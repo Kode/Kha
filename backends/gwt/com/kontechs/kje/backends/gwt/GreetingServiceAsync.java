@@ -1,4 +1,4 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -1,10 +1,10 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.user.client.Timer;
 
-import de.hsharz.game.engine.Loader;
-import de.hsharz.game.engine.Music;
-import de.hsharz.game.engine.Sound;
+import com.kontechs.kje.Loader;
+import com.kontechs.kje.Music;
+import com.kontechs.kje.Sound;
 
 public class WebLoader extends Loader {
 	private static int[][] level;
@@ -41,7 +41,7 @@ public class WebLoader extends Loader {
 	}
 
 	@Override
-	public de.hsharz.game.engine.Image loadImage(String filename) {
+	public com.kontechs.kje.Image loadImage(String filename) {
 		return new WebImage(filename);
 	}
 

@@ -1,8 +1,8 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import de.hsharz.game.engine.Music;
+import com.kontechs.kje.Music;
 
 public class AndroidMusic implements Music {
 	private MediaPlayer mp;
@@ -11,10 +11,8 @@ public class AndroidMusic implements Music {
 	public AndroidMusic(Context context) {
 		instance = this;
 		try {
-	    	mp = MediaPlayer.create(context, R.raw.level1);
-	    	mp.setLooping(true);
-			//mp.setDataSource("res/raw/jump.wav");
-			//mp.prepare();
+	    	//mp = MediaPlayer.create(context, R.raw.level1);
+	    	//mp.setLooping(true);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -23,15 +21,20 @@ public class AndroidMusic implements Music {
 	
 	@Override
 	public void start() {
-		mp.start();
+		//mp.start();
 	}
 
 	@Override
 	public void stop() {
-		mp.stop();
+		//mp.stop();
 	}
 	
 	public static void stopit() {
 		instance.stop();
+	}
+
+	@Override
+	public void update() {
+		
 	}
 }

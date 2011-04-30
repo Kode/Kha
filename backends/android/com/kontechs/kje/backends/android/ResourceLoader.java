@@ -1,4 +1,4 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -8,10 +8,10 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
-import de.hsharz.game.engine.Image;
-import de.hsharz.game.engine.Loader;
-import de.hsharz.game.engine.Music;
-import de.hsharz.game.engine.Sound;
+import com.kontechs.kje.Image;
+import com.kontechs.kje.Loader;
+import com.kontechs.kje.Music;
+import com.kontechs.kje.Sound;
 
 public class ResourceLoader extends Loader {
 	private AssetManager assets;

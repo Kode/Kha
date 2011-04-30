@@ -1,11 +1,11 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.dom.client.MediaElement;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.ui.RootPanel;
 
-import de.hsharz.game.engine.Music;
+import com.kontechs.kje.Music;
 
 public class WebMusic implements Music {
 	private AudioElement element;

@@ -1,20 +1,20 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
-import de.hsharz.game.engine.Key;
-import de.hsharz.game.engine.Loader;
-import de.hsharz.game.engine.Painter;
-import de.hsharz.game.engine.example.ExampleGame;
-import de.hsharz.game.engine.zool.ZoolGame;
+import com.kontechs.kje.Key;
+import com.kontechs.kje.Loader;
+import com.kontechs.kje.Painter;
+import com.kontechs.sml.SuperMarioLand;
+//import com.kontechs.kje.zool.ZoolGame;
 
 public class GameThread extends Thread {
 	private boolean running = false;
 	private SurfaceHolder surface;
 	private Context context;
-	private de.hsharz.game.engine.Game game;
+	private com.kontechs.kje.Game game;
 
 	public GameThread(SurfaceHolder surface, Context context) {
 		this.surface = surface;
@@ -23,9 +23,9 @@ public class GameThread extends Thread {
 
 	@Override
 	public void run() {
-		de.hsharz.game.engine.System.init(new AndroidSystem());
+		com.kontechs.kje.System.init(new AndroidSystem());
 		Loader.init(new ResourceLoader(context));
-		game = new ExampleGame();
+		game = new SuperMarioLand();
 		//game = new ZoolGame();
 		while (running) {
 			Canvas c = null;
@@ -57,16 +57,16 @@ public class GameThread extends Thread {
 		synchronized (surface) {
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.RIGHT, true));
+				game.key(new com.kontechs.kje.KeyEvent(Key.RIGHT, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.LEFT, true));
+				game.key(new com.kontechs.kje.KeyEvent(Key.LEFT, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_UP:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.UP, true));
+				game.key(new com.kontechs.kje.KeyEvent(Key.UP, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.DOWN, true));
+				game.key(new com.kontechs.kje.KeyEvent(Key.DOWN, true));
 				break;
 			default:
 				return false;	
@@ -79,16 +79,16 @@ public class GameThread extends Thread {
 		synchronized (surface) {
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.RIGHT, false));
+				game.key(new com.kontechs.kje.KeyEvent(Key.RIGHT, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.LEFT, false));
+				game.key(new com.kontechs.kje.KeyEvent(Key.LEFT, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_UP:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.UP, false));
+				game.key(new com.kontechs.kje.KeyEvent(Key.UP, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
-				game.key(new de.hsharz.game.engine.KeyEvent(Key.DOWN, false));
+				game.key(new com.kontechs.kje.KeyEvent(Key.DOWN, false));
 				break;
 			default:
 				return false;	

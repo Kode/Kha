@@ -1,11 +1,11 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 
-import de.hsharz.game.engine.Image;
+import com.kontechs.kje.Image;
 
 public class WebImage implements Image, LoadHandler {
 	private com.google.gwt.user.client.ui.Image img;

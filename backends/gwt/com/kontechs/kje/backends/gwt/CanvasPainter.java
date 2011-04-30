@@ -1,10 +1,10 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 
-import de.hsharz.game.engine.Image;
-import de.hsharz.game.engine.Painter;
+import com.kontechs.kje.Image;
+import com.kontechs.kje.Painter;
 
 public class CanvasPainter implements Painter {
 	private Context2d context;

@@ -1,4 +1,4 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.app.Activity;
 import android.os.Bundle;

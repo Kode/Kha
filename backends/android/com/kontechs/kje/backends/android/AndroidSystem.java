@@ -1,6 +1,6 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
-public class AndroidSystem extends de.hsharz.game.engine.System {
+public class AndroidSystem extends com.kontechs.kje.System {
 	@Override
 	public int getXRes() {
 		return 400;

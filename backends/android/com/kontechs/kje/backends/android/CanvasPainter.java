@@ -1,11 +1,11 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import de.hsharz.game.engine.Image;
-import de.hsharz.game.engine.Painter;
+import com.kontechs.kje.Image;
+import com.kontechs.kje.Painter;
 
 public class CanvasPainter implements Painter {
 	private Canvas c;

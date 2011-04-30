@@ -1,7 +1,7 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.graphics.Bitmap;
-import de.hsharz.game.engine.Image;
+import com.kontechs.kje.Image;
 
 public class BitmapImage implements Image {
 	Bitmap bitmap;

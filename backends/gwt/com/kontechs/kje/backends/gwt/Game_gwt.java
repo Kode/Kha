@@ -1,4 +1,4 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -11,11 +11,11 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
-import de.hsharz.game.engine.Game;
-import de.hsharz.game.engine.Key;
-import de.hsharz.game.engine.KeyEvent;
-import de.hsharz.game.engine.Loader;
-import de.hsharz.game.engine.example.ExampleGame;
+import com.kontechs.kje.Game;
+import com.kontechs.kje.Key;
+import com.kontechs.kje.KeyEvent;
+import com.kontechs.kje.Loader;
+import com.kontechs.sml.SuperMarioLand;
 //import de.hsharz.game.engine.zool.ZoolGame;
 
 public class Game_gwt implements EntryPoint {
@@ -52,9 +52,9 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		panel.addKeyUpHandler(this);
 		panel.setFocus(true);
 		
-		de.hsharz.game.engine.System.init(new WebSystem(WIDTH, HEIGHT));
+		com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
 		Loader.init(new WebLoader());
-		game = new ExampleGame();
+		game = new SuperMarioLand();
 		//game = new ZoolGame();
 	}
 	

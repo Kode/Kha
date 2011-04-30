@@ -1,9 +1,9 @@
-package de.hsharz.game;
+package com.kontechs.kje.backends.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import de.hsharz.game.engine.Sound;
+import com.kontechs.kje.Sound;
 
 public class AndroidSound implements Sound {
 	private static SoundPool pool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);

@@ -1,6 +1,6 @@
-package de.hsharz.game.client;
+package com.kontechs.kje.backends.gwt;
 
-public class WebSystem extends de.hsharz.game.engine.System {
+public class WebSystem extends com.kontechs.kje.System {
 	int xres, yres;
 	
 	public WebSystem(int xres, int yres) {
