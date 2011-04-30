@@ -1,18 +1,22 @@
 package com.kontechs.kje.backends.android;
 
-import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+
 import com.kontechs.kje.Music;
 
 public class AndroidMusic implements Music {
 	private MediaPlayer mp;
 	private static AndroidMusic instance;
 	
-	public AndroidMusic(Context context) {
+	public AndroidMusic(AssetFileDescriptor file) {
 		instance = this;
 		try {
-	    	//mp = MediaPlayer.create(context, R.raw.level1);
-	    	//mp.setLooping(true);
+			mp = new MediaPlayer();
+			mp.setLooping(true);
+			mp.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+			mp.prepare();
+			mp.start();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -21,12 +25,12 @@ public class AndroidMusic implements Music {
 	
 	@Override
 	public void start() {
-		//mp.start();
+		mp.start();
 	}
 
 	@Override
 	public void stop() {
-		//mp.stop();
+		mp.stop();
 	}
 	
 	public static void stopit() {

@@ -15,10 +15,8 @@ import com.kontechs.kje.Sound;
 
 public class ResourceLoader extends Loader {
 	private AssetManager assets;
-	private Context context;
 	
 	public ResourceLoader(Context context) {
-		this.context = context;
 		this.assets = context.getAssets();
 	}
 	
@@ -36,14 +34,20 @@ public class ResourceLoader extends Loader {
 	public Sound loadSound(String filename) {
 		try {
 			return new AndroidSound(assets.openFd(filename + ".wav"));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Music loadMusic(String filename) {
-		return new AndroidMusic(context);
+		try {
+			return new AndroidMusic(assets.openFd(filename + ".ogg"));
+		}
+		catch (IOException e) {
+			return null;
+		}
 	}
 
 	@Override

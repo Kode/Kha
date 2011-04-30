@@ -16,7 +16,7 @@ import com.kontechs.kje.Loader;
 public class JavaLoader extends Loader {
 	public JavaImage loadImage(String filename) {
 		try {
-			return new JavaImage(ImageIO.read(new File("../../../../data/" + filename + ".png")));
+			return new JavaImage(ImageIO.read(new File("../../data/" + filename + ".png")));
 		}
 		catch (IOException e) {
 			return null;
@@ -24,12 +24,12 @@ public class JavaLoader extends Loader {
 	}
 	
 	public JavaSound loadSound(String filename) {
-		return new JavaSound(filename);
+		return new JavaSound("../../data/" + filename + ".wav");
 	}
 	
 	public JavaMusic loadMusic(String filename) {
 		try {
-			return new JavaMusic(new File("../../../../data/" + filename + ".wav"));
+			return new JavaMusic(new File("../../data/" + filename + ".wav"));
 		}
 		catch (IOException e) {
 			return null;
@@ -45,7 +45,7 @@ public class JavaLoader extends Loader {
 	public int[][] loadLevel() {
 		int[][] map;
 		try {
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../../../data/level.map")));
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/level.map")));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];

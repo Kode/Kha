@@ -60,7 +60,7 @@ public class JavaSound implements Sound {
 	
 	public JavaSound(String filename) {
 		try {
-			AudioInputStream stream = AudioSystem.getAudioInputStream(new File("../../../../data/" + filename + ".wav"));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
 			clip = AudioSystem.getClip();
 			clip.open(stream);
 		} catch (Exception e) {

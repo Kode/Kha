@@ -1,3 +1,5 @@
 
 /games/sml/projects/java/bin
 /games/sml/projects/android/bin
+/games/sml/projects/gwt/war/WEB-INF/classes
+/games/sml/projects/gwt/.gwt
