@@ -17,14 +17,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-import com.kontechs.kje.BackgroundImage;
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Rectangle;
 import com.kontechs.kje.Saver;
 
 //TODO: Should not be here
-public class WinningScreen extends JFrame implements MouseListener,MouseMotionListener{ 
+public class _WinningScreen extends JFrame implements MouseListener,MouseMotionListener{ 
 	private static final long serialVersionUID = 1L;
 	private Image background_image = Loader.getInstance().loadImage("winningscreen");
 	private int time_left = 0;
@@ -34,7 +33,7 @@ public class WinningScreen extends JFrame implements MouseListener,MouseMotionLi
 	private static Image cursor_point;
 	JTextField name_field;
 	
-	public WinningScreen(int time_left,int points) {
+	public _WinningScreen(int time_left, int points) {
 		this.time_left = time_left;
 		this.points = points;
 		
@@ -50,7 +49,7 @@ public class WinningScreen extends JFrame implements MouseListener,MouseMotionLi
 		addMouseMotionListener(this);
 		
 		// Backgroundimage
-		BackgroundImage background = new BackgroundImage(background_image);
+		_BackgroundImage background = new _BackgroundImage(background_image);
 		
 		
 		// Textarea
@@ -87,7 +86,7 @@ public class WinningScreen extends JFrame implements MouseListener,MouseMotionLi
 		}
 		Rectangle window_pos = new Rectangle(this.getLocationOnScreen().x, this.getLocationOnScreen().y, 
 				0, 0);
-		StartScreen.insertInHighscore((this.time_left + this.points), name_field.getText());
+		_StartScreen.insertInHighscore((this.time_left + this.points), name_field.getText());
 		Saver.getInstance().saveHighscore();
 		this.setVisible(false);
 		return window_pos;
@@ -153,7 +152,7 @@ public class WinningScreen extends JFrame implements MouseListener,MouseMotionLi
 		g.drawString("" + this.time_left, 240, 248);
 		g.drawString("" + this.points, 240, 278);
 		g.drawString("" + (this.time_left + this.points), 240, 311);
-		int score_place = StartScreen.getHighscorePlace((this.time_left + this.points));
+		int score_place = _StartScreen.getHighscorePlace((this.time_left + this.points));
 		g.drawString(score_place +  (score_place==1?"st":score_place==2?"nd":score_place==3?"rd":"th" + " Place"), 220, 341);
 	}
 }

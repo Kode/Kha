@@ -1,17 +1,17 @@
-package com.kontechs.kje;
+package com.kontechs.kje.backends.java;
 
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import com.kontechs.kje.backends.java.JavaImage;
+import com.kontechs.kje.Image;
 
 //TODO: Remove
-public class BackgroundImage extends JPanel {
+public class _BackgroundImage extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Image background_image;
 	
-	public BackgroundImage(Image background_image) {
+	public _BackgroundImage(Image background_image) {
 		this.background_image = background_image;
 		this.setBounds(0, 0, background_image.getWidth(), background_image.getHeight());
 	}

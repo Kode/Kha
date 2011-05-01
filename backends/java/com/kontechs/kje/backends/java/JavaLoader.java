@@ -90,7 +90,7 @@ public class JavaLoader extends Loader {
 				e.printStackTrace();
 			}
 		}
-		StartScreen.setHighscore(highscore);
+		//StartScreen.setHighscore(highscore); //TODO
 	}
 	
 	//TODO: Check
@@ -122,6 +122,5 @@ public class JavaLoader extends Loader {
 			}
 		}
 		return array_elements;
-		
 	}
 }

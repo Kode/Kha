@@ -14,14 +14,13 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import com.kontechs.kje.BackgroundImage;
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Rectangle;
 import com.kontechs.kje.Saver;
 
 //TODO: Should not be here
-public class StartScreen extends JFrame implements MouseListener,MouseMotionListener{
+public class _StartScreen extends JFrame implements MouseListener,MouseMotionListener{
 	private static final long serialVersionUID = 1L;
 	private static Image start_screen;
 	private static Image credits_screen;
@@ -32,7 +31,7 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 	
 
 	private boolean start_window = true;
-	private BackgroundImage background;
+	private _BackgroundImage background;
 	private boolean isOnSubScreen = false;
 	private boolean isOnHighscore = false;
 	
@@ -47,7 +46,7 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 		cursor_point = Loader.getInstance().loadImage("cursor_point");
 	}
 	
-	public StartScreen() {
+	public _StartScreen() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -57,7 +56,7 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 		addMouseMotionListener(this);
 		
 		// Backgroundimage
-		background = new BackgroundImage(start_screen);
+		background = new _BackgroundImage(start_screen);
 		
 		// add elements
 		add(background);
@@ -221,7 +220,7 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 	}
 
 	public static void setHighscore(String[][] highscore) {
-		StartScreen.highscore = highscore;
+		_StartScreen.highscore = highscore;
 	}
 	
 	@Override

@@ -15,8 +15,8 @@ public class JavaSaver extends Saver {
 		try {
 			stream_highscore = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("../data/highscore.score")));
 			for (int entry_index = 0; entry_index < 10; entry_index++)  {
-				stream_highscore.writeUTF(StartScreen.getHighscore()[entry_index][0]); //TODO: Get this somewhere else
-				stream_highscore.writeUTF(StartScreen.getHighscore()[entry_index][1]); //TODO: Get this somewhere else
+				//stream_highscore.writeUTF(StartScreen.getHighscore()[entry_index][0]); //TODO: Get this somewhere else
+				//stream_highscore.writeUTF(StartScreen.getHighscore()[entry_index][1]); //TODO: Get this somewhere else
 			}
 			stream_highscore.close();
 		} catch (FileNotFoundException e) {
@@ -27,7 +27,6 @@ public class JavaSaver extends Saver {
 			try {
 				stream_highscore.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

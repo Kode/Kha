@@ -81,7 +81,7 @@ public class Sprite {
 		if (image != null) {
 			painter.drawImage(image, animation.get() * width % image.getWidth(), animation.get() * width / image.getWidth() * height, width, height, x - collider.x, y - collider.y, width, height);
 			if(Scene.getInstance().isCooliderDebugMode()){
-				painter.drawCollider(x + collider.x,y + collider.y,collider.width,collider.height); //TODO: drawRect
+				//painter.drawCollider(x + collider.x,y + collider.y,collider.width,collider.height); //TODO: drawRect
 			}
 		}
 	}

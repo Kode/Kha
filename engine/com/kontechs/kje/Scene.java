@@ -349,8 +349,9 @@ public class Scene {
 			}
 		}
 		
-		painter.drawStatusLine();
-		painter.drawExcavatorLife(100, 100);
+		//TODO
+		//painter.drawStatusLine();
+		//painter.drawExcavatorLife(100, 100);
 	}
 	
 	public int camx, camy;

@@ -7,8 +7,8 @@ public interface Painter {
 	void fillRect(int x, int y, int width, int height);
 	void translate(int x, int y);
 	
-	//TODO: Remove
-	void drawStatusLine();
-	void drawCollider(int x,int y,int width,int height);
-	void drawExcavatorLife(int x,int y);
+	//TODO
+	//void drawStatusLine();
+	//void drawCollider(int x,int y,int width,int height);
+	//void drawExcavatorLife(int x,int y);
 }

@@ -23,11 +23,6 @@ public class JavaMusic implements Music, Runnable {
 	Thread playThread;
 	boolean playing;
 	boolean notYetEOF;
-	//private static PCMFilePlayer instance;
-	
-	//static PCMFilePlayer getInstance() {
-	//	return instance;
-	//}
 
 	public JavaMusic(File f) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		//instance = this;

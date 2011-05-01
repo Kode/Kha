@@ -40,8 +40,8 @@ public class GraphicsPainter implements Painter {
 	}
 	
 	//TODO: Should not be here
-	public void drawStatusLine(){ 
-		/*g.drawImage(((JavaImage) StatusLine.getStatusLine()).getImage(), 0, 505, null);
+	/*public void drawStatusLine(){ 
+		g.drawImage(((JavaImage) StatusLine.getStatusLine()).getImage(), 0, 505, null);
 	
 		g.setFont(new Font("Arial",Font.PLAIN, 13));
 		g.drawString("" + StatusLine.getScore(), 120, 541);
@@ -60,22 +60,20 @@ public class GraphicsPainter implements Painter {
 			g.setColor(Color.RED);
 			g.setFont(new Font("Arial", Font.BOLD, 20));
 			g.drawString("Godmode enabled", 50, 50);			
-		}*/
-	}
+		}
+	}*/
 	
 	//TODO: Should not be here
-	public void drawExcavatorLife(int x,int y){ 
-		/*g.setColor(Color.RED);
+	/*public void drawExcavatorLife(int x,int y){ 
+		g.setColor(Color.RED);
 		
 		if(ExcavatorLifeLine.getPosx()>0)
 			g.fillRect(ExcavatorLifeLine.getPosx() - Scene.getInstance().camx + 370, ExcavatorLifeLine.getPosy() + 30, ExcavatorLifeLine.getActualLifeLineLength(), 10);
-		*/
-	}
+	}*/
 	
 	//TODO: Should not be here
-	public void drawCollider(int x,int y,int width,int height){
-		//g.setColor(Color.RED);
-		//g.drawRect(x + tx, y + ty, width, height);
-	}
-	
+	/*public void drawCollider(int x,int y,int width,int height){
+		g.setColor(Color.RED);
+		g.drawRect(x + tx, y + ty, width, height);
+	}*/
 }

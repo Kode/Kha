@@ -38,12 +38,15 @@ public class TileProperty {
 	public void setCollides(boolean collides) {
 		this.collides = collides;
 	}
+	
+	//TODO: Generalize
 	public int getSeasonMode() {
 		return seasonMode;
 	}
 	public void setSeasonMode(int seasonMode) {
 		this.seasonMode = seasonMode;
 	}
+	
 	public int getLinkedTile() {
 		return linkedTile;
 	}
