@@ -11,7 +11,7 @@ public class WebMusic implements Music {
 	private AudioElement element;
 	
 	public WebMusic(String filename) {
-		Audio audio = Audio.createIfSupported(); //not supported in IE9
+		Audio audio = Audio.createIfSupported(); //not working in IE9
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();

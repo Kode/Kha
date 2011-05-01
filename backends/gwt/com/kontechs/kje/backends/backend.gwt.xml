@@ -4,5 +4,16 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.kontechs.engine" />
 	
+	<!-- Hack to force IE9 to use the "maybe" permutation of Canvas -->
+	<!-- This causes all browsers to download the Canvas code by    -->
+	<!-- preventing the default Canvas.gwt.xml from compiling out   -->
+	<!-- non-canvas code for non-canvas browsers                    -->
+	<replace-with class="com.google.gwt.canvas.client.Canvas.CanvasElementSupportDetectedMaybe">
+		<when-type-is class="com.google.gwt.canvas.client.Canvas.CanvasElementSupportDetector" />
+	</replace-with>
+	<!--<replace-with class="com.google.gwt.media.client.Audio.AudioElementSupportDetectedMaybe">
+		<when-type-is class="com.google.gwt.media.client.Audio.AudioElementSupportDetector" />
+	</replace-with>-->
+  
 	<source path="gwt"/>
 </module>
