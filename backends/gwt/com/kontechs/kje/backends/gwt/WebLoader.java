@@ -1,6 +1,11 @@
 package com.kontechs.kje.backends.gwt;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Music;
@@ -8,33 +13,10 @@ import com.kontechs.kje.Sound;
 import com.kontechs.kje.TileProperty;
 
 public class WebLoader extends Loader {
-	private static int[][] level;
-	
-	public static void load() {
-		/*GreetingServiceAsync service = GWT.create(GreetingService.class);
-		service.getLevel(new AsyncCallback<int[][]>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				
-			}
-
-			@Override
-			public void onSuccess(int[][] result) {
-				level = result;
-				loadingFinished();
-			}
-		});*/
-		int levelWidth = LevelMap.levelmap[0];
-		int levelHeight = LevelMap.levelmap[1];
-		int index = 2;
-		level = new int[levelWidth][levelHeight];
-		for (int x = 0; x < levelWidth; ++x) {
-			for (int y = 0; y < levelHeight; ++y) {
-				level[x][y] = LevelMap.levelmap[index++];
-			}
-		}
-		loadingFinished();
-	}
+	private static LevelServiceAsync service;
+	private java.util.Map<String, int[][]> maps = new java.util.HashMap<String, int[][]>();
+	private java.util.Map<String, TileProperty[]> tilesets = new java.util.HashMap<String, TileProperty[]>();
+	private int loadcount;
 	
 	private static void loadingFinished() {
 		Timer timer = new AnimationTimer();
@@ -57,19 +39,88 @@ public class WebLoader extends Loader {
 	}
 
 	@Override
-	public int[][] loadLevel(String lvl_name) {
-		return level;
+	public int[][] getMap(String name) {
+		return maps.get(name);
 	}
 
 	@Override
-	public TileProperty[] loadTilesProperties(String tilesPropertyName) {
-		TileProperty[] properties = new TileProperty[256];
-		for (int i = 0; i < 256; ++i) properties[i] = new TileProperty();
-		return properties;
+	public TileProperty[] getTileset(String tilesPropertyName) {
+		return tilesets.get(tilesPropertyName);
 	}
 
 	@Override
 	public void loadHighscore() {
 		
+	}
+	
+	@Override
+	public void setTilesets(String[] names) {
+		tilesets.clear();
+		for (int i = 0; i < names.length; ++i) tilesets.put(names[i], null);
+		loadcount += names.length;
+	}
+
+	@Override
+	public void setMaps(String[] names) {
+		maps.clear();
+		for (int i = 0; i < names.length; ++i) maps.put(names[i], null);
+		loadcount += names.length;
+	}
+	
+	class MapLoader implements AsyncCallback<int[][]> {
+		private String name;
+		
+		public MapLoader(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public void onFailure(Throwable caught) {
+			System.err.println("Failed loading level");
+		}
+
+		@Override
+		public void onSuccess(int[][] result) {
+			maps.put(name, result);
+			--loadcount;
+			if (loadcount <= 0) loadingFinished();
+		}	
+	}
+	
+	class TilesetLoader implements AsyncCallback<TileProperty[]> {
+		private String name;
+		
+		public TilesetLoader(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public void onFailure(Throwable caught) {
+			System.err.println("Failed loading level");
+		}
+
+		@Override
+		public void onSuccess(TileProperty[] result) {
+			tilesets.put(name, result);
+			--loadcount;
+			if (loadcount <= 0) loadingFinished();
+		}	
+	}
+	
+	
+
+	@Override
+	public void load() {
+		service = GWT.create(LevelService.class);
+		Set<String> mapnames = maps.keySet();
+		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) {
+			String name = it.next();
+			service.getLevel(name, new MapLoader(name));
+		}
+		Set<String> tilesetnames = tilesets.keySet();
+		for (Iterator<String> it = tilesetnames.iterator(); it.hasNext(); ) {
+			String name = it.next();
+			service.getTileset(name, new TilesetLoader(name));
+		}
 	}
 }

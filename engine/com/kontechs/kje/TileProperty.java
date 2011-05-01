@@ -1,7 +1,10 @@
 package com.kontechs.kje;
 
+import java.io.Serializable;
+
 //TODO: Generalize
-public class TileProperty {
+public class TileProperty implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public static final int SEASONMODE_SUMMERONLY = 0;
 	public static final int SEASONMODE_WINTERONLY = 1;
 	public static final int SEASONMODE_BOTH = 2;

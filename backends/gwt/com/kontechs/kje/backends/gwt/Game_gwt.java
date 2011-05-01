@@ -18,7 +18,11 @@ import com.kontechs.kje.Loader;
 
 public class Game_gwt implements EntryPoint {
 	public void onModuleLoad() {
-		WebLoader.load();
+		Loader.init(new WebLoader());
+		//game = new com.kontechs.sml.SuperMarioLand();
+		//game = new com.kontechs.zool.ZoolGame();
+		new de.hsharz.beaver.BeaverGame("level1", "tiles");
+		Loader.getInstance().load();
 	}
 }
 
@@ -26,7 +30,6 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 	private Canvas canvas;
 	private Context2d context;
 	private CanvasPainter painter;
-	private Game game;
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 550;
 	private boolean[] keyreleased;
@@ -51,22 +54,20 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		panel.setFocus(true);
 		
 		com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
-		Loader.init(new WebLoader());
-		//game = new com.kontechs.sml.SuperMarioLand();
-		//game = new com.kontechs.zool.ZoolGame();
-		game = new de.hsharz.beaver.BeaverGame("level1", "tiles");
+		
+		Game.getInstance().postInit();
 	}
 	
 	private void pressKey(int keycode, Key key) {
 		if (keyreleased[keycode]) { //avoid auto-repeat
 			keyreleased[keycode] = false;
-			game.key(new KeyEvent(key, true));
+			Game.getInstance().key(new KeyEvent(key, true));
 		}
 	}
 	
 	private void releaseKey(int keycode, Key key) {
 		keyreleased[keycode] = true;
-		game.key(new KeyEvent(key, false));
+		Game.getInstance().key(new KeyEvent(key, false));
 	}
 	
 	@Override
@@ -97,9 +98,9 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 
 	public void run() {
 		try {
-			game.update();
-			game.update();
-			game.render(painter);
+			Game.getInstance().update();
+			Game.getInstance().update();
+			Game.getInstance().render(painter);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

@@ -14,7 +14,13 @@ public abstract class Loader {
 	public abstract Image loadImage(String filename);
 	public abstract Sound loadSound(String filename);
 	public abstract Music loadMusic(String filename);
-	public abstract int[][] loadLevel(String lvl_name);
-	public abstract TileProperty[] loadTilesProperties(String tilesPropertyName);
+	
+	public abstract void setMaps(String[] names);
+	public abstract void setTilesets(String[] names);
+	public abstract void load();
+	
+	public abstract int[][] getMap(String name);
+	public abstract TileProperty[] getTileset(String tilesPropertyName);
+	
 	public abstract void loadHighscore();
 }

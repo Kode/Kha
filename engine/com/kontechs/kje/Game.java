@@ -1,14 +1,21 @@
 package com.kontechs.kje;
 
 public abstract class Game {
+	private static Game instance;
 	private Scene scene;
 	
-	public Game(String lvl_name, String tilesPropertyName) {
-		scene = new Scene();
-		init(lvl_name, tilesPropertyName);
+	public static Game getInstance() {
+		return instance;
 	}
 	
-	public abstract void init(String lvl_name, String tilesPropertyName);
+	public Game(String lvl_name, String tilesPropertyName) {
+		instance = this;
+		scene = new Scene();
+		preInit(lvl_name, tilesPropertyName);
+	}
+	
+	public abstract void preInit(String lvl_name, String tilesPropertyName); //Used to configure the Loader
+	public abstract void postInit(); //Called by the Loader when finished
 	
 	public void update() {
 		scene.update();

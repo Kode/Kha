@@ -357,7 +357,7 @@ public class Scene {
 	public int camx, camy;
 
 	public void setTileProperties(String tilesPropertyName) {
-		this.tilesProperties = Loader.getInstance().loadTilesProperties(tilesPropertyName);
+		this.tilesProperties = Loader.getInstance().getTileset(tilesPropertyName);
 	}
 	
 	//TODO: Generalize
