@@ -51,6 +51,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent msg) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && msg.isAltPressed()) return true; //Circle button on Xperia Play
 		return thread.keyDown(keyCode);
 	}
 

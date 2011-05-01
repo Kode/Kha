@@ -1,12 +1,8 @@
 package com.kontechs.kje.backends.gwt;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Music;
 import com.kontechs.kje.Sound;
@@ -14,13 +10,14 @@ import com.kontechs.kje.TileProperty;
 
 public class WebLoader extends Loader {
 	private static LevelServiceAsync service;
-	private java.util.Map<String, int[][]> maps = new java.util.HashMap<String, int[][]>();
-	private java.util.Map<String, TileProperty[]> tilesets = new java.util.HashMap<String, TileProperty[]>();
-	private int loadcount;
 	
 	private static void loadingFinished() {
 		Timer timer = new AnimationTimer();
 		timer.scheduleRepeating(1000 / 30);
+	}
+	
+	public WebLoader() {
+		service = GWT.create(LevelService.class);
 	}
 
 	@Override
@@ -39,32 +36,8 @@ public class WebLoader extends Loader {
 	}
 
 	@Override
-	public int[][] getMap(String name) {
-		return maps.get(name);
-	}
-
-	@Override
-	public TileProperty[] getTileset(String tilesPropertyName) {
-		return tilesets.get(tilesPropertyName);
-	}
-
-	@Override
 	public void loadHighscore() {
 		
-	}
-	
-	@Override
-	public void setTilesets(String[] names) {
-		tilesets.clear();
-		for (int i = 0; i < names.length; ++i) tilesets.put(names[i], null);
-		loadcount += names.length;
-	}
-
-	@Override
-	public void setMaps(String[] names) {
-		maps.clear();
-		for (int i = 0; i < names.length; ++i) maps.put(names[i], null);
-		loadcount += names.length;
 	}
 	
 	class MapLoader implements AsyncCallback<int[][]> {
@@ -107,20 +80,13 @@ public class WebLoader extends Loader {
 		}	
 	}
 	
-	
-
 	@Override
-	public void load() {
-		service = GWT.create(LevelService.class);
-		Set<String> mapnames = maps.keySet();
-		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) {
-			String name = it.next();
-			service.getLevel(name, new MapLoader(name));
-		}
-		Set<String> tilesetnames = tilesets.keySet();
-		for (Iterator<String> it = tilesetnames.iterator(); it.hasNext(); ) {
-			String name = it.next();
-			service.getTileset(name, new TilesetLoader(name));
-		}
+	protected void loadMap(String name) {
+		service.getLevel(name, new MapLoader(name));
+	}
+	
+	@Override
+	protected void loadTileset(String name) {
+		service.getTileset(name, new TilesetLoader(name));
 	}
 }

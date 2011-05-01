@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import com.kontechs.kje.Game;
+import com.kontechs.kje.GameInfo;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.KeyEvent;
 import com.kontechs.kje.Loader;
@@ -19,9 +20,7 @@ import com.kontechs.kje.Loader;
 public class Game_gwt implements EntryPoint {
 	public void onModuleLoad() {
 		Loader.init(new WebLoader());
-		//game = new com.kontechs.sml.SuperMarioLand();
-		//game = new com.kontechs.zool.ZoolGame();
-		new de.hsharz.beaver.BeaverGame("level1", "tiles");
+		GameInfo.createGame("level1", "tiles");
 		Loader.getInstance().load();
 	}
 }

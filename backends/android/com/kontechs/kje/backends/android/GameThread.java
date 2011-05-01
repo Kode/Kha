@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
+
+import com.kontechs.kje.GameInfo;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Painter;
@@ -23,10 +25,9 @@ public class GameThread extends Thread {
 	public void run() {
 		com.kontechs.kje.System.init(new AndroidSystem());
 		Loader.init(new ResourceLoader(context));
-		
-		//game = new com.kontechs.sml.SuperMarioLand();
-		//game = new com.kontechs.kje.zool.ZoolGame();
-		game = new de.hsharz.beaver.BeaverGame("level1", "tiles");
+		game = GameInfo.createGame("level1", "tiles");
+		Loader.getInstance().load();
+		game.postInit();
 		
 		while (running) {
 			Canvas c = null;
@@ -63,11 +64,17 @@ public class GameThread extends Thread {
 			case KeyEvent.KEYCODE_DPAD_LEFT:
 				game.key(new com.kontechs.kje.KeyEvent(Key.LEFT, true));
 				break;
-			case KeyEvent.KEYCODE_DPAD_UP:
+			case KeyEvent.KEYCODE_DPAD_CENTER:
 				game.key(new com.kontechs.kje.KeyEvent(Key.UP, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
 				game.key(new com.kontechs.kje.KeyEvent(Key.DOWN, true));
+				break;
+			case 99:
+				game.key(new com.kontechs.kje.KeyEvent(Key.BUTTON_1, true));
+				break;
+			case 100:
+				game.key(new com.kontechs.kje.KeyEvent(Key.BUTTON_2, true));
 				break;
 			default:
 				return false;	
@@ -85,14 +92,20 @@ public class GameThread extends Thread {
 			case KeyEvent.KEYCODE_DPAD_LEFT:
 				game.key(new com.kontechs.kje.KeyEvent(Key.LEFT, false));
 				break;
-			case KeyEvent.KEYCODE_DPAD_UP:
+			case KeyEvent.KEYCODE_DPAD_CENTER:
 				game.key(new com.kontechs.kje.KeyEvent(Key.UP, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
 				game.key(new com.kontechs.kje.KeyEvent(Key.DOWN, false));
 				break;
+			case 99:
+				game.key(new com.kontechs.kje.KeyEvent(Key.BUTTON_1, false));
+				break;
+			case 100:
+				game.key(new com.kontechs.kje.KeyEvent(Key.BUTTON_2, false));
+				break;
 			default:
-				return false;	
+				return false;
 			}
 			return true;
 		}

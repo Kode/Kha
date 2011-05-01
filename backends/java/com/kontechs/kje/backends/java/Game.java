@@ -11,6 +11,7 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.JFrame;
 
+import com.kontechs.kje.GameInfo;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Scene;
@@ -108,6 +109,8 @@ public class Game extends JFrame implements KeyListener {
 		com.kontechs.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
 		createGame();
+		Loader.getInstance().load();
+		game.postInit();
 		long lasttime = System.nanoTime();
 		for (;;) {
 			if (vsynced) update();
@@ -135,9 +138,7 @@ public class Game extends JFrame implements KeyListener {
 	}
 	
 	private void createGame() {
-		game = new de.hsharz.beaver.BeaverGame(lvl_name, tilesPropertyName);
-		//game = new com.kontechs.sml.SuperMarioLand();
-		//game = new com.kontechs.zool.ZoolGame();
+		game = GameInfo.createGame(lvl_name, tilesPropertyName);
 	}
 	
 	private void resetGame() {

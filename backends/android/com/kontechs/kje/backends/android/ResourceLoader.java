@@ -2,7 +2,6 @@ package com.kontechs.kje.backends.android;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import android.content.Context;
@@ -55,33 +54,29 @@ public class ResourceLoader extends Loader {
 	}
 
 	@Override
-	public int[][] loadLevel(String lvl_name) {
-		int[][] map;
+	public void loadMap(String name) {
 		try {
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(assets.open(lvl_name)));
+			int[][] map;
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(assets.open(name)));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];
 			for (int x = 0; x < levelWidth; ++x) for (int y = 0; y < levelHeight; ++y) {
 				map[x][y] = stream.readInt();
 			}
-			return map;
+			maps.put(name, map);
 		}
-		catch (FileNotFoundException e) {
-			return null;
-		}
-		catch (IOException e) {
-			return null;
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public TileProperty[] loadTilesProperties(String tilesPropertyName) {
+	public void loadTileset(String name) {
 		TileProperty[] array_elements = null;
 		DataInputStream stream_elements = null;
 		try {
-			stream_elements = new DataInputStream(new BufferedInputStream(
-					assets.open(tilesPropertyName + ".settings")));
+			stream_elements = new DataInputStream(new BufferedInputStream(assets.open(name + ".settings")));
 
 			array_elements = new TileProperty[stream_elements.readInt()];
 			for(int i = 0;i<array_elements.length;i++){
@@ -94,16 +89,19 @@ public class ResourceLoader extends Loader {
 				array_elements[i].setSeasonMode(stream_elements.readInt());
 				array_elements[i].setLinkedTile(stream_elements.readInt());
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			try {
 				stream_elements.close();
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return array_elements;
+		tilesets.put(name, array_elements);
 	}
 
 	@Override
