@@ -38,4 +38,44 @@ public class GraphicsPainter implements Painter {
 		tx = x;
 		ty = y;
 	}
+	
+	//TODO: Should not be here
+	public void drawStatusLine(){ 
+		/*g.drawImage(((JavaImage) StatusLine.getStatusLine()).getImage(), 0, 505, null);
+	
+		g.setFont(new Font("Arial",Font.PLAIN, 13));
+		g.drawString("" + StatusLine.getScore(), 120, 541);
+		int life_rectangleLength = 150;
+		g.fillRect(436, 530, 
+				(int) (life_rectangleLength - 
+				((double)life_rectangleLength * 
+						(1-((double)StatusLine.getTime_leftInSeconds() / (double)StatusLine.getGametimeInSeconds()))
+				)), 11);
+		for(int i = 0;i<Beaver.getInstance().getBeaver_hearts();i++){
+			int x = 260 + 20 * i;
+			g.drawImage(((JavaImage)StatusLine.getStatus_heart()).getImage(), x, 533, null);
+		}
+		
+		if (Beaver.getInstance().isGodMode()) {
+			g.setColor(Color.RED);
+			g.setFont(new Font("Arial", Font.BOLD, 20));
+			g.drawString("Godmode enabled", 50, 50);			
+		}*/
+	}
+	
+	//TODO: Should not be here
+	public void drawExcavatorLife(int x,int y){ 
+		/*g.setColor(Color.RED);
+		
+		if(ExcavatorLifeLine.getPosx()>0)
+			g.fillRect(ExcavatorLifeLine.getPosx() - Scene.getInstance().camx + 370, ExcavatorLifeLine.getPosy() + 30, ExcavatorLifeLine.getActualLifeLineLength(), 10);
+		*/
+	}
+	
+	//TODO: Should not be here
+	public void drawCollider(int x,int y,int width,int height){
+		//g.setColor(Color.RED);
+		//g.drawRect(x + tx, y + ty, width, height);
+	}
+	
 }

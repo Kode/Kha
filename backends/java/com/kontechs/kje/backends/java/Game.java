@@ -11,20 +11,39 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.JFrame;
 
+import com.kontechs.kje.Rectangle;
+import com.kontechs.kje.StatusLine;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;
+import com.kontechs.kje.Scene;
 
 public class Game extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 640;
-	private static final int HEIGHT = 540;
+	private static final int HEIGHT = 550;
 	private boolean vsynced = false;
 	private com.kontechs.kje.Game game;
 	private boolean[] keyreleased;
 	
-	public Game() {
+	//TODO: Check
+	private boolean exit = false;
+	private static int syncrate = 60;
+	private static boolean endgame = false;
+
+	private String lvl_name;
+	private String tilesPropertyName;
+
+	
+	public Game(String lvl_name, String tilesPropertyName) {
+		this.lvl_name = lvl_name;
+		this.tilesPropertyName = tilesPropertyName;
 		keyreleased = new boolean[256];
 		for (int i = 0; i < 256; ++i) keyreleased[i] = true;
+		
+		//TODO: No Go
+		StartScreen start_screen = new StartScreen();
+		start_screen.showStartScreen();
+		
 		setupWindow();
 		createVSyncedDoubleBuffer();
 		mainLoop();
@@ -93,23 +112,40 @@ public class Game extends JFrame implements KeyListener {
 	private void mainLoop() {
 		com.kontechs.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
-		
+		game = new de.hsharz.beaver.BeaverGame(lvl_name, tilesPropertyName);
 		//game = new com.kontechs.sml.SuperMarioLand();
 		//game = new com.kontechs.zool.ZoolGame();
-		game = new de.hsharz.beaver.BeaverGame("", "");
-		
 		long lasttime = System.nanoTime();
 		for (;;) {
 			if (vsynced) update();
 			else {
 				long time = System.nanoTime();
-				while (time >= lasttime + 1000 * 1000 * 1000 / 60) {
-					lasttime += 1000 * 1000 * 1000 / 60;
+				while (time >= lasttime + 1000 * 1000 * 1000 / syncrate) {
+					lasttime += 1000 * 1000 * 1000 / syncrate;
 					update();
 				}
 			}
 			render();
+			
+			//reset game
+			if(exit) { //TODO: Why is it called exit?
+				exit = false;
+				StatusLine.setScore(0);
+				//Beaver.getInstance().getMusic().stop(); //TODO
+				game = new de.hsharz.beaver.BeaverGame(lvl_name, tilesPropertyName);
+				StatusLine.setTime_left(StatusLine.GAMETIME_IN_SECONDS * Game.getSyncrate());
+			}
+			if(endgame){
+				//Beaver.getInstance().getMusic().stop(); //TODO
+				break;
+			}
 		}
+		setVisible(false);
+		//TODO
+		//WinningScreen win_screen = new WinningScreen(StatusLine.getGametimeInSeconds(), StatusLine.getScore());
+		//win_screen.showWinningScreen();
+		System.exit(0);
+		
 	}
 	
 	void update() {
@@ -159,8 +195,41 @@ public class Game extends JFrame implements KeyListener {
 		case KeyEvent.VK_UP:
 			pressKey(keyCode, Key.UP);
 			break;
+			
+		//TODO: Sort and check
+		case KeyEvent.VK_F1:
+			exit = true;
+			break;
+		case KeyEvent.VK_PLUS:
+			syncrate += 10;
+			break;
+		case KeyEvent.VK_MINUS:
+			if(syncrate>10)syncrate -= 10;
+			break;
+		//press space to attack with the hero
+		case KeyEvent.VK_SPACE:
+			pressKey(keyCode, Key.SPACE);
+			//Jumpman.getInstance().attack();
+			break;
+		case KeyEvent.VK_M:
+			Scene.getInstance().changeSeason();
+			break;
+		case KeyEvent.VK_CONTROL:
+			//WoodHole.setKey_pressed(true);
+			break;
+		case KeyEvent.VK_W:
+			endgame = true;
+			break;
+		case KeyEvent.VK_G:
+			//Beaver.getInstance().setGodMode(Beaver.getInstance().isGodMode()?false:true);
+			break;
+		case KeyEvent.VK_D:
+			Scene.getInstance().setCooliderDebugMode(
+					Scene.getInstance().isCooliderDebugMode()?false:true);
+			break;
 		}
 	}
+	
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -175,6 +244,9 @@ public class Game extends JFrame implements KeyListener {
 		case KeyEvent.VK_UP:
 			releaseKey(keyCode, Key.UP);
 			break;
+		case KeyEvent.VK_SPACE: //TODO: Rename
+			releaseKey(keyCode, Key.SPACE);
+			break;
 		}
 	}
  
@@ -183,7 +255,21 @@ public class Game extends JFrame implements KeyListener {
 		
 	}
 	
+	public static int getSyncrate() {
+		return syncrate;
+	}
+	
 	public static void main(String[] args) {
-		new Game();
+		//System.setProperty("apple.awt.graphics.UseQuartz", "true");
+		if(args.length < 2 || args == null){
+			new Game("level1", "tiles");
+		}
+		else{
+			new Game(args[0],args[1]);
+		}
+	}
+	
+	public static void endGame(){
+		endgame = true;
 	}
 }
