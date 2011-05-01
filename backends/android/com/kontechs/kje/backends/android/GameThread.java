@@ -7,8 +7,6 @@ import android.view.SurfaceHolder;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Painter;
-import com.kontechs.sml.SuperMarioLand;
-//import com.kontechs.kje.zool.ZoolGame;
 
 public class GameThread extends Thread {
 	private boolean running = false;
@@ -25,8 +23,11 @@ public class GameThread extends Thread {
 	public void run() {
 		com.kontechs.kje.System.init(new AndroidSystem());
 		Loader.init(new ResourceLoader(context));
-		game = new SuperMarioLand();
-		//game = new ZoolGame();
+		
+		//game = new com.kontechs.sml.SuperMarioLand();
+		//game = new com.kontechs.kje.zool.ZoolGame();
+		game = new de.hsharz.beaver.BeaverGame("level1", "tiles");
+		
 		while (running) {
 			Canvas c = null;
 			try {

@@ -17,4 +17,9 @@ public class AndroidSound implements Sound {
 	public void play() {
 		pool.play(soundid, 1, 1, 1, 0, 1);
 	}
+
+	@Override
+	public void stop() {
+		pool.stop(soundid);
+	}
 }

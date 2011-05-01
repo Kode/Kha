@@ -8,10 +8,12 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
+
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Music;
 import com.kontechs.kje.Sound;
+import com.kontechs.kje.TileProperty;
 
 public class ResourceLoader extends Loader {
 	private AssetManager assets;
@@ -25,7 +27,8 @@ public class ResourceLoader extends Loader {
 		try {
 			return new BitmapImage(BitmapFactory.decodeStream(assets.open(filename + ".png")));
 		}
-		catch (IOException e) {
+		catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -35,7 +38,8 @@ public class ResourceLoader extends Loader {
 		try {
 			return new AndroidSound(assets.openFd(filename + ".wav"));
 		}
-		catch (IOException e) {
+		catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -51,10 +55,10 @@ public class ResourceLoader extends Loader {
 	}
 
 	@Override
-	public int[][] loadLevel() {
+	public int[][] loadLevel(String lvl_name) {
 		int[][] map;
 		try {
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(assets.open("level.map")));
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(assets.open(lvl_name)));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];
@@ -69,5 +73,41 @@ public class ResourceLoader extends Loader {
 		catch (IOException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public TileProperty[] loadTilesProperties(String tilesPropertyName) {
+		TileProperty[] array_elements = null;
+		DataInputStream stream_elements = null;
+		try {
+			stream_elements = new DataInputStream(new BufferedInputStream(
+					assets.open(tilesPropertyName + ".settings")));
+
+			array_elements = new TileProperty[stream_elements.readInt()];
+			for(int i = 0;i<array_elements.length;i++){
+				array_elements[i] = new TileProperty();
+			}
+			for (int i = 0; i < array_elements.length; i++) {
+				array_elements[i].setCollides(stream_elements.readBoolean());
+				array_elements[i].setEnemy(stream_elements.readBoolean());
+				array_elements[i].setEnemyTyp(stream_elements.readUTF());
+				array_elements[i].setSeasonMode(stream_elements.readInt());
+				array_elements[i].setLinkedTile(stream_elements.readInt());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stream_elements.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return array_elements;
+	}
+
+	@Override
+	public void loadHighscore() {
+		
 	}
 }
