@@ -22,11 +22,10 @@ import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Rectangle;
 import com.kontechs.kje.Saver;
-import com.kontechs.kje.StatusLine;
 
 //TODO: Should not be here
 public class WinningScreen extends JFrame implements MouseListener,MouseMotionListener{ 
-	
+	private static final long serialVersionUID = 1L;
 	private Image background_image = Loader.getInstance().loadImage("winningscreen");
 	private int time_left = 0;
 	private int points = 0;

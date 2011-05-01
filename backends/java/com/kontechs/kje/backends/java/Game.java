@@ -11,7 +11,6 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.JFrame;
 
-import com.kontechs.kje.Rectangle;
 import com.kontechs.kje.StatusLine;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;

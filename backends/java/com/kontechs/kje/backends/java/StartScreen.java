@@ -22,7 +22,7 @@ import com.kontechs.kje.Saver;
 
 //TODO: Should not be here
 public class StartScreen extends JFrame implements MouseListener,MouseMotionListener{
-
+	private static final long serialVersionUID = 1L;
 	private static Image start_screen;
 	private static Image credits_screen;
 	private static Image highscore_screen;
@@ -121,13 +121,13 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 			if (arg0.getX() > 370 && arg0.getX() < 615 && arg0.getY() > 220
 					&& arg0.getY() < 260) {
 				isOnHighscore = true;
-				this.background.setBackgroundImage(this.highscore_screen);
+				this.background.setBackgroundImage(highscore_screen);
 				this.repaint();
 			}
 
 			if (arg0.getX() > 370 && arg0.getX() < 615 && arg0.getY() > 295
 					&& arg0.getY() < 335) {
-				this.background.setBackgroundImage(this.credits_screen);
+				this.background.setBackgroundImage(credits_screen);
 				this.repaint();
 			}
 
@@ -140,7 +140,7 @@ public class StartScreen extends JFrame implements MouseListener,MouseMotionList
 			if (arg0.getX() > 12 && arg0.getX() < 162 && arg0.getY() > 470
 					&& arg0.getY() < 500) {
 				isOnHighscore = false;
-				this.background.setBackgroundImage(this.start_screen);
+				this.background.setBackgroundImage(start_screen);
 				this.repaint();
 			}
 		}

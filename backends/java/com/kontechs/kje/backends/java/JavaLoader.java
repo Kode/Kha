@@ -18,7 +18,7 @@ import com.kontechs.kje.TileProperty;
 public class JavaLoader extends Loader {
 	public JavaImage loadImage(String filename) {
 		try {
-			return new JavaImage(ImageIO.read(new File("../data/" + filename + ".png")));
+			return new JavaImage(ImageIO.read(new File("../../data/" + filename + ".png")));
 		}
 		catch (IOException e) {
 			return null;
@@ -47,7 +47,7 @@ public class JavaLoader extends Loader {
 	public int[][] loadLevel(String lvl_name) {
 		int[][] map;
 		try {
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../data/" + lvl_name)));
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/" + lvl_name)));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];
@@ -71,7 +71,7 @@ public class JavaLoader extends Loader {
 		String[][] highscore = new String[10][2];
 		DataInputStream stream = null;
 		try {
-			stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../data/highscore.score")));
+			stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/highscore.score")));
 			for (int entry_index = 0; entry_index < 10; entry_index++)  {
 				highscore[entry_index][0] = stream.readUTF();
 				highscore[entry_index][1] = stream.readUTF();
@@ -99,7 +99,7 @@ public class JavaLoader extends Loader {
 		DataInputStream stream_elements = null;
 		try {
 			stream_elements = new DataInputStream(new BufferedInputStream(
-					new FileInputStream("../data/" + tilesPropertyName + ".settings")));
+					new FileInputStream("../../data/" + tilesPropertyName + ".settings")));
 
 			array_elements = new TileProperty[stream_elements.readInt()];
 			for(int i = 0;i<array_elements.length;i++){

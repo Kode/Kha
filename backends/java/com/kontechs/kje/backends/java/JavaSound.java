@@ -118,7 +118,7 @@ public class JavaSound implements Sound {
 		this.clip = clip;
 		AudioInputStream stream;
 		try {
-			stream = AudioSystem.getAudioInputStream(new File("../data/sounds/" + filename + ".wav"));
+			stream = AudioSystem.getAudioInputStream(new File(filename));
 			clip.close();
 			clip.open(stream);
 		}
