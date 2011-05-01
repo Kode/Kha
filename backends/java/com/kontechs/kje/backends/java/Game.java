@@ -95,7 +95,8 @@ public class Game extends JFrame implements KeyListener {
 		Loader.init(new JavaLoader());
 		
 		//game = new com.kontechs.sml.SuperMarioLand();
-		game = new com.kontechs.zool.ZoolGame();
+		//game = new com.kontechs.zool.ZoolGame();
+		game = new de.hsharz.beaver.BeaverGame("", "");
 		
 		long lasttime = System.nanoTime();
 		for (;;) {
