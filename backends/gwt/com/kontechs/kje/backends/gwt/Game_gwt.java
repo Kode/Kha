@@ -15,8 +15,6 @@ import com.kontechs.kje.Game;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.KeyEvent;
 import com.kontechs.kje.Loader;
-import com.kontechs.sml.SuperMarioLand;
-//import de.hsharz.game.engine.zool.ZoolGame;
 
 public class Game_gwt implements EntryPoint {
 	public void onModuleLoad() {
@@ -54,8 +52,9 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		
 		com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
 		Loader.init(new WebLoader());
-		game = new SuperMarioLand();
-		//game = new ZoolGame();
+		//game = new com.kontechs.sml.SuperMarioLand();
+		//game = new com.kontechs.zool.ZoolGame();
+		game = new de.hsharz.beaver.BeaverGame("level1", "tiles");
 	}
 	
 	private void pressKey(int keycode, Key key) {

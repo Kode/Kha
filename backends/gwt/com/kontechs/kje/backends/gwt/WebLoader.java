@@ -5,6 +5,7 @@ import com.google.gwt.user.client.Timer;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Music;
 import com.kontechs.kje.Sound;
+import com.kontechs.kje.TileProperty;
 
 public class WebLoader extends Loader {
 	private static int[][] level;
@@ -56,7 +57,19 @@ public class WebLoader extends Loader {
 	}
 
 	@Override
-	public int[][] loadLevel() {
+	public int[][] loadLevel(String lvl_name) {
 		return level;
+	}
+
+	@Override
+	public TileProperty[] loadTilesProperties(String tilesPropertyName) {
+		TileProperty[] properties = new TileProperty[256];
+		for (int i = 0; i < 256; ++i) properties[i] = new TileProperty();
+		return properties;
+	}
+
+	@Override
+	public void loadHighscore() {
+		
 	}
 }

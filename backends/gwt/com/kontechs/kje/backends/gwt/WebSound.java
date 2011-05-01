@@ -26,4 +26,10 @@ public class WebSound implements Sound {
 		element.setCurrentTime(0);
 		element.play();
 	}
+
+	@Override
+	public void stop() {
+		if (element == null) return;
+		element.pause();
+	}
 }
