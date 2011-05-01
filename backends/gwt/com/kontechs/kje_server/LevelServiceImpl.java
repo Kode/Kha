@@ -11,11 +11,22 @@ import com.kontechs.kje.TileProperty;
 import com.kontechs.kje.backends.gwt.LevelService;
 
 @SuppressWarnings("serial")
-public class LevelServiceImpl extends RemoteServiceServlet implements LevelService {	
+public class LevelServiceImpl extends RemoteServiceServlet implements LevelService {
+	private static String directory;
+	
+	{
+		if (isOnline()) directory = "turrican/sub/robert/beaver/";
+		else directory = "";
+	}
+	
+	private static boolean isOnline() {
+		return System.getProperty("os.name").contains("Server");
+	}
+	
 	public int[][] getLevel(String filename) {
 		int[][] map;
 		try {
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)));
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(directory + filename)));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];
@@ -37,8 +48,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 		TileProperty[] array_elements = null;
 		DataInputStream stream_elements = null;
 		try {
-			stream_elements = new DataInputStream(new BufferedInputStream(
-					new FileInputStream(filename + ".settings")));
+			stream_elements = new DataInputStream(new BufferedInputStream(new FileInputStream(directory + filename + ".settings")));
 
 			array_elements = new TileProperty[stream_elements.readInt()];
 			for(int i = 0;i<array_elements.length;i++){
