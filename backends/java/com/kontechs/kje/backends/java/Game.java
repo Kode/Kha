@@ -93,8 +93,10 @@ public class Game extends JFrame implements KeyListener {
 	private void mainLoop() {
 		com.kontechs.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
-		game = new com.kontechs.sml.SuperMarioLand();
-		//game = new ZoolGame();
+		
+		//game = new com.kontechs.sml.SuperMarioLand();
+		game = new com.kontechs.zool.ZoolGame();
+		
 		long lasttime = System.nanoTime();
 		for (;;) {
 			if (vsynced) update();
