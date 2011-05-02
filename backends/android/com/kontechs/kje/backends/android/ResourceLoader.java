@@ -8,10 +8,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 
-import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
-import com.kontechs.kje.Music;
-import com.kontechs.kje.Sound;
 import com.kontechs.kje.TileProperty;
 
 public class ResourceLoader extends Loader {
@@ -22,34 +19,32 @@ public class ResourceLoader extends Loader {
 	}
 	
 	@Override
-	public Image loadImage(String filename) {
+	public void loadImage(String name) {
 		try {
-			return new BitmapImage(BitmapFactory.decodeStream(assets.open(filename + ".png")));
+			images.put(name, new BitmapImage(BitmapFactory.decodeStream(assets.open(name + ".png"))));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 
 	@Override
-	public Sound loadSound(String filename) {
+	public void loadSound(String name) {
 		try {
-			return new AndroidSound(assets.openFd(filename + ".wav"));
+			sounds.put(name, new AndroidSound(assets.openFd(name + ".wav")));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 
 	@Override
-	public Music loadMusic(String filename) {
+	public void loadMusic(String name) {
 		try {
-			return new AndroidMusic(assets.openFd(filename + ".ogg"));
+			musics.put(name, new AndroidMusic(assets.openFd(name + ".ogg")));
 		}
 		catch (IOException e) {
-			return null;
+			e.printStackTrace();
 		}
 	}
 

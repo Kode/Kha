@@ -39,11 +39,11 @@ public class _StartScreen extends JFrame implements MouseListener,MouseMotionLis
 		com.kontechs.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
 		Saver.init(new JavaSaver());
-		start_screen = Loader.getInstance().loadImage("startscreen");
-		credits_screen = Loader.getInstance().loadImage("credits");
-		highscore_screen = Loader.getInstance().loadImage("highscore");
-		cursor_normal = Loader.getInstance().loadImage("cursor_normal");
-		cursor_point = Loader.getInstance().loadImage("cursor_point");
+		start_screen = Loader.getInstance().getImage("startscreen");
+		credits_screen = Loader.getInstance().getImage("credits");
+		highscore_screen = Loader.getInstance().getImage("highscore");
+		cursor_normal = Loader.getInstance().getImage("cursor_normal");
+		cursor_point = Loader.getInstance().getImage("cursor_point");
 	}
 	
 	public _StartScreen() {

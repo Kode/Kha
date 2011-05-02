@@ -25,7 +25,7 @@ import com.kontechs.kje.Saver;
 //TODO: Should not be here
 public class _WinningScreen extends JFrame implements MouseListener,MouseMotionListener{ 
 	private static final long serialVersionUID = 1L;
-	private Image background_image = Loader.getInstance().loadImage("winningscreen");
+	private Image background_image = Loader.getInstance().getImage("winningscreen");
 	private int time_left = 0;
 	private int points = 0;
 	private boolean winning_screen = true;
@@ -37,8 +37,8 @@ public class _WinningScreen extends JFrame implements MouseListener,MouseMotionL
 		this.time_left = time_left;
 		this.points = points;
 		
-		cursor_normal = Loader.getInstance().loadImage("cursor_normal");
-		cursor_point = Loader.getInstance().loadImage("cursor_point");
+		cursor_normal = Loader.getInstance().getImage("cursor_normal");
+		cursor_point = Loader.getInstance().getImage("cursor_point");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);

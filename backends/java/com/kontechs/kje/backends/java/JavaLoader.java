@@ -8,39 +8,34 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JOptionPane;
 
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.TileProperty;
 
 public class JavaLoader extends Loader {
-	public JavaImage loadImage(String filename) {
+	@Override
+	public void loadImage(String name) {
 		try {
-			return new JavaImage(ImageIO.read(new File("../../data/" + filename + ".png")));
+			images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".png"))));
 		}
 		catch (IOException e) {
-			return null;
+			e.printStackTrace();
 		}
 	}
 	
-	public JavaSound loadSound(String filename) {
-		return new JavaSound("../../data/" + filename + ".wav");
+	@Override
+	public void loadSound(String name) {
+		sounds.put(name, new JavaSound("../../data/" + name + ".wav"));
 	}
 	
-	public JavaMusic loadMusic(String filename) {
+	@Override
+	public void loadMusic(String name) {
 		try {
-			return new JavaMusic(new File("../../data/" + filename + ".wav"));
+			musics.put(name, new JavaMusic(new File("../../data/" + name + ".wav")));
 		}
-		catch (IOException e) {
-			return null;
-		}
-		catch (UnsupportedAudioFileException e) {
-			return null;
-		}
-		catch (LineUnavailableException e) {
-			return null;
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
