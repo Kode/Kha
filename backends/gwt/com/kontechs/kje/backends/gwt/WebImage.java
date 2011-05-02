@@ -105,17 +105,17 @@ public class WebImage implements Image, LoadHandler {
 			width = 192;
 			height = 64;
 		}
-		else if (filename.equals("jaeger_spriteSheet")) {
-			width = 15;
-			height = 10;
-		}
-		else if (filename.equals("jaeger_winter_spriteSheet")) {
+		else if (filename.equals("jaeger_spriteSheet") || filename.equals("jaeger_winter_spriteSheet")) {
 			width = 1024;
 			height = 64;
 		}
 		else if (filename.equals("bagger_spriteSheet")) {
 			width = 4096;
 			height = 128;
+		}
+		else if (filename.equals("gewehrkugel")) {
+			width = 5;
+			height = 5;
 		}
 		else {
 			System.err.println("Unknown image: " + filename);
