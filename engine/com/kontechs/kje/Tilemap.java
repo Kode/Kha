@@ -36,15 +36,8 @@ public class Tilemap {
 	public boolean collideright(Sprite sprite) {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
-		
-		//TODO: Research the mighty beaver hack
-		if (collides(rect.x + rect.width + 5, rect.y + 1) || collides(rect.x + rect.width + 5, rect.y + rect.height - 1)) {
-			//beaver hack
-			//if(sprite instanceof Beaver)
-				//set the beaver the beaver speed back, so it looks like he does not move
-				//sprite.x -= ((Beaver) sprite).getBeaverSpeed();
-			//else
-				sprite.x = (rect.x + rect.width) / Tileset.TILE_WIDTH * Tileset.TILE_WIDTH - rect.width;
+		if (collides(rect.x + rect.width, rect.y + 1) || collides(rect.x + rect.width, rect.y + rect.height - 1)) {
+			sprite.x = (rect.x + rect.width) / Tileset.TILE_WIDTH * Tileset.TILE_WIDTH - rect.width;
 			collided = true;
 		}
 		return collided;
