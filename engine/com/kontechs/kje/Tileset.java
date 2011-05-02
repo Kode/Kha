@@ -7,7 +7,7 @@ public class Tileset {
 	private Image image;
 
 	public Tileset() {
-		this.image = Loader.getInstance().loadImage("tiles");
+		this.image = Loader.getInstance().getImage("tiles");
 		xmax = image.getWidth() / TILE_WIDTH;
 		ymax = image.getHeight() / TILE_HEIGHT;
 	}

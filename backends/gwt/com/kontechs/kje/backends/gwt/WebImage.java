@@ -7,13 +7,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 import com.kontechs.kje.Image;
 
-public class WebImage implements Image, LoadHandler {
-	private com.google.gwt.user.client.ui.Image img;
+public class WebImage implements Image {//, LoadHandler {
+	//private com.google.gwt.user.client.ui.Image img;
 	private ImageElement ie;
-	private int width, height;
+	//private int width, height;
 	
-	public WebImage(String filename) {
-		if (filename.equals("tiles")) {
+	public WebImage(ImageElement ie) {//String filename) {
+		this.ie = ie;
+		/*if (filename.equals("tiles")) {
 			width = 1024;//448;
 			height = 640;//320;
 		}
@@ -123,12 +124,12 @@ public class WebImage implements Image, LoadHandler {
 		img = new com.google.gwt.user.client.ui.Image(filename + ".png");
 		img.addLoadHandler(this);
 		img.setVisible(false);
-	    RootPanel.get().add(img); // image must be on page to fire load
+	    RootPanel.get().add(img); // image must be on page to fire load*/
 	}
 	
-	public void onLoad(LoadEvent event) {
-		ie = (ImageElement) img.getElement().cast();
-	}
+	//public void onLoad(LoadEvent event) {
+	//	ie = (ImageElement) img.getElement().cast();
+	//}
 	
 	public ImageElement getIE() {
 		return ie;
@@ -136,15 +137,15 @@ public class WebImage implements Image, LoadHandler {
 
 	@Override
 	public int getWidth() {
-		return width;
+		//return width;
 		//if (ie == null || ie.getWidth() == 0) return width; //ie.getWidth returns 0 in IE9
-		//return ie.getWidth();
+		return ie.getWidth();
 	}
 
 	@Override
 	public int getHeight() {
-		return height;
+		//return height;
 		//if (ie == null || ie.getHeight() == 0) return height;
-		//return ie.getHeight();
+		return ie.getHeight();
 	}
 }
