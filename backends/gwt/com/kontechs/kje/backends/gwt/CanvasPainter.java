@@ -15,11 +15,11 @@ public class CanvasPainter implements Painter {
 	}
 	
 	public void drawImage(Image img, int x, int y) {
-		if (((WebImage)img).getIE() != null) context.drawImage(((WebImage)img).getIE(), tx + x, ty + y);
+		context.drawImage(((WebImage)img).getIE(), tx + x, ty + y);
 	}
 	
 	public void drawImage(Image img, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
-		if (((WebImage)img).getIE() != null) context.drawImage(((WebImage)img).getIE(), sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+		context.drawImage(((WebImage)img).getIE(), sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
 	}
 	
 	public void setColor(int r, int g, int b) {

@@ -63,18 +63,6 @@ public class Sprite {
 	public void hit(Sprite sprite) {
 		
 	}
-
-	//TODO: W00t?
-	public boolean collidedown(Sprite sprite) {
-		sprite.y = y +32;
-		return true;
-	}
-	
-	//TODO: W00t?
-	public boolean collidetop(Sprite sprite){
-		sprite.y= y -64;
-		return true;
-	}
 	
 	public int getZ_order() {
 		return z_order;
