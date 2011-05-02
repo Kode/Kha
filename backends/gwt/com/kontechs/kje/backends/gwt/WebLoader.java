@@ -17,7 +17,7 @@ public class WebLoader extends Loader {
 	private int filecount;
 	
 	private void loadingFinished() {
-		RootPanel.get().remove(button);
+		if (button != null) RootPanel.get().remove(button);
 		Timer timer = new AnimationTimer();
 		timer.scheduleRepeating(1000 / 30);
 	}
@@ -102,7 +102,7 @@ public class WebLoader extends Loader {
 	
 	private void fileLoaded() {
 		--loadcount;
-		button.setText("Loading: " + (int)((filecount - loadcount) / filecount * 100) + "%");
+		if (button != null) button.setText("Loading: " + (int)((filecount - loadcount) / filecount * 100) + "%");
 		if (loadcount <= 0) {
 			loadingFinished();
 		}
@@ -126,8 +126,14 @@ public class WebLoader extends Loader {
 	@Override
 	protected void loadStarted() {
 		filecount = loadcount;
-		button = new Button("Loading: 0%");
-		button.setEnabled(false);
-		RootPanel.get().add(button);
+		if (!getUserAgent().contains("msie")) {
+			button = new Button("Loading: 0%");
+			button.setEnabled(false);
+			RootPanel.get().add(button);
+		}
 	}
+	
+	public static native String getUserAgent() /*-{
+    	return navigator.userAgent.toLowerCase();
+ 	}-*/;
 }
