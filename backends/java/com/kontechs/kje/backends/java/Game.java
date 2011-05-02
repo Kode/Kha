@@ -196,6 +196,9 @@ public class Game extends JFrame implements KeyListener {
 		case KeyEvent.VK_UP:
 			pressKey(keyCode, Key.UP);
 			break;
+		case KeyEvent.VK_DOWN:
+			pressKey(keyCode, Key.DOWN);
+			break;
 		case KeyEvent.VK_SPACE:
 			pressKey(keyCode, Key.BUTTON_1);
 			break;
@@ -242,6 +245,9 @@ public class Game extends JFrame implements KeyListener {
 			break;
 		case KeyEvent.VK_UP:
 			releaseKey(keyCode, Key.UP);
+			break;
+		case KeyEvent.VK_DOWN:
+			releaseKey(keyCode, Key.DOWN);
 			break;
 		case KeyEvent.VK_SPACE:
 			releaseKey(keyCode, Key.BUTTON_1);

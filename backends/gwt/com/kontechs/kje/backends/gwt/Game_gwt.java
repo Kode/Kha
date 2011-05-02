@@ -3,6 +3,7 @@ package com.kontechs.kje.backends.gwt;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -80,6 +81,15 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		else if (event.isUpArrow()) {
 			pressKey(2, Key.UP);
 		}
+		else if (event.isDownArrow()) {
+			pressKey(3, Key.DOWN);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_CTRL) {
+			pressKey(4, Key.BUTTON_1);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_SHIFT) {
+			pressKey(5, Key.BUTTON_2);
+		}
 	}
 	
 	@Override
@@ -92,6 +102,15 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		}
 		else if (event.isUpArrow()) {
 			releaseKey(2, Key.UP);
+		}
+		else if (event.isDownArrow()) {
+			releaseKey(3, Key.DOWN);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_CTRL) {
+			releaseKey(4, Key.BUTTON_1);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_SHIFT) {
+			releaseKey(5, Key.BUTTON_2);
 		}
 	}
 
