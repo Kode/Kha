@@ -95,7 +95,7 @@ public class WebLoader extends Loader {
 
 		@Override
 		public void onLoad(LoadEvent event) {
-			images.put(name, new WebImage((ImageElement) img.getElement().cast()));
+			images.put(name, new WebImage(name, (ImageElement) img.getElement().cast()));
 			fileLoaded();
 		}
 	}

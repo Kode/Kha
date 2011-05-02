@@ -1,135 +1,133 @@
 package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.ui.RootPanel;
-
 import com.kontechs.kje.Image;
 
-public class WebImage implements Image {//, LoadHandler {
-	//private com.google.gwt.user.client.ui.Image img;
+public class WebImage implements Image {
 	private ImageElement ie;
-	//private int width, height;
+	private int width, height;
+	private String name;
 	
-	public WebImage(ImageElement ie) {//String filename) {
-		this.ie = ie;
-		/*if (filename.equals("tiles")) {
+	//ie.getWidth returns 0 in IE9
+	private void IE9Hack() {
+		if (width != 0 && height != 0) return;
+		
+		if (name.equals("tiles")) {
 			width = 1024;//448;
 			height = 640;//320;
 		}
-		else if (filename.equals("koopa")) {
+		else if (name.equals("koopa")) {
 			width = 512;
 			height = 48;
 		}
-		else if (filename.equals("jumpman")) {
+		else if (name.equals("jumpman")) {
 			width = 768;
 			height = 256;
 		}
-		else if (filename.equals("gumba")) {
+		else if (name.equals("gumba")) {
 			width = 96;
 			height = 32;
 		}
-		else if (filename.equals("fly")) {
+		else if (name.equals("fly")) {
 			width = 384;
 			height = 56;
 		}
-		else if (filename.equals("coin")) {
+		else if (name.equals("coin")) {
 			width = 28;
 			height = 32;
 		}
-		else if (filename.equals("bonusblock")) {
+		else if (name.equals("bonusblock")) {
 			width = 64;
 			height = 32;
 		}
-		else if (filename.equals("blockcoin")) {
+		else if (name.equals("blockcoin")) {
 			width = 16;
 			height = 32;
 		}
-		else if (filename.equals("zoool")) {
+		else if (name.equals("zoool")) {
 			width = 2352;
 			height = 78;
 		}
-		else if (filename.equals("beaver") || filename.equals("beaver_Winter")) {
+		else if (name.equals("beaver") || name.equals("beaver_Winter")) {
 			width = 780;
 			height = 256;
 		}
-		else if (filename.equals("status_line")) {
+		else if (name.equals("status_line")) {
 			width = 640;
 			height = 42;
 		}
-		else if (filename.equals("heart")) {
+		else if (name.equals("heart")) {
 			width = 15;
 			height = 10;
 		}
-		else if (filename.equals("WoodCoin")) {
+		else if (name.equals("WoodCoin")) {
 			width = 64;
 			height = 32;
 		}
-		else if (filename.equals("branch") || filename.equals("branch_Winter")) {
+		else if (name.equals("branch") || name.equals("branch_Winter")) {
 			width = 192;
 			height = 32;
 		}
-		else if (filename.equals("bursting_branch") || filename.equals("bursting_branch_winter")) {
+		else if (name.equals("bursting_branch") || name.equals("bursting_branch_winter")) {
 			width = 768;
 			height = 32;
 		}
-		else if (filename.equals("hole")) {
+		else if (name.equals("hole")) {
 			width = 64;
 			height = 64;
 		}
-		else if (filename.equals("dackel_sheet")) {
+		else if (name.equals("dackel_sheet")) {
 			width = 1024;
 			height = 256;
 		}
-		else if (filename.equals("woodTrap") || filename.equals("woodTrapWinter")) {
+		else if (name.equals("woodTrap") || name.equals("woodTrapWinter")) {
 			width = 96;
 			height = 32;
 		}
-		else if (filename.equals("bear_trap")) {
+		else if (name.equals("bear_trap")) {
 			width = 96;
 			height = 32;
 		}
-		else if (filename.equals("WoodCoinGold")) {
+		else if (name.equals("WoodCoinGold")) {
 			width = 64;
 			height = 32;
 		}
-		else if (filename.equals("treeBark") || filename.equals("treeBarkWinter")) {
+		else if (name.equals("treeBark") || name.equals("treeBarkWinter")) {
 			width = 128;
 			height = 32;
 		}
-		else if (filename.equals("treeHole") || filename.equals("treeHoleWinter")) {
+		else if (name.equals("treeHole") || name.equals("treeHoleWinter")) {
 			width = 128;
 			height = 32;
 		}
-		else if (filename.equals("waterTilesheet") || filename.equals("waterTilesheetWinter")) {
+		else if (name.equals("waterTilesheet") || name.equals("waterTilesheetWinter")) {
 			width = 192;
 			height = 64;
 		}
-		else if (filename.equals("jaeger_spriteSheet") || filename.equals("jaeger_winter_spriteSheet")) {
+		else if (name.equals("jaeger_spriteSheet") || name.equals("jaeger_winter_spriteSheet")) {
 			width = 1024;
 			height = 64;
 		}
-		else if (filename.equals("bagger_spriteSheet")) {
+		else if (name.equals("bagger_spriteSheet")) {
 			width = 4096;
 			height = 128;
 		}
-		else if (filename.equals("gewehrkugel")) {
+		else if (name.equals("gewehrkugel")) {
 			width = 5;
 			height = 5;
 		}
 		else {
-			System.err.println("Unknown image: " + filename);
+			System.err.println("Unknown image: " + name);
 		}
-		img = new com.google.gwt.user.client.ui.Image(filename + ".png");
-		img.addLoadHandler(this);
-		img.setVisible(false);
-	    RootPanel.get().add(img); // image must be on page to fire load*/
 	}
 	
-	//public void onLoad(LoadEvent event) {
-	//	ie = (ImageElement) img.getElement().cast();
-	//}
+	public WebImage(String name, ImageElement ie) {
+		this.name = name;
+		this.ie = ie;
+		width = ie.getWidth();
+		height = ie.getHeight();
+		IE9Hack();
+	}
 	
 	public ImageElement getIE() {
 		return ie;
@@ -137,15 +135,11 @@ public class WebImage implements Image {//, LoadHandler {
 
 	@Override
 	public int getWidth() {
-		//return width;
-		//if (ie == null || ie.getWidth() == 0) return width; //ie.getWidth returns 0 in IE9
-		return ie.getWidth();
+		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		//return height;
-		//if (ie == null || ie.getHeight() == 0) return height;
-		return ie.getHeight();
+		return height;
 	}
 }
