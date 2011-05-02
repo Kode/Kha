@@ -23,8 +23,12 @@ public class CanvasPainter implements Painter {
 	}
 	
 	public void setColor(int r, int g, int b) {
+		context.setStrokeStyle(CssColor.make(r, g, b));
 		context.setFillStyle(CssColor.make(r, g, b));
-		
+	}
+	
+	public void drawRect(int x, int y, int width, int height) {
+		context.rect(tx + x, ty + y, width, height);
 	}
 	
 	public void fillRect(int x, int y, int width, int height) {
@@ -35,5 +39,15 @@ public class CanvasPainter implements Painter {
 	public void translate(int x, int y) {
 		tx = x;
 		ty = y;
+	}
+
+	@Override
+	public void setFont(String name, int size) {
+		context.setFont(name);
+	}
+
+	@Override
+	public void drawString(String text, int x, int y) {
+		context.fillText(text, x, y);
 	}
 }

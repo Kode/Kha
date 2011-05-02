@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Painter;
 
@@ -41,5 +43,20 @@ public class CanvasPainter implements Painter {
 	public void translate(int x, int y) {
 		tx = x;
 		ty = y;
+	}
+
+	@Override
+	public void drawRect(int x, int y, int width, int height) {
+		c.drawRect(x + tx, y + ty, x + width + tx, y + width + ty, paint);
+	}
+
+	@Override
+	public void setFont(String name, int size) {
+		paint.setTypeface(Typeface.create(name, Typeface.NORMAL));
+	}
+
+	@Override
+	public void drawString(String text, int x, int y) {
+		c.drawText(text, x, y, paint);
 	}
 }
