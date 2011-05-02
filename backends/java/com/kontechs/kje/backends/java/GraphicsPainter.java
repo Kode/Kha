@@ -9,20 +9,24 @@ import com.kontechs.kje.Painter;
 
 public class GraphicsPainter implements Painter {
 	private Graphics2D g;
-	private int tx, ty;
+	private double tx, ty;
 
 	public GraphicsPainter(Graphics2D g) {
 		this.g = g;
 	}
 	
+	private static int round(double value) {
+		return (int)Math.round(value);
+	}
+	
 	@Override
-	public void drawImage(Image img, int x, int y) {
-		g.drawImage(((JavaImage)img).getImage(), tx + x, ty + y, null);
+	public void drawImage(Image img, double x, double y) {
+		g.drawImage(((JavaImage)img).getImage(), round(tx + x), round(ty + y), null);
 	}
 
 	@Override
-	public void drawImage(Image img, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
-		g.drawImage(((JavaImage)img).getImage(), tx + dx, ty + dy, tx + dx + dw, ty + dy + dh, sx, sy, sx + sw, sy + sh, null);
+	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
+		g.drawImage(((JavaImage)img).getImage(), round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
 	}
 
 	@Override
@@ -31,13 +35,13 @@ public class GraphicsPainter implements Painter {
 	}
 
 	@Override
-	public void drawRect(int x, int y, int width, int height) {
-		g.drawRect(tx + x, ty + y, width, height);
+	public void drawRect(double x, double y, double width, double height) {
+		g.drawRect(round(tx + x), round(ty + y), round(width), round(height));
 	}
 	
 	@Override
-	public void fillRect(int x, int y, int width, int height) {
-		g.fillRect(tx + x, ty + y, width, height);	
+	public void fillRect(double x, double y, double width, double height) {
+		g.fillRect(round(tx + x), round(ty + y), round(width), round(height));	
 	}
 	
 	@Override
@@ -46,12 +50,12 @@ public class GraphicsPainter implements Painter {
 	}
 	
 	@Override
-	public void drawString(String text, int x, int y) {
-		g.drawString(text, tx + x, ty + y);
+	public void drawString(String text, double x, double y) {
+		g.drawString(text, round(tx + x), round(ty + y));
 	}
 	
 	@Override
-	public void translate(int x, int y) {
+	public void translate(double x, double y) {
 		tx = x;
 		ty = y;
 	}

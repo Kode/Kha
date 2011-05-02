@@ -24,10 +24,6 @@ public class Scene {
 	
 	private ArrayList<Sprite> heroes, sprites, enemies;
 	
-	//TODO: Check
-	//private int mapstranslater=0;
-	//private int endmapTranslater=0;
-	
 	private boolean cooliderDebugMode = false;
 	
 	private SpriteXComparator comparator = new SpriteXComparator();
@@ -159,7 +155,7 @@ public class Scene {
 		
 		// paints the element based on the z-order
 		// 0 first ... 3 last
-		for(int z_order = 0;z_order<4;z_order++){
+		for (int z_order = 0; z_order < 4; ++z_order){
 			int i = 0;
 			for (; i < sprites.size(); ++i) {
 				if (sprites.get(i).x  + sprites.get(i).width > realcamx) break;
@@ -168,7 +164,7 @@ public class Scene {
 				if (sprites.get(i).x > realcamx + System.getInstance().getXRes()){
 					break;
 				}
-				if(sprites.get(i).getZ_order() == z_order){
+				if (sprites.get(i).getZ_order() == z_order){
 					sprites.get(i).render(painter);
 				}
 			}

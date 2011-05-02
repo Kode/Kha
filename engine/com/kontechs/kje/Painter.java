@@ -1,12 +1,12 @@
 package com.kontechs.kje;
 
 public interface Painter {
-	void drawImage(Image img, int x, int y);
-	void drawImage(Image image, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
+	void drawImage(Image img, double x, double y);
+	void drawImage(Image image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh);
 	void setColor(int r, int g, int b);
-	void drawRect(int x, int y, int width, int height);
-	void fillRect(int x, int y, int width, int height);
+	void drawRect(double x, double y, double width, double height);
+	void fillRect(double x, double y, double width, double height);
 	void setFont(String name, int size);
-	void drawString(String text, int x, int y);
-	void translate(int x, int y);
+	void drawString(String text, double x, double y);
+	void translate(double x, double y);
 }
