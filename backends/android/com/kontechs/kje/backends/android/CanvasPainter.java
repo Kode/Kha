@@ -12,7 +12,7 @@ import com.kontechs.kje.Painter;
 public class CanvasPainter implements Painter {
 	private Canvas c;
 	private Paint paint;
-	private int tx, ty;
+	private double tx, ty;
 	
 	CanvasPainter(Canvas c) {
 		this.c = c;
@@ -20,13 +20,15 @@ public class CanvasPainter implements Painter {
 	}
 	
 	@Override
-	public void drawImage(Image img, int x, int y) {
-		c.drawBitmap(((BitmapImage)img).getBitmap(), x + tx, y + ty, paint);
+	public void drawImage(Image img, double x, double y) {
+		c.drawBitmap(((BitmapImage)img).getBitmap(), (float)(x + tx), (float)(y + ty), paint);
 	}
 	
 	@Override
-	public void drawImage(Image img, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
-		c.drawBitmap(((BitmapImage)img).getBitmap(), new Rect(sx, sy, sx + sw, sy + sh), new Rect(tx + dx, ty + dy, tx + dx + dw, ty + dy + dh), paint);
+	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
+		c.drawBitmap(((BitmapImage)img).getBitmap(),
+				new Rect(round(sx), round(sy), round(sx + sw), round(sy + sh)),
+				new Rect(round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh)), paint);
 	}
 	
 	@Override
@@ -35,19 +37,19 @@ public class CanvasPainter implements Painter {
 	}
 
 	@Override
-	public void fillRect(int x, int y, int width, int height) {
-		c.drawRect(x + tx, y + ty, x + width + tx, y + width + ty, paint);
+	public void fillRect(double x, double y, double width, double height) {
+		c.drawRect((float)(x + tx), (float)(y + ty), (float)(x + width + tx), (float)(y + width + ty), paint);
 	}
 
 	@Override
-	public void translate(int x, int y) {
+	public void translate(double x, double y) {
 		tx = x;
 		ty = y;
 	}
 
 	@Override
-	public void drawRect(int x, int y, int width, int height) {
-		c.drawRect(x + tx, y + ty, x + width + tx, y + width + ty, paint);
+	public void drawRect(double x, double y, double width, double height) {
+		c.drawRect((float)(x + tx), (float)(y + ty), (float)(x + width + tx), (float)(y + width + ty), paint);
 	}
 
 	@Override
@@ -56,7 +58,11 @@ public class CanvasPainter implements Painter {
 	}
 
 	@Override
-	public void drawString(String text, int x, int y) {
-		c.drawText(text, x, y, paint);
+	public void drawString(String text, double x, double y) {
+		c.drawText(text, (float)x, (float)y, paint);
+	}
+	
+	int round(double value) {
+		return (int)Math.round(value);
 	}
 }
