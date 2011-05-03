@@ -71,7 +71,7 @@ public class Tilemap {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
 		//if (collides(rect.x + rect.width, rect.y + 1) || collides(rect.x + rect.width, rect.y + rect.height - 1)) {
-		if (collidesrightleft(round(rect.x + rect.width), round(rect.y + 1), round(rect.y + rect.height - 1))) {
+		if (collidesrightleft((int)(rect.x + rect.width), round(rect.y + 1), round(rect.y + rect.height - 1))) {
 			sprite.x = Math.floor((rect.x + rect.width) / Tileset.TILE_WIDTH) * Tileset.TILE_WIDTH - rect.width;
 			collided = true;
 		}
@@ -82,7 +82,7 @@ public class Tilemap {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
 		//if (collides(rect.x, rect.y + 1) || collides(rect.x, rect.y + rect.height - 1)) {
-		if (collidesrightleft(round(rect.x), round(rect.y + 1), round(rect.y + rect.height - 1))) {
+		if (collidesrightleft((int)rect.x, round(rect.y + 1), round(rect.y + rect.height - 1))) {
 			sprite.x = (Math.floor(rect.x / Tileset.TILE_WIDTH) + 1) * Tileset.TILE_WIDTH;
 			collided = true;
 		}
@@ -93,7 +93,7 @@ public class Tilemap {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
 		//if (collides(rect.x + 1, rect.y + rect.height) || collides(rect.x + rect.width - 1, rect.y + rect.height)) {
-		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), round(rect.y + rect.height))) {
+		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), (int)(rect.y + rect.height))) {
 			sprite.y = Math.floor((rect.y + rect.height) / Tileset.TILE_HEIGHT) * Tileset.TILE_HEIGHT - rect.height;
 			collided = true;
 		}
@@ -104,7 +104,7 @@ public class Tilemap {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
 		//if (collides(rect.x + 1, rect.y) || collides(rect.x + rect.width - 1, rect.y)) {
-		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), round(rect.y))) {
+		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), (int)rect.y)) {
 			sprite.y = ((Math.floor(rect.y / Tileset.TILE_HEIGHT) + 1) * Tileset.TILE_HEIGHT);
 			collided = true;
 		}

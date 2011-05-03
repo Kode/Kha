@@ -11,7 +11,8 @@ public class WebSound implements Sound {
 	private AudioElement element;
 	
 	public WebSound(String filename) {
-		Audio audio = Audio.createIfSupported(); //not working in IE9
+		Audio audio = Audio.createIfSupported();
+		if (getUserAgent().contains("msie")) audio = null; //not working in IE9
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();
@@ -32,4 +33,8 @@ public class WebSound implements Sound {
 		if (element == null) return;
 		element.pause();
 	}
+	
+	public static native String getUserAgent() /*-{
+	return navigator.userAgent.toLowerCase();
+	}-*/;
 }
