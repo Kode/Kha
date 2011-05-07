@@ -95,4 +95,6 @@ public abstract class Loader {
 	protected abstract void loadTileset(String name);
 	protected abstract void loadSound(String filename);
 	protected abstract void loadMusic(String filename);
+	
+	public abstract Font loadFont(String name, int style, int size);
 }

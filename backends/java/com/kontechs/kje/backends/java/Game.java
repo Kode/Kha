@@ -160,7 +160,7 @@ public class Game extends JFrame implements KeyListener {
 	 
 		try {
 			g = (Graphics2D)bf.getDrawGraphics();
-			GraphicsPainter painter = new GraphicsPainter(g);
+			JavaPainter painter = new JavaPainter(g);
 			game.render(painter);
 		}
 		finally {

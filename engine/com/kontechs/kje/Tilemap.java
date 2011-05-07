@@ -8,7 +8,11 @@ public class Tilemap {
 	private TileProperty[] properties;
 
 	public Tilemap(int[][] map, TileProperty[] properties) {
-		tileset = new Tileset();
+		this("tiles", 32, 32, map, properties);
+	}
+	
+	public Tilemap(String imagename, int tileWidth, int tileHeight, int[][] map, TileProperty[] properties) {
+		tileset = new Tileset(imagename, tileWidth, tileHeight);
 		this.map = map;
 		this.properties = properties;
 		levelWidth = map.length;

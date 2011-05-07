@@ -1,13 +1,15 @@
 package com.kontechs.kje;
 
 public class Tileset {
-	public static final int TILE_WIDTH = 32;
-	public static final int TILE_HEIGHT = 32;
+	public static int TILE_WIDTH = 32;
+	public static int TILE_HEIGHT = 32;
 	int xmax, ymax;
 	private Image image;
 
-	public Tileset() {
-		this.image = Loader.getInstance().getImage("tiles");
+	public Tileset(String imagename, int tileWidth, int tileHeight) {
+		this.image = Loader.getInstance().getImage(imagename);
+		TILE_WIDTH = tileWidth;
+		TILE_HEIGHT = tileHeight;
 		xmax = image.getWidth() / TILE_WIDTH;
 		ymax = image.getHeight() / TILE_HEIGHT;
 	}

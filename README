@@ -1,3 +1,4 @@
 Unter games/xxx/projects finden sich jeweils drei Eclipse-Projekte für die drei verschiedenen Backends.
 Vor dem Import der Projekte sollte in Eclipse unter Window->Preferences->General->Workspace->Linked Resources
 eine Path-Variable namens KJE_HOME angelegt werden, die auf das Projektverzeichnis zeigt.
+Vorteilhaft ist es zudem, unter General->Workspace Text file encoding auf UTF-8 zu stellen.

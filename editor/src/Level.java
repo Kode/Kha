@@ -17,8 +17,8 @@ public class Level extends JPanel implements MouseListener, MouseMotionListener 
 	private static final long serialVersionUID = 1L;
 	private int levelWidth = 1000;
 	private int levelHeight = 16;
-	public static final int TILE_WIDTH = 32;
-	public static final int TILE_HEIGHT = 32;
+	public static final int TILE_WIDTH = 16;
+	public static final int TILE_HEIGHT = 16;
 	
 	private static Level instance;
 	private int[][] map;

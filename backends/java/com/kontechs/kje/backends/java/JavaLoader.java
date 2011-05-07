@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import com.kontechs.kje.Font;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.TileProperty;
 
@@ -119,5 +120,10 @@ public class JavaLoader extends Loader {
 			}
 		}
 		tilesets.put(name, array_elements);
+	}
+
+	@Override
+	public Font loadFont(String name, int style, int size) {
+		return new JavaFont(name, style, size);
 	}
 }

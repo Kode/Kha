@@ -1,17 +1,16 @@
 package com.kontechs.kje.backends.java;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Painter;
 
-public class GraphicsPainter implements Painter {
+public class JavaPainter implements Painter {
 	private Graphics2D g;
 	private double tx, ty;
 
-	public GraphicsPainter(Graphics2D g) {
+	public JavaPainter(Graphics2D g) {
 		this.g = g;
 	}
 	
@@ -45,8 +44,13 @@ public class GraphicsPainter implements Painter {
 	}
 	
 	@Override
-	public void setFont(String name, int size) {
-		g.setFont(new Font(name, 0, size));
+	public void setFont(com.kontechs.kje.Font font) {
+		g.setFont(((JavaFont)font).getNativeFont());
+	}
+	
+	@Override
+	public void drawChars(char[] text, int offset, int length, double x, double y) {
+		g.drawChars(text, offset, length, round(tx + x), round(ty + y));
 	}
 	
 	@Override

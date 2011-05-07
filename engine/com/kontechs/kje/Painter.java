@@ -6,7 +6,8 @@ public interface Painter {
 	void setColor(int r, int g, int b);
 	void drawRect(double x, double y, double width, double height);
 	void fillRect(double x, double y, double width, double height);
-	void setFont(String name, int size);
+	void setFont(Font font);
+	void drawChars(char[] text, int offset, int length, double x, double y);
 	void drawString(String text, double x, double y);
 	void translate(double x, double y);
 }
