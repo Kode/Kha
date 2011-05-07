@@ -59,6 +59,7 @@ public abstract class Loader {
 	}
 	
 	public Image getImage(String name) {
+		if (!images.containsKey(name)) java.lang.System.err.println("Could not find image " + name + ".");
 		return images.get(name);
 	}
 	

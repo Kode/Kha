@@ -117,11 +117,13 @@ public class Scene {
 			if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
 			sprite.x += sprite.speedx;
 			
-			if (sprite.speedx > 0) { if (tilemap_foreground.collideright(sprite)) sprite.hit(Direction.LEFT); }
-			else if (sprite.speedx < 0) { if (tilemap_foreground.collideleft(sprite)) sprite.hit(Direction.RIGHT); }
-			sprite.y += sprite.speedy;
-			if (sprite.speedy > 0) { if (tilemap_foreground.collidedown(sprite)) sprite.hit(Direction.UP); }
-			else if (sprite.speedy < 0) { if (tilemap_foreground.collideup(sprite)) sprite.hit(Direction.DOWN); }
+			if (tilemap_foreground != null) {
+				if (sprite.speedx > 0) { if (tilemap_foreground.collideright(sprite)) sprite.hit(Direction.LEFT); }
+				else if (sprite.speedx < 0) { if (tilemap_foreground.collideleft(sprite)) sprite.hit(Direction.RIGHT); }
+				sprite.y += sprite.speedy;
+				if (sprite.speedy > 0) { if (tilemap_foreground.collidedown(sprite)) sprite.hit(Direction.UP); }
+				else if (sprite.speedy < 0) { if (tilemap_foreground.collideup(sprite)) sprite.hit(Direction.DOWN); }
+			}
 		}
 		else {
 			sprite.x += sprite.speedx;
@@ -134,7 +136,8 @@ public class Scene {
 		painter.setColor(255, 255, 255);
 		painter.fillRect(0, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		
-		int realcamx = Math.min(Math.max(0, camx - System.getInstance().getXRes() / 2), tilemap_foreground.getWidth() * Tileset.TILE_WIDTH - System.getInstance().getXRes());
+		int realcamx = 0;
+		if (tilemap_foreground != null) realcamx = Math.min(Math.max(0, camx - System.getInstance().getXRes() / 2), tilemap_foreground.getWidth() * Tileset.TILE_WIDTH - System.getInstance().getXRes());
 		//copy value of current realcamx to be able to translate the tilemap but still draw the tilemap at the right position
 		//int realcamxChange = realcamx;
 		
@@ -150,7 +153,7 @@ public class Scene {
 		
 		painter.translate(-realcamx, 25);
 		
-		tilemap_foreground.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		
 		// paints the element based on the z-order
