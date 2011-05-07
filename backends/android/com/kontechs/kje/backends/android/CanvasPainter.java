@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
+import com.kontechs.kje.Font;
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Painter;
 
@@ -53,16 +54,31 @@ public class CanvasPainter implements Painter {
 	}
 
 	@Override
-	public void setFont(String name, int size) {
-		paint.setTypeface(Typeface.create(name, Typeface.NORMAL));
-	}
-
-	@Override
 	public void drawString(String text, double x, double y) {
-		c.drawText(text, (float)x, (float)y, paint);
+		c.drawText(text, (float)(x + tx), (float)(y + ty), paint);
 	}
 	
 	int round(double value) {
 		return (int)Math.round(value);
+	}
+
+	@Override
+	public void setFont(Font font) {
+		paint.setTypeface(Typeface.create(((AndroidFont)font).name, Typeface.NORMAL));
+	}
+
+	@Override
+	public void drawChars(char[] text, int offset, int length, double x, double y) {
+		drawString(new String(text, offset, length), x, y);
+	}
+
+	@Override
+	public void drawLine(double x1, double y1, double x2, double y2) {
+		c.drawLine((float)(x1 + tx), (float)(y1 + ty), (float)(x2 + tx), (float)(y2 + ty), paint);
+	}
+
+	@Override
+	public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+		
 	}
 }

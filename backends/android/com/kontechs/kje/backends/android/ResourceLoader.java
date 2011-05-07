@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 
+import com.kontechs.kje.Font;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.TileProperty;
 
@@ -102,5 +103,10 @@ public class ResourceLoader extends Loader {
 	@Override
 	public void loadHighscore() {
 		
+	}
+
+	@Override
+	public Font loadFont(String name, int style, int size) {
+		return new AndroidFont(name);
 	}
 }

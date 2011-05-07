@@ -8,6 +8,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.kontechs.kje.Font;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.TileProperty;
 
@@ -129,5 +130,10 @@ public class WebLoader extends Loader {
 		button = new Button("Loading: 0%");
 		button.setEnabled(false);
 		RootPanel.get().add(button);
+	}
+
+	@Override
+	public Font loadFont(String name, int style, int size) {
+		return new WebFont(name);
 	}
 }
