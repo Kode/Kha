@@ -60,6 +60,8 @@ public class Level extends JPanel implements MouseListener, MouseMotionListener 
 
 	public void save(DataOutputStream stream) {
 		try {
+			//levelWidth = levelWidth - 9;
+			//levelHeight = 10;
 			stream.writeInt(levelWidth);
 			stream.writeInt(levelHeight);
 			for (int x = 0; x < levelWidth; ++x) for (int y = 0; y < levelHeight; ++y) {

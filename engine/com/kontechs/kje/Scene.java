@@ -137,21 +137,24 @@ public class Scene {
 		painter.fillRect(0, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		
 		int realcamx = 0;
-		if (tilemap_foreground != null) realcamx = Math.min(Math.max(0, camx - System.getInstance().getXRes() / 2), tilemap_foreground.getWidth() * Tileset.TILE_WIDTH - System.getInstance().getXRes());
+		if (tilemap_foreground != null) {
+			realcamx = Math.min(Math.max(0, camx - System.getInstance().getXRes() / 2), tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH - System.getInstance().getXRes());
+			if (getWidth() < System.getInstance().getXRes()) realcamx = 0;
+		}
 		//copy value of current realcamx to be able to translate the tilemap but still draw the tilemap at the right position
 		//int realcamxChange = realcamx;
 		
 		/*for parallax-effect change the x-value of painter.translate and tilemapBackground.render
 		 * @author Robert P.
 		 */
-		painter.translate((int)-realcamx/4, 25);
+		painter.translate((int)-realcamx/4, camy);
 		if (tilemap_background != null) tilemap_background.render(painter, (int)realcamx/4,0, System.getInstance().getXRes(), System.getInstance().getYRes());
-		painter.translate((int)-realcamx/3, 25);
+		painter.translate((int)-realcamx/3, camy);
 		if (tilemap_background2 != null) tilemap_background2.render(painter, (int)realcamx/3,0, System.getInstance().getXRes(), System.getInstance().getYRes());
-		painter.translate((int)-realcamx/2, 25);
+		painter.translate((int)-realcamx/2, camy);
 		if (tilemap_background3 != null) tilemap_background3.render(painter, (int)realcamx/2,0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		
-		painter.translate(-realcamx, 25);
+		painter.translate(-realcamx, camy);
 		
 		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
@@ -174,7 +177,7 @@ public class Scene {
 		}
 	}
 	
-	public int camx, camy;
+	public int camx, camy = 25;
 	
 	public boolean isCooliderDebugMode() {
 		return cooliderDebugMode;
@@ -182,5 +185,10 @@ public class Scene {
 
 	public void setCooliderDebugMode(boolean cooliderDebugMode) {
 		this.cooliderDebugMode = cooliderDebugMode;
+	}
+	
+	public double getWidth() {
+		if (tilemap_foreground != null) return tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH;
+		else return 0;
 	}
 }

@@ -1,8 +1,8 @@
 package com.kontechs.kje;
 
 public class Tileset {
-	public static int TILE_WIDTH = 32;
-	public static int TILE_HEIGHT = 32;
+	public int TILE_WIDTH = 32;
+	public int TILE_HEIGHT = 32;
 	int xmax, ymax;
 	private Image image;
 

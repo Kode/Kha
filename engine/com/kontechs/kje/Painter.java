@@ -9,5 +9,7 @@ public interface Painter {
 	void setFont(Font font);
 	void drawChars(char[] text, int offset, int length, double x, double y);
 	void drawString(String text, double x, double y);
+	void drawLine(double x1, double y1, double x2, double y2);
+	void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3);
 	void translate(double x, double y);
 }

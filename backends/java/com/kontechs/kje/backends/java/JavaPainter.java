@@ -59,6 +59,18 @@ public class JavaPainter implements Painter {
 	}
 	
 	@Override
+	public void drawLine(double x1, double y1, double x2, double y2) {
+		g.drawLine(round(tx + x1), round(ty + y1), round(tx + x2), round(ty + y2));
+	}
+	
+	@Override
+	public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+		int[] xPoints = new int[]{round(tx + x1), round(tx + x2), round(tx + x3)};
+		int[] yPoints = new int[]{round(ty + y1), round(ty + y2), round(ty + y3)};
+		g.fillPolygon(xPoints, yPoints, 3);
+	}
+	
+	@Override
 	public void translate(double x, double y) {
 		tx = x;
 		ty = y;
