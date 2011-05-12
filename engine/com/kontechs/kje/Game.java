@@ -26,4 +26,5 @@ public abstract class Game {
 	}
 	
 	public abstract void key(KeyEvent event);
+	public void charKey(char c) { }
 }

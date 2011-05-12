@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import com.kontechs.kje.GameInfo;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.Loader;
-import com.kontechs.kje.Scene;
 
 public class Game extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -203,12 +202,17 @@ public class Game extends JFrame implements KeyListener {
 			pressKey(keyCode, Key.BUTTON_1);
 			break;
 		case KeyEvent.VK_CONTROL:
-			//WoodHole.setKey_pressed(true);
 			pressKey(keyCode, Key.BUTTON_2);
+			break;
+		case KeyEvent.VK_ENTER:
+			pressKey(keyCode, Key.ENTER);
+			break;
+		case KeyEvent.VK_BACK_SPACE:
+			pressKey(keyCode, Key.BACKSPACE);
 			break;
 			
 		//Debug keys
-		case KeyEvent.VK_F1:
+		/*case KeyEvent.VK_F1:
 			reset = true;
 			break;
 		case KeyEvent.VK_PLUS:
@@ -228,7 +232,7 @@ public class Game extends JFrame implements KeyListener {
 			break;
 		case KeyEvent.VK_D:
 			Scene.getInstance().setCooliderDebugMode(Scene.getInstance().isCooliderDebugMode()?false:true);
-			break;
+			break;*/
 		}
 	}
 	
@@ -255,12 +259,18 @@ public class Game extends JFrame implements KeyListener {
 		case KeyEvent.VK_CONTROL:
 			releaseKey(keyCode, Key.BUTTON_2);
 			break;
+		case KeyEvent.VK_ENTER:
+			releaseKey(keyCode, Key.ENTER);
+			break;
+		case KeyEvent.VK_BACK_SPACE:
+			releaseKey(keyCode, Key.BACKSPACE);
+			break;
 		}
 	}
  
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+		game.charKey(e.getKeyChar());
 	}
 	
 	public static int getSyncrate() {

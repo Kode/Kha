@@ -84,11 +84,13 @@ public abstract class Loader {
 		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) loadMap(it.next());
 		Set<String> tilesetnames = tilesets.keySet();
 		for (Iterator<String> it = tilesetnames.iterator(); it.hasNext(); ) loadTileset(it.next());
+		loadHighscore();
 	}
 	
 	protected void loadStarted() { }
 	
 	public abstract void loadHighscore();
+	public abstract void saveHighscore();
 	
 	protected abstract void loadImage(String filename);
 	protected abstract void loadMap(String name);

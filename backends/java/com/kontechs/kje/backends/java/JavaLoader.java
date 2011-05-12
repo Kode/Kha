@@ -1,17 +1,24 @@
 package com.kontechs.kje.backends.java;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import com.kontechs.kje.Font;
+import com.kontechs.kje.HighscoreList;
 import com.kontechs.kje.Loader;
+import com.kontechs.kje.Score;
 import com.kontechs.kje.TileProperty;
 
 public class JavaLoader extends Loader {
@@ -62,31 +69,57 @@ public class JavaLoader extends Loader {
 		}
 	}
 	
-	//TODO: Check
+	@Override
 	public void loadHighscore(){
-		String[][] highscore = new String[10][2];
-		DataInputStream stream = null;
+		BufferedReader reader = null;
 		try {
-			stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/highscore.score")));
-			for (int entry_index = 0; entry_index < 10; entry_index++)  {
-				highscore[entry_index][0] = stream.readUTF();
-				highscore[entry_index][1] = stream.readUTF();
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream("../../data/highscore.score")));
+			for (;;) {
+				String name = reader.readLine();
+				String score = reader.readLine();
+				if (name != null && score != null) HighscoreList.getInstance().addScore(name, Integer.parseInt(score));
+				else break;
 			}
-		}catch(FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Die Highscore-Datei wurde nicht gefunden!", "Fehler....", JOptionPane.OK_OPTION);
-			System.exit(0);
 		}
 		catch (IOException e) {
+			e.printStackTrace();
 		}
 		finally{
 			try {
-				stream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				if (reader != null) reader.close();
+			}
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		//StartScreen.setHighscore(highscore); //TODO
+	}
+	
+	@Override
+	public void saveHighscore() {
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../../data/highscore.score")));
+			for (int i = 0; i < HighscoreList.getInstance().getScores().size(); ++i) {
+				Score score = HighscoreList.getInstance().getScores().get(i);
+				writer.write(score.getName() + "\n");
+				writer.write(String.valueOf(score.getScore()) + "\n");
+			}
+		}
+		catch (Exception ex) {
+			
+		}
+		finally {
+			if (writer != null)
+			try {
+				writer.close();
+			}
+			catch (IOException e) {
+
+			}
+		}
 	}
 	
 	@Override

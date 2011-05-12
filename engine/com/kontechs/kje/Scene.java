@@ -39,6 +39,17 @@ public class Scene {
 		enemies = new ArrayList<Sprite>();
 	}
 	
+	public void clear() {
+		tilemap_foreground = null;
+		tilemap_overlay = null;
+		tilemap_background = null;
+		tilemap_background2 = null;
+		tilemap_background3 = null;
+		heroes.clear();
+		enemies.clear();
+		sprites.clear();
+	}
+	
 	public ArrayList<Sprite> getEnemies() {
 		return enemies;
 	}
