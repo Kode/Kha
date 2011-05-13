@@ -10,7 +10,7 @@ public abstract class Loader {
 	protected java.util.Map<String, Image> images = new java.util.HashMap<String, Image>();
 	protected java.util.Map<String, Sound> sounds = new java.util.HashMap<String, Sound>();
 	protected java.util.Map<String, Music> musics = new java.util.HashMap<String, Music>();
-	protected int loadcount;
+	protected int loadcount = 1;
 	
 	public static void init(Loader loader) {
 		instance = loader;
@@ -90,7 +90,7 @@ public abstract class Loader {
 	protected void loadStarted() { }
 	
 	public abstract void loadHighscore();
-	public abstract void saveHighscore();
+	public abstract void saveHighscore(Score score);
 	
 	protected abstract void loadImage(String filename);
 	protected abstract void loadMap(String name);

@@ -6,6 +6,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Timer;
@@ -26,7 +28,7 @@ public class Game_gwt implements EntryPoint {
 	}
 }
 
-class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
+class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler {
 	private Canvas canvas;
 	private Context2d context;
 	private CanvasPainter painter;
@@ -51,6 +53,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		panel.add(canvas);
 		panel.addKeyDownHandler(this);
 		panel.addKeyUpHandler(this);
+		panel.addKeyPressHandler(this);
 		panel.setFocus(true);
 		
 		com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
@@ -90,6 +93,12 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		else if (event.getNativeKeyCode() == KeyCodes.KEY_SHIFT) {
 			pressKey(5, Key.BUTTON_2);
 		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			pressKey(6, Key.ENTER);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE) {
+			pressKey(7, Key.BACKSPACE);
+		}
 	}
 	
 	@Override
@@ -112,6 +121,12 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		else if (event.getNativeKeyCode() == KeyCodes.KEY_SHIFT) {
 			releaseKey(5, Key.BUTTON_2);
 		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			releaseKey(6, Key.ENTER);
+		}
+		else if (event.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE) {
+			releaseKey(7, Key.BACKSPACE);
+		}
 	}
 
 	public void run() {
@@ -123,5 +138,10 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler {
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onKeyPress(KeyPressEvent event) {
+		Game.getInstance().charKey(event.getCharCode());
 	}
 }

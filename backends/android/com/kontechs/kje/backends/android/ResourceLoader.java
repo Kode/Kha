@@ -99,6 +99,11 @@ public class ResourceLoader extends Loader {
 		}
 		tilesets.put(name, array_elements);
 	}
+	
+	@Override
+	public Font loadFont(String name, int style, int size) {
+		return new AndroidFont(name);
+	}
 
 	@Override
 	public void loadHighscore() {
@@ -106,7 +111,7 @@ public class ResourceLoader extends Loader {
 	}
 
 	@Override
-	public Font loadFont(String name, int style, int size) {
-		return new AndroidFont(name);
+	public void saveHighscore() {
+		
 	}
 }

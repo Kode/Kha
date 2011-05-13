@@ -1,5 +1,7 @@
 package com.kontechs.kje.backends.gwt;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.LoadEvent;
@@ -9,7 +11,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.kontechs.kje.Font;
+import com.kontechs.kje.HighscoreList;
 import com.kontechs.kje.Loader;
+import com.kontechs.kje.Score;
 import com.kontechs.kje.TileProperty;
 
 public class WebLoader extends Loader {
@@ -37,11 +41,6 @@ public class WebLoader extends Loader {
 	protected void loadMusic(String name) {
 		musics.put(name, new WebMusic(name));
 		fileLoaded();
-	}
-
-	@Override
-	public void loadHighscore() {
-		
 	}
 	
 	class MapLoader implements AsyncCallback<int[][]> {
@@ -135,5 +134,36 @@ public class WebLoader extends Loader {
 	@Override
 	public Font loadFont(String name, int style, int size) {
 		return new WebFont(name);
+	}
+	
+	@Override
+	public void loadHighscore() {
+		service.getScores(new AsyncCallback<java.util.ArrayList<Score>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(ArrayList<Score> result) {
+				HighscoreList.getInstance().init(result);
+				fileLoaded();
+			}
+		});
+	}
+
+	@Override
+	public void saveHighscore(Score score) {
+		service.addScore(score, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				
+			}
+		});
 	}
 }

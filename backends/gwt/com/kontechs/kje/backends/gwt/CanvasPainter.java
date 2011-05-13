@@ -59,7 +59,7 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void drawChars(char[] text, int offset, int length, double x, double y) {
-		
+		drawString(new String(text, offset, length), x, y);
 	}
 
 	@Override

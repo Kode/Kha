@@ -13,8 +13,12 @@ public class WebImage implements Image {
 		if (width != 0 && height != 0) return;
 		
 		if (name.equals("tiles")) {
-			width = 1024;//448;
-			height = 640;//320;
+			width = 1024;
+			height = 640;
+		}
+		else if (name.equals("sml_tiles")) {
+			width = 448;
+			height = 320;
 		}
 		else if (name.equals("koopa")) {
 			width = 512;

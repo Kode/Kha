@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -74,12 +75,14 @@ public class JavaLoader extends Loader {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream("../../data/highscore.score")));
+			ArrayList<Score> scores = new ArrayList<Score>();
 			for (;;) {
 				String name = reader.readLine();
 				String score = reader.readLine();
-				if (name != null && score != null) HighscoreList.getInstance().addScore(name, Integer.parseInt(score));
+				if (name != null && score != null) scores.add(new Score(name, Integer.parseInt(score)));
 				else break;
 			}
+			HighscoreList.getInstance().init(scores);
 		}
 		catch (Exception e) {
 			
@@ -95,7 +98,7 @@ public class JavaLoader extends Loader {
 	}
 	
 	@Override
-	public void saveHighscore() {
+	public void saveHighscore(Score unusedScore) {
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../../data/highscore.score")));
