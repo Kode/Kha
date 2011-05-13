@@ -81,11 +81,8 @@ public class JavaLoader extends Loader {
 				else break;
 			}
 		}
-		catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Die Highscore-Datei wurde nicht gefunden!", "Fehler....", JOptionPane.OK_OPTION);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+		catch (Exception e) {
+			
 		}
 		finally{
 			try {

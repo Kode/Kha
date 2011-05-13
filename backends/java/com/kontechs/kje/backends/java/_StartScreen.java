@@ -17,7 +17,6 @@ import javax.swing.JFrame;
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Rectangle;
-import com.kontechs.kje.Saver;
 
 //TODO: Should not be here
 public class _StartScreen extends JFrame implements MouseListener,MouseMotionListener{
@@ -38,7 +37,7 @@ public class _StartScreen extends JFrame implements MouseListener,MouseMotionLis
 	static{
 		com.kontechs.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
-		Saver.init(new JavaSaver());
+		//Saver.init(new JavaSaver());
 		start_screen = Loader.getInstance().getImage("startscreen");
 		credits_screen = Loader.getInstance().getImage("credits");
 		highscore_screen = Loader.getInstance().getImage("highscore");

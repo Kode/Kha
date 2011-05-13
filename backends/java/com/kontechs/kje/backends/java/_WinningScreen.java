@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 import com.kontechs.kje.Image;
 import com.kontechs.kje.Loader;
 import com.kontechs.kje.Rectangle;
-import com.kontechs.kje.Saver;
 
 //TODO: Should not be here
 public class _WinningScreen extends JFrame implements MouseListener,MouseMotionListener{ 
@@ -64,7 +63,7 @@ public class _WinningScreen extends JFrame implements MouseListener,MouseMotionL
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				winning_screen = false;
-				Saver.getInstance().saveHighscore();				
+				//Saver.getInstance().saveHighscore();				
 			}
 		});
 		
@@ -87,7 +86,7 @@ public class _WinningScreen extends JFrame implements MouseListener,MouseMotionL
 		Rectangle window_pos = new Rectangle(this.getLocationOnScreen().x, this.getLocationOnScreen().y, 
 				0, 0);
 		_StartScreen.insertInHighscore((this.time_left + this.points), name_field.getText());
-		Saver.getInstance().saveHighscore();
+		//Saver.getInstance().saveHighscore();
 		this.setVisible(false);
 		return window_pos;
 	}
@@ -118,7 +117,7 @@ public class _WinningScreen extends JFrame implements MouseListener,MouseMotionL
 		if (arg0.getX() > 12 && arg0.getX() < 162 && arg0.getY() > 470
 				&& arg0.getY() < 500) {
 			winning_screen = false;
-			Saver.getInstance().saveHighscore();
+			//Saver.getInstance().saveHighscore();
 			
 		}
 		
