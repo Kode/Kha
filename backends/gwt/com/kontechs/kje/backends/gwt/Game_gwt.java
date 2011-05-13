@@ -22,9 +22,14 @@ import com.kontechs.kje.Loader;
 
 public class Game_gwt implements EntryPoint {
 	public void onModuleLoad() {
-		Loader.init(new WebLoader());
-		GameInfo.createGame("level1", "tiles");
-		Loader.getInstance().load();
+		try {
+			Loader.init(new WebLoader());
+			GameInfo.createGame("level1", "tiles");
+			Loader.getInstance().load();
+		}
+		catch (Exception ex) {
+			AnimationTimer.alert(ex.getMessage());
+		}
 	}
 }
 
@@ -37,29 +42,38 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 	private boolean[] keyreleased;
 	
 	AnimationTimer() {
-		keyreleased = new boolean[256];
-		for (int i = 0; i < 256; ++i) keyreleased[i] = true;
-		
-		canvas = Canvas.createIfSupported();
-		canvas.setWidth(WIDTH + "px");
-		canvas.setHeight(HEIGHT + "px");
-		canvas.setCoordinateSpaceWidth(WIDTH);
-		canvas.setCoordinateSpaceHeight(HEIGHT);
-		context = canvas.getContext2d();
-		painter = new CanvasPainter(context);
-
-		FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
-		RootPanel.get().add(panel);
-		panel.add(canvas);
-		panel.addKeyDownHandler(this);
-		panel.addKeyUpHandler(this);
-		panel.addKeyPressHandler(this);
-		panel.setFocus(true);
-		
-		com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
-		
-		Game.getInstance().postInit();
+		try {
+			keyreleased = new boolean[256];
+			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
+			
+			canvas = Canvas.createIfSupported();
+			canvas.setWidth(WIDTH + "px");
+			canvas.setHeight(HEIGHT + "px");
+			canvas.setCoordinateSpaceWidth(WIDTH);
+			canvas.setCoordinateSpaceHeight(HEIGHT);
+			context = canvas.getContext2d();
+			painter = new CanvasPainter(context);
+	
+			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
+			RootPanel.get().add(panel);
+			panel.add(canvas);
+			panel.addKeyDownHandler(this);
+			panel.addKeyUpHandler(this);
+			panel.addKeyPressHandler(this);
+			panel.setFocus(true);
+			
+			com.kontechs.kje.System.init(new WebSystem(WIDTH, HEIGHT));
+			
+			Game.getInstance().postInit();
+		}
+		catch (Exception ex) {
+			alert(ex.getMessage());
+		}
 	}
+	
+	public static native void alert(String msg) /*-{
+	  $wnd.alert(msg);
+	}-*/;
 	
 	private void pressKey(int keycode, Key key) {
 		if (keyreleased[keycode]) { //avoid auto-repeat

@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,10 +43,8 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 			}
 			return map;
 		}
-		catch (FileNotFoundException e) {
-			return null;
-		}
-		catch (IOException e) {
+		catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -72,10 +69,12 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			try {
 				stream_elements.close();
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -96,7 +95,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 			return scores;
 		}
 		catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		finally{
 			try {
