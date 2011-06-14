@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 
 import com.kontechs.kje.Font;
 import com.kontechs.kje.Loader;
+import com.kontechs.kje.Score;
 import com.kontechs.kje.TileProperty;
 
 public class ResourceLoader extends Loader {
@@ -111,7 +112,7 @@ public class ResourceLoader extends Loader {
 	}
 
 	@Override
-	public void saveHighscore() {
+	public void saveHighscore(Score score) {
 		
 	}
 }
