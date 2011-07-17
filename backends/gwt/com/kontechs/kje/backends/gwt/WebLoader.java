@@ -3,7 +3,6 @@ package com.kontechs.kje.backends.gwt;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
@@ -95,7 +94,8 @@ public class WebLoader extends Loader {
 
 		@Override
 		public void onLoad(LoadEvent event) {
-			images.put(name, new WebImage(name, (ImageElement) img.getElement().cast()));
+			RootPanel.get().remove(img);
+			images.put(name, new WebImage(name, img));
 			fileLoaded();
 		}
 	}

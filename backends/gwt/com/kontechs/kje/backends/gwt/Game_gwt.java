@@ -134,7 +134,9 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 		try {
 			Game.getInstance().update();
 			Game.getInstance().update();
+			painter.begin();
 			Game.getInstance().render(painter);
+			painter.end();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

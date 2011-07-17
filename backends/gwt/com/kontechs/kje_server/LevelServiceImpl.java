@@ -95,7 +95,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 			return scores;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		finally{
 			try {

@@ -12,4 +12,6 @@ public interface Painter {
 	void drawLine(double x1, double y1, double x2, double y2);
 	void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3);
 	void translate(double x, double y);
+	void begin();
+	void end();
 }

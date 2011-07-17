@@ -1,12 +1,16 @@
 package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.dom.client.ImageElement;
+import com.googlecode.gwtgl.binding.WebGLTexture;
 import com.kontechs.kje.Image;
 
 public class WebImage implements Image {
 	private ImageElement ie;
 	private int width, height;
 	private String name;
+	
+	public com.google.gwt.user.client.ui.Image img;
+	public WebGLTexture tex;
 	
 	//ie.getWidth returns 0 in IE9
 	private void IE9Hack() {
@@ -25,6 +29,10 @@ public class WebImage implements Image {
 			height = 48;
 		}
 		else if (name.equals("jumpman")) {
+			width = 768;
+			height = 256;
+		}
+		else if (name.equals("jumpman2")) {
 			width = 768;
 			height = 256;
 		}
@@ -125,9 +133,10 @@ public class WebImage implements Image {
 		}
 	}
 	
-	public WebImage(String name, ImageElement ie) {
+	public WebImage(String name, com.google.gwt.user.client.ui.Image img) {
 		this.name = name;
-		this.ie = ie;
+		this.img = img;
+		this.ie = (ImageElement) img.getElement().cast();
 		width = ie.getWidth();
 		height = ie.getHeight();
 		IE9Hack();
