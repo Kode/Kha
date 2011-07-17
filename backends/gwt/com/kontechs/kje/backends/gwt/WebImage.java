@@ -32,10 +32,6 @@ public class WebImage implements Image {
 			width = 768;
 			height = 256;
 		}
-		else if (name.equals("jumpman2")) {
-			width = 768;
-			height = 256;
-		}
 		else if (name.equals("gumba")) {
 			width = 96;
 			height = 32;

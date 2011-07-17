@@ -81,4 +81,14 @@ public class CanvasPainter implements Painter {
 	public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
 		
 	}
+	
+	@Override
+	public void begin() {
+		
+	}
+	
+	@Override
+	public void end() {
+		
+	}
 }

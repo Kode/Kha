@@ -1,12 +1,7 @@
 package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.googlecode.gwtgl.array.Float32Array;
 import com.googlecode.gwtgl.binding.WebGLBuffer;
 import com.googlecode.gwtgl.binding.WebGLCanvas;
@@ -43,14 +38,14 @@ public class CanvasPainter implements Painter {
 		panel.add(webGLCanvas);
 		
 		initShaders();
-		glContext.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glContext.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glContext.clearDepth(1.0f);
 		//glContext.enable(WebGLRenderingContext.DEPTH_TEST);
 		//glContext.enable(WebGLRenderingContext.TEXTURE_2D);
 		//glContext.depthFunc(WebGLRenderingContext.LEQUAL);
 		initBuffers();
-		setImage(Resources.INSTANCE.texture());
-checkErrors();
+
+		checkErrors();
 		//drawScene();
 
 		/*canvas = Canvas.createIfSupported();
@@ -75,8 +70,7 @@ checkErrors();
 				//+ "vec4 color = texture2D(tex, texCoord);"
 		        //+ "color += vec4(0.1, 0.1, 0.1, 1);"
 		        //+ "gl_FragColor = color;" //vec4(color.xyz * v_Dot, color.a);
-				//+ "gl_FragColor = texture2D(tex, texCoord);"
-		        + "gl_FragColor = texture2D(tex, vec2(0.5, 0.5));"
+				+ "gl_FragColor = texture2D(tex, texCoord);"
 				+ "}");
 		
 		WebGLShader vertexShader = getShader(WebGLRenderingContext.VERTEX_SHADER,
@@ -146,6 +140,7 @@ checkErrors();
 		};
 		rectVertices = Float32Array.create(vertices);
 		glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectVertices, WebGLRenderingContext.STATIC_DRAW);
+		glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
 		
 		rectTexCoordBuffer = glContext.createBuffer();
 		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
@@ -157,6 +152,10 @@ checkErrors();
 		};
 		rectTexCoords = Float32Array.create(vertices);
 		glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoords, WebGLRenderingContext.STATIC_DRAW);
+		glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+		
+		glContext.enableVertexAttribArray(vertexPositionAttribute);
+		glContext.enableVertexAttribArray(texCoordAttribute);
 	}
 	
 	private float[] ortho(float left, float right, float bottom, float top, float zn, float zf) {
@@ -192,57 +191,37 @@ checkErrors();
 		
 		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
 		glContext.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectVertices);
-	}
-	private HandlerRegistration handlerRegistration;
-	com.google.gwt.user.client.ui.Image imageToSet;
-	public void setImage(final ImageResource imageResource) {
-       // if (destroyed) {
-       //         throw new IllegalStateException(
-       //                         "The Texture2D is already destroyed");
-       // }
-
-        final com.google.gwt.user.client.ui.Image img = new com.google.gwt.user.client.ui.Image();
-        handlerRegistration = img.addLoadHandler(
-        		new LoadHandler() {
-                @Override
-                public void onLoad(LoadEvent event) {
-                        imageToSet=img;
-
-                        RootPanel.get().remove(img);
-
-                        if (handlerRegistration != null) {
-                                handlerRegistration.removeHandler();
-                                handlerRegistration = null;
-                        }
-                }
-        });
-        img.setVisible(false);
-        RootPanel.get().add(img);
-        // image.setResource(imageResource);
-        // TODO doesn't work with more than one image bundled to one
-        // ImageBundle if the browser doesn't support data:... urls
-        // So it's no problem at the moment because Chrome and FF support it
-        img.setUrl(imageResource.getURL());
+		//glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
 	}
 	
+	private void setRectTexCoords(float left, float top, float right, float bottom) {
+		rectTexCoords.set( 0, left);
+		rectTexCoords.set( 1, top);
+		rectTexCoords.set( 2, right);
+		rectTexCoords.set( 3, top);
+		rectTexCoords.set( 4, left);
+		rectTexCoords.set( 5, bottom);
+		rectTexCoords.set( 6, right);
+		rectTexCoords.set( 7, bottom);
+		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
+		glContext.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectTexCoords);
+		//glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+	}
+
 	private void setTexture(WebImage img) {
 		if (img.tex == null) {
-			if (imageToSet != null) {
-				img.tex = glContext.createTexture();
-				glContext.activeTexture(WebGLRenderingContext.TEXTURE0);
-				glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
-				glContext.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
-				glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, imageToSet.getElement());//img.img.getElement());
-				glContext.uniform1i(textureUniform, 0);
-				checkErrors();
-			}
-		}
-		else {
+			img.tex = glContext.createTexture();
 			glContext.activeTexture(WebGLRenderingContext.TEXTURE0);
 			glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
+			//glContext.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
+			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
+			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
+			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, WebGLRenderingContext.CLAMP_TO_EDGE);
+			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, WebGLRenderingContext.CLAMP_TO_EDGE);
+			glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, img.img.getElement());
 			glContext.uniform1i(textureUniform, 0);
-			checkErrors();
 		}
+		else glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
 	}
 	
 	@Override
@@ -254,10 +233,9 @@ checkErrors();
 		float right = (float)(tx + x + img.getWidth());
 		float bottom = (float)(ty + y + img.getHeight());
 		
+		setRectTexCoords(0, 0, 1, 1);
 		setRectVertices(left, top, right, bottom);
 		
-		glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
-		glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
 		setTexture((WebImage)img);
 		glContext.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, 4);
 	}
@@ -266,18 +244,16 @@ checkErrors();
 	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
 		//context.drawImage(((WebImage)img).getIE(), sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
 		
-		if (dw == 32) return;
+		//if (dw == 32) return;
 		
 		float left = (float)(tx + dx);
 		float top = (float)(ty + dy);
-		float right = (float)(tx + dx + img.getWidth());
-		float bottom = (float)(ty + dy + img.getHeight());
+		float right = (float)(tx + dx + dw);
+		float bottom = (float)(ty + dy + dh);
 		
+		setRectTexCoords((float)(sx / img.getWidth()), (float)(sy / img.getHeight()), (float)((sx + sw) / img.getWidth()), (float)((sy + sh) / img.getHeight()));
 		setRectVertices(left, top, right, bottom);
-		glContext.enableVertexAttribArray(vertexPositionAttribute);
-		glContext.enableVertexAttribArray(texCoordAttribute);
-		glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
-		glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+		
 		setTexture((WebImage)img);
 		glContext.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, 4);
 		

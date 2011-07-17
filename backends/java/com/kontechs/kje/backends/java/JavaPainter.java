@@ -75,4 +75,14 @@ public class JavaPainter implements Painter {
 		tx = x;
 		ty = y;
 	}
+	
+	@Override
+	public void begin() {
+		
+	}
+	
+	@Override
+	public void end() {
+		
+	}
 }
