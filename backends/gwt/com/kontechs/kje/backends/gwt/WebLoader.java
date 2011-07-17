@@ -23,7 +23,7 @@ public class WebLoader extends Loader {
 	private void loadingFinished() {
 		RootPanel.get().remove(button);
 		Timer timer = new AnimationTimer();
-		timer.scheduleRepeating(1000 / 60);
+		timer.scheduleRepeating(1000 / 30);
 	}
 	
 	public WebLoader() {

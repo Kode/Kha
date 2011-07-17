@@ -16,6 +16,7 @@ import com.kontechs.kje.GameInfo;
 import com.kontechs.kje.Key;
 import com.kontechs.kje.KeyEvent;
 import com.kontechs.kje.Loader;
+import com.kontechs.kje.Painter;
 
 public class Game_gwt implements EntryPoint {
 	public void onModuleLoad() {
@@ -31,7 +32,7 @@ public class Game_gwt implements EntryPoint {
 }
 
 class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler {
-	private CanvasPainter painter;
+	private Painter painter;
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 550;
 	private boolean[] keyreleased;
@@ -43,7 +44,12 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			
 			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
 			RootPanel.get().add(panel);
-			painter = new CanvasPainter(panel, WIDTH, HEIGHT);
+			try {
+				painter = new WebGLPainter(panel, WIDTH, HEIGHT);
+			}
+			catch (Exception ex) {
+				painter = new CanvasPainter(panel, WIDTH, HEIGHT);
+			}
 			panel.addKeyDownHandler(this);
 			panel.addKeyUpHandler(this);
 			panel.addKeyPressHandler(this);
@@ -132,7 +138,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 
 	public void run() {
 		try {
-			//Game.getInstance().update();
+			Game.getInstance().update();
 			Game.getInstance().update();
 			painter.begin();
 			Game.getInstance().render(painter);
