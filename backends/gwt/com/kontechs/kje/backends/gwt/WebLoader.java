@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -22,8 +21,9 @@ public class WebLoader extends Loader {
 	
 	private void loadingFinished() {
 		RootPanel.get().remove(button);
-		Timer timer = new AnimationTimer();
-		timer.scheduleRepeating(1000 / 30);
+		AnimationTimer timer = new AnimationTimer();
+		if (timer.webgl) timer.scheduleRepeating(1000 / 60);
+		else timer.scheduleRepeating(1000 / 30);
 	}
 	
 	public WebLoader() {

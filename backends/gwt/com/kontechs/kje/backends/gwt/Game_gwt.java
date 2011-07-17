@@ -36,6 +36,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 550;
 	private boolean[] keyreleased;
+	public boolean webgl = false;
 	
 	AnimationTimer() {
 		try {
@@ -46,6 +47,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			RootPanel.get().add(panel);
 			try {
 				painter = new WebGLPainter(panel, WIDTH, HEIGHT);
+				webgl = true;
 			}
 			catch (Exception ex) {
 				painter = new CanvasPainter(panel, WIDTH, HEIGHT);
@@ -138,7 +140,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 
 	public void run() {
 		try {
-			Game.getInstance().update();
+			if (!webgl) Game.getInstance().update();
 			Game.getInstance().update();
 			painter.begin();
 			Game.getInstance().render(painter);

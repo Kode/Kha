@@ -169,7 +169,7 @@ public class Scene {
 		
 		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
 		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
-		
+
 		// paints the element based on the z-order
 		// 0 first ... 3 last
 		for (int z_order = 0; z_order < 4; ++z_order){
