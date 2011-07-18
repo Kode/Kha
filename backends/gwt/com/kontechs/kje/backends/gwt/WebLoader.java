@@ -21,9 +21,7 @@ public class WebLoader extends Loader {
 	
 	private void loadingFinished() {
 		RootPanel.get().remove(button);
-		AnimationTimer timer = new AnimationTimer();
-		if (timer.webgl) timer.scheduleRepeating(1000 / 60);
-		else timer.scheduleRepeating(1000 / 30);
+		new AnimationTimer();
 	}
 	
 	public WebLoader() {

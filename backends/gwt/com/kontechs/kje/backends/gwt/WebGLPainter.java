@@ -2,7 +2,6 @@ package com.kontechs.kje.backends.gwt;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.googlecode.gwtgl.array.ArrayBufferView;
 import com.googlecode.gwtgl.array.Float32Array;
 import com.googlecode.gwtgl.binding.WebGLBuffer;
 import com.googlecode.gwtgl.binding.WebGLCanvas;
@@ -121,19 +120,19 @@ public class WebGLPainter implements Painter {
 		triangleVertexBuffer = gl.createBuffer();
 		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, triangleVertexBuffer);
 		triangleVertices = Float32Array.create(3 * 3);
-		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, triangleVertices, WebGLRenderingContext.STATIC_DRAW);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, triangleVertices, WebGLRenderingContext.DYNAMIC_DRAW);
 		
 		rectVertexBuffer = gl.createBuffer();
 		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
 		rectVertices = Float32Array.create(bufferSize * 3 * 6);
-		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectVertices, WebGLRenderingContext.STATIC_DRAW);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectVertices, WebGLRenderingContext.DYNAMIC_DRAW);
 		gl.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
 		//rectVerticesCache = Float32Array.create(3 * 6);
 		
 		rectTexCoordBuffer = gl.createBuffer();
 		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
 		rectTexCoords = Float32Array.create(bufferSize * 2 * 6);
-		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoords, WebGLRenderingContext.STATIC_DRAW);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoords, WebGLRenderingContext.DYNAMIC_DRAW);
 		gl.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
 		//rectTexCoordsCache = Float32Array.create(2 * 6);
 		
@@ -223,12 +222,12 @@ public class WebGLPainter implements Painter {
 	}
 	
 	private void drawBuffer() {
-		//java.lang.System.err.println("drawBuffer");
+		//java.lang.System.err.println("drawBuffer " + bufferIndex);
 		setTexture((WebImage)lastTexture);
 		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
-		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectVertices);//.subarray(0, bufferIndex * 6 * 3));
+		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, Float32Array.create(rectVertices.getBuffer(), 0, bufferIndex * 6 * 3));
 		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
-		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectTexCoords);//.subarray(0, bufferIndex * 6 * 2));
+		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, Float32Array.create(rectTexCoords.getBuffer(), 0, bufferIndex * 6 * 2));
 		gl.drawArrays(WebGLRenderingContext.TRIANGLES, 0, bufferIndex * 6);
 		bufferIndex = 0;
 		//checkErrors();

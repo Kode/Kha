@@ -1,5 +1,6 @@
 package com.kontechs.kje.backends.gwt;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -64,7 +65,23 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 		catch (Exception ex) {
 			alert(ex.getMessage());
 		}
+		//requestAnimationFrame(this);
+		if (webgl) scheduleRepeating(1000 / 60);
+		else scheduleRepeating(1000 / 30);
 	}
+	
+	//private native void requestAnimationFrame(AnimationTimer callback) /*-{
+	//    var fn = function() { callback.@com.kontechs.kje.backends.gwt.AnimationTimer::run()(); };
+	//    if ($wnd.requestAnimationFrame) {
+	//      $wnd.requestAnimationFrame(fn);
+	//    } else if ($wnd.mozRequestAnimationFrame) {
+	//      $wnd.mozRequestAnimationFrame(fn);
+	//    } else if ($wnd.webkitRequestAnimationFrame) {
+	//      $wnd.webkitRequestAnimationFrame(fn);
+	//    } else {
+	//      $wnd.setTimeout(fn, 1000 / 60);
+	//    }
+	//}-*/;
 	
 	public static native void alert(String msg) /*-{
 	  $wnd.alert(msg);
@@ -137,11 +154,28 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			releaseKey(7, Key.BACKSPACE);
 		}
 	}
+	
+	public double time() {
+		return Duration.currentTimeMillis();
+	}
+	
+	final double updateRate = 1000 / 60;
+	private double accum = 0;
+    private double lastTime;
+    private final double MAX_DELTA = 1000.0;
 
 	public void run() {
+		//requestAnimationFrame(this);
 		try {
-			if (!webgl) Game.getInstance().update();
-			Game.getInstance().update();
+			double now = time();
+			double delta = now - lastTime;
+			if (delta > MAX_DELTA) delta = MAX_DELTA;
+			lastTime = now;
+			accum += delta;
+			while (accum > updateRate) {
+				Game.getInstance().update();
+				accum -= updateRate;
+			}
 			painter.begin();
 			Game.getInstance().render(painter);
 			painter.end();
