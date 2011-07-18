@@ -1,6 +1,8 @@
 package com.kontechs.kje.backends.gwt;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.googlecode.gwtgl.array.ArrayBufferView;
 import com.googlecode.gwtgl.array.Float32Array;
 import com.googlecode.gwtgl.binding.WebGLBuffer;
 import com.googlecode.gwtgl.binding.WebGLCanvas;
@@ -16,16 +18,16 @@ public class WebGLPainter implements Painter {
 	@SuppressWarnings("unused")
 	private int width, height;
 	
-	private WebGLRenderingContext glContext;
+	private WebGLRenderingContext gl;
     private WebGLProgram shaderProgram;
     private int vertexPositionAttribute, texCoordAttribute;
     private WebGLBuffer triangleVertexBuffer, rectVertexBuffer, rectTexCoordBuffer;
     private Float32Array triangleVertices;
-    private Float32Array rectVertices, rectTexCoords;
+    private Float32Array rectVertices, rectTexCoords;//, rectVerticesCache, rectTexCoordsCache;
 	private WebGLUniformLocation textureUniform;
-
-    //private Canvas canvas;
-	//private Context2d context;
+	private final int bufferSize = 100;
+	private int bufferIndex = 0;
+	private Image lastTexture = null;
 	private double tx, ty;
 	
 	public WebGLPainter(FocusPanel panel, int width, int height) {
@@ -33,23 +35,23 @@ public class WebGLPainter implements Painter {
 		this.height = height;
 		
 		final WebGLCanvas webGLCanvas = new WebGLCanvas(width + "px", height + "px");
-		glContext = webGLCanvas.getGlContext();
-		glContext.viewport(0, 0, width, height);
+		gl = webGLCanvas.getGlContext();
+		gl.viewport(0, 0, width, height);
 		panel.add(webGLCanvas);
 		
 		initShaders();
-		glContext.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glContext.clearDepth(1.0f);
+		gl.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		gl.clearDepth(1.0f);
 		//glContext.enable(WebGLRenderingContext.DEPTH_TEST);
 		//glContext.enable(WebGLRenderingContext.TEXTURE_2D);
 		//glContext.depthFunc(WebGLRenderingContext.LEQUAL);
-		glContext.enable(WebGLRenderingContext.BLEND);
-		glContext.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
+		gl.enable(WebGLRenderingContext.BLEND);
+		gl.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 		initBuffers();
 
 		float[] projectionMatrix = ortho(0, width, height, 0, 0.1f, 1000);
-		WebGLUniformLocation uniformLocation = glContext.getUniformLocation(shaderProgram, "projectionMatrix");
-		glContext.uniformMatrix4fv(uniformLocation, false, projectionMatrix);
+		WebGLUniformLocation uniformLocation = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+		gl.uniformMatrix4fv(uniformLocation, false, projectionMatrix);
 		
 		//checkErrors();
 	}
@@ -79,79 +81,64 @@ public class WebGLPainter implements Painter {
 				+ "texCoord = texPosition;"
 				+ "}");
 	
-		shaderProgram = glContext.createProgram();
-		glContext.attachShader(shaderProgram, vertexShader);
-		glContext.attachShader(shaderProgram, fragmentShader);
+		shaderProgram = gl.createProgram();
+		gl.attachShader(shaderProgram, vertexShader);
+		gl.attachShader(shaderProgram, fragmentShader);
 		
-		glContext.bindAttribLocation(shaderProgram, 0, "vertexPosition");
-		glContext.bindAttribLocation(shaderProgram, 1, "texPosition");
+		gl.bindAttribLocation(shaderProgram, 0, "vertexPosition");
+		gl.bindAttribLocation(shaderProgram, 1, "texPosition");
 
-		glContext.linkProgram(shaderProgram);
+		gl.linkProgram(shaderProgram);
 
-		if (!glContext.getProgramParameterb(shaderProgram, WebGLRenderingContext.LINK_STATUS)) throw new RuntimeException("Could not initialise shaders");
+		if (!gl.getProgramParameterb(shaderProgram, WebGLRenderingContext.LINK_STATUS)) throw new RuntimeException("Could not initialise shaders");
 
-		glContext.useProgram(shaderProgram);
+		gl.useProgram(shaderProgram);
 		
-		vertexPositionAttribute = glContext.getAttribLocation(shaderProgram, "vertexPosition");
-		glContext.enableVertexAttribArray(vertexPositionAttribute);
+		vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "vertexPosition");
+		gl.enableVertexAttribArray(vertexPositionAttribute);
 		
-		texCoordAttribute = glContext.getAttribLocation(shaderProgram, "texPosition");
-		glContext.enableVertexAttribArray(texCoordAttribute);
+		texCoordAttribute = gl.getAttribLocation(shaderProgram, "texPosition");
+		gl.enableVertexAttribArray(texCoordAttribute);
 		
-		textureUniform = glContext.getUniformLocation(shaderProgram, "tex");
-		glContext.uniform1i(textureUniform, 0);
+		textureUniform = gl.getUniformLocation(shaderProgram, "tex");
+		gl.uniform1i(textureUniform, 0);
 		
 		//checkErrors();
 	}
 	
 	private WebGLShader getShader(int type, String source) {
-		WebGLShader shader = glContext.createShader(type);
+		WebGLShader shader = gl.createShader(type);
 
-		glContext.shaderSource(shader, source);
-		glContext.compileShader(shader);
+		gl.shaderSource(shader, source);
+		gl.compileShader(shader);
 
-		if (!glContext.getShaderParameterb(shader, WebGLRenderingContext.COMPILE_STATUS)) throw new RuntimeException(glContext.getShaderInfoLog(shader));
+		if (!gl.getShaderParameterb(shader, WebGLRenderingContext.COMPILE_STATUS)) throw new RuntimeException(gl.getShaderInfoLog(shader));
 
 		return shader;
 	}
 	
 	private void initBuffers() {
-		triangleVertexBuffer = glContext.createBuffer();
-		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, triangleVertexBuffer);
-		float[] vertices = new float[]{
-				200.0f,  300.0f,  -5.0f,
-				100.0f, 100.0f,  -5.0f,
-				300.0f, 100.0f,  -5.0f
-		};
-		triangleVertices = Float32Array.create(vertices);
-		glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, triangleVertices, WebGLRenderingContext.STATIC_DRAW);
+		triangleVertexBuffer = gl.createBuffer();
+		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, triangleVertexBuffer);
+		triangleVertices = Float32Array.create(3 * 3);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, triangleVertices, WebGLRenderingContext.STATIC_DRAW);
 		
-		rectVertexBuffer = glContext.createBuffer();
-		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
-		vertices = new float[]{
-				100.0f, 100.0f,  -5.0f,
-				300.0f, 100.0f,  -5.0f,
-				100.0f, 300.0f,  -5.0f,
-				300.0f, 300.0f,  -5.0f
-		};
-		rectVertices = Float32Array.create(vertices);
-		glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectVertices, WebGLRenderingContext.STATIC_DRAW);
-		glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
+		rectVertexBuffer = gl.createBuffer();
+		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
+		rectVertices = Float32Array.create(bufferSize * 3 * 6);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectVertices, WebGLRenderingContext.STATIC_DRAW);
+		gl.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
+		//rectVerticesCache = Float32Array.create(3 * 6);
 		
-		rectTexCoordBuffer = glContext.createBuffer();
-		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
-		vertices = new float[]{
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
-				1.0f, 1.0f,
-		};
-		rectTexCoords = Float32Array.create(vertices);
-		glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoords, WebGLRenderingContext.STATIC_DRAW);
-		glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+		rectTexCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
+		rectTexCoords = Float32Array.create(bufferSize * 2 * 6);
+		gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoords, WebGLRenderingContext.STATIC_DRAW);
+		gl.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+		//rectTexCoordsCache = Float32Array.create(2 * 6);
 		
-		glContext.enableVertexAttribArray(vertexPositionAttribute);
-		glContext.enableVertexAttribArray(texCoordAttribute);
+		gl.enableVertexAttribArray(vertexPositionAttribute);
+		gl.enableVertexAttribArray(texCoordAttribute);
 	}
 	
 	private float[] ortho(float left, float right, float bottom, float top, float zn, float zf) {
@@ -166,62 +153,91 @@ public class WebGLPainter implements Painter {
 		};
 	}
 	
-	/*private void checkErrors() {
-		int error = glContext.getError();
+	@SuppressWarnings("unused")
+	private void checkErrors() {
+		int error = gl.getError();
 		if (error != WebGLRenderingContext.NO_ERROR) {
 			String message = "WebGL Error: " + error;
 			GWT.log(message, null);
 			throw new RuntimeException(message);
 		}
-	}*/
+	}
 	
 	private void setRectVertices(float left, float top, float right, float bottom) {
-		rectVertices.set( 0, left);
-		rectVertices.set( 1, top);
-		rectVertices.set( 3, right);
-		rectVertices.set( 4, top);
-		rectVertices.set( 6, left);
-		rectVertices.set( 7, bottom);
-		rectVertices.set( 9, right);
-		rectVertices.set(10, bottom);
+		int baseIndex = bufferIndex * 3 * 6;
+		rectVertices.set(baseIndex + 0, left  );
+		rectVertices.set(baseIndex + 1, top   );
+		rectVertices.set(baseIndex + 2, -5.0f);
+		rectVertices.set(baseIndex + 3, right );
+		rectVertices.set(baseIndex + 4, top   );
+		rectVertices.set(baseIndex + 5, -5.0f );
+		rectVertices.set(baseIndex + 6, left  );
+		rectVertices.set(baseIndex + 7, bottom);
+		rectVertices.set(baseIndex + 8, -5.0f );
+		rectVertices.set(baseIndex + 9, left  );
+		rectVertices.set(baseIndex +10, bottom);
+		rectVertices.set(baseIndex +11, -5.0f );
+		rectVertices.set(baseIndex +12, right );
+		rectVertices.set(baseIndex +13, top   );
+		rectVertices.set(baseIndex +14, -5.0f );
+		rectVertices.set(baseIndex +15, right );
+		rectVertices.set(baseIndex +16, bottom);
 		
-		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
-		glContext.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectVertices);
-		//glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
+		//gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
+		//gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, bufferIndex * 3 * 6 * 4, rectVerticesCache);
 	}
 	
 	private void setRectTexCoords(float left, float top, float right, float bottom) {
-		rectTexCoords.set( 0, left);
-		rectTexCoords.set( 1, top);
-		rectTexCoords.set( 2, right);
-		rectTexCoords.set( 3, top);
-		rectTexCoords.set( 4, left);
-		rectTexCoords.set( 5, bottom);
-		rectTexCoords.set( 6, right);
-		rectTexCoords.set( 7, bottom);
-		glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
-		glContext.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectTexCoords);
-		//glContext.vertexAttribPointer(texCoordAttribute, 2, WebGLRenderingContext.FLOAT, false, 0, 0);
+		int baseIndex = bufferIndex * 2 * 6;
+		rectTexCoords.set(baseIndex + 0, left  );
+		rectTexCoords.set(baseIndex + 1, top   );
+		rectTexCoords.set(baseIndex + 2, right );
+		rectTexCoords.set(baseIndex + 3, top   );
+		rectTexCoords.set(baseIndex + 4, left  );
+		rectTexCoords.set(baseIndex + 5, bottom);
+		rectTexCoords.set(baseIndex + 6, left  );
+		rectTexCoords.set(baseIndex + 7, bottom);
+		rectTexCoords.set(baseIndex + 8, right );
+		rectTexCoords.set(baseIndex + 9, top   );
+		rectTexCoords.set(baseIndex +10, right );
+		rectTexCoords.set(baseIndex +11, bottom);
+		
+		//gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
+		//gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, bufferIndex * 2 * 6 * 4, rectTexCoordsCache);
 	}
 
 	private void setTexture(WebImage img) {
 		if (img.tex == null) {
-			img.tex = glContext.createTexture();
-			glContext.activeTexture(WebGLRenderingContext.TEXTURE0);
-			glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
+			img.tex = gl.createTexture();
+			gl.activeTexture(WebGLRenderingContext.TEXTURE0);
+			gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
 			//glContext.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
-			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
-			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
-			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, WebGLRenderingContext.CLAMP_TO_EDGE);
-			glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, WebGLRenderingContext.CLAMP_TO_EDGE);
-			glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, img.img.getElement());
-			glContext.uniform1i(textureUniform, 0);
+			gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
+			gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
+			gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, WebGLRenderingContext.CLAMP_TO_EDGE);
+			gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, WebGLRenderingContext.CLAMP_TO_EDGE);
+			gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, img.img.getElement());
+			gl.uniform1i(textureUniform, 0);
 		}
-		else glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
+		else gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, img.tex);
+	}
+	
+	private void drawBuffer() {
+		//java.lang.System.err.println("drawBuffer");
+		setTexture((WebImage)lastTexture);
+		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectVertexBuffer);
+		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectVertices);//.subarray(0, bufferIndex * 6 * 3));
+		gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, rectTexCoordBuffer);
+		gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, rectTexCoords);//.subarray(0, bufferIndex * 6 * 2));
+		gl.drawArrays(WebGLRenderingContext.TRIANGLES, 0, bufferIndex * 6);
+		bufferIndex = 0;
+		//checkErrors();
 	}
 	
 	@Override
 	public void drawImage(Image img, double x, double y) {
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
+		
 		float left = (float)(tx + x);
 		float top = (float)(ty + y);
 		float right = (float)(tx + x + img.getWidth());
@@ -229,13 +245,14 @@ public class WebGLPainter implements Painter {
 		
 		setRectTexCoords(0, 0, 1, 1);
 		setRectVertices(left, top, right, bottom);
-		
-		setTexture((WebImage)img);
-		glContext.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, 4);
+		++bufferIndex;
+		lastTexture = img;
 	}
 	
 	@Override
 	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
+		
 		float left = (float)(tx + dx);
 		float top = (float)(ty + dy);
 		float right = (float)(tx + dx + dw);
@@ -243,9 +260,8 @@ public class WebGLPainter implements Painter {
 		
 		setRectTexCoords((float)(sx / img.getWidth()), (float)(sy / img.getHeight()), (float)((sx + sw) / img.getWidth()), (float)((sy + sh) / img.getHeight()));
 		setRectVertices(left, top, right, bottom);
-		
-		setTexture((WebImage)img);
-		glContext.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, 4);
+		++bufferIndex;
+		lastTexture = img;
 	}
 	
 	@Override
@@ -302,11 +318,14 @@ public class WebGLPainter implements Painter {
 	
 	@Override
 	public void begin() {
-		glContext.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+		gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
 	}
 	
 	@Override
 	public void end() {
-		//glContext.flush();
+		if (bufferIndex > 0) drawBuffer();
+		lastTexture = null;
+		gl.flush();
+		//java.lang.System.err.println("frame end");
 	}
 }
