@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.3.0.m1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.3.0.m1/distro-source/core/src/gwt-module.dtd">
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.ktx.engine" />
+	<inherits name='com.googlecode.gwtgl.binding'/>
+	
+	<!-- Hack to force IE9 to use the "maybe" permutation of Canvas -->
+	<!-- This causes all browsers to download the Canvas code by    -->
+	<!-- preventing the default Canvas.gwt.xml from compiling out   -->
+	<!-- non-canvas code for non-canvas browsers                    -->
+	<replace-with class="com.google.gwt.canvas.client.Canvas.CanvasElementSupportDetectedMaybe">
+		<when-type-is class="com.google.gwt.canvas.client.Canvas.CanvasElementSupportDetector" />
+	</replace-with>
+	<!--<replace-with class="com.google.gwt.media.client.Audio.AudioElementSupportDetectedMaybe">
+		<when-type-is class="com.google.gwt.media.client.Audio.AudioElementSupportDetector" />
+	</replace-with>-->
+  
+	<source path="gwt"/>
+</module>
