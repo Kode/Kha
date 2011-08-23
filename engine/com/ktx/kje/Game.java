@@ -27,4 +27,7 @@ public abstract class Game {
 	
 	public abstract void key(KeyEvent event);
 	public void charKey(char c) { }
+	
+	public void mouseDown(int x, int y) { }
+	public void mouseUp(int x, int y) { }
 }

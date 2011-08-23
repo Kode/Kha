@@ -3,6 +3,8 @@ package com.ktx.kje;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.ktx.kje.xml.Node;
+
 public abstract class Loader {
 	private static Loader instance;
 	protected java.util.Map<String, int[][]> maps = new java.util.HashMap<String, int[][]>();
@@ -10,6 +12,7 @@ public abstract class Loader {
 	protected java.util.Map<String, Image> images = new java.util.HashMap<String, Image>();
 	protected java.util.Map<String, Sound> sounds = new java.util.HashMap<String, Sound>();
 	protected java.util.Map<String, Music> musics = new java.util.HashMap<String, Music>();
+	protected java.util.Map<String, Node> xmls = new java.util.HashMap<String, Node>();
 	protected int loadcount = 1;
 	
 	public static void init(Loader loader) {
@@ -50,6 +53,12 @@ public abstract class Loader {
 		loadcount += names.length;
 	}
 	
+	public void setXmls(String[] names) {
+		xmls.clear();
+		for (int i = 0; i < names.length; ++i) xmls.put(names[i], null);
+		loadcount += names.length;
+	}
+	
 	public int[][] getMap(String name) {
 		return maps.get(name);
 	}
@@ -71,11 +80,17 @@ public abstract class Loader {
 		return sounds.get(name);
 	}
 	
+	public Node getXml(String name) {
+		return xmls.get(name);
+	}
+	
 	public void load() {
 		loadStarted();
 		
 		Set<String> imagenames = images.keySet();
 		for (Iterator<String> it = imagenames.iterator(); it.hasNext(); ) loadImage(it.next());
+		Set<String> xmlnames = xmls.keySet();
+		for (Iterator<String> it = xmlnames.iterator(); it.hasNext(); ) loadXml(it.next());
 		Set<String> musicnames = musics.keySet();
 		for (Iterator<String> it = musicnames.iterator(); it.hasNext(); ) loadMusic(it.next());
 		Set<String> soundnames = sounds.keySet();
@@ -97,6 +112,7 @@ public abstract class Loader {
 	protected abstract void loadTileset(String name);
 	protected abstract void loadSound(String filename);
 	protected abstract void loadMusic(String filename);
+	protected abstract void loadXml(String filename);
 	
 	public abstract Font loadFont(String name, int style, int size);
 }

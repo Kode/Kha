@@ -26,7 +26,10 @@ public class JavaLoader extends Loader {
 	@Override
 	public void loadImage(String name) {
 		try {
-			images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".png"))));
+			if (new File("../../data/" + name + ".png").exists())
+				images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".png"))));
+			else
+				images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".jpg"))));
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -158,5 +161,10 @@ public class JavaLoader extends Loader {
 	@Override
 	public Font loadFont(String name, int style, int size) {
 		return new JavaFont(name, style, size);
+	}
+	
+	@Override
+	public void loadXml(String name) {
+		xmls.put(name, new JavaNode("../../data/" + name + ".icml"));
 	}
 }
