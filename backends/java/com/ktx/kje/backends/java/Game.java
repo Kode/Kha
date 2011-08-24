@@ -328,6 +328,6 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
+		if (game != null) game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 	}
 }
