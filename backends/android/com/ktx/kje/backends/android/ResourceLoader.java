@@ -115,4 +115,10 @@ public class ResourceLoader extends Loader {
 	public void saveHighscore(Score score) {
 		
 	}
+
+	@Override
+	protected void loadXml(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
 }

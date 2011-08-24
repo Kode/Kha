@@ -164,4 +164,10 @@ public class WebLoader extends Loader {
 			}
 		});
 	}
+
+	@Override
+	protected void loadXml(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
 }

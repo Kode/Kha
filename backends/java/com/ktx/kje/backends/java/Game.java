@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.lang.reflect.Constructor;
 
@@ -17,7 +18,7 @@ import com.ktx.kje.GameInfo;
 import com.ktx.kje.Key;
 import com.ktx.kje.Loader;
 
-public class Game extends JFrame implements KeyListener, MouseListener {
+public class Game extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 600;
@@ -61,6 +62,7 @@ public class Game extends JFrame implements KeyListener, MouseListener {
 		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
 	
 	private void createVSyncedDoubleBuffer() {
@@ -317,5 +319,15 @@ public class Game extends JFrame implements KeyListener, MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		game.mouseUp(arg0.getPoint().x, arg0.getPoint().y);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 	}
 }

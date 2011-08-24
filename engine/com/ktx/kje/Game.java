@@ -30,4 +30,5 @@ public abstract class Game {
 	
 	public void mouseDown(int x, int y) { }
 	public void mouseUp(int x, int y) { }
+	public void mouseMove(int x, int y) { }
 }

@@ -172,7 +172,7 @@ public class Scene {
 
 		// paints the element based on the z-order
 		// 0 first ... 3 last
-		for (int z_order = 0; z_order < 4; ++z_order){
+		for (int z_order = 0; z_order < 10; ++z_order){
 			int i = 0;
 			for (; i < sprites.size(); ++i) {
 				if (sprites.get(i).x  + sprites.get(i).width > realcamx) break;
