@@ -26,10 +26,7 @@ public class JavaLoader extends Loader {
 	@Override
 	public void loadImage(String name) {
 		try {
-			if (new File("../../data/" + name + ".png").exists())
-				images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".png"))));
-			else
-				images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name + ".jpg"))));
+			images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name))));
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -165,6 +162,6 @@ public class JavaLoader extends Loader {
 	
 	@Override
 	public void loadXml(String name) {
-		xmls.put(name, new JavaNode("../../data/" + name + ".icml"));
+		xmls.put(name, new JavaNode("../../data/" + name));
 	}
 }

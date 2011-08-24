@@ -23,4 +23,10 @@ public class BitmapImage implements Image {
 	public int getHeight() {
 		return bitmap.getHeight();
 	}
+
+	@Override
+	public boolean isAlpha(int x, int y) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -1,18 +1,33 @@
 package com.ktx.kje.backends.gwt;
 
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.dom.client.ImageElement;
 import com.googlecode.gwtgl.binding.WebGLTexture;
 import com.ktx.kje.Image;
 
 public class WebImage implements Image {
 	private ImageElement ie;
+	private ImageData data;
 	private int width, height;
 	private String name;
 	
 	public com.google.gwt.user.client.ui.Image img;
 	public WebGLTexture tex;
 	
+	private static Context2d context;
+	
+	static {
+		Canvas canvasTmp = Canvas.createIfSupported();
+	    context = canvasTmp.getContext2d();
+	    canvasTmp.setCoordinateSpaceHeight(2048);
+	    canvasTmp.setCoordinateSpaceWidth(2048);
+	}
+	
 	//ie.getWidth returns 0 in IE9
+	@SuppressWarnings("unused")
 	private void IE9Hack() {
 		if (width != 0 && height != 0) return;
 		
@@ -135,7 +150,13 @@ public class WebImage implements Image {
 		this.ie = (ImageElement) img.getElement().cast();
 		width = ie.getWidth();
 		height = ie.getHeight();
-		IE9Hack();
+		
+		context.setStrokeStyle(CssColor.make(255, 255, 0));
+		context.setFillStyle(CssColor.make(255, 255, 0));
+		context.fillRect(0, 0, width, height);
+		context.drawImage(ie, 0, 0, width, height, 0, 0, width, height);
+		data = context.getImageData(0, 0, width, height);
+		//IE9Hack();
 	}
 	
 	public ImageElement getIE() {
@@ -154,6 +175,6 @@ public class WebImage implements Image {
 
 	@Override
 	public boolean isAlpha(int x, int y) {
-		return false;
+		return !(data.getRedAt(x, y) == 255 && data.getGreenAt(x, y) == 255);
 	}
 }

@@ -9,6 +9,12 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -32,10 +38,10 @@ public class Game_gwt implements EntryPoint {
 	}
 }
 
-class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler {
+class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler, MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 	private Painter painter;
-	private static final int WIDTH = 640;
-	private static final int HEIGHT = 550;
+	private static final int WIDTH = 1000;
+	private static final int HEIGHT = 600;
 	private boolean[] keyreleased;
 	public boolean webgl = false;
 	
@@ -46,16 +52,19 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			
 			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
 			RootPanel.get().add(panel);
-			try {
-				painter = new WebGLPainter(panel, WIDTH, HEIGHT);
-				webgl = true;
-			}
-			catch (Exception ex) {
+			//try {
+			//	painter = new WebGLPainter(panel, WIDTH, HEIGHT);
+			//	webgl = true;
+			//}
+			//catch (Exception ex) {
 				painter = new CanvasPainter(panel, WIDTH, HEIGHT);
-			}
+			//}
 			panel.addKeyDownHandler(this);
 			panel.addKeyUpHandler(this);
 			panel.addKeyPressHandler(this);
+			panel.addMouseDownHandler(this);
+			panel.addMouseUpHandler(this);
+			panel.addMouseMoveHandler(this);
 			panel.setFocus(true);
 			
 			com.ktx.kje.System.init(new WebSystem(WIDTH, HEIGHT));
@@ -188,5 +197,20 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
 		Game.getInstance().charKey(event.getCharCode());
+	}
+
+	@Override
+	public void onMouseUp(MouseUpEvent event) {
+		Game.getInstance().mouseUp(event.getX(), event.getY());
+	}
+
+	@Override
+	public void onMouseDown(MouseDownEvent event) {
+		Game.getInstance().mouseDown(event.getX(), event.getY());
+	}
+
+	@Override
+	public void onMouseMove(MouseMoveEvent event) {
+		Game.getInstance().mouseMove(event.getX(), event.getY());
 	}
 }

@@ -4,6 +4,7 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.ktx.engine" />
 	<inherits name='com.googlecode.gwtgl.binding'/>
+	<inherits name="com.google.gwt.xml.XML" />
 	
 	<!-- Hack to force IE9 to use the "maybe" permutation of Canvas -->
 	<!-- This causes all browsers to download the Canvas code by    -->

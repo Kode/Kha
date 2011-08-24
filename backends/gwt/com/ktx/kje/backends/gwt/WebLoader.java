@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.xml.client.XMLParser;
 import com.ktx.kje.Font;
 import com.ktx.kje.HighscoreList;
 import com.ktx.kje.Loader;
@@ -84,7 +89,7 @@ public class WebLoader extends Loader {
 		
 		public ImageLoader(String name) {
 			this.name = name;
-			img = new com.google.gwt.user.client.ui.Image(name + ".png");
+			img = new com.google.gwt.user.client.ui.Image(name);
 			img.addLoadHandler(this);
 			img.setVisible(false);
 		    RootPanel.get().add(img); // image must be on page to fire load
@@ -95,6 +100,32 @@ public class WebLoader extends Loader {
 			RootPanel.get().remove(img);
 			images.put(name, new WebImage(name, img));
 			fileLoaded();
+		}
+	}
+	
+	class XmlLoader implements RequestCallback {
+		private String name;
+		
+		public XmlLoader(String name) {
+			this.name = name;
+			RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, name);
+			try {
+				requestBuilder.sendRequest(null, this);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onResponseReceived(Request request, Response response) {
+			xmls.put(name, new WebXml(XMLParser.parse(response.getText()).getDocumentElement()));
+			fileLoaded();
+		}
+
+		@Override
+		public void onError(Request request, Throwable exception) {
+			System.err.println("Error loading " + name + ".");
 		}
 	}
 	
@@ -166,8 +197,7 @@ public class WebLoader extends Loader {
 	}
 
 	@Override
-	protected void loadXml(String filename) {
-		// TODO Auto-generated method stub
-		
+	protected void loadXml(String name) {
+		new XmlLoader(name);
 	}
 }

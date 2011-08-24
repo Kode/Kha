@@ -13,7 +13,7 @@ public abstract class Loader {
 	protected java.util.Map<String, Sound> sounds = new java.util.HashMap<String, Sound>();
 	protected java.util.Map<String, Music> musics = new java.util.HashMap<String, Music>();
 	protected java.util.Map<String, Node> xmls = new java.util.HashMap<String, Node>();
-	protected int loadcount = 1;
+	protected int loadcount = 0;
 	
 	public static void init(Loader loader) {
 		instance = loader;
@@ -99,7 +99,7 @@ public abstract class Loader {
 		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) loadMap(it.next());
 		Set<String> tilesetnames = tilesets.keySet();
 		for (Iterator<String> it = tilesetnames.iterator(); it.hasNext(); ) loadTileset(it.next());
-		loadHighscore();
+		//loadHighscore();
 	}
 	
 	protected void loadStarted() { }
