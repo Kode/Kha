@@ -151,4 +151,9 @@ public class WebImage implements Image {
 	public int getHeight() {
 		return height;
 	}
+
+	@Override
+	public boolean isAlpha(int x, int y) {
+		return false;
+	}
 }
