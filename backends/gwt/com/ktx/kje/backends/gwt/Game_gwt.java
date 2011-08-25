@@ -33,6 +33,7 @@ public class Game_gwt implements EntryPoint {
 			Loader.getInstance().load();
 		}
 		catch (Exception ex) {
+			ex.printStackTrace();
 			AnimationTimer.alert(ex.getMessage());
 		}
 	}

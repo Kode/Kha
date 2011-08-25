@@ -131,7 +131,7 @@ public class WebLoader extends Loader {
 	
 	private void fileLoaded() {
 		--loadcount;
-		button.setText("Loading: " + (int)((filecount - loadcount) / filecount * 100) + "%");
+		button.setText("Loading: " + (int)((filecount - loadcount) * 100 / filecount) + "%");
 		if (loadcount <= 0) {
 			loadingFinished();
 		}
