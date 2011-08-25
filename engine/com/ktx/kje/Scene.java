@@ -188,7 +188,7 @@ public class Scene {
 		}
 	}
 	
-	public int camx, camy = 25;
+	public int camx, camy;
 	
 	public boolean isCooliderDebugMode() {
 		return cooliderDebugMode;
