@@ -23,7 +23,6 @@ public class GameThread extends Thread {
 
 	@Override
 	public void run() {
-		com.ktx.kje.System.init(new AndroidSystem());
 		Loader.init(new ResourceLoader(context));
 		game = GameInfo.createGame("level1", "tiles");
 		Loader.getInstance().load();

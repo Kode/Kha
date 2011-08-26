@@ -35,7 +35,7 @@ public class _StartScreen extends JFrame implements MouseListener,MouseMotionLis
 	private boolean isOnHighscore = false;
 	
 	static{
-		com.ktx.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
+		//com.ktx.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
 		Loader.init(new JavaLoader());
 		//Saver.init(new JavaSaver());
 		start_screen = Loader.getInstance().getImage("startscreen");

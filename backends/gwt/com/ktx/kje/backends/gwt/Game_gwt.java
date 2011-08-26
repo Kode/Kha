@@ -41,25 +41,28 @@ public class Game_gwt implements EntryPoint {
 
 class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler, MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 	private Painter painter;
-	private static final int WIDTH = 1000;
-	private static final int HEIGHT = 600;
+	private static int WIDTH;
+	private static int HEIGHT;
 	private boolean[] keyreleased;
 	public boolean webgl = false;
 	
 	AnimationTimer() {
 		try {
+			WIDTH = Game.getInstance().getWidth();
+			HEIGHT = Game.getInstance().getHeight();
+			
 			keyreleased = new boolean[256];
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 			
 			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
 			RootPanel.get().add(panel);
-			//try {
-			//	painter = new WebGLPainter(panel, WIDTH, HEIGHT);
-			//	webgl = true;
-			//}
-			//catch (Exception ex) {
+			try {
+				painter = new WebGLPainter(panel, WIDTH, HEIGHT);
+				webgl = true;
+			}
+			catch (Exception ex) {
 				painter = new CanvasPainter(panel, WIDTH, HEIGHT);
-			//}
+			}
 			panel.addKeyDownHandler(this);
 			panel.addKeyUpHandler(this);
 			panel.addKeyPressHandler(this);
@@ -67,8 +70,6 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			panel.addMouseUpHandler(this);
 			panel.addMouseMoveHandler(this);
 			panel.setFocus(true);
-			
-			com.ktx.kje.System.init(new WebSystem(WIDTH, HEIGHT));
 			
 			Game.getInstance().postInit();
 		}

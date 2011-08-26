@@ -20,8 +20,8 @@ import com.ktx.kje.Loader;
 
 public class Game extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
-	private static final int WIDTH = 1000;
-	private static final int HEIGHT = 600;
+	private static int WIDTH;
+	private static int HEIGHT;
 	private boolean vsynced = false;
 	private com.ktx.kje.Game game;
 	private boolean[] keyreleased;
@@ -41,6 +41,9 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		//TODO
 		//StartScreen start_screen = new StartScreen();
 		//start_screen.showStartScreen();
+		
+		Loader.init(new JavaLoader());
+		createGame();
 		
 		setupWindow();
 		createVSyncedDoubleBuffer();
@@ -110,9 +113,6 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	}
  
 	private void mainLoop() {
-		com.ktx.kje.System.init(new JavaSystem(WIDTH, HEIGHT));
-		Loader.init(new JavaLoader());
-		createGame();
 		Loader.getInstance().load();
 		game.postInit();
 		long lasttime = System.nanoTime();
@@ -143,6 +143,8 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	
 	private void createGame() {
 		game = GameInfo.createGame(lvl_name, tilesPropertyName);
+		WIDTH = game.getWidth();
+		HEIGHT = game.getHeight();
 	}
 	
 	private void resetGame() {

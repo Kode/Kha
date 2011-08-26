@@ -93,11 +93,11 @@ public class Scene {
 		Collections.sort(sprites, comparator);
 		int i = 0;
 		for (; i < sprites.size(); ++i) {
-			if (sprites.get(i).x + sprites.get(i).width> camx - System.getInstance().getXRes() / 2) break;
+			if (sprites.get(i).x + sprites.get(i).width> camx - Game.getInstance().getWidth() / 2) break;
 		}
 		for (; i < sprites.size(); ++i) {
 			Sprite sprite = sprites.get(i);
-			if (sprite.x > camx + System.getInstance().getXRes() / 2) break;
+			if (sprite.x > camx + Game.getInstance().getWidth() / 2) break;
 			sprite.update();
 			move(sprite);
 		}
@@ -106,10 +106,10 @@ public class Scene {
 		i = 0;
 		
 		for (; i < enemies.size(); ++i) {
-			if (enemies.get(i).x > camx - System.getInstance().getXRes() / 2) break;
+			if (enemies.get(i).x > camx - Game.getInstance().getWidth() / 2) break;
 		}
 		for (; i < enemies.size(); ++i) {
-			if (enemies.get(i).x > camx + System.getInstance().getXRes() / 2) break;
+			if (enemies.get(i).x > camx + Game.getInstance().getWidth() / 2) break;
 			Rectangle rect1 = enemies.get(i).collisionRect();
 			for (int i2 = 0; i2 < heroes.size(); ++i2) {
 				Rectangle rect2 = heroes.get(i2).collisionRect();
@@ -145,12 +145,12 @@ public class Scene {
 	public void render(Painter painter) {
 		painter.translate(0, 0);
 		painter.setColor(255, 255, 255);
-		painter.fillRect(0, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		painter.fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		
 		int realcamx = 0;
 		if (tilemap_foreground != null) {
-			realcamx = Math.min(Math.max(0, camx - System.getInstance().getXRes() / 2), tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH - System.getInstance().getXRes());
-			if (getWidth() < System.getInstance().getXRes()) realcamx = 0;
+			realcamx = Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH - Game.getInstance().getWidth());
+			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
 		}
 		//copy value of current realcamx to be able to translate the tilemap but still draw the tilemap at the right position
 		//int realcamxChange = realcamx;
@@ -159,16 +159,16 @@ public class Scene {
 		 * @author Robert P.
 		 */
 		painter.translate((int)-realcamx/4, camy);
-		if (tilemap_background != null) tilemap_background.render(painter, (int)realcamx/4,0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		if (tilemap_background != null) tilemap_background.render(painter, (int)realcamx/4,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		painter.translate((int)-realcamx/3, camy);
-		if (tilemap_background2 != null) tilemap_background2.render(painter, (int)realcamx/3,0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		if (tilemap_background2 != null) tilemap_background2.render(painter, (int)realcamx/3,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		painter.translate((int)-realcamx/2, camy);
-		if (tilemap_background3 != null) tilemap_background3.render(painter, (int)realcamx/2,0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		if (tilemap_background3 != null) tilemap_background3.render(painter, (int)realcamx/2,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		
 		painter.translate(-realcamx, camy);
 		
-		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
-		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, System.getInstance().getXRes(), System.getInstance().getYRes());
+		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 
 		// paints the element based on the z-order
 		// 0 first ... 3 last
@@ -178,7 +178,7 @@ public class Scene {
 				if (sprites.get(i).x  + sprites.get(i).width > realcamx) break;
 			}
 			for (; i < sprites.size(); ++i) {
-				if (sprites.get(i).x > realcamx + System.getInstance().getXRes()){
+				if (sprites.get(i).x > realcamx + Game.getInstance().getWidth()){
 					break;
 				}
 				if (sprites.get(i).getZ_order() == z_order){

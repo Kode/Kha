@@ -3,15 +3,26 @@ package com.ktx.kje;
 public abstract class Game {
 	private static Game instance;
 	private Scene scene;
+	private int width, height;
 	
 	public static Game getInstance() {
 		return instance;
 	}
 	
-	public Game(String lvl_name, String tilesPropertyName) {
+	public Game(String lvl_name, String tilesPropertyName, int width, int height) {
 		instance = this;
+		this.width = width;
+		this.height = height;
 		scene = new Scene();
 		preInit(lvl_name, tilesPropertyName);
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 	
 	public abstract void preInit(String lvl_name, String tilesPropertyName); //Used to configure the Loader
