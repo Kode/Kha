@@ -1,5 +1,6 @@
 package com.ktx.kje.backends.java;
 
+import java.awt.Cursor;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,6 +30,7 @@ public class JavaLoader extends Loader {
 			images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name))));
 		}
 		catch (IOException e) {
+			System.err.println("Failed loading " + name);
 			e.printStackTrace();
 		}
 	}
@@ -163,5 +165,15 @@ public class JavaLoader extends Loader {
 	@Override
 	public void loadXml(String name) {
 		xmls.put(name, new JavaNode("../../data/" + name));
+	}
+
+	@Override
+	public void setNormalCursor() {
+		Game.getInstance().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	}
+
+	@Override
+	public void setHandCursor() {
+		Game.getInstance().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 }

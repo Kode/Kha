@@ -115,4 +115,7 @@ public abstract class Loader {
 	protected abstract void loadXml(String filename);
 	
 	public abstract Font loadFont(String name, int style, int size);
+	
+	public abstract void setNormalCursor();
+	public abstract void setHandCursor();
 }

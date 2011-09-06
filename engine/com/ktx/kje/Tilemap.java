@@ -8,7 +8,7 @@ public class Tilemap {
 	private TileProperty[] properties;
 
 	public Tilemap(int[][] map, TileProperty[] properties) {
-		this("tiles", 32, 32, map, properties);
+		this("tiles.png", 32, 32, map, properties);
 	}
 	
 	public Tilemap(String imagename, int tileWidth, int tileHeight, int[][] map, TileProperty[] properties) {
