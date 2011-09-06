@@ -24,10 +24,12 @@ import com.ktx.kje.Score;
 import com.ktx.kje.TileProperty;
 
 public class JavaLoader extends Loader {
+	private final static String base = "../../data/";
+	
 	@Override
 	public void loadImage(String name) {
 		try {
-			images.put(name, new JavaImage(ImageIO.read(new File("../../data/" + name))));
+			images.put(name, new JavaImage(ImageIO.read(new File(base + name))));
 		}
 		catch (IOException e) {
 			System.err.println("Failed loading " + name);
@@ -37,13 +39,13 @@ public class JavaLoader extends Loader {
 	
 	@Override
 	public void loadSound(String name) {
-		sounds.put(name, new JavaSound("../../data/" + name + ".wav"));
+		sounds.put(name, new JavaSound(base + name + ".wav"));
 	}
 	
 	@Override
 	public void loadMusic(String name) {
 		try {
-			musics.put(name, new JavaMusic(new File("../../data/" + name + ".wav")));
+			musics.put(name, new JavaMusic(new File(base + name + ".wav")));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -54,7 +56,7 @@ public class JavaLoader extends Loader {
 	public void loadMap(String lvl_name) {
 		try {
 			int[][] map;
-			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/" + lvl_name)));
+			DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(base + lvl_name)));
 			int levelWidth = stream.readInt();
 			int levelHeight = stream.readInt();
 			map = new int[levelWidth][levelHeight];
@@ -76,7 +78,7 @@ public class JavaLoader extends Loader {
 	public void loadHighscore(){
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream("../../data/highscore.score")));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(base + "highscore.score")));
 			ArrayList<Score> scores = new ArrayList<Score>();
 			for (;;) {
 				String name = reader.readLine();
@@ -103,7 +105,7 @@ public class JavaLoader extends Loader {
 	public void saveHighscore(Score unusedScore) {
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("../../data/highscore.score")));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(base + "highscore.score")));
 			for (int i = 0; i < HighscoreList.getInstance().getScores().size(); ++i) {
 				Score score = HighscoreList.getInstance().getScores().get(i);
 				writer.write(score.getName() + "\n");
@@ -129,7 +131,7 @@ public class JavaLoader extends Loader {
 		TileProperty[] array_elements = null;
 		DataInputStream stream_elements = null;
 		try {
-			stream_elements = new DataInputStream(new BufferedInputStream(new FileInputStream("../../data/" + name + ".settings")));
+			stream_elements = new DataInputStream(new BufferedInputStream(new FileInputStream(base + name + ".settings")));
 
 			array_elements = new TileProperty[stream_elements.readInt()];
 			for(int i = 0;i<array_elements.length;i++){
@@ -164,7 +166,7 @@ public class JavaLoader extends Loader {
 	
 	@Override
 	public void loadXml(String name) {
-		xmls.put(name, new JavaNode("../../data/" + name));
+		xmls.put(name, new JavaNode(base + name));
 	}
 
 	@Override
