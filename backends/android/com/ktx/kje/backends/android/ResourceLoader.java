@@ -118,7 +118,16 @@ public class ResourceLoader extends Loader {
 
 	@Override
 	protected void loadXml(String filename) {
-		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNormalCursor() {
+		
+	}
+
+	@Override
+	public void setHandCursor() {
 		
 	}
 }

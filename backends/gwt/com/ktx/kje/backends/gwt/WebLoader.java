@@ -9,6 +9,7 @@ import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -199,5 +200,15 @@ public class WebLoader extends Loader {
 	@Override
 	protected void loadXml(String name) {
 		new XmlLoader(name);
+	}
+
+	@Override
+	public void setNormalCursor() {
+		DOM.setStyleAttribute(RootPanel.get().getElement(), "cursor", "default");
+	}
+
+	@Override
+	public void setHandCursor() {
+		DOM.setStyleAttribute(RootPanel.get().getElement(), "cursor", "pointer");
 	}
 }
