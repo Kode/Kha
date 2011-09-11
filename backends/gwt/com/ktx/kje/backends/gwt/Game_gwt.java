@@ -15,9 +15,14 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.xml.client.XMLParser;
 import com.ktx.kje.Game;
 import com.ktx.kje.GameInfo;
 import com.ktx.kje.Key;
@@ -26,16 +31,39 @@ import com.ktx.kje.Loader;
 import com.ktx.kje.Painter;
 
 public class Game_gwt implements EntryPoint {
+	class XmlLoader implements RequestCallback {
+		public XmlLoader() {
+			RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, "images.xml");
+			try {
+				requestBuilder.sendRequest(null, this);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onResponseReceived(Request request, Response response) {
+			WebImage.init(new WebXml(XMLParser.parse(response.getText()).getDocumentElement()));
+			try {
+				Loader.init(new WebLoader());
+				GameInfo.createGame("level1", "tiles");
+				Loader.getInstance().load();
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				AnimationTimer.alert(ex.getMessage());
+			}
+		}
+
+		@Override
+		public void onError(Request request, Throwable exception) {
+			System.err.println("Error loading images.xml.");
+		}
+	}
+	
 	public void onModuleLoad() {
-		try {
-			Loader.init(new WebLoader());
-			GameInfo.createGame("level1", "tiles");
-			Loader.getInstance().load();
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-			AnimationTimer.alert(ex.getMessage());
-		}
+		new XmlLoader();
 	}
 }
 

@@ -33,7 +33,7 @@ public class WebLoader extends Loader {
 	public WebLoader() {
 		service = GWT.create(LevelService.class);
 	}
-
+	
 	@Override
 	protected void loadSound(String name) {
 		sounds.put(name, new WebSound(name));
