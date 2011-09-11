@@ -1,3 +1,5 @@
+package com.ktx.kje.editor;
+
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;

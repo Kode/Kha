@@ -1,18 +1,20 @@
+package com.ktx.kje.editor;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-public class Saver implements ActionListener {
+public class JavaSaver implements ActionListener {
 	private JFrame parent;
 
-	public Saver(JFrame parent) {
+	public JavaSaver(JFrame parent) {
 		this.parent = parent;
 	}
 
@@ -22,8 +24,8 @@ public class Saver implements ActionListener {
 			try {
 				File file = chooser.getSelectedFile();
 				String filename = file.getAbsolutePath();
-				DataOutputStream stream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
-				Level.getInstance().save(stream);
+				PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filename)));
+				Level.getInstance().saveJava(stream);
 			}
 			catch (IOException ex) {
 				ex.printStackTrace();
