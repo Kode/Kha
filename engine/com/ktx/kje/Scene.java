@@ -181,7 +181,7 @@ public class Scene {
 				if (sprites.get(i).x > realcamx + Game.getInstance().getWidth()){
 					break;
 				}
-				if (sprites.get(i).getZ_order() == z_order){
+				if (i < sprites.size() && sprites.get(i).getZ_order() == z_order){
 					sprites.get(i).render(painter);
 				}
 			}
