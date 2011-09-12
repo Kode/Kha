@@ -1,18 +1,17 @@
 package com.ktx.kje.backends.gwt;
 
-import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.ktx.kje.Font;
 import com.ktx.kje.Image;
 import com.ktx.kje.Painter;
 
 public class CanvasPainter implements Painter {
-	@SuppressWarnings("unused")
 	private int width, height;
 
-    private Canvas canvas;
+    private Canvas2 canvas;
     private Context2d context;
 	private double tx, ty;
 	
@@ -20,7 +19,9 @@ public class CanvasPainter implements Painter {
 		this.width = width;
 		this.height = height;
 
-		canvas = Canvas.createIfSupported();
+		canvas = Canvas2.createIfSupported();
+		String agent = getUserAgent().toLowerCase();
+		if ((agent.contains("msie 8") || agent.contains("msie 7") || agent.contains("msie 6")) && !agent.contains("opera")) initCanvas(canvas.getCanvasElement());
 		canvas.setWidth(width + "px");
 		canvas.setHeight(height + "px");
 		canvas.setCoordinateSpaceWidth(width);
@@ -29,6 +30,14 @@ public class CanvasPainter implements Painter {
 		
 		panel.add(canvas);
 	}
+	
+	public static native void initCanvas(CanvasElement canvas) /*-{
+		$wnd.G_vmlCanvasManager.initElement(canvas);
+	}-*/;
+	
+	public static native String getUserAgent() /*-{
+		return navigator.userAgent.toLowerCase();
+	}-*/;
 	
 	@Override
 	public void drawImage(Image img, double x, double y) {
