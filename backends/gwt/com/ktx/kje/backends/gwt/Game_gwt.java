@@ -21,6 +21,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.xml.client.XMLParser;
 import com.ktx.kje.Game;
@@ -63,8 +64,21 @@ public class Game_gwt implements EntryPoint {
 	}
 	
 	public void onModuleLoad() {
-		new XmlLoader();
+		if (isOldIE()) {
+			Label label = new Label("Ihr Browser (eine ältere Version des Internet Explorers) wird leider noch nicht unterstützt. Bitte besuchen Sie uns Ende der Woche wieder.");
+			RootPanel.get("gameblock").add(label);
+		}
+		else new XmlLoader();
 	}
+	
+	public static boolean isOldIE() {
+		String agent = getUserAgent();
+		return (agent.contains("msie 8") || agent.contains("msie 7") || agent.contains("msie 6")) && !agent.contains("opera");
+	}
+	
+	public static native String getUserAgent() /*-{
+		return navigator.userAgent.toLowerCase();
+	}-*/;
 }
 
 class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyPressHandler, MouseDownHandler, MouseUpHandler, MouseMoveHandler {
@@ -83,7 +97,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 			
 			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
-			RootPanel.get().add(panel);
+			RootPanel.get("gameblock").add(panel);
 			//try {
 			//	painter = new WebGLPainter(panel, WIDTH, HEIGHT);
 			//	webgl = true;
