@@ -22,18 +22,24 @@ public class IE6Painter implements Painter {
 	
 	@Override
 	public void drawImage(Image img, double x, double y) {
-		WebImage image = (WebImage)img;
-		image.img.setVisible(true);
-		panel.add(image.img, (int)(tx + x), (int)(ty + y));
-		images.add(image.img);
+		com.google.gwt.user.client.ui.Image image = ((WebImage)img).img;
+		if (images.contains(image)) image = new com.google.gwt.user.client.ui.Image(image.getUrl());
+		image.setVisible(true);
+		image.setWidth(Integer.toString(img.getWidth()));
+		image.setHeight(Integer.toString(img.getHeight()));
+		panel.add(image, (int)(tx + x), (int)(ty + y));
+		images.add(image);
 	}
 
 	@Override
 	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
-		WebImage image = (WebImage)img;
-		image.img.setVisible(true);
-		panel.add(image.img, (int)(tx + dx), (int)(ty + dy));
-		images.add(image.img);
+		com.google.gwt.user.client.ui.Image image = ((WebImage)img).img;
+		if (images.contains(image)) image = new com.google.gwt.user.client.ui.Image(image.getUrl());
+		image.setVisible(true);
+		image.setWidth(Integer.toString((int)dw));
+		image.setHeight(Integer.toString((int)dh));
+		panel.add(image, (int)(tx + dx), (int)(ty + dy));
+		images.add(image);
 	}
 
 	@Override
