@@ -82,6 +82,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 	private static int HEIGHT;
 	private boolean[] keyreleased;
 	public boolean webgl = false;
+	private FocusPanel panel;
 	
 	AnimationTimer() {
 		try {
@@ -91,7 +92,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			keyreleased = new boolean[256];
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 			
-			FocusPanel panel = new FocusPanel(); //Canvas can not receive key events in IE9
+			panel = new FocusPanel(); //Canvas can not receive key events in IE9
 			RootPanel.get("gameblock").add(panel);
 			//try {
 			//	painter = new WebGLPainter(panel, WIDTH, HEIGHT);
@@ -241,16 +242,16 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 
 	@Override
 	public void onMouseUp(MouseUpEvent event) {
-		Game.getInstance().mouseUp(event.getX(), event.getY());
+		Game.getInstance().mouseUp(event.getClientX() - panel.getWidget().getAbsoluteLeft(), event.getClientY() - panel.getWidget().getAbsoluteTop());
 	}
 
 	@Override
 	public void onMouseDown(MouseDownEvent event) {
-		Game.getInstance().mouseDown(event.getX(), event.getY());
+		Game.getInstance().mouseDown(event.getClientX() - panel.getWidget().getAbsoluteLeft(), event.getClientY() - panel.getWidget().getAbsoluteTop());
 	}
 
 	@Override
 	public void onMouseMove(MouseMoveEvent event) {
-		Game.getInstance().mouseMove(event.getX(), event.getY());
+		Game.getInstance().mouseMove(event.getClientX() - panel.getWidget().getAbsoluteLeft(), event.getClientY() - panel.getWidget().getAbsoluteTop());
 	}
 }
