@@ -21,7 +21,6 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.xml.client.XMLParser;
 import com.ktx.kje.Game;
@@ -64,11 +63,7 @@ public class Game_gwt implements EntryPoint {
 	}
 	
 	public void onModuleLoad() {
-		if (isOldIE()) {
-			Label label = new Label("Ihr Browser (eine ältere Version des Internet Explorers) wird leider noch nicht unterstützt. Bitte besuchen Sie uns Ende der Woche wieder.");
-			RootPanel.get("gameblock").add(label);
-		}
-		else new XmlLoader();
+		new XmlLoader();
 	}
 	
 	public static boolean isOldIE() {
@@ -103,7 +98,8 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			//	webgl = true;
 			//}
 			//catch (Exception ex) {
-				painter = new CanvasPainter(panel, WIDTH, HEIGHT);
+			if (Game_gwt.isOldIE()) painter = new IE6Painter(panel, WIDTH, HEIGHT);
+			else painter = new CanvasPainter(panel, WIDTH, HEIGHT);
 			//}
 			panel.addKeyDownHandler(this);
 			panel.addKeyUpHandler(this);
@@ -136,8 +132,8 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 	//    }
 	//}-*/;
 	
-	public static native void alert(String msg) /*-{
-	  $wnd.alert(msg);
+	public static native void alert(String message) /*-{
+	  $wnd.alert(message);
 	}-*/;
 	
 	private void pressKey(int keycode, Key key) {
