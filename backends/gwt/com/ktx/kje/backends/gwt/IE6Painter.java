@@ -3,6 +3,7 @@ package com.ktx.kje.backends.gwt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.ktx.kje.Font;
@@ -27,6 +28,7 @@ public class IE6Painter implements Painter {
 		image.setVisible(true);
 		image.setWidth(Integer.toString(img.getWidth()));
 		image.setHeight(Integer.toString(img.getHeight()));
+		if (Game_gwt.isIE6()) addAlpha(image.getElement(), image.getUrl());
 		panel.add(image, (int)(tx + x), (int)(ty + y));
 		images.add(image);
 	}
@@ -38,9 +40,14 @@ public class IE6Painter implements Painter {
 		image.setVisible(true);
 		image.setWidth(Integer.toString((int)dw));
 		image.setHeight(Integer.toString((int)dh));
+		if (Game_gwt.isIE6()) addAlpha(image.getElement(), image.getUrl());
 		panel.add(image, (int)(tx + dx), (int)(ty + dy));
 		images.add(image);
 	}
+	
+	public static native void addAlpha(Element image, String url) /*-{
+		image.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + url + "')";
+	}-*/;
 
 	@Override
 	public void setColor(int r, int g, int b) {

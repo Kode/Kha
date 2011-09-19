@@ -71,6 +71,11 @@ public class Game_gwt implements EntryPoint {
 		return (agent.contains("msie 8") || agent.contains("msie 7") || agent.contains("msie 6")) && !agent.contains("opera");
 	}
 	
+	public static boolean isIE6() {
+		String agent = getUserAgent();
+		return agent.contains("msie 6") && !agent.contains("opera");
+	}
+	
 	public static native String getUserAgent() /*-{
 		return navigator.userAgent.toLowerCase();
 	}-*/;
