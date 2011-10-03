@@ -11,13 +11,13 @@ public class WebMusic implements Music {
 	private AudioElement element;
 	
 	public WebMusic(String filename) {
-		Audio audio = Audio.createIfSupported(); //not working in IE9
+		Audio audio = Audio.createIfSupported();
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();
-			if (element.canPlayType("audio/ogg") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".mp3");
-			else element.setSrc(filename + ".ogg");
-			element.setLoop(true); //Firefox ignores this
+			if (element.canPlayType("audio/mp3") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
+			else element.setSrc(filename + ".mp3");
+			element.setAttribute("loop", "true");
 			element.setPreload(MediaElement.PRELOAD_AUTO);
 		}
 	}

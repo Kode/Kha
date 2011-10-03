@@ -4,7 +4,6 @@ import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.dom.client.MediaElement;
 import com.google.gwt.media.client.Audio;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import com.ktx.kje.Sound;
 
 public class WebSound implements Sound {
@@ -12,11 +11,11 @@ public class WebSound implements Sound {
 	
 	public WebSound(String filename) {
 		Audio audio = Audio.createIfSupported();
-		if (getUserAgent().contains("msie")) audio = null; //not working in IE9
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();
-			element.setSrc(filename + ".wav");
+			if (element.canPlayType("audio/mp3") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
+			else element.setSrc(filename + ".mp3");
 			element.setPreload(MediaElement.PRELOAD_AUTO);
 		}
 	}
@@ -33,8 +32,4 @@ public class WebSound implements Sound {
 		if (element == null) return;
 		element.pause();
 	}
-	
-	public static native String getUserAgent() /*-{
-	return navigator.userAgent.toLowerCase();
-	}-*/;
 }
