@@ -1,8 +1,8 @@
 package com.ktxsoftware.kje;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 class SpriteXComparator implements Comparator<Sprite> {
 	@Override
@@ -22,11 +22,11 @@ public class Scene {
 	private Tilemap tilemap_background2;
 	private Tilemap tilemap_background3;
 	
-	private ArrayList<Sprite> heroes, sprites, enemies;
+	private LinkedList<Sprite> heroes, sprites, enemies;
 	
 	private boolean cooliderDebugMode = false;
 	
-	private SpriteXComparator comparator = new SpriteXComparator();
+	//private SpriteXComparator comparator = new SpriteXComparator();
 	
 	public static Scene getInstance() {
 		return instance;
@@ -34,9 +34,9 @@ public class Scene {
 	
 	public Scene() {
 		instance = this;
-		sprites = new ArrayList<Sprite>();
-		heroes = new ArrayList<Sprite>();
-		enemies = new ArrayList<Sprite>();
+		sprites = new LinkedList<Sprite>();
+		heroes = new LinkedList<Sprite>();
+		enemies = new LinkedList<Sprite>();
 	}
 	
 	public void clear() {
@@ -50,7 +50,7 @@ public class Scene {
 		sprites.clear();
 	}
 	
-	public ArrayList<Sprite> getEnemies() {
+	public LinkedList<Sprite> getEnemies() {
 		return enemies;
 	}
 
@@ -89,8 +89,31 @@ public class Scene {
 		sprites.remove(sprite);
 	}
 	
+	private void bubbleSort(LinkedList<Sprite> sprites) {
+		boolean changed = true;
+		while (changed) {
+			changed = false;
+			ListIterator<Sprite> it = sprites.listIterator();
+			Sprite last, current;
+			if (it.hasNext()) current = it.next();
+			else return;
+			while (it.hasNext()) {
+				last = current;
+				current = it.next();
+				if (last.x > current.x) {
+					it.previous();
+					it.previous();
+					it.remove();
+					it.next();
+					it.add(last);
+					changed = true;
+				}
+			}
+		}
+	}
+	
 	public void update() {
-		Collections.sort(sprites, comparator);
+		bubbleSort(sprites);
 		int i = 0;
 		for (; i < sprites.size(); ++i) {
 			if (sprites.get(i).x + sprites.get(i).width> camx - Game.getInstance().getWidth() / 2) break;
@@ -101,8 +124,8 @@ public class Scene {
 			sprite.update();
 			move(sprite);
 		}
-		Collections.sort(heroes, comparator);
-		Collections.sort(enemies, comparator);
+		bubbleSort(heroes);
+		bubbleSort(enemies);
 		i = 0;
 		
 		for (; i < enemies.size(); ++i) {
