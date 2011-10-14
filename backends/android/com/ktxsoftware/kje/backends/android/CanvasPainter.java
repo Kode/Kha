@@ -1,4 +1,4 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -6,9 +6,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
-import com.ktx.kje.Font;
-import com.ktx.kje.Image;
-import com.ktx.kje.Painter;
+import com.ktxsoftware.kje.Font;
+import com.ktxsoftware.kje.Image;
+import com.ktxsoftware.kje.Painter;
 
 public class CanvasPainter implements Painter {
 	private Canvas c;

@@ -1,4 +1,4 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -8,10 +8,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 
-import com.ktx.kje.Font;
-import com.ktx.kje.Loader;
-import com.ktx.kje.Score;
-import com.ktx.kje.TileProperty;
+import com.ktxsoftware.kje.Font;
+import com.ktxsoftware.kje.Loader;
+import com.ktxsoftware.kje.Score;
+import com.ktxsoftware.kje.TileProperty;
 
 public class ResourceLoader extends Loader {
 	private AssetManager assets;
@@ -23,7 +23,7 @@ public class ResourceLoader extends Loader {
 	@Override
 	public void loadImage(String name) {
 		try {
-			images.put(name, new BitmapImage(BitmapFactory.decodeStream(assets.open(name + ".png"))));
+			images.put(name, new BitmapImage(BitmapFactory.decodeStream(assets.open(name))));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

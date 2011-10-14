@@ -1,4 +1,4 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.content.Context;
 import android.view.KeyEvent;

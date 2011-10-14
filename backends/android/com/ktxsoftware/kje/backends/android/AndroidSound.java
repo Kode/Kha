@@ -1,9 +1,9 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import com.ktx.kje.Sound;
+import com.ktxsoftware.kje.Sound;
 
 public class AndroidSound implements Sound {
 	private static SoundPool pool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);

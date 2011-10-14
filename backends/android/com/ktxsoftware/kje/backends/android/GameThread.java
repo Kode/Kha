@@ -1,20 +1,20 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
-import com.ktx.kje.GameInfo;
-import com.ktx.kje.Key;
-import com.ktx.kje.Loader;
-import com.ktx.kje.Painter;
+import com.ktxsoftware.kje.GameInfo;
+import com.ktxsoftware.kje.Key;
+import com.ktxsoftware.kje.Loader;
+import com.ktxsoftware.kje.Painter;
 
 public class GameThread extends Thread {
 	private boolean running = false;
 	private SurfaceHolder surface;
 	private Context context;
-	private com.ktx.kje.Game game;
+	private com.ktxsoftware.kje.Game game;
 
 	public GameThread(SurfaceHolder surface, Context context) {
 		this.surface = surface;
@@ -58,22 +58,22 @@ public class GameThread extends Thread {
 		synchronized (surface) {
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				game.key(new com.ktx.kje.KeyEvent(Key.RIGHT, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
-				game.key(new com.ktx.kje.KeyEvent(Key.LEFT, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				game.key(new com.ktx.kje.KeyEvent(Key.UP, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, true));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
-				game.key(new com.ktx.kje.KeyEvent(Key.DOWN, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, true));
 				break;
 			case 99:
-				game.key(new com.ktx.kje.KeyEvent(Key.BUTTON_1, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.BUTTON_1, true));
 				break;
 			case 100:
-				game.key(new com.ktx.kje.KeyEvent(Key.BUTTON_2, true));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.BUTTON_2, true));
 				break;
 			default:
 				return false;	
@@ -86,22 +86,22 @@ public class GameThread extends Thread {
 		synchronized (surface) {
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				game.key(new com.ktx.kje.KeyEvent(Key.RIGHT, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
-				game.key(new com.ktx.kje.KeyEvent(Key.LEFT, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				game.key(new com.ktx.kje.KeyEvent(Key.UP, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, false));
 				break;
 			case KeyEvent.KEYCODE_DPAD_DOWN:
-				game.key(new com.ktx.kje.KeyEvent(Key.DOWN, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, false));
 				break;
 			case 99:
-				game.key(new com.ktx.kje.KeyEvent(Key.BUTTON_1, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.BUTTON_1, false));
 				break;
 			case 100:
-				game.key(new com.ktx.kje.KeyEvent(Key.BUTTON_2, false));
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.BUTTON_2, false));
 				break;
 			default:
 				return false;

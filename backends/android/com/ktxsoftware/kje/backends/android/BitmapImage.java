@@ -1,7 +1,7 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.graphics.Bitmap;
-import com.ktx.kje.Image;
+import com.ktxsoftware.kje.Image;
 
 public class BitmapImage implements Image {
 	Bitmap bitmap;

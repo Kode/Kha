@@ -1,6 +1,6 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
-import com.ktx.kje.Font;
+import com.ktxsoftware.kje.Font;
 
 public class AndroidFont implements Font {
 	public String name;

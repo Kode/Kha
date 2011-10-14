@@ -1,9 +1,9 @@
-package com.ktx.kje.backends.android;
+package com.ktxsoftware.kje.backends.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 
-import com.ktx.kje.Music;
+import com.ktxsoftware.kje.Music;
 
 public class AndroidMusic implements Music {
 	private MediaPlayer mp;
