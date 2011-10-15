@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 
 import com.ktxsoftware.kje.Font;
@@ -14,22 +15,62 @@ public class CanvasPainter implements Painter {
 	private Canvas c;
 	private Paint paint;
 	private double tx, ty;
+	private int width, height;
 	
-	CanvasPainter(Canvas c) {
+	CanvasPainter(Canvas c, int width, int height) {
 		this.c = c;
+		this.width = width;
+		this.height = height;
 		paint = new Paint();
+	}
+	
+	private double getFactor() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return (double)height / (double)com.ktxsoftware.kje.Game.getInstance().getHeight();
+		else
+			return (double)width / (double)com.ktxsoftware.kje.Game.getInstance().getWidth();
+	}
+	
+	private double getXOffset() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return width / 2 - com.ktxsoftware.kje.Game.getInstance().getWidth() * getFactor() / 2;
+		else
+			return 0;
+	}
+	
+	private double getYOffset() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return 0;
+		else
+			return height / 2 - com.ktxsoftware.kje.Game.getInstance().getHeight() * getFactor() / 2;
+	}
+	
+	private double adjustX(double x) {
+		return x * getFactor();
+	}
+	
+	private double adjustY(double y) {
+		return y * getFactor();
+	}
+	
+	private double adjustXPos(double x) {
+		return adjustX(x) + getXOffset();
+	}
+	
+	private double adjustYPos(double y) {
+		return adjustY(y) + getYOffset();
 	}
 	
 	@Override
 	public void drawImage(Image img, double x, double y) {
-		c.drawBitmap(((BitmapImage)img).getBitmap(), (float)(x + tx), (float)(y + ty), paint);
+		c.drawBitmap(((BitmapImage)img).getBitmap(), (float)adjustXPos(round(x + tx)), (float)adjustYPos(round(y + ty)), paint);
 	}
 	
 	@Override
 	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
 		c.drawBitmap(((BitmapImage)img).getBitmap(),
 				new Rect(round(sx), round(sy), round(sx + sw), round(sy + sh)),
-				new Rect(round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh)), paint);
+				new RectF((float)adjustXPos(round(tx + dx)), (float)adjustYPos(round(ty + dy)), (float)adjustXPos(round(tx + dx + dw)), (float)adjustYPos(round(ty + dy + dh))), paint);
 	}
 	
 	@Override
@@ -39,7 +80,7 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void fillRect(double x, double y, double width, double height) {
-		c.drawRect((float)(x + tx), (float)(y + ty), (float)(x + width + tx), (float)(y + width + ty), paint);
+		c.drawRect((float)(adjustXPos(x + tx)), (float)(adjustYPos(y + ty)), (float)(adjustXPos(x + width + tx)), (float)(adjustYPos(y + width + ty)), paint);
 	}
 
 	@Override
@@ -50,12 +91,12 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void drawRect(double x, double y, double width, double height) {
-		c.drawRect((float)(x + tx), (float)(y + ty), (float)(x + width + tx), (float)(y + width + ty), paint);
+		c.drawRect((float)(adjustXPos(x + tx)), (float)(adjustYPos(y + ty)), (float)(adjustXPos(x + width + tx)), (float)(adjustYPos(y + width + ty)), paint);
 	}
 
 	@Override
 	public void drawString(String text, double x, double y) {
-		c.drawText(text, (float)(x + tx), (float)(y + ty), paint);
+		c.drawText(text, (float)(adjustXPos(x + tx)), (float)(adjustYPos(y + ty)), paint);
 	}
 	
 	int round(double value) {
@@ -74,7 +115,7 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void drawLine(double x1, double y1, double x2, double y2) {
-		c.drawLine((float)(x1 + tx), (float)(y1 + ty), (float)(x2 + tx), (float)(y2 + ty), paint);
+		c.drawLine((float)(adjustXPos(x1 + tx)), (float)(adjustYPos(y1 + ty)), (float)(adjustXPos(x2 + tx)), (float)(adjustYPos(y2 + ty)), paint);
 	}
 
 	@Override

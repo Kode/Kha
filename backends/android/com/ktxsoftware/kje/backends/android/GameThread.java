@@ -15,10 +15,13 @@ public class GameThread extends Thread {
 	private SurfaceHolder surface;
 	private Context context;
 	private com.ktxsoftware.kje.Game game;
+	private int width, height;
 
-	public GameThread(SurfaceHolder surface, Context context) {
+	public GameThread(SurfaceHolder surface, Context context, int width, int height) {
 		this.surface = surface;
 		this.context = context;
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
@@ -32,7 +35,7 @@ public class GameThread extends Thread {
 			Canvas c = null;
 			try {
 				c = surface.lockCanvas(null);
-				Painter p = new CanvasPainter(c);
+				Painter p = new CanvasPainter(c, width, height);
 				synchronized (surface) {
 					updateGame();
 					doDraw(p);
@@ -50,7 +53,8 @@ public class GameThread extends Thread {
 
 	public void setSurfaceSize(int width, int height) {
 		synchronized (surface) {
-
+			this.width = width;
+			this.height = height;
 		}
 	}
 
