@@ -1,4 +1,4 @@
-package com.ktx.kje.editor;
+package com.ktxsoftware.kje.editor;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Tileset {
-	private BufferedImage[] tiles;
+	private static BufferedImage[] tiles;
 
 	public Tileset(String filename, int width, int height) {
 		try {
@@ -30,9 +30,13 @@ public class Tileset {
 
 	public void paint(Graphics2D g2d, int tile, int x, int y) {
 		g2d.drawImage(tiles[tile], x, y, null);
-	}
+	} 
 
 	public int getLength() {
 		return tiles.length;
+	}
+
+	public static BufferedImage[] getTiles() {
+		return tiles;
 	}
 }

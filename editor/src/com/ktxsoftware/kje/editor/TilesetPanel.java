@@ -1,4 +1,4 @@
-package com.ktx.kje.editor;
+package com.ktxsoftware.kje.editor;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,17 +8,20 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-public class TilesetPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class TilesetPanel extends JScrollPane implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
-	private static final int PANEL_WIDTH = 1000;
-	private static final int PANEL_HEIGHT = 300;
+	private static final int PANEL_WIDTH = 1024;
+	private static final int PANEL_HEIGHT = 600;
 	private static TilesetPanel instance;
 	private Tileset tileset;
+	
 	private Point mouse = new Point(0, 0);
-	private int last, verylast;
+	private int last;
+	private ArrayList<Integer> selectedElements = new ArrayList<Integer>();
 
 	static {
 		instance = new TilesetPanel();
@@ -31,8 +34,7 @@ public class TilesetPanel extends JPanel implements MouseListener, MouseMotionLi
 	private TilesetPanel() {
 		tileset = new Tileset(
 				//"../data/zool/tiles.png",
-				//"../data/tiles.png",
-				"../games/leslie/data/hundertwasser.png",
+				"../data/tiles.png",
 				Level.TILE_WIDTH, Level.TILE_HEIGHT);
 		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		this.addMouseMotionListener(this);
@@ -52,6 +54,13 @@ public class TilesetPanel extends JPanel implements MouseListener, MouseMotionLi
 				g.fillRect(x, y, Level.TILE_WIDTH, Level.TILE_HEIGHT);
 				last = i;
 			}
+			// Markiert die aktuell selektierten Elemente halbgruen
+			for(int selectedElement:selectedElements){
+			if(i == selectedElement){
+				g.setColor(new Color(0, 0.5f, 0, 0.5f));
+				g.fillRect(x, y, Level.TILE_WIDTH, Level.TILE_HEIGHT);
+			}
+			}
 		}
 	}
 
@@ -59,8 +68,12 @@ public class TilesetPanel extends JPanel implements MouseListener, MouseMotionLi
 		tileset.paint(g2d, tile, x, y);
 	}
 
-	public int getLast() {
-		return verylast;
+	public ArrayList<Integer> getSelectedElements() {
+		return selectedElements;
+	}
+	
+	public Tileset getTileset() {
+		return tileset;
 	}
 
 	public void mouseMoved(MouseEvent e) {
@@ -69,12 +82,26 @@ public class TilesetPanel extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	public void mousePressed(MouseEvent e) {
-		verylast = last;
+		selectedElements.clear();
+		selectedElements.add(last);
+		((TileProperties)((Editor)this.getTopLevelAncestor()).lvlElements_properties).update();
+		
 	}
 
-	public void mouseDragged(MouseEvent e) { }
+	public void mouseDragged(MouseEvent e) { 
+		// Element nur aufnehmen wenn noch nicht in Liste
+		if (!selectedElements.contains(last)) {
+			selectedElements.add(last);
+		}
+		
+		mouse = e.getPoint();
+		repaint();
+	}
 	public void mouseClicked(MouseEvent e) { }
-	public void mouseReleased(MouseEvent e) { }
+	public void mouseReleased(MouseEvent e) {
+	}
 	public void mouseEntered(MouseEvent e) { }
 	public void mouseExited(MouseEvent e) { }
+
+	
 }

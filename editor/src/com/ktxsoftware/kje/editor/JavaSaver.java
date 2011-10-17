@@ -1,4 +1,4 @@
-package com.ktx.kje.editor;
+package com.ktxsoftware.kje.editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +10,7 @@ import java.io.PrintStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
 
 public class JavaSaver implements ActionListener {
 	private JFrame parent;

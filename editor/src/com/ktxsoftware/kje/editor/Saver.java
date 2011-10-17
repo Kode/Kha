@@ -1,4 +1,4 @@
-package com.ktx.kje.editor;
+package com.ktxsoftware.kje.editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +19,7 @@ public class Saver implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser chooser = new JFileChooser();
+		/*JFileChooser chooser = new JFileChooser();
 		if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			try {
 				File file = chooser.getSelectedFile();
@@ -30,6 +30,6 @@ public class Saver implements ActionListener {
 			catch (IOException ex) {
 				ex.printStackTrace();
 			}
-		}
+		}*/
 	}
 }
