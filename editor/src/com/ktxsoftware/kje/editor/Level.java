@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,10 +17,10 @@ import javax.swing.JPanel;
 
 public class Level extends JPanel implements MouseListener, MouseMotionListener{
 	private static final long serialVersionUID = 1L;
-	private int levelWidth = 1000;
-	private int levelHeight = 16;
-	public static final int TILE_WIDTH = 32;
-	public static final int TILE_HEIGHT = 32;
+	private int levelWidth = 256;
+	private int levelHeight = 224 / 16;
+	public static final int TILE_WIDTH = 16;
+	public static final int TILE_HEIGHT = 16;
 	
 	private static Level instance;
 	private int[][] map_foreground_summer;
@@ -390,7 +388,7 @@ public class Level extends JPanel implements MouseListener, MouseMotionListener{
 	}
 	public void mouseMoved(MouseEvent e) {}
 	
-	public void resetMaps(){
+	public void resetMaps() {
 		map_foreground_summer = new int[levelWidth][levelHeight];
 		map_background_summer = new int[levelWidth][levelHeight];
 		map_background2_summer = new int[levelWidth][levelHeight];
@@ -404,21 +402,21 @@ public class Level extends JPanel implements MouseListener, MouseMotionListener{
 		repaint();
 	}
 	
-	public void translateSummertoWinter(TileProperty[] elementProperties){
+	public void translateSummertoWinter(TileProperty[] elementProperties) {
 		for (int x = 0; x < levelWidth; ++x) for (int y = 0; y < levelHeight; ++y) {
-			if(elementProperties[map_background_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH){
+			if (elementProperties[map_background_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH) {
 				map_background_winter[x][y] = elementProperties[map_background_summer[x][y]].getLinkedTile();
 			}
-			if(elementProperties[map_background2_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH){
+			if (elementProperties[map_background2_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH) {
 				map_background2_winter[x][y] = elementProperties[map_background2_summer[x][y]].getLinkedTile();
 			}
-			if(elementProperties[map_background3_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH){
+			if (elementProperties[map_background3_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH) {
 				map_background3_winter[x][y] = elementProperties[map_background3_summer[x][y]].getLinkedTile();
 			}
-			if(elementProperties[map_foreground_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH){
+			if (elementProperties[map_foreground_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH) {
 				map_foreground_winter[x][y] = elementProperties[map_foreground_summer[x][y]].getLinkedTile();
 			}
-			if(elementProperties[map_overlay_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH){
+			if (elementProperties[map_overlay_summer[x][y]].getSeasonMode() == TileProperty.SEASONMODE_BOTH) {
 				map_overlay_winter[x][y] = elementProperties[map_overlay_summer[x][y]].getLinkedTile();
 			}
 		}
@@ -431,6 +429,4 @@ public class Level extends JPanel implements MouseListener, MouseMotionListener{
 	public void setBlank_mode(boolean blank_mode) {
 		this.blank_mode = blank_mode;
 	}
-	
-	
 }

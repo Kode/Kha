@@ -18,9 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-
-
 public class TileProperties extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private JCheckBox checkbox_collision;
 	private JCheckBox checkbox_enemy;
 	private JComboBox combobox_enemyTyp;

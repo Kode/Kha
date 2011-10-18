@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JCheckBox;
 
-
 public class LayerCheckBoxMouseListener implements MouseListener{
 
 	@Override
@@ -18,19 +17,16 @@ public class LayerCheckBoxMouseListener implements MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -62,22 +58,20 @@ public class LayerCheckBoxMouseListener implements MouseListener{
 		}
 		// Da Aenderungen an Sichtbarkeit moeglich (checked oder nicht) --> visibleLayers Array updaten
 		boolean[] visibleLayers = Editor.getVisible_layers();
-		if(((JCheckBox)(e.getSource())).isSelected()){
+		if (((JCheckBox)(e.getSource())).isSelected()) {
 			visibleLayers[Integer.parseInt(((JCheckBox)(e.getSource())).getName().toString())] = true;
-		}else{
+		}
+		else {
 			visibleLayers[Integer.parseInt(((JCheckBox)(e.getSource())).getName().toString())] = false;
 		}
 		Editor.setVisible_layers(visibleLayers);
 		
 		System.out.println("----------");
-		for(boolean visible:visibleLayers){
+		for (boolean visible : visibleLayers) {
 			System.out.println(visible);
 		}
 		
 		// Layers neu zeichnen, da ja eine Ebenensichtbarkeit deaktiviert/aktiviert wurden sein koennte
-		Level.getInstance().repaint();
-		
-		
+		Level.getInstance().repaint();	
 	}
-
 }

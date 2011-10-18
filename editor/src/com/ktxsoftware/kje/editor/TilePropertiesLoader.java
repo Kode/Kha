@@ -12,7 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
-
 public class TilePropertiesLoader implements ActionListener {
 
 	private JFrame parent;
@@ -38,7 +37,7 @@ public class TilePropertiesLoader implements ActionListener {
 		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			try {
 				File file = chooser.getSelectedFile();
-				String filename = file.getAbsolutePath();
+				//String filename = file.getAbsolutePath();
 				
 				DataInputStream stream_elements = new DataInputStream(new BufferedInputStream(
 						new FileInputStream(file.getAbsolutePath())));
@@ -50,5 +49,4 @@ public class TilePropertiesLoader implements ActionListener {
 		}
 
 	}
-
 }

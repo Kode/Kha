@@ -2,16 +2,11 @@ package com.ktxsoftware.kje.editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 public class Loader implements ActionListener {
+	@SuppressWarnings("unused")
 	private JFrame parent;
 
 	public Loader(JFrame parent) {

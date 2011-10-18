@@ -15,7 +15,7 @@ public class Tileset {
 	}
 
 	public void render(Painter painter, int tile, int x, int y) {
-		if (tile == 0 || tile == 1 || tile == 73) return; //mario performance hack
+		//if (tile == 0 || tile == 1 || tile == 73) return; //mario performance hack
 
 		int ytile = tile / xmax;
 		int xtile = tile - ytile * xmax;

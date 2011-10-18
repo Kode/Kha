@@ -25,8 +25,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
-
-
 public class Editor extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private static int actual_layer = 0;
@@ -205,14 +203,9 @@ public class Editor extends JFrame{
 			protected void dispatchEvent(AWTEvent event) {
 				if (event instanceof KeyEvent) {
 					KeyEvent keyEvent = (KeyEvent) event;
-					if (event.getID() == keyEvent.KEY_PRESSED
-							& keyEvent.getKeyCode() == keyEvent.VK_CONTROL) {
-
-						Level.getInstance().setBlank_mode(
-								Level.getInstance().isBlank_mode() ? false
-										: true);
+					if (event.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode() == KeyEvent.VK_CONTROL) {
+						Level.getInstance().setBlank_mode(!Level.getInstance().isBlank_mode());
 						Level.getInstance().repaint();
-						
 					}
 				}
 				super.dispatchEvent(event);
@@ -260,7 +253,4 @@ public class Editor extends JFrame{
 	public static void setSummer_season(boolean summer_season) {
 		Editor.summer_season = summer_season;
 	}
-
-	
-
 }
