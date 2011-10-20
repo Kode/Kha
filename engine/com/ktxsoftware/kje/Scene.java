@@ -26,6 +26,7 @@ public class Scene {
 	
 	private boolean cooliderDebugMode = false;
 	
+	private Color backgroundColor = new Color(0, 0, 0);
 	//private SpriteXComparator comparator = new SpriteXComparator();
 	
 	public static Scene getInstance() {
@@ -48,6 +49,10 @@ public class Scene {
 		heroes.clear();
 		enemies.clear();
 		sprites.clear();
+	}
+	
+	public void setBackgroundColor(Color color) {
+		backgroundColor = color;
 	}
 	
 	public LinkedList<Sprite> getEnemies() {
@@ -167,7 +172,7 @@ public class Scene {
 	
 	public void render(Painter painter) {
 		painter.translate(0, 0);
-		painter.setColor(255, 255, 255);
+		painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
 		painter.fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		
 		int realcamx = 0;
