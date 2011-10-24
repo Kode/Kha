@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-public class ComboBoxRenderer extends JLabel implements ListCellRenderer {
+public class ComboBoxRenderer extends JLabel implements ListCellRenderer<Object> {
 	private static final long serialVersionUID = 1L;
 
 	public ComboBoxRenderer() {
@@ -17,7 +17,7 @@ public class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 	}
 	
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		int selectedIndex = 0;
 		if (value != null) selectedIndex = ((Integer)value).intValue();
 		

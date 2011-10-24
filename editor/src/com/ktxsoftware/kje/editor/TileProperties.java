@@ -22,8 +22,8 @@ public class TileProperties extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JCheckBox checkbox_collision;
 	private JCheckBox checkbox_enemy;
-	private JComboBox combobox_enemyTyp;
-	private JComboBox combobox_linkedTo;
+	private JComboBox<String> combobox_enemyTyp;
+	private JComboBox<Integer> combobox_linkedTo;
 	JLabel label_thumbnail;
 	JRadioButton radiobutton_summer;
 	JRadioButton radiobutton_winter;
@@ -65,7 +65,7 @@ public class TileProperties extends JPanel {
 		
 		
 		// Enemy Typ
-		combobox_enemyTyp = new JComboBox();
+		combobox_enemyTyp = new JComboBox<String>();
 		combobox_enemyTyp.setEnabled(false);
 		combobox_enemyTyp.addItem("Hunter");
 		combobox_enemyTyp.addItem("Dog");
@@ -128,7 +128,7 @@ public class TileProperties extends JPanel {
 		for(int i = 0;i<Tileset.getTiles().length;i++){
 			intArray[i] = i;
 		}
-		this.combobox_linkedTo = new JComboBox(intArray);
+		this.combobox_linkedTo = new JComboBox<Integer>(intArray);
 		ComboBoxRenderer renderer = new ComboBoxRenderer();
 		renderer.setPreferredSize(new Dimension(50,32));
 		this.combobox_linkedTo.setRenderer(renderer);
