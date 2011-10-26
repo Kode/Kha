@@ -1,6 +1,6 @@
 package com.ktxsoftware.kje.editor;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,8 +28,8 @@ public class Tileset {
 		}
 	}
 
-	public void paint(Graphics2D g2d, int tile, int x, int y) {
-		g2d.drawImage(tiles[tile], x, y, null);
+	public void paint(Graphics g, int tile, int x, int y) {
+		g.drawImage(tiles[tile], x, y, null);
 	} 
 
 	public int getLength() {

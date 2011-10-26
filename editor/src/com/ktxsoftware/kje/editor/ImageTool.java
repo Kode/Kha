@@ -22,8 +22,7 @@ public class ImageTool {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		File dir = new File("./");
-		collect(dir);
+		collect(new File("./"));
 		PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream("images.xml")));
 		stream.println("<images>");
 		for (File file : files) {
