@@ -5,16 +5,12 @@ public class Tilemap {
 	private int[][] map;
 	private int levelWidth;
 	private int levelHeight;
-	private TileProperty[] properties;
-
-	public Tilemap(int[][] map, TileProperty[] properties) {
-		this("tiles.png", 32, 32, map, properties);
-	}
+	private boolean[] tileCollision;
 	
-	public Tilemap(String imagename, int tileWidth, int tileHeight, int[][] map, TileProperty[] properties) {
+	public Tilemap(String imagename, int tileWidth, int tileHeight, int[][] map, boolean[] tileCollision) {
 		tileset = new Tileset(imagename, tileWidth, tileHeight);
 		this.map = map;
-		this.properties = properties;
+		this.tileCollision = tileCollision;
 		levelWidth = map.length;
 		levelHeight = map[0].length;
 	}
@@ -34,12 +30,7 @@ public class Tilemap {
 		int xtilestart = x1 / tileset.TILE_WIDTH;
 		int xtileend = x2 / tileset.TILE_WIDTH;
 		int ytile = y / tileset.TILE_HEIGHT;
-		for (int xtile = xtilestart; xtile <= xtileend; ++xtile) {
-			int value = map[xtile][ytile];
-			if (properties[value].isCollides()) {
-				return true;
-			}
-		}
+		for (int xtile = xtilestart; xtile <= xtileend; ++xtile) if (tileCollision[map[xtile][ytile]]) return true;
 		return false;
 	}
 	
@@ -50,10 +41,7 @@ public class Tilemap {
 		int xtile = x / tileset.TILE_WIDTH;
 		for (int ytile = ytilestart; ytile <= ytileend; ++ytile) {
 			if (ytile < 0 || ytile >= levelHeight) continue;
-			int value = map[xtile][ytile];
-			if (properties[value].isCollides()) {
-				return true;
-			}
+			if (tileCollision[map[xtile][ytile]]) return true;
 		}
 		return false;
 	}
@@ -64,7 +52,7 @@ public class Tilemap {
 		
 		int value = map[x / tileset.TILE_WIDTH][y / tileset.TILE_HEIGHT];
 		
-		return properties[value].isCollides();
+		return tileCollision[value];
 	}
 	
 	private static int round(double value) {
@@ -74,7 +62,6 @@ public class Tilemap {
 	public boolean collideright(Sprite sprite) {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
-		//if (collides(rect.x + rect.width, rect.y + 1) || collides(rect.x + rect.width, rect.y + rect.height - 1)) {
 		if (collidesrightleft((int)(rect.x + rect.width), round(rect.y + 1), round(rect.y + rect.height - 1))) {
 			sprite.x = Math.floor((rect.x + rect.width) / tileset.TILE_WIDTH) * tileset.TILE_WIDTH - rect.width;
 			collided = true;
@@ -85,7 +72,6 @@ public class Tilemap {
 	public boolean collideleft(Sprite sprite) {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
-		//if (collides(rect.x, rect.y + 1) || collides(rect.x, rect.y + rect.height - 1)) {
 		if (collidesrightleft((int)rect.x, round(rect.y + 1), round(rect.y + rect.height - 1))) {
 			sprite.x = (Math.floor(rect.x / tileset.TILE_WIDTH) + 1) * tileset.TILE_WIDTH;
 			collided = true;
@@ -96,7 +82,6 @@ public class Tilemap {
 	public boolean collidedown(Sprite sprite) {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
-		//if (collides(rect.x + 1, rect.y + rect.height) || collides(rect.x + rect.width - 1, rect.y + rect.height)) {
 		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), (int)(rect.y + rect.height))) {
 			sprite.y = Math.floor((rect.y + rect.height) / tileset.TILE_HEIGHT) * tileset.TILE_HEIGHT - rect.height;
 			collided = true;
@@ -107,7 +92,6 @@ public class Tilemap {
 	public boolean collideup(Sprite sprite) {
 		Rectangle rect = sprite.collisionRect();
 		boolean collided = false;
-		//if (collides(rect.x + 1, rect.y) || collides(rect.x + rect.width - 1, rect.y)) {
 		if (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), (int)rect.y)) {
 			sprite.y = ((Math.floor(rect.y / tileset.TILE_HEIGHT) + 1) * tileset.TILE_HEIGHT);
 			collided = true;

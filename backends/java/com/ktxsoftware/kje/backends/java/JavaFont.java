@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import com.ktxsoftware.kje.Font;
 
 public class JavaFont implements Font {
-	private java.awt.Font font;
 	private static BufferedImage testImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 	private static java.awt.Graphics2D testGraphics;
+	private java.awt.Font font;
 	
 	static {
 		testGraphics = testImage.createGraphics();
@@ -34,7 +34,6 @@ public class JavaFont implements Font {
 
 	@Override
 	public double stringWidth(String str) {
-		if (str == null) throw new NullPointerException();
 		return testGraphics.getFontMetrics(font).stringWidth(str);
 	}
 	

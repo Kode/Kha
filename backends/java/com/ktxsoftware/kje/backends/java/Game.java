@@ -1,6 +1,7 @@
 package com.ktxsoftware.kje.backends.java;
 
 import java.awt.BufferCapabilities;
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -23,46 +24,45 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	public static Game instance;
 	private static int WIDTH;
 	private static int HEIGHT;
+	private static int syncrate = 60;
+	
+	private Canvas canvas;
 	private boolean vsynced = false;
 	private com.ktxsoftware.kje.Game game;
 	private boolean[] keyreleased;
 	private boolean reset = false;
-	private static int syncrate = 60;
-	private static boolean endgame = false;
-	private String lvl_name;
-	private String tilesPropertyName;
-
+	
 	public static Game getInstance() {
 		return instance;
 	}
 	
-	public Game(String lvl_name, String tilesPropertyName) {
+	public Game() {
 		instance = this;
-		this.lvl_name = lvl_name;
-		this.tilesPropertyName = tilesPropertyName;
 		keyreleased = new boolean[256];
 		for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 		
-		//TODO
-		//StartScreen start_screen = new StartScreen();
-		//start_screen.showStartScreen();
-		
 		Loader.init(new JavaLoader());
 		createGame();
-		//setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		setupWindow();
 		createVSyncedDoubleBuffer();
 		mainLoop();
 	}
 	
 	private void setupWindow() {
+		setIgnoreRepaint(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		setSize(WIDTH, HEIGHT);
+		canvas = new Canvas();
+		canvas.setIgnoreRepaint(true);
+		canvas.setSize(WIDTH, HEIGHT);
+		add(canvas);
+		setResizable(false);
+		pack();
+
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((screen.width - WIDTH) / 2, (screen.height - HEIGHT) / 2);
-		setResizable(false);
-		this.setTitle("Game");
+		
+		setTitle("Game");
 		
 		setVisible(true);
 		
@@ -74,8 +74,8 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	}
 	
 	private void createVSyncedDoubleBuffer() {
-		createBufferStrategy(2);
-		BufferStrategy bufferStrategy = getBufferStrategy();
+		canvas.createBufferStrategy(2);
+		BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 		if (bufferStrategy != null) {
 			BufferCapabilities caps = bufferStrategy.getCapabilities();
 			try {
@@ -87,7 +87,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 
 				BufferCapabilities newCaps = (BufferCapabilities)ebcConstructor.newInstance(new Object[] { caps, vSyncType });
 
-				createBufferStrategy(2, newCaps);
+				canvas.createBufferStrategy(2, newCaps);
 
 				//vsynced = true;
 				
@@ -96,7 +96,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 			}
 			catch (Throwable t) {
 				t.printStackTrace();
-				createBufferStrategy(2);
+				canvas.createBufferStrategy(2);
 			}
 		}
 		
@@ -106,7 +106,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	private void checkVSync() {
 		long starttime = System.nanoTime();
 		for (int i = 0; i < 3; ++i) {
-			getBufferStrategy().show();
+			canvas.getBufferStrategy().show();
 			Toolkit.getDefaultToolkit().sync();
 		}
 		long endtime = System.nanoTime();
@@ -133,31 +133,18 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 			render();
 			
 			if (reset) resetGame();
-			
-			if(endgame){
-				//Beaver.getInstance().getMusic().stop(); //TODO
-				break;
-			}
 		}
-		setVisible(false);
-		//TODO
-		//WinningScreen win_screen = new WinningScreen(StatusLine.getGametimeInSeconds(), StatusLine.getScore());
-		//win_screen.showWinningScreen();
-		System.exit(0);
 	}
 	
 	private void createGame() {
-		game = GameInfo.createGame(lvl_name, tilesPropertyName);
+		game = GameInfo.createGame();
 		WIDTH = game.getWidth();
 		HEIGHT = game.getHeight();
 	}
 	
 	private void resetGame() {
 		reset = false;
-		//StatusLine.setScore(0); //TODO
-		//Beaver.getInstance().getMusic().stop(); //TODO
 		createGame();
-		//StatusLine.setTime_left(StatusLine.GAMETIME_IN_SECONDS * Game.getSyncrate()); //TODO
 	}
 	
 	void update() {
@@ -166,7 +153,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	}
  
 	private void render() {
-		BufferStrategy bf = getBufferStrategy();
+		BufferStrategy bf = canvas.getBufferStrategy();
 		Graphics2D g = null;
 	 
 		try {
@@ -222,29 +209,6 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		case KeyEvent.VK_BACK_SPACE:
 			pressKey(keyCode, Key.BACKSPACE);
 			break;
-			
-		//Debug keys
-		/*case KeyEvent.VK_F1:
-			reset = true;
-			break;
-		case KeyEvent.VK_PLUS:
-			syncrate += 10;
-			break;
-		case KeyEvent.VK_MINUS:
-			if (syncrate > 10) syncrate -= 10;
-			break;
-		case KeyEvent.VK_M:
-			//Scene.getInstance().changeSeason(); //TODO
-			break;
-		case KeyEvent.VK_W:
-			endgame = true;
-			break;
-		case KeyEvent.VK_G:
-			//Beaver.getInstance().setGodMode(Beaver.getInstance().isGodMode() ? false : true); //TODO
-			break;
-		case KeyEvent.VK_D:
-			Scene.getInstance().setCooliderDebugMode(Scene.getInstance().isCooliderDebugMode()?false:true);
-			break;*/
 		}
 	}
 	
@@ -290,17 +254,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 	}
 	
 	public static void main(String[] args) {
-		//System.setProperty("apple.awt.graphics.UseQuartz", "true");
-		if(args.length < 2 || args == null){
-			new Game("level1", "tiles");
-		}
-		else{
-			new Game(args[0], args[1]);
-		}
-	}
-	
-	public static void endGame(){
-		endgame = true;
+		new Game();
 	}
 
 	@Override

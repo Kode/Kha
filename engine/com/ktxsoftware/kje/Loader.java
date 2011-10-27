@@ -8,7 +8,6 @@ import com.ktxsoftware.kje.xml.Node;
 public abstract class Loader {
 	private static Loader instance;
 	protected java.util.Map<String, int[][]> maps = new java.util.HashMap<String, int[][]>();
-	protected java.util.Map<String, TileProperty[]> tilesets = new java.util.HashMap<String, TileProperty[]>();
 	protected java.util.Map<String, Image> images = new java.util.HashMap<String, Image>();
 	protected java.util.Map<String, Sound> sounds = new java.util.HashMap<String, Sound>();
 	protected java.util.Map<String, Music> musics = new java.util.HashMap<String, Music>();
@@ -26,12 +25,6 @@ public abstract class Loader {
 	public void setImages(String[] names) {
 		images.clear();
 		for (int i = 0; i < names.length; ++i) images.put(names[i], null);
-		loadcount += names.length;
-	}
-	
-	public void setTilesets(String[] names) {
-		tilesets.clear();
-		for (int i = 0; i < names.length; ++i) tilesets.put(names[i], null);
 		loadcount += names.length;
 	}
 
@@ -61,10 +54,6 @@ public abstract class Loader {
 	
 	public int[][] getMap(String name) {
 		return maps.get(name);
-	}
-
-	public TileProperty[] getTileset(String name) {
-		return tilesets.get(name);
 	}
 	
 	public Image getImage(String name) {
@@ -99,9 +88,7 @@ public abstract class Loader {
 		for (Iterator<String> it = soundnames.iterator(); it.hasNext(); ) loadSound(it.next());
 		Set<String> mapnames = maps.keySet();
 		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) loadMap(it.next());
-		Set<String> tilesetnames = tilesets.keySet();
-		for (Iterator<String> it = tilesetnames.iterator(); it.hasNext(); ) loadTileset(it.next());
-		//loadHighscore();
+		loadHighscore();
 	}
 	
 	protected void loadStarted() { }
@@ -111,7 +98,6 @@ public abstract class Loader {
 	
 	protected abstract void loadImage(String filename);
 	protected abstract void loadMap(String name);
-	protected abstract void loadTileset(String name);
 	protected abstract void loadSound(String filename);
 	protected abstract void loadMusic(String filename);
 	protected abstract void loadXml(String filename);

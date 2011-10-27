@@ -1,33 +1,24 @@
 package com.ktxsoftware.kje;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
-
-class SpriteXComparator implements Comparator<Sprite> {
-	@Override
-	public int compare(Sprite o1, Sprite o2) {
-		if (o1.x < o2.x) return -1;
-		else if (o1.x > o2.x) return 1;
-		return 0;
-	}
-}
 
 public class Scene {
 	private static Scene instance;
 	
-	private Tilemap tilemap_foreground;
-	private Tilemap tilemap_overlay;
-	private Tilemap tilemap_background;
-	private Tilemap tilemap_background2;
-	private Tilemap tilemap_background3;
+	private Tilemap colissionMap;
+	private List<Tilemap> backgrounds = new ArrayList<Tilemap>();
+	private List<Tilemap> foregrounds = new ArrayList<Tilemap>();
+	private List<Double> backgroundSpeeds = new ArrayList<Double>();
+	private List<Double> foregroundSpeeds = new ArrayList<Double>();
 	
 	private LinkedList<Sprite> heroes, sprites, enemies;
 	
-	private boolean cooliderDebugMode = false;
-	
 	private Color backgroundColor = new Color(0, 0, 0);
-	//private SpriteXComparator comparator = new SpriteXComparator();
+	
+	public int camx, camy;
 	
 	public static Scene getInstance() {
 		return instance;
@@ -41,11 +32,11 @@ public class Scene {
 	}
 	
 	public void clear() {
-		tilemap_foreground = null;
-		tilemap_overlay = null;
-		tilemap_background = null;
-		tilemap_background2 = null;
-		tilemap_background3 = null;
+		colissionMap = null;
+		backgrounds.clear();
+		foregrounds.clear();
+		backgroundSpeeds.clear();
+		foregroundSpeeds.clear();
 		heroes.clear();
 		enemies.clear();
 		sprites.clear();
@@ -58,26 +49,20 @@ public class Scene {
 	public LinkedList<Sprite> getEnemies() {
 		return enemies;
 	}
-
-	public void setTilemapForeground(Tilemap tilemapForeground) {
-		this.tilemap_foreground = tilemapForeground;
+	
+	public void addBackgroundTilemap(Tilemap tilemap, double speed) {
+		backgrounds.add(tilemap);
+		backgroundSpeeds.add(speed);
 	}
 	
-	public void setTilemapOverlay(Tilemap tilemapOverlay){
-		this.tilemap_overlay = tilemapOverlay;
+	public void addForegroundTilemap(Tilemap tilemap, double speed) {
+		foregrounds.add(tilemap);
+		foregroundSpeeds.add(speed);
 	}
 	
-	public void setTilemapBackground(Tilemap tilemapBackground){
-		this.tilemap_background = tilemapBackground;
+	public void setColissionMap(Tilemap tilemap) {
+		colissionMap = tilemap;
 	}
-	
-	public void setTilemapBackground2(Tilemap tilemapBackground2){
-		this.tilemap_background2 = tilemapBackground2;
-	}
-	
-	public void setTilemapBackground3(Tilemap tilemapBackground3){
-		this.tilemap_background3 = tilemapBackground3;
-	}	
 	
 	public void addHero(Sprite sprite) {
 		heroes.add(sprite);
@@ -156,12 +141,12 @@ public class Scene {
 			if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
 			sprite.x += sprite.speedx;
 			
-			if (tilemap_foreground != null) {
-				if (sprite.speedx > 0) { if (tilemap_foreground.collideright(sprite)) sprite.hit(Direction.LEFT); }
-				else if (sprite.speedx < 0) { if (tilemap_foreground.collideleft(sprite)) sprite.hit(Direction.RIGHT); }
+			if (colissionMap != null) {
+				if (sprite.speedx > 0) { if (colissionMap.collideright(sprite)) sprite.hit(Direction.LEFT); }
+				else if (sprite.speedx < 0) { if (colissionMap.collideleft(sprite)) sprite.hit(Direction.RIGHT); }
 				sprite.y += sprite.speedy;
-				if (sprite.speedy > 0) { if (tilemap_foreground.collidedown(sprite)) sprite.hit(Direction.UP); }
-				else if (sprite.speedy < 0) { if (tilemap_foreground.collideup(sprite)) sprite.hit(Direction.DOWN); }
+				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) sprite.hit(Direction.UP); }
+				else if (sprite.speedy < 0) { if (colissionMap.collideup(sprite)) sprite.hit(Direction.DOWN); }
 			}
 		}
 		else {
@@ -176,58 +161,36 @@ public class Scene {
 		painter.fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		
 		int realcamx = 0;
-		if (tilemap_foreground != null) {
-			realcamx = Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH - Game.getInstance().getWidth());
+		if (colissionMap != null) {
+			realcamx = Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.getInstance().getWidth());
 			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
 		}
-		//copy value of current realcamx to be able to translate the tilemap but still draw the tilemap at the right position
-		//int realcamxChange = realcamx;
 		
-		/*for parallax-effect change the x-value of painter.translate and tilemapBackground.render
-		 * @author Robert P.
-		 */
-		painter.translate((int)-realcamx/4, camy);
-		if (tilemap_background != null) tilemap_background.render(painter, (int)realcamx/4,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
-		painter.translate((int)-realcamx/3, camy);
-		if (tilemap_background2 != null) tilemap_background2.render(painter, (int)realcamx/3,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
-		painter.translate((int)-realcamx/2, camy);
-		if (tilemap_background3 != null) tilemap_background3.render(painter, (int)realcamx/2,0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		for (int i = 0; i < backgrounds.size(); ++i) {
+			painter.translate(-realcamx * backgroundSpeeds.get(i), camy * backgroundSpeeds.get(i));
+			backgrounds.get(i).render(painter, (int)(realcamx * backgroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		}
 		
 		painter.translate(-realcamx, camy);
 		
-		if (tilemap_foreground != null) tilemap_foreground.render(painter, realcamx, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
-		if (tilemap_overlay != null) tilemap_overlay.render(painter, realcamx, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
-
-		// paints the element based on the z-order
-		// 0 first ... 3 last
-		for (int z_order = 0; z_order < 10; ++z_order){
+		for (int z = 0; z < 10; ++z) {
 			int i = 0;
+			for (; i < sprites.size(); ++i) if (sprites.get(i).x + sprites.get(i).width > realcamx) break;
 			for (; i < sprites.size(); ++i) {
-				if (sprites.get(i).x  + sprites.get(i).width > realcamx) break;
-			}
-			for (; i < sprites.size(); ++i) {
-				if (sprites.get(i).x > realcamx + Game.getInstance().getWidth()){
-					break;
-				}
-				if (i < sprites.size() && sprites.get(i).getZ_order() == z_order){
-					sprites.get(i).render(painter);
-				}
+				if (sprites.get(i).x > realcamx + Game.getInstance().getWidth()) break;
+				if (i < sprites.size() && sprites.get(i).z == z) sprites.get(i).render(painter);
 			}
 		}
-	}
-	
-	public int camx, camy;
-	
-	public boolean isCooliderDebugMode() {
-		return cooliderDebugMode;
-	}
-
-	public void setCooliderDebugMode(boolean cooliderDebugMode) {
-		this.cooliderDebugMode = cooliderDebugMode;
+		
+		for (int i = 0; i < foregrounds.size(); ++i) {
+			painter.translate(-realcamx * foregroundSpeeds.get(i), camy * foregroundSpeeds.get(i));
+			foregrounds.get(i).render(painter, (int)(realcamx * foregroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		}
+		
 	}
 	
 	public double getWidth() {
-		if (tilemap_foreground != null) return tilemap_foreground.getWidth() * tilemap_foreground.getTileset().TILE_WIDTH;
+		if (colissionMap != null) return colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH;
 		else return 0;
 	}
 }

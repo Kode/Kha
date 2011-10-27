@@ -22,13 +22,12 @@ public class HighscoreList {
 	
 	public void addScore(String name, int score) {
 		scores.add(new Score(name, score));
-		Comparator<Score> comparator = new Comparator<Score>() {
+		java.util.Collections.sort(scores, new Comparator<Score>() {
 			@Override
 			public int compare(Score score1, Score score2) {
 				return score2.getScore() - score1.getScore();
 			}
-		};
-		java.util.Collections.sort(scores, comparator);
+		});
 		Loader.getInstance().saveHighscore(new Score(name, score));
 	}
 }

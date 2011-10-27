@@ -21,7 +21,6 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.HighscoreList;
 import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Score;
-import com.ktxsoftware.kje.TileProperty;
 
 public class JavaLoader extends Loader {
 	private final static String base = "../../data/";
@@ -124,39 +123,6 @@ public class JavaLoader extends Loader {
 
 			}
 		}
-	}
-	
-	@Override
-	public void loadTileset(String name){
-		TileProperty[] array_elements = null;
-		DataInputStream stream_elements = null;
-		try {
-			stream_elements = new DataInputStream(new BufferedInputStream(new FileInputStream(base + name + ".settings")));
-
-			array_elements = new TileProperty[stream_elements.readInt()];
-			for(int i = 0;i<array_elements.length;i++){
-				array_elements[i] = new TileProperty();
-			}
-			for (int i = 0; i < array_elements.length; i++) {
-				array_elements[i].setCollides(stream_elements.readBoolean());
-				array_elements[i].setEnemy(stream_elements.readBoolean());
-				array_elements[i].setEnemyTyp(stream_elements.readUTF());
-				array_elements[i].setSeasonMode(stream_elements.readInt());
-				array_elements[i].setLinkedTile(stream_elements.readInt());
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				stream_elements.close();
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		tilesets.put(name, array_elements);
 	}
 
 	@Override
