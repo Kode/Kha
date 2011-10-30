@@ -33,13 +33,17 @@ public class Scene {
 	
 	public void clear() {
 		colissionMap = null;
+		clearTilemaps();
+		heroes.clear();
+		enemies.clear();
+		sprites.clear();
+	}
+	
+	public void clearTilemaps() {
 		backgrounds.clear();
 		foregrounds.clear();
 		backgroundSpeeds.clear();
 		foregroundSpeeds.clear();
-		heroes.clear();
-		enemies.clear();
-		sprites.clear();
 	}
 	
 	public void setBackgroundColor(Color color) {

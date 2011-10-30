@@ -9,7 +9,6 @@ import com.ktxsoftware.kje.Score;
 @RemoteServiceRelativePath("level")
 public interface LevelService extends RemoteService {
 	int[][] getLevel(String filename);
-	//TileProperty[] getTileset(String filename);
 	ArrayList<Score> getScores();
 	void addScore(Score score);
 }
