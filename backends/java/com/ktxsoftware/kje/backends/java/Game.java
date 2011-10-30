@@ -55,6 +55,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		canvas = new Canvas();
 		canvas.setIgnoreRepaint(true);
 		canvas.setSize(WIDTH, HEIGHT);
+		canvas.setFocusable(false);
 		add(canvas);
 		setResizable(false);
 		pack();
@@ -66,14 +67,13 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		
 		setVisible(true);
 		
-		setFocusable(true);
-		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
 	
 	private void createVSyncedDoubleBuffer() {
+		vsynced = true;
 		canvas.createBufferStrategy(2);
 		BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 		if (bufferStrategy != null) {
@@ -95,12 +95,13 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 				//setRefreshRate(60);
 			}
 			catch (Throwable t) {
+				vsynced = false;
 				t.printStackTrace();
 				canvas.createBufferStrategy(2);
 			}
 		}
 		
-		checkVSync();
+		if (vsynced) checkVSync();
 	}
 	
 	private void checkVSync() {
