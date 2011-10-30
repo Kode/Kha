@@ -47,7 +47,7 @@ public class Game_gwt implements EntryPoint {
 			WebImage.init(new WebXml(XMLParser.parse(response.getText()).getDocumentElement()));
 			try {
 				Loader.init(new WebLoader());
-				GameInfo.createGame("level1", "tiles");
+				GameInfo.createGame();
 				Loader.getInstance().load();
 			}
 			catch (Exception ex) {

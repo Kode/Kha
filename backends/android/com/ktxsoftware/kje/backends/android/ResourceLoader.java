@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Score;
-import com.ktxsoftware.kje.TileProperty;
 
 public class ResourceLoader extends Loader {
 	private AssetManager assets;
@@ -68,7 +67,7 @@ public class ResourceLoader extends Loader {
 		}
 	}
 
-	@Override
+	/*@Override
 	public void loadTileset(String name) {
 		TileProperty[] array_elements = null;
 		DataInputStream stream_elements = null;
@@ -99,7 +98,7 @@ public class ResourceLoader extends Loader {
 			}
 		}
 		tilesets.put(name, array_elements);
-	}
+	}*/
 	
 	@Override
 	public Font loadFont(String name, int style, int size) {

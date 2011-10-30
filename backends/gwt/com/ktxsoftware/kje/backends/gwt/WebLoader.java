@@ -18,7 +18,6 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.HighscoreList;
 import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Score;
-import com.ktxsoftware.kje.TileProperty;
 
 public class WebLoader extends Loader {
 	private LevelServiceAsync service;
@@ -65,7 +64,7 @@ public class WebLoader extends Loader {
 		}	
 	}
 	
-	class TilesetLoader implements AsyncCallback<TileProperty[]> {
+	/*class TilesetLoader implements AsyncCallback<TileProperty[]> {
 		private String name;
 		
 		public TilesetLoader(String name) {
@@ -82,7 +81,7 @@ public class WebLoader extends Loader {
 			tilesets.put(name, result);
 			fileLoaded();
 		}	
-	}
+	}*/
 	
 	class ImageLoader implements LoadHandler {
 		private String name;
@@ -143,10 +142,10 @@ public class WebLoader extends Loader {
 		service.getLevel(name, new MapLoader(name));
 	}
 	
-	@Override
+	/*@Override
 	protected void loadTileset(String name) {
 		service.getTileset(name, new TilesetLoader(name));
-	}
+	}*/
 	
 	@Override
 	protected void loadImage(String name) {

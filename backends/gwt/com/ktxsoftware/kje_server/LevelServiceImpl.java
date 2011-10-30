@@ -15,7 +15,6 @@ import java.util.Comparator;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ktxsoftware.kje.GameInfo;
 import com.ktxsoftware.kje.Score;
-import com.ktxsoftware.kje.TileProperty;
 import com.ktxsoftware.kje.backends.gwt.LevelService;
 
 @SuppressWarnings("serial")
@@ -49,7 +48,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 		}
 	}
 
-	@Override
+	/*@Override
 	public TileProperty[] getTileset(String filename) {
 		TileProperty[] array_elements = null;
 		DataInputStream stream_elements = null;
@@ -79,7 +78,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 			}
 		}
 		return array_elements;
-	}
+	}*/
 	
 	private synchronized ArrayList<Score> getScores(int count) {
 		BufferedReader reader = null;

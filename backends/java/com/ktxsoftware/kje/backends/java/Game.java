@@ -68,8 +68,8 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		setVisible(true);
 		
 		addKeyListener(this);
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
 	}
 	
 	private void createVSyncedDoubleBuffer() {

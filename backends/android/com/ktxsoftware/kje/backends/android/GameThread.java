@@ -27,7 +27,7 @@ public class GameThread extends Thread {
 	@Override
 	public void run() {
 		Loader.init(new ResourceLoader(context));
-		game = GameInfo.createGame("level1", "tiles");
+		game = GameInfo.createGame();
 		Loader.getInstance().load();
 		game.postInit();
 		

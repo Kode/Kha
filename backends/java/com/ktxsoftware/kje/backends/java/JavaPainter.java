@@ -2,6 +2,7 @@ package com.ktxsoftware.kje.backends.java;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
@@ -12,6 +13,7 @@ public class JavaPainter implements Painter {
 
 	public JavaPainter(Graphics2D g) {
 		this.g = g;
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 	}
 	
 	private static int round(double value) {
