@@ -23,7 +23,7 @@ import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Score;
 
 public class JavaLoader extends Loader {
-	private final static String base = "../../data/";
+	private final static String base = "data/";
 	
 	@Override
 	public void loadImage(String name) {
