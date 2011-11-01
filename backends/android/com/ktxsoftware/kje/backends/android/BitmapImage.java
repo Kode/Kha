@@ -26,7 +26,6 @@ public class BitmapImage implements Image {
 
 	@Override
 	public boolean isAlpha(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
+		return (bitmap.getPixel(x, y) >> 24) != 0;
 	}
 }

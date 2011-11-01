@@ -53,12 +53,20 @@ public class CanvasPainter implements Painter {
 		return y * getFactor();
 	}
 	
-	private double adjustXPos(double x) {
+	public double adjustXPos(double x) {
 		return adjustX(x) + getXOffset();
 	}
 	
-	private double adjustYPos(double y) {
+	public double adjustYPos(double y) {
 		return adjustY(y) + getYOffset();
+	}
+	
+	public double adjustXPosInv(double x) {
+		return (x - getXOffset()) / getFactor();
+	}
+	
+	public double adjustYPosInv(double y) {
+		return (y - getYOffset()) / getFactor();
 	}
 	
 	@Override

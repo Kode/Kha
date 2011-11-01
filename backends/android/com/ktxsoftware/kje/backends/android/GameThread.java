@@ -16,7 +16,8 @@ public class GameThread extends Thread {
 	private Context context;
 	private com.ktxsoftware.kje.Game game;
 	private int width, height;
-
+	private CanvasPainter p;
+	
 	public GameThread(SurfaceHolder surface, Context context, int width, int height) {
 		this.surface = surface;
 		this.context = context;
@@ -35,7 +36,7 @@ public class GameThread extends Thread {
 			Canvas c = null;
 			try {
 				c = surface.lockCanvas(null);
-				Painter p = new CanvasPainter(c, width, height);
+				p = new CanvasPainter(c, width, height);
 				synchronized (surface) {
 					updateGame();
 					doDraw(p);
@@ -121,4 +122,20 @@ public class GameThread extends Thread {
 	private void doDraw(Painter painter) {
 		game.render(painter);
 	}
+	
+	boolean mouseDown(int x, int y){
+	    game.mouseDown((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+	    return true;
+	}
+	
+	boolean mouseUp(int x, int y){
+	    game.mouseUp((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+	    return true;
+	}
+	
+	boolean mouseMove(int x, int y){
+	    game.mouseMove((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+	    return true;
+	}
+	
 }

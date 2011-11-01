@@ -1,24 +1,31 @@
 package com.ktxsoftware.kje.backends.android;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private GameThread thread;
 	private int lastTouch;
+	private GestureDetector gestureDetector = null;
 
 	public GameView(Context context) {
 		super(context);
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
 		thread = new GameThread(holder, context, getWidth(), getHeight());
+		setupGestureDetector();
 		setFocusable(true);
 	}
-	
+
 	public boolean onTouchEvent(MotionEvent event) {
+		if (gestureDetector == null) setupGestureDetector();
+		gestureDetector.onTouchEvent(event);
+
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (event.getRawY() < getHeight() / 2) {
 				lastTouch = 0;
@@ -86,5 +93,50 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			}
 		}
+	}
+
+	private void setupGestureDetector() {
+		gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+			@Override
+			public boolean onDown(MotionEvent e) {
+				thread.mouseDown((int)e.getX(), (int)e.getY());
+				//mouseDown((int) e.getX(), (int) e.getY());
+				//mouseDown((int)e.getRawX(), (int)e.getRawY());
+				Log.e("down", "X: "+(int)e.getX()+" Y: "+(int)e.getY());
+				return true;
+			}
+
+			@Override
+			public boolean onSingleTapUp(MotionEvent e) {
+				thread.mouseUp((int)e.getX(), (int)e.getY());
+				//mouseUp((int) e.getX(), (int) e.getY());
+				//mouseUp((int)e.getRawX(), (int)e.getRawY());
+				Log.e("up", "X: "+(int)e.getX()+" Y: "+(int)e.getY());
+				return true;
+			}
+
+			@Override
+			public void onLongPress(MotionEvent e) {
+				onSingleTapUp(e);
+			}
+
+			@Override
+			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+				thread.mouseMove((int)e2.getX(), (int)e2.getY());
+				//mouseMove((int) e2.getX(), (int) e2.getY());
+				//mouseMove((int)e2.getRawX(), (int)e2.getRawY());
+				Log.e("move", "X: "+(int)e2.getX()+" Y: "+(int)e2.getY());
+				return true;
+			}
+
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+				thread.mouseUp((int)e2.getX(), (int)e2.getY());
+				//mouseMove((int) e2.getX(), (int) e2.getY());
+				//mouseMove((int)e2.getRawX(), (int)e2.getRawY());
+				Log.e("up2", "X: "+(int)e2.getX()+" Y: "+(int)e2.getY());
+				return true;
+			}
+		});
 	}
 }

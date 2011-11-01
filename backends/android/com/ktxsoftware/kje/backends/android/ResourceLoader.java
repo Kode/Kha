@@ -66,39 +66,6 @@ public class ResourceLoader extends Loader {
 			e.printStackTrace();
 		}
 	}
-
-	/*@Override
-	public void loadTileset(String name) {
-		TileProperty[] array_elements = null;
-		DataInputStream stream_elements = null;
-		try {
-			stream_elements = new DataInputStream(new BufferedInputStream(assets.open(name + ".settings")));
-
-			array_elements = new TileProperty[stream_elements.readInt()];
-			for(int i = 0;i<array_elements.length;i++){
-				array_elements[i] = new TileProperty();
-			}
-			for (int i = 0; i < array_elements.length; i++) {
-				array_elements[i].setCollides(stream_elements.readBoolean());
-				array_elements[i].setEnemy(stream_elements.readBoolean());
-				array_elements[i].setEnemyTyp(stream_elements.readUTF());
-				array_elements[i].setSeasonMode(stream_elements.readInt());
-				array_elements[i].setLinkedTile(stream_elements.readInt());
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				stream_elements.close();
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		tilesets.put(name, array_elements);
-	}*/
 	
 	@Override
 	public Font loadFont(String name, int style, int size) {
@@ -107,26 +74,28 @@ public class ResourceLoader extends Loader {
 
 	@Override
 	public void loadHighscore() {
-		
+		//TODO evtl
 	}
 
 	@Override
 	public void saveHighscore(Score score) {
-		
+		//TODO evtl
 	}
 
 	@Override
 	protected void loadXml(String filename) {
-		
+		try {
+		    xmls.put(filename, new AndroidNode(assets.open(filename)));
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void setNormalCursor() {
-		
 	}
 
 	@Override
 	public void setHandCursor() {
-		
 	}
 }
