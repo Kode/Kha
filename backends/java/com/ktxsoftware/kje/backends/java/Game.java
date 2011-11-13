@@ -120,7 +120,7 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
  
 	private void mainLoop() {
 		Loader.getInstance().load();
-		game.postInit();
+		game.init();
 		long lasttime = System.nanoTime();
 		for (;;) {
 			if (vsynced) update();

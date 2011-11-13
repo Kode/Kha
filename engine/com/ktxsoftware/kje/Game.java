@@ -14,7 +14,6 @@ public abstract class Game {
 		this.width = width;
 		this.height = height;
 		scene = new Scene();
-		preInit(lvl_name, tilesPropertyName);
 	}
 	
 	public int getWidth() {
@@ -25,8 +24,7 @@ public abstract class Game {
 		return height;
 	}
 	
-	public abstract void preInit(String lvl_name, String tilesPropertyName); //Used to configure the Loader
-	public abstract void postInit(); //Called by the Loader when finished
+	public abstract void init(); //Called by the Loader when finished
 	
 	public void update() {
 		scene.update();

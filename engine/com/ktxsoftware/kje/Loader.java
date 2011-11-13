@@ -1,8 +1,5 @@
 package com.ktxsoftware.kje;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.ktxsoftware.kje.xml.Node;
 
 public abstract class Loader {
@@ -20,36 +17,6 @@ public abstract class Loader {
 	
 	public static Loader getInstance() {
 		return instance;
-	}
-	
-	public void setImages(String[] names) {
-		images.clear();
-		for (int i = 0; i < names.length; ++i) images.put(names[i], null);
-		loadcount += names.length;
-	}
-
-	public void setMaps(String[] names) {
-		maps.clear();
-		for (int i = 0; i < names.length; ++i) maps.put(names[i], null);
-		loadcount += names.length;
-	}
-	
-	public void setMusics(String[] names) {
-		musics.clear();
-		for (int i = 0; i < names.length; ++i) musics.put(names[i], null);
-		loadcount += names.length;
-	}
-	
-	public void setSounds(String[] names) {
-		sounds.clear();
-		for (int i = 0; i < names.length; ++i) sounds.put(names[i], null);
-		loadcount += names.length;
-	}
-	
-	public void setXmls(String[] names) {
-		xmls.clear();
-		for (int i = 0; i < names.length; ++i) xmls.put(names[i], null);
-		loadcount += names.length;
 	}
 	
 	public int[][] getMap(String name) {
@@ -76,18 +43,16 @@ public abstract class Loader {
 	}
 	
 	public void load() {
-		loadStarted();
-		
-		Set<String> imagenames = images.keySet();
-		for (Iterator<String> it = imagenames.iterator(); it.hasNext(); ) loadImage(it.next());
-		Set<String> xmlnames = xmls.keySet();
-		for (Iterator<String> it = xmlnames.iterator(); it.hasNext(); ) loadXml(it.next());
-		Set<String> musicnames = musics.keySet();
-		for (Iterator<String> it = musicnames.iterator(); it.hasNext(); ) loadMusic(it.next());
-		Set<String> soundnames = sounds.keySet();
-		for (Iterator<String> it = soundnames.iterator(); it.hasNext(); ) loadSound(it.next());
-		Set<String> mapnames = maps.keySet();
-		for (Iterator<String> it = mapnames.iterator(); it.hasNext(); ) loadMap(it.next());
+		loadXml("data.xml");
+		loadStarted();		
+		Node node = getXml("data.xml");
+		for (Node dataNode : node.getChilds()) {
+			if (dataNode.getName().equals("image")) loadImage(dataNode.getValue());
+			else if (dataNode.getName().equals("xml")) loadXml(dataNode.getValue());
+			else if (dataNode.getName().equals("music")) loadMusic(dataNode.getValue());
+			else if (dataNode.getName().equals("sound")) loadSound(dataNode.getValue());
+			else if (dataNode.getName().equals("map")) loadMap(dataNode.getValue());
+		}
 		loadHighscore();
 	}
 	

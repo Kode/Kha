@@ -41,6 +41,11 @@ public class JavaNode implements Node {
 	public String getName() {
 		return element.getNodeName();
 	}
+	
+	@Override
+	public String getValue() {
+		return element.getTextContent();
+	}
 
 	@Override
 	public void require(String name) {
