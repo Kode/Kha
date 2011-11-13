@@ -83,6 +83,20 @@ public class Scene {
 		sprites.remove(sprite);
 	}
 	
+	public void removeHero(Sprite sprite) {
+		heroes.remove(sprite);
+		sprites.remove(sprite);
+	}
+	
+	private int adjustCamX() {
+		if (colissionMap != null) {
+			int realcamx = Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.getInstance().getWidth());
+			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
+			return realcamx;
+		}
+		else return camx;
+	}
+	
 	private void bubbleSort(LinkedList<Sprite> sprites) {
 		boolean changed = true;
 		while (changed) {
@@ -107,14 +121,15 @@ public class Scene {
 	}
 	
 	public void update() {
+		int camx = adjustCamX();
 		bubbleSort(sprites);
 		int i = 0;
 		for (; i < sprites.size(); ++i) {
-			if (sprites.get(i).x + sprites.get(i).width> camx - Game.getInstance().getWidth() / 2) break;
+			if (sprites.get(i).x + sprites.get(i).width > camx) break;
 		}
 		for (; i < sprites.size(); ++i) {
 			Sprite sprite = sprites.get(i);
-			if (sprite.x > camx + Game.getInstance().getWidth() / 2) break;
+			if (sprite.x > camx + Game.getInstance().getWidth()) break;
 			sprite.update();
 			move(sprite);
 		}
@@ -123,10 +138,10 @@ public class Scene {
 		i = 0;
 		
 		for (; i < enemies.size(); ++i) {
-			if (enemies.get(i).x > camx - Game.getInstance().getWidth() / 2) break;
+			if (enemies.get(i).x + enemies.get(i).width > camx) break;
 		}
 		for (; i < enemies.size(); ++i) {
-			if (enemies.get(i).x > camx + Game.getInstance().getWidth() / 2) break;
+			if (enemies.get(i).x > camx + Game.getInstance().getWidth()) break;
 			Rectangle rect1 = enemies.get(i).collisionRect();
 			for (int i2 = 0; i2 < heroes.size(); ++i2) {
 				Rectangle rect2 = heroes.get(i2).collisionRect();
@@ -164,31 +179,27 @@ public class Scene {
 		painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
 		painter.fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		
-		int realcamx = 0;
-		if (colissionMap != null) {
-			realcamx = Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.getInstance().getWidth());
-			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
-		}
+		int camx = adjustCamX();
 		
 		for (int i = 0; i < backgrounds.size(); ++i) {
-			painter.translate(-realcamx * backgroundSpeeds.get(i), camy * backgroundSpeeds.get(i));
-			backgrounds.get(i).render(painter, (int)(realcamx * backgroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			painter.translate(-camx * backgroundSpeeds.get(i), camy * backgroundSpeeds.get(i));
+			backgrounds.get(i).render(painter, (int)(camx * backgroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 		
-		painter.translate(-realcamx, camy);
+		painter.translate(-camx, camy);
 		
 		for (int z = 0; z < 10; ++z) {
 			int i = 0;
-			for (; i < sprites.size(); ++i) if (sprites.get(i).x + sprites.get(i).width > realcamx) break;
+			for (; i < sprites.size(); ++i) if (sprites.get(i).x + sprites.get(i).width > camx) break;
 			for (; i < sprites.size(); ++i) {
-				if (sprites.get(i).x > realcamx + Game.getInstance().getWidth()) break;
+				if (sprites.get(i).x > camx + Game.getInstance().getWidth()) break;
 				if (i < sprites.size() && sprites.get(i).z == z) sprites.get(i).render(painter);
 			}
 		}
 		
 		for (int i = 0; i < foregrounds.size(); ++i) {
-			painter.translate(-realcamx * foregroundSpeeds.get(i), camy * foregroundSpeeds.get(i));
-			foregrounds.get(i).render(painter, (int)(realcamx * foregroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			painter.translate(-camx * foregroundSpeeds.get(i), camy * foregroundSpeeds.get(i));
+			foregrounds.get(i).render(painter, (int)(camx * foregroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 		
 	}
