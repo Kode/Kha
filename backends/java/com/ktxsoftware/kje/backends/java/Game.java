@@ -213,7 +213,6 @@ public class Game extends JFrame implements KeyListener, MouseListener, MouseMot
 		}
 	}
 	
-	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode();

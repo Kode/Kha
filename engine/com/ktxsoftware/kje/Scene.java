@@ -1,9 +1,9 @@
 package com.ktxsoftware.kje;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class Scene {
 	private static Scene instance;
@@ -99,32 +99,20 @@ public class Scene {
 		else return camx;
 	}
 	
-	private void bubbleSort(LinkedList<Sprite> sprites) {
-		boolean changed = true;
-		while (changed) {
-			changed = false;
-			ListIterator<Sprite> it = sprites.listIterator();
-			Sprite last, current;
-			if (it.hasNext()) current = it.next();
-			else return;
-			while (it.hasNext()) {
-				last = current;
-				current = it.next();
-				if (last.x > current.x) {
-					it.previous();
-					it.previous();
-					it.remove();
-					it.next();
-					it.add(last);
-					changed = true;
-				}
+	private void sort(LinkedList<Sprite> sprites) {
+		java.util.Collections.sort(sprites, new Comparator<Sprite>() {
+			@Override
+			public int compare(Sprite arg0, Sprite arg1) {
+				if (arg0.x < arg1.x) return -1;
+				else if (arg0.x == arg1.x) return 0;
+				else return 1;
 			}
-		}
+		});
 	}
 	
 	public void update() {
 		int camx = adjustCamX();
-		bubbleSort(sprites);
+		sort(sprites);
 		int i = 0;
 		for (; i < sprites.size(); ++i) {
 			if (sprites.get(i).x + sprites.get(i).width > camx) break;
@@ -132,20 +120,21 @@ public class Scene {
 		for (; i < sprites.size(); ++i) {
 			Sprite sprite = sprites.get(i);
 			if (sprite.x > camx + Game.getInstance().getWidth()) break;
-			sprite.update();
-			move(sprite);
 			updatedSprites.add(sprite);
 		}
-		for (Sprite sprite : lastUpdatedSprites)
-		{
+		for (Sprite sprite : updatedSprites) {
+			sprite.update();
+			move(sprite);
+		}
+		for (Sprite sprite : lastUpdatedSprites) {
 			if (!updatedSprites.contains(sprite)) sprite.outOfView();
 		}
 		lastUpdatedSprites.clear();
 		lastUpdatedSprites.addAll(updatedSprites);
 		updatedSprites.clear();
 		
-		bubbleSort(heroes);
-		bubbleSort(enemies);
+		sort(heroes);
+		sort(enemies);
 		i = 0;
 		
 		for (; i < enemies.size(); ++i) {
