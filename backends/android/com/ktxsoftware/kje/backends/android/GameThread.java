@@ -30,7 +30,7 @@ public class GameThread extends Thread {
 		Loader.init(new ResourceLoader(context));
 		game = GameInfo.createGame();
 		Loader.getInstance().load();
-		game.postInit();
+		game.init();
 		
 		while (running) {
 			Canvas c = null;

@@ -14,16 +14,15 @@ import org.w3c.dom.NodeList;
 import com.ktxsoftware.kje.xml.Node;
 
 
-public class AndroidNode implements Node{
-    
-    private Element element;
+public class AndroidNode implements Node {
+	private Element element;
 	
 	public AndroidNode(InputStream fileIS) {
 		try {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    	DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-    	Document doc = docBuilder.parse(fileIS);
-    	element = doc.getDocumentElement();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(fileIS);
+			element = doc.getDocumentElement();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -55,5 +54,10 @@ public class AndroidNode implements Node{
 		List<Node> retnodes = new ArrayList<Node>();
 		for (int i = 0; i < nodes.getLength(); ++i) if (nodes.item(i) instanceof Element) retnodes.add(new AndroidNode((Element)nodes.item(i)));
 		return retnodes;
+	}
+
+	@Override
+	public String getValue() {
+		return element.getTextContent();
 	}
 }
