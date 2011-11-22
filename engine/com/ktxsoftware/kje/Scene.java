@@ -13,6 +13,8 @@ public class Scene {
 	private List<Tilemap> foregrounds = new ArrayList<Tilemap>();
 	private List<Double> backgroundSpeeds = new ArrayList<Double>();
 	private List<Double> foregroundSpeeds = new ArrayList<Double>();
+	private List<Sprite> lastUpdatedSprites = new ArrayList<Sprite>();
+	private List<Sprite> updatedSprites = new ArrayList<Sprite>();
 	
 	private LinkedList<Sprite> heroes, sprites, enemies;
 	
@@ -132,7 +134,16 @@ public class Scene {
 			if (sprite.x > camx + Game.getInstance().getWidth()) break;
 			sprite.update();
 			move(sprite);
+			updatedSprites.add(sprite);
 		}
+		for (Sprite sprite : lastUpdatedSprites)
+		{
+			if (!updatedSprites.contains(sprite)) sprite.outOfView();
+		}
+		lastUpdatedSprites.clear();
+		lastUpdatedSprites.addAll(updatedSprites);
+		updatedSprites.clear();
+		
 		bubbleSort(heroes);
 		bubbleSort(enemies);
 		i = 0;
@@ -201,7 +212,6 @@ public class Scene {
 			painter.translate(-camx * foregroundSpeeds.get(i), camy * foregroundSpeeds.get(i));
 			foregrounds.get(i).render(painter, (int)(camx * foregroundSpeeds.get(i)), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
-		
 	}
 	
 	public double getWidth() {

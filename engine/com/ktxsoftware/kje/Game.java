@@ -9,7 +9,7 @@ public abstract class Game {
 		return instance;
 	}
 	
-	public Game(String lvl_name, String tilesPropertyName, int width, int height) {
+	public Game(int width, int height) {
 		instance = this;
 		this.width = width;
 		this.height = height;
