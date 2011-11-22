@@ -46,7 +46,12 @@ public class CanvasPainter implements Painter {
 	
 	@Override
 	public void drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
-		context.drawImage(((WebImage)img).getIE(), sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+		try {
+			context.drawImage(((WebImage)img).getIE(), sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+		}
+		catch (Exception ex) {
+			System.err.println("Error drawing image");
+		}
 	}
 	
 	@Override

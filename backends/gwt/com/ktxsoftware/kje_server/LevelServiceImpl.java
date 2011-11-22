@@ -22,7 +22,7 @@ public class LevelServiceImpl extends RemoteServiceServlet implements LevelServi
 	private static String directory;
 	
 	{
-		if (isOnline()) directory = GameInfo.dataDir();
+		if (isOnline()) directory = "turrican/sub/robert/" + GameInfo.dataDir() + "/";
 		else directory = "";
 	}
 	

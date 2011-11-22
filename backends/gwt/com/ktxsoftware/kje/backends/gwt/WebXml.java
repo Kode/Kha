@@ -36,4 +36,9 @@ public class WebXml implements Node {
 		for (int i = 0; i < nodes.getLength(); ++i) if (nodes.item(i) instanceof Element) retNodes.add(new WebXml((Element)nodes.item(i)));
 		return retNodes;
 	}
+
+	@Override
+	public String getValue() {
+		return element.getChildNodes().item(0).getNodeValue();
+	}
 }

@@ -43,9 +43,18 @@ public abstract class Loader {
 	}
 	
 	public void load() {
+		loadDataDefinition();
+	}
+	
+	//override for asynchronous loading
+	public void loadDataDefinition() {
 		loadXml("data.xml");
-		loadStarted();		
+		loadFiles();
+	}
+	
+	protected void loadFiles() {
 		Node node = getXml("data.xml");
+		loadStarted(node.getChilds().size());
 		for (Node dataNode : node.getChilds()) {
 			if (dataNode.getName().equals("image")) loadImage(dataNode.getValue());
 			else if (dataNode.getName().equals("xml")) loadXml(dataNode.getValue());
@@ -56,7 +65,7 @@ public abstract class Loader {
 		loadHighscore();
 	}
 	
-	protected void loadStarted() { }
+	protected void loadStarted(int numberOfFiles) { }
 	
 	public abstract void loadHighscore();
 	public abstract void saveHighscore(Score score);

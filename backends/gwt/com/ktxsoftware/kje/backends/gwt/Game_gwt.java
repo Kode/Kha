@@ -115,7 +115,7 @@ class AnimationTimer extends Timer implements KeyDownHandler, KeyUpHandler, KeyP
 			panel.addMouseMoveHandler(this);
 			panel.setFocus(true);
 			
-			Game.getInstance().postInit();
+			Game.getInstance().init();
 		}
 		catch (Exception ex) {
 			alert(ex.getMessage());

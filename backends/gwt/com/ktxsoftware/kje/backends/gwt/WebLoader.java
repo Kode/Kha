@@ -64,25 +64,6 @@ public class WebLoader extends Loader {
 		}	
 	}
 	
-	/*class TilesetLoader implements AsyncCallback<TileProperty[]> {
-		private String name;
-		
-		public TilesetLoader(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public void onFailure(Throwable caught) {
-			System.err.println("Failed loading level");
-		}
-
-		@Override
-		public void onSuccess(TileProperty[] result) {
-			tilesets.put(name, result);
-			fileLoaded();
-		}	
-	}*/
-	
 	class ImageLoader implements LoadHandler {
 		private String name;
 		private com.google.gwt.user.client.ui.Image img;
@@ -142,22 +123,48 @@ public class WebLoader extends Loader {
 		service.getLevel(name, new MapLoader(name));
 	}
 	
-	/*@Override
-	protected void loadTileset(String name) {
-		service.getTileset(name, new TilesetLoader(name));
-	}*/
-	
 	@Override
 	protected void loadImage(String name) {
 		new ImageLoader(name);
 	}
 	
 	@Override
-	protected void loadStarted() {
-		filecount = loadcount;
+	protected void loadStarted(int numberOfFiles) {
+		filecount = loadcount = numberOfFiles + 1; //+1 for highscore
 		button = new Button("Loading: 0%");
 		button.setEnabled(false);
 		RootPanel.get().add(button);
+	}
+	
+	class DataXmlLoader implements RequestCallback {
+		private String name;
+		
+		public DataXmlLoader() {
+			name = "data.xml";
+			RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, name);
+			try {
+				requestBuilder.sendRequest(null, this);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onResponseReceived(Request request, Response response) {
+			xmls.put(name, new WebXml(XMLParser.parse(response.getText()).getDocumentElement()));
+			loadFiles();
+		}
+
+		@Override
+		public void onError(Request request, Throwable exception) {
+			System.err.println("Error loading " + name + ".");
+		}
+	}
+	
+	@Override
+	public void loadDataDefinition() {
+		new DataXmlLoader();
 	}
 
 	@Override
