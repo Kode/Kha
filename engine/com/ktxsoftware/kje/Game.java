@@ -34,6 +34,10 @@ public abstract class Game {
 		scene.render(painter);
 	}
 	
+	public boolean hasScores() {
+		return true;
+	}
+	
 	public abstract void key(KeyEvent event);
 	public void charKey(char c) { }
 	

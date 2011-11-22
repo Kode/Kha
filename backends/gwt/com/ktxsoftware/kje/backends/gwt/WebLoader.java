@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.xml.client.XMLParser;
 import com.ktxsoftware.kje.Font;
+import com.ktxsoftware.kje.Game;
 import com.ktxsoftware.kje.HighscoreList;
 import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Score;
@@ -130,7 +131,7 @@ public class WebLoader extends Loader {
 	
 	@Override
 	protected void loadStarted(int numberOfFiles) {
-		filecount = loadcount = numberOfFiles + 1; //+1 for highscore
+		filecount = loadcount = numberOfFiles + (Game.getInstance().hasScores() ? 1 : 0);
 		button = new Button("Loading: 0%");
 		button.setEnabled(false);
 		RootPanel.get().add(button);

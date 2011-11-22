@@ -62,7 +62,7 @@ public abstract class Loader {
 			else if (dataNode.getName().equals("sound")) loadSound(dataNode.getValue());
 			else if (dataNode.getName().equals("map")) loadMap(dataNode.getValue());
 		}
-		loadHighscore();
+		if (Game.getInstance().hasScores()) loadHighscore();
 	}
 	
 	protected void loadStarted(int numberOfFiles) { }
