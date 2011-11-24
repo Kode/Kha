@@ -2,12 +2,28 @@ package com.ktxsoftware.kje.backends.android;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.ktxsoftware.kje.Image;
+
+class BitmapManager {
+	private static List<BitmapImage> images = new LinkedList<BitmapImage>();
+	
+	static void add(BitmapImage image) {
+		images.add(image);
+	}
+	
+	static void touch(BitmapImage image) {
+		images.remove(image);
+		images.add(image);
+		for (int i = 0; i < images.size() - 10; ++i) images.get(i).unload();
+	}
+}
 
 public class BitmapImage implements Image {
 	public static AssetManager assets;
@@ -17,6 +33,7 @@ public class BitmapImage implements Image {
 	
 	public BitmapImage(String name) {
 		this.name = name;
+		BitmapManager.add(this);
 	}
 	
 	private void load() {
@@ -28,6 +45,11 @@ public class BitmapImage implements Image {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		BitmapManager.touch(this);
+	}
+	
+	void unload() {
+		b = null;
 	}
 	
 	public Bitmap getBitmap() {
