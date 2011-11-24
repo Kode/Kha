@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.BitmapFactory;
 
 import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Loader;
@@ -17,12 +16,13 @@ public class ResourceLoader extends Loader {
 	
 	public ResourceLoader(Context context) {
 		this.assets = context.getAssets();
+		BitmapImage.assets = assets;
 	}
 	
 	@Override
 	public void loadImage(String name) {
 		try {
-			images.put(name, new BitmapImage(BitmapFactory.decodeStream(assets.open(name))));
+			images.put(name, new BitmapImage(name));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
