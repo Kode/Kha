@@ -8,7 +8,7 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
-public class CanvasPainter implements Painter {
+public class CanvasPainter extends Painter {
 	private int width, height;
 
     private Canvas2 canvas;

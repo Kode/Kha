@@ -11,7 +11,7 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
-public class CanvasPainter implements Painter {
+public class CanvasPainter extends Painter {
 	private Canvas c;
 	private Paint paint;
 	private double tx, ty;
@@ -22,6 +22,7 @@ public class CanvasPainter implements Painter {
 		this.width = width;
 		this.height = height;
 		paint = new Paint();
+		paint.setFilterBitmap(true);
 	}
 	
 	private double getFactor() {
@@ -88,6 +89,7 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void fillRect(double x, double y, double width, double height) {
+		paint.setStyle(Paint.Style.FILL);
 		c.drawRect((float)(adjustXPos(x + tx)), (float)(adjustYPos(y + ty)), (float)(adjustXPos(x + width + tx)), (float)(adjustYPos(y + width + ty)), paint);
 	}
 
@@ -99,6 +101,7 @@ public class CanvasPainter implements Painter {
 
 	@Override
 	public void drawRect(double x, double y, double width, double height) {
+		paint.setStyle(Paint.Style.STROKE);
 		c.drawRect((float)(adjustXPos(x + tx)), (float)(adjustYPos(y + ty)), (float)(adjustXPos(x + width + tx)), (float)(adjustYPos(y + width + ty)), paint);
 	}
 
@@ -129,6 +132,12 @@ public class CanvasPainter implements Painter {
 	@Override
 	public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
 		
+	}
+	
+	@Override
+	public void clear() {
+		paint.setStyle(Paint.Style.FILL);
+		c.drawRect(0, 0, width, height, paint);
 	}
 	
 	@Override

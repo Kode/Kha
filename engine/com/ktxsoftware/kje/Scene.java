@@ -177,7 +177,7 @@ public class Scene {
 	public void render(Painter painter) {
 		painter.translate(0, 0);
 		painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
-		painter.fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		painter.clear();
 		
 		int camx = adjustCamX();
 		

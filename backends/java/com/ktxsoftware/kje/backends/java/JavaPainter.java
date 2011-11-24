@@ -7,7 +7,7 @@ import java.awt.RenderingHints;
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
-public class JavaPainter implements Painter {
+public class JavaPainter extends Painter {
 	private Graphics2D g;
 	private double tx, ty;
 

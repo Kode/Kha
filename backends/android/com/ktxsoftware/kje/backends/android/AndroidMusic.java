@@ -34,7 +34,7 @@ public class AndroidMusic implements Music {
 	}
 	
 	public static void stopit() {
-		instance.stop();
+		if (instance != null) instance.stop();
 	}
 
 	@Override

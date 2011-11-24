@@ -14,7 +14,7 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
-public class WebGLPainter implements Painter {
+public class WebGLPainter extends Painter {
 	@SuppressWarnings("unused")
 	private int width, height;
 	
