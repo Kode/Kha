@@ -1,23 +1,25 @@
 package com.ktxsoftware.kje.backends.android;
 
 import android.content.Context;
+import android.opengl.GLSurfaceView;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-	private GameThread thread;
+public class GameView extends GLSurfaceView /*implements SurfaceHolder.Callback*/ {
+	//private GameThread thread;
 	//private int lastTouch;
 
 	public GameView(Context context) {
 		super(context);
-		SurfaceHolder holder = getHolder();
-		holder.addCallback(this);
-		thread = new GameThread(holder, context, getWidth(), getHeight());
-		setFocusable(true);
+		//SurfaceHolder holder = getHolder();
+		//holder.addCallback(this);
+		//thread = new GameThread(holder, context, getWidth(), getHeight());
+		//setFocusable(true);
+		setEGLContextClientVersion(2);
+        setRenderer(new OpenGLES20Renderer(context));
 	}
-
+/*
 	public boolean onTouchEvent(MotionEvent event) {
 		//if (gestureDetector == null) setupGestureDetector();
 		//gestureDetector.onTouchEvent(event);
@@ -33,34 +35,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			thread.mouseUp((int)event.getX(), (int)event.getY());
 			break;
 		}
-		
-		/*if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (event.getRawY() < getHeight() / 2) {
-				lastTouch = 0;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_UP);
-			}
-			else if (event.getRawX() < getWidth() / 2) {
-				lastTouch = 1;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_LEFT);
-			}
-			else {
-				lastTouch = 2;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_RIGHT);
-			}
-		}
-		else if (event.getAction() == MotionEvent.ACTION_UP) {
-			switch (lastTouch) {
-			case 0:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_UP);
-				break;
-			case 1:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_LEFT);
-				break;
-			case 2:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_RIGHT);
-				break;
-			}
-		}*/
 		return true;
 	}
 
@@ -101,5 +75,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			}
 		}
-	}
+	}*/
 }
