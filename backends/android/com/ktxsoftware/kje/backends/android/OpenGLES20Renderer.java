@@ -75,7 +75,9 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
         checkGlError("glDrawArrays");*/
         
         game.update();
+        painter.begin();
         game.render(painter);
+        painter.end();
     }
 
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
@@ -84,9 +86,11 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
         /*GLES20.glViewport(0, 0, width, height);
         float ratio = (float) width / height;
         Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);*/
+    	painter = new OpenGLPainter(width, height);
     }
 
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    	
         /*// Ignore the passed-in GL10 interface, and use the GLES20
         // class's static methods instead.
         mProgram = createProgram(mVertexShader, mFragmentShader);
@@ -150,7 +154,7 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
 
         Matrix.setLookAtM(mVMatrix, 0, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);*/
         
-        painter = new OpenGLPainter(width, height);
+        
     }
 
     private int loadShader(int shaderType, String source) {
