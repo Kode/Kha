@@ -17,7 +17,7 @@ public class GameView extends GLSurfaceView /*implements SurfaceHolder.Callback*
 		//thread = new GameThread(holder, context, getWidth(), getHeight());
 		//setFocusable(true);
 		setEGLContextClientVersion(2);
-        setRenderer(new OpenGLES20Renderer(context));
+        setRenderer(new OpenGLES20Renderer(context, getWidth(), getHeight()));
 	}
 /*
 	public boolean onTouchEvent(MotionEvent event) {

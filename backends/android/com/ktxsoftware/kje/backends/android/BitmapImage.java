@@ -2,6 +2,8 @@ package com.ktxsoftware.kje.backends.android;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.nio.Buffer;
+import java.nio.IntBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +33,9 @@ public class BitmapImage implements Image {
 	private WeakReference<Bitmap> bitmap;
 	private Bitmap b;
 	
+	public int tex;
+	private Buffer buffer;
+	
 	public BitmapImage(String name) {
 		this.name = name;
 		BitmapManager.add(this);
@@ -50,6 +55,15 @@ public class BitmapImage implements Image {
 	
 	void unload() {
 		b = null;
+	}
+	
+	public Buffer getBuffer() {
+		load();
+		if (buffer == null) {
+			buffer = IntBuffer.allocate(getBitmap().getWidth() * getBitmap().getHeight());
+			getBitmap().copyPixelsToBuffer(buffer);
+		}
+		return buffer;
 	}
 	
 	public Bitmap getBitmap() {

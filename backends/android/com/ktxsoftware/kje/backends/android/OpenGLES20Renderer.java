@@ -9,6 +9,9 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.ktxsoftware.kje.GameInfo;
+import com.ktxsoftware.kje.Loader;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,18 +23,27 @@ import android.os.SystemClock;
 import android.util.Log;
 
 class OpenGLES20Renderer implements GLSurfaceView.Renderer {
+	private com.ktxsoftware.kje.Game game;
+	private OpenGLPainter painter;
+	private int width, height;
+	
+	public OpenGLES20Renderer(Context context, int width, int height) {
+		mContext = context;
+		mTriangleVertices = ByteBuffer.allocateDirect(mTriangleVerticesData.length * FLOAT_SIZE_BYTES).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		mTriangleVertices.put(mTriangleVerticesData).position(0);
 
-    public OpenGLES20Renderer(Context context) {
-        mContext = context;
-        mTriangleVertices = ByteBuffer.allocateDirect(mTriangleVerticesData.length
-                * FLOAT_SIZE_BYTES).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mTriangleVertices.put(mTriangleVerticesData).position(0);
-    }
+		this.width = width;
+		this.height = height;
+		Loader.init(new ResourceLoader(context));
+		game = GameInfo.createGame();
+		Loader.getInstance().load();
+		game.init();
+	}
 
     public void onDrawFrame(GL10 glUnused) {
         // Ignore the passed-in GL10 interface, and use the GLES20
         // class's static methods instead.
-        GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        /*GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glUseProgram(mProgram);
         checkGlError("glUseProgram");
@@ -60,19 +72,22 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
 
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
-        checkGlError("glDrawArrays");
+        checkGlError("glDrawArrays");*/
+        
+        game.update();
+        game.render(painter);
     }
 
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Ignore the passed-in GL10 interface, and use the GLES20
         // class's static methods instead.
-        GLES20.glViewport(0, 0, width, height);
+        /*GLES20.glViewport(0, 0, width, height);
         float ratio = (float) width / height;
-        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);*/
     }
 
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        // Ignore the passed-in GL10 interface, and use the GLES20
+        /*// Ignore the passed-in GL10 interface, and use the GLES20
         // class's static methods instead.
         mProgram = createProgram(mVertexShader, mFragmentShader);
         if (mProgram == 0) {
@@ -95,10 +110,10 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
             throw new RuntimeException("Could not get attrib location for uMVPMatrix");
         }
 
-        /*
-         * Create our texture. This has to be done each time the
-         * surface is created.
-         */
+        //
+        // Create our texture. This has to be done each time the
+        // surface is created.
+        ///
 
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
@@ -117,23 +132,25 @@ class OpenGLES20Renderer implements GLSurfaceView.Renderer {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
                 GLES20.GL_REPEAT);
 
-        /*nputStream is = mContext.getResources()
-            .openRawResource(R.raw.robot);
-        Bitmap bitmap;
-        try {
-            bitmap = BitmapFactory.decodeStream(is);
-        } finally {
-            try {
-                is.close();
-            } catch(IOException e) {
-                // Ignore.
-            }
-        }
+        //nputStream is = mContext.getResources()
+        //    .openRawResource(R.raw.robot);
+        //Bitmap bitmap;
+        //try {
+        //    bitmap = BitmapFactory.decodeStream(is);
+        //} finally {
+        //    try {
+        //        is.close();
+        //    } catch(IOException e) {
+        //        // Ignore.
+        //    }
+        //}
 
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-        bitmap.recycle();*/
+        //GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+       // bitmap.recycle();
 
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mVMatrix, 0, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);*/
+        
+        painter = new OpenGLPainter(width, height);
     }
 
     private int loadShader(int shaderType, String source) {
