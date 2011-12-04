@@ -33,7 +33,7 @@ public class OpenGLPainter extends Painter {
 		mTriangleVertices = ByteBuffer.allocateDirect(mTriangleVerticesData.length * FLOAT_SIZE_BYTES).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		mTriangleVertices.put(mTriangleVerticesData).position(0);
 		
-		/*GLES20.glViewport(0, 0, width, height);
+		GLES20.glViewport(0, 0, width, height);
 		
 		initShaders();
 		GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
@@ -43,25 +43,14 @@ public class OpenGLPainter extends Painter {
 		//glContext.depthFunc(WebGLRenderingContext.LEQUAL);
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		initBuffers();*/
+		//initBuffers();
 		
-		
-		mProgram = createProgram(mVertexShader, mFragmentShader);
+		/*mProgram = createProgram(mVertexShader, mFragmentShader);
         if (mProgram == 0) {
             return;
-        }
-        maPositionHandle = GLES20.glGetAttribLocation(mProgram, "aPosition");
-        checkGlError("glGetAttribLocation aPosition");
-        if (maPositionHandle == -1) {
-            throw new RuntimeException("Could not get attrib location for aPosition");
-        }
-        maTextureHandle = GLES20.glGetAttribLocation(mProgram, "aTextureCoord");
-        checkGlError("glGetAttribLocation aTextureCoord");
-        if (maTextureHandle == -1) {
-            throw new RuntimeException("Could not get attrib location for aTextureCoord");
-        }
+        }*/
 
-        muMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        muMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "projectionMatrix");
         checkGlError("glGetUniformLocation uMVPMatrix");
         if (muMVPMatrixHandle == -1) {
             throw new RuntimeException("Could not get attrib location for uMVPMatrix");
@@ -84,24 +73,7 @@ public class OpenGLPainter extends Painter {
                 GLES20.GL_REPEAT);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
                 GLES20.GL_REPEAT);
-
-        //nputStream is = mContext.getResources()
-        //    .openRawResource(R.raw.robot);
-        //Bitmap bitmap;
-        //try {
-        //    bitmap = BitmapFactory.decodeStream(is);
-        //} finally {
-        //    try {
-        //        is.close();
-        //    } catch(IOException e) {
-        //        // Ignore.
-        //    }
-        //}
-
-        //GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-       // bitmap.recycle();
         
-        GLES20.glViewport(0, 0, width, height);
         float ratio = (float) width / height;
         Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
@@ -406,7 +378,7 @@ public class OpenGLPainter extends Painter {
 	
 	@Override
 	public void begin() {
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
 	}
 	
 	@Override
@@ -414,25 +386,25 @@ public class OpenGLPainter extends Painter {
 		/*if (bufferIndex > 0) drawBuffer();
 		lastTexture = null;*/
 		
-		GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-        GLES20.glUseProgram(mProgram);
+		//GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        //GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glUseProgram(shaderProgram);
         checkGlError("glUseProgram");
         
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureID);
 
         mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
-        GLES20.glVertexAttribPointer(maPositionHandle, 3, GLES20.GL_FLOAT, false,
+        GLES20.glVertexAttribPointer(vertexPositionAttribute, 3, GLES20.GL_FLOAT, false,
                 TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
         checkGlError("glVertexAttribPointer maPosition");
         mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
-        GLES20.glEnableVertexAttribArray(maPositionHandle);
+        GLES20.glEnableVertexAttribArray(vertexPositionAttribute);
         checkGlError("glEnableVertexAttribArray maPositionHandle");
-        GLES20.glVertexAttribPointer(maTextureHandle, 2, GLES20.GL_FLOAT, false,
+        GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false,
                 TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
         checkGlError("glVertexAttribPointer maTextureHandle");
-        GLES20.glEnableVertexAttribArray(maTextureHandle);
+        GLES20.glEnableVertexAttribArray(texCoordAttribute);
         checkGlError("glEnableVertexAttribArray maTextureHandle");
 
         long time = SystemClock.uptimeMillis() % 4000L;
@@ -456,53 +428,6 @@ public class OpenGLPainter extends Painter {
         }
     }
 	
-	private int loadShader(int shaderType, String source) {
-        int shader = GLES20.glCreateShader(shaderType);
-        if (shader != 0) {
-            GLES20.glShaderSource(shader, source);
-            GLES20.glCompileShader(shader);
-            int[] compiled = new int[1];
-            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-            if (compiled[0] == 0) {
-                Log.e(TAG, "Could not compile shader " + shaderType + ":");
-                Log.e(TAG, GLES20.glGetShaderInfoLog(shader));
-                GLES20.glDeleteShader(shader);
-                shader = 0;
-            }
-        }
-        return shader;
-    }
-
-    private int createProgram(String vertexSource, String fragmentSource) {
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
-        if (vertexShader == 0) {
-            return 0;
-        }
-
-        int pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
-        if (pixelShader == 0) {
-            return 0;
-        }
-
-        int program = GLES20.glCreateProgram();
-        if (program != 0) {
-            GLES20.glAttachShader(program, vertexShader);
-            checkGlError("glAttachShader");
-            GLES20.glAttachShader(program, pixelShader);
-            checkGlError("glAttachShader");
-            GLES20.glLinkProgram(program);
-            int[] linkStatus = new int[1];
-            GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
-            if (linkStatus[0] != GLES20.GL_TRUE) {
-                Log.e(TAG, "Could not link program: ");
-                Log.e(TAG, GLES20.glGetProgramInfoLog(program));
-                GLES20.glDeleteProgram(program);
-                program = 0;
-            }
-        }
-        return program;
-    }
-	
 	private static final int FLOAT_SIZE_BYTES = 4;
     private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
     private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
@@ -515,35 +440,16 @@ public class OpenGLPainter extends Painter {
 
     private FloatBuffer mTriangleVertices;
 
-    private final String mVertexShader =
-        "uniform mat4 uMVPMatrix;\n" +
-        "attribute vec4 aPosition;\n" +
-        "attribute vec2 aTextureCoord;\n" +
-        "varying vec2 vTextureCoord;\n" +
-        "void main() {\n" +
-        "  gl_Position = uMVPMatrix * aPosition;\n" +
-        "  vTextureCoord = aTextureCoord;\n" +
-        "}\n";
-
-    private final String mFragmentShader =
-        "precision mediump float;\n" +
-        "varying vec2 vTextureCoord;\n" +
-        "uniform sampler2D sTexture;\n" +
-        "void main() {\n" +
-        "  gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
-        "}\n";
-
     private float[] mMVPMatrix = new float[16];
     private float[] mProjMatrix = new float[16];
     private float[] mMMatrix = new float[16];
     private float[] mVMatrix = new float[16];
 
-    private int mProgram;
+    //private int mProgram;
     private int mTextureID;
     private int muMVPMatrixHandle;
-    private int maPositionHandle;
-    private int maTextureHandle;
+    //private int maPositionHandle;
+    //private int maTextureHandle;
 
-    private Context mContext;
     private static String TAG = "GLES20TriangleRenderer";
 }
