@@ -28,14 +28,17 @@ public class OpenGLPainter extends Painter {
 	private double tx, ty;
 	private int matrixLocation;
 	private float[] projectionMatrix;
+	private int width, height;
 	
 	public OpenGLPainter(int width, int height) {
+		this.width = width;
+		this.height = height;
 		mTriangleVertices = ByteBuffer.allocateDirect(30 * FLOAT_SIZE_BYTES * bufferSize).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		
 		GLES20.glViewport(0, 0, width, height);
 		
 		initShaders();
-		GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GLES20.glClearDepthf(1.0f);
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -45,6 +48,51 @@ public class OpenGLPainter extends Painter {
 		Matrix.orthoM(projectionMatrix, 0, 0, width, height, 0, 0.1f, 1000.0f);
 		matrixLocation = GLES20.glGetUniformLocation(shaderProgram, "projectionMatrix");
 		GLES20.glUniformMatrix4fv(matrixLocation, 1, false, projectionMatrix, 0);
+	}
+	
+	private double getFactor() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return (double)height / (double)com.ktxsoftware.kje.Game.getInstance().getHeight();
+		else
+			return (double)width / (double)com.ktxsoftware.kje.Game.getInstance().getWidth();
+	}
+	
+	private double getXOffset() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return width / 2 - com.ktxsoftware.kje.Game.getInstance().getWidth() * getFactor() / 2;
+		else
+			return 0;
+	}
+	
+	private double getYOffset() {
+		if ((double)width / (double)height > (double)com.ktxsoftware.kje.Game.getInstance().getWidth() / (double)com.ktxsoftware.kje.Game.getInstance().getHeight())
+			return 0;
+		else
+			return height / 2 - com.ktxsoftware.kje.Game.getInstance().getHeight() * getFactor() / 2;
+	}
+	
+	private double adjustX(double x) {
+		return x * getFactor();
+	}
+	
+	private double adjustY(double y) {
+		return y * getFactor();
+	}
+	
+	public double adjustXPos(double x) {
+		return adjustX(x) + getXOffset();
+	}
+	
+	public double adjustYPos(double y) {
+		return adjustY(y) + getYOffset();
+	}
+	
+	public double adjustXPosInv(double x) {
+		return (x - getXOffset()) / getFactor();
+	}
+	
+	public double adjustYPosInv(double y) {
+		return (y - getYOffset()) / getFactor();
 	}
 	
 	private void initShaders() {
@@ -153,6 +201,7 @@ public class OpenGLPainter extends Painter {
 		checkErrors();
 	}
 	
+	@SuppressWarnings("unused")
 	private float[] ortho(float left, float right, float bottom, float top, float zn, float zf) {
 		float tx = -(right + left) / (right - left);
 		float ty = -(top + bottom) / (top - bottom);
@@ -172,6 +221,7 @@ public class OpenGLPainter extends Painter {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void setRectVertices(float left, float top, float right, float bottom) {
 		int baseIndex = bufferIndex * 3 * 4;
 		rectVertices.put(baseIndex + 0, left  );
@@ -196,6 +246,7 @@ public class OpenGLPainter extends Painter {
 		//gl.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, bufferIndex * 3 * 6 * 4, rectVerticesCache);
 	}
 	
+	@SuppressWarnings("unused")
 	private void setRectTexCoords(float left, float top, float right, float bottom) {
 		int baseIndex = bufferIndex * 2 * 4;
 		rectTexCoords.put(baseIndex + 0, left  );
@@ -286,19 +337,24 @@ public class OpenGLPainter extends Painter {
 		
 		//setTexture((BitmapImage)img);
 		
+		float x1 = (float)adjustXPos(dx + tx);
+		float y1 = (float)adjustYPos(dy + ty);
+		float x2 = (float)adjustXPos(dx + dw + tx);
+		float y2 = (float)adjustYPos(dy + dh + ty);
+		
 		float u1 = (float)(sx / img.getWidth());
 		float v1 = (float)(sy / img.getHeight());
 		float u2 = (float)((sx + sw) / img.getWidth());
 		float v2 = (float)((sy + sh) / img.getHeight());
 		
 		//mTriangleVertices.position(0);
-		mTriangleVertices.put((float)(dx + tx)); mTriangleVertices.put((float)(dy + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v1);
-		mTriangleVertices.put((float)(dx + dw + tx)); mTriangleVertices.put((float)(dy + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v1);
-		mTriangleVertices.put((float)(dx + tx)); mTriangleVertices.put((float)(dy + dh + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v2);
+		mTriangleVertices.put(x1); mTriangleVertices.put(y1); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v1);
+		mTriangleVertices.put(x2); mTriangleVertices.put(y1); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v1);
+		mTriangleVertices.put(x1); mTriangleVertices.put(y2); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v2);
 		
-		mTriangleVertices.put((float)(dx + dw + tx)); mTriangleVertices.put((float)(dy + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v1);
-		mTriangleVertices.put((float)(dx + dw + tx)); mTriangleVertices.put((float)(dy + dh + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v2);
-		mTriangleVertices.put((float)(dx + tx)); mTriangleVertices.put((float)(dy + dh + ty)); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v2);
+		mTriangleVertices.put(x2); mTriangleVertices.put(y1); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v1);
+		mTriangleVertices.put(x2); mTriangleVertices.put(y2); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u2); mTriangleVertices.put(v2);
+		mTriangleVertices.put(x1); mTriangleVertices.put(y2); mTriangleVertices.put(-1.0f); mTriangleVertices.put(u1); mTriangleVertices.put(v2);
 		
 		++bufferIndex;
 		lastTexture = img;

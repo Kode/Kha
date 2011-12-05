@@ -4,35 +4,29 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 
-public class GameView extends GLSurfaceView /*implements SurfaceHolder.Callback*/ {
-	//private GameThread thread;
-	//private int lastTouch;
-
+public class GameView extends GLSurfaceView {
+	private OpenGLES20Renderer renderer;
+	
 	public GameView(Context context) {
 		super(context);
-		//SurfaceHolder holder = getHolder();
-		//holder.addCallback(this);
-		//thread = new GameThread(holder, context, getWidth(), getHeight());
-		//setFocusable(true);
 		setEGLContextClientVersion(2);
-        setRenderer(new OpenGLES20Renderer(context, getWidth(), getHeight()));
+		renderer = new OpenGLES20Renderer(context);
+        setRenderer(renderer);
+        setFocusable(true);
+		requestFocus();
 	}
-/*
-	public boolean onTouchEvent(MotionEvent event) {
-		//if (gestureDetector == null) setupGestureDetector();
-		//gestureDetector.onTouchEvent(event);
 
+	public boolean onTouchEvent(MotionEvent event) {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			thread.mouseDown((int)event.getX(), (int)event.getY());
+			renderer.mouseDown((int)event.getX(), (int)event.getY());
 			break;
 		case MotionEvent.ACTION_MOVE:
-			thread.mouseMove((int)event.getX(), (int)event.getY());
+			renderer.mouseMove((int)event.getX(), (int)event.getY());
 			break;
 		case MotionEvent.ACTION_UP:
-			thread.mouseUp((int)event.getX(), (int)event.getY());
+			renderer.mouseUp((int)event.getX(), (int)event.getY());
 			break;
 		}
 		return true;
@@ -41,39 +35,11 @@ public class GameView extends GLSurfaceView /*implements SurfaceHolder.Callback*
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent msg) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && msg.isAltPressed()) return true; //Circle button on Xperia Play
-		return thread.keyDown(keyCode);
+		return renderer.keyDown(keyCode);
 	}
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent msg) {
-		return thread.keyUp(keyCode);
+		return renderer.keyUp(keyCode);
 	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasWindowFocus) {
-
-	}
-
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		thread.setSurfaceSize(width, height);
-	}
-
-	public void surfaceCreated(SurfaceHolder holder) {
-		thread.setRunning(true);
-		thread.start();
-	}
-
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		boolean retry = true;
-		thread.setRunning(false);
-		while (retry) {
-			try {
-				thread.join();
-				retry = false;
-			}
-			catch (InterruptedException e) {
-
-			}
-		}
-	}*/
 }
