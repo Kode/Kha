@@ -11,7 +11,7 @@ public class Game extends Activity {
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         mView = new GameView(getApplication());
         setContentView(mView);
     }

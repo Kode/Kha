@@ -3,6 +3,7 @@ package com.ktxsoftware.kje.backends.android;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class BitmapImage implements Image {
 	private WeakReference<Bitmap> bitmap;
 	private Bitmap b;
 	
-	public int tex;
+	public int tex = -1;
 	private Buffer buffer;
 	
 	public BitmapImage(String name) {
@@ -60,7 +61,7 @@ public class BitmapImage implements Image {
 	public Buffer getBuffer() {
 		load();
 		if (buffer == null) {
-			buffer = IntBuffer.allocate(getBitmap().getWidth() * getBitmap().getHeight());
+			buffer = ByteBuffer.allocateDirect(getBitmap().getWidth() * getBitmap().getHeight() * 4);
 			getBitmap().copyPixelsToBuffer(buffer);
 		}
 		return buffer;

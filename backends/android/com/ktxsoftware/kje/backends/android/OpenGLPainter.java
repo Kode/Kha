@@ -7,6 +7,7 @@ import java.nio.IntBuffer;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
@@ -144,8 +145,8 @@ public class OpenGLPainter extends Painter {
 	}
 	
 	private void initBuffers() {
-		/*triangleVertexBuffer = createBuffer();
-		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, triangleVertexBuffer);
+		triangleVertexBuffer = createBuffer();
+		/*GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, triangleVertexBuffer);
 		triangleVertices = ByteBuffer.allocateDirect(3 * 3 * 4);
 		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, triangleVertices.capacity(), triangleVertices, GLES20.GL_DYNAMIC_DRAW);
 		
@@ -254,7 +255,7 @@ public class OpenGLPainter extends Painter {
 	}
 
 	private void setTexture(BitmapImage img) {
-		if (img.tex == 0) {
+		if (img.tex == -1) {
 			img.tex = createTexture();
 			GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, img.tex);
@@ -263,10 +264,15 @@ public class OpenGLPainter extends Painter {
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, img.getBuffer());
-			GLES20.glUniform1i(textureUniform, 0);
+			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img.getBitmap(), 0);
+			//GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, img.getBuffer());
+			//GLES20.glUniform1i(textureUniform, GLES20.GL_TEXTURE0);
 		}
 		else GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, img.tex);
+		
+		if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
+			System.err.println("GL Error");
+		}
 	}
 	
 	private void drawBuffer() {
@@ -287,17 +293,7 @@ public class OpenGLPainter extends Painter {
 	
 	@Override
 	public void drawImage(Image img, double x, double y) {
-		/*if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
-		
-		float left = (float)(tx + x);
-		float top = (float)(ty + y);
-		float right = (float)(tx + x + img.getWidth());
-		float bottom = (float)(ty + y + img.getHeight());
-		
-		setRectTexCoords(0, 0, 1, 1);
-		setRectVertices(left, top, right, bottom);
-		++bufferIndex;
-		lastTexture = img;*/
+		drawImage(img, 0, 0, img.getWidth(), img.getHeight(), x, y, img.getWidth(), img.getHeight());
 	}
 	
 	@Override
@@ -313,6 +309,33 @@ public class OpenGLPainter extends Painter {
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
 		lastTexture = img;*/
+		
+		setTexture((BitmapImage)img);
+		
+		float u1 = (float)(sx / img.getWidth());
+		float v1 = (float)(sy / img.getHeight());
+		float u2 = (float)((sx + sw) / img.getWidth());
+		float v2 = (float)((sy + sh) / img.getHeight());
+		
+		mTriangleVerticesData[0] = (float)(dx + tx); mTriangleVerticesData[1] = (float)(dy + ty); mTriangleVerticesData[2] = -1.0f; mTriangleVerticesData[3] = u1; mTriangleVerticesData[4] = v1;
+		mTriangleVerticesData[5] = (float)(dx + dw + tx); mTriangleVerticesData[6] = (float)(dy + ty); mTriangleVerticesData[7] = -1.0f; mTriangleVerticesData[8] = u2; mTriangleVerticesData[9] = v1;
+		mTriangleVerticesData[10] = (float)(dx + tx); mTriangleVerticesData[11] = (float)(dy + dh + ty); mTriangleVerticesData[12] = -1.0f; mTriangleVerticesData[13] = u1; mTriangleVerticesData[14] = v2;
+		
+		mTriangleVerticesData[15] = (float)(dx + dw + tx); mTriangleVerticesData[16] = (float)(dy + ty); mTriangleVerticesData[17] = -1.0f; mTriangleVerticesData[18] = u2; mTriangleVerticesData[19] = v1;
+		mTriangleVerticesData[20] = (float)(dx + dw + tx); mTriangleVerticesData[21] = (float)(dy + dh + ty); mTriangleVerticesData[22] = -1.0f; mTriangleVerticesData[23] = u2; mTriangleVerticesData[24] = v2;
+		mTriangleVerticesData[25] = (float)(dx + tx); mTriangleVerticesData[26] = (float)(dy + dh + ty); mTriangleVerticesData[27] = -1.0f; mTriangleVerticesData[28] = u1; mTriangleVerticesData[29] = v2;
+		
+		mTriangleVertices.position(0);
+		mTriangleVertices.put(mTriangleVerticesData).position(0);
+		mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
+        GLES20.glVertexAttribPointer(vertexPositionAttribute, 3, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+        mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
+        GLES20.glEnableVertexAttribArray(vertexPositionAttribute);
+        GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+        GLES20.glEnableVertexAttribArray(texCoordAttribute);
+
+        GLES20.glUniformMatrix4fv(matrixLocation, 1, false, projectionMatrix, 0);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3 * 2);
 	}
 	
 	@Override
@@ -376,16 +399,6 @@ public class OpenGLPainter extends Painter {
 	public void end() {
 		/*if (bufferIndex > 0) drawBuffer();
 		lastTexture = null;*/
-		
-        mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
-        GLES20.glVertexAttribPointer(vertexPositionAttribute, 3, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
-        mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
-        GLES20.glEnableVertexAttribArray(vertexPositionAttribute);
-        GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
-        GLES20.glEnableVertexAttribArray(texCoordAttribute);
-
-        GLES20.glUniformMatrix4fv(matrixLocation, 1, false, projectionMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3 * 100 * 100);
 	}
 	
 	private static final int FLOAT_SIZE_BYTES = 4;
