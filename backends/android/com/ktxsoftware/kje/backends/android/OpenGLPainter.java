@@ -32,6 +32,28 @@ public class OpenGLPainter extends Painter {
 	private float[] projectionMatrix;
 	
 	public OpenGLPainter(int width, int height) {
+		mTriangleVerticesData = new float[]{
+				// X, Y, Z, U, V
+				-80.0f, 40.0f, 1.0f, 0, 0,
+				-40.0f, 40.0f, 1.0f, 0, 0,
+				-40.0f, 80.0f, 1.0f, 0,  0,
+
+				-80.0f, 40.0f, 1.0f, 0, 0,
+				-80.0f, 80.0f, 1.0f, 0, 0,
+				-40.0f, 80.0f, 1.0f, 0,  0,
+				
+			};
+		
+		mTriangleVerticesData = new float[5 * 3 * 100 * 100];
+		for (int x = -50; x < 50; ++x) {
+			for (int y = -50; y < 50; ++y) {
+				int index = (x + 50) * 5 * 3 + (y + 50) * 100 * 5 * 3;
+				mTriangleVerticesData[index +  0] = (x + 0) * 10; mTriangleVerticesData[index +  1] = (y + 0) * 10; mTriangleVerticesData[index +  2] = 1.0f; mTriangleVerticesData[index +  3] = 0; mTriangleVerticesData[index +  4] = 0;
+				mTriangleVerticesData[index +  5] = (x + 0) * 10; mTriangleVerticesData[index +  6] = (y + 1) * 10; mTriangleVerticesData[index +  7] = 1.0f; mTriangleVerticesData[index +  8] = 0; mTriangleVerticesData[index +  9] = 0;
+				mTriangleVerticesData[index + 10] = (x + 1) * 10; mTriangleVerticesData[index + 11] = (y + 0) * 10; mTriangleVerticesData[index + 12] = 1.0f; mTriangleVerticesData[index + 13] = 0; mTriangleVerticesData[index + 14] = 0;
+			}
+		}
+		
 		mTriangleVertices = ByteBuffer.allocateDirect(mTriangleVerticesData.length * FLOAT_SIZE_BYTES).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		mTriangleVertices.put(mTriangleVerticesData).position(0);
 		
@@ -44,6 +66,7 @@ public class OpenGLPainter extends Painter {
 		//glContext.enable(WebGLRenderingContext.TEXTURE_2D);
 		//glContext.depthFunc(WebGLRenderingContext.LEQUAL);
 		GLES20.glEnable(GLES20.GL_BLEND);
+		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		initBuffers();
 		
@@ -365,24 +388,19 @@ public class OpenGLPainter extends Painter {
         Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix, 0, mVMatrix, 0);
 
         GLES20.glUniformMatrix4fv(matrixLocation, 1, false, mMVPMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3 * 100 * 100);
 		
 		GLES20.glFlush();
 		//java.lang.System.err.println("frame end");
 	}
 	
 	private static final int FLOAT_SIZE_BYTES = 4;
-    private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
-    private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
-    private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
-    private final float[] mTriangleVerticesData = {
-            // X, Y, Z, U, V
-            -200.0f, 20.0f, 1.0f, 0, 0,
-            40.0f, 20.0f, 1.0f, 0, 0,
-            40.0f, 400.0f, 1.0f, 0,  0 };
-
-    private FloatBuffer mTriangleVertices;
-
-    private float[] mMVPMatrix = new float[16];
-    private float[] mVMatrix = new float[16];
+	private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
+	private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
+	private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
+	private float[] mTriangleVerticesData;
+	
+	private FloatBuffer mTriangleVertices;
+	private float[] mMVPMatrix = new float[16];
+	private float[] mVMatrix = new float[16];
 }
