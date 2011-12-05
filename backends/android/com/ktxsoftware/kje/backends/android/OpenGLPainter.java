@@ -47,8 +47,6 @@ public class OpenGLPainter extends Painter {
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		initBuffers();
 		
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f); //**
-		
 		projectionMatrix = new float[16];//ortho(0, width, height, 0, 0.1f, 1000);
 		Matrix.orthoM(projectionMatrix, 0, 0, width, height, 0, 0.1f, 1000.0f);
 		matrixLocation = GLES20.glGetUniformLocation(shaderProgram, "projectionMatrix");
@@ -357,17 +355,14 @@ public class OpenGLPainter extends Painter {
 		lastTexture = null;*/
 		
         mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
-        GLES20.glVertexAttribPointer(vertexPositionAttribute, 3, GLES20.GL_FLOAT, false,
-                TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+        GLES20.glVertexAttribPointer(vertexPositionAttribute, 3, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
         mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
         GLES20.glEnableVertexAttribArray(vertexPositionAttribute);
-        GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false,
-                TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+        GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
         GLES20.glEnableVertexAttribArray(texCoordAttribute);
 
-        Matrix.setRotateM(mMMatrix, 0, 20, 0, 0, 1.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, mMMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix, 0, mMVPMatrix, 0);
+        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 0f, 0f, 0f, 1.0f, 0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix, 0, mVMatrix, 0);
 
         GLES20.glUniformMatrix4fv(matrixLocation, 1, false, mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
@@ -382,13 +377,12 @@ public class OpenGLPainter extends Painter {
     private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
     private final float[] mTriangleVerticesData = {
             // X, Y, Z, U, V
-            -1.0f, -0.5f, 0, -0.5f, 0.0f,
-            300.0f, -0.5f, 0, 1.5f, -0.0f,
-            0.0f,  300.11803399f, 0, 0.5f,  1.61803399f };
+            -200.0f, 20.0f, 1.0f, 0, 0,
+            40.0f, 20.0f, 1.0f, 0, 0,
+            40.0f, 400.0f, 1.0f, 0,  0 };
 
     private FloatBuffer mTriangleVertices;
 
     private float[] mMVPMatrix = new float[16];
-    private float[] mMMatrix = new float[16];
     private float[] mVMatrix = new float[16];
 }
