@@ -48,9 +48,9 @@ public class OpenGLPainter extends Painter {
 		for (int x = -50; x < 50; ++x) {
 			for (int y = -50; y < 50; ++y) {
 				int index = (x + 50) * 5 * 3 + (y + 50) * 100 * 5 * 3;
-				mTriangleVerticesData[index +  0] = (x + 0) * 10; mTriangleVerticesData[index +  1] = (y + 0) * 10; mTriangleVerticesData[index +  2] = 1.0f; mTriangleVerticesData[index +  3] = 0; mTriangleVerticesData[index +  4] = 0;
-				mTriangleVerticesData[index +  5] = (x + 0) * 10; mTriangleVerticesData[index +  6] = (y + 1) * 10; mTriangleVerticesData[index +  7] = 1.0f; mTriangleVerticesData[index +  8] = 0; mTriangleVerticesData[index +  9] = 0;
-				mTriangleVerticesData[index + 10] = (x + 1) * 10; mTriangleVerticesData[index + 11] = (y + 0) * 10; mTriangleVerticesData[index + 12] = 1.0f; mTriangleVerticesData[index + 13] = 0; mTriangleVerticesData[index + 14] = 0;
+				mTriangleVerticesData[index +  0] = (x + 0) * 10; mTriangleVerticesData[index +  1] = (y + 0) * 10; mTriangleVerticesData[index +  2] = -1.0f; mTriangleVerticesData[index +  3] = 0; mTriangleVerticesData[index +  4] = 0;
+				mTriangleVerticesData[index +  5] = (x + 0) * 10; mTriangleVerticesData[index +  6] = (y + 1) * 10; mTriangleVerticesData[index +  7] = -1.0f; mTriangleVerticesData[index +  8] = 0; mTriangleVerticesData[index +  9] = 0;
+				mTriangleVerticesData[index + 10] = (x + 1) * 10; mTriangleVerticesData[index + 11] = (y + 0) * 10; mTriangleVerticesData[index + 12] = -1.0f; mTriangleVerticesData[index + 13] = 0; mTriangleVerticesData[index + 14] = 0;
 			}
 		}
 		
@@ -66,7 +66,7 @@ public class OpenGLPainter extends Painter {
 		//glContext.enable(WebGLRenderingContext.TEXTURE_2D);
 		//glContext.depthFunc(WebGLRenderingContext.LEQUAL);
 		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+		//GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		initBuffers();
 		
@@ -384,14 +384,8 @@ public class OpenGLPainter extends Painter {
         GLES20.glVertexAttribPointer(texCoordAttribute, 2, GLES20.GL_FLOAT, false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
         GLES20.glEnableVertexAttribArray(texCoordAttribute);
 
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 0f, 0f, 0f, 1.0f, 0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix, 0, mVMatrix, 0);
-
-        GLES20.glUniformMatrix4fv(matrixLocation, 1, false, mMVPMatrix, 0);
+        GLES20.glUniformMatrix4fv(matrixLocation, 1, false, projectionMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3 * 100 * 100);
-		
-		GLES20.glFlush();
-		//java.lang.System.err.println("frame end");
 	}
 	
 	private static final int FLOAT_SIZE_BYTES = 4;
@@ -401,6 +395,4 @@ public class OpenGLPainter extends Painter {
 	private float[] mTriangleVerticesData;
 	
 	private FloatBuffer mTriangleVertices;
-	private float[] mMVPMatrix = new float[16];
-	private float[] mVMatrix = new float[16];
 }
