@@ -10,7 +10,7 @@ import com.ktxsoftware.kje.Font;
 import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
-public class IE6Painter implements Painter {
+public class IE6Painter extends Painter {
 	private double tx, ty;
 	private List<com.google.gwt.user.client.ui.Image> images = new ArrayList<com.google.gwt.user.client.ui.Image>();
 	private AbsolutePanel panel;
