@@ -9,16 +9,17 @@ import com.ktxsoftware.kje.Image;
 import com.ktxsoftware.kje.Painter;
 
 public class CanvasPainter extends Painter {
+	private static CanvasPainter instance;
 	private int width, height;
 
     private Canvas2 canvas;
-    private Context2d context;
+    public Context2d context;
 	private double tx, ty;
 	
 	public CanvasPainter(FocusPanel panel, int width, int height) {
 		this.width = width;
 		this.height = height;
-
+		instance = this;
 		canvas = Canvas2.createIfSupported();
 		String agent = getUserAgent().toLowerCase();
 		if ((agent.contains("msie 8") || agent.contains("msie 7") || agent.contains("msie 6")) && !agent.contains("opera")) initCanvas(canvas.getCanvasElement());
@@ -29,6 +30,10 @@ public class CanvasPainter extends Painter {
 		context = canvas.getContext2d();
 		
 		panel.add(canvas);
+	}
+	
+	public static CanvasPainter getInstance() {
+		return instance;
 	}
 	
 	public static native void initCanvas(CanvasElement canvas) /*-{
@@ -83,7 +88,8 @@ public class CanvasPainter extends Painter {
 
 	@Override
 	public void setFont(Font font) {
-		context.setFont(((WebFont)font).name);
+		WebFont webfont = (WebFont)font;
+		context.setFont(webfont.size + "px " + webfont.name);
 	}
 
 	@Override

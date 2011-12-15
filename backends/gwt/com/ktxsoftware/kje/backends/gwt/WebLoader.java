@@ -170,7 +170,7 @@ public class WebLoader extends Loader {
 
 	@Override
 	public Font loadFont(String name, int style, int size) {
-		return new WebFont(name);
+		return new WebFont(name, style, size);
 	}
 	
 	@Override
