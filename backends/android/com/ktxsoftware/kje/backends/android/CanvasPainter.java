@@ -23,6 +23,8 @@ public class CanvasPainter extends Painter {
 		this.height = height;
 		paint = new Paint();
 		paint.setFilterBitmap(true);
+		paint.setSubpixelText(true);
+		paint.setAntiAlias(true);
 	}
 	
 	private double getFactor() {
