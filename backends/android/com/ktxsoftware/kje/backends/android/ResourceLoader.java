@@ -69,7 +69,7 @@ public class ResourceLoader extends Loader {
 	
 	@Override
 	public Font loadFont(String name, int style, int size) {
-		return new AndroidFont(name);
+		return new AndroidFont(name, style, size);
 	}
 
 	@Override

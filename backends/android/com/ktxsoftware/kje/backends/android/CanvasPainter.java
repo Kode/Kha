@@ -17,7 +17,7 @@ public class CanvasPainter extends Painter {
 	private double tx, ty;
 	private int width, height;
 	
-	CanvasPainter(Canvas c, int width, int height) {
+	public CanvasPainter(Canvas c, int width, int height) {
 		this.c = c;
 		this.width = width;
 		this.height = height;
@@ -116,7 +116,9 @@ public class CanvasPainter extends Painter {
 
 	@Override
 	public void setFont(Font font) {
-		paint.setTypeface(Typeface.create(((AndroidFont)font).name, Typeface.NORMAL));
+		AndroidFont afont = (AndroidFont)font;
+		paint.setTypeface(Typeface.create(afont.name, Typeface.NORMAL));
+		paint.setTextSize((float)afont.size * (float)getFactor());
 	}
 
 	@Override
