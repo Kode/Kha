@@ -14,8 +14,8 @@ public class WebSound implements Sound {
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();
-			if (element.canPlayType("audio/mp3") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
-			else element.setSrc(filename + ".mp3");
+			if (element.canPlayType("audio/mp4") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
+			else element.setSrc(filename + ".mp4");
 			element.setPreload(MediaElement.PRELOAD_AUTO);
 		}
 	}
@@ -23,7 +23,12 @@ public class WebSound implements Sound {
 	@Override
 	public void play() {
 		if (element == null) return;
-		element.setCurrentTime(0);
+		try {
+			element.setCurrentTime(0);
+		}
+		catch (Exception ex) {
+			
+		}
 		element.play();
 	}
 

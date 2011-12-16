@@ -15,8 +15,8 @@ public class WebMusic implements Music {
 		if (audio != null) {
 			RootPanel.get().add(audio);
 			element = audio.getAudioElement();
-			if (element.canPlayType("audio/mp3") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
-			else element.setSrc(filename + ".mp3");
+			if (element.canPlayType("audio/mp4") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
+			else element.setSrc(filename + ".mp4");
 			element.setAttribute("loop", "true");
 			element.setPreload(MediaElement.PRELOAD_AUTO);
 		}
