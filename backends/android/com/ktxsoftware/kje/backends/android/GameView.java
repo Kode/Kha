@@ -19,9 +19,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
-		//if (gestureDetector == null) setupGestureDetector();
-		//gestureDetector.onTouchEvent(event);
-
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			thread.mouseDown((int)event.getX(), (int)event.getY());
@@ -33,34 +30,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			thread.mouseUp((int)event.getX(), (int)event.getY());
 			break;
 		}
-		
-		/*if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (event.getRawY() < getHeight() / 2) {
-				lastTouch = 0;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_UP);
-			}
-			else if (event.getRawX() < getWidth() / 2) {
-				lastTouch = 1;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_LEFT);
-			}
-			else {
-				lastTouch = 2;
-				thread.keyDown(KeyEvent.KEYCODE_DPAD_RIGHT);
-			}
-		}
-		else if (event.getAction() == MotionEvent.ACTION_UP) {
-			switch (lastTouch) {
-			case 0:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_UP);
-				break;
-			case 1:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_LEFT);
-				break;
-			case 2:
-				thread.keyUp(KeyEvent.KEYCODE_DPAD_RIGHT);
-				break;
-			}
-		}*/
 		return true;
 	}
 

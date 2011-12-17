@@ -8,7 +8,6 @@ import android.view.SurfaceHolder;
 import com.ktxsoftware.kje.GameInfo;
 import com.ktxsoftware.kje.Key;
 import com.ktxsoftware.kje.Loader;
-import com.ktxsoftware.kje.Painter;
 
 public class GameThread extends Thread {
 	private boolean running = false;
@@ -38,8 +37,8 @@ public class GameThread extends Thread {
 				c = surface.lockCanvas(null);
 				p = new CanvasPainter(c, width, height);
 				synchronized (surface) {
-					updateGame();
-					doDraw(p);
+					game.update();
+					game.render(p);
 				}
 			}
 			finally {
@@ -115,27 +114,24 @@ public class GameThread extends Thread {
 		}
 	}
 
-	private void updateGame() {
-		game.update();
-	}
-
-	private void doDraw(Painter painter) {
-		game.render(painter);
+	boolean mouseDown(int x, int y) {
+		synchronized (surface) {
+			game.mouseDown((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+		}
+		return true;
 	}
 	
-	boolean mouseDown(int x, int y){
-	    game.mouseDown((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+	boolean mouseUp(int x, int y) {
+		synchronized (surface) {
+			game.mouseUp((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+		}
+		return true;
+	}
+	
+	boolean mouseMove(int x, int y) {
+		synchronized (surface) {
+			game.mouseMove((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
+		}
 	    return true;
 	}
-	
-	boolean mouseUp(int x, int y){
-	    game.mouseUp((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
-	    return true;
-	}
-	
-	boolean mouseMove(int x, int y){
-	    game.mouseMove((int)p.adjustXPosInv(x), (int)p.adjustYPosInv(y));
-	    return true;
-	}
-	
 }

@@ -11,6 +11,11 @@ public class Game extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		layout = new LinearLayout(this);
 		layout.addView(new GameView(this));
@@ -18,9 +23,26 @@ public class Game extends Activity {
 	}
 	
 	@Override
-	public void onStop() {
+	protected void onResume() {
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
 		super.onStop();
 		AndroidMusic.stopit();
+		setContentView(new LinearLayout(this));
+		layout = null;
 		finish();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 }
