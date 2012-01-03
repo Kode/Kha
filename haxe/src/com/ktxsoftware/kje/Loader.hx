@@ -1,0 +1,104 @@
+package com.ktxsoftware.kje;
+
+class Loader {
+	static var instance : Loader;
+	private var maps : Hash<Array<Array<Int>>>;
+	private var images : Hash<Image>;
+	private var sounds : Hash<Sound>;
+	private var musics : Hash<Music>;
+	private var xmls : Hash<Xml>;
+	private var loadcount : Int;
+	
+	public function new() {
+		maps = new Hash<Array<Array<Int>>>();
+		images = new Hash<Image>();
+		sounds = new Hash<Sound>();
+		musics = new Hash<Music>();
+		xmls = new Hash<Xml>();
+		loadcount = 0;
+	}
+	
+	public static function init(loader : Loader) {
+		instance = loader;
+	}
+	
+	public static function getInstance() : Loader {
+		return instance;
+	}
+	
+	public function getMap(name : String) : Array<Array<Int>> {
+		return maps.get(name);
+	}
+	
+	public function getImage(name : String) : Image {
+		if (!images.exists(name)) {
+			trace("Could not find image " + name + ".");
+		}
+		return images.get(name);
+	}
+	
+	public function getMusic(name : String) : Music {
+		return musics.get(name);
+	}
+	
+	public function getSound(name : String) : Sound {
+		return sounds.get(name);
+	}
+	
+	public function getXml(name : String) : Xml {
+		return xmls.get(name);
+	}
+	
+	public function load() {
+		loadDataDefinition();
+	}
+	
+	//override for asynchronous loading
+	public function loadDataDefinition() {
+		loadXml("data.xml");
+		loadFiles();
+	}
+	
+	private function loadFiles() {
+		var node : Xml = getXml("data.xml");
+		var size : Int = 0;
+		for (element in node.elements()) ++size;
+		loadStarted(size);
+		for (dataNode in node.elements()) {
+			switch (dataNode.nodeName) {
+				case "image":
+					loadImage(dataNode.nodeValue);
+					break;
+				case "xml":
+					loadXml(dataNode.nodeValue);
+					break;
+				case "music":
+					loadMusic(dataNode.nodeValue);
+					break;
+				case "sound":
+					loadSound(dataNode.nodeValue);
+					break;
+				case "map":
+					loadMap(dataNode.nodeValue);
+					break;
+			}
+		}
+		if (Game.getInstance().hasScores()) loadHighscore();
+	}
+	
+	private function loadStarted(numberOfFiles : Int) { }
+	
+	public function loadHighscore() { }
+	public function saveHighscore(score : Score) { }
+	
+	private function loadImage(filename : String) { }
+	private function loadMap(name : String) { }
+	private function loadSound(filename : String) { }
+	private function loadMusic(filename : String) { }
+	private function loadXml(filename : String) { }
+	
+	public function loadFont(name : String, style : Int, size : Int) : Font { return null; }
+	
+	public function setNormalCursor() { }
+	public function setHandCursor() { }
+}
