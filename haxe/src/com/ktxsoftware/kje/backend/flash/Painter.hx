@@ -44,6 +44,5 @@ class Painter extends com.ktxsoftware.kje.Painter {
 	public override function drawImage2(img : com.ktxsoftware.kje.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
 		var image : Image = cast(img, Image);
 		backBuffer.copyPixels(image.image.bitmapData, new Rectangle(sx, sy, sw, sh), new Point(tx + dx, ty + dy));
-		//trace("draw " + sx + " " + sy + " "  + sw + " "  + sh + " "  + " at " + (tx + dx) + " - " + (ty + dy));
 	}
 }

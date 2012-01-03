@@ -8,8 +8,8 @@ class Scene {
 	var foregrounds : Array<Tilemap>;
 	var backgroundSpeeds : Array<Float>;
 	var foregroundSpeeds : Array<Float>;
-	var lastUpdatedSprites : Array<Sprite>;
-	var updatedSprites : Array<Sprite>;
+	//var lastUpdatedSprites : Array<Sprite>;
+	//var updatedSprites : Array<Sprite>;
 	
 	var heroes : Array<Sprite>;
 	var sprites : Array<Sprite>;
@@ -33,8 +33,8 @@ class Scene {
 		foregrounds = new Array<Tilemap>();
 		backgroundSpeeds = new Array<Float>();
 		foregroundSpeeds = new Array<Float>();
-		lastUpdatedSprites = new Array<Sprite>();
-		updatedSprites = new Array<Sprite>();
+		//lastUpdatedSprites = new Array<Sprite>();
+		//updatedSprites = new Array<Sprite>();
 		backgroundColor = new Color(0, 0, 0);
 	}
 	
@@ -116,33 +116,37 @@ class Scene {
 		var camx : Int = adjustCamX();
 		sort(sprites);
 		var i : Int = 0;
-		for (i in 0...sprites.length) {
+		while (i < sprites.length) {
 			if (sprites[i].x + sprites[i].width > camx) break;
+			++i;
 		}
-		for (i in 0...sprites.length) {
+		while (i < sprites.length) {
 			var sprite : Sprite = sprites[i];
 			if (sprite.x > camx + Game.getInstance().getWidth()) break;
-			updatedSprites.push(sprite);
+			//updatedSprites.push(sprite);
+			sprite.update();
+			move(sprite);
+			++i;
 		}
-		for (sprite in updatedSprites) {
+		/*for (sprite in updatedSprites) {
 			sprite.update();
 			move(sprite);
 		}
 		for (sprite in lastUpdatedSprites) {
 			//if (!updatedSprites...contains(sprite)) sprite.outOfView();
 		}
-		lastUpdatedSprites = new Array<Sprite>();
 		lastUpdatedSprites = updatedSprites;
-		updatedSprites = new Array<Sprite>();
+		updatedSprites = new Array<Sprite>();*/
 		
 		sort(heroes);
 		sort(enemies);
 		i = 0;
 		
-		for (i in 0...enemies.length) {
+		while (i < enemies.length) {
 			if (enemies[i].x + enemies[i].width > camx) break;
+			++i;
 		}
-		for (i in 0...enemies.length) {
+		while (i < enemies.length) {
 			if (enemies[i].x > camx + Game.getInstance().getWidth()) break;
 			var rect1 : Rectangle = enemies[i].collisionRect();
 			for (i2 in 0...heroes.length) {
@@ -152,6 +156,7 @@ class Scene {
 					enemies[i].hit(heroes[i2]);
 				}
 			}
+			++i;
 		}
 	}
 	
@@ -192,10 +197,14 @@ class Scene {
 		
 		for (z in 0...10) {
 			var i : Int = 0;
-			for (i in 0...sprites.length) if (sprites[i].x + sprites[i].width > camx) break;
-			for (i in 0...sprites.length) {
+			while (i < sprites.length) {
+				if (sprites[i].x + sprites[i].width > camx) break;
+				++i;
+			}
+			while (i < sprites.length) {
 				if (sprites[i].x > camx + Game.getInstance().getWidth()) break;
 				if (i < sprites.length && sprites[i].z == z) sprites[i].render(painter);
+				++i;
 			}
 		}
 		
