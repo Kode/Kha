@@ -27,9 +27,14 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	}
 	
 	override function loadMusic(filename : String) {
-		musics.set(filename, new Music());
-		--numberOfFiles;
-		checkComplete();
+		var urlRequest : URLRequest = new URLRequest(filename + ".mp3");
+		var music : flash.media.Sound = new flash.media.Sound();
+		music.addEventListener(Event.COMPLETE, function(e : Event) {
+			musics.set(filename, new Music(music));
+			--numberOfFiles;
+			checkComplete();
+		});
+		music.load(urlRequest);
 	}
 	
 	override function loadXml(filename : String) {
@@ -76,10 +81,10 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	}
 
 	override function loadSound(filename : String) {
-		var urlRequest : URLRequest = new URLRequest(filename);
+		var urlRequest : URLRequest = new URLRequest(filename + ".mp3");
 		var sound : flash.media.Sound = new flash.media.Sound();
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
-			sounds.set(filename, new Sound());
+			sounds.set(filename, new Sound(sound));
 			--numberOfFiles;
 			checkComplete();
 		});

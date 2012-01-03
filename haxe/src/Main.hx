@@ -27,6 +27,7 @@ class Main extends MovieClip {
 		game.init();
 		painter = new Painter();
 		Lib.current.addChild(this);
+		stage.frameRate = 60;
 		Lib.current.addEventListener(Event.ENTER_FRAME, draw);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
