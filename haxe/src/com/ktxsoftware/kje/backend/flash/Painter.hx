@@ -2,19 +2,20 @@ package com.ktxsoftware.kje.backend.flash;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
 class Painter extends com.ktxsoftware.kje.Painter {
 	var graphics : Graphics;
-	var backBuffer : BitmapData;
 	var tx : Float;
 	var ty : Float;
+	var matrix : Matrix;
 	
 	public function new() {
-		backBuffer = new BitmapData(600, 520, false);
 		tx = 0;
 		ty = 0;
+		matrix = new Matrix();
 	}
 	
 	public function setGraphics(graphics : Graphics) {
@@ -22,13 +23,11 @@ class Painter extends com.ktxsoftware.kje.Painter {
 	}
 	
 	public override function begin() {
-		backBuffer.fillRect(backBuffer.rect, 0xffffff);
+		graphics.clear();
 	}
 	
 	public override function end() {
-		graphics.beginBitmapFill(backBuffer);
-		graphics.drawRect(0, 0, 600, 520);
-		graphics.endFill();
+		
 	}
 	
 	public override function translate(x : Float, y : Float) {
@@ -43,6 +42,10 @@ class Painter extends com.ktxsoftware.kje.Painter {
 	
 	public override function drawImage2(img : com.ktxsoftware.kje.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
 		var image : Image = cast(img, Image);
-		backBuffer.copyPixels(image.image.bitmapData, new Rectangle(sx, sy, sw, sh), new Point(tx + dx, ty + dy));
+		matrix.tx = tx + dx - sx;
+		matrix.ty = ty + dy - sy;
+		graphics.beginBitmapFill(image.image.bitmapData, matrix);
+		graphics.drawRect(tx + dx, ty + dy, dw, dh);
+		graphics.endFill();
 	}
 }
