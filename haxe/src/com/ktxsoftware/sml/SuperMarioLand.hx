@@ -40,9 +40,15 @@ class SuperMarioLand extends Game {
 
 	public override function init() {
 		tileColissions = new Array<Bool>();
-		for (i in 0...140 - 1) tileColissions.push(isCollidable(i));
+		for (i in 0...140) tileColissions.push(isCollidable(i));
 		originalmap = Loader.getInstance().getMap("level.map");
 		map = new Array<Array<Int>>();
+		for (x in 0...originalmap.length) {
+			map.push(new Array<Int>());
+			for (y in 0...originalmap[0].length) {
+				map[x].push(0);
+			}
+		}
 		music = Loader.getInstance().getMusic("level1");
 		startGame();
 	}
@@ -56,36 +62,29 @@ class SuperMarioLand extends Game {
 		Scene.getInstance().addBackgroundTilemap(tilemap, 1);
 		var TILE_WIDTH : Int = 32;
 		var TILE_HEIGHT : Int = 32;
-		for (x in 0...originalmap.length - 1) {
+		for (x in 0...originalmap.length) {
 			for (y in 0...originalmap[0].length) {
 				switch (originalmap[x][y]) {
 				case 15:
 					map[x][y] = 0;
 					Scene.getInstance().addEnemy(new Gumba(x * TILE_WIDTH, y * TILE_HEIGHT));
-					break;
 				case 16:
 					map[x][y] = 0;
 					Scene.getInstance().addEnemy(new Koopa(x * TILE_WIDTH, y * TILE_HEIGHT - 16));
-					break;
 				case 17:
 					map[x][y] = 0;
 					Scene.getInstance().addEnemy(new Fly(x * TILE_WIDTH - 32, y * TILE_HEIGHT));
-					break;
 				case 46:
 					map[x][y] = 0;
 					Scene.getInstance().addEnemy(new Coin(x * TILE_WIDTH, y * TILE_HEIGHT));
-					break;
 				case 52:
 					map[x][y] = 52;
 					Scene.getInstance().addEnemy(new Exit(x * TILE_WIDTH, y * TILE_HEIGHT));
-					break;
 				case 56:
 					map[x][y] = 1;
 					Scene.getInstance().addEnemy((new BonusBlock(x * TILE_WIDTH, y * TILE_HEIGHT)));
-					break;
 				default:
 					map[x][y] = originalmap[x][y];
-					break;
 				}
 			}
 		}

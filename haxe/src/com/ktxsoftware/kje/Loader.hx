@@ -62,25 +62,20 @@ class Loader {
 	private function loadFiles() {
 		var node : Xml = getXml("data.xml");
 		var size : Int = 0;
-		for (element in node.elements()) ++size;
+		for (element in node.elements().next().elements()) ++size;
 		loadStarted(size);
-		for (dataNode in node.elements()) {
+		for (dataNode in node.elements().next().elements()) {
 			switch (dataNode.nodeName) {
 				case "image":
-					loadImage(dataNode.nodeValue);
-					break;
+					loadImage(dataNode.firstChild().nodeValue);
 				case "xml":
-					loadXml(dataNode.nodeValue);
-					break;
+					loadXml(dataNode.firstChild().nodeValue);
 				case "music":
-					loadMusic(dataNode.nodeValue);
-					break;
+					loadMusic(dataNode.firstChild().nodeValue);
 				case "sound":
-					loadSound(dataNode.nodeValue);
-					break;
+					loadSound(dataNode.firstChild().nodeValue);
 				case "map":
-					loadMap(dataNode.nodeValue);
-					break;
+					loadMap(dataNode.firstChild().nodeValue);
 			}
 		}
 		if (Game.getInstance().hasScores()) loadHighscore();

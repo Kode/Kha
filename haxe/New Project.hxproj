@@ -5,9 +5,9 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\NewProject.swf" />
-    <movie fps="30" />
-    <movie width="800" />
-    <movie height="600" />
+    <movie fps="60" />
+    <movie width="600" />
+    <movie height="520" />
     <movie version="10" />
     <movie minorVersion="1" />
     <movie platform="Flash Player" />

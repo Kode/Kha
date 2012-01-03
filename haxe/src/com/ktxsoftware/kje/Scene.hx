@@ -116,10 +116,10 @@ class Scene {
 		var camx : Int = adjustCamX();
 		sort(sprites);
 		var i : Int = 0;
-		for (i in 0...sprites.length - 1) {
+		for (i in 0...sprites.length) {
 			if (sprites[i].x + sprites[i].width > camx) break;
 		}
-		for (i in 0...sprites.length - 1) {
+		for (i in 0...sprites.length) {
 			var sprite : Sprite = sprites[i];
 			if (sprite.x > camx + Game.getInstance().getWidth()) break;
 			updatedSprites.push(sprite);
@@ -139,13 +139,13 @@ class Scene {
 		sort(enemies);
 		i = 0;
 		
-		for (i in 0...enemies.length - 1) {
+		for (i in 0...enemies.length) {
 			if (enemies[i].x + enemies[i].width > camx) break;
 		}
-		for (i in 0...enemies.length - 1) {
+		for (i in 0...enemies.length) {
 			if (enemies[i].x > camx + Game.getInstance().getWidth()) break;
 			var rect1 : Rectangle = enemies[i].collisionRect();
-			for (i2 in 0...heroes.length - 1) {
+			for (i2 in 0...heroes.length) {
 				var rect2 : Rectangle = heroes[i2].collisionRect();
 				if (rect1.collision(rect2)) {
 					heroes[i2].hit(enemies[i]);
@@ -183,23 +183,23 @@ class Scene {
 		
 		var camx : Int = adjustCamX();
 		
-		for (i in 0...backgrounds.length - 1) {
+		for (i in 0...backgrounds.length) {
 			painter.translate(-camx * backgroundSpeeds[i], camy * backgroundSpeeds[i]);
 			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 		
 		painter.translate(-camx, camy);
 		
-		for (z in 0...10 - 1) {
+		for (z in 0...10) {
 			var i : Int = 0;
-			for (i in 0...sprites.length - 1) if (sprites[i].x + sprites[i].width > camx) break;
-			for (i in 0...sprites.length - 1) {
+			for (i in 0...sprites.length) if (sprites[i].x + sprites[i].width > camx) break;
+			for (i in 0...sprites.length) {
 				if (sprites[i].x > camx + Game.getInstance().getWidth()) break;
 				if (i < sprites.length && sprites[i].z == z) sprites[i].render(painter);
 			}
 		}
 		
-		for (i in 0...foregrounds.length - 1) {
+		for (i in 0...foregrounds.length) {
 			painter.translate(-camx * foregroundSpeeds[i], camy * foregroundSpeeds[i]);
 			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}

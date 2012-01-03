@@ -6,11 +6,20 @@ import com.ktxsoftware.kje.Scene;
 import com.ktxsoftware.kje.Sprite;
 
 class BlockCoin extends Sprite {
-	static var image : Image = Loader.getInstance().getImage("blockcoin.png");
+	static var image : Image;
 	var count : Int;
+	static var initialized = false;
+	
+	static function init() {
+		if (!initialized) {
+			image = Loader.getInstance().getImage("blockcoin.png");
+			initialized = true;
+		}
+	}
 	
 	public function new(x : Float, y : Float) {
-		super(image, image.getWidth(), image.getHeight(), 0);
+		init();
+		super(BlockCoin.image, BlockCoin.image.getWidth(), BlockCoin.image.getHeight(), 0);
 		accy = 0;
 		speedy = -2;
 		collides = false;

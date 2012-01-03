@@ -21,7 +21,7 @@ class Tilemap {
 		var xend : Int = Std.int(Math.min((xleft + width) / tileset.TILE_WIDTH + 1, levelWidth));
 		var ystart : Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0));
 		var yend : Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 1, levelHeight));
-		for (x in xstart...xend - 1) for (y in ystart...yend - 1) {
+		for (x in xstart...xend) for (y in ystart...yend) {
 			tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
 		}
 	}
@@ -31,7 +31,7 @@ class Tilemap {
 		var xtilestart : Int = Std.int(x1 / tileset.TILE_WIDTH);
 		var xtileend : Int = Std.int(x2 / tileset.TILE_WIDTH);
 		var ytile : Int = Std.int(y / tileset.TILE_HEIGHT);
-		for (xtile in xtilestart...xtileend) if (tileCollision[map[xtile][ytile]]) return true;
+		for (xtile in xtilestart...xtileend + 1) if (tileCollision[map[xtile][ytile]]) return true;
 		return false;
 	}
 	
@@ -40,7 +40,7 @@ class Tilemap {
 		var ytilestart : Int = Std.int(y1 / tileset.TILE_HEIGHT);
 		var ytileend : Int = Std.int(y2 / tileset.TILE_HEIGHT);
 		var xtile : Int = Std.int(x / tileset.TILE_WIDTH);
-		for (ytile in ytilestart...ytileend) {
+		for (ytile in ytilestart...ytileend + 1) {
 			if (ytile < 0 || ytile >= levelHeight) continue;
 			if (tileCollision[map[xtile][ytile]]) return true;
 		}

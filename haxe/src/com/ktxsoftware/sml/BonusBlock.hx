@@ -9,14 +9,24 @@ import com.ktxsoftware.kje.Sound;
 import com.ktxsoftware.kje.Sprite;
 
 class BonusBlock extends Sprite {
-	static var image : Image = Loader.getInstance().getImage("bonusblock.png");
-	static var sound : Sound = Loader.getInstance().getSound("coin");
+	static var image : Image;
+	static var sound : Sound;
 	var downcount : Int;
 	var washit : Bool;
 	static var onehit : Bool = false;
+	static var initialized = false;
+	
+	static function init() {
+		if (!initialized) {
+			BonusBlock.image = Loader.getInstance().getImage("bonusblock.png");
+			sound = Loader.getInstance().getSound("coin");
+			initialized = true;
+		}
+	}
 	
 	public function new(x : Float, y : Float) {
-		super(image, Std.int(image.getWidth() / 2), image.getHeight(), 0);
+		init();
+		super(BonusBlock.image, Std.int(BonusBlock.image.getWidth() / 2), BonusBlock.image.getHeight(), 0);
 		this.x = x;
 		this.y = y;
 		accy = 0;

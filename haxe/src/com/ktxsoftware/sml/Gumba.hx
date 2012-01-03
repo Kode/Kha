@@ -7,11 +7,20 @@ import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.kje.Scene;
 
 class Gumba extends Enemy {
-	static var image : Image = Loader.getInstance().getImage("gumba.png");
+	static var image : Image;
 	var killcount : Int;
+	static var initialized = false;
+	
+	static function init() {
+		if (!initialized) {
+			image = Loader.getInstance().getImage("gumba.png");
+			initialized = true;
+		}
+	}
 	
 	public function new(x : Int, y : Int) {
-		super(image, Std.int(96 / 3), 32);
+		init();
+		super(Gumba.image, Std.int(96 / 3), 32);
 		this.x = x;
 		this.y = y;
 		setAnimation(new Animation([0, 2], 14));

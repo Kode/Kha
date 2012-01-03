@@ -9,13 +9,22 @@ import com.ktxsoftware.kje.Scene;
 import com.ktxsoftware.kje.Sprite;
 
 class Koopa extends Enemy {
-	static var image : Image = Loader.getInstance().getImage("koopa.png");
+	static var image : Image;
 	var killcount : Int;
 	var leftAnim : Animation;
 	var rightAnim : Animation;
+	static var initialized = false;
+	
+	static function init() {
+		if (!initialized) {
+			image = Loader.getInstance().getImage("koopa.png");
+			initialized = true;
+		}
+	}
 	
 	public function new(x : Int, y : Int) {
-		super(image, 16 * 4, 48);
+		init();
+		super(Koopa.image, 16 * 4, 48);
 		this.x = x;
 		this.y = y;
 		leftAnim = new Animation([0, 1], 10);
