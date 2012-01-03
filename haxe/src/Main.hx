@@ -1,10 +1,13 @@
 package ;
 
-import com.ktxsoftware.kje.backend.flash.Painter;
 import com.ktxsoftware.kje.Game;
 import com.ktxsoftware.kje.Key;
 import com.ktxsoftware.kje.Loader;
 import com.ktxsoftware.sml.SuperMarioLand;
+
+#if flash
+
+import com.ktxsoftware.kje.backend.flash.Painter;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -72,3 +75,41 @@ class Main extends MovieClip {
 		new Main();
 	}
 }
+
+#end
+
+#if js
+
+import js.Lib;
+
+class Main {
+	static var game : Game;
+	
+	static function main() {
+		Loader.init(new com.ktxsoftware.kje.backend.js.Loader());
+		game = new SuperMarioLand();
+		Loader.getInstance().load();
+		
+		var window : Dynamic = Lib.window;
+		window.webkitRequestAnimationFrame(animate);
+	}
+	
+	static function animate(timestamp) {
+		var window : Dynamic = Lib.window;
+		window.webkitRequestAnimationFrame(animate);
+		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		if (canvas.getContext){
+			canvas = canvas.getContext('2d');
+			canvas.clearRect(0, 0, 640, 560);
+			canvas.fillStyle = "rgb(200,0,0)";
+			canvas.fillRect(10, 10, 55, 55 );
+		}
+	}
+}
+
+/*class Main {
+	static function main() {
+		new SuperMarioLand();
+	}
+}*/
+#end

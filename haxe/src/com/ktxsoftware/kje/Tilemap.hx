@@ -1,5 +1,4 @@
 package com.ktxsoftware.kje;
-import flash.accessibility.AccessibilityProperties;
 
 class Tilemap {
 	var tileset : Tileset;
