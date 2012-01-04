@@ -148,3 +148,62 @@ class Main {
 }
 
 #end
+
+#if cpp
+
+class Main {
+	static var game : Game;
+	static var painter : com.ktxsoftware.kje.backend.cpp.Painter;
+	
+	static function main() {
+		Loader.init(new com.ktxsoftware.kje.backend.cpp.Loader());
+		game = new SuperMarioLand();
+		Loader.getInstance().load();
+	}
+	
+	public static function start() {
+		game.init();
+		painter = new com.ktxsoftware.kje.backend.cpp.Painter();
+	}
+
+	public static function frame() {
+		game.update();
+		painter.begin();
+		game.render(painter);
+		painter.end();
+	}
+	
+	public static function pushUp() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, true));
+	}
+	
+	public static function pushDown() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, true));
+	}
+
+	public static function pushLeft() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, true));
+	}
+
+	public static function pushRight() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, true));
+	}
+
+	public static function releaseUp() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, false));
+	}
+
+	public static function releaseDown() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, false));
+	}
+
+	public static function releaseLeft() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, false));
+	}
+	
+	public static function releaseRight() : Void {
+		game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, false));
+	}
+}
+
+#end
