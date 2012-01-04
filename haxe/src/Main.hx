@@ -122,21 +122,28 @@ class Main {
 			}
 		};
 		var window : Dynamic = Lib.window;
-		window.webkitRequestAnimationFrame(animate);
-	}
-	
-	static function animate(timestamp) {
-		var window : Dynamic = Lib.window;
-		window.webkitRequestAnimationFrame(animate);
-		game.update();
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
-		if (canvas.getContext) {
-			canvas = canvas.getContext('2d');
-			painter.setCanvas(canvas);
-			painter.begin();
-			game.render(painter);
-			painter.end();
+		var requestAnimationFrame = window.requestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
+		
+		function animate(timestamp) {
+			var window : Dynamic = Lib.window;
+			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
+			else requestAnimationFrame(animate);			
+			game.update();
+			var canvas : Dynamic = Lib.document.getElementById("haxvas");
+			if (canvas.getContext) {
+				canvas = canvas.getContext('2d');
+				painter.setCanvas(canvas);
+				painter.begin();
+				game.render(painter);
+				painter.end();
+			}
 		}
+		
+		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
+		else requestAnimationFrame(animate);
 	}
 }
 

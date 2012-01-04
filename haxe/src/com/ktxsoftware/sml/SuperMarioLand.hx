@@ -178,29 +178,23 @@ class SuperMarioLand extends Game {
 			case UP:
 				if (event.down) Jumpman.getInstance().setUp();
 				else Jumpman.getInstance().up = event.down;
-				//break;
 			case LEFT:
 				Jumpman.getInstance().left = event.down;
-				//break;
 			case RIGHT:
 				Jumpman.getInstance().right = event.down;
 			default:
 			}
-			//break;
 		case EnterHighscore:
 			if (highscoreName.length > 0) {
 				switch (event.key) {
 				case ENTER:
 					HighscoreList.getInstance().addScore(highscoreName, Jumpman.getInstance().getScore());
 					mode = Mode.Highscore;
-					//break;
 				case BACKSPACE:
 					highscoreName = highscoreName.substr(0, highscoreName.length - 1);
-					//break;
 				default:
 				}
 			}
-			//break;
 		default:
 		}
 	}

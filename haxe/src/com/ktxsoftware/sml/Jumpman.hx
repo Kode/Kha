@@ -47,8 +47,12 @@ class Jumpman extends Sprite {
 		this.music = music;
 		score = 0;
 		round = 1;
+		up = false;
+		right = false;
+		left = false;
 		lookRight = true;
 		killed = false;
+		jumpcount = 0;
 		stompsound = Loader.getInstance().getSound("stomp");
 		jumpsound = Loader.getInstance().getSound("jump");
 		diesound = Loader.getInstance().getSound("die");

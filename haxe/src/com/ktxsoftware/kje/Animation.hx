@@ -13,12 +13,13 @@ class Animation {
 	
 	public static function createRange(minindex : Int, maxindex : Int, speeddiv : Int) : Animation {
 		var indices = new Array<Int>();
-		for (i in 0...maxindex - minindex) indices.push(minindex + i);
+		for (i in 0...maxindex - minindex + 1) indices.push(minindex + i);
 		return new Animation(indices, speeddiv);
 	}
 	
 	public function new(indices : Array<Int>, speeddiv : Int) {
 		this.indices = indices;
+		index = 0;
 		this.speeddiv = speeddiv;
 	}
 	

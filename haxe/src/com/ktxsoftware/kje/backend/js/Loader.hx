@@ -38,13 +38,13 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	}
 	
 	override function loadMusic(filename : String) {
-		musics.set(filename, new Music());
+		musics.set(filename, new Music(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
 	override function loadSound(filename : String) {
-		sounds.set(filename, new Sound());
+		sounds.set(filename, new Sound(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
