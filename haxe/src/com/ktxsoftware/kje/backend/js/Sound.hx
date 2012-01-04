@@ -1,5 +1,6 @@
 package com.ktxsoftware.kje.backend.js;
 
+import js.Dom;
 import js.Lib;
 
 class Sound implements com.ktxsoftware.kje.Sound {
@@ -7,25 +8,16 @@ class Sound implements com.ktxsoftware.kje.Sound {
 	
 	public function new(filename : String) {
 		element = Lib.document.createElement("audio");
-		element.src = filename + ".mp3";
-		//if (element.canPlayType("audio/mp4") == MediaElement.CANNOT_PLAY) element.setSrc(filename + ".ogg");
-		//else element.setSrc(filename + ".mp4");
-		element.preload = "auto";
+		if (!element.canPlayType("audio/mp4")) element.src = filename + ".ogg";
+		else element.src = filename + ".mp4";
+		element.load();
 	}
 	
 	public function play() : Void {
-		//try {
-		//	element.setCurrentTime(0);
-		//}
-		//catch (Exception ex) { }
-		//element.pause();
-		//element.currentTime = 0.0;
 		try {
-			element.currentTime = 0.0;
+			element.currentTime = 0;
 		}
-		catch (e : Dynamic) {
-			
-		}
+		catch (ex : Dynamic) { }
 		element.play();
 	}
 	
