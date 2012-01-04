@@ -81,15 +81,46 @@ class Main extends MovieClip {
 #if js
 
 import js.Lib;
+import js.Dom;
 
 class Main {
 	static var game : Game;
+	static var painter : com.ktxsoftware.kje.backend.js.Painter;
 	
 	static function main() {
 		Loader.init(new com.ktxsoftware.kje.backend.js.Loader());
 		game = new SuperMarioLand();
 		Loader.getInstance().load();
-		
+	}
+	
+	public static function start() {
+		game.init();
+		painter = new com.ktxsoftware.kje.backend.js.Painter();
+
+		Lib.document.onkeydown = function(event : js.Event) {
+			switch (event.keyCode) {
+			case 38:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, true));
+			case 40:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, true));
+			case 37:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, true));
+			case 39:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, true));
+			}
+		};
+		Lib.document.onkeyup = function(event : js.Event) {
+			switch (event.keyCode) {
+			case 38:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, false));
+			case 40:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, false));
+			case 37:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, false));
+			case 39:
+				game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, false));
+			}
+		};
 		var window : Dynamic = Lib.window;
 		window.webkitRequestAnimationFrame(animate);
 	}
@@ -97,19 +128,16 @@ class Main {
 	static function animate(timestamp) {
 		var window : Dynamic = Lib.window;
 		window.webkitRequestAnimationFrame(animate);
+		game.update();
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
-		if (canvas.getContext){
+		if (canvas.getContext) {
 			canvas = canvas.getContext('2d');
-			canvas.clearRect(0, 0, 640, 560);
-			canvas.fillStyle = "rgb(200,0,0)";
-			canvas.fillRect(10, 10, 55, 55 );
+			painter.setCanvas(canvas);
+			painter.begin();
+			game.render(painter);
+			painter.end();
 		}
 	}
 }
 
-/*class Main {
-	static function main() {
-		new SuperMarioLand();
-	}
-}*/
 #end
