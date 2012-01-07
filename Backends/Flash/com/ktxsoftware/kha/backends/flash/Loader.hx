@@ -1,5 +1,6 @@
-package com.ktxsoftware.kje.backend.flash;
+package com.ktxsoftware.kha.backends.flash;
 
+import com.ktxsoftware.kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.events.Event;
@@ -8,12 +9,12 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-class Loader extends com.ktxsoftware.kje.Loader {
+class Loader extends com.ktxsoftware.kha.Loader {
 	var xmlName : String;
-	var main : Main;
+	var main : Starter;
 	var numberOfFiles : Int;
 	
-	public function new(main : Main) {
+	public function new(main : Starter) {
 		super();
 		this.main = main;
 	}
@@ -103,7 +104,7 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
-			main.start();
+			main.loadFinished();
 		}
 	}
 }

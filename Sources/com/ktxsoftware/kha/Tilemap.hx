@@ -1,4 +1,4 @@
-package com.ktxsoftware.kje;
+package com.ktxsoftware.kha;
 
 class Tilemap {
 	var tileset : Tileset;

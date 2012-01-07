@@ -1,4 +1,4 @@
-package com.ktxsoftware.kje;
+package com.ktxsoftware.kha;
 
 class Tileset {
 	public var TILE_WIDTH : Int;

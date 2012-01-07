@@ -1,9 +1,9 @@
-package com.ktxsoftware.kje.backend.flash;
+package com.ktxsoftware.kha.backends.flash;
 
 import flash.display.Bitmap;
 import flash.display.DisplayObject;
 
-class Image implements com.ktxsoftware.kje.Image {
+class Image implements com.ktxsoftware.kha.Image {
 	public var image : Bitmap;
 	
 	public function new(image : DisplayObject)  {

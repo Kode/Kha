@@ -1,4 +1,4 @@
-package com.ktxsoftware.kje;
+package com.ktxsoftware.kha;
 
 interface Font {
 	/*public static var PLAIN : Int = 0;

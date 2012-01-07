@@ -1,6 +1,6 @@
-package com.ktxsoftware.kje.backend.flash;
+package com.ktxsoftware.kha.backends.flash;
 
-class Sound implements com.ktxsoftware.kje.Sound {
+class Sound implements com.ktxsoftware.kha.Sound {
 	var sound : flash.media.Sound;
 	
 	public function new(sound : flash.media.Sound) {

@@ -1,13 +1,12 @@
-package ;
+package com.ktxsoftware.kha;
 
-import com.ktxsoftware.kje.Game;
-import com.ktxsoftware.kje.Key;
-import com.ktxsoftware.kje.Loader;
-import com.ktxsoftware.sml.SuperMarioLand;
+import com.ktxsoftware.kha.Game;
+import com.ktxsoftware.kha.Key;
+import com.ktxsoftware.kha.Loader;
 
 #if flash
 
-import com.ktxsoftware.kje.backend.flash.Painter;
+import com.ktxsoftware.kha.backends.flash.Painter;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -15,18 +14,21 @@ import flash.Lib;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 
-class Main extends MovieClip {
+class Starter extends MovieClip {
 	var game : Game;
 	var painter : Painter;
 	
 	public function new() {
 		super();
-		Loader.init(new com.ktxsoftware.kje.backend.flash.Loader(this));
-		game = new SuperMarioLand();
+		Loader.init(new com.ktxsoftware.kha.backends.flash.Loader(this));
+	}
+	
+	public function start(game : Game) {
+		this.game = game;
 		Loader.getInstance().load();
 	}
 	
-	public function start() {
+	public function loadFinished() {
 		game.init();
 		painter = new Painter();
 		Lib.current.addChild(this);
@@ -48,31 +50,27 @@ class Main extends MovieClip {
 	function keyDownHandler(event : KeyboardEvent) {
 		switch (event.keyCode) {
 		case 38:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, true));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.UP, true));
 		case 40:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, true));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.DOWN, true));
 		case 37:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, true));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, true));
 		case 39:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, true));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, true));
 		}
 	}
 
 	function keyUpHandler(event : KeyboardEvent) {
 		switch (event.keyCode) {
 		case 38:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.UP, false));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.UP, false));
 		case 40:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.DOWN, false));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.DOWN, false));
 		case 37:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.LEFT, false));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, false));
 		case 39:
-			game.key(new com.ktxsoftware.kje.KeyEvent(Key.RIGHT, false));
+			game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, false));
 		}
-	}
-	
-	static function main() {
-		new Main();
 	}
 }
 

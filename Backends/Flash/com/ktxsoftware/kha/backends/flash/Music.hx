@@ -1,7 +1,7 @@
-package com.ktxsoftware.kje.backend.flash;
+package com.ktxsoftware.kha.backends.flash;
 import flash.media.SoundChannel;
 
-class Music implements com.ktxsoftware.kje.Music {
+class Music implements com.ktxsoftware.kha.Music {
 	var music : flash.media.Sound;
 	var channel : SoundChannel;
 	

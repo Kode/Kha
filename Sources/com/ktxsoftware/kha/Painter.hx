@@ -1,4 +1,4 @@
-package com.ktxsoftware.kje;
+package com.ktxsoftware.kha;
 
 class Painter {
 	public function drawImage(img : Image, x : Float, y : Float) { }
