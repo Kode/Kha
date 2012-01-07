@@ -1,11 +1,12 @@
-package com.ktxsoftware.kje.backend.js;
+package com.ktxsoftware.kha.backends.js;
 
+import com.ktxsoftware.kha.Starter;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Dom;
 import js.Lib;
 
-class Loader extends com.ktxsoftware.kje.Loader {
+class Loader extends com.ktxsoftware.kha.Loader {
 	var numberOfFiles : Int;
 	
 	public function new() {
@@ -53,7 +54,7 @@ class Loader extends com.ktxsoftware.kje.Loader {
 		var img : js.Image = cast Lib.document.createElement("img");
 		img.src = filename;
 		img.onload = function(event : Event) {
-			images.set(filename, new com.ktxsoftware.kje.backend.js.Image(img));
+			images.set(filename, new com.ktxsoftware.kha.backends.js.Image(img));
 			--numberOfFiles;
 			checkComplete();
 		};
@@ -95,7 +96,7 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
 			//Lib.alert("Complete");
-			Main.start();
+			Starter.loadFinished();
 		}
 	}
 }

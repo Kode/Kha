@@ -1,8 +1,8 @@
-package com.ktxsoftware.kje.backend.js;
+package com.ktxsoftware.kha.backends.js;
 
 import js.Lib;
 
-class Music implements com.ktxsoftware.kje.Music {
+class Music implements com.ktxsoftware.kha.Music {
 	var element : Dynamic;
 	
 	public function new(filename : String) {

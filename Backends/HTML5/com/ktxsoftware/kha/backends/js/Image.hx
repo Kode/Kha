@@ -1,8 +1,8 @@
-package com.ktxsoftware.kje.backend.js;
+package com.ktxsoftware.kha.backends.js;
 
 import js.Dom;
 
-class Image implements com.ktxsoftware.kje.Image {
+class Image implements com.ktxsoftware.kha.Image {
 	public var image : js.Image;
 	
 	public function new(image : js.Image) {
