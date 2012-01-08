@@ -1,6 +1,6 @@
-package com.ktxsoftware.kje.backend.cpp;
+package com.ktxsoftware.kha.backends.cpp;
 
-class Painter extends com.ktxsoftware.kje.Painter {
+class Painter extends com.ktxsoftware.kha.Painter {
 	var tx : Float;
 	var ty : Float;
 	
@@ -22,7 +22,7 @@ class Painter extends com.ktxsoftware.kje.Painter {
 		ty = y;
 	}
 	
-	public override function drawImage2(image : com.ktxsoftware.kje.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	public override function drawImage2(image : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
 		
 	}
 }

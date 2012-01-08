@@ -1,6 +1,6 @@
-package com.ktxsoftware.kje.backend.cpp;
+package com.ktxsoftware.kha.backends.cpp;
 
-class Image implements com.ktxsoftware.kje.Image {
+class Image implements com.ktxsoftware.kha.Image {
 	public function new(filename : String) {
 		
 	}

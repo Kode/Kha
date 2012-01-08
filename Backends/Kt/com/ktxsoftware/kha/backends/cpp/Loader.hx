@@ -1,9 +1,9 @@
-package com.ktxsoftware.kje.backend.cpp;
+package com.ktxsoftware.kha.backends.cpp;
 
 import cpp.io.File;
 import haxe.io.Bytes;
 
-class Loader extends com.ktxsoftware.kje.Loader {
+class Loader extends com.ktxsoftware.kha.Loader {
 	var numberOfFiles : Int;
 	
 	public function new() {
@@ -38,7 +38,7 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	}
 	
 	override function loadImage(filename : String) {
-		images.set(filename, new com.ktxsoftware.kje.backend.cpp.Image(filename));
+		images.set(filename, new com.ktxsoftware.kha.backends.cpp.Image(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
@@ -73,7 +73,7 @@ class Loader extends com.ktxsoftware.kje.Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
-			Main.start();
+			Starter.loadFinished();
 		}
 	}
 }

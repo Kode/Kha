@@ -1,6 +1,6 @@
-package com.ktxsoftware.kje.backend.cpp;
+package com.ktxsoftware.kha.backends.cpp;
 
-class Music implements com.ktxsoftware.kje.Music {
+class Music implements com.ktxsoftware.kha.Music {
 	public function new(filename : String) {
 		
 	}
