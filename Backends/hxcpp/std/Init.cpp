@@ -91,7 +91,7 @@ int std_register_prims()
       + __misc_prims()
       + __process_prims()
       + __random_prims()
-      + __socket_prims()
+      //+ __socket_prims()
       + __string_prims()
       + __sys_prims()
       + __xml_prims();

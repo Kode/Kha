@@ -24,7 +24,9 @@ bool gLoadDebug = false;
 #include <windows.h>
 typedef HMODULE Module;
 
-Module hxLoadLibrary(String inLib) { return LoadLibraryW(inLib.__WCStr()); }
+Module hxLoadLibrary(String inLib) {
+	return 0;//LoadLibraryW(inLib.__WCStr());
+}
 void *hxFindSymbol(Module inModule, const char *inSymbol) { return (void *)GetProcAddress(inModule,inSymbol); }
 #elif defined (IPHONE)
 
@@ -274,9 +276,11 @@ Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
 
 
 extern "C" void *hx_cffi(const char *inName);
+extern "C" int std_register_prims();
 
 Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
 {
+	std_register_prims();
 #ifdef ANDROID
    inLib = HX_CSTRING("lib") + inLib;
 
@@ -366,7 +370,7 @@ Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
          #endif
       }
       module = hxLoadLibrary(dll_ext);
-      if (module)
+	  if (module || strcmp(inLib.c_str(), "std") == 0)
          break;
 
       
@@ -429,7 +433,7 @@ Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
       }
    }
 
-   if (!module)
+   if (!module && strcmp(inLib.c_str(), "std") != 0)
    {
      throw Dynamic(HX_CSTRING("Could not load module ") + inLib + HX_CSTRING("@") + full_name);
     }

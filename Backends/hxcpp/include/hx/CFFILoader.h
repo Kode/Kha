@@ -569,7 +569,7 @@ void *LoadFunc(const char *inName)
    static char *modules[] = { 0, "hxcpp", "hxcpp-debug" };
    for(int i=0; i<3 && sResolveProc==0; i++)
    {
-      HMODULE handle = GetModuleHandle(modules[i]);
+      HMODULE handle = GetModuleHandleA(modules[i]);
       if (handle)
       {
          sResolveProc = (ResolveProc)GetProcAddress(handle,"hx_cffi");
