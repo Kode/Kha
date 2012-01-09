@@ -1,5 +1,6 @@
 package com.ktxsoftware.kha.backends.flash;
 
+import com.ktxsoftware.kha.Color;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Matrix;
@@ -11,6 +12,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var tx : Float;
 	var ty : Float;
 	var matrix : Matrix;
+	var color : Color;
 	
 	public function new() {
 		tx = 0;
@@ -46,6 +48,16 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		matrix.ty = ty + dy - sy;
 		graphics.beginBitmapFill(image.image.bitmapData, matrix);
 		graphics.drawRect(tx + dx, ty + dy, dw, dh);
+		graphics.endFill();
+	}
+	
+	public override function setColor(r : Int, g : Int, b : Int) {
+		color = new Color(r, g, b);
+	}
+	
+	public override function fillRect(x : Float, y : Float, width : Float, height : Float) {
+		graphics.beginFill(color.r << 16 | color.g << 8 | color.b);
+		graphics.drawRect(tx + x, ty + y, width, height);
 		graphics.endFill();
 	}
 }

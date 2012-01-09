@@ -65,13 +65,18 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
 			var data : ByteArray = urlLoader.data;
-			var levelWidth : Int = data.readInt();
-			var levelHeight : Int = data.readInt();
+			var levelWidth : Int = 40;// data.readInt();
+			var levelHeight : Int = 32;// data.readInt();
 			var map : Array<Array<Int>> = new Array<Array<Int>>();
 			for (x in 0...levelWidth) {
 				map.push(new Array<Int>());
 				for (y in 0...levelHeight) {
-					map[x].push(data.readInt());
+					map[x].push(0); //data.readByte());// .readInt());
+				}
+			}
+			for (y in 0...levelHeight) {
+				for (x in 0...levelWidth) {
+					map[x][y] = data.readByte();
 				}
 			}
 			maps.set(name, map);

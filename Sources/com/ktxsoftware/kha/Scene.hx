@@ -14,6 +14,7 @@ class Scene {
 	var heroes : Array<Sprite>;
 	var sprites : Array<Sprite>;
 	var enemies : Array<Sprite>;
+	var projectiles : Array<Sprite>;
 	
 	var backgroundColor : Color;
 	
@@ -29,6 +30,7 @@ class Scene {
 		sprites = new Array<Sprite>();
 		heroes = new Array<Sprite>();
 		enemies = new Array<Sprite>();
+		projectiles = new Array<Sprite>();
 		backgrounds = new Array<Tilemap>();
 		foregrounds = new Array<Tilemap>();
 		backgroundSpeeds = new Array<Float>();
@@ -85,6 +87,11 @@ class Scene {
 		sprites.push(sprite);
 	}
 	
+	public function addProjectile(sprite : Sprite) {
+		projectiles.push(sprite);
+		sprites.push(sprite);
+	}
+	
 	public function removeEnemy(sprite : Sprite) {
 		enemies.remove(sprite);
 		sprites.remove(sprite);
@@ -92,6 +99,11 @@ class Scene {
 	
 	public function removeHero(sprite : Sprite) {
 		heroes.remove(sprite);
+		sprites.remove(sprite);
+	}
+	
+	public function removeProjectile(sprite : Sprite) {
+		projectiles.remove(sprite);
 		sprites.remove(sprite);
 	}
 	
@@ -140,6 +152,7 @@ class Scene {
 		
 		sort(heroes);
 		sort(enemies);
+		sort(projectiles);
 		i = 0;
 		
 		while (i < enemies.length) {
@@ -153,7 +166,32 @@ class Scene {
 				var rect2 : Rectangle = heroes[i2].collisionRect();
 				if (rect1.collision(rect2)) {
 					heroes[i2].hit(enemies[i]);
-					enemies[i].hit(heroes[i2]);
+					if (i < enemies.length && i2 < heroes.length) enemies[i].hit(heroes[i2]);
+				}
+			}
+			for (i2 in 0...projectiles.length) {
+				var rect2 : Rectangle = projectiles[i2].collisionRect();
+				if (rect1.collision(rect2)) {
+					projectiles[i2].hit(enemies[i]);
+					if (i < enemies.length && i2 < projectiles.length) enemies[i].hit(projectiles[i2]);
+				}
+			}
+			++i;
+		}
+		
+		i = 0;
+		while (i < projectiles.length) {
+			if (projectiles[i].x + projectiles[i].width > camx) break;
+			++i;
+		}
+		while (i < projectiles.length) {
+			if (projectiles[i].x > camx + Game.getInstance().getWidth()) break;
+			var rect1 : Rectangle = projectiles[i].collisionRect();
+			for (i2 in 0...heroes.length) {
+				var rect2 : Rectangle = heroes[i2].collisionRect();
+				if (rect1.collision(rect2)) {
+					heroes[i2].hit(projectiles[i]);
+					if (i < projectiles.length && i2 < heroes.length) projectiles[i].hit(heroes[i2]);
 				}
 			}
 			++i;
@@ -168,11 +206,12 @@ class Scene {
 			sprite.x += sprite.speedx;
 			
 			if (colissionMap != null) {
-				if (sprite.speedx > 0) { if (colissionMap.collideright(sprite)) sprite.hitFrom(Direction.LEFT); }
-				else if (sprite.speedx < 0) { if (colissionMap.collideleft(sprite)) sprite.hitFrom(Direction.RIGHT); }
+				var rect : Rectangle = sprite.collisionRect();
+				if (sprite.speedx > 0) { if (/*colissionMap.collideright(sprite)*/ rect.x + rect.width > 640 - 16) { sprite.x = 640 - 16 - rect.width; sprite.hitFrom(Direction.LEFT); } }
+				else if (sprite.speedx < 0) { if (/*colissionMap.collideleft(sprite)*/ rect.x < 16) { sprite.x = 16; sprite.hitFrom(Direction.RIGHT); } }
 				sprite.y += sprite.speedy;
-				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) sprite.hitFrom(Direction.UP); }
-				else if (sprite.speedy < 0) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
+				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) { sprite.hitFrom(Direction.UP); sprite.speedy = 0; } }
+				else if (sprite.speedy < 0 && sprite.y < 50) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
 			}
 		}
 		else {
