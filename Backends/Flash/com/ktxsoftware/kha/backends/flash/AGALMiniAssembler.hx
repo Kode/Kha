@@ -267,70 +267,68 @@ class AGALMiniAssembler {
 					if (reg.match(relreg)) {
 						reloffset = Std.parseInt(reg.matched(0));
 					}
-				}
-				if (reloffset < 0 || reloffset > 255) {
-					_error = "error: index offset "+reloffset+" out of bounds. [0..255]"; 
-				}
-				badreg = true;
-				break;
-			}
-			if (verbose) trace( "RELATIVE: type="+reltype+"=="+relname+" sel="+relsel+"=="+selmatch+" idx="+regidx+" offset="+reloffset ); 
-		}
-
-		if (verbose) trace("  emit argcode=" + regFound + "[" + regidx + "][" + regmask + "]");
-		if (isDest) {
-			_agalcode.writeShort(regidx);
-			_agalcode.writeByte(regmask);
-			_agalcode.writeByte(regFound.emitCode());
-			pad -= 32;
-		}
-		else {
-			if (isSampler) {
-				if (verbose) trace("  emit sampler");
-				var samplerbits : UInt = 5; // type 5
-				var optsLength:UInt = opts.length;
-				var bias:Float = 0;
-				var k : Int = 0;
-				while (k < Std.int(optsLength)) {
-					if (verbose) trace("    opt: " + opts.charAt(k));
-					var optfound : Sampler = SAMPLEMAP.get(opts.charAt(k));
-					if (optfound == null) {
-						// todo check that it's a number...
-						//trace( "Warning, unknown sampler option: "+opts[k] );
-						bias = Std.parseFloat(opts.charAt(k));
-						if (verbose) trace("    bias: " + bias);
+					if (reloffset < 0 || reloffset > 255) {
+						_error = "error: index offset "+reloffset+" out of bounds. [0..255]"; 
+						badreg = true;
+						break;
 					}
-					else {
-						if (optfound.flag() != SAMPLER_SPECIAL_SHIFT) samplerbits &= ~(0xf << optfound.flag());
-						samplerbits |= optfound.mask() << optfound.flag();
-					}
-					++k;
+					if (verbose) trace( "RELATIVE: type="+reltype+"=="+relname+" sel="+relsel+"=="+selmatch+" idx="+regidx+" offset="+reloffset ); 
 				}
-				_agalcode.writeShort(regidx);
-				_agalcode.writeByte(Std.int(bias * 8.0));
-				_agalcode.writeByte(0);
-				_agalcode.writeUnsignedInt(samplerbits);
 
-				if (verbose) trace("    bits: " + ( samplerbits - 5 ));
-				pad -= 64;
-			}
-			else {
-				if (j == 0) {
-					_agalcode.writeUnsignedInt(0);
+				if (verbose) trace("  emit argcode=" + regFound + "[" + regidx + "][" + regmask + "]");
+				if (isDest) {
+					_agalcode.writeShort(regidx);
+					_agalcode.writeByte(regmask);
+					_agalcode.writeByte(regFound.emitCode());
 					pad -= 32;
 				}
-				_agalcode.writeShort(regidx);
-				_agalcode.writeByte(reloffset);
-				_agalcode.writeByte(regmask);
-				_agalcode.writeByte(regFound.emitCode());
-				_agalcode.writeByte(reltype);
-				_agalcode.writeShort(isRelative ? ( relsel | ( 1 << 15 ) ) : 0);
+				else {
+					if (isSampler) {
+						if (verbose) trace("  emit sampler");
+						var samplerbits : UInt = 5; // type 5
+						var optsLength:UInt = opts.length;
+						var bias:Float = 0;
+						var k : Int = 0;
+						while (k < Std.int(optsLength)) {
+							if (verbose) trace("    opt: " + opts.charAt(k));
+							var optfound : Sampler = SAMPLEMAP.get(opts.charAt(k));
+							if (optfound == null) {
+								// todo check that it's a number...
+								//trace( "Warning, unknown sampler option: "+opts[k] );
+								bias = Std.parseFloat(opts.charAt(k));
+								if (verbose) trace("    bias: " + bias);
+							}
+							else {
+								if (optfound.flag() != SAMPLER_SPECIAL_SHIFT) samplerbits &= ~(0xf << optfound.flag());
+								samplerbits |= optfound.mask() << optfound.flag();
+							}
+							++k;
+						}
+						_agalcode.writeShort(regidx);
+						_agalcode.writeByte(Std.int(bias * 8.0));
+						_agalcode.writeByte(0);
+						_agalcode.writeUnsignedInt(samplerbits);
 
-				pad -= 64;
+						if (verbose) trace("    bits: " + ( samplerbits - 5 ));
+						pad -= 64;
+					}
+					else {
+						if (j == 0) {
+							_agalcode.writeUnsignedInt(0);
+							pad -= 32;
+						}
+						_agalcode.writeShort(regidx);
+						_agalcode.writeByte(reloffset);
+						_agalcode.writeByte(regmask);
+						_agalcode.writeByte(regFound.emitCode());
+						_agalcode.writeByte(reltype);
+						_agalcode.writeShort(isRelative ? ( relsel | ( 1 << 15 ) ) : 0);
+
+						pad -= 64;
+					}
+				}
+				++j;
 			}
-		}
-		++j;
-	}
 
 			// pad unused regs
 			j = 0;
