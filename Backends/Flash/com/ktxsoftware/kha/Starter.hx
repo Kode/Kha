@@ -1,7 +1,7 @@
 package com.ktxsoftware.kha;
 
-import com.ktxsoftware.kha.backends.flash.AGALMiniAssembler;
-import com.ktxsoftware.kha.backends.flash.PerspectiveMatrix3D;
+import com.ktxsoftware.flash.utils.AGALMiniAssembler;
+import com.ktxsoftware.flash.utils.PerspectiveMatrix3D;
 import com.ktxsoftware.kha.Game;
 import com.ktxsoftware.kha.Key;
 import com.ktxsoftware.kha.Loader;
@@ -93,15 +93,16 @@ class Starter /*extends MovieClip*/ {
    
 		var vertexBuffer = context.createVertexBuffer(3, 3);
 		var vec2 = new Vector<Float>(9);
-		vec2[0] = -1; vec2[1] = -1; vec2[2] = 5;
-		vec2[3] = 1; vec2[4] = -1; vec2[5] = 5;
-		vec2[6] = 0; vec2[7] = 1; vec2[8] = 5;
+		vec2[0] = 100; vec2[1] = 100; vec2[2] = 5;
+		vec2[3] = 300; vec2[4] = 100; vec2[5] = 5;
+		vec2[6] = 200; vec2[7] = 300; vec2[8] = 5;
 		vertexBuffer.uploadFromVector(vec2, 0, 3);
 
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 
 		var projection : PerspectiveMatrix3D = new PerspectiveMatrix3D();
-		projection.perspectiveFieldOfViewLH(45 * Math.PI / 180, 1.2, 0.1, 512);
+		projection.orthoLH(640, 480, 0.1, 512);
+		//projection.perspectiveFieldOfViewLH(45 * Math.PI / 180, 1.2, 0.1, 512);
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, projection, true);
 		var vec3 = new Vector<Float>(4);
 		vec3[0] = 1; vec3[1] = 1; vec3[2] = 1; vec3[3] = 0;
