@@ -29,7 +29,7 @@ class Starter {
 	var pressedKeys : Array<Bool>;
 	var stage : Stage;
 	var stage3D : Stage3D;
-	var context : Context3D;
+	public static var context : Context3D;
 	var indexBuffer : IndexBuffer3D;
 	
 	public function new() {
@@ -64,18 +64,19 @@ class Starter {
 		context.enableErrorChecking = true;
 		context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, true);
 
-		var vertexShader : Array<String> =
-		[
-			  // Transform our vertices by our projection matrix and move it into temporary register
-			  "m44 vt0, va0, vc0",
-			  // Move the temporary register to out position for this vertex
-			  "mov op, vt0"
+		var vertexShader : Array<String> = [
+			// Transform our vertices by our projection matrix and move it into temporary register
+			"m44 vt0, va0, vc0",
+			// Move the temporary register to out position for this vertex
+			"mov op, vt0",
+			"mov v0, va1"
 		];
 		
-		var fragmentShader : Array<String> =
-		[
-			  // Simply assing the fragment constant to our out color
-			  "mov oc, fc0"
+		var fragmentShader : Array<String> = [
+			// Simply assing the fragment constant to our out color
+			//"mov oc, fc0"
+			"tex ft1, v0, fs0 <2d,linear,nomip>",
+			"mov oc, ft1"
 		];
 
 		var program : Program3D = context.createProgram();
@@ -91,14 +92,16 @@ class Starter {
 		vec[0] = 0; vec[1] = 1; vec[2] = 2;
 		indexBuffer.uploadFromVector(vec, 0, 3);
    
-		var vertexBuffer = context.createVertexBuffer(3, 3);
-		var vec2 = new Vector<Float>(9);
-		vec2[0] = 100; vec2[1] = 100; vec2[2] = 1;
-		vec2[3] = 300; vec2[4] = 200; vec2[5] = 1;
-		vec2[6] = 200; vec2[7] = 300; vec2[8] = 1;
+		var vertexBuffer = context.createVertexBuffer(3, 5);
+		var vec2 = new Vector<Float>(15);
+		vec2[ 0] = 100; vec2[ 1] = 100; vec2[ 2] = 1; vec2[ 3] = 0; vec2[ 4] = 0;
+		vec2[ 5] = 300; vec2[ 6] = 200; vec2[ 7] = 1; vec2[ 8] = 1; vec2[ 9] = 0;
+		vec2[10] = 200; vec2[11] = 300; vec2[12] = 1; vec2[13] = 0; vec2[14] = 1;
 		vertexBuffer.uploadFromVector(vec2, 0, 3);
 
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
+		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
+		context.setTextureAt(0, cast(Loader.getInstance().getImage("Bub.png"), com.ktxsoftware.kha.backends.flash.Image).getTexture());
 
 		var projection : Matrix3D = new Matrix3D();
 		var right : Float = 640;
