@@ -10,6 +10,7 @@ import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
+import flash.display3D.VertexBuffer3D;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
 import flash.geom.Point;
@@ -21,6 +22,8 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var ty : Float;
 	var color : Color;
 	var context : Context3D;
+	var vertexBuffer : VertexBuffer3D;
+	var vertices : Vector<Float>;
 	var indexBuffer : IndexBuffer3D;
 	var projection : Matrix3D;
 	
@@ -30,10 +33,10 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		ty = 0;
 		
 		projection = new Matrix3D();
-		var right : Float = 640;
+		var right : Float = width;
 		var left : Float = 0;
 		var top : Float = 0;
-		var bottom : Float = 480;
+		var bottom : Float = height;
 		var zNear : Float = 0.1;
 		var zFar : Float = 512;
 		
@@ -49,8 +52,9 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		vec[12] = tx;                   vec[13] = ty;                   vec[14] = tz;                   vec[15] = 1.0;
 		
 		projection.copyRawDataFrom(vec);
-		
+		#if debug
 		context.enableErrorChecking = true;
+		#end
 		context.configureBackBuffer(width, height, 0, false);
 
 		var vertexShader : Array<String> = [
@@ -81,6 +85,14 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		vec[0] = 0; vec[1] = 1; vec[2] = 2;
 		vec[4] = 1; vec[5] = 2; vec[3] = 3;
 		indexBuffer.uploadFromVector(vec, 0, 6);
+		
+		vertexBuffer = context.createVertexBuffer(4, 5);
+		vertices = new Vector<Float>(20);
+		
+		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
+		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
+		
+		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, projection, true);
 	}
 	
 	public override function begin() {
@@ -105,27 +117,17 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		var image : Image = cast(img, Image);
 		image.getTexture();
 
-		var vertexBuffer = context.createVertexBuffer(4, 5);
-		var vec2 = new Vector<Float>(20);
 		var u1 = image.correctU(sx / image.getWidth());
 		var u2 = image.correctU((sx + sw) / image.getWidth());
 		var v1 = image.correctV(sy / image.getHeight());
 		var v2 = image.correctV((sy + sh) / image.getHeight());
-		vec2[ 0] = tx + dx;      vec2[ 1] = ty + dy;      vec2[ 2] = 1; vec2[ 3] = u1; vec2[ 4] = v1;
-		vec2[ 5] = tx + dx + dw; vec2[ 6] = ty + dy;      vec2[ 7] = 1; vec2[ 8] = u2; vec2[ 9] = v1;
-		vec2[10] = tx + dx;      vec2[11] = ty + dy + dh; vec2[12] = 1; vec2[13] = u1; vec2[14] = v2;
-		vec2[15] = tx + dx + dw; vec2[16] = ty + dy + dh; vec2[17] = 1; vec2[18] = u2; vec2[19] = v2;
-		vertexBuffer.uploadFromVector(vec2, 0, 4);
+		vertices[ 0] = tx + dx;      vertices[ 1] = ty + dy;      vertices[ 2] = 1; vertices[ 3] = u1; vertices[ 4] = v1;
+		vertices[ 5] = tx + dx + dw; vertices[ 6] = ty + dy;      vertices[ 7] = 1; vertices[ 8] = u2; vertices[ 9] = v1;
+		vertices[10] = tx + dx;      vertices[11] = ty + dy + dh; vertices[12] = 1; vertices[13] = u1; vertices[14] = v2;
+		vertices[15] = tx + dx + dw; vertices[16] = ty + dy + dh; vertices[17] = 1; vertices[18] = u2; vertices[19] = v2;
+		vertexBuffer.uploadFromVector(vertices, 0, 4);
 
-		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
-		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
 		context.setTextureAt(0, image.getTexture());
-		
-		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, projection, true);
-		var vec3 = new Vector<Float>(4);
-		vec3[0] = 1; vec3[1] = 1; vec3[2] = 1; vec3[3] = 0;
-		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec3);
-		
 		context.drawTriangles(indexBuffer, 0, 2);
 	}
 	

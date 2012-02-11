@@ -50,8 +50,9 @@ class Sprite {
 	}
 	
 	public function render(painter : Painter) {
-		if (image != null)
-			painter.drawImage2(image, animation.get() * width % image.getWidth(), Math.floor(animation.get() * width / image.getWidth()) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
+		if (image != null) {
+			painter.drawImage2(image, Std.int(animation.get() * width) % image.getWidth(), Math.floor(animation.get() * width / image.getWidth()) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
+		}
 	}
 	
 	public function hitFrom(dir : Direction) {
