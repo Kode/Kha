@@ -6,6 +6,7 @@ import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
+import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.IndexBuffer3D;
@@ -56,6 +57,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		context.enableErrorChecking = true;
 		#end
 		context.configureBackBuffer(width, height, 0, false);
+		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 
 		var vertexShader : Array<String> = [
 			// Transform our vertices by our projection matrix and move it into temporary register
@@ -80,14 +82,20 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		program.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
 		context.setProgram(program);
    
-		indexBuffer = context.createIndexBuffer(6);
-		var vec = new Vector<UInt>(6);
-		vec[0] = 0; vec[1] = 1; vec[2] = 2;
-		vec[4] = 1; vec[5] = 2; vec[3] = 3;
-		indexBuffer.uploadFromVector(vec, 0, 6);
+		indexBuffer = context.createIndexBuffer(6 * maxCount);
+		var indices = new Vector<UInt>(6 * maxCount);
+		for (i in 0...maxCount) {
+			indices[6 * i + 0] = i * 4 + 0;
+			indices[6 * i + 1] = i * 4 + 1;
+			indices[6 * i + 2] = i * 4 + 2;
+			indices[6 * i + 3] = i * 4 + 1;
+			indices[6 * i + 4] = i * 4 + 2;
+			indices[6 * i + 5] = i * 4 + 3;
+		}
+		indexBuffer.uploadFromVector(indices, 0, 6 * maxCount);
 		
-		vertexBuffer = context.createVertexBuffer(4, 5);
-		vertices = new Vector<Float>(20);
+		vertexBuffer = context.createVertexBuffer(4 * maxCount, 5);
+		vertices = new Vector<Float>(20 * maxCount);
 		
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
@@ -100,6 +108,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	}
 	
 	public override function end() {
+		if (image != null && count > 0) flushBuffers();
 		context.present();
 	}
 	
@@ -113,22 +122,38 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		
 	}
 	
+	var image : Image;
+	var count : Int;
+	static var maxCount : Int = 500;
+	
+	function flushBuffers() : Void {
+		context.setTextureAt(0, image.getTexture());
+		vertexBuffer.uploadFromVector(vertices, 0, 4 * count);
+		context.drawTriangles(indexBuffer, 0, 2 * count);
+		count = 0;
+	}
+	
 	public override function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
-		var image : Image = cast(img, Image);
-		image.getTexture();
+		if (image != img || count >= maxCount) {
+			if (image != null) flushBuffers();
+			image = cast(img, Image);
+			image.getTexture();
+			context.setTextureAt(0, image.getTexture());
+		}
 
 		var u1 = image.correctU(sx / image.getWidth());
 		var u2 = image.correctU((sx + sw) / image.getWidth());
 		var v1 = image.correctV(sy / image.getHeight());
 		var v2 = image.correctV((sy + sh) / image.getHeight());
-		vertices[ 0] = tx + dx;      vertices[ 1] = ty + dy;      vertices[ 2] = 1; vertices[ 3] = u1; vertices[ 4] = v1;
-		vertices[ 5] = tx + dx + dw; vertices[ 6] = ty + dy;      vertices[ 7] = 1; vertices[ 8] = u2; vertices[ 9] = v1;
-		vertices[10] = tx + dx;      vertices[11] = ty + dy + dh; vertices[12] = 1; vertices[13] = u1; vertices[14] = v2;
-		vertices[15] = tx + dx + dw; vertices[16] = ty + dy + dh; vertices[17] = 1; vertices[18] = u2; vertices[19] = v2;
-		vertexBuffer.uploadFromVector(vertices, 0, 4);
+		var offset = count * 20;
+		vertices[offset +  0] = tx + dx;      vertices[offset +  1] = ty + dy;      vertices[offset +  2] = 1; vertices[offset +  3] = u1; vertices[offset +  4] = v1;
+		vertices[offset +  5] = tx + dx + dw; vertices[offset +  6] = ty + dy;      vertices[offset +  7] = 1; vertices[offset +  8] = u2; vertices[offset +  9] = v1;
+		vertices[offset + 10] = tx + dx;      vertices[offset + 11] = ty + dy + dh; vertices[offset + 12] = 1; vertices[offset + 13] = u1; vertices[offset + 14] = v2;
+		vertices[offset + 15] = tx + dx + dw; vertices[offset + 16] = ty + dy + dh; vertices[offset + 17] = 1; vertices[offset + 18] = u2; vertices[offset + 19] = v2;
+		//vertexBuffer.uploadFromVector(vertices, 0, 4);
 
-		context.setTextureAt(0, image.getTexture());
-		context.drawTriangles(indexBuffer, 0, 2);
+		//context.drawTriangles(indexBuffer, 0, 2);
+		++count;
 	}
 	
 	public override function setColor(r : Int, g : Int, b : Int) {

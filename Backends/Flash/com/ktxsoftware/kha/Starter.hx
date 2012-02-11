@@ -10,6 +10,7 @@ import flash.display.Stage;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DRenderMode;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
@@ -49,7 +50,9 @@ class Starter {
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-		stage3D.requestContext3D();
+		stage3D.requestContext3D(
+			//"software"
+		);
 	}
 	
 	function onReady( _ ) : Void {
