@@ -60,9 +60,9 @@ class Starter {
 	}
 	
 	function update(_) {
-		//game.update();
+		game.update();
 		painter.begin();
-		//game.render(painter);
+		game.render(painter);
 		painter.end();
 	}
 	

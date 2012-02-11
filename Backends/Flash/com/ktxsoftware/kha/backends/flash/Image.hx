@@ -10,6 +10,9 @@ import flash.geom.Matrix;
 
 class Image implements com.ktxsoftware.kha.Image {
 	public var image : Bitmap;
+	var tex : Texture;
+	var texWidth : Int;
+	var texHeight : Int;
 	
 	public function new(image : DisplayObject)  {
 		this.image = cast(image, Bitmap);
@@ -28,22 +31,38 @@ class Image implements com.ktxsoftware.kha.Image {
 	}
 	
 	public function getTexture() : Texture {
-		var tex : Texture;
-		tex = Starter.context.createTexture(Std.int(image.width), Std.int(image.height), Context3DTextureFormat.BGRA, false);
-		uploadTextureWithMipmaps(tex);
+		if (tex == null) uploadTextureWithMipmaps();
 		return tex;
 	}
 	
-	function uploadTextureWithMipmaps(dest : Texture) : Void {
-		var ws : Int = Std.int(image.width);
-		var hs : Int = Std.int(image.height);
-		var level : Int = 0;
+	function pow(pow : Int) : Int {
+        var ret : Int = 1;
+        for (i in 0...pow) ret *= 2;
+        return ret;
+    }
+
+    function toPow2(i : Int) : Int {
+        var power : Int = 0;
+		while (true) {
+            if (pow(power) >= i) return pow(power);
+			++power;
+		}
+		return -1;
+    }
+	
+	function uploadTextureWithMipmaps() : Void {
+		texWidth = toPow2(Std.int(image.width));
+		texHeight = toPow2(Std.int(image.height));
+		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, false);
+		tex.uploadFromBitmapData(image.bitmapData, 0);
+		
+		/*var level : Int = 0;
 		var transform = new Matrix();
 		var tmp = new BitmapData(ws, hs, true, 0x00000000);
 
 		while (ws >= 1 && hs >= 1) {
 			tmp.draw(image.bitmapData, transform, null, null, null, true);
-			dest.uploadFromBitmapData(tmp, level);
+			tex.uploadFromBitmapData(tmp, level);
 			transform.scale(0.5, 0.5);
 			++level;
 			ws >>= 1;
@@ -53,6 +72,14 @@ class Image implements com.ktxsoftware.kha.Image {
 				tmp = new BitmapData(ws, hs, true, 0x00000000);
 			}
 		}
-		tmp.dispose();
+		tmp.dispose();*/
+	}
+	
+	public function correctU(u : Float) : Float {
+		return u * image.width / texWidth;
+	}
+
+	public function correctV(v : Float) : Float {
+		return v * image.height / texHeight;
 	}
 }
