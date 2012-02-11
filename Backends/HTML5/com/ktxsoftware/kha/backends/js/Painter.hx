@@ -5,13 +5,10 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var tx : Float;
 	var ty : Float;
 	
-	public function new() {
+	public function new(canvas : Dynamic) {
+		this.canvas = canvas;
 		tx = 0;
 		ty = 0;
-	}
-	
-	public function setCanvas(canvas : Dynamic) {
-		this.canvas = canvas;
 	}
 	
 	public override function begin() {

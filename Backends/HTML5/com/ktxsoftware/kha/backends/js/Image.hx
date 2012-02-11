@@ -4,6 +4,7 @@ import js.Dom;
 
 class Image implements com.ktxsoftware.kha.Image {
 	public var image : js.Image;
+	public var tex : Dynamic;
 	
 	public function new(image : js.Image) {
 		this.image = image;
