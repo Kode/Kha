@@ -23,7 +23,7 @@ import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.Vector;
 
-class Starter /*extends MovieClip*/ {
+class Starter {
 	var game : Game;
 	var painter : Painter;
 	var pressedKeys : Array<Bool>;
@@ -93,16 +93,34 @@ class Starter /*extends MovieClip*/ {
    
 		var vertexBuffer = context.createVertexBuffer(3, 3);
 		var vec2 = new Vector<Float>(9);
-		vec2[0] = 100; vec2[1] = 100; vec2[2] = 5;
-		vec2[3] = 300; vec2[4] = 100; vec2[5] = 5;
-		vec2[6] = 200; vec2[7] = 300; vec2[8] = 5;
+		vec2[0] = 100; vec2[1] = 100; vec2[2] = 1;
+		vec2[3] = 300; vec2[4] = 200; vec2[5] = 1;
+		vec2[6] = 200; vec2[7] = 300; vec2[8] = 1;
 		vertexBuffer.uploadFromVector(vec2, 0, 3);
 
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 
-		var projection : PerspectiveMatrix3D = new PerspectiveMatrix3D();
-		projection.orthoLH(640, 480, 0.1, 512);
-		//projection.perspectiveFieldOfViewLH(45 * Math.PI / 180, 1.2, 0.1, 512);
+		var projection : Matrix3D = new Matrix3D();
+		var right : Float = 640;
+		var left : Float = 0;
+		var top : Float = 0;
+		var bottom : Float = 480;
+		var zNear : Float = 0.1;
+		var zFar : Float = 512;
+		
+		var tx : Float = -(right + left) / (right - left);
+		var ty : Float = -(top + bottom) / (top - bottom);
+		var tz : Float = -zNear / (zFar - zNear);
+			
+		var vec : Vector<Float> = new Vector<Float>(16);
+		
+		vec[ 0] = 2.0 / (right - left); vec[ 1] = 0.0;                  vec[ 2] = 0.0;                  vec[ 3] = 0.0;
+		vec[ 4] = 0.0;                  vec[ 5] = 2.0 / (top - bottom); vec[ 6] = 0.0;                  vec[ 7] = 0.0;
+		vec[ 8] = 0.0;                  vec[ 9] = 0.0;                  vec[10] = 1.0 / (zFar - zNear); vec[11] = 0.0;
+		vec[12] = tx;                   vec[13] = ty;                   vec[14] = tz;                   vec[15] = 1.0;
+		
+		projection.copyRawDataFrom(vec);
+		
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, projection, true);
 		var vec3 = new Vector<Float>(4);
 		vec3[0] = 1; vec3[1] = 1; vec3[2] = 1; vec3[3] = 0;
