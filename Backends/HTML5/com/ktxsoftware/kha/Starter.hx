@@ -34,6 +34,10 @@ class Starter {
 				game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, true));
 			case 39:
 				game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, true));
+			case 65:
+				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_1, true));
+			case 83:
+				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_2, true));
 			}
 		};
 		Lib.document.onkeyup = function(event : js.Event) {
@@ -46,6 +50,10 @@ class Starter {
 				game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, false));
 			case 39:
 				game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, false));
+			case 65:
+				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_1, false));
+			case 83:
+				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_2, false));
 			}
 		};
 		

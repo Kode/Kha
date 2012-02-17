@@ -57,15 +57,27 @@ class Loader extends com.ktxsoftware.kha.Loader {
 	override function loadMap(name : String) {
 		bytePosition = 0;
 		var bytes : Bytes = File.getBytes(name);
-		var levelWidth : Int = readInt(bytes);
-		var levelHeight : Int = readInt(bytes);
+		var levelWidth : Int = 40;// readInt(bytes);
+		var levelHeight : Int = 32;// readInt(bytes);
 		var map : Array<Array<Int>> = new Array<Array<Int>>();
-		for (x in 0...levelWidth) {
+		/*for (x in 0...levelWidth) {
 			map.push(new Array<Int>());
 			for (y in 0...levelHeight) {
 				map[x].push(readInt(bytes));
 			}
-		}
+		}*/
+		for (x in 0...levelWidth) {
+				map.push(new Array<Int>());
+				for (y in 0...levelHeight) {
+					map[x].push(0); //data.readByte());// .readInt());
+				}
+			}
+			for (y in 0...levelHeight) {
+				for (x in 0...levelWidth) {
+					map[x][y] = bytes.get(bytePosition);
+					++bytePosition;
+				}
+			}
 		maps.set(name, map);
 		--numberOfFiles;
 		checkComplete();

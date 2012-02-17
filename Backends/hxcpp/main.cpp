@@ -18,7 +18,7 @@ namespace {
 	class HaxeItem : public Kt::Item {
 	public:
 		float width() {
-			return 600;
+			return 640;
 		}
 
 		float height() {
@@ -45,6 +45,9 @@ namespace {
 		case Kt::Key_Right:
 			Starter_obj::pushRight();
 			break;
+		case Kt::Key_A:
+			Starter_obj::pushButton1();
+			break;
 		}
 	}
 
@@ -62,6 +65,9 @@ namespace {
 		case Kt::Key_Right:
 			Starter_obj::releaseRight();
 			break;
+		case Kt::Key_A:
+			Starter_obj::releaseButton1();
+			break;
 		}
 	}
 }
@@ -72,7 +78,7 @@ int ktmain(int argc, char** argv) {
 
    // Register additional ndll libaries ...
    // nme_register_prims();
-	Kt::Application app(argc, argv, 600, 520);
+	Kt::Application app(argc, argv, 640, 520);
 	Kt::Sound::init();
 	//printf("Begin!\n");
  	const char *err = hxRunLibrary();
