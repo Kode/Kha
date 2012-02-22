@@ -84,7 +84,7 @@ HX_DEFINE_DYNAMIC_FUNC2(Painter_obj,translate,(void))
 Void Painter_obj::drawImage2( ::com::ktxsoftware::kha::Image image,double sx,double sy,double sw,double sh,double dx,double dy,double dw,double dh){
 {
 		HX_SOURCE_PUSH("Painter_obj::drawImage2")
-		::com::ktxsoftware::kha::backends::cpp::Image_obj* img = dynamic_cast<::com::ktxsoftware::kha::backends::cpp::Image_obj*>(image->__GetRealObject());
+		::com::ktxsoftware::kha::backends::cpp::Image_obj* img = dynamic_cast< ::com::ktxsoftware::kha::backends::cpp::Image_obj*>(image->__GetRealObject());
 		haxePainter->drawSubImage(img->image, tx + dx, ty + dy, dw, dh, sx, sy, sw, sh);
 	}
 return null();

@@ -704,7 +704,7 @@ int __stdcall WinMain( void * hInstance, void * hPrevInstance, const char *lpCmd
 
 #define HX_BEGIN_MAIN \
 \
-int main(int argc,char **argv){ \
+int main_nix(int argc,char **argv){ \
 	HX_TOP_OF_STACK \
 	hx::Boot(); \
 	try{ \
