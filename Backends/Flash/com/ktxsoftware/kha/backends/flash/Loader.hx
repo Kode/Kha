@@ -1,5 +1,6 @@
 package com.ktxsoftware.kha.backends.flash;
 
+import com.ktxsoftware.kha.Blob;
 import com.ktxsoftware.kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -8,6 +9,7 @@ import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
+import haxe.io.Bytes;
 
 class Loader extends com.ktxsoftware.kha.Loader {
 	var xmlName : String;
@@ -59,27 +61,13 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		loader.load(urlRequest);
 	}
 	
-	override function loadMap(name : String) {
-		var urlRequest : URLRequest = new URLRequest(name);
+	override function loadBlob(filename : String) {
+		var urlRequest : URLRequest = new URLRequest(filename);
 		var urlLoader : URLLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
-			var data : ByteArray = urlLoader.data;
-			var levelWidth : Int = 40;// data.readInt();
-			var levelHeight : Int = 32;// data.readInt();
-			var map : Array<Array<Int>> = new Array<Array<Int>>();
-			for (x in 0...levelWidth) {
-				map.push(new Array<Int>());
-				for (y in 0...levelHeight) {
-					map[x].push(0); //data.readByte());// .readInt());
-				}
-			}
-			for (y in 0...levelHeight) {
-				for (x in 0...levelWidth) {
-					map[x][y] = data.readByte();
-				}
-			}
-			maps.set(name, map);
+			var blob = new Blob(Bytes.ofData(urlLoader.data));
+			blobs.set(filename, blob);
 			--numberOfFiles;
 			checkComplete();
 		});

@@ -1,5 +1,6 @@
 package com.ktxsoftware.kha.backends.cpp;
 
+import com.ktxsoftware.kha.Blob;
 import cpp.io.File;
 import haxe.io.Bytes;
 
@@ -42,43 +43,9 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		--numberOfFiles;
 		checkComplete();
 	}
-		
-	var bytePosition : Int;
 	
-	function readInt(bytes : Bytes) : Int {
-		var fourth = bytes.get(bytePosition + 0);
-		var third  = bytes.get(bytePosition + 1);
-		var second = bytes.get(bytePosition + 2);
-		var first  = bytes.get(bytePosition + 3);
-		bytePosition += 4;
-		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
-	}
-	
-	override function loadMap(name : String) {
-		bytePosition = 0;
-		var bytes : Bytes = File.getBytes(name);
-		var levelWidth : Int = 40;// readInt(bytes);
-		var levelHeight : Int = 32;// readInt(bytes);
-		var map : Array<Array<Int>> = new Array<Array<Int>>();
-		/*for (x in 0...levelWidth) {
-			map.push(new Array<Int>());
-			for (y in 0...levelHeight) {
-				map[x].push(readInt(bytes));
-			}
-		}*/
-		for (x in 0...levelWidth) {
-				map.push(new Array<Int>());
-				for (y in 0...levelHeight) {
-					map[x].push(0); //data.readByte());// .readInt());
-				}
-			}
-			for (y in 0...levelHeight) {
-				for (x in 0...levelWidth) {
-					map[x][y] = bytes.get(bytePosition);
-					++bytePosition;
-				}
-			}
-		maps.set(name, map);
+	override function loadBlob(filename : String) {
+		blobs.set(filename, new Blob(File.getBytes(filename)));
 		--numberOfFiles;
 		checkComplete();
 	}

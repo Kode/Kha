@@ -2,7 +2,7 @@ package com.ktxsoftware.kha;
 
 class Loader {
 	static var instance : Loader;
-	private var maps : Hash<Array<Array<Int>>>;
+	private var blobs : Hash<Blob>;
 	private var images : Hash<Image>;
 	private var sounds : Hash<Sound>;
 	private var musics : Hash<Music>;
@@ -10,7 +10,7 @@ class Loader {
 	private var loadcount : Int;
 	
 	public function new() {
-		maps = new Hash<Array<Array<Int>>>();
+		blobs = new Hash<Blob>();
 		images = new Hash<Image>();
 		sounds = new Hash<Sound>();
 		musics = new Hash<Music>();
@@ -26,8 +26,8 @@ class Loader {
 		return instance;
 	}
 	
-	public function getMap(name : String) : Array<Array<Int>> {
-		return maps.get(name);
+	public function getBlob(name : String) : Blob {
+		return blobs.get(name);
 	}
 	
 	public function getImage(name : String) : Image {
@@ -74,8 +74,8 @@ class Loader {
 					loadMusic(dataNode.firstChild().nodeValue);
 				case "sound":
 					loadSound(dataNode.firstChild().nodeValue);
-				case "map":
-					loadMap(dataNode.firstChild().nodeValue);
+				case "blob":
+					loadBlob(dataNode.firstChild().nodeValue);
 			}
 		}
 		if (Game.getInstance().hasScores()) loadHighscore();
@@ -87,7 +87,7 @@ class Loader {
 	public function saveHighscore(score : Score) { }
 	
 	private function loadImage(filename : String) { }
-	private function loadMap(name : String) { }
+	private function loadBlob(filename : String) { }
 	private function loadSound(filename : String) { }
 	private function loadMusic(filename : String) { }
 	private function loadXml(filename : String) { }
