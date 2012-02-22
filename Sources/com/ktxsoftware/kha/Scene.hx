@@ -206,13 +206,22 @@ class Scene {
 			sprite.x += sprite.speedx;
 			
 			if (colissionMap != null) {
+				if (sprite.speedx > 0) { if (colissionMap.collideright(sprite)) sprite.hitFrom(Direction.LEFT); }
+				else if (sprite.speedx < 0) { if (colissionMap.collideleft(sprite)) sprite.hitFrom(Direction.RIGHT); }
+				sprite.y += sprite.speedy;
+				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) sprite.hitFrom(Direction.UP); }
+				else if (sprite.speedy < 0) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
+			}
+			
+			//Bubble Dragons Hack
+			/*if (colissionMap != null) {
 				var rect : Rectangle = sprite.collisionRect();
-				if (sprite.speedx > 0) { if (/*colissionMap.collideright(sprite)*/ rect.x + rect.width > 640 - 16) { sprite.x = 640 - 16 - rect.width; sprite.hitFrom(Direction.LEFT); } }
-				else if (sprite.speedx < 0) { if (/*colissionMap.collideleft(sprite)*/ rect.x < 16) { sprite.x = 16; sprite.hitFrom(Direction.RIGHT); } }
+				if (sprite.speedx > 0) { if (rect.x + rect.width > 640 - 16) { sprite.x = 640 - 16 - rect.width; sprite.hitFrom(Direction.LEFT); } }
+				else if (sprite.speedx < 0) { if (rect.x < 16) { sprite.x = 16; sprite.hitFrom(Direction.RIGHT); } }
 				sprite.y += sprite.speedy;
 				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) { sprite.hitFrom(Direction.UP); sprite.speedy = 0; } }
 				else if (sprite.speedy < 0 && sprite.y < 50) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
-			}
+			}*/
 		}
 		else {
 			sprite.x += sprite.speedx;

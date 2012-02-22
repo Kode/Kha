@@ -96,6 +96,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		
 		vertexBuffer = context.createVertexBuffer(4 * maxCount, 5);
 		vertices = new Vector<Float>(20 * maxCount);
+		vertexBuffer.uploadFromVector(vertices, 0, 4 * maxCount);
 		
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
