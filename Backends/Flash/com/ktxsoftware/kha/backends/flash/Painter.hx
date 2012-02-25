@@ -118,11 +118,6 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		ty = y;
 	}
 	
-	public override function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) {
-		var image : Image = cast(img, Image);
-		
-	}
-	
 	var image : Image;
 	var count : Int;
 	static var maxCount : Int = 500;
@@ -134,7 +129,11 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		count = 0;
 	}
 	
-	public override function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	override public function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) : Void {
+		drawImage2(img, 0, 0, img.getWidth(), img.getHeight(), x, y, img.getWidth(), img.getHeight());
+	}
+	
+	override public function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
 		if (image != img || count >= maxCount) {
 			if (image != null) flushBuffers();
 			image = cast(img, Image);

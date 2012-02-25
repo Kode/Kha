@@ -20,6 +20,8 @@ class Sprite {
 	
 	public function new(image : Image, width : Int, height : Int, z : Int) {
 		this.image = image;
+		x = 0;
+		y = 0;
 		this.width = width;
 		this.height = height;
 		this.z = z;
