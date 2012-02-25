@@ -87,7 +87,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 	}
 	
 	override function loadFont(name : String, style : Int, size : Int) : com.ktxsoftware.kha.Font {
-		return new com.ktxsoftware.kha.backends.flash.Font();
+		return new com.ktxsoftware.kha.backends.flash.Font(name, style, size);
 	}
 	
 	function loadDataXml() : Void {

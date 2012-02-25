@@ -7,14 +7,20 @@ class Painter {
 	public function drawRect(x : Float, y : Float, width : Float, height : Float) : Void { }
 	public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void { }
 	public function setFont(font : Font) : Void { }
-	public function drawChars(text : String, offset : Int, length : Int, x : Float, y : Float) : Void { }
+	
+	public function drawChars(text : String, offset : Int, length : Int, x : Float, y : Float) : Void {
+		drawString(text.substr(offset, length), x, y);
+	}
+	
 	public function drawString(text : String, x : Float, y : Float) : Void { }
 	public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void { }
 	public function fillTriangle(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : Float, y3 : Float) : Void { }
 	public function translate(x : Float, y : Float) : Void { }
+	
 	public function clear() : Void {
 		fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
 	}
+	
 	public function begin() : Void { }
 	public function end() : Void { }
 }
