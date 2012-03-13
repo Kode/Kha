@@ -44,6 +44,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		var urlRequest : URLRequest = new URLRequest(filename);
 		var urlLoader : URLLoader = new URLLoader();
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
+			xmls.set(filename, Xml.parse(urlLoader.data));
 			--numberOfFiles;
 			checkComplete();
 		});
@@ -83,6 +84,10 @@ class Loader extends com.ktxsoftware.kha.Loader {
 			checkComplete();
 		});
 		sound.load(urlRequest);
+	}
+	
+	override function loadFont(name : String, style : Int, size : Int) : com.ktxsoftware.kha.Font {
+		return new com.ktxsoftware.kha.backends.flash.Font(name, style, size);
 	}
 	
 	function loadDataXml() : Void {

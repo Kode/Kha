@@ -50,12 +50,15 @@ class Starter {
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 		stage3D.requestContext3D(
 			//"software"
 		);
 	}
 	
-	function onReady( _ ) : Void {
+	function onReady(_) : Void {
 		context = stage3D.context3D;
 		painter = new Painter(context, stage.stageWidth, stage.stageHeight);
 
@@ -69,7 +72,7 @@ class Starter {
 		painter.end();
 	}
 	
-	function keyDownHandler(event : KeyboardEvent) {
+	function keyDownHandler(event : KeyboardEvent) : Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
@@ -86,7 +89,7 @@ class Starter {
 		}
 	}
 
-	function keyUpHandler(event : KeyboardEvent) {
+	function keyUpHandler(event : KeyboardEvent) : Void {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
 		case 38:
@@ -100,5 +103,17 @@ class Starter {
 		case 65:
 			game.key(new KeyEvent(Key.BUTTON_1, false));
 		}
+	}
+	
+	function mouseDownHandler(event : MouseEvent) : Void {
+		game.mouseDown(Std.int(event.stageX), Std.int(event.stageY));
+	}
+	
+	function mouseUpHandler(event : MouseEvent) : Void {
+		game.mouseUp(Std.int(event.stageX), Std.int(event.stageY));
+	}
+	
+	function mouseMoveHandler(event : MouseEvent) : Void {
+		game.mouseMove(Std.int(event.stageX), Std.int(event.stageY));
 	}
 }

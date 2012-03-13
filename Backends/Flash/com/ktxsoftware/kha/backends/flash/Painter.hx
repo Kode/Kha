@@ -8,14 +8,18 @@ import flash.display.Stage3D;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
+import flash.display3D.textures.Texture;
 import flash.display3D.VertexBuffer3D;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.text.TextField;
+import flash.text.TextFormat;
 import flash.Vector;
 
 class Painter extends com.ktxsoftware.kha.Painter {
@@ -27,11 +31,21 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var vertices : Vector<Float>;
 	var indexBuffer : IndexBuffer3D;
 	var projection : Matrix3D;
+	var font : Font;
+	var textField : TextField;
+	var textBitmap : BitmapData;
+	var textTexture : Texture;
 	
 	public function new(context : Context3D, width : Int, height : Int) {
 		this.context = context;
 		tx = 0;
 		ty = 0;
+		
+		textField = new TextField();
+		textField.width = 1024;
+		textField.height = 1024;
+		textBitmap = new BitmapData(1024, 1024, true, 0xffffff);
+		textTexture = Starter.context.createTexture(1024, 1024, Context3DTextureFormat.BGRA, false);
 		
 		projection = new Matrix3D();
 		var right : Float = width;
@@ -118,11 +132,6 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		ty = y;
 	}
 	
-	public override function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) {
-		var image : Image = cast(img, Image);
-		
-	}
-	
 	var image : Image;
 	var count : Int;
 	static var maxCount : Int = 500;
@@ -134,7 +143,11 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		count = 0;
 	}
 	
-	public override function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	override public function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) : Void {
+		drawImage2(img, 0, 0, img.getWidth(), img.getHeight(), x, y, img.getWidth(), img.getHeight());
+	}
+	
+	override public function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
 		if (image != img || count >= maxCount) {
 			if (image != null) flushBuffers();
 			image = cast(img, Image);
@@ -157,11 +170,44 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		++count;
 	}
 	
+	override public function drawString(text : String, x : Float, y : Float) : Void {
+		textField.defaultTextFormat = new TextFormat(font.name, font.size);
+		textField.text = text;
+		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
+		textBitmap.draw(textField);
+		textTexture.uploadFromBitmapData(textBitmap, 0);
+		
+		flushBuffers();
+		
+		var dx = x;
+		var dy = y - font.size;
+		var dw = 1024;
+		var dh = 1024;
+		var u1 = 0.0;
+		var u2 = 1.0;
+		var v1 = 0.0;
+		var v2 = 1.0;
+		var offset = 0;
+		
+		vertices[offset +  0] = tx + dx;      vertices[offset +  1] = ty + dy;      vertices[offset +  2] = 1; vertices[offset +  3] = u1; vertices[offset +  4] = v1;
+		vertices[offset +  5] = tx + dx + dw; vertices[offset +  6] = ty + dy;      vertices[offset +  7] = 1; vertices[offset +  8] = u2; vertices[offset +  9] = v1;
+		vertices[offset + 10] = tx + dx;      vertices[offset + 11] = ty + dy + dh; vertices[offset + 12] = 1; vertices[offset + 13] = u1; vertices[offset + 14] = v2;
+		vertices[offset + 15] = tx + dx + dw; vertices[offset + 16] = ty + dy + dh; vertices[offset + 17] = 1; vertices[offset + 18] = u2; vertices[offset + 19] = v2;
+		
+		context.setTextureAt(0, textTexture);
+		vertexBuffer.uploadFromVector(vertices, 0, 4 * 1);
+		context.drawTriangles(indexBuffer, 0, 2 * 1);
+	}
+	
 	public override function setColor(r : Int, g : Int, b : Int) {
 		color = new Color(r, g, b);
 	}
 	
 	public override function fillRect(x : Float, y : Float, width : Float, height : Float) {
 		
+	}
+	
+	override public function setFont(font : com.ktxsoftware.kha.Font) : Void {
+		this.font = cast(font, Font);
 	}
 }
