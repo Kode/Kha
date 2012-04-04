@@ -72,13 +72,13 @@ namespace {
 	}
 }
 
-int ktmain(int argc, char** argv) {
+int ktmain(const Kt::List<Kt::Text>& params) {
 	// Do this first
 	hxcpp_set_top_of_stack();
 
    // Register additional ndll libaries ...
    // nme_register_prims();
-	Kt::Application app(argc, argv, 640, 520);
+	Kt::Application app(params, 640, 520);
 	Kt::Sound::init();
 	//printf("Begin!\n");
  	const char *err = hxRunLibrary();
