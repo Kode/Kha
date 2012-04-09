@@ -310,6 +310,7 @@ class PainterGL extends com.ktxsoftware.kha.Painter {
 	}
 	
 	public override function begin() : Void {
+		gl.clearColor(0, 0, 0, 255);
 		gl.clear(gl.COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
 	}
 	
