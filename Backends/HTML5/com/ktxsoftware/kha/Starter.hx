@@ -22,7 +22,19 @@ class Starter {
 	
 	public static function loadFinished() {
 		game.init();
-		//painter = new com.ktxsoftware.kha.backends.js.Painter();
+		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		
+		Lib.document.onmousedown = function(event : js.Event) {
+			game.mouseDown(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
+		}
+		
+		Lib.document.onmouseup = function(event : js.Event) {
+			game.mouseUp(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
+		}
+		
+		Lib.document.onmousemove = function(event : js.Event) {
+			game.mouseMove(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
+		}
 
 		Lib.document.onkeydown = function(event : js.Event) {
 			switch (event.keyCode) {
@@ -57,7 +69,6 @@ class Starter {
 			}
 		};
 		
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), 640, 512);
 		else painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"));
 		
