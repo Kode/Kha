@@ -70,12 +70,12 @@ class Starter {
 		};
 		
 		try {
-			if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), 640, 512);
+			if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.getWidth(), game.getHeight());
 		}
 		catch (e : Dynamic) {
 			
 		}
-		if (painter == null) painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"));
+		if (painter == null) painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
 		
 		var window : Dynamic = Lib.window;
 		var requestAnimationFrame = window.requestAnimationFrame;

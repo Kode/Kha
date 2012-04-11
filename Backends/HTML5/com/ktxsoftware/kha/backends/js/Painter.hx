@@ -4,15 +4,19 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var canvas : Dynamic;
 	var tx : Float;
 	var ty : Float;
+	var width : Int;
+	var height : Int;
 	
-	public function new(canvas : Dynamic) {
+	public function new(canvas : Dynamic, width : Int, height : Int) {
 		this.canvas = canvas;
+		this.width = width;
+		this.height = height;
 		tx = 0;
 		ty = 0;
 	}
 	
 	public override function begin() {
-		canvas.clearRect(0, 0, 600, 520);
+		canvas.clearRect(0, 0, width, height);
 	}
 	
 	public override function end() {
