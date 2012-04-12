@@ -1,6 +1,7 @@
 package com.ktxsoftware.kha.backends.flash;
 
 import com.ktxsoftware.kha.Blob;
+import com.ktxsoftware.kha.FontStyle;
 import com.ktxsoftware.kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -86,7 +87,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		sound.load(urlRequest);
 	}
 	
-	override function loadFont(name : String, style : Int, size : Int) : com.ktxsoftware.kha.Font {
+	override function loadFont(name : String, style : FontStyle, size : Int) : com.ktxsoftware.kha.Font {
 		return new com.ktxsoftware.kha.backends.flash.Font(name, style, size);
 	}
 	

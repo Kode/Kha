@@ -92,7 +92,7 @@ class Loader {
 	private function loadMusic(filename : String) { }
 	private function loadXml(filename : String) { }
 	
-	public function loadFont(name : String, style : Int, size : Int) : Font { return null; }
+	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
