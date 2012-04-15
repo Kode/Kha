@@ -70,7 +70,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 
 	override public function setFont(font : com.ktxsoftware.kha.Font) {
 		var webfont = cast(font, Font);
-		canvas.setFont(webfont.size + "px " + webfont.name);
+		canvas.font = webfont.size + "px " + webfont.name;
 	}
 
 	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) {

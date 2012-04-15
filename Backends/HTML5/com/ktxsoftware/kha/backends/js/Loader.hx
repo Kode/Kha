@@ -1,4 +1,5 @@
 package com.ktxsoftware.kha.backends.js;
+import com.ktxsoftware.kha.FontStyle;
 
 import com.ktxsoftware.kha.Blob;
 import com.ktxsoftware.kha.Starter;
@@ -79,6 +80,10 @@ class Loader extends com.ktxsoftware.kha.Loader {
 			else Lib.alert("loadBlob failed");
 		};
 		request.send(null);
+	}
+	
+	override public function loadFont(name : String, style : FontStyle, size : Int) : com.ktxsoftware.kha.Font {
+		return new Font(name, style, size);
 	}
 	
 	function checkComplete() {
