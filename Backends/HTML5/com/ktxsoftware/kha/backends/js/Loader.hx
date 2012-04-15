@@ -6,6 +6,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Dom;
 import js.Lib;
+import js.XMLHttpRequest;
 
 class Loader extends com.ktxsoftware.kha.Loader {
 	var numberOfFiles : Int;
@@ -62,14 +63,22 @@ class Loader extends com.ktxsoftware.kha.Loader {
 	}
 	
 	override function loadBlob(filename : String) {
-		var r = new haxe.Http(filename);
-		r.onError = Lib.alert;
-		r.onData = function(data : String) {
-			blobs.set(filename, new Blob(Bytes.ofString(data)));
-			--numberOfFiles;
-			checkComplete();
+		var request = untyped new XMLHttpRequest();
+		request.overrideMimeType('text/plain; charset=x-user-defined');
+		request.open("GET", filename, true);
+		request.onreadystatechange = function() {
+			if (request.readyState != 4) return;
+			if (request.status >= 200 && request.status < 400) {
+				var data : String = request.responseText;
+				var bytes = Bytes.alloc(data.length);
+				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
+				blobs.set(filename, new Blob(bytes));
+				--numberOfFiles;
+				checkComplete();
+			}
+			else Lib.alert("loadBlob failed");
 		};
-		r.request(false);
+		request.send(null);
 	}
 	
 	function checkComplete() {
