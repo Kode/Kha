@@ -15,7 +15,7 @@ class Music implements com.ktxsoftware.kha.Music {
 	}
 	
 	public function stop() : Void {
-		channel.stop();
+		if (channel != null) channel.stop();
 	}
 
 	public function update() : Void {
