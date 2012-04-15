@@ -6,6 +6,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	var ty : Float;
 	var width : Int;
 	var height : Int;
+	static var instance : Painter;
 	
 	public function new(canvas : Dynamic, width : Int, height : Int) {
 		this.canvas = canvas;
@@ -13,6 +14,15 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		this.height = height;
 		tx = 0;
 		ty = 0;
+		instance = this;
+	}
+	
+	public static function stringWidth(font : com.ktxsoftware.kha.Font, text : String) {
+		if (instance == null) return 5 * text.length;
+		else {
+			instance.setFont(font);
+			return instance.canvas.measureText(text).getWidth();
+		}
 	}
 	
 	override public function begin() {

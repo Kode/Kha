@@ -26,9 +26,7 @@ class Font implements com.ktxsoftware.kha.Font {
 	}
 
 	public function stringWidth(str : String) : Float {
-		//CanvasPainter.getInstance().setFont(this);
-		//return CanvasPainter.getInstance().context.measureText(str).getWidth();
-		return 5 * str.length;
+		return Painter.stringWidth(this, str);
 	}
 
 	public function getBaselinePosition() : Float {
