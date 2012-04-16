@@ -12,6 +12,7 @@ class Starter {
 	static var painter : Painter;
 	
 	public function new() {
+		com.ktxsoftware.kha.backends.js.Image.init();
 		Loader.init(new com.ktxsoftware.kha.backends.js.Loader());
 	}
 	
