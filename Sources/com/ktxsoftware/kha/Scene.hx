@@ -22,11 +22,11 @@ class Scene {
 	public var camy : Int;
 	
 	public static function getInstance() : Scene {
+		if (instance == null) instance = new Scene();
 		return instance;
 	}
 	
-	public function new() {
-		instance = this;
+	function new() {
 		sprites = new Array<Sprite>();
 		heroes = new Array<Sprite>();
 		enemies = new Array<Sprite>();

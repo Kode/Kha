@@ -8,6 +8,7 @@ import js.Lib;
 import js.Dom;
 
 class Starter {
+	static var screen : Game;
 	static var game : Game;
 	static var painter : Painter;
 	
@@ -18,11 +19,44 @@ class Starter {
 	
 	public function start(game : Game) : Void {
 		Starter.game = game;
+		screen = new LoadingScreen(game.getWidth(), game.getHeight());
+		
+		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		
+		try {
+			//if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.getWidth(), game.getHeight());
+		}
+		catch (e : Dynamic) {
+			
+		}
+		if (painter == null) painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
+		
+		var window : Dynamic = Lib.window;
+		var requestAnimationFrame = window.requestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
+		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
+		
+		function animate(timestamp) {
+			var window : Dynamic = Lib.window;
+			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
+			else requestAnimationFrame(animate);			
+			screen.update();
+			
+			if (canvas.getContext) {
+				painter.begin();
+				screen.render(painter);
+				painter.end();
+			}
+		}
+		
+		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
+		else requestAnimationFrame(animate);
+		
 		Loader.getInstance().load();
 	}
 	
 	public static function loadFinished() {
-		game.init();
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
 		Lib.document.onmousedown = function(event : js.Event) {
@@ -70,34 +104,7 @@ class Starter {
 			}
 		};
 		
-		try {
-			if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.getWidth(), game.getHeight());
-		}
-		catch (e : Dynamic) {
-			
-		}
-		if (painter == null) painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
-		
-		var window : Dynamic = Lib.window;
-		var requestAnimationFrame = window.requestAnimationFrame;
-		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
-		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
-		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
-		
-		function animate(timestamp) {
-			var window : Dynamic = Lib.window;
-			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
-			else requestAnimationFrame(animate);			
-			game.update();
-			
-			if (canvas.getContext) {
-				painter.begin();
-				game.render(painter);
-				painter.end();
-			}
-		}
-		
-		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
-		else requestAnimationFrame(animate);
+		game.loadFinished();
+		screen = game;
 	}
 }

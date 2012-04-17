@@ -14,7 +14,7 @@ class Game {
 		instance = this;
 		this.width = width;
 		this.height = height;
-		scene = new Scene();
+		scene = Scene.getInstance();
 	}
 	
 	public function getWidth() : Int {
@@ -25,7 +25,11 @@ class Game {
 		return height;
 	}
 	
-	public function init() { } //Called by the Loader when finished
+	public function loadFinished() : Void {
+		init();
+	}
+	
+	public function init() { }
 	
 	public function update() {
 		scene.update();

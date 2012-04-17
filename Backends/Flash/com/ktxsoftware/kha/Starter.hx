@@ -25,6 +25,7 @@ import flash.display.Sprite;
 import flash.Vector;
 
 class Starter {
+	var screen : Game;
 	var game : Game;
 	var painter : Painter;
 	var pressedKeys : Array<Bool>;
@@ -39,15 +40,15 @@ class Starter {
 	}
 	
 	public function start(game : Game) {
+		stage = flash.Lib.current.stage;
+		stage3D = stage.stage3Ds[0];
+		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
+		screen = new LoadingScreen(game.getWidth(), game.getHeight());
 		Loader.getInstance().load();
 	}
 	
 	public function loadFinished() {
-		game.init();
-		stage = flash.Lib.current.stage;
-		stage3D = stage.stage3Ds[0];
-		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
@@ -56,6 +57,8 @@ class Starter {
 		stage3D.requestContext3D(
 			//"software"
 		);
+		screen = game;
+		game.loadFinished();
 	}
 	
 	function onReady(_) : Void {
@@ -66,9 +69,9 @@ class Starter {
 	}
 	
 	function update(_) {
-		game.update();
+		screen.update();
 		painter.begin();
-		game.render(painter);
+		screen.render(painter);
 		painter.end();
 	}
 	

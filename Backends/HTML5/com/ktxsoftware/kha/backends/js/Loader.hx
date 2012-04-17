@@ -10,14 +10,8 @@ import js.Lib;
 import js.XMLHttpRequest;
 
 class Loader extends com.ktxsoftware.kha.Loader {
-	var numberOfFiles : Int;
-	
 	public function new() {
 		super();
-	}
-	
-	private override function loadStarted(numberOfFiles : Int) {
-		this.numberOfFiles = numberOfFiles;
 	}
 	
 	public override function loadDataDefinition() {

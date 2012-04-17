@@ -18,7 +18,7 @@ class Starter {
 	}
 	
 	public static function loadFinished() {
-		game.init();
+		game.loadFinished();
 		painter = new com.ktxsoftware.kha.backends.cpp.Painter();
 	}
 

@@ -15,15 +15,10 @@ import haxe.io.Bytes;
 class Loader extends com.ktxsoftware.kha.Loader {
 	var xmlName : String;
 	var main : Starter;
-	var numberOfFiles : Int;
-	
+		
 	public function new(main : Starter) {
 		super();
 		this.main = main;
-	}
-	
-	private override function loadStarted(numberOfFiles : Int) {
-		this.numberOfFiles = numberOfFiles;
 	}
 	
 	public override function loadDataDefinition() {

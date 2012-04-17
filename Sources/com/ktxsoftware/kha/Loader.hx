@@ -2,12 +2,13 @@ package com.ktxsoftware.kha;
 
 class Loader {
 	static var instance : Loader;
-	private var blobs : Hash<Blob>;
-	private var images : Hash<Image>;
-	private var sounds : Hash<Sound>;
-	private var musics : Hash<Music>;
-	private var xmls : Hash<Xml>;
-	private var loadcount : Int;
+	var blobs : Hash<Blob>;
+	var images : Hash<Image>;
+	var sounds : Hash<Sound>;
+	var musics : Hash<Music>;
+	var xmls : Hash<Xml>;
+	var loadcount : Int;
+	var numberOfFiles : Int;
 	
 	public function new() {
 		blobs = new Hash<Blob>();
@@ -16,6 +17,7 @@ class Loader {
 		musics = new Hash<Music>();
 		xmls = new Hash<Xml>();
 		loadcount = 0;
+		numberOfFiles = 100;
 	}
 	
 	public static function init(loader : Loader) {
@@ -24,6 +26,10 @@ class Loader {
 	
 	public static function getInstance() : Loader {
 		return instance;
+	}
+	
+	public function getLoadPercentage() : Int {
+		return Std.int(numberOfFiles / loadcount * 100);
 	}
 	
 	public function getBlob(name : String) : Blob {
@@ -81,7 +87,9 @@ class Loader {
 		if (Game.getInstance().hasScores()) loadHighscore();
 	}
 	
-	private function loadStarted(numberOfFiles : Int) { }
+	function loadStarted(numberOfFiles : Int) {
+		this.numberOfFiles = numberOfFiles;
+	}
 	
 	public function loadHighscore() { }
 	public function saveHighscore(score : Score) { }

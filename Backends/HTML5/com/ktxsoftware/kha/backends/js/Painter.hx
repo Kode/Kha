@@ -57,7 +57,9 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	}
 	
 	override public function drawRect(x :Float, y : Float, width : Float, height : Float) {
+		canvas.beginPath();
 		canvas.rect(tx + x, ty + y, width, height);
+		canvas.stroke();
 	}
 	
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) {
@@ -74,9 +76,11 @@ class Painter extends com.ktxsoftware.kha.Painter {
 	}
 
 	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) {
+		canvas.beginPath();
 		canvas.moveTo(tx + x1, ty + y1);
 		canvas.lineTo(tx + x2, ty + y2);
 		canvas.moveTo(0, 0);
+		canvas.stroke();
 	}
 
 	override public function fillTriangle(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : Float, y3 : Float) {
