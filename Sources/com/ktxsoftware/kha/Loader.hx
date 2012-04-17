@@ -16,7 +16,7 @@ class Loader {
 		sounds = new Hash<Sound>();
 		musics = new Hash<Music>();
 		xmls = new Hash<Xml>();
-		loadcount = 0;
+		loadcount = 100;
 		numberOfFiles = 100;
 	}
 	
@@ -29,7 +29,7 @@ class Loader {
 	}
 	
 	public function getLoadPercentage() : Int {
-		return Std.int(numberOfFiles / loadcount * 100);
+		return Std.int((loadcount - numberOfFiles) / loadcount * 100);
 	}
 	
 	public function getBlob(name : String) : Blob {
@@ -88,6 +88,7 @@ class Loader {
 	}
 	
 	function loadStarted(numberOfFiles : Int) {
+		this.loadcount = numberOfFiles;
 		this.numberOfFiles = numberOfFiles;
 	}
 	
