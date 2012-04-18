@@ -12,10 +12,13 @@ class Starter {
 	static var game : Game;
 	static var painter : Painter;
 	static var keyreleased : Array<Bool>;
+	static var buttonspressed : Array<Bool>;
 	
 	public function new() {
 		keyreleased = new Array<Bool>();
-		for (i in 0...256) keyreleased[i] = true;
+		for (i in 0...256) keyreleased.push(true);
+		buttonspressed = new Array<Bool>();
+		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
 		Loader.init(new kha.js.Loader());
 	}
@@ -43,7 +46,25 @@ class Starter {
 		function animate(timestamp) {
 			var window : Dynamic = Lib.window;
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
-			else requestAnimationFrame(animate);			
+			else requestAnimationFrame(animate);
+			
+			var gamepads : Dynamic = untyped __js__("navigator.gamepads");
+			if (gamepads == null) gamepads = untyped __js__("navigator.webkitGamepads");
+			if (gamepads == null) gamepads = untyped __js__("navigator.mozGamepads");
+			if (gamepads != null) {
+				for (i in 0...gamepads.length) {
+					var pad = gamepads[i];
+					if (pad != null) {
+						if (buttonspressed[0]) {
+							if (pad.buttons[0] < 0.5) game.buttonUp(Button.BUTTON_1);
+						}
+						else {
+							if (pad.buttons[0] > 0.5) game.buttonDown(Button.BUTTON_1);
+						}
+					}
+				}
+			}
+			
 			screen.update();
 			
 			if (canvas.getContext) {
