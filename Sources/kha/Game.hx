@@ -33,13 +33,13 @@ class Game {
 		init();
 	}
 	
-	public function init() { }
+	public function init() : Void { }
 	
-	public function update() {
+	public function update() : Void {
 		scene.update();
 	}
 	
-	public function render(painter : Painter) {
+	public function render(painter : Painter) : Void {
 		scene.render(painter);
 	}
 	
@@ -47,10 +47,13 @@ class Game {
 		return highscores;
 	}
 	
-	public function key(event : KeyEvent) { }
-	public function charKey(c : String) { }
+	public function buttonDown(button : Button) : Void { }
+	public function buttonUp(button : Button) : Void { }
 	
-	public function mouseDown(x : Int, y : Int) { }
-	public function mouseUp(x : Int, y : Int) { }
-	public function mouseMove(x : Int, y : Int) { }
+	public function keyDown(key : Key, char : String) : Void { }
+	public function keyUp(key : Key, char : String) : Void { }
+	
+	public function mouseDown(x : Int, y : Int) : Void { }
+	public function mouseUp(x : Int, y : Int) : Void { }
+	public function mouseMove(x : Int, y : Int) : Void { }
 }
