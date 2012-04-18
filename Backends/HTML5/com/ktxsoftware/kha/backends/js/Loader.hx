@@ -86,4 +86,12 @@ class Loader extends com.ktxsoftware.kha.Loader {
 			Starter.loadFinished();
 		}
 	}
+	
+	override public function setNormalCursor() {
+		Lib.document.getElementById("haxvas").style.cursor = "default";
+	}
+
+	override public function setHandCursor() {
+		Lib.document.getElementById("haxvas").style.cursor = "pointer";
+	}
 }
