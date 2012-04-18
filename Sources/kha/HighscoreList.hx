@@ -1,7 +1,6 @@
 package kha;
 
 import haxe.Http;
-import js.Lib;
 
 class HighscoreList {
 	var name : String;
@@ -29,9 +28,6 @@ class HighscoreList {
 			}
 			scores = newscores;
 		};
-		request.onError = function(err : String) {
-			Lib.alert("arrr");
-		}
 		request.request(false);
 	}
 	
