@@ -1,6 +1,6 @@
-package com.ktxsoftware.kha.backends.js;
+package kha.js;
 
-class Painter extends com.ktxsoftware.kha.Painter {
+class Painter extends kha.Painter {
 	var canvas : Dynamic;
 	var tx : Float;
 	var ty : Float;
@@ -17,7 +17,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		instance = this;
 	}
 	
-	public static function stringWidth(font : com.ktxsoftware.kha.Font, text : String) {
+	public static function stringWidth(font : kha.Font, text : String) {
 		if (instance == null) return 5 * text.length;
 		else {
 			instance.setFont(font);
@@ -38,11 +38,11 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		ty = y;
 	}
 	
-	override public function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) {
+	override public function drawImage(img : kha.Image, x : Float, y : Float) {
 		canvas.drawImage(cast(img, Image).image, tx + x, ty + y);
 	}
 	
-	override public function drawImage2(image : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
 		try {
 			canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
 		}
@@ -70,7 +70,7 @@ class Painter extends com.ktxsoftware.kha.Painter {
 		canvas.fillText(text, tx + x, ty + y);
 	}
 
-	override public function setFont(font : com.ktxsoftware.kha.Font) {
+	override public function setFont(font : kha.Font) {
 		var webfont = cast(font, Font);
 		canvas.font = webfont.size + "px " + webfont.name;
 	}

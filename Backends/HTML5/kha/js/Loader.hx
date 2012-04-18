@@ -1,15 +1,15 @@
-package com.ktxsoftware.kha.backends.js;
-import com.ktxsoftware.kha.FontStyle;
+package kha.js;
 
-import com.ktxsoftware.kha.Blob;
-import com.ktxsoftware.kha.Starter;
+import kha.FontStyle;
+import kha.Blob;
+import kha.Starter;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Dom;
 import js.Lib;
 import js.XMLHttpRequest;
 
-class Loader extends com.ktxsoftware.kha.Loader {
+class Loader extends kha.Loader {
 	public function new() {
 		super();
 	}
@@ -51,7 +51,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		var img : js.Image = cast Lib.document.createElement("img");
 		img.src = filename;
 		img.onload = function(event : Event) {
-			images.set(filename, new com.ktxsoftware.kha.backends.js.Image(img));
+			images.set(filename, new kha.js.Image(img));
 			--numberOfFiles;
 			checkComplete();
 		};
@@ -76,7 +76,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 		request.send(null);
 	}
 	
-	override public function loadFont(name : String, style : FontStyle, size : Int) : com.ktxsoftware.kha.Font {
+	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		return new Font(name, style, size);
 	}
 	

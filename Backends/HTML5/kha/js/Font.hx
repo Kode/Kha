@@ -1,8 +1,8 @@
-package com.ktxsoftware.kha.backends.js;
+package kha.js;
 
-import com.ktxsoftware.kha.FontStyle;
+import kha.FontStyle;
 
-class Font implements com.ktxsoftware.kha.Font {
+class Font implements kha.Font {
 	public var name : String;
 	public var style : FontStyle;
 	public var size : Int;

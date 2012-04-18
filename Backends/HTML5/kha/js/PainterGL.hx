@@ -1,8 +1,9 @@
-package com.ktxsoftware.kha.backends.js;
-import com.ktxsoftware.kha.Font;
+package kha.js;
+
+import kha.Font;
 import js.Lib;
 
-class PainterGL extends com.ktxsoftware.kha.Painter {
+class PainterGL extends kha.Painter {
 	var gl : Dynamic;
     var shaderProgram : Dynamic;
     var vertexPositionAttribute : Int;
@@ -241,7 +242,7 @@ class PainterGL extends com.ktxsoftware.kha.Painter {
 		//checkErrors();
 	}
 	
-	public override function drawImage(img : com.ktxsoftware.kha.Image, x : Float, y : Float) : Void {
+	public override function drawImage(img : kha.Image, x : Float, y : Float) : Void {
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
 		
 		var left : Float = tx + x;
@@ -255,7 +256,7 @@ class PainterGL extends com.ktxsoftware.kha.Painter {
 		lastTexture = cast(img, Image);
 	}
 	
-	public override function drawImage2(img : com.ktxsoftware.kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
+	public override function drawImage2(img : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
 		
 		var left : Float = tx + dx;

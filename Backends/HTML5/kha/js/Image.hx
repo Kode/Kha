@@ -1,8 +1,8 @@
-package com.ktxsoftware.kha.backends.js;
+package kha.js;
 
 import js.Dom;
 
-class Image implements com.ktxsoftware.kha.Image {
+class Image implements kha.Image {
 	public var image : js.Image;
 	public var tex : Dynamic;
 	

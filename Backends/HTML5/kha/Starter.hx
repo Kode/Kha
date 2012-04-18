@@ -1,9 +1,9 @@
-package com.ktxsoftware.kha;
+package kha;
 
-import com.ktxsoftware.kha.backends.js.PainterGL;
-import com.ktxsoftware.kha.Game;
-import com.ktxsoftware.kha.Key;
-import com.ktxsoftware.kha.Loader;
+import kha.js.PainterGL;
+import kha.Game;
+import kha.Key;
+import kha.Loader;
 import js.Lib;
 import js.Dom;
 
@@ -13,8 +13,8 @@ class Starter {
 	static var painter : Painter;
 	
 	public function new() {
-		com.ktxsoftware.kha.backends.js.Image.init();
-		Loader.init(new com.ktxsoftware.kha.backends.js.Loader());
+		kha.js.Image.init();
+		Loader.init(new kha.js.Loader());
 	}
 	
 	public function start(game : Game) : Void {
@@ -29,7 +29,7 @@ class Starter {
 		catch (e : Dynamic) {
 			
 		}
-		if (painter == null) painter = new com.ktxsoftware.kha.backends.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
+		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
 		
 		var window : Dynamic = Lib.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
@@ -74,33 +74,35 @@ class Starter {
 		Lib.document.onkeydown = function(event : js.Event) {
 			switch (event.keyCode) {
 			case 38:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.UP, true));
+				game.key(new kha.KeyEvent(Key.UP, true));
 			case 40:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.DOWN, true));
+				game.key(new kha.KeyEvent(Key.DOWN, true));
 			case 37:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, true));
+				game.key(new kha.KeyEvent(Key.LEFT, true));
 			case 39:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, true));
+				game.key(new kha.KeyEvent(Key.RIGHT, true));
 			case 65:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_1, true));
+				game.key(new kha.KeyEvent(Key.BUTTON_1, true));
 			case 83:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_2, true));
+				game.key(new kha.KeyEvent(Key.BUTTON_2, true));
+			default:
+				game.charKey(String.fromCharCode(event.keyCode));
 			}
 		};
 		Lib.document.onkeyup = function(event : js.Event) {
 			switch (event.keyCode) {
 			case 38:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.UP, false));
+				game.key(new kha.KeyEvent(Key.UP, false));
 			case 40:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.DOWN, false));
+				game.key(new kha.KeyEvent(Key.DOWN, false));
 			case 37:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.LEFT, false));
+				game.key(new kha.KeyEvent(Key.LEFT, false));
 			case 39:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.RIGHT, false));
+				game.key(new kha.KeyEvent(Key.RIGHT, false));
 			case 65:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_1, false));
+				game.key(new kha.KeyEvent(Key.BUTTON_1, false));
 			case 83:
-				game.key(new com.ktxsoftware.kha.KeyEvent(Key.BUTTON_2, false));
+				game.key(new kha.KeyEvent(Key.BUTTON_2, false));
 			}
 		};
 		

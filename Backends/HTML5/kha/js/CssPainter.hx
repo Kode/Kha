@@ -1,4 +1,4 @@
-package com.ktxsoftware.kha.backends.js;
+package kha.js;
 
 class CSSPainter extends Painter {
 	var tx : Float;

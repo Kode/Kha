@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.Http;
+import js.Lib;
 
 class HighscoreList {
 	var name : String;
@@ -17,7 +18,7 @@ class HighscoreList {
 	}
 	
 	function updateScores() {
-		var request = new Http("http://localhost:8080/getscores");
+		var request = new Http("http://games.ktxsoftware.com/getscores");
 		request.setParameter("game", name);
 		request.setParameter("count", "10");
 		request.onData = function(data : String) {
@@ -28,6 +29,9 @@ class HighscoreList {
 			}
 			scores = newscores;
 		};
+		request.onError = function(err : String) {
+			Lib.alert("arrr");
+		}
 		request.request(false);
 	}
 	
@@ -40,7 +44,7 @@ class HighscoreList {
 		scores.sort(function(score1 : Score, score2 : Score) {
 			return score2.getScore() - score1.getScore();
 		});
-		var request = new Http("http://localhost:8080/addscore");
+		var request = new Http("http://games.ktxsoftware.com/addscore");
 		request.setParameter("game", this.name);
 		request.setParameter("name", name);
 		request.setParameter("score", Std.string(score));
