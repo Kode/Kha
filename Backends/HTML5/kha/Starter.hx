@@ -23,6 +23,21 @@ class Starter {
 		Loader.init(new kha.js.Loader());
 	}
 	
+	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {
+		if (buttonspressed[num]) {
+			if (pad.buttons[num] < 0.5) {
+				game.buttonUp(button);
+				buttonspressed[num] = false;
+			}
+		}
+		else {
+			if (pad.buttons[num] > 0.5) {
+				game.buttonDown(button);
+				buttonspressed[num] = true;
+			}
+		}
+	}
+	
 	public function start(game : Game) : Void {
 		Starter.game = game;
 		screen = new LoadingScreen(game.getWidth(), game.getHeight());
@@ -55,12 +70,12 @@ class Starter {
 				for (i in 0...gamepads.length) {
 					var pad = gamepads[i];
 					if (pad != null) {
-						if (buttonspressed[0]) {
-							if (pad.buttons[0] < 0.5) game.buttonUp(Button.BUTTON_1);
-						}
-						else {
-							if (pad.buttons[0] > 0.5) game.buttonDown(Button.BUTTON_1);
-						}
+						checkGamepadButton(pad, 0, Button.BUTTON_1);
+						checkGamepadButton(pad, 1, Button.BUTTON_2);
+						checkGamepadButton(pad, 12, Button.UP);
+						checkGamepadButton(pad, 13, Button.DOWN);
+						checkGamepadButton(pad, 14, Button.LEFT);
+						checkGamepadButton(pad, 15, Button.RIGHT);
 					}
 				}
 			}
