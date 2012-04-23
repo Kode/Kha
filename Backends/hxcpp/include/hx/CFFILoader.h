@@ -5,7 +5,6 @@
 #include <android/log.h>
 #endif
 
-
 #ifdef NEKO_WINDOWS
 #include <windows.h>
 #include <stdio.h>
@@ -24,7 +23,7 @@
 #define NEKO_EXT "so"
 //#define __USE_GNU 1
 #else
-#ifdef ANDROID
+#if defined(ANDROID) || defined(BLACKBERRY)
 #define EXT "so"
 #else
 #include <mach-o/dyld.h>
@@ -87,7 +86,7 @@ void *LoadNekoFunc(const char *inName)
    if (!sNekoDllHandle)
    {
       #if HX_WINDOWS
-      sNekoDllHandle = GetModuleHandle("neko.dll");
+      sNekoDllHandle = GetModuleHandleA("neko.dll");
       #else
       sNekoDllHandle = dlopen("libneko." NEKO_EXT, RTLD_NOW);
       // Look for libneko.so.0 too ...
@@ -117,6 +116,7 @@ void *LoadNekoFunc(const char *inName)
 static int __a_id = 0;
 static int __s_id = 0;
 static int length_id = 0;
+static int push_id = 0;
 
 neko_value *gNeko2HaxeString = 0;
 neko_value *gNekoNewArray = 0;
@@ -144,6 +144,8 @@ typedef neko_buffer (*alloc_buffer_func)(const char *);
 typedef void (*buffer_append_sub_func)(neko_buffer,const char *,int);
 typedef void (*fail_func)(neko_value,const char *,int);
 typedef neko_value (*alloc_array_func)(unsigned int);
+typedef void (*val_gc_func)(neko_value,void *);
+typedef void (*val_ocall1_func)(neko_value,int,neko_value);
 
 static alloc_object_func dyn_alloc_object = 0;
 static alloc_string_func dyn_alloc_string = 0;
@@ -157,6 +159,8 @@ static alloc_buffer_func dyn_alloc_buffer = 0;
 static fail_func dyn_fail = 0;
 static buffer_append_sub_func dyn_buffer_append_sub = 0;
 static alloc_array_func dyn_alloc_array = 0;
+static val_gc_func dyn_val_gc = 0;
+static val_ocall1_func dyn_val_ocall1 = 0;
 
 
 neko_value api_alloc_string(const char *inString)
@@ -387,9 +391,9 @@ void api_val_array_set_size(neko_value  arg1,int inLen)
 	NOT_IMPLEMNETED("api_val_array_set_size");
 }
 
-void api_val_array_push(neko_value  arg1,neko_value inValue)
+void api_val_array_push(neko_value  inArray,neko_value inValue)
 {
-	NOT_IMPLEMNETED("api_val_array_push");
+   dyn_val_ocall1(inArray,push_id,inValue);
 }
 
 
@@ -415,6 +419,22 @@ neko_value  api_val_call0_traceexcept(neko_value  arg1)
 }
 
 
+void api_val_gc(neko_value obj, void *finalizer)
+{
+   // Let neko deal with ints or abstracts ...
+   if (neko_val_is_int(obj) || neko_val_is_abstract(obj))
+   {
+      dyn_val_gc(obj,finalizer);
+   }
+   else
+   {
+      // Hack type to abstract for the duration
+      neko_val_type old_tag = neko_val_tag(obj);
+      neko_val_tag(obj) = VAL_ABSTRACT;
+      dyn_val_gc(obj,finalizer);
+      neko_val_tag(obj) = old_tag;
+   }
+}
 
 
 #define IMPLEMENT_HERE(x) if (!strcmp(inName,#x)) return (void *)api_##x;
@@ -438,6 +458,7 @@ void *DynamicNekoLoader(const char *inName)
    IMPLEMENT_HERE(alloc_int)
    IMPLEMENT_HERE(alloc_empty_object)
    IMPLEMENT_HERE(alloc_root)
+   IMPLEMENT_HERE(val_gc)
 
    IGNORE_API(gc_enter_blocking)
    IGNORE_API(gc_exit_blocking)
@@ -451,12 +472,11 @@ void *DynamicNekoLoader(const char *inName)
    IGNORE_API(hx_register_prim)
    IGNORE_API(val_array_int)
    IGNORE_API(val_array_double)
+   IGNORE_API(val_array_float)
    IGNORE_API(val_array_bool)
 
    if (!strcmp(inName,"hx_alloc"))
       return LoadNekoFunc("neko_alloc");
-   if (!strcmp(inName,"val_gc_ptr"))
-      return LoadNekoFunc("neko_val_gc");
 
    if (!strcmp(inName,"buffer_val"))
       return LoadNekoFunc("neko_buffer_to_string");
@@ -518,6 +538,8 @@ ResolveProc InitDynamicNekoLoader()
       dyn_fail = (fail_func)LoadNekoFunc("_neko_failure");
       dyn_buffer_append_sub = (buffer_append_sub_func)LoadNekoFunc("neko_buffer_append_sub");
       dyn_alloc_array = (alloc_array_func)LoadNekoFunc("neko_alloc_array");
+      dyn_val_gc = (val_gc_func)LoadNekoFunc("neko_val_gc");
+      dyn_val_ocall1 = (val_ocall1_func)LoadNekoFunc("neko_val_ocall1");
       init = true;
    }
 
@@ -528,6 +550,7 @@ ResolveProc InitDynamicNekoLoader()
    __a_id = dyn_val_id("__a");
    __s_id = dyn_val_id("__s");
    length_id = dyn_val_id("length");
+   push_id = dyn_val_id("push");
 
    return DynamicNekoLoader;
 }

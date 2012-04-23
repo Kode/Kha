@@ -13,7 +13,7 @@
 #include <typeinfo>
 #include <stdint.h>
 using std::type_info;
-typedef  uint64_t  __int64;
+typedef  int64_t  __int64;
 #endif
 
 
@@ -42,9 +42,17 @@ typedef  uint64_t  __int64;
 #endif
 
 
+#ifdef HXCPP_SET_PROP
+#define HXCPP_EXTRA_FIELD_DECL ,bool inCallProp
+#define HXCPP_EXTRA_FIELD_CALL ,inCallProp
+#define HXCPP_EXTRA_FIELD_TRUE ,true
+#else
+#define HXCPP_EXTRA_FIELD_DECL
+#define HXCPP_EXTRA_FIELD_CALL
+#define HXCPP_EXTRA_FIELD_TRUE
+#endif
 
 
-#ifdef HX_UTF8_STRINGS
 
 typedef char HX_CHAR;
 
@@ -58,28 +66,6 @@ typedef char HX_CHAR;
 
 #define HX_FIELD_EQ(name,field) !memcmp(name.__s, field, sizeof(field)/sizeof(char))
 
-
-#else // wide strings
-
-typedef wchar_t HX_CHAR;
-
-#ifdef HX_WINDOWS
-#define HX_STRING(s,len) ::String((L"\xffff\xffff" s)+2,len)
-#else
-#define HX_STRING(s,len) ::String( (L"\xffffffff" s) + 1 ,len)
-#endif
-
-#define HX_STR(s) HX_STRING(s,sizeof(s)/sizeof(HX_CHAR)-1)
-
-#define HX_STRING_UTF8(s,len) ::String( ("\xff\xff\xff\xff" s) + 4 ,len)
-
-#define HX_CSTRING2(wide,len,utf8) HX_STRING(wide,len)
-
-#define HX_CSTRING(x) HX_STR(L##x)
-
-#define HX_FIELD_EQ(name,field) !memcmp(name.__s, L##field, sizeof(field)/sizeof(wchar_t))
-
-#endif
 
 
 
@@ -160,8 +146,13 @@ void __hx_dump_stack();
 // Basic mapping from haxe -> c++
 
 typedef int Int;
-typedef double Float;
 typedef bool Bool;
+
+#ifdef HXCPP_FLOAT32
+typedef float Float;
+#else
+typedef double Float;
+#endif
 
 // --- Forward decalarations --------------------------------------------
 

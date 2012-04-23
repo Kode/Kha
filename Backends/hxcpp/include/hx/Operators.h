@@ -35,6 +35,7 @@ HX_COMPARE_NULL_MOST_OPS(hx::IndexRef)
 
 inline String operator+(const Int &i,const String &s) { return String(i) + s; }
 inline String operator+(const double &d,const String &s) { return String(d) + s; }
+inline String operator+(const float &d,const String &s) { return String(d) + s; }
 inline String operator+(const bool &b,const String &s) { return String(b) + s; }
 inline String operator+(const HX_CHAR *c,const String &s) { return String(c) + s; }
 inline String operator+(const null &n,const String &s) { return String(n) + s; }
@@ -68,6 +69,7 @@ template<> inline double ToDouble(String inValue) { return __hxcpp_parse_float(i
 template<> inline double ToDouble(double inValue) { return inValue; }
 template<> inline double ToDouble(int inValue) { return inValue; }
 template<> inline double ToDouble(bool inValue) { return inValue; }
+template<> inline double ToDouble(float inValue) { return inValue; }
 template<> inline double ToDouble(null inValue) { return 0; }
 
 
@@ -182,6 +184,13 @@ template<> inline double TCastObject<double>(hx::Object *inObj)
       return hx::BadCast();
    return inObj->__ToDouble();
 }
+template<> inline float TCastObject<float>(hx::Object *inObj)
+{
+   if (!inObj || (inObj->__GetType()!=::vtFloat && inObj->__GetType()!=::vtInt))
+      return hx::BadCast();
+   return inObj->__ToDouble();
+}
+
 template<> inline String TCastObject<String>(hx::Object *inObj)
 {
    if (!inObj || (inObj->__GetType()!=::vtString))

@@ -22,7 +22,7 @@ public:
    inline static int floor(double inX) { return __int__(::floor(inX)); }
    inline static int ceil(double inX) { return __int__(::ceil(inX)); }
    inline static int round(double inX) { return floor(inX+0.5); }
-   inline static double random() { return (double)rand()/RAND_MAX; }
+   inline static double random() { return __hxcpp_drand(); }
    inline static double sqrt(double inX) { return ::sqrt(inX); }
    inline static double cos(double inX) { return ::cos(inX); }
    inline static double sin(double inX) { return ::sin(inX); }

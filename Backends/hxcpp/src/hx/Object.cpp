@@ -23,7 +23,7 @@
 
 #include <sys/time.h>
 #include <wchar.h>
-typedef  uint64_t  __int64;
+typedef  int64_t  __int64;
 
 #endif
 
@@ -37,7 +37,7 @@ String sNone[] = { String(null()) };
 
 Dynamic Object::__IField(int inFieldID)
 {
-   return __Field( __hxcpp_field_from_id(inFieldID) );
+   return __Field( __hxcpp_field_from_id(inFieldID) HXCPP_EXTRA_FIELD_TRUE );
 }
 
 double Object::__INumField(int inFieldID)
@@ -54,7 +54,7 @@ int Object::__Compare(const Object *inRHS) const
 }
 
 
-Dynamic Object::__Field(const String &inString) { return null(); }
+Dynamic Object::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL) { return null(); }
 bool Object::__HasField(const String &inString)
 {
    return false;
@@ -90,7 +90,7 @@ String Object::__ToString() const { return HX_CSTRING("Object"); }
 const char * Object::__CStr() const { return __ToString().__CStr(); }
 
 
-Dynamic Object::__SetField(const String &inField,const Dynamic &inValue)
+Dynamic Object::__SetField(const String &inField,const Dynamic &inValue HXCPP_EXTRA_FIELD_DECL)
 {
 	throw Dynamic( HX_CSTRING("Invalid field:") + inField );
 	return null();

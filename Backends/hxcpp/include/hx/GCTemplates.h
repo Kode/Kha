@@ -24,6 +24,7 @@ template<typename T> inline void MarkMember(Array<T> &outT HX_MARK_ADD_PARAMS)
 template<> inline void MarkMember<int>(int &outT HX_MARK_ADD_PARAMS) {  }
 template<> inline void MarkMember<bool>(bool &outT HX_MARK_ADD_PARAMS) {  }
 template<> inline void MarkMember<double>(double &outT HX_MARK_ADD_PARAMS) {  }
+template<> inline void MarkMember<float>(float &outT HX_MARK_ADD_PARAMS) {  }
 template<> inline void MarkMember<String>(String &outT HX_MARK_ADD_PARAMS)
 {
    HX_MARK_STRING(outT.__s);

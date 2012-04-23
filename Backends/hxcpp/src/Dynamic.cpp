@@ -112,6 +112,7 @@ public:
 Dynamic::Dynamic(bool inVal) : super( new BoolData(inVal) ) { }
 Dynamic::Dynamic(int inVal) : super( new IntData(inVal) ) { }
 Dynamic::Dynamic(double inVal) : super( new DoubleData(inVal) ) { }
+Dynamic::Dynamic(float inVal) : super( new DoubleData(inVal) ) { }
 Dynamic::Dynamic(const cpp::CppInt32__ &inVal) : super( new IntData((int)inVal) ) { }
 Dynamic::Dynamic(const String &inVal) : super( inVal.__s ? inVal.__ToObject() : 0 ) { }
 Dynamic::Dynamic(const HX_CHAR *inVal) : super( inVal ? String(inVal).__ToObject() : 0 ) { }
@@ -148,6 +149,15 @@ Dynamic Dynamic::operator+(const double &d) const
    if (t==vtString)
       return Cast<String>() + String(d);
    return Cast<double>() + d;
+}
+
+
+Dynamic Dynamic::operator+(const float &f) const
+{
+   int t = mPtr ? mPtr->__GetType() : vtNull;
+   if (t==vtString)
+      return Cast<String>() + String(f);
+   return Cast<float>() + f;
 }
 
 
@@ -196,11 +206,25 @@ static bool IsFloat(hx::Object *inPtr)
    return inPtr && (TCanCast<IntData>(inPtr) || TCanCast<DoubleData>(inPtr));
 }
 
+static bool IsInt(hx::Object *inPtr)
+{
+   if (!inPtr)
+      return false;
+   if (TCanCast<IntData>(inPtr))
+      return true;
+   DoubleData *d = dynamic_cast<DoubleData *>(inPtr);
+   if (!d)
+      return false;
+   double val = d->__ToDouble();
+   return ((int)val == val);
+}
+
+
 
 void Dynamic::__boot()
 {
    Static(__BoolClass) = hx::RegisterClass(HX_CSTRING("Bool"),TCanCast<BoolData>,sNone,sNone, 0,0, 0 );
-   Static(__IntClass) = hx::RegisterClass(HX_CSTRING("Int"),TCanCast<IntData>,sNone,sNone,0,0, 0 );
+   Static(__IntClass) = hx::RegisterClass(HX_CSTRING("Int"),IsInt,sNone,sNone,0,0, 0 );
    Static(__FloatClass) = hx::RegisterClass(HX_CSTRING("Float"),IsFloat,sNone,sNone, 0,0,&__IntClass );
    Static(__VoidClass) = hx::RegisterClass(HX_CSTRING("Void"),NoCast,sNone,sNone,0,0,0, 0 );
 }

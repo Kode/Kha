@@ -20,6 +20,7 @@ public:
    static inline CppInt32__ make(int a,int b) { return CppInt32__( (a<<16) | b ); }
    static inline CppInt32__ ofInt(int a) { return CppInt32__( a ); }
    static inline int toInt(CppInt32__ a) { __hxcpp_check_overflow(a); return a.mValue; }
+   static inline int toNativeInt(CppInt32__ a) { return a.mValue; }
    static inline CppInt32__ add(CppInt32__ a,CppInt32__ b) { return CppInt32__( a.mValue + b.mValue  ); }
    static inline CppInt32__ sub(CppInt32__ a,CppInt32__ b) { return CppInt32__( a.mValue - b.mValue  ); }
    static inline CppInt32__ mul(CppInt32__ a,CppInt32__ b) { return CppInt32__( a.mValue * b.mValue  ); }

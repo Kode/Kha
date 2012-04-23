@@ -79,10 +79,10 @@ public:
    virtual const char * __CStr() const;
    virtual String toString();
    virtual bool __HasField(const String &inString);
-   virtual Dynamic __Field(const String &inString);
+   virtual Dynamic __Field(const String &inString HXCPP_EXTRA_FIELD_DECL);
    virtual Dynamic __IField(int inFieldID);
    virtual double __INumField(int inFieldID);
-   virtual Dynamic __SetField(const String &inField,const Dynamic &inValue);
+   virtual Dynamic __SetField(const String &inField,const Dynamic &inValue HXCPP_EXTRA_FIELD_DECL);
    virtual void  __SetThis(Dynamic inThis);
    virtual Dynamic __Run(const Array<Dynamic> &inArgs);
    virtual hx::FieldMap *__GetFieldMap();
@@ -109,13 +109,12 @@ public:
 
    virtual int __ArgCount() const { return -1; }
 
+   inline bool __compare( hx::Object *inRHS )
+      { return __GetRealObject()!=inRHS->__GetRealObject(); }
 
    static Class &__SGetClass();
    static void __boot();
 };
-
-
-
 
 // --- hx::ObjectPtr ---------------------------------------------------------------
 //
@@ -125,6 +124,25 @@ public:
 template<typename OBJ_>
 class ObjectPtr
 {
+   inline bool SetPtr(OBJ_ *inPtr)
+   {
+      mPtr = inPtr;
+      return true;
+   }
+   inline bool SetPtr(...) { return false; }
+
+   void CastPtr(hx::Object *inPtr)
+   {
+      if (inPtr)
+      {
+         mPtr = dynamic_cast<OBJ_ *>(inPtr->__GetRealObject());
+         if (!mPtr)
+            mPtr = (Ptr)inPtr->__ToInterface(typeid(Obj));
+      }
+      else
+         mPtr = 0;
+   }
+
 public:
    typedef OBJ_ Obj;
    typedef OBJ_ *Ptr;
@@ -132,38 +150,21 @@ public:
    ObjectPtr() : mPtr(0) { }
    ObjectPtr(OBJ_ *inObj) : mPtr(inObj) { }
    ObjectPtr(const null &inNull) : mPtr(0) { }
+   ObjectPtr(const ObjectPtr<OBJ_> &inOther) : mPtr( inOther.mPtr ) {  }
 
    template<typename SOURCE_>
    ObjectPtr(const ObjectPtr<SOURCE_> &inObjectPtr)
    {
-      if (inObjectPtr.mPtr)
-      {
-         mPtr = dynamic_cast<OBJ_ *>(inObjectPtr.mPtr->__GetRealObject());
-         if (!mPtr)
-            mPtr = (Ptr)inObjectPtr.mPtr->__ToInterface(typeid(Obj));
-      }
-      else
-         mPtr = 0;
+      if (!SetPtr(inObjectPtr.mPtr))
+         CastPtr(inObjectPtr.mPtr);
    }
-
 
    template<typename SOURCE_>
    ObjectPtr(const SOURCE_ *inPtr)
    {
-      if (inPtr)
-      {
-         mPtr = dynamic_cast<OBJ_ *>((const_cast<SOURCE_ *>(inPtr))->__GetRealObject());
-         if (!mPtr)
-            mPtr = (Ptr)const_cast<SOURCE_ *>(inPtr)->__ToInterface(typeid(Obj));
-      }
-      else
-         mPtr = 0;
+      if (!SetPtr(const_cast<SOURCE_ *>(inPtr)))
+         CastPtr(const_cast<SOURCE_ *>(inPtr));
    }
-
-
-   ObjectPtr(const ObjectPtr<OBJ_> &inOther) : mPtr( inOther.mPtr ) {  }
-
-
 
    ObjectPtr &operator=(const null &inNull) { mPtr = 0; return *this; }
    ObjectPtr &operator=(Ptr inRHS) { mPtr = inRHS; return *this; }
@@ -195,13 +196,13 @@ public:
    {
       if (mPtr==inRHS.mPtr) return true;
       if (!mPtr || !inRHS.mPtr) return false;
-      return mPtr->__GetRealObject() == inRHS.mPtr->__GetRealObject();
+      return !mPtr->__compare(inRHS.mPtr);
    }
    bool operator!=(const ObjectPtr &inRHS) const
    {
       if (mPtr==inRHS.mPtr) return false;
       if (!mPtr || !inRHS.mPtr) return true;
-      return mPtr->__GetRealObject() != inRHS.mPtr->__GetRealObject();
+      return mPtr->__compare(inRHS.mPtr);
    }
    bool operator==(const null &inRHS) const { return mPtr==0; }
    bool operator!=(const null &inRHS) const { return mPtr!=0; }

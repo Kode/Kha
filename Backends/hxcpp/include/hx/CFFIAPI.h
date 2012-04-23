@@ -57,6 +57,7 @@ DEFFUNC_2(void,val_array_push,value,value)
 DEFFUNC_1(bool *,val_array_bool,value)
 DEFFUNC_1(int *,val_array_int,value)
 DEFFUNC_1(double *,val_array_double,value)
+DEFFUNC_1(float *,val_array_float,value)
 DEFFUNC_1(value *,val_array_value,value)
 
 // Byte arrays

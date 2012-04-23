@@ -20,6 +20,7 @@ public:
    Dynamic(const cpp::CppInt32__ &inVal);
    Dynamic(bool inVal);
    Dynamic(double inVal);
+   Dynamic(float inVal);
    Dynamic(hx::Object *inObj) : super(inObj) { }
    Dynamic(const String &inString);
    Dynamic(const null &inNull) : super(0) { }
@@ -29,8 +30,10 @@ public:
     void Set(bool inVal);
     void Set(int inVal);
     void Set(double inVal);
+    void Set(float inVal);
 
    inline operator double () const { return mPtr ? mPtr->__ToDouble() : 0.0; }
+   inline operator float () const { return mPtr ? (float)mPtr->__ToDouble() : 0.0f; }
    inline operator int () const { return mPtr ? mPtr->__ToInt() : 0; }
    inline operator unsigned char () const { return mPtr ? mPtr->__ToInt() : 0; }
    inline operator bool() const { return mPtr && mPtr->__ToInt(); }
@@ -75,6 +78,7 @@ public:
    bool operator != (const Dynamic &inRHS) const { return (Compare(inRHS) != 0); }
    bool operator != (const String &inRHS)  const { return !mPtr || ((String)(*this) != inRHS); }
    bool operator != (double inRHS)  const { return !mPtr || ((double)(*this) != inRHS); }
+   bool operator != (float inRHS)  const { return !mPtr || ((double)(*this) != inRHS); }
    bool operator != (int inRHS)  const { return !mPtr || ((double)(*this) != (double)inRHS); }
    bool operator != (bool inRHS)  const { return !mPtr || ((double)(*this) != (double)inRHS); }
 
@@ -88,6 +92,7 @@ public:
    #define DYNAMIC_COMPARE_OP( op ) \
       bool operator op (const String &inRHS)  const { return mPtr && ((String)(*this) op inRHS); } \
       bool operator op (double inRHS)  const { return mPtr && ((double)(*this) op inRHS); } \
+      bool operator op (float inRHS)  const { return mPtr && ((double)(*this) op inRHS); } \
       bool operator op (int inRHS)  const { return mPtr && ((double)(*this) op (double)inRHS); } \
       bool operator op (bool inRHS)  const { return mPtr && ((double)(*this) op (double)inRHS); } \
 
@@ -124,6 +129,7 @@ public:
    inline String operator+(const String &s) const;
     Dynamic operator+(const int &i) const;
     Dynamic operator+(const double &d) const;
+    Dynamic operator+(const float &d) const;
 
    double operator%(const Dynamic &inRHS) const;
    double operator-() const { return mPtr ? - mPtr->__ToDouble() : 0.0; }
@@ -136,6 +142,7 @@ public:
    #define DYNAMIC_ARITH( op ) \
       double operator op (const Dynamic &inRHS) const { return (double)(*this) op (double)inRHS; } \
       double operator op (const double &inRHS) const { return (double)(*this) op (double)inRHS; } \
+      double operator op (const float &inRHS) const { return (double)(*this) op (double)inRHS; } \
       double operator op (const int &inRHS) const { return (double)(*this) op (double)inRHS; }
 
    DYNAMIC_ARITH( - )
@@ -205,6 +212,8 @@ inline bool Dynamic::Cast<bool>() const { return mPtr ? mPtr->__ToInt() : 0; }
 template<>
 inline double Dynamic::Cast<double>() const { return mPtr ? mPtr->__ToDouble() : 0; }
 template<>
+inline float Dynamic::Cast<float>() const { return mPtr ? mPtr->__ToDouble() : 0; }
+template<>
 inline String Dynamic::Cast<String>() const { return mPtr ? mPtr->toString() : String(null()); }
 
 
@@ -228,6 +237,8 @@ inline bool Dynamic::IsClass<int>() { return mPtr && mPtr->__GetClass()==hx::Get
 template<>
 inline bool Dynamic::IsClass<double>() { return mPtr && mPtr->__GetClass()==hx::GetFloatClass(); }
 template<>
+inline bool Dynamic::IsClass<float>() { return mPtr && mPtr->__GetClass()==hx::GetFloatClass(); }
+template<>
 inline bool Dynamic::IsClass<bool>() { return mPtr && mPtr->__GetClass()==hx::GetBoolClass(); }
 template<>
 inline bool Dynamic::IsClass<null>() { return !mPtr; }
@@ -239,6 +250,8 @@ inline String Dynamic::operator+(const String &s) const { return Cast<String>() 
 
 inline bool operator != (double inLHS,const Dynamic &inRHS) \
    { return !inRHS.GetPtr() || (inLHS != (double)inRHS); } \
+inline bool operator != (float inLHS,const Dynamic &inRHS) \
+   { return !inRHS.GetPtr() || ((double)inLHS != (double)inRHS); } \
 inline bool operator != (int inLHS,const Dynamic &inRHS) \
    { return !inRHS.GetPtr() || (inLHS != (double)inRHS); } \
 inline bool operator != (bool inLHS,const Dynamic &inRHS) \
@@ -248,6 +261,8 @@ inline bool operator != (bool inLHS,const Dynamic &inRHS) \
 #define COMPARE_DYNAMIC_OP( op ) \
    inline bool operator op (double inLHS,const Dynamic &inRHS) \
       { return inRHS.IsNumeric() && (inLHS op (double)inRHS); } \
+   inline bool operator op (float inLHS,const Dynamic &inRHS) \
+      { return inRHS.IsNumeric() && ((double)inLHS op (double)inRHS); } \
    inline bool operator op (int inLHS,const Dynamic &inRHS) \
       { return inRHS.IsNumeric() && (inLHS op (double)inRHS); }
 
@@ -268,6 +283,7 @@ COMPARE_DYNAMIC_OP( >  )
 
 #define ARITH_DYNAMIC( op ) \
    inline double operator op (const double &inLHS,const Dynamic &inRHS) { return inLHS op (double)inRHS;} \
+   inline double operator op (const float &inLHS,const Dynamic &inRHS) { return inLHS op (double)inRHS;} \
    inline double operator op (const int &inLHS,const Dynamic &inRHS) { return inLHS op (double)inRHS; } \
 
 ARITH_DYNAMIC( - )
@@ -277,6 +293,7 @@ ARITH_DYNAMIC( * )
 
 double operator%(const int &inLHS,const Dynamic &inRHS);
 double operator%(const double &inLHS,const Dynamic &inRHS);
+double operator%(const float &inLHS,const Dynamic &inRHS);
 
 
 #endif

@@ -29,7 +29,6 @@ void ArrayBase::EnsureSize(int inSize) const
    {
       if (s>mAlloc)
       {
-         int obytes = mAlloc * GetElementSize();
          mAlloc = s*3/2 + 10;
          int bytes = mAlloc * GetElementSize();
          if (mBase)
@@ -236,7 +235,7 @@ DEFINE_ARRAY_FUNC1(sort);
 DEFINE_ARRAY_FUNC0(toString);
 DEFINE_ARRAY_FUNC1(unshift);
 
-Dynamic ArrayBase::__Field(const String &inString)
+Dynamic ArrayBase::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
 {
    if (inString==HX_CSTRING("length")) return Dynamic((int)size());
    if (inString==HX_CSTRING("concat")) return concat_dyn();
@@ -313,7 +312,7 @@ Dynamic IteratorBase::next_dyn()
    return hx::CreateMemberFunction0(this,__IteratorBase_dynamicNext);
 }
 
-Dynamic IteratorBase::__Field(const String &inString)
+Dynamic IteratorBase::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
 {
    if (inString==HX_CSTRING("hasNext")) return hasNext_dyn();
    if (inString==HX_CSTRING("next")) return _dynamicNext_dyn();

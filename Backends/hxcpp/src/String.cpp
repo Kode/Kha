@@ -344,6 +344,15 @@ String::String(const double &inRHS)
    __s = GCStringDup(buf,-1,&length);
 }
 
+
+String::String(const float &inRHS)
+{
+   HX_CHAR buf[100];
+   SPRINTF(buf,100,HX_DOUBLE_PATTERN,inRHS);
+   buf[99]='\0';
+   __s = GCStringDup(buf,-1,&length);
+}
+
 String::String(const bool &inRHS)
 {
    if (inRHS)
@@ -378,7 +387,6 @@ String String::__URLEncode() const
    int l = utf8_chars + extra*2 + spaces*2 /* *0 */;
    HX_CHAR *result = hx::NewString(l);
    HX_CHAR *ptr = result;
-   bool has_plus = false;
 
    for(int i=0;i<utf8_chars;i++)
    {
@@ -554,6 +562,11 @@ Dynamic String::charCodeAt(int inPos) const
 
 String String::fromCharCode( int c )
 {
+   char buf[2];
+   buf[0] = c;
+   buf[1] = '\0';
+   return String( GCStringDup(buf,1,0), 1 );
+   #if 0
    #ifdef HX_UTF8_STRINGS
    int len = 0;
    char buf[5];
@@ -586,6 +599,7 @@ String String::fromCharCode( int c )
    result[0] = c;
    result[1] = '\0';
    return String(result,1);
+   #endif
    #endif
 }
 
@@ -766,7 +780,7 @@ Array<String> String::split(const String &inDelimiter) const
          #ifdef HX_UTF8_STRINGS
          const unsigned char *start = (const unsigned char *)(__s + i);
          const unsigned char *ptr = start;
-         int ch = DecodeAdvanceUTF8(ptr);
+         DecodeAdvanceUTF8(ptr);
          int len =  ptr - start;
          result[idx++] = String( __s+i, len ).dup();
          i+=len;
@@ -920,7 +934,7 @@ DEFINE_STRING_FUNC0(toLowerCase);
 DEFINE_STRING_FUNC0(toUpperCase);
 DEFINE_STRING_FUNC0(toString);
 
-Dynamic String::__Field(const String &inString)
+Dynamic String::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
 {
    if (HX_FIELD_EQ(inString,"length")) return length;
    if (HX_FIELD_EQ(inString,"charAt")) return charAt_dyn();
@@ -1049,9 +1063,9 @@ public:
       return mValue.compare( const_cast<hx::Object*>(inRHS)->toString() );
    }
 
-   Dynamic __Field(const String &inString)
+   Dynamic __Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
    {
-      return mValue.__Field(inString);
+      return mValue.__Field(inString HXCPP_EXTRA_FIELD_CALL);
    }
 
 

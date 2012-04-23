@@ -70,6 +70,7 @@ class null
      template<typename T> explicit inline null(const hx::ObjectPtr<T> &){ } 
      template<typename T> explicit inline null(const String &){ } 
      explicit inline null(double){ } 
+     explicit inline null(float){ } 
      explicit inline null(int){ } 
      explicit inline null(bool){ } 
 
@@ -78,6 +79,7 @@ class null
      operator bool () { return false; }
      operator int () { return 0; }
      operator double () { return 0; }
+     operator float () { return 0; }
      operator unsigned char () { return 0; }
 
      bool operator == (null inRHS) const { return true; }
@@ -103,6 +105,7 @@ class null
 
 	  HX_NULL_COMPARE_OPS(bool)
 	  HX_NULL_COMPARE_OPS(double)
+	  HX_NULL_COMPARE_OPS(float)
 	  HX_NULL_COMPARE_OPS(int)
 	  HX_NULL_COMPARE_MOST_OPS(String)
 	  HX_NULL_COMPARE_MOST_OPS(Dynamic)
@@ -127,10 +130,35 @@ class null
 	  HX_NULL_ARITHMETIC_OP(<<);
 };
 
+namespace hx
+{
+
+template<typename T>
+struct Null
+{
+   inline Null() : isNull(true) { }
+   inline Null(const Null<T> &inOther) : isNull(inOther.isNull), value(inOther.value) { }
+   inline Null(const T& inVal) : isNull(false), value(inVal) { }
+   inline Null(const null &) : isNull(true) { }
+   inline Null(const Dynamic &inVal)
+   {
+      isNull = null() == inVal;
+      if (!isNull)
+         value = inVal;
+   }
+   inline T Default(T inDefault) { return isNull ? inDefault : value; }
+
+   bool isNull;
+   T    value;
+};
+
+} // end namesapce hx
+
 typedef null Void;
 
 HX_COMPARE_NULL_OPS(bool)
 HX_COMPARE_NULL_OPS(double)
+HX_COMPARE_NULL_OPS(float)
 HX_COMPARE_NULL_OPS(int)
 
 HX_ARITHMETIC_NULL_OP(+)

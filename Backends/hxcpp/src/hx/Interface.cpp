@@ -13,14 +13,14 @@ hx::Object *Interface::__ToInterface(const type_info &i)
 {
 	return __GetRealObject()->__ToInterface(i);
 }
-int Interface::__GetType()
+int Interface::__GetType() const
 {
-	return __GetRealObject()->__GetType();
+	return const_cast<Interface *>(this)->__GetRealObject()->__GetType();
 }
 
-void *Interface::__GetHandle()
+void *Interface::__GetHandle() const
 {
-	return __GetRealObject()->__GetHandle();
+	return const_cast<Interface *>(this)->__GetRealObject()->__GetHandle();
 }
 
 hx::FieldRef Interface::__FieldRef(const ::String &s)
@@ -28,24 +28,24 @@ hx::FieldRef Interface::__FieldRef(const ::String &s)
 	return __GetRealObject()->__FieldRef(s);
 }
 
-::String Interface::__ToString()
+::String Interface::__ToString() const
 {
-	return __GetRealObject()->__ToString();
+	return const_cast<Interface *>(this)->__GetRealObject()->__ToString();
 }
 
-int Interface::__ToInt()
+int Interface::__ToInt() const
 {
-	return __GetRealObject()->__ToInt();
+	return const_cast<Interface *>(this)->__GetRealObject()->__ToInt();
 }
 
-double Interface::__ToDouble()
+double Interface::__ToDouble() const
 {
-	return __GetRealObject()->__ToDouble();
+	return const_cast<Interface *>(this)->__GetRealObject()->__ToDouble();
 }
 
-const char * Interface::__CStr()
+const char * Interface::__CStr() const
 {
-	return __GetRealObject()->__CStr();
+	return const_cast<Interface *>(this)->__GetRealObject()->__CStr();
 }
 
 ::String Interface::toString()
@@ -58,9 +58,9 @@ bool Interface::__HasField(const ::String &s)
 	return __GetRealObject()->__HasField(s);
 }
 
-Dynamic Interface::__Field(const ::String &s)
+Dynamic Interface::__Field(const ::String &s HXCPP_EXTRA_FIELD_DECL)
 {
-	return __GetRealObject()->__Field(s);
+	return __GetRealObject()->__Field(s HXCPP_EXTRA_FIELD_CALL);
 }
 
 Dynamic Interface::__IField(int i)
@@ -68,9 +68,9 @@ Dynamic Interface::__IField(int i)
 	return __GetRealObject()->__IField( i);
 }
 
-Dynamic Interface::__SetField(const ::String &s,const Dynamic &d)
+Dynamic Interface::__SetField(const ::String &s,const Dynamic &d HXCPP_EXTRA_FIELD_DECL)
 {
-	return __GetRealObject()->__SetField(s,d);
+	return __GetRealObject()->__SetField(s,d HXCPP_EXTRA_FIELD_CALL);
 }
 
 void Interface::__SetThis(Dynamic d)
@@ -83,14 +83,14 @@ void Interface::__GetFields(Array< ::String> &a)
 	return __GetRealObject()->__GetFields(a);
 }
 
-Class Interface::__GetClass()
+Class Interface::__GetClass() const
 {
-	return __GetRealObject()->__GetClass();
+	return const_cast<Interface *>(this)->__GetRealObject()->__GetClass();
 }
 
-int Interface::__Compare(const hx::Object *o)
+int Interface::__Compare(const hx::Object *o) const
 {
-	return __GetRealObject()->__Compare(o);
+	return const_cast<Interface *>(this)->__GetRealObject()->__Compare(o);
 }
 
 
