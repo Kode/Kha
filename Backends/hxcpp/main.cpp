@@ -25,6 +25,18 @@ namespace {
 			return 520;
 		}
 
+		virtual void mouseButtonDown(Kt::MouseEvent* event) override {
+			Starter_obj::mouseDown(event->x(), event->y());
+		}
+
+		virtual void mouseButtonUp(Kt::MouseEvent* event) override {
+			Starter_obj::mouseUp(event->x(), event->y());
+		}
+		
+		virtual void mouseMove(Kt::MouseEvent* event) override {
+			Starter_obj::mouseMove(event->x(), event->y());
+		}
+
 		void render(Kt::Painter* painter) {
 			haxePainter = painter;
 			Starter_obj::frame();

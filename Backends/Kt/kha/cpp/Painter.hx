@@ -1,4 +1,5 @@
 package kha.cpp;
+import kha.Image;
 
 @:cppFileCode('
 #include <kha/cpp/Image.h>
@@ -32,9 +33,17 @@ class Painter extends kha.Painter {
 	
 	@:functionCode('
 	::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
+	haxePainter->drawImage(img->image, tx + x, ty + y);
+	')
+	override public function drawImage(image : Image, x : Float, y : Float) : Void {
+		
+	}
+	
+	@:functionCode('
+	::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
 	haxePainter->drawSubImage(img->image, tx + dx, ty + dy, dw, dh, sx, sy, sw, sh);
 	')
-	public override function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
 		
 	}
 }

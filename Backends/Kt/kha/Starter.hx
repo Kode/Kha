@@ -68,4 +68,16 @@ class Starter {
 	public static function releaseButton1() : Void {
 		game.buttonUp(Button.BUTTON_1);
 	}
+	
+	public static function mouseDown(x : Int, y : Int) : Void {
+		game.mouseDown(x, y);
+	}
+
+	public static function mouseUp(x : Int, y : Int) : Void {
+		game.mouseUp(x, y);
+	}
+	
+	public static function mouseMove(x : Int, y : Int) : Void {
+		game.mouseMove(x, y);
+	}
 }
