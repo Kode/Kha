@@ -1,6 +1,8 @@
 #include <hxcpp.h>
 
 #include <stdio.h>
+#define INT_MIN     (-2147483647 - 1) /* minimum (signed) int value */
+#define INT_MAX       2147483647    /* maximum (signed) int value */
 #include <string>
 #include <map>
 #include <vector>
@@ -356,7 +358,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name)
          #endif
       }
       module = hxLoadLibrary(dll_ext);
-      if (module)
+	  if (module || strcmp(inLib.c_str(), "std") == 0)
          break;
 
       
@@ -417,7 +419,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name)
          return registered;
    }
 
-   if (!module)
+   if (!module && strcmp(inLib.c_str(), "std") != 0)
    {
      throw Dynamic(HX_CSTRING("Could not load module ") + inLib + HX_CSTRING("@") + full_name);
    }

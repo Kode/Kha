@@ -18,6 +18,7 @@
 #include <hx/CFFI.h>
 #ifdef NEKO_WINDOWS
 #	include <winsock2.h>
+#pragma comment(lib, "Ws2_32.lib")
 #	define FDSIZE(n)	(sizeof(u_int) + (n) * sizeof(SOCKET))
 #	define SHUT_WR		SD_SEND
 #	define SHUT_RD		SD_RECEIVE

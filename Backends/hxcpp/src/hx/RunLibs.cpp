@@ -2,6 +2,8 @@
  Use the "hxRunLibrary" code to run the static version of the code
 */
 #include <hxcpp.h>
+#define INT_MIN     (-2147483647 - 1) /* minimum (signed) int value */
+#define INT_MAX       2147483647    /* maximum (signed) int value */
 #include <string>
 
 
@@ -22,8 +24,8 @@ std::wstring sgResultBuffer;
 const HX_CHAR *hxRunLibrary()
 {
    std_register_prims();
-   regexp_register_prims();
-   zlib_register_prims();
+   //regexp_register_prims();
+   //zlib_register_prims();
     
    try { 
       __hxcpp_lib_main();

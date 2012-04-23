@@ -16,7 +16,8 @@ typedef int64_t __int64;
 #ifdef WEBOS
 #include <syslog.h>
 #endif
-
+#define INT_MIN     (-2147483647 - 1) /* minimum (signed) int value */
+#define INT_MAX       2147483647    /* maximum (signed) int value */
 #include <string>
 #include <vector>
 #include <map>
