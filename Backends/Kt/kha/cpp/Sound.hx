@@ -1,6 +1,6 @@
-package com.ktxsoftware.kha.backends.cpp;
+package kha.cpp;
 
-class Sound implements com.ktxsoftware.kha.Sound {
+class Sound implements kha.Sound {
 	public function new(filename : String) {
 		
 	}

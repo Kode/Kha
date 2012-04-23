@@ -1,18 +1,12 @@
-package com.ktxsoftware.kha.backends.cpp;
+package kha.cpp;
 
-import com.ktxsoftware.kha.Blob;
+import kha.Blob;
 import cpp.io.File;
 import haxe.io.Bytes;
 
-class Loader extends com.ktxsoftware.kha.Loader {
-	var numberOfFiles : Int;
-	
+class Loader extends kha.Loader {
 	public function new() {
 		super();
-	}
-	
-	private override function loadStarted(numberOfFiles : Int) {
-		this.numberOfFiles = numberOfFiles;
 	}
 	
 	public override function loadDataDefinition() {
@@ -39,7 +33,7 @@ class Loader extends com.ktxsoftware.kha.Loader {
 	}
 	
 	override function loadImage(filename : String) {
-		images.set(filename, new com.ktxsoftware.kha.backends.cpp.Image(filename));
+		images.set(filename, new kha.cpp.Image(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
