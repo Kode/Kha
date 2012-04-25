@@ -247,7 +247,7 @@ class Scene {
 		var camy : Int = adjustCamY();
 		
 		for (i in 0...backgrounds.length) {
-			painter.translate(-camx * backgroundSpeeds[i], -camy * backgroundSpeeds[i]);
+			painter.translate(Math.round(-camx * backgroundSpeeds[i]), Math.round(-camy * backgroundSpeeds[i]));
 			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), Std.int(camy * backgroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 		
@@ -267,7 +267,7 @@ class Scene {
 		}
 		
 		for (i in 0...foregrounds.length) {
-			painter.translate(-camx * foregroundSpeeds[i], -camy * foregroundSpeeds[i]);
+			painter.translate(Math.round(-camx * foregroundSpeeds[i]), Math.round(-camy * foregroundSpeeds[i]));
 			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), Std.int(camy * foregroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 	}
