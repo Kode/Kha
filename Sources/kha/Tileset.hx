@@ -19,6 +19,10 @@ class Tileset {
 	}
 
 	public function render(painter : Painter, tile : Int, x : Int, y : Int) {
+		if (tile != 0) {
+			var a = 3;
+			++a;
+		}
 		var ytile : Int = Std.int(tile / xmax);
 		var xtile : Int = tile - ytile * xmax;
 		painter.drawImage2(image, xtile * TILE_WIDTH, ytile * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x, y, TILE_WIDTH, TILE_HEIGHT);

@@ -103,6 +103,10 @@ class Tilemap {
 		return levelWidth;
 	}
 	
+	public function getHeight() : Int {
+		return levelHeight;
+	}
+	
 	public function getTileset() : Tileset {
 		return tileset;
 	}
