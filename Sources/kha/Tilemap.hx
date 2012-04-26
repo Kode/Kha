@@ -5,12 +5,10 @@ class Tilemap {
 	var map : Array<Array<Int>>;
 	var levelWidth : Int;
 	var levelHeight : Int;
-	var tileCollision : Array<Bool>;
 	
-	public function new(imagename : String, tileWidth : Int, tileHeight : Int, map : Array<Array<Int>>, tileCollision : Array<Bool>) {
-		tileset = new Tileset(imagename, tileWidth, tileHeight);
+	public function new(imagename : String, tileWidth : Int, tileHeight : Int, map : Array<Array<Int>>, tiles : Array<Tile> = null) {
+		tileset = new Tileset(imagename, tileWidth, tileHeight, tiles);
 		this.map = map;
-		this.tileCollision = tileCollision;
 		levelWidth = map.length;
 		levelHeight = map[0].length;
 	}
@@ -30,7 +28,7 @@ class Tilemap {
 		var xtilestart : Int = Std.int(x1 / tileset.TILE_WIDTH);
 		var xtileend : Int = Std.int(x2 / tileset.TILE_WIDTH);
 		var ytile : Int = Std.int(y / tileset.TILE_HEIGHT);
-		for (xtile in xtilestart...xtileend + 1) if (tileCollision[map[xtile][ytile]]) return true;
+		for (xtile in xtilestart...xtileend + 1) if (tileset.tile(map[xtile][ytile]).collides) return true;
 		return false;
 	}
 	
@@ -41,7 +39,7 @@ class Tilemap {
 		var xtile : Int = Std.int(x / tileset.TILE_WIDTH);
 		for (ytile in ytilestart...ytileend + 1) {
 			if (ytile < 0 || ytile >= levelHeight) continue;
-			if (tileCollision[map[xtile][ytile]]) return true;
+			if (tileset.tile(map[xtile][ytile]).collides) return true;
 		}
 		return false;
 	}
@@ -52,7 +50,7 @@ class Tilemap {
 		
 		var value : Int = map[Std.int(x / tileset.TILE_WIDTH)][Std.int(y / tileset.TILE_HEIGHT)];
 		
-		return tileCollision[value];
+		return tileset.tile(value).collides;
 	}
 	
 	private static function round(value : Float) : Int{
