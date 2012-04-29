@@ -236,6 +236,25 @@ class Scene {
 				x0 += sx;
 				sprite.x = x0;
 				if (colissionMap.collides(sprite)) {
+					sprite.y -= 1;
+					if (!colissionMap.collides(sprite)) {
+						continue;
+					}
+					else {
+						sprite.y -= 1;
+						if (!colissionMap.collides(sprite)) {
+							continue;
+						}
+						else {
+							sprite.y -= 1;
+							if (!colissionMap.collides(sprite)) {
+								continue;
+							}
+							sprite.y += 1;
+						}
+						sprite.y += 1;
+					}
+					sprite.y += 1;
 					sprite.x -= sx;
 					if (sx < 0) sprite.hitFrom(Direction.RIGHT);
 					else sprite.hitFrom(Direction.LEFT);
@@ -273,6 +292,25 @@ class Scene {
 						x0 += sx;
 						sprite.x = x0;
 						if (colissionMap.collides(sprite)) {
+							sprite.y -= 1;
+							if (!colissionMap.collides(sprite)) {
+								continue;
+							}
+							else {
+								sprite.y -= 1;
+								if (!colissionMap.collides(sprite)) {
+									continue;
+								}
+								else {
+									sprite.y -= 1;
+									if (!colissionMap.collides(sprite)) {
+										continue;
+									}
+									sprite.y += 1;
+								}
+								sprite.y += 1;
+							}
+							sprite.y += 1;
 							sprite.x -= sx;
 							if (sx < 0) sprite.hitFrom(Direction.RIGHT);
 							else sprite.hitFrom(Direction.LEFT);
