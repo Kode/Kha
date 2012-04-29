@@ -271,7 +271,6 @@ class Scene {
 							else sprite.hitFrom(Direction.UP);
 							return;
 						}
-						return;
 					}
 					return;
 				}

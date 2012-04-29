@@ -30,7 +30,7 @@ class Image implements kha.Image {
 		return image.height;
 	}
 	
-	public function isAlpha(x : Int, y : Int) : Bool {
+	public function isOpaque(x : Int, y : Int) : Bool {
 		if (data == null) {
 			if (context == null) return true;
 			else createImageData();
