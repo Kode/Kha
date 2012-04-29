@@ -207,12 +207,104 @@ class Scene {
 		}
 	}
 	
-	private function move(sprite : Sprite) {
+	//Bresenhahm
+	function line(xstart : Float, ystart : Float, xend : Float, yend : Float, sprite : Sprite) : Void {
+		var x0 = round(xstart);
+		var y0 = round(ystart);
+		var x1 = round(xend);
+		var y1 = round(yend);
+		sprite.x = x0;
+		sprite.y = y0;
+		var dx = Math.abs(x1 - x0);
+		var dy = Math.abs(y1 - y0);
+		var sx : Int;
+		var sy : Int;
+		if (x0 < x1) sx = 1; else sx = -1;
+		if (y0 < y1) sy = 1; else sy = -1;
+		var err = dx - dy;
+
+		while (true) {
+			//setPixel(x0,y0)
+			if (x0 == x1 && y0 == y1) {
+				sprite.x = xend;
+				sprite.y = yend;
+				break;
+			}
+			var e2 = 2 * err;
+			if (e2 > -dy) {
+				err -= dy;
+				x0 += sx;
+				sprite.x = x0;
+				if (colissionMap.collides(sprite)) {
+					sprite.x -= sx;
+					if (sx < 0) sprite.hitFrom(Direction.RIGHT);
+					else sprite.hitFrom(Direction.LEFT);
+					while (true) {
+						if (y0 == y1) {
+							sprite.y = yend;
+							return;
+						}
+						y0 += sy;
+						sprite.y = y0;
+						if (colissionMap.collides(sprite)) {
+							sprite.y -= sy;
+							if (sy < 0) sprite.hitFrom(Direction.DOWN);
+							else sprite.hitFrom(Direction.UP);
+							return;
+						}
+						return;
+					}
+					return;
+				}
+			}
+			if (e2 < dx) {
+				err += dx;
+				y0 += sy; 
+				sprite.y = y0;
+				if (colissionMap.collides(sprite)) {
+					sprite.y -= sy;
+					if (sy < 0) sprite.hitFrom(Direction.DOWN);
+					else sprite.hitFrom(Direction.UP);
+					while (true) {
+						if (x0 == x1) {
+							sprite.x = xend;
+							return;
+						}
+						x0 += sx;
+						sprite.x = x0;
+						if (colissionMap.collides(sprite)) {
+							sprite.x -= sx;
+							if (sx < 0) sprite.hitFrom(Direction.RIGHT);
+							else sprite.hitFrom(Direction.LEFT);
+							return;
+						}
+					}
+					return;
+				}
+			}
+		}
+	}
+	
+	static function round(value : Float) : Int {
+		return Math.round(value);
+	}
+	
+	function move(sprite : Sprite) {
 		sprite.speedx += sprite.accx;
 		sprite.speedy += sprite.accy;
+		if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
 		if (sprite.collides) {
-			if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
-			sprite.x += sprite.speedx;
+			var xaim = sprite.x + sprite.speedx;
+			var yaim = sprite.y + sprite.speedy;
+			var xstart = sprite.x;
+			var ystart = sprite.y;
+			sprite.x = xaim;
+			sprite.y = yaim;
+			if (colissionMap.collides(sprite)) {
+				line(xstart, ystart, xaim, yaim, sprite);
+			}
+
+			/*sprite.x += sprite.speedx;
 			
 			if (colissionMap != null) {
 				if (sprite.speedx > 0) { if (colissionMap.collideright(sprite)) sprite.hitFrom(Direction.LEFT); }
@@ -220,7 +312,7 @@ class Scene {
 				sprite.y += sprite.speedy;
 				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) sprite.hitFrom(Direction.UP); }
 				else if (sprite.speedy < 0) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
-			}
+			}*/
 			
 			//Bubble Dragons Hack
 			/*if (colissionMap != null) {

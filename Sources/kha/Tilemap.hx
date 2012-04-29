@@ -25,6 +25,24 @@ class Tilemap {
 		}
 	}
 	
+	public function collides(sprite : Sprite) {
+		var rect = sprite.collisionRect();
+		var xtilestart : Int = Std.int(rect.x / tileset.TILE_WIDTH);
+		var xtileend : Int = Std.int((rect.x + rect.width) / tileset.TILE_WIDTH);
+		var ytilestart : Int = Std.int(rect.y / tileset.TILE_HEIGHT);
+		var ytileend : Int = Std.int((rect.y + rect.height) / tileset.TILE_HEIGHT);
+		for (ytile in ytilestart...ytileend + 1) {
+			for (xtile in xtilestart...xtileend + 1) {
+				collissionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
+				collissionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
+				collissionRectCache.width = rect.width;
+				collissionRectCache.height = rect.height;
+				if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
+			}
+		}
+		return false;
+	}
+	
 	function collidesupdown(x1 : Int, x2 : Int, y : Int, rect : Rectangle) : Bool {
 		if (y < 0 || y / tileset.TILE_HEIGHT >= levelHeight) return false;
 		var xtilestart : Int = Std.int(x1 / tileset.TILE_WIDTH);
