@@ -19,7 +19,7 @@ class Tileset {
 		ymax = Std.int(image.getHeight() / TILE_HEIGHT);
 		if (tiles == null) {
 			this.tiles = new Array<Tile>();
-			for (i in 0...getLength()) this.tiles.push(new Tile(i));
+			for (i in 0...getLength()) this.tiles.push(new Tile(i, false));
 		}
 		else this.tiles = tiles;
 	}

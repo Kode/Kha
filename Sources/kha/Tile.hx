@@ -3,11 +3,15 @@ package kha;
 class Tile {
 	public var imageIndex : Int;
 	public var visible : Bool;
-	public var collides : Bool;
+	var collides : Bool;
 	
-	public function new(imageIndex : Int) {
+	public function new(imageIndex : Int, collides : Bool) {
 		this.imageIndex = imageIndex;
+		this.collides = collides;
 		visible = true;
-		collides = false;
-	}	
+	}
+	
+	public function collission(rect : Rectangle) : Bool {
+		return collides;
+	}
 }
