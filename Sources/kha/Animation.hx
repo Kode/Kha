@@ -23,6 +23,13 @@ class Animation {
 		this.speeddiv = speeddiv;
 	}
 	
+	public function take(animation : Animation) {
+		if (indices == animation.indices) return;
+		indices = animation.indices;
+		speeddiv = animation.speeddiv;
+		reset();
+	}
+	
 	public function get() : Int {
 		return indices[index];
 	}

@@ -44,7 +44,7 @@ class Sprite {
 	}
 	
 	public function setAnimation(animation : Animation) : Void {
-		this.animation = animation;
+		this.animation.take(animation);
 	}
 	
 	public function update() : Void {
