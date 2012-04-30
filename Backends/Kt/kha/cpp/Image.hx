@@ -26,7 +26,7 @@ class Image implements kha.Image {
 		return 0;
 	}
 	
-	public function isAlpha(x : Int, y : Int) : Bool {
+	public function isOpaque(x : Int, y : Int) : Bool {
 		return true;
 	}
 }

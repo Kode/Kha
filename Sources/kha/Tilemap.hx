@@ -37,7 +37,8 @@ class Tilemap {
 				collissionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
 				collissionRectCache.width = rect.width;
 				collissionRectCache.height = rect.height;
-				if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
+				if (tileset.tile(map[xtile][ytile]) != null)
+					if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
 			}
 		}
 		return false;
