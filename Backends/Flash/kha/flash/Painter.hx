@@ -171,7 +171,7 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function drawString(text : String, x : Float, y : Float) : Void {
-		return;
+		//return;
 		textField.defaultTextFormat = new TextFormat(font.name, font.size);
 		textField.text = text;
 		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
