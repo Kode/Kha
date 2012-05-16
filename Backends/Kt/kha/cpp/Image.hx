@@ -26,6 +26,7 @@ class Image implements kha.Image {
 		return 0;
 	}
 	
+	@:functionCode("return image.At(x, y).Ab() > 0;")
 	public function isOpaque(x : Int, y : Int) : Bool {
 		return true;
 	}
