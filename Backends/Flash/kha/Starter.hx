@@ -58,6 +58,7 @@ class Starter {
 			//"software"
 		);
 		screen = game;
+		screen.setInstance();
 		game.loadFinished();
 	}
 	

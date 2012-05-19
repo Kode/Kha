@@ -120,6 +120,7 @@ class Starter {
 		
 		game.loadFinished();
 		screen = game;
+		screen.setInstance();
 	}
 	
 	static function pressKey(keycode : Int) {

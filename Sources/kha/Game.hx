@@ -21,6 +21,10 @@ class Game {
 		scene = Scene.getInstance();
 	}
 	
+	public function setInstance() {
+		instance = this;
+	}
+	
 	public function getWidth() : Int {
 		return width;
 	}
