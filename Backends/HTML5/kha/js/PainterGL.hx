@@ -112,21 +112,21 @@ class PainterGL extends kha.Painter {
 		
 		rectVertexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, rectVertexBuffer);
-		rectVertices = untyped __js__('new Float32Array(com.ktxsoftware.kha.backends.js.PainterGL.bufferSize * 3 * 4)');//6);
+		rectVertices = untyped __js__('new Float32Array(kha.js.PainterGL.bufferSize * 3 * 4)');//6);
 		gl.bufferData(gl.ARRAY_BUFFER, rectVertices, gl.DYNAMIC_DRAW);
 		gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 		//rectVerticesCache = Float32Array.create(3 * 6);
 		
 		rectTexCoordBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, rectTexCoordBuffer);
-		rectTexCoords = untyped __js__('new Float32Array(com.ktxsoftware.kha.backends.js.PainterGL.bufferSize * 2 * 4)');//6);
+		rectTexCoords = untyped __js__('new Float32Array(kha.js.PainterGL.bufferSize * 2 * 4)');//6);
 		gl.bufferData(gl.ARRAY_BUFFER, rectTexCoords, gl.DYNAMIC_DRAW);
 		gl.vertexAttribPointer(texCoordAttribute, 2, gl.FLOAT, false, 0, 0);
 		//rectTexCoordsCache = Float32Array.create(2 * 6);
 		
 		indexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		var indices = untyped __js__('new Uint16Array(com.ktxsoftware.kha.backends.js.PainterGL.bufferSize * 3 * 2)');
+		var indices = untyped __js__('new Uint16Array(kha.js.PainterGL.bufferSize * 3 * 2)');
 		
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;

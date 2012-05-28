@@ -38,6 +38,8 @@ class Scene {
 		//lastUpdatedSprites = new Array<Sprite>();
 		//updatedSprites = new Array<Sprite>();
 		backgroundColor = new Color(0, 0, 0);
+		camx = 0;
+		camy = 0;
 	}
 	
 	public function clear() {

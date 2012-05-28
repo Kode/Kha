@@ -27,7 +27,7 @@ class Starter {
 			//if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.getWidth(), game.getHeight());
 		}
 		catch (e : Dynamic) {
-			
+			trace(e);
 		}
 		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
 		
