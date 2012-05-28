@@ -150,22 +150,22 @@ bool Class_obj::__HasField(const String &inString)
    return false;
 }
 
-Dynamic Class_obj::__Field(const String &inString)
+Dynamic Class_obj::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
 {
    // Not the most efficient way of doing this!
    if (!mConstructEmpty)
       return null();
    Dynamic instance = mConstructEmpty();
-   return instance->__Field(inString);
+   return instance->__Field(inString HXCPP_EXTRA_FIELD_CALL);
 }
 
-Dynamic Class_obj::__SetField(const String &inString,const Dynamic &inValue)
+Dynamic Class_obj::__SetField(const String &inString,const Dynamic &inValue HXCPP_EXTRA_FIELD_DECL)
 {
    // Not the most efficient way of doing this!
    if (!mConstructEmpty)
       return null();
    Dynamic instance = mConstructEmpty();
-   return instance->__SetField(inString,inValue);
+   return instance->__SetField(inString,inValue HXCPP_EXTRA_FIELD_CALL);
 }
 
 bool Class_obj::__IsEnum()

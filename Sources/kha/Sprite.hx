@@ -43,33 +43,33 @@ class Sprite {
 		return tempcollider;
 	}
 	
-	public function setAnimation(animation : Animation) {
-		this.animation = animation;
+	public function setAnimation(animation : Animation) : Void {
+		this.animation.take(animation);
 	}
 	
-	public function update() {
+	public function update() : Void {
 		animation.next();
 	}
 	
-	public function render(painter : Painter) {
+	public function render(painter : Painter) : Void {
 		if (image != null) {
 			painter.drawImage2(image, Std.int(animation.get() * width) % image.getWidth(), Math.floor(animation.get() * width / image.getWidth()) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
 		}
 	}
 	
-	public function hitFrom(dir : Direction) {
+	public function hitFrom(dir : Direction) : Void {
 		
 	}
 	
-	public function hit(sprite : Sprite) {
+	public function hit(sprite : Sprite) : Void {
 		
 	}
 	
-	public function setImage(image : Image) {
+	public function setImage(image : Image) : Void {
 		this.image = image;
 	}
 	
-	public function outOfView() {
+	public function outOfView() : Void {
 		
 	}
 }

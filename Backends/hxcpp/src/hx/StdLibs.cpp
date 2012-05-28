@@ -7,7 +7,7 @@
 #else
 #include <sys/time.h>
 #include <stdio.h>
-typedef uint64_t __int64;
+typedef int64_t __int64;
 #endif
 
 #ifdef ANDROID
@@ -108,6 +108,24 @@ Array<unsigned char> __hxcpp_resource_bytes(String inName)
 
 // --- System ---------------------------------------------------------------------
 
+// --- Maths ---------------------------------------------------------
+static double rand_scale = 1.0 / (1<<16) / (1<<16);
+double __hxcpp_drand()
+{
+   unsigned int lo = rand() & 0xfff;
+   unsigned int mid = rand() & 0xfff;
+   unsigned int hi = rand() & 0xff;
+   double result = (lo | (mid<<12) | (hi<<24) ) * rand_scale;
+   return result;
+}
+
+int __hxcpp_irand(int inMax)
+{
+   unsigned int lo = rand() & 0xfff;
+   unsigned int mid = rand() & 0xfff;
+   unsigned int hi = rand() & 0xff;
+   return (lo | (mid<<12) | (hi<<24) ) % inMax;
+}
 
 void __trace(Dynamic inObj, Dynamic inData)
 {
@@ -119,13 +137,13 @@ void __trace(Dynamic inObj, Dynamic inData)
    #else
    printf("%s:%d: %s\n",
    #endif
-               inData==null() ? "?" : inData->__Field( HX_CSTRING("fileName")) ->toString().__s,
-               inData==null() ? 0 : inData->__Field( HX_CSTRING("lineNumber") )->__ToInt(),
+               inData==null() ? "?" : inData->__Field( HX_CSTRING("fileName") HXCPP_EXTRA_FIELD_TRUE) ->toString().__s,
+               inData==null() ? 0 : inData->__Field( HX_CSTRING("lineNumber") HXCPP_EXTRA_FIELD_TRUE)->__ToInt(),
                inObj.GetPtr() ? inObj->toString().__s : "null" );
 #else
    printf( "%S:%d: %S\n",
-               inData->__Field( HX_CSTRING("fileName") )->__ToString().__s,
-               inData->__Field( HX_CSTRING("lineNumber") )->__ToInt(),
+               inData->__Field( HX_CSTRING("fileName") HXCPP_EXTRA_FIELD_TRUE)->__ToString().__s,
+               inData->__Field( HX_CSTRING("lineNumber") HXCPP_EXTRA_FIELD_TRUE)->__ToInt(),
                inObj.GetPtr() ? inObj->toString().__s : L"null" );
 #endif
 }
@@ -281,9 +299,9 @@ bool __instanceof(const Dynamic &inValue, const Dynamic &inType)
 
 int __int__(double x)
 {
-   if (x < -0x7fffffff || x>0x80000000 )
+   if (x < -0x7fffffff || x>0x7fffffff )
    {
-      __int64 big_int = (__int64)x;
+      __int64 big_int = __int64(x);
       return big_int & 0xffffffff;
    }
    else
@@ -339,9 +357,7 @@ bool __hxcpp_same_closure(Dynamic &inF1,Dynamic &inF2)
    hx::Object *p2 = inF2.GetPtr();
    if (p1==0 || p2==0)
       return false;
-   if ( (p1->__GetHandle() != p2->__GetHandle()) || 1)
-      return false;
-   if (typeid(*p1) != typeid(*p2))
+   if ( (p1->__GetHandle() != p2->__GetHandle()))
       return false;
    return p1->__Compare(p2)==0;
 }

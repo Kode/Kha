@@ -57,14 +57,40 @@ class Loader extends kha.Loader {
 		};
 	}
 	
+	static function convertResponseBodyToText(binary) {
+		var byteMapping = new Hash<String>();
+		for (i in 0...256) {
+			for (j in 0...256) {
+				byteMapping.set(String.fromCharCode(i + j * 256), String.fromCharCode(i) + String.fromCharCode(j));
+			}
+		}
+		var rawBytes = untyped __js__("IEBinaryToArray_ByteStr(binary)");
+		var lastChr = untyped __js__("IEBinaryToArray_ByteStr_Last(binary)");
+		return untyped __js__("rawBytes.replace(/[\\s\\S]/g, function( match ) { return byteMapping[match]; }) + lastChr");
+	}
+	
+	static function bin2arr(a) {
+		return untyped __js__("arr(a).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(a)");
+}
+	
 	override function loadBlob(filename : String) {
 		var request = untyped new XMLHttpRequest();
-		request.overrideMimeType('text/plain; charset=x-user-defined');
 		request.open("GET", filename, true);
+		if (request.overrideMimeType != null) request.overrideMimeType('text/plain; charset=x-user-defined');
+		else {
+			request.setRequestHeader("Accept-Charset", "x-user-defined");
+		}
 		request.onreadystatechange = function() {
 			if (request.readyState != 4) return;
 			if (request.status >= 200 && request.status < 400) {
-				var data : String = request.responseText;
+				var data : String = null;
+				if (request.responseBody != null) {
+					//data = untyped __js__("kha.js.Loader.convertResponseBodyToText(request.responseBody)");
+					data = untyped __js__("kha.js.Loader.bin2arr(request.responseBody)");
+				}
+				else {
+					data = request.responseText;
+				}
 				var bytes = Bytes.alloc(data.length);
 				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
 				blobs.set(filename, new Blob(bytes));

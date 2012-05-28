@@ -21,7 +21,7 @@ void Anon_obj::__Mark(HX_MARK_PARAMS)
 
 
 
-Dynamic Anon_obj::__Field(const String &inString)
+Dynamic Anon_obj::__Field(const String &inString HXCPP_EXTRA_FIELD_DECL)
 {
    Dynamic *v = mFields->Find(inString);
    if (!v)
@@ -41,7 +41,7 @@ bool Anon_obj::__Remove(String inKey)
 }
 
 
-Dynamic Anon_obj::__SetField(const String &inString,const Dynamic &inValue)
+Dynamic Anon_obj::__SetField(const String &inString,const Dynamic &inValue HXCPP_EXTRA_FIELD_DECL)
 {
    mFields->Insert(inString,inValue);
    return inValue;
@@ -77,6 +77,10 @@ struct Stringer
 
 String Anon_obj::toString()
 {
+   Dynamic func;
+   if (FieldMapGet(mFields, HX_CSTRING("toString"), func))
+       return func();
+
    String result = HX_CSTRING("{ ");
    Stringer stringer(result);
    mFields->Iterate(stringer);

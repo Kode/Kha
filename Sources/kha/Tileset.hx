@@ -5,9 +5,10 @@ class Tileset {
 	public var TILE_HEIGHT : Int;
 	var xmax : Int;
 	var ymax : Int;
-	private var image : Image;
+	var image : Image;
+	var tiles : Array<Tile>;
 
-	public function new(imagename : String, tileWidth : Int, tileHeight : Int) {
+	public function new(imagename : String, tileWidth : Int, tileHeight : Int, tiles : Array<Tile> = null) {
 		TILE_WIDTH = 32;
 		TILE_HEIGHT = 32;
 		
@@ -16,12 +17,22 @@ class Tileset {
 		TILE_HEIGHT = tileHeight;
 		xmax = Std.int(image.getWidth() / TILE_WIDTH);
 		ymax = Std.int(image.getHeight() / TILE_HEIGHT);
+		if (tiles == null) {
+			this.tiles = new Array<Tile>();
+			for (i in 0...getLength()) this.tiles.push(new Tile(i, false));
+		}
+		else this.tiles = tiles;
 	}
-
-	public function render(painter : Painter, tile : Int, x : Int, y : Int) {
-		var ytile : Int = Std.int(tile / xmax);
-		var xtile : Int = tile - ytile * xmax;
+	
+	public function render(painter : Painter, tile : Int, x : Int, y : Int) : Void {
+		var index = tiles[tile].imageIndex;
+		var ytile : Int = Std.int(index / xmax);
+		var xtile : Int = index - ytile * xmax;
 		painter.drawImage2(image, xtile * TILE_WIDTH, ytile * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x, y, TILE_WIDTH, TILE_HEIGHT);
+	}
+	
+	public function tile(index : Int) : Tile {
+		return tiles[index];
 	}
 
 	public function getLength() : Int {

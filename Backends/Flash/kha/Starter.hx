@@ -58,6 +58,7 @@ class Starter {
 			//"software"
 		);
 		screen = game;
+		screen.setInstance();
 		game.loadFinished();
 	}
 	
@@ -80,15 +81,15 @@ class Starter {
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
 		case 38:
-			game.key(new KeyEvent(Key.UP, true));
+			game.buttonDown(Button.UP);
 		case 40:
-			game.key(new KeyEvent(Key.DOWN, true));
+			game.buttonDown(Button.DOWN);
 		case 37:
-			game.key(new KeyEvent(Key.LEFT, true));
+			game.buttonDown(Button.LEFT);
 		case 39:
-			game.key(new KeyEvent(Key.RIGHT, true));
+			game.buttonDown(Button.RIGHT);
 		case 65:
-			game.key(new KeyEvent(Key.BUTTON_1, true));
+			game.buttonDown(Button.BUTTON_1);
 		}
 	}
 
@@ -96,15 +97,15 @@ class Starter {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
 		case 38:
-			game.key(new KeyEvent(Key.UP, false));
+			game.buttonUp(Button.UP);
 		case 40:
-			game.key(new KeyEvent(Key.DOWN, false));
+			game.buttonUp(Button.DOWN);
 		case 37:
-			game.key(new KeyEvent(Key.LEFT, false));
+			game.buttonUp(Button.LEFT);
 		case 39:
-			game.key(new KeyEvent(Key.RIGHT, false));
+			game.buttonUp(Button.RIGHT);
 		case 65:
-			game.key(new KeyEvent(Key.BUTTON_1, false));
+			game.buttonUp(Button.BUTTON_1);
 		}
 	}
 	

@@ -68,7 +68,14 @@ struct TLSData
 
 struct MyMutex
 {
-   MyMutex() { pthread_mutex_init(&mMutex,0); mValid = true; }
+   MyMutex()
+   {
+      pthread_mutexattr_t mta;
+      pthread_mutexattr_init(&mta);
+      pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
+      pthread_mutex_init(&mMutex,&mta);
+      mValid = true;
+   }
    ~MyMutex() { if (mValid) pthread_mutex_destroy(&mMutex); }
    void Lock() { pthread_mutex_lock(&mMutex); }
    void Unlock() { pthread_mutex_unlock(&mMutex); }

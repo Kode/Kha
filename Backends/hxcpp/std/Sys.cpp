@@ -42,7 +42,9 @@ int __sys_prims() { return 0; }
 #	include <sys/times.h>
 #ifndef ANDROID
 #	include <locale.h>
+#ifndef BLACKBERRY
 #	include <xlocale.h>
+#endif
 #endif
 #endif
 
@@ -213,6 +215,8 @@ static value sys_string() {
 	return alloc_string("Mac");
 #elif defined(ANDROID)
 	return alloc_string("Android");
+#elif defined(BLACKBERRY)
+	return alloc_string("BlackBerry");
 #else
 #error Unknow system string
 #endif

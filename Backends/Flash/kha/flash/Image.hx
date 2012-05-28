@@ -26,8 +26,8 @@ class Image implements kha.Image {
 		return Std.int(image.height);
 	}
 	
-	public function isAlpha(x : Int, y : Int) : Bool {
-		return true;
+	public function isOpaque(x : Int, y : Int) : Bool {
+		return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
 	}
 	
 	public function getTexture() : Texture {

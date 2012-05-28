@@ -1,4 +1,4 @@
-#include <hxcpp.h>
+   #include <hxcpp.h>
 #include <stdio.h>
 // Get headers etc.
 #include <hx/OS.h>
@@ -367,6 +367,15 @@ double * val_array_double(hx::Object * arg1)
    return (double *)a->GetBase();
 }
 
+
+float * val_array_float(hx::Object * arg1)
+{
+   Array_obj<float> *a = dynamic_cast< Array_obj<float> * >(arg1);
+   if (a==0)
+      return 0;
+   return (float *)a->GetBase();
+}
+
 value * val_array_value(hx::Object * arg1)
 {
    return 0;
@@ -470,7 +479,6 @@ char * buffer_data(buffer inBuffer)
 // Append value to buffer
 void val_buffer(buffer inBuffer,value inValue)
 {
-   ByteArray b = (ByteArray)inBuffer;
    hx::Object *obj = (hx::Object *)inValue;
    if (obj)
    {
@@ -587,7 +595,7 @@ void alloc_field(hx::Object * arg1,int arg2,hx::Object * arg3) THROWS
 {
    //hx::InternalCollect();
    if (!arg1) hx::Throw(HX_INVALID_OBJECT);
-   arg1->__SetField(__hxcpp_field_from_id(arg2),arg3);
+   arg1->__SetField(__hxcpp_field_from_id(arg2),arg3 HXCPP_EXTRA_FIELD_TRUE);
 }
 void hxcpp_alloc_field(hx::Object * arg1,int arg2,hx::Object * arg3)
 {
@@ -661,8 +669,12 @@ void  val_gc(hx::Object * arg1,hx::finalizer arg2) THROWS
 {
    hx::Abstract_obj *abstract = dynamic_cast<hx::Abstract_obj *>(arg1);
    if (!abstract)
-      hx::Throw(HX_CSTRING("Finalizer not on abstract object"));
-   abstract->SetFinalizer(arg2);
+   {
+      hx::GCSetFinalizer(arg1,arg2);
+      //hx::Throw(HX_CSTRING("Finalizer not on abstract object"));
+   }
+   else
+      abstract->SetFinalizer(arg2);
 }
 
 void  val_gc_ptr(void * arg1,hxPtrFinalizer arg2) THROWS

@@ -5,7 +5,7 @@
 #include <Kt/Input/Keyboard.h>
 #include <Kt/Sound/Sound.h>
 #include <stdio.h>
-#include <com/ktxsoftware/kha/Starter.h>
+#include <kha/Starter.h>
 
 extern "C" const char *hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
@@ -13,7 +13,7 @@ extern "C" void hxcpp_set_top_of_stack();
 Kt::Painter* haxePainter;
 
 namespace {
-	using com::ktxsoftware::kha::Starter_obj;
+	using kha::Starter_obj;
 
 	class HaxeItem : public Kt::Item {
 	public:
@@ -23,6 +23,18 @@ namespace {
 
 		float height() {
 			return 520;
+		}
+
+		virtual void mouseButtonDown(Kt::MouseEvent* event) override {
+			Starter_obj::mouseDown(event->x(), event->y());
+		}
+
+		virtual void mouseButtonUp(Kt::MouseEvent* event) override {
+			Starter_obj::mouseUp(event->x(), event->y());
+		}
+		
+		virtual void mouseMove(Kt::MouseEvent* event) override {
+			Starter_obj::mouseMove(event->x(), event->y());
 		}
 
 		void render(Kt::Painter* painter) {

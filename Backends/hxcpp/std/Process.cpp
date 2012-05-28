@@ -23,7 +23,7 @@
 #   include <unistd.h>
 #   include <memory.h>
 #   include <errno.h>
-#   ifdef  ANDROID
+#   if defined(ANDROID) || defined(BLACKBERRY)
 #      include <sys/wait.h>
 #   elif !defined(NEKO_MAC)
 #      include <wait.h>

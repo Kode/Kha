@@ -13,20 +13,21 @@
    static hx::ObjectPtr<Class_obj> __mClass; \
    hx::ObjectPtr<Class_obj > __GetClass() const { return __mClass; } \
    static hx::ObjectPtr<Class_obj> &__SGetClass() { return __mClass; } \
-   Dynamic __Field(const ::String &inString); \
+   Dynamic __Field(const ::String &inString HXCPP_EXTRA_FIELD_DECL); \
    void __GetFields(Array< ::String> &outFields); \
-   Dynamic __SetField(const ::String &inString,const Dynamic &inValue); \
+   Dynamic __SetField(const ::String &inString,const Dynamic &inValue HXCPP_EXTRA_FIELD_DECL); \
    virtual int __GetType() const { return vtClass; } \
    inline operator super *() { return this; } 
 
 #define HX_DO_INTERFACE_RTTI \
+   int __GetType() const { return vtClass; } \
    static hx::ObjectPtr<Class_obj> __mClass; \
    static hx::ObjectPtr<Class_obj> &__SGetClass() { return __mClass; } \
 	static void __register();
 
 #define HX_DO_ENUM_RTTI_INTERNAL \
    HX_DO_RTTI_BASE  \
-   Dynamic __Field(const ::String &inString); \
+   Dynamic __Field(const ::String &inString HXCPP_EXTRA_FIELD_DECL); \
    static int __FindIndex(::String inName); \
    static int __FindArgCount(::String inName);
 
@@ -674,6 +675,7 @@ extern "C" GCC_EXTRA JNIEXPORT void JNICALL Java_org_haxe_HXCPP_main(JNIEnv * en
 	  __hx_dump_stack(); \
           __android_log_print(ANDROID_LOG_ERROR, "Exception", "%s", e->toString().__CStr()); \
         }\
+	hx::SetTopOfStack((int *)0,true); \
 }
 
 #elif defined(HX_WIN_MAIN)
@@ -704,7 +706,7 @@ int __stdcall WinMain( void * hInstance, void * hPrevInstance, const char *lpCmd
 
 #define HX_BEGIN_MAIN \
 \
-int main_nix(int argc,char **argv){ \
+int main(int argc,char **argv){ \
 	HX_TOP_OF_STACK \
 	hx::Boot(); \
 	try{ \

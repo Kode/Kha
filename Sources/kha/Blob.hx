@@ -16,6 +16,13 @@ class Blob {
 		++position;
 		return byte;
 	}
+	
+	public function readUInt16LE() : Int {
+		var second = bytes.get(position + 0);
+		var first  = bytes.get(position + 1);
+		position += 2;
+		return first * 256 + second;
+	}
 
 	public function readInt() : Int {
 		var fourth = bytes.get(position + 0);

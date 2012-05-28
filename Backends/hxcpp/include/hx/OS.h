@@ -65,7 +65,6 @@
 
 
 
-#undef EXTERN
 #undef EXPORT
 #undef IMPORT
 #if defined(NEKO_VCC) || defined(NEKO_MINGW)
@@ -81,19 +80,6 @@
 #	define EXPORT __attribute__ ((visibility("default")))
 #	define IMPORT
 #endif
-
-#if defined(NEKO_SOURCES)
-#	define EXTERN EXPORT
-#elif defined(NEKO_INSTALLER)
-#	define EXTERN
-#	undef EXPORT
-#	undef IMPORT
-#	define EXPORT
-#	define IMPORT
-#else
-#	define EXTERN IMPORT
-#endif
-
 
 #ifdef NEKO_POSIX
 #	include <errno.h>

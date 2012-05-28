@@ -109,7 +109,7 @@ class Scene {
 		sprites.remove(sprite);
 	}
 	
-	private function adjustCamX() : Int {
+	function adjustCamX() : Int {
 		if (colissionMap != null) {
 			var realcamx : Int = Std.int(Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.getInstance().getWidth()));
 			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
@@ -118,7 +118,16 @@ class Scene {
 		else return camx;
 	}
 	
-	private function sort(sprites : Array<Sprite>) {
+	function adjustCamY() : Int {
+		if (colissionMap != null) {
+			var realcamy : Int = Std.int(Math.min(Math.max(0, camy - Game.getInstance().getHeight() / 2), colissionMap.getHeight() * colissionMap.getTileset().TILE_HEIGHT - Game.getInstance().getHeight()));
+			if (getHeight() < Game.getInstance().getHeight()) realcamy = 0;
+			return realcamy;
+		}
+		else return camy;
+	}
+	
+	function sort(sprites : Array<Sprite>) {
 		sprites.sort(function(arg0 : Sprite, arg1 : Sprite) {
 			if (arg0.x < arg1.x) return -1;
 			else if (arg0.x == arg1.x) return 0;
@@ -200,12 +209,141 @@ class Scene {
 		}
 	}
 	
-	private function move(sprite : Sprite) {
+	//Bresenhahm
+	function line(xstart : Float, ystart : Float, xend : Float, yend : Float, sprite : Sprite) : Void {
+		var x0 = round(xstart);
+		var y0 = round(ystart);
+		var x1 = round(xend);
+		var y1 = round(yend);
+		sprite.x = x0;
+		sprite.y = y0;
+		var dx = Math.abs(x1 - x0);
+		var dy = Math.abs(y1 - y0);
+		var sx : Int;
+		var sy : Int;
+		if (x0 < x1) sx = 1; else sx = -1;
+		if (y0 < y1) sy = 1; else sy = -1;
+		var err = dx - dy;
+
+		while (true) {
+			//setPixel(x0,y0)
+			if (x0 == x1 && y0 == y1) {
+				sprite.x = xend;
+				sprite.y = yend;
+				break;
+			}
+			var e2 = 2 * err;
+			if (e2 > -dy) {
+				err -= dy;
+				x0 += sx;
+				sprite.x = x0;
+				if (colissionMap.collides(sprite)) {
+					sprite.y -= 1;
+					if (!colissionMap.collides(sprite)) {
+						continue;
+					}
+					else {
+						sprite.y -= 1;
+						if (!colissionMap.collides(sprite)) {
+							continue;
+						}
+						else {
+							sprite.y -= 1;
+							if (!colissionMap.collides(sprite)) {
+								continue;
+							}
+							sprite.y += 1;
+						}
+						sprite.y += 1;
+					}
+					sprite.y += 1;
+					sprite.x -= sx;
+					if (sx < 0) sprite.hitFrom(Direction.RIGHT);
+					else sprite.hitFrom(Direction.LEFT);
+					while (true) {
+						if (y0 == y1) {
+							sprite.y = yend;
+							return;
+						}
+						y0 += sy;
+						sprite.y = y0;
+						if (colissionMap.collides(sprite)) {
+							sprite.y -= sy;
+							if (sy < 0) sprite.hitFrom(Direction.DOWN);
+							else sprite.hitFrom(Direction.UP);
+							return;
+						}
+					}
+					return;
+				}
+			}
+			if (e2 < dx) {
+				err += dx;
+				y0 += sy; 
+				sprite.y = y0;
+				if (colissionMap.collides(sprite)) {
+					sprite.y -= sy;
+					if (sy < 0) sprite.hitFrom(Direction.DOWN);
+					else sprite.hitFrom(Direction.UP);
+					while (true) {
+						if (x0 == x1) {
+							sprite.x = xend;
+							return;
+						}
+						x0 += sx;
+						sprite.x = x0;
+						if (colissionMap.collides(sprite)) {
+							sprite.y -= 1;
+							if (!colissionMap.collides(sprite)) {
+								continue;
+							}
+							else {
+								sprite.y -= 1;
+								if (!colissionMap.collides(sprite)) {
+									continue;
+								}
+								else {
+									sprite.y -= 1;
+									if (!colissionMap.collides(sprite)) {
+										continue;
+									}
+									sprite.y += 1;
+								}
+								sprite.y += 1;
+							}
+							sprite.y += 1;
+							sprite.x -= sx;
+							if (sx < 0) sprite.hitFrom(Direction.RIGHT);
+							else sprite.hitFrom(Direction.LEFT);
+							return;
+						}
+					}
+					return;
+				}
+			}
+		}
+	}
+	
+	static function round(value : Float) : Int {
+		return Math.round(value);
+	}
+	
+	function move(sprite : Sprite) {
 		sprite.speedx += sprite.accx;
 		sprite.speedy += sprite.accy;
+		if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
 		if (sprite.collides) {
-			if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
-			sprite.x += sprite.speedx;
+			var xaim = sprite.x + sprite.speedx;
+			var yaim = sprite.y + sprite.speedy;
+			var xstart = sprite.x;
+			var ystart = sprite.y;
+			sprite.x = xaim;
+			sprite.y = yaim;
+			if (colissionMap.collides(sprite)) {
+				line(xstart, ystart, xaim, yaim, sprite);
+			}
+
+			/*sprite.x += sprite.speedx;
 			
 			if (colissionMap != null) {
 				if (sprite.speedx > 0) { if (colissionMap.collideright(sprite)) sprite.hitFrom(Direction.LEFT); }
@@ -213,7 +351,7 @@ class Scene {
 				sprite.y += sprite.speedy;
 				if (sprite.speedy > 0) { if (colissionMap.collidedown(sprite)) sprite.hitFrom(Direction.UP); }
 				else if (sprite.speedy < 0) { if (colissionMap.collideup(sprite)) sprite.hitFrom(Direction.DOWN); }
-			}
+			}*/
 			
 			//Bubble Dragons Hack
 			/*if (colissionMap != null) {
@@ -233,17 +371,18 @@ class Scene {
 	
 	public function render(painter : Painter) {
 		painter.translate(0, 0);
-		painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
-		painter.clear();
+		//painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+		//painter.clear();
 		
 		var camx : Int = adjustCamX();
+		var camy : Int = adjustCamY();
 		
 		for (i in 0...backgrounds.length) {
-			painter.translate(-camx * backgroundSpeeds[i], camy * backgroundSpeeds[i]);
-			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			painter.translate(Math.round(-camx * backgroundSpeeds[i]), Math.round(-camy * backgroundSpeeds[i]));
+			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), Std.int(camy * backgroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 		
-		painter.translate(-camx, camy);
+		painter.translate(-camx, -camy);
 		
 		for (z in 0...10) {
 			var i : Int = 0;
@@ -259,13 +398,18 @@ class Scene {
 		}
 		
 		for (i in 0...foregrounds.length) {
-			painter.translate(-camx * foregroundSpeeds[i], camy * foregroundSpeeds[i]);
-			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			painter.translate(Math.round(-camx * foregroundSpeeds[i]), Math.round(-camy * foregroundSpeeds[i]));
+			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), Std.int(camy * foregroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
 		}
 	}
 	
 	public function getWidth() : Float {
 		if (colissionMap != null) return colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH;
+		else return 0;
+	}
+	
+	public function getHeight() : Float {
+		if (colissionMap != null) return colissionMap.getHeight() * colissionMap.getTileset().TILE_HEIGHT;
 		else return 0;
 	}
 }
