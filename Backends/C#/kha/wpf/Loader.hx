@@ -16,29 +16,29 @@ class Loader extends kha.Loader {
 		--numberOfFiles;
 		checkComplete();
 	')
-	override public function loadXml(filename : String) : Void {
+	override function loadXml(filename : String) : Void {
 		
 	}
 
-	override public function loadMusic(filename : String) : Void {
+	override function loadMusic(filename : String) : Void {
 		musics.set(filename, null);//new Music(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override public function loadSound(filename : String) : Void {
+	override function loadSound(filename : String) : Void {
 		sounds.set(filename, null);//new Sound(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override public function loadImage(filename : String) : Void {
+	override function loadImage(filename : String) : Void {
 		images.set(filename, new Image(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override public function loadBlob(filename : String) : Void {
+	override function loadBlob(filename : String) : Void {
 		blobs.set(filename, null);//new Blob(File.getBytes(filename)));
 		--numberOfFiles;
 		checkComplete();
