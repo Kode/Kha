@@ -4,11 +4,7 @@ import haxe.io.Bytes;
 
 class Loader extends kha.Loader {
 	@:functionBody('
-		var resourceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PSTest.resources.data.xml");
-		System.IO.StreamReader stream = new System.IO.StreamReader(resourceStream, System.Text.Encoding.GetEncoding("utf-8"));
-		string xml = stream.ReadToEnd();
-		stream.Close();
-		xmls.set("data.xml", Xml.parse(xml));
+		xmls.set("data.xml", Xml.parse(System.IO.File.ReadAllText("/Application/resources/data.xml")));
 		loadFiles();
 	')
 	override public function loadDataDefinition() : Void {
@@ -16,11 +12,7 @@ class Loader extends kha.Loader {
 	}
 	
 	@:functionBody('
-		var resourceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PSTest.resources." + filename);
-		System.IO.StreamReader stream = new System.IO.StreamReader(resourceStream, System.Text.Encoding.GetEncoding("utf-8"));
-		string xml = stream.ReadToEnd();
-		stream.Close();
-		xmls.set("data.xml", Xml.parse(xml));
+		xmls.set(filename, Xml.parse(System.IO.File.ReadAllText("/Application/resources/" + filename)));
 		--numberOfFiles;
 		checkComplete();
 	')
@@ -47,18 +39,10 @@ class Loader extends kha.Loader {
 	}
 
 	@:functionBody('
-		var resourceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PSTest.resources." + filename);
-		System.IO.BinaryReader reader = new System.IO.BinaryReader(resourceStream);
-		System.Collections.Generic.List<int> bytes = new System.Collections.Generic.List<int>();
-		byte[] buffer = new byte[100];
-		int bytesRead = 0;
-		while ((bytesRead = resourceStream.Read(buffer, 0, 100)) > 0) {
-			for (int i = 0; i < bytesRead; ++i) bytes.Add(buffer[i]);
-		}	
-		int[] bigBytes = new int[bytes.Count];
-		bytes.CopyTo(bigBytes);
-		for (int i = 0; i < bytes.Count; ++i) bigBytes[i] = bytes[i];
-		blobs.set(filename, new Blob(new haxe.io.Bytes(bytes.Count, new haxe.root.Array<int>(bigBytes))));
+		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + filename);
+		int[] bigBytes = new int[bytes.Length];
+		for (int i = 0; i < bytes.Length; ++i) bigBytes[i] = bytes[i];
+		blobs.set(filename, new Blob(new haxe.io.Bytes(bytes.Length, new haxe.root.Array<int>(bigBytes))));
 		--numberOfFiles;
 		checkComplete();
 	')
