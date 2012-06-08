@@ -128,6 +128,7 @@ class Scene {
 	}
 	
 	function sort(sprites : Array<Sprite>) {
+		if (sprites.length == 0) return;
 		sprites.sort(function(arg0 : Sprite, arg1 : Sprite) {
 			if (arg0.x < arg1.x) return -1;
 			else if (arg0.x == arg1.x) return 0;
