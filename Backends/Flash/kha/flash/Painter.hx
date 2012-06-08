@@ -35,6 +35,8 @@ class Painter extends kha.Painter {
 	var textField : TextField;
 	var textBitmap : BitmapData;
 	var textTexture : Texture;
+	var program : Program3D;
+	var noTexProgram : Program3D;
 	
 	public function new(context : Context3D, width : Int, height : Int) {
 		this.context = context;
@@ -82,20 +84,27 @@ class Painter extends kha.Painter {
 		];
 		
 		var fragmentShader : Array<String> = [
-			// Simply assing the fragment constant to our out color
-			//"mov oc, fc0"
 			"tex ft1, v0, fs0 <2d,linear,nomip>",
 			"mov oc, ft1"
 		];
+		
+		var noTexFragmentShader : Array<String> = [
+			"mov oc, fc0"
+		];
 
-		var program : Program3D = context.createProgram();
+		program = context.createProgram();
 		var vertexAssembler : AGALMiniAssembler = new AGALMiniAssembler();
 		vertexAssembler.assemble(Context3DProgramType.VERTEX, vertexShader.join("\n"));
 		var fragmentAssembler : AGALMiniAssembler = new AGALMiniAssembler();
 		fragmentAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader.join("\n"));
 		program.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
 		context.setProgram(program);
-   
+		
+		noTexProgram = context.createProgram();
+		fragmentAssembler = new AGALMiniAssembler();
+		fragmentAssembler.assemble(Context3DProgramType.FRAGMENT, noTexFragmentShader.join("\n"));
+		noTexProgram.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
+		
 		indexBuffer = context.createIndexBuffer(6 * maxCount);
 		var indices = new Vector<UInt>(6 * maxCount);
 		for (i in 0...maxCount) {
@@ -204,8 +213,60 @@ class Painter extends kha.Painter {
 		color = new Color(r, g, b);
 	}
 	
+	function getColorVector() : Vector<Float> {
+		var vec = new Vector<Float>();
+		vec.push(color.r / 256);
+		vec.push(color.g / 256);
+		vec.push(color.b / 256);
+		vec.push(1);
+		return vec;
+	}
+	
 	public override function fillRect(x : Float, y : Float, width : Float, height : Float) {
+		flushBuffers();
 		
+		var offset = count * 20;
+		vertices[offset +  0] = tx + x;         vertices[offset +  1] = ty + y;          vertices[offset +  2] = 1; vertices[offset +  3] = 0; vertices[offset +  4] = 0;
+		vertices[offset +  5] = tx + x + width; vertices[offset +  6] = ty + y;          vertices[offset +  7] = 1; vertices[offset +  8] = 0; vertices[offset +  9] = 0;
+		vertices[offset + 10] = tx + x;         vertices[offset + 11] = ty + y + height; vertices[offset + 12] = 1; vertices[offset + 13] = 0; vertices[offset + 14] = 0;
+		vertices[offset + 15] = tx + x + width; vertices[offset + 16] = ty + y + height; vertices[offset + 17] = 1; vertices[offset + 18] = 0; vertices[offset + 19] = 0;
+		
+		context.setTextureAt(0, null);
+		context.setProgram(noTexProgram);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, getColorVector());
+		vertexBuffer.uploadFromVector(vertices, 0, 4 * 1);
+		context.drawTriangles(indexBuffer, 0, 2 * 1);
+		context.setProgram(program);
+	}
+	
+	public override function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
+		drawLine(tx + x, ty + y, tx + x + width, ty + y);
+		drawLine(tx + x + width, ty + y, tx + x + width, ty + y + height);
+		drawLine(tx + x + width, ty + y + height, tx + x, ty + y + height);
+		drawLine(tx + x, ty + y + height, tx + x, ty + y);
+	}
+	
+	public override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
+		flushBuffers();
+		
+		var nx = -(y2 - y1);
+		var ny = x2 - x1;
+		var length = Math.sqrt(nx * nx + ny * ny);
+		nx /= length;
+		ny /= length;
+		
+		var offset = count * 20;
+		vertices[offset +  0] = tx + x1;      vertices[offset +  1] = ty + y1;      vertices[offset +  2] = 1; vertices[offset +  3] = 0; vertices[offset +  4] = 0;
+		vertices[offset +  5] = tx + x2;      vertices[offset +  6] = ty + y2;      vertices[offset +  7] = 1; vertices[offset +  8] = 0; vertices[offset +  9] = 0;
+		vertices[offset + 10] = tx + x1 + nx; vertices[offset + 11] = ty + y1 + ny; vertices[offset + 12] = 1; vertices[offset + 13] = 0; vertices[offset + 14] = 0;
+		vertices[offset + 15] = tx + x2 + nx; vertices[offset + 16] = ty + y2 + ny; vertices[offset + 17] = 1; vertices[offset + 18] = 0; vertices[offset + 19] = 0;
+		
+		context.setTextureAt(0, null);
+		context.setProgram(noTexProgram);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, getColorVector());
+		vertexBuffer.uploadFromVector(vertices, 0, 4 * 1);
+		context.drawTriangles(indexBuffer, 0, 2 * 1);
+		context.setProgram(program);
 	}
 	
 	override public function setFont(font : kha.Font) : Void {
