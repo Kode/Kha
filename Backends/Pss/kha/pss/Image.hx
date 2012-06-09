@@ -1,7 +1,7 @@
 package kha.pss;
 
 @:classContents('
-	Sce.Pss.Core.Graphics.Texture2D texture;
+	public Sce.Pss.Core.Graphics.Texture2D texture;
 ')
 class Image implements kha.Image {
 	public function new(filename : String) {
@@ -15,12 +15,18 @@ class Image implements kha.Image {
 		
 	}
 	
+	@:functionBody('
+		return texture.Width;
+	')
 	public function getWidth() : Int {
-		return 100;
+		return 0;
 	}
 	
+	@:functionBody('
+		return texture.Width;
+	')
 	public function getHeight() : Int {
-		return 100;
+		return 0;
 	}
 	
 	public function isOpaque(x : Int, y : Int) : Bool {
