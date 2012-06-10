@@ -4,78 +4,64 @@ import kha.Game;
 import kha.Key;
 
 @:classContents('
-	public class Window extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
+	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener {
 		private static final long serialVersionUID = 1L;
-		public static Game instance;
-		private static int WIDTH;
-		private static int HEIGHT;
-		private static int syncrate = 60;
-		
-		private Canvas canvas;
+		public Window instance;
+		private int WIDTH;
+		private int HEIGHT;
+		private int syncrate = 60;
+		private java.awt.Canvas canvas;
 		private boolean vsynced = false;
-		private com.ktxsoftware.kje.Game game;
+		public kha.Game game;
 		private boolean[] keyreleased;
 		private boolean reset = false;
-		
-		public static Game getInstance() {
-			return instance;
-		}
-		
-		public Game() {
+
+		public Window() {
 			instance = this;
 			keyreleased = new boolean[256];
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
-			
-			Loader.init(new JavaLoader());
+		}
+
+		public void start() {
 			createGame();
 			setupWindow();
 			createVSyncedDoubleBuffer();
 			mainLoop();
 		}
-		
+
 		private void setupWindow() {
 			setIgnoreRepaint(true);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
-			canvas = new Canvas();
+			setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+			canvas = new java.awt.Canvas();
 			canvas.setIgnoreRepaint(true);
 			canvas.setSize(WIDTH, HEIGHT);
 			canvas.setFocusable(false);
 			add(canvas);
 			setResizable(false);
 			pack();
-
-			Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+			java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 			setLocation((screen.width - WIDTH) / 2, (screen.height - HEIGHT) / 2);
-			
 			setTitle("Game");
-			
 			setVisible(true);
-			
 			addKeyListener(this);
 			canvas.addMouseListener(this);
 			canvas.addMouseMotionListener(this);
 		}
-		
+
 		private void createVSyncedDoubleBuffer() {
 			vsynced = true;
 			canvas.createBufferStrategy(2);
-			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
+			java.awt.image.BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 			if (bufferStrategy != null) {
-				BufferCapabilities caps = bufferStrategy.getCapabilities();
+				java.awt.BufferCapabilities caps = bufferStrategy.getCapabilities();
 				try {
 					Class<?> ebcClass = Class.forName("sun.java2d.pipe.hw.ExtendedBufferCapabilities");
 					Class<?> vstClass = Class.forName("sun.java2d.pipe.hw.ExtendedBufferCapabilities$VSyncType");
-
-					Constructor<?> ebcConstructor = ebcClass.getConstructor(new Class[] { BufferCapabilities.class, vstClass });
+					java.lang.reflect.Constructor<?> ebcConstructor = ebcClass.getConstructor(new Class[] { java.awt.BufferCapabilities.class, vstClass });
 					Object vSyncType = vstClass.getField("VSYNC_ON").get(null);
-
-					BufferCapabilities newCaps = (BufferCapabilities)ebcConstructor.newInstance(new Object[] { caps, vSyncType });
-
+					java.awt.BufferCapabilities newCaps = (java.awt.BufferCapabilities)ebcConstructor.newInstance(new Object[] { caps, vSyncType });
 					canvas.createBufferStrategy(2, newCaps);
-
 					//vsynced = true;
-					
 					//setCanChangeRefreshRate(false);
 					//setRefreshRate(60);
 				}
@@ -85,15 +71,14 @@ import kha.Key;
 					canvas.createBufferStrategy(2);
 				}
 			}
-			
 			if (vsynced) checkVSync();
 		}
-		
+
 		private void checkVSync() {
 			long starttime = System.nanoTime();
 			for (int i = 0; i < 3; ++i) {
 				canvas.getBufferStrategy().show();
-				Toolkit.getDefaultToolkit().sync();
+				java.awt.Toolkit.getDefaultToolkit().sync();
 			}
 			long endtime = System.nanoTime();
 			if (endtime - starttime > 1000 * 1000 * 1000 / 60) {
@@ -102,10 +87,8 @@ import kha.Key;
 			}
 			else System.out.println("VSync not enabled, sorry.");
 		}
-	 
+
 		private void mainLoop() {
-			Loader.getInstance().load();
-			game.init();
 			long lasttime = System.nanoTime();
 			for (;;) {
 				if (vsynced) update();
@@ -117,174 +100,169 @@ import kha.Key;
 					}
 				}
 				render();
-				
 				if (reset) resetGame();
 			}
 		}
-		
+
 		private void createGame() {
-			game = GameInfo.createGame();
 			WIDTH = game.getWidth();
 			HEIGHT = game.getHeight();
 		}
-		
+
 		private void resetGame() {
 			reset = false;
 			createGame();
 		}
-		
+
 		void update() {
 			//System.gc();
 			game.update();
 		}
-	 
+
 		private void render() {
-			BufferStrategy bf = canvas.getBufferStrategy();
-			Graphics2D g = null;
-		 
+			java.awt.image.BufferStrategy bf = canvas.getBufferStrategy();
+			java.awt.Graphics2D g = null;
 			try {
-				g = (Graphics2D)bf.getDrawGraphics();
-				JavaPainter painter = new JavaPainter(g);
+				g = (java.awt.Graphics2D)bf.getDrawGraphics();
+				kha.java.Painter painter = new kha.java.Painter();
+				painter.graphics = g;
 				game.render(painter);
 			}
 			finally {
 				g.dispose();
 			}
-		 
 			bf.show();
-			Toolkit.getDefaultToolkit().sync();
+			java.awt.Toolkit.getDefaultToolkit().sync();
 		}
-		
-		private void pressKey(int keycode, Key key) {
+
+		private void pressKey(int keycode, Button button) {
 			if (keyreleased[keycode]) { //avoid auto-repeat
 				keyreleased[keycode] = false;
-				game.key(new com.ktxsoftware.kje.KeyEvent(key, true));
+				game.buttonDown(button);
 			}
 		}
-		
-		private void releaseKey(int keycode, Key key) {
+
+		private void releaseKey(int keycode, Button button) {
 			keyreleased[keycode] = true;
-			game.key(new com.ktxsoftware.kje.KeyEvent(key, false));
+			game.buttonUp(button);
 		}
-		
+
 		@Override
-		public void keyPressed(KeyEvent e) {
+		public void keyPressed(java.awt.event.KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			switch (keyCode) {
-			case KeyEvent.VK_RIGHT:
-				pressKey(keyCode, Key.RIGHT);
+			case java.awt.event.KeyEvent.VK_RIGHT:
+				pressKey(keyCode, Button.RIGHT);
 				break;
-			case KeyEvent.VK_LEFT:
-				pressKey(keyCode, Key.LEFT);
+			case java.awt.event.KeyEvent.VK_LEFT:
+				pressKey(keyCode, Button.LEFT);
 				break;
-			case KeyEvent.VK_UP:
-				pressKey(keyCode, Key.UP);
+			case java.awt.event.KeyEvent.VK_UP:
+				pressKey(keyCode, Button.UP);
 				break;
-			case KeyEvent.VK_DOWN:
-				pressKey(keyCode, Key.DOWN);
+			case java.awt.event.KeyEvent.VK_DOWN:
+				pressKey(keyCode, Button.DOWN);
 				break;
-			case KeyEvent.VK_SPACE:
-				pressKey(keyCode, Key.BUTTON_1);
+			case java.awt.event.KeyEvent.VK_SPACE:
+				pressKey(keyCode, Button.BUTTON_1);
 				break;
-			case KeyEvent.VK_CONTROL:
-				pressKey(keyCode, Key.BUTTON_2);
+			case java.awt.event.KeyEvent.VK_CONTROL:
+				pressKey(keyCode, Button.BUTTON_2);
 				break;
-			case KeyEvent.VK_ENTER:
-				pressKey(keyCode, Key.ENTER);
+			case java.awt.event.KeyEvent.VK_ENTER:
+				//pressKey(keyCode, Key.ENTER);
 				break;
-			case KeyEvent.VK_BACK_SPACE:
-				pressKey(keyCode, Key.BACKSPACE);
+			case java.awt.event.KeyEvent.VK_BACK_SPACE:
+				//pressKey(keyCode, Key.BACKSPACE);
+				break;
+			}
+		}
+
+		@Override
+		public void keyReleased(java.awt.event.KeyEvent e) {
+			int keyCode = e.getKeyCode();
+			switch (keyCode) {
+			case java.awt.event.KeyEvent.VK_RIGHT:
+				releaseKey(keyCode, Button.RIGHT);
+				break;
+			case java.awt.event.KeyEvent.VK_LEFT:
+				releaseKey(keyCode, Button.LEFT);
+				break;
+			case java.awt.event.KeyEvent.VK_UP:
+				releaseKey(keyCode, Button.UP);
+				break;
+			case java.awt.event.KeyEvent.VK_DOWN:
+				releaseKey(keyCode, Button.DOWN);
+				break;
+			case java.awt.event.KeyEvent.VK_SPACE:
+				releaseKey(keyCode, Button.BUTTON_1);
+				break;
+			case java.awt.event.KeyEvent.VK_CONTROL:
+				releaseKey(keyCode, Button.BUTTON_2);
+				break;
+			case java.awt.event.KeyEvent.VK_ENTER:
+				//releaseKey(keyCode, Key.ENTER);
+				break;
+			case java.awt.event.KeyEvent.VK_BACK_SPACE:
+				//releaseKey(keyCode, Key.BACKSPACE);
 				break;
 			}
 		}
 		
 		@Override
-		public void keyReleased(KeyEvent e) {
-			int keyCode = e.getKeyCode();
-			switch (keyCode) {
-			case KeyEvent.VK_RIGHT:
-				releaseKey(keyCode, Key.RIGHT);
-				break;
-			case KeyEvent.VK_LEFT:
-				releaseKey(keyCode, Key.LEFT);
-				break;
-			case KeyEvent.VK_UP:
-				releaseKey(keyCode, Key.UP);
-				break;
-			case KeyEvent.VK_DOWN:
-				releaseKey(keyCode, Key.DOWN);
-				break;
-			case KeyEvent.VK_SPACE:
-				releaseKey(keyCode, Key.BUTTON_1);
-				break;
-			case KeyEvent.VK_CONTROL:
-				releaseKey(keyCode, Key.BUTTON_2);
-				break;
-			case KeyEvent.VK_ENTER:
-				releaseKey(keyCode, Key.ENTER);
-				break;
-			case KeyEvent.VK_BACK_SPACE:
-				releaseKey(keyCode, Key.BACKSPACE);
-				break;
-			}
+		public void keyTyped(java.awt.event.KeyEvent e) {
+			//game.charKey(e.getKeyChar());
 		}
-	 
-		@Override
-		public void keyTyped(KeyEvent e) {
-			game.charKey(e.getKeyChar());
-		}
-		
-		public static int getSyncrate() {
+
+		public int getSyncrate() {
 			return syncrate;
 		}
-		
-		public static void main(String[] args) {
-			new Game();
+
+		@Override
+		public void mouseClicked(java.awt.event.MouseEvent arg0) {
+
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			
+		public void mouseEntered(java.awt.event.MouseEvent arg0) {
+
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent arg0) {
-			
+		public void mouseExited(java.awt.event.MouseEvent arg0) {
+
 		}
 
 		@Override
-		public void mouseExited(MouseEvent arg0) {
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent arg0) {
+		public void mousePressed(java.awt.event.MouseEvent arg0) {
 			game.mouseDown(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent arg0) {
+		public void mouseReleased(java.awt.event.MouseEvent arg0) {
 			game.mouseUp(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
-		public void mouseDragged(MouseEvent arg0) {
+		public void mouseDragged(java.awt.event.MouseEvent arg0) {
 			game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
-		public void mouseMoved(MouseEvent arg0) {
+		public void mouseMoved(java.awt.event.MouseEvent arg0) {
 			if (game != null) game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 		}
 	}
-	
+
 	private Window window;
 ')
 class Starter {
+	static var instance : Starter;
 	static var game : Game;
 	static var painter : kha.java.Painter;
 	
 	public function new() {
+		instance = this;
 		kha.Loader.init(new kha.java.Loader());
 	}
 	
@@ -293,16 +271,14 @@ class Starter {
 		Loader.getInstance().load();
 	}
 	
-	public static function loadFinished() {
-		game.loadFinished();
-		painter = new kha.java.Painter();
-		startWindow();
-	}
-
 	@:functionBody('
-		new System.Windows.Application().Run(new MainWindow());
+		game.loadFinished();
+		//start main loop
+		Window window = instance.new Window();
+		window.game = game;
+		window.start();
 	')
-	static function startWindow() : Void {
-		
+	public static function loadFinished() {
+	
 	}
 }
