@@ -61,29 +61,33 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadMusic(filename : String) : Void {
-		musics.set(filename, null);//new Music(filename));
+		musics.set(filename, new Music(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
 	override function loadSound(filename : String) : Void {
-		sounds.set(filename, null);//new Sound(filename));
+		sounds.set(filename, new Sound(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
+	override function loadImage(filename : String) : Void {
+		var image = new kha.java.Image(filename);
+		loadRealImage(filename, image);
+		images.set(filename, image);
+		--numberOfFiles;
+		checkComplete();
+	}
+	
 	@:functionBody('
-		kha.java.Image image = new kha.java.Image(filename);
 		try {
 			image.image = javax.imageio.ImageIO.read(new java.io.File(filename));
 		} catch (java.io.IOException e) {
 			e.printStackTrace();
 		}
-		this.images.set(filename, image);
-		 -- this.numberOfFiles;
-		this.checkComplete();
 	')
-	override function loadImage(filename : String) : Void {
+	function loadRealImage(filename : String, image : Image) {
 		
 	}
 

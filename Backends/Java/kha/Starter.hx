@@ -126,6 +126,7 @@ import kha.Key;
 				g = (java.awt.Graphics2D)bf.getDrawGraphics();
 				kha.java.Painter painter = new kha.java.Painter();
 				painter.graphics = g;
+				painter.setRenderHint();
 				game.render(painter);
 			}
 			finally {
