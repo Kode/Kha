@@ -3,9 +3,10 @@ package kha.android;
 import android.content.Context;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import android.opengl.GLSurfaceViewRenderer;
 import android.view.KeyEvent;
 
-class OpenGLES20Renderer { //implements GLSurfaceView.Renderer {
+class OpenGLES20Renderer implements GLSurfaceViewRenderer {
 	var game : kha.Game;
 	var painter : OpenGLPainter;
 	

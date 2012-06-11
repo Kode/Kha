@@ -1,5 +1,6 @@
 package kha.android;
 
+import android.view.SurfaceHolderCallback;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 import android.content.Context;
@@ -7,47 +8,19 @@ import android.view.MotionEvent;
 import android.view.KeyEvent;
 import java.lang.InterruptedException;
 
-@:classContents('
-	class Callback implements android.view.SurfaceHolder.Callback {
-		private GameView view;
-		
-		public Callback(GameView view) {
-			this.view = view;
-		}
-		
-		@Override
-		public void surfaceChanged(android.view.SurfaceHolder holder, int format, int width, int height) {
-			view.surfaceChanged(holder, format, width, height);
-		}
-
-		@Override
-		public void surfaceCreated(android.view.SurfaceHolder holder) {
-			view.surfaceCreated(holder);
-		}
-
-		@Override
-		public void surfaceDestroyed(android.view.SurfaceHolder holder) {
-			view.surfaceDestroyed(holder);
-		}
-	}
-')
-class GameView extends SurfaceView {
+class GameView extends SurfaceView, implements SurfaceHolderCallback {
 	var thread : GameThread;
 	//private int lastTouch;
 
 	public function new(context : Context) {
 		super(context);
+		
+		//new OpenGLES20Renderer(context);
+		
 		var holder : SurfaceHolder = getHolder();
-		addCallback(holder);
+		holder.addCallback(this);
 		thread = new GameThread(holder, context, getWidth(), getHeight());
 		setFocusable(true);
-	}
-	
-	@:functionBody('
-		holder.addCallback(new Callback(this));
-	')
-	function addCallback(holder : SurfaceHolder) {
-		
 	}
 
 	public function onTouchEvent(event : MotionEvent) : Bool {
