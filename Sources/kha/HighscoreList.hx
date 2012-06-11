@@ -21,7 +21,7 @@ class HighscoreList {
 		request.setParameter("game", name);
 		request.setParameter("count", "10");
 		request.onData = function(data : String) {
-			var json = Json.parse(data);
+			var json = haxe.Json.parse(data);
 			var newscores = new Array<Score>();
 			for (i in 0...10) {
 				newscores.push(new Score(json[i].name, json[i].score));
