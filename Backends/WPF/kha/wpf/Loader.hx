@@ -1,23 +1,18 @@
 package kha.wpf;
 
 import kha.FontStyle;
+import system.io.File;
 
 class Loader extends kha.Loader {
-	@:functionBody('
-		xmls.set("data.xml", Xml.parse(System.IO.File.ReadAllText("data.xml")));
-		loadFiles();
-	')
 	override public function loadDataDefinition() : Void {
-		
+		xmls.set("data.xml", Xml.parse(File.ReadAllText("data.xml")));
+		loadFiles();
 	}
 	
-	@:functionBody('
-		xmls.set(filename, Xml.parse(System.IO.File.ReadAllText(filename)));
+	override function loadXml(filename : String) : Void {
+		xmls.set(filename, Xml.parse(File.ReadAllText(filename)));
 		--numberOfFiles;
 		checkComplete();
-	')
-	override function loadXml(filename : String) : Void {
-		
 	}
 
 	override function loadMusic(filename : String) : Void {

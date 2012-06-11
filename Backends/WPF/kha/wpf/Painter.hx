@@ -1,10 +1,11 @@
 package kha.wpf;
 
-@:classContents('
-	public System.Windows.Media.DrawingContext context;
-	private System.Windows.Media.Color color;
-')
+import system.windows.media.Color;
+import system.windows.media.DrawingContext;
+
 class Painter extends kha.Painter {
+	public var context : DrawingContext;
+	var color : Color;
 	var font : Font;
 
 	public function new() {

@@ -1,9 +1,10 @@
 package kha.wpf;
 
-@:classContents('
-	public System.Windows.Media.Imaging.BitmapImage image;
-')
+import system.windows.media.imaging.BitmapImage;
+
 class Image implements kha.Image {
+	public var image : BitmapImage;
+	
 	@:functionBody('
 		image = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(filename, System.UriKind.Relative));
 	')
