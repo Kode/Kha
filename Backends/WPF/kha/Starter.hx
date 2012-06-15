@@ -44,6 +44,7 @@ import kha.Key;
 class Starter {
 	static var game : Game;
 	static var painter : kha.wpf.Painter;
+	static var openWindow : Bool = true;
 	
 	public function new() {
 		kha.Loader.init(new kha.wpf.Loader());
@@ -57,7 +58,9 @@ class Starter {
 	public static function loadFinished() {
 		game.loadFinished();
 		painter = new kha.wpf.Painter();
-		startWindow();
+		
+		if (openWindow)
+			startWindow();
 	}
 
 	@:functionBody('
