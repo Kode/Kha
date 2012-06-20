@@ -48,4 +48,18 @@ class Loader extends kha.Loader {
 			kha.Starter.loadFinished();
 		}
 	}
+	
+	@:functionBody('
+        System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
+	')
+	override function setNormalCursor() {
+		
+	}
+	
+	@:functionBody('
+        System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.Hand;
+	')
+	override function setHandCursor() {
+		
+	}
 }

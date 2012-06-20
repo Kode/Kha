@@ -9,6 +9,7 @@ import flash.events.Event;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import flash.ui.Mouse;
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
 
@@ -100,5 +101,13 @@ class Loader extends kha.Loader {
 		if (numberOfFiles <= 0) {
 			main.loadFinished();
 		}
+	}
+	
+	override function setNormalCursor() {
+		Mouse.cursor="auto";
+	}
+	
+	override function setHandCursor() {
+		Mouse.cursor="button";
 	}
 }
