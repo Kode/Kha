@@ -2,6 +2,8 @@ package kha.wpf;
 
 import kha.FontStyle;
 import system.io.File;
+import system.windows.input.Cursors;
+import system.windows.input.Mouse;
 
 class Loader extends kha.Loader {
 	override public function loadDataDefinition() : Void {
@@ -49,17 +51,11 @@ class Loader extends kha.Loader {
 		}
 	}
 	
-	@:functionBody('
-        System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
-	')
 	override function setNormalCursor() {
-		
+		Mouse.OverrideCursor = Cursors.Arrow;
 	}
 	
-	@:functionBody('
-        System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.Hand;
-	')
 	override function setHandCursor() {
-		
+		Mouse.OverrideCursor = Cursors.Hand;
 	}
 }

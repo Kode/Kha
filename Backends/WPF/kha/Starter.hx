@@ -47,6 +47,7 @@ class Starter {
 	static var openWindow : Bool = true;
 	
 	public function new() {
+		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	

@@ -36,6 +36,7 @@ class Starter {
 	public function new() {
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
+		Storage.init(new kha.flash.Storage());
 		Loader.init(new kha.flash.Loader(this));
 	}
 	
