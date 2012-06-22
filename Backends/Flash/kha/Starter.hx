@@ -81,6 +81,10 @@ class Starter {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
+		case 8:
+			game.keyDown(Key.BACKSPACE, "");
+		case 13:
+			game.keyDown(Key.ENTER, "");
 		case 38:
 			game.buttonDown(Button.UP);
 		case 40:
@@ -90,7 +94,11 @@ class Starter {
 		case 39:
 			game.buttonDown(Button.RIGHT);
 		case 65:
-			game.buttonDown(Button.BUTTON_1);
+			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
+			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
+		default:
+			if (event.charCode != 0)
+				game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
 		}
 	}
 

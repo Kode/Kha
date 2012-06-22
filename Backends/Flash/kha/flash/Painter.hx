@@ -146,10 +146,12 @@ class Painter extends kha.Painter {
 	static var maxCount : Int = 500;
 	
 	function flushBuffers() : Void {
-		context.setTextureAt(0, image.getTexture());
-		vertexBuffer.uploadFromVector(vertices, 0, 4 * count);
-		context.drawTriangles(indexBuffer, 0, 2 * count);
-		count = 0;
+		if (image != null) {
+			context.setTextureAt(0, image.getTexture());
+			vertexBuffer.uploadFromVector(vertices, 0, 4 * count);
+			context.drawTriangles(indexBuffer, 0, 2 * count);
+			count = 0;
+		}
 	}
 	
 	override public function drawImage(img : kha.Image, x : Float, y : Float) : Void {

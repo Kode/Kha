@@ -7,4 +7,5 @@ enum Key {
 	SHIFT;
 	CTRL;
 	ALT;
+	CHAR;
 }
