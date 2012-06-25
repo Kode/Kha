@@ -42,6 +42,18 @@ import kha.Key;
 			Starter.mouseMove((int)e.GetPosition(this).X, (int)e.GetPosition(this).Y);
 		}
 
+		
+        protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e) {
+            // Used for text input since KeyEventArgs does not provide a string representation
+			base.OnTextInput(e);
+			
+			// Printable characters only
+			char[] chararray = e.Text.ToCharArray();
+            int c = System.Convert.ToInt32((char)chararray[0]);
+			if (c > 32)
+                kha.Starter.game.keyDown(Key.CHAR, e.Text);
+        }
+		
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
             base.OnKeyDown(e);
 
@@ -70,12 +82,7 @@ import kha.Key;
                     kha.Starter.game.buttonDown(Button.RIGHT);
                     break;
                 case System.Windows.Input.Key.A:
-			        kha.Starter.game.buttonDown(Button.BUTTON_1); // This is also an a
-                    kha.Starter.game.keyDown(Key.CHAR, e.Key.ToString());
-                    break;
-                default:
-                    if (e.Key.ToString() != "")
-                        kha.Starter.game.keyDown(Key.CHAR, e.Key.ToString());
+			        kha.Starter.game.buttonDown(Button.BUTTON_1);
                     break;
             }
         }
@@ -105,12 +112,7 @@ import kha.Key;
                     kha.Starter.game.buttonUp(Button.RIGHT);
                     break;
                 case System.Windows.Input.Key.A:
-                    kha.Starter.game.buttonUp(Button.BUTTON_1); // This is also an a
-                    kha.Starter.game.keyUp(Key.CHAR, e.Key.ToString());
-                    break;
-                default:
-                    if (e.Key.ToString() != "")
-                        kha.Starter.game.keyUp(Key.CHAR, e.Key.ToString());
+                    kha.Starter.game.buttonUp(Button.BUTTON_1);
                     break;
             }
         }
