@@ -105,6 +105,10 @@ class Starter {
 	function keyUpHandler(event : KeyboardEvent) : Void {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
+		case 8:
+			game.keyUp(Key.BACKSPACE, "");
+		case 13:
+			game.keyUp(Key.ENTER, "");
 		case 38:
 			game.buttonUp(Button.UP);
 		case 40:
@@ -114,7 +118,11 @@ class Starter {
 		case 39:
 			game.buttonUp(Button.RIGHT);
 		case 65:
-			game.buttonUp(Button.BUTTON_1);
+			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
+			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
+		default:
+			if (event.charCode != 0)
+				game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
 		}
 	}
 	

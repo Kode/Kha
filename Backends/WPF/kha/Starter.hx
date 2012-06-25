@@ -5,6 +5,8 @@ import kha.Key;
 
 @:classContents('
 	class MainWindow : System.Windows.Window {
+        private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
+	
 		public MainWindow() {
 			Width = 1000;
 			Height = 600;
@@ -39,6 +41,79 @@ import kha.Key;
 			base.OnMouseMove(e);
 			Starter.mouseMove((int)e.GetPosition(this).X, (int)e.GetPosition(this).Y);
 		}
+
+        protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
+            base.OnKeyDown(e);
+
+            if (pressedKeys.Contains(e.Key))
+                return;
+            pressedKeys.Add(e.Key);
+
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.Back:
+                    kha.Starter.game.keyDown(Key.BACKSPACE, "");
+                    break;
+                case System.Windows.Input.Key.Enter:
+                    kha.Starter.game.keyDown(Key.ENTER, "");
+                    break;
+                case System.Windows.Input.Key.Up:
+                    kha.Starter.game.buttonDown(Button.UP);
+                    break;
+                case System.Windows.Input.Key.Down:
+                    kha.Starter.game.buttonDown(Button.DOWN);
+                    break;
+                case System.Windows.Input.Key.Left:
+                    kha.Starter.game.buttonDown(Button.LEFT);
+                    break;
+                case System.Windows.Input.Key.Right:
+                    kha.Starter.game.buttonDown(Button.RIGHT);
+                    break;
+                case System.Windows.Input.Key.A:
+			        kha.Starter.game.buttonDown(Button.BUTTON_1); // This is also an a
+                    kha.Starter.game.keyDown(Key.CHAR, e.Key.ToString());
+                    break;
+                default:
+                    if (e.Key.ToString() != "")
+                        kha.Starter.game.keyDown(Key.CHAR, e.Key.ToString());
+                    break;
+            }
+        }
+
+        protected override void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
+            base.OnKeyUp(e);
+
+            pressedKeys.Remove(e.Key);
+
+            switch (e.Key) {
+                case System.Windows.Input.Key.Back:
+                    kha.Starter.game.keyUp(Key.BACKSPACE, "");
+                    break;
+                case System.Windows.Input.Key.Enter:
+                    kha.Starter.game.keyUp(Key.ENTER, "");
+                    break;
+                case System.Windows.Input.Key.Up:
+                    kha.Starter.game.buttonUp(Button.UP);
+                    break;
+                case System.Windows.Input.Key.Down:
+                    kha.Starter.game.buttonUp(Button.DOWN);
+                    break;
+                case System.Windows.Input.Key.Left:
+                    kha.Starter.game.buttonUp(Button.LEFT);
+                    break;
+                case System.Windows.Input.Key.Right:
+                    kha.Starter.game.buttonUp(Button.RIGHT);
+                    break;
+                case System.Windows.Input.Key.A:
+                    kha.Starter.game.buttonUp(Button.BUTTON_1); // This is also an a
+                    kha.Starter.game.keyUp(Key.CHAR, e.Key.ToString());
+                    break;
+                default:
+                    if (e.Key.ToString() != "")
+                        kha.Starter.game.keyUp(Key.CHAR, e.Key.ToString());
+                    break;
+            }
+        }
 	}
 ')
 class Starter {
@@ -109,7 +184,7 @@ class Starter {
 	
 	public static function releaseButton1() : Void {
 		game.buttonUp(Button.BUTTON_1);
-	}
+	}	
 	
 	public static function mouseDown(x : Int, y : Int) : Void {
 		game.mouseDown(x, y);

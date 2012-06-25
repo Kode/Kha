@@ -43,9 +43,23 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionBody('
+		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Rect(x, y, width, height));
+	')
+	override public function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
+		
+	}
+
+	@:functionBody('
 		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(x, y, width, height));
 	')
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
+		
+	}
+	
+	@:functionBody('
+	context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
+	')
+	override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
 		
 	}
 }
