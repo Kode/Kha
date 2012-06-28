@@ -183,7 +183,7 @@ class Painter extends kha.Painter {
 	
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		//return;
-		textField.defaultTextFormat = new TextFormat(font.name, font.size);
+		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt());
 		textField.text = text;
 		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
 		textBitmap.draw(textField);
@@ -222,6 +222,10 @@ class Painter extends kha.Painter {
 		vec.push(color.b / 256);
 		vec.push(1);
 		return vec;
+	}
+	
+	function getColorInt() : Int {
+		return color.r * 256 * 256 + color.g * 256 + color.b;
 	}
 	
 	public override function fillRect(x : Float, y : Float, width : Float, height : Float) {
