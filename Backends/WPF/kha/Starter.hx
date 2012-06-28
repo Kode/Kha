@@ -125,7 +125,7 @@ class MainWindow extends system.windows.Window {
 class Starter {
 	static var game : Game;
 	static var openWindow : Bool = true;
-	static var mainWindow : MainWindow = new MainWindow();
+	static var mainWindow : MainWindow;
 	public static var painter : kha.wpf.Painter;
 	public static var frameworkElement: FrameworkElement;
 	
@@ -135,8 +135,10 @@ class Starter {
 	}
 	
 	public function start(game : Game) {
-		if (openWindow)
+		if (openWindow) {
+			mainWindow = new MainWindow();
 			Starter.frameworkElement = mainWindow;
+		}
 		Starter.game = game;
 		Loader.getInstance().load();
 	}
