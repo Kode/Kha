@@ -1,7 +1,9 @@
 package kha.wpf;
 
 import kha.FontStyle;
+import kha.Starter;
 import system.io.File;
+import system.windows.FrameworkElement;
 import system.windows.input.Cursors;
 import system.windows.input.Mouse;
 
@@ -52,10 +54,10 @@ class Loader extends kha.Loader {
 	}
 	
 	override function setNormalCursor() {
-		Mouse.OverrideCursor = Cursors.Arrow;
+		Starter.frameworkElement.Cursor = Cursors.Arrow;
 	}
 	
 	override function setHandCursor() {
-		Mouse.OverrideCursor = Cursors.Hand;
+		Starter.frameworkElement.Cursor = Cursors.Hand;
 	}
 }
