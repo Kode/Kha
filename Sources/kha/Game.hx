@@ -7,6 +7,7 @@ class Game {
 	var width : Int;
 	var height : Int;
 	var highscores : HighscoreList;
+	var timers : Array<FrameCountTimer>;
 	
 	public static function getInstance() : Game {
 		return instance;
@@ -14,6 +15,7 @@ class Game {
 	
 	public function new(name : String, width : Int, height : Int, hasHighscores : Bool = true) {
 		instance = this;
+		timers = new Array<FrameCountTimer>();
 		this.name = name;
 		this.width = width;
 		this.height = height;
@@ -40,7 +42,18 @@ class Game {
 	public function init() : Void { }
 	
 	public function update() : Void {
+		for (timer in timers)
+			timer.update();
+		
 		scene.update();
+	}
+	
+	public function registerTimer(timer : FrameCountTimer) {
+		timers.push(timer);
+	}
+	
+	public function removeTimer(timer : FrameCountTimer) {
+		timers.remove(timer);
 	}
 	
 	public function render(painter : Painter) : Void {
