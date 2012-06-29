@@ -86,6 +86,15 @@ class Loader extends kha.Loader {
 	override function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		return new kha.flash.Font(name, style, size);
 	}
+  
+	override public function loadURL(url : String) : Void {
+		try{
+      flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
+		}
+		catch (ex:Dynamic) {
+			trace(ex);
+		}
+	}
 	
 	function loadDataXml() : Void {
 		var urlRequest : URLRequest = new URLRequest("data.xml");

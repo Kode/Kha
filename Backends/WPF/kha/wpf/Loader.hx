@@ -47,6 +47,13 @@ class Loader extends kha.Loader {
 		return new Font(name, style, size);
 	}
 
+	@:functionBody('
+		System.Diagnostics.Process.Start(new System.Uri(url).AbsoluteUri);
+	')
+	override public function loadURL(url : String) : Void {
+		
+	}
+
 	function checkComplete() : Void {
 		if (numberOfFiles <= 0) {
 			kha.Starter.loadFinished();

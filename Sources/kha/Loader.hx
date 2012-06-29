@@ -99,6 +99,8 @@ class Loader {
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	
+	public function loadURL(url : String) : Void { }
+	
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
 }
