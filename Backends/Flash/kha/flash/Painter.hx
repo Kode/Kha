@@ -43,6 +43,8 @@ class Painter extends kha.Painter {
 		tx = 0;
 		ty = 0;
 		
+		font = new Font("Arial", FontStyle.PLAIN, 12);
+		
 		textField = new TextField();
 		textField.width = 1024;
 		textField.height = 1024;
