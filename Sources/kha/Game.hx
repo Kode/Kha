@@ -8,6 +8,7 @@ class Game {
 	var height : Int;
 	var highscores : HighscoreList;
 	var timers : Array<FrameCountTimer>;
+	public static var FPS : Int = 60;
 	
 	public static function getInstance() : Game {
 		return instance;

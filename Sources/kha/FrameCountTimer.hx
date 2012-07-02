@@ -6,7 +6,6 @@ class FrameCountTimer
 	var repeating : Bool;
 	var active : Bool = false;
 	var count : Int = 0;
-	static var FPS : Int = 60;
 	
 	public function new(miliseconds : Int, repeating : Bool) 
 	{
@@ -37,7 +36,7 @@ class FrameCountTimer
 			return;
 		
 		count ++;
-		if ((count / FPS) > miliseconds / 1000) {
+		if ((count / Game.FPS) > miliseconds / 1000) {
 			count = 0;
 			fireEvent();
 			if (!repeating)
