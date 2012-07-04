@@ -14,6 +14,10 @@ class FrameCountTimer
 		Game.getInstance().registerTimer(this);
 	}
 	
+	public function getActive() : Bool {
+		return active;
+	}
+	
 	public function start() {
 		active = true;
 	}

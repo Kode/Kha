@@ -6,6 +6,7 @@ class Loader {
 	var images : Hash<Image>;
 	var sounds : Hash<Sound>;
 	var musics : Hash<Music>;
+	var videos : Hash<Video>;
 	var xmls : Hash<Xml>;
 	var loadcount : Int;
 	var numberOfFiles : Int;
@@ -15,6 +16,7 @@ class Loader {
 		images = new Hash<Image>();
 		sounds = new Hash<Sound>();
 		musics = new Hash<Music>();
+		videos = new Hash<Video>();
 		xmls = new Hash<Xml>();
 		loadcount = 100;
 		numberOfFiles = 100;
@@ -51,6 +53,10 @@ class Loader {
 		return sounds.get(name);
 	}
 	
+	public function getVideo(name : String) : Video {
+		return videos.get(name);
+	}
+	
 	public function getXml(name : String) : Xml {
 		return xmls.get(name);
 	}
@@ -80,6 +86,8 @@ class Loader {
 					loadMusic(dataNode.firstChild().nodeValue);
 				case "sound":
 					loadSound(dataNode.firstChild().nodeValue);
+				case "video":
+					loadVideo(dataNode.firstChild().nodeValue);
 				case "blob":
 					loadBlob(dataNode.firstChild().nodeValue);
 			}
@@ -95,6 +103,7 @@ class Loader {
 	private function loadBlob(filename : String) { }
 	private function loadSound(filename : String) { }
 	private function loadMusic(filename : String) { }
+	private function loadVideo(filename : String) { }
 	private function loadXml(filename : String) { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }

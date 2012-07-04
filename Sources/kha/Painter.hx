@@ -14,6 +14,7 @@ class Painter {
 	
 	public function drawString(text : String, x : Float, y : Float) : Void { }
 	public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void { }
+	public function drawVideo(video : Video, x : Float, y : Float, width : Float, height : Float) : Void { }
 	public function fillTriangle(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : Float, y3 : Float) : Void { }
 	public function translate(x : Float, y : Float) : Void { }
 	
