@@ -19,8 +19,4 @@ class Music extends kha.Music {
 	public override function stop() : Void {
 		if (channel != null) channel.stop();
 	}
-
-	public function update() : Void {
-		
-	}
 }

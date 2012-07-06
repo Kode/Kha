@@ -1,15 +1,14 @@
 package kha;
 
 // This class is used for dynamic media like sounds or videos
-class Media 
-{
-	public function new() { }
+class Media {
+	public function new() : Void { }
 	
-	public function play() { }
+	public function play() : Void { }
 	
-	public function pause() { }
+	public function pause() : Void { }
 
-	public function stop() { }
+	public function stop() : Void { }
 
 	public function getLength() : Int { return 0; } // Miliseconds
 	
@@ -22,5 +21,4 @@ class Media
 	public function isFinished() : Bool {
 		return getCurrentPos() >= getLength();
 	}
-	
 }
