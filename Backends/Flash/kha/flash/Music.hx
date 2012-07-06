@@ -11,7 +11,7 @@ class Music extends kha.Music {
 		this.music = music;
 	}
 	
-	public override function start() : Void {
+	public override function play() : Void {
 		if (channel != null) channel.stop();
 		channel = music.play(0, 1000 * 1000 * 100);
 	}

@@ -5,7 +5,7 @@ class Media
 {
 	public function new() { }
 	
-	public function start() { }
+	public function play() { }
 	
 	public function pause() { }
 

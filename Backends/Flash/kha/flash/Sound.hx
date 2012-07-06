@@ -8,7 +8,7 @@ class Sound extends kha.Sound {
 		this.sound = sound;
 	}
 	
-	public override function start() : Void {
+	public override function play() : Void {
 		sound.play(0);
 	}
 	
