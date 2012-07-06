@@ -14,6 +14,14 @@ class FrameCountTimer
 		Game.getInstance().registerTimer(this);
 	}
 	
+	public function setMiliseconds(miliseconds : Int) {
+		this.miliseconds = miliseconds;
+	}
+	
+	public function setRepeating(repeating : Bool) {
+		this.repeating = repeating;
+	}
+	
 	public function getActive() : Bool {
 		return active;
 	}
