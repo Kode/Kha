@@ -16,7 +16,7 @@ class Media {
 	
 	public function getVolume() : Float { return 0; } // [0, 1]
 
-	public function setVolume() : Float { return 0; } // [0, 1]
+	public function setVolume(volume : Float) : Void { } // [0, 1]
 	
 	public function isFinished() : Bool {
 		return getCurrentPos() >= getLength();

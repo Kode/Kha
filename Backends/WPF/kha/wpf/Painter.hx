@@ -57,9 +57,16 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionBody('
-	context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
+		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
 	')
 	override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
 		
+	}
+		
+	@:functionBody('
+	context.DrawVideo(video.player, new System.Windows.Rect(x, y, width, height));
+	')
+	override function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
+
 	}
 }
