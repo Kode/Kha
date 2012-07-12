@@ -1,5 +1,6 @@
 package kha.wpf;
 
+import kha.Animation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 
@@ -64,7 +65,7 @@ class Painter extends kha.Painter {
 	}
 		
 	@:functionBody('
-	context.DrawVideo(video.player, new System.Windows.Rect(x, y, width, height));
+	context.DrawVideo(((Video)video).getPlayer(), new System.Windows.Rect(x, y, width, height));
 	')
 	override function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
 

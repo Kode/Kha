@@ -1,6 +1,6 @@
 package system;
 
-@:native("System")
+@:native("System.UriKind")
 extern enum UriKind {
 	RelativeOrAbsolute;
 	Absolute;

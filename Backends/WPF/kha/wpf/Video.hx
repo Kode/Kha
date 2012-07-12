@@ -12,6 +12,10 @@ class Video extends kha.Video {
         player.Open(new Uri(filename, UriKind.Relative));
 	}
 	
+	public function getPlayer() : MediaPlayer {
+		return player;
+	}
+	
 	public override function play() : Void {
 		player.Play();
 	}
