@@ -29,7 +29,9 @@ class Video extends kha.Video {
 	}
 
 	@:functionBody('
+		if (player.NaturalDuration.HasTimeSpan)
 		return Math.round(player.NaturalDuration.TimeSpan.TotalMilliseconds);
+		else return int.MaxValue;
 	')
 	public override function getLength() : Int {
 		return 0;

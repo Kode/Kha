@@ -1,5 +1,6 @@
 package kha.flash;
 
+import flash.net.NetStream;
 import kha.Blob;
 import kha.FontStyle;
 import kha.Starter;
@@ -81,6 +82,20 @@ class Loader extends kha.Loader {
 			checkComplete();
 		});
 		sound.load(urlRequest);
+	}
+
+	override function loadVideo(filename : String) {
+		// TODO
+			--numberOfFiles;
+			checkComplete();
+		/*var urlRequest : URLRequest = new URLRequest(filename);
+		var video : flash.media.Video = new flash.media.Video();
+		video.addEventListener(Event.COMPLETE, function(e : Event) {
+			videos.set(filename, new Video(video));
+			--numberOfFiles;
+			checkComplete();
+		});
+		//video.attachNetStream(new NetStream(urlRequest));*/
 	}
 	
 	override function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
