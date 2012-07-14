@@ -1,0 +1,3 @@
+[submodule "Backends/hxcpp"]
+	path = Backends/hxcpp
+	url = https://git.ktxsoftware.com/git/Externals/hxcpp.git
