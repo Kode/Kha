@@ -21,7 +21,7 @@ class Painter extends kha.Painter {
 		if (instance == null) return 5 * text.length;
 		else {
 			instance.setFont(font);
-			return instance.canvas.measureText(text).getWidth();
+			return instance.canvas.measureText(text).width;
 		}
 	}
 	
