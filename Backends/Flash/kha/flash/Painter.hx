@@ -183,6 +183,14 @@ class Painter extends kha.Painter {
 		++count;
 	}
 	
+	override public function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
+		// TODO
+		var savedColor = color;
+		color = new Color(0, 0, 0);
+		fillRect(x, y, width, height);
+		color = savedColor;
+	}
+	
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		//return;
 		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt());
