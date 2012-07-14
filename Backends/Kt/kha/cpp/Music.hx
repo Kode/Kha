@@ -6,8 +6,9 @@ package kha.cpp;
 ')
 
 @:headerClassCode("Kt::Text music;")
-class Music implements kha.Music {
+class Music extends kha.Music {
 	public function new(filename : String) {
+		super();
 		loadMusic(filename);
 	}
 	
@@ -17,16 +18,12 @@ class Music implements kha.Music {
 	}
 	
 	@:functionCode("Kt::Music::play(music);")
-	public function start() : Void {
+	override public function play() : Void {
 		
 	}
 	
 	@:functionCode("Kt::Music::stop();")
-	public function stop() : Void {
-		
-	}
-	
-	public function update() : Void {
+	override public function stop() : Void {
 		
 	}
 }

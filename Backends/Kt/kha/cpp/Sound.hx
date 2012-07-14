@@ -6,8 +6,9 @@ package kha.cpp;
 ')
 
 @:headerClassCode("Kt::Sound::SoundHandle* sound;")
-class Sound implements kha.Sound {
+class Sound extends kha.Sound {
 	public function new(filename : String) {
+		super();
 		loadSound(filename);
 	}
 	
@@ -17,11 +18,11 @@ class Sound implements kha.Sound {
 	}
 	
 	@:functionCode("sound->play();")
-	public function play() : Void {
+	override public function play() : Void {
 		
 	}
 	
-	public function stop() : Void {
+	override public function stop() : Void {
 		
 	}
 }
