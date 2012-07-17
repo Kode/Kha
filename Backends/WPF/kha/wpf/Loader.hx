@@ -9,16 +9,17 @@ import system.windows.input.Cursors;
 import system.windows.input.Mouse;
 
 class Loader extends kha.Loader {
+	public static var path : String = "";
 	var savedCursor : Cursor;
 	var busyCursor : Bool = false;
 	
 	override public function loadDataDefinition() : Void {
-		xmls.set("data.xml", Xml.parse(File.ReadAllText("data.xml")));
+		xmls.set("data.xml", Xml.parse(File.ReadAllText(path + "data.xml")));
 		loadFiles();
 	}
 	
 	override function loadXml(filename : String) : Void {
-		xmls.set(filename, Xml.parse(File.ReadAllText(filename)));
+		xmls.set(filename, Xml.parse(File.ReadAllText(path + filename)));
 		--numberOfFiles;
 		checkComplete();
 	}
@@ -30,13 +31,13 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadSound(filename : String) : Void {
-		sounds.set(filename, new Sound(filename + ".wav"));
+		sounds.set(filename, new Sound(path + filename + ".wav"));
 		--numberOfFiles;
 		checkComplete();
 	}
 
 	override function loadImage(filename : String) : Void {
-		images.set(filename, new Image(filename));
+		images.set(filename, new Image(path + filename));
 		--numberOfFiles;
 		checkComplete();
 	}
@@ -48,7 +49,7 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadVideo(filename : String) : Void {
-		videos.set(filename, new Video(filename + ".wmv"));
+		videos.set(filename, new Video(path + filename + ".wmv"));
 		--numberOfFiles;
 		checkComplete();
 	}

@@ -124,14 +124,19 @@ class MainWindow extends system.windows.Window {
 
 class Starter {
 	static var game : Game;
-	static var openWindow : Bool = true;
 	static var mainWindow : MainWindow;
+	static var openWindow : Bool = true;
 	public static var painter : kha.wpf.Painter;
 	public static var frameworkElement: FrameworkElement;
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
+	}
+	
+	public static function configure(openWindow : Bool, path : String) {
+		Starter.openWindow = openWindow;
+		kha.wpf.Loader.path = path;
 	}
 	
 	public function start(game : Game) {

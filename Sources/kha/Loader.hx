@@ -61,6 +61,30 @@ class Loader {
 		return xmls.get(name);
 	}
 	
+	public function getAvailableBlobs() : Iterator<String> {
+		return blobs.keys();
+	}
+	
+	public function getAvailableImages() : Iterator<String> {
+		return images.keys();
+	}
+	
+	public function getAvailableMusic() : Iterator<String> {
+		return musics.keys();
+	}
+	
+	public function getAvailableSounds() : Iterator<String> {
+		return sounds.keys();
+	}
+	
+	public function getAvailableVideos() : Iterator<String> {
+		return videos.keys();
+	}
+	
+	public function getAvailableXmls() : Iterator<String> {
+		return xmls.keys();
+	}
+	
 	public function load() {
 		loadDataDefinition();
 	}
