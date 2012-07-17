@@ -26,7 +26,7 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadSound(filename : String) : Void {
-		sounds.set(filename, new Sound(filename));
+		sounds.set(filename, new Sound(filename + ".wav"));
 		--numberOfFiles;
 		checkComplete();
 	}
@@ -44,7 +44,7 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadVideo(filename : String) : Void {
-		videos.set(filename, new Video(filename));
+		videos.set(filename, new Video(filename + ".wmv"));
 		--numberOfFiles;
 		checkComplete();
 	}
