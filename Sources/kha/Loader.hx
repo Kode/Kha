@@ -112,4 +112,5 @@ class Loader {
 	
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
+	public function setCursorBusy(busy : Bool) { }
 }

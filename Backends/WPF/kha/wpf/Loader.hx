@@ -4,10 +4,14 @@ import kha.FontStyle;
 import kha.Starter;
 import system.io.File;
 import system.windows.FrameworkElement;
+import system.windows.input.Cursor;
 import system.windows.input.Cursors;
 import system.windows.input.Mouse;
 
 class Loader extends kha.Loader {
+	var savedCursor : Cursor;
+	var busyCursor : Bool = false;
+	
 	override public function loadDataDefinition() : Void {
 		xmls.set("data.xml", Xml.parse(File.ReadAllText("data.xml")));
 		loadFiles();
@@ -67,10 +71,20 @@ class Loader extends kha.Loader {
 	}
 	
 	override function setNormalCursor() {
-		Starter.frameworkElement.Cursor = Cursors.Arrow;
+		savedCursor = Cursors.Arrow;
+		if (!busyCursor) Starter.frameworkElement.Cursor = Cursors.Arrow;
 	}
 	
 	override function setHandCursor() {
-		Starter.frameworkElement.Cursor = Cursors.Hand;
+		savedCursor = Cursors.Hand;
+		if (!busyCursor) Starter.frameworkElement.Cursor = Cursors.Hand;
+	}
+	
+	override function setCursorBusy(busy : Bool) {
+		busyCursor = busy;
+		if (busy)
+			Starter.frameworkElement.Cursor = Cursors.Wait;
+		else
+			Starter.frameworkElement.Cursor = savedCursor;
 	}
 }

@@ -4,4 +4,5 @@ package system.windows.input;
 extern class Cursors {
 	public static var Arrow : Cursor;
 	public static var Hand : Cursor;
+	public static var Wait : Cursor;
 }

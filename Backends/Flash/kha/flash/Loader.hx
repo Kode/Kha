@@ -134,4 +134,11 @@ class Loader extends kha.Loader {
 	override function setHandCursor() {
 		Mouse.cursor="button";
 	}
+	
+	override function setCursorBusy(busy : Bool) {
+		if (busy)
+			Mouse.hide();
+		else
+			Mouse.show();
+	}
 }
