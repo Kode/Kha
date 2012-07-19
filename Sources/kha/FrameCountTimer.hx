@@ -6,6 +6,7 @@ class FrameCountTimer
 	var repeating : Bool;
 	var active : Bool = false;
 	var count : Int = 0;
+	var currentTimerValue : Int = 0;
 	
 	public function new(miliseconds : Int, repeating : Bool) 
 	{
@@ -44,11 +45,15 @@ class FrameCountTimer
 	}
 	
 	public function update() {
+		
+		currentTimerValue = Std.int(count / Game.FPS);
+		
 		if (!active)
 			return;
 		
 		count ++;
 		if ((count / Game.FPS) > miliseconds / 1000) {
+			
 			count = 0;
 			fireEvent();
 			if (!repeating)
@@ -57,5 +62,9 @@ class FrameCountTimer
 	}
 	
 	private function fireEvent() { }
+	
+	public function getCurrentTimerValue() : Int {
+		return currentTimerValue;
+	}
 	
 }
