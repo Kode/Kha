@@ -50,6 +50,11 @@ class Game {
 	}
 	
 	public function registerTimer(timer : FrameCountTimer) {
+		for (existingTimer in timers) {
+			if (existingTimer == timer)
+				return;
+		}
+		
 		timers.push(timer);
 	}
 	
