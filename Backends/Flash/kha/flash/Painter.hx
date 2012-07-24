@@ -202,7 +202,7 @@ class Painter extends kha.Painter {
 		flushBuffers();
 		
 		var dx = x;
-		var dy = y - font.size;
+		var dy = y;
 		var dw = 1024;
 		var dh = 1024;
 		var u1 = 0.0;
