@@ -112,8 +112,9 @@ import system.windows.FrameworkElement;
 ')
 class MainWindow extends system.windows.Window {
 	@:functionBody('
-		Width = 1000;
-		Height = 600;
+		Width = kha.Game.getInstance().getWidth() + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
+        Height = kha.Game.getInstance().getHeight() + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
 	')
