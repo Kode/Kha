@@ -10,6 +10,7 @@ import system.windows.input.Mouse;
 
 class Loader extends kha.Loader {
 	public static var path : String = "";
+	public static var forceBusyCursor : Bool = false;
 	var savedCursor : Cursor;
 	var busyCursor : Bool = false;
 	
@@ -67,23 +68,25 @@ class Loader extends kha.Loader {
 
 	function checkComplete() : Void {
 		if (numberOfFiles <= 0) {
+			if (forceBusyCursor)
+				Starter.frameworkElement.Cursor = Cursors.Wait;
 			kha.Starter.loadFinished();
 		}
 	}
 	
 	override function setNormalCursor() {
 		savedCursor = Cursors.Arrow;
-		if (!busyCursor) Starter.frameworkElement.Cursor = Cursors.Arrow;
+		if (!busyCursor && !forceBusyCursor) Starter.frameworkElement.Cursor = Cursors.Arrow;
 	}
 	
 	override function setHandCursor() {
 		savedCursor = Cursors.Hand;
-		if (!busyCursor) Starter.frameworkElement.Cursor = Cursors.Hand;
+		if (!busyCursor && !forceBusyCursor) Starter.frameworkElement.Cursor = Cursors.Hand;
 	}
 	
 	override function setCursorBusy(busy : Bool) {
 		busyCursor = busy;
-		if (busy)
+		if (busy || forceBusyCursor)
 			Starter.frameworkElement.Cursor = Cursors.Wait;
 		else
 			Starter.frameworkElement.Cursor = savedCursor;

@@ -1,5 +1,6 @@
 package kha;
 
+import icml.Player;
 import kha.Game;
 import kha.Key;
 import system.windows.FrameworkElement;
@@ -135,9 +136,11 @@ class Starter {
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(openWindow : Bool, path : String) {
+	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool) {
 		Starter.openWindow = openWindow;
 		kha.wpf.Loader.path = path;
+		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
+        Player.suppressLogging = suppressLogging;
 	}
 	
 	public function start(game : Game) {
