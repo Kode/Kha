@@ -1,5 +1,4 @@
 package system.windows.media;
-import system.DateTime.TimeSpan;
 
 @:native("System.Windows.Media.MediaPlayer")
 extern class MediaPlayer {
