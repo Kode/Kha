@@ -4,6 +4,7 @@ import icml.Player;
 import kha.Game;
 import kha.Key;
 import system.windows.FrameworkElement;
+import tools.RandomNumberGenerator;
 
 @:classContents('
 	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
@@ -136,11 +137,12 @@ class Starter {
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool) {
+	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool, overrideRandomGenerator : Bool) {
 		Starter.openWindow = openWindow;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
         Player.suppressLogging = suppressLogging;
+		RandomNumberGenerator.overrideGeneration = overrideRandomGenerator;
 	}
 	
 	public function start(game : Game) {
