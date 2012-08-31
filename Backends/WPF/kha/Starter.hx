@@ -3,38 +3,51 @@ package kha;
 import icml.Player;
 import kha.Game;
 import kha.Key;
+import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 import tools.RandomNumberGenerator;
+
+@:classContents('
+	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
+		base.OnRender(drawingContext);
+
+		if (kha.Starter.painter != null && kha.Starter.game != null) {
+			Starter.painter.context = drawingContext;
+			Starter.painter.begin();
+			Starter.game.render(Starter.painter);
+			Starter.painter.end();
+		}
+	}
+')
+class StoryPublishCanvas extends system.windows.controls.Canvas {
+}
 
 @:classContents('
 	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, System.EventArgs e) {
+		double widthTransform = canvas.ActualWidth/Starter.game.getWidth();
+		double heightTransform = canvas.ActualHeight/Starter.game.getHeight();
+		double transform = System.Math.Min(widthTransform, heightTransform);
+		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
 		Starter.game.update();
+		canvas.InvalidateVisual();
 		InvalidateVisual();
-	}
-
-	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
-		base.OnRender(drawingContext);
-		Starter.painter.context = drawingContext;
-		Starter.painter.begin();
-		Starter.game.render(Starter.painter);
-		Starter.painter.end();
 	}
 
 	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
 		base.OnMouseDown(e);
-		Starter.mouseDown((int)e.GetPosition(this).X, (int)e.GetPosition(this).Y);
+		Starter.mouseDown((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
 	}
 
 	protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
 		base.OnMouseUp(e);
-		Starter.mouseUp((int)e.GetPosition(this).X, (int)e.GetPosition(this).Y);
+		Starter.mouseUp((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
 	}
 
 	protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
 		base.OnMouseMove(e);
-		Starter.mouseMove((int)e.GetPosition(this).X, (int)e.GetPosition(this).Y);
+		Starter.mouseMove((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
 	}
 
 	
@@ -113,7 +126,27 @@ import tools.RandomNumberGenerator;
 	}
 ')
 class MainWindow extends system.windows.Window {
+	public var canvas : StoryPublishCanvas;
+	
 	@:functionBody('
+		canvas = new StoryPublishCanvas();
+        canvas.Width = Game.getInstance().getWidth();
+        canvas.Height = Game.getInstance().getHeight();
+        AddChild(canvas);
+        
+		System.Windows.Data.Binding widthBinding = new System.Windows.Data.Binding {
+			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
+			Path = new System.Windows.PropertyPath("ActualWidth"),
+		};
+		canvas.SetBinding(System.Windows.Controls.Canvas.WidthProperty, widthBinding);
+		
+		System.Windows.Data.Binding heightBinding = new System.Windows.Data.Binding {
+			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
+			Path = new System.Windows.PropertyPath("ActualHeight"),
+		};
+
+		canvas.SetBinding(System.Windows.Controls.Canvas.HeightProperty, heightBinding);
+		
 		Width = kha.Game.getInstance().getWidth() + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
         Height = kha.Game.getInstance().getHeight() + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
@@ -148,7 +181,7 @@ class Starter {
 	public function start(game : Game) {
 		if (openWindow) {
 			mainWindow = new MainWindow();
-			Starter.frameworkElement = mainWindow;
+			Starter.frameworkElement = mainWindow.canvas;
 		}
 		Starter.game = game;
 		Loader.getInstance().load();
