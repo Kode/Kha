@@ -179,12 +179,24 @@ class Starter {
 	}
 	
 	public function start(game : Game) {
-		if (openWindow) {
-			mainWindow = new MainWindow();
-			Starter.frameworkElement = mainWindow.canvas;
+		try {
+			if (openWindow) {
+				mainWindow = new MainWindow();
+				Starter.frameworkElement = mainWindow.canvas;
+			}
+			Starter.game = game;
+			Loader.getInstance().load();
 		}
-		Starter.game = game;
-		Loader.getInstance().load();
+		catch( unknown : Dynamic ) {
+			displayErrorMessage("Unknown exception : " + Std.string(unknown));
+		}
+	}
+	
+	@:functionBody('
+	System.Windows.MessageBox.Show(msg, "Exeption", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+	')
+	private function displayErrorMessage(msg : String) {
+		
 	}
 	
 	public static function loadFinished() {
