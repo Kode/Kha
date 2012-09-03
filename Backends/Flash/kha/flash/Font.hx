@@ -19,7 +19,7 @@ class Font implements kha.Font {
 	}
 	
 	public function getHeight() : Float {
-		t.defaultTextFormat = new TextFormat(name, size);
+		t.defaultTextFormat = new TextFormat(name, size, 0, style.getBold(), style.getItalic(), style.getUnderlined());
 		t.text = "A";
 		return t.textHeight;
 	}
@@ -33,7 +33,7 @@ class Font implements kha.Font {
 	}
 	
 	public function stringWidth(str : String) : Float {
-		t.defaultTextFormat = new TextFormat(name, size);
+		t.defaultTextFormat = new TextFormat(name, size, 0, style.getBold(), style.getItalic(), style.getUnderlined());
 		t.text = str;
 		return t.textWidth;
 	}

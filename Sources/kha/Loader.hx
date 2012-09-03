@@ -103,20 +103,22 @@ class Loader {
 		for (dataNode in node.elements().next().elements()) {
 			switch (dataNode.nodeName) {
 				case "image":
-					if (!images.exists(dataNode.firstChild().nodeValue)) loadImage(dataNode.firstChild().nodeValue);
+					if (!images.exists(dataNode.firstChild().nodeValue)) loadImage(dataNode.firstChild().nodeValue) else loadDummyFile();
 				case "xml":
-					if (!xmls.exists(dataNode.firstChild().nodeValue)) loadXml(dataNode.firstChild().nodeValue);
+					if (!xmls.exists(dataNode.firstChild().nodeValue)) loadXml(dataNode.firstChild().nodeValue) else loadDummyFile();
 				case "music":
-					if (!musics.exists(dataNode.firstChild().nodeValue)) loadMusic(dataNode.firstChild().nodeValue);
+					if (!musics.exists(dataNode.firstChild().nodeValue)) loadMusic(dataNode.firstChild().nodeValue) else loadDummyFile();
 				case "sound":
-					if (!sounds.exists(dataNode.firstChild().nodeValue)) loadSound(dataNode.firstChild().nodeValue);
+					if (!sounds.exists(dataNode.firstChild().nodeValue)) loadSound(dataNode.firstChild().nodeValue) else loadDummyFile();
 				case "video":
-					if (!videos.exists(dataNode.firstChild().nodeValue)) loadVideo(dataNode.firstChild().nodeValue);
+					if (!videos.exists(dataNode.firstChild().nodeValue)) loadVideo(dataNode.firstChild().nodeValue) else loadDummyFile();
 				case "blob":
-					if (!blobs.exists(dataNode.firstChild().nodeValue)) loadBlob(dataNode.firstChild().nodeValue);
+					if (!blobs.exists(dataNode.firstChild().nodeValue)) loadBlob(dataNode.firstChild().nodeValue) else loadDummyFile();
 			}
 		}
 	}
+	
+	private function loadDummyFile() : Void { }
 	
 	function loadStarted(numberOfFiles : Int) {
 		this.loadcount = numberOfFiles;

@@ -4,9 +4,13 @@ import kha.FontStyle;
 
 @:classContents('
 	private System.Windows.Media.FormattedText getFormat(string text = "ABC") {
-		return new System.Windows.Media.FormattedText(text,
+		System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text,
 				System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
 				new System.Windows.Media.Typeface(name), size, System.Windows.Media.Brushes.Black);
+		if (style.getBold()) fText.SetFontWeight(System.Windows.FontWeights.Bold);
+		if (style.getItalic()) fText.SetFontStyle(System.Windows.FontStyles.Italic);
+		if (style.getUnderlined()) fText.SetTextDecorations(System.Windows.TextDecorations.Underline);
+		return fText;
 	}
 ')
 class Font implements kha.Font {

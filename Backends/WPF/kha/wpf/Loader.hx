@@ -54,6 +54,11 @@ class Loader extends kha.Loader {
 		--numberOfFiles;
 		checkComplete();
 	}
+	
+	override function loadDummyFile() : Void {
+		--numberOfFiles;
+		checkComplete();
+	}
 
 	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		var font : kha.Font = new Font(name, style, size);

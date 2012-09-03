@@ -43,7 +43,7 @@ class Painter extends kha.Painter {
 		tx = 0;
 		ty = 0;
 		
-		font = new Font("Arial", FontStyle.PLAIN, 12);
+		font = new Font("Arial", new FontStyle(false, false, false), 12);
 		
 		textField = new TextField();
 		textField.width = 1024;
@@ -193,7 +193,7 @@ class Painter extends kha.Painter {
 	
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		//return;
-		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt());
+		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt(), font.style.getBold(), font.style.getItalic(), font.style.getUnderlined());
 		textField.text = text;
 		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
 		textBitmap.draw(textField);

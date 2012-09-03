@@ -1,6 +1,7 @@
 package kha.wpf;
 
 import kha.Animation;
+import kha.FontStyle;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 
@@ -10,7 +11,7 @@ class Painter extends kha.Painter {
 	var font : Font;
 
 	public function new() {
-		font = new Font("Arial", kha.FontStyle.PLAIN, 20);
+		font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 
 	@:functionBody('
@@ -22,11 +23,13 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionBody('
-		context.DrawText(
-			new System.Windows.Media.FormattedText(text, 
-				System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
-				new System.Windows.Media.Typeface(font.name), font.size, new System.Windows.Media.SolidColorBrush(color)),
-				new System.Windows.Point(x, y));
+		System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
+			System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
+			new System.Windows.Media.Typeface(font.name), font.size, new System.Windows.Media.SolidColorBrush(color));
+		if (font.style.getBold()) fText.SetFontWeight(System.Windows.FontWeights.Bold);
+		if (font.style.getItalic()) fText.SetFontStyle(System.Windows.FontStyles.Italic);
+		if (font.style.getUnderlined()) fText.SetTextDecorations(System.Windows.TextDecorations.Underline);
+		context.DrawText(fText, new System.Windows.Point(x, y));
 	')
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		

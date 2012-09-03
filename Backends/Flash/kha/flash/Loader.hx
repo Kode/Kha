@@ -98,6 +98,11 @@ class Loader extends kha.Loader {
 		//video.attachNetStream(new NetStream(urlRequest));*/
 	}
 	
+	override function loadDummyFile() : Void {
+		--numberOfFiles;
+		checkComplete();
+	}
+	
 	override function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		return new kha.flash.Font(name, style, size);
 	}
