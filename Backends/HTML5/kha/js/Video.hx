@@ -2,12 +2,12 @@ package kha.js;
 
 import js.Lib;
 
-class Sound implements kha.Sound {
-	var element : Dynamic;
+class Video {
+	public var element : Dynamic;
 	
 	public function new(filename : String) {
-		element = Lib.document.createElement("audio");
-		if (!element.canPlayType("audio/mp4")) element.src = filename + ".ogg";
+		element = Lib.document.createElement("video");
+		if (!element.canPlayType("video/mp4")) element.src = filename + ".webm";
 		else element.src = filename + ".mp4";
 		element.load();
 	}

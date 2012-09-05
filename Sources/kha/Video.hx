@@ -1,5 +1,5 @@
 package kha;
 
-class Video extends Media
-{
+class Video extends Media {
+	
 }

@@ -89,4 +89,8 @@ class Painter extends kha.Painter {
 		canvas.closePath();
 		canvas.fill();
 	}
+	
+	override public function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
+		canvas.drawImage(cast(video, Video).element, x, y, width, height);
+	}
 }
