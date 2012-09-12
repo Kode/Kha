@@ -7,7 +7,6 @@ class Video extends kha.Video {
 	
 	public function new(filename : String) {
 		super();
-		filename = StringTools.replace(filename, "\\", "/");
 		element = Lib.document.createElement("video");
 		if (!element.canPlayType("video/webm")) element.src = filename + ".mp4";
 		else element.src = filename + ".webm";
