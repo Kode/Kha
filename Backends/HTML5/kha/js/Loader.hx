@@ -57,6 +57,12 @@ class Loader extends kha.Loader {
 		};
 	}
 	
+	override function loadVideo(filename : String) : Void {
+		videos.set(filename, new Video(filename));
+		--numberOfFiles;
+		checkComplete();
+	}
+	
 	static function convertResponseBodyToText(binary) {
 		var byteMapping = new Hash<String>();
 		for (i in 0...256) {

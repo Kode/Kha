@@ -2,17 +2,19 @@ package kha.js;
 
 import js.Lib;
 
-class Video {
+class Video extends kha.Video {
 	public var element : Dynamic;
 	
 	public function new(filename : String) {
+		super();
+		filename = StringTools.replace(filename, "\\", "/");
 		element = Lib.document.createElement("video");
-		if (!element.canPlayType("video/mp4")) element.src = filename + ".webm";
-		else element.src = filename + ".mp4";
+		if (!element.canPlayType("video/webm")) element.src = filename + ".mp4";
+		else element.src = filename + ".webm";
 		element.load();
 	}
 	
-	public function play() : Void {
+	override public function play() : Void {
 		try {
 			element.currentTime = 0;
 		}
@@ -20,7 +22,7 @@ class Video {
 		element.play();
 	}
 	
-	public function stop() : Void {
+	override public function stop() : Void {
 		element.pause();
 	}
 }
