@@ -2,6 +2,7 @@ package kha.js;
 
 class Painter extends kha.Painter {
 	var canvas : Dynamic;
+	var webfont : Font;
 	var tx : Float;
 	var ty : Float;
 	var width : Int;
@@ -67,11 +68,11 @@ class Painter extends kha.Painter {
 	}
 
 	override public function drawString(text : String, x : Float, y : Float) {
-		canvas.fillText(text, tx + x, ty + y);
+		canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 	}
 
 	override public function setFont(font : kha.Font) {
-		var webfont = cast(font, Font);
+		webfont = cast(font, Font);
 		canvas.font = webfont.size + "px " + webfont.name;
 	}
 
