@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import java.lang.ref.WeakReference;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.io.IOException;
+import java.io.Exceptions;
 
 class BitmapManager {
 	static var images : Array<Image> = new Array<Image>();

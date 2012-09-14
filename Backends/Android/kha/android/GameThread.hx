@@ -16,6 +16,7 @@ class GameThread extends Thread {
 	var p : Painter;
 	
 	public function new(surface : SurfaceHolder, context : Context, width : Int, height : Int) {
+		super(null);
 		this.surface = surface;
 		this.context = context;
 		this.width = width;
@@ -24,7 +25,7 @@ class GameThread extends Thread {
 
 	override public function run() : Void {
 		kha.Loader.init(new Loader(context));
-		game = new TPlayer();//GameInfo.createGame();
+		game = new StoryPublish();//GameInfo.createGame();
 		kha.Loader.getInstance().load();
 		game.init();
 		

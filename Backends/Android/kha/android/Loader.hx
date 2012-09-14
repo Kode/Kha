@@ -3,9 +3,10 @@ package kha.android;
 import android.content.Context;
 import android.content.res.AssetManager;
 import haxe.io.Bytes;
-import java.io.IOException;
+import java.io.Exceptions;
 import java.lang.Number;
 import java.lang.Object;
+import java.NativeArray;
 import kha.Blob;
 import kha.FontStyle;
 
@@ -63,7 +64,9 @@ class Loader extends kha.Loader {
 		catch (ex : IOException) {
 			
 		}
-		var hbytes = Bytes.ofData(bytes);
+		var array = new NativeArray(bytes.length);
+		for (i in 0...bytes.length) array[i] = bytes[i];
+		var hbytes = Bytes.ofData(array);
 		blobs.set(filename, new kha.Blob(hbytes));
 		--numberOfFiles;
 		checkComplete();
