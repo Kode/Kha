@@ -26,7 +26,9 @@ class Loader extends kha.Loader {
 	
 	override function loadXml(filename : String) {
 		var r = new haxe.Http(filename);
-		r.onError = Lib.alert;
+		r.onError = function(error:String) {
+			Lib.alert("Error loading " + filename + ": " + error);
+		}
 		r.onData = function(data : String) {
 			xmls.set(filename, Xml.parse(data));
 			--numberOfFiles;
