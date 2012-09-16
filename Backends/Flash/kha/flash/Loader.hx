@@ -108,8 +108,8 @@ class Loader extends kha.Loader {
 	}
   
 	override public function loadURL(url : String) : Void {
-		try{
-      flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
+		try {
+			flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
 		}
 		catch (ex:Dynamic) {
 			trace(ex);
@@ -133,11 +133,11 @@ class Loader extends kha.Loader {
 	}
 	
 	override function setNormalCursor() {
-		Mouse.cursor="auto";
+		Mouse.cursor = "auto";
 	}
 	
 	override function setHandCursor() {
-		Mouse.cursor="button";
+		Mouse.cursor = "button";
 	}
 	
 	override function setCursorBusy(busy : Bool) {

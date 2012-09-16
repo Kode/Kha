@@ -37,6 +37,10 @@ class Game {
 	}
 	
 	public function loadFinished() : Void {
+		var w = Loader.getInstance().getWidth();
+		if (w > 0) width = w;
+		var h = Loader.getInstance().getHeight();
+		if (h > 0) height = h;
 		init();
 	}
 	

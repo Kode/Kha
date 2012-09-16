@@ -10,6 +10,8 @@ class Loader {
 	var xmls : Hash<Xml>;
 	var loadcount : Int;
 	var numberOfFiles : Int;
+	var width : Int;
+	var height : Int;
 	
 	public function new() {
 		blobs = new Hash<Blob>();
@@ -20,6 +22,8 @@ class Loader {
 		xmls = new Hash<Xml>();
 		loadcount = 100;
 		numberOfFiles = 100;
+		width = -1;
+		height = -1;
 	}
 	
 	public static function init(loader : Loader) {
@@ -28,6 +32,14 @@ class Loader {
 	
 	public static function getInstance() : Loader {
 		return instance;
+	}
+	
+	public function getWidth() : Int {
+		return width;
+	}
+	
+	public function getHeight() : Int {
+		return height;
 	}
 	
 	public function getLoadPercentage() : Int {
@@ -98,6 +110,10 @@ class Loader {
 	private function loadFiles() {
 		var node : Xml = getXml("data.xml");
 		var size : Int = 0;
+		var w = node.elements().next().get("width");
+		if (w != null) width = Std.parseInt(w);
+		var h = node.elements().next().get("height");
+		if (h != null) height = Std.parseInt(h);
 		for (element in node.elements().next().elements()) ++size;
 		loadStarted(size);
 		for (dataNode in node.elements().next().elements()) {
