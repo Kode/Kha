@@ -4,11 +4,12 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import java.lang.Throwable;
 
-class Music implements kha.Music {
+class Music extends kha.Music {
 	var mp : MediaPlayer;
 	static var instance : Music;
 	
 	public function new(file : AssetFileDescriptor) {
+		super();
 		instance = this;
 		try {
 			mp = new MediaPlayer();
@@ -22,11 +23,11 @@ class Music implements kha.Music {
 		}
 	}
 	
-	public function start() : Void {
+	override public function play() : Void {
 		mp.start();
 	}
 
-	public function stop() : Void {
+	override public function stop() : Void {
 		mp.stop();
 	}
 	

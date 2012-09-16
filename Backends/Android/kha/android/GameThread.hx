@@ -16,7 +16,7 @@ class GameThread extends Thread {
 	var p : Painter;
 	
 	public function new(surface : SurfaceHolder, context : Context, width : Int, height : Int) {
-		super(null);
+		//super();
 		this.surface = surface;
 		this.context = context;
 		this.width = width;

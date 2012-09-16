@@ -3,6 +3,7 @@ package kha.android;
 import android.content.Context;
 import android.content.res.AssetManager;
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 import java.io.Exceptions;
 import java.lang.Number;
 import java.lang.Object;
@@ -52,19 +53,19 @@ class Loader extends kha.Loader {
 	}
 	
 	override private function loadBlob(filename : String) : Void {
-		var bytes : Array<Int> = new Array<Int>();
+		var bytes : Array<Byte> = new Array<Byte>();
 		try {
 			var stream : java.io.InputStream = new java.io.BufferedInputStream(assets.open(filename));
 			var c : Int = -1;
 			while ((c = stream.read()) != -1) {
-				bytes.push(c);
+				bytes.push(cast(c, Byte));
 			}
 			stream.close();
 		}
 		catch (ex : IOException) {
 			
 		}
-		var array = new NativeArray(bytes.length);
+		var array = new BytesData(bytes.length);
 		for (i in 0...bytes.length) array[i] = bytes[i];
 		var hbytes = Bytes.ofData(array);
 		blobs.set(filename, new kha.Blob(hbytes));
