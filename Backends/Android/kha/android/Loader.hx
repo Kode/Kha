@@ -48,6 +48,17 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 	
+	override private function loadVideo(filename : String) {
+		try {
+			videos.set(filename, new Video(assets.openFd(filename + ".mp4")));
+		}
+		catch (ex : IOException) {
+			ex.printStackTrace();
+		}
+		--numberOfFiles;
+		checkComplete();
+	}
+	
 	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		return new Font(name, style, size);
 	}
