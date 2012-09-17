@@ -26,6 +26,11 @@ class GameThread extends Thread {
 	override public function run() : Void {
 		kha.Loader.init(new Loader(context));
 		game = new StoryPublish();//GameInfo.createGame();
+		kha.Loader.getInstance().preLoad();
+		if (kha.Loader.getInstance().getWidth() > 0 && kha.Loader.getInstance().getHeight() > 0) {
+			game.setWidth(kha.Loader.getInstance().getWidth());
+			game.setHeight(kha.Loader.getInstance().getHeight());
+		}
 		kha.Loader.getInstance().load();
 		game.init();
 		

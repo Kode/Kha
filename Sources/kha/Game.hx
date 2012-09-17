@@ -32,8 +32,16 @@ class Game {
 		return width;
 	}
 	
+	public function setWidth(width : Int) : Void {
+		this.width = width;
+	}
+	
 	public function getHeight() : Int {
 		return height;
+	}
+	
+	public function setHeight(height : Int) : Void {
+		this.height = height;
 	}
 	
 	public function loadFinished() : Void {

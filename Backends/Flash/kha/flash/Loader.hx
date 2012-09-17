@@ -23,8 +23,12 @@ class Loader extends kha.Loader {
 		this.main = main;
 	}
 	
+	public override function loadWindowDefinition() {
+		loadDataXml(true);
+	}
+	
 	public override function loadDataDefinition() {
-		loadDataXml();
+		loadDataXml(false);
 	}
 	
 	override function loadMusic(filename : String) {
@@ -116,12 +120,15 @@ class Loader extends kha.Loader {
 		}
 	}
 	
-	function loadDataXml() : Void {
+	function loadDataXml(isPreLoad : Bool) : Void {
 		var urlRequest : URLRequest = new URLRequest("data.xml");
 		var urlLoader : URLLoader = new URLLoader();
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
 			xmls.set("data.xml", Xml.parse(urlLoader.data));
-			loadFiles();
+			if (isPreLoad)
+				loadWindowSize();
+			else
+				loadFiles();
 		});
 		urlLoader.load(urlRequest);
 	}

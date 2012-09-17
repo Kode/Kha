@@ -97,6 +97,24 @@ class Loader {
 		return xmls.keys();
 	}
 	
+	public function preLoad() {
+		loadWindowDefinition();
+	}
+	
+	//override for asynchronous loading
+	public function loadWindowDefinition() {
+		loadXml("data.xml");
+		loadWindowSize();
+	}
+	
+	private function loadWindowSize() {
+		var node : Xml = getXml("data.xml");
+		var w = node.elements().next().get("width");
+		if (w != null) width = Std.parseInt(w);
+		var h = node.elements().next().get("height");
+		if (h != null) height = Std.parseInt(h);
+	}
+	
 	public function load() {
 		loadDataDefinition();
 	}

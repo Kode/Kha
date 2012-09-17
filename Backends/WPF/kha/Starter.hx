@@ -185,6 +185,11 @@ class Starter {
 				Starter.frameworkElement = mainWindow.canvas;
 			}
 			Starter.game = game;
+			Loader.getInstance().preLoad();
+			if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+				game.setWidth(Loader.getInstance().getWidth());
+				game.setHeight(Loader.getInstance().getHeight());
+			}
 			Loader.getInstance().load();
 		}
 		catch( unknown : Dynamic ) {

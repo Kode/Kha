@@ -45,6 +45,11 @@ class Starter {
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
+		Loader.getInstance().preLoad();
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
 		screen = new LoadingScreen(game.getWidth(), game.getHeight());
 		Loader.getInstance().load();
 	}

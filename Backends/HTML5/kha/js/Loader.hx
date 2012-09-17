@@ -14,6 +14,16 @@ class Loader extends kha.Loader {
 		super();
 	}
 	
+	public override function loadWindowDefinition() {
+		var r = new haxe.Http("data.xml");
+		r.onError = Lib.alert;
+		r.onData = function(data : String) {
+			xmls.set("data.xml", Xml.parse(data));
+			loadWindowSize();
+		};
+		r.request(false);
+	}
+	
 	public override function loadDataDefinition() {
 		var r = new haxe.Http("data.xml");
 		r.onError = Lib.alert;
