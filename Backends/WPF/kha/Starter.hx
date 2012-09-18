@@ -193,7 +193,10 @@ class Starter {
 			Loader.getInstance().load();
 		}
 		catch( unknown : Dynamic ) {
-			displayErrorMessage("Unknown exception : " + Std.string(unknown));
+			if (openWindow)
+				displayErrorMessage("Unknown exception : " + Std.string(unknown));
+			else
+				throw unknown;
 		}
 	}
 	
