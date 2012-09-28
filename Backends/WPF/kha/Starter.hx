@@ -15,11 +15,25 @@ import tools.RandomNumberGenerator;
 			Starter.painter.context = drawingContext;
 			Starter.painter.begin();
 			Starter.game.render(Starter.painter);
+			if (drawMousePos) {
+				Starter.painter.setColor(255, 255, 255);
+				Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
+				Starter.painter.setColor(0, 0, 0);
+				Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10);
+			}
 			Starter.painter.end();
 		}
 	}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
+	var mousePosX : Int;
+	var mousePosY : Int;
+	var drawMousePos : Bool;
+	
+	public function setMousePos(posX : Int, posY : Int) : Void {
+		mousePosX = posX;
+		mousePosY = posY;
+	}
 }
 
 @:classContents('
@@ -163,19 +177,19 @@ class Starter {
 	static var mainWindow : MainWindow;
 	static var openWindow : Bool = true;
 	public static var painter : kha.wpf.Painter;
-	public static var frameworkElement: FrameworkElement;
+	public static var frameworkElement: StoryPublishCanvas;
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool, overrideRandomGenerator : Bool) {
+	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool, suppressRandomSeed : Bool) {
 		Starter.openWindow = openWindow;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
         Player.suppressLogging = suppressLogging;
-		RandomNumberGenerator.overrideGeneration = overrideRandomGenerator;
+		Player.suppressRandomSeed = suppressRandomSeed;
 	}
 	
 	public function start(game : Game) {
@@ -264,13 +278,16 @@ class Starter {
 	
 	public static function mouseDown(x : Int, y : Int) : Void {
 		game.mouseDown(x, y);
+		frameworkElement.setMousePos(x, y);
 	}
 
 	public static function mouseUp(x : Int, y : Int) : Void {
 		game.mouseUp(x, y);
+		frameworkElement.setMousePos(x, y);
 	}
 	
 	public static function mouseMove(x : Int, y : Int) : Void {
 		game.mouseMove(x, y);
+		frameworkElement.setMousePos(x, y);
 	}
 }
