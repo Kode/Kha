@@ -290,4 +290,8 @@ class Starter {
 		game.mouseMove(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
+	
+	public static function keyDown(key : Key, c : String) : Void {
+		game.keyDown(key, c);
+	}
 }
