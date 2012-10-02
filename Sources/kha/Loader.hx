@@ -3,10 +3,12 @@ package kha;
 import haxe.Json;
 
 class Asset {
-	public function new(file: String, type: String) {
+	public function new(name: String, file: String, type: String) {
+		this.name = name;
 		this.file = file;
 		this.type = type;
 	}
+	public var name: String;
 	public var file: String;
 	public var type: String;
 }
@@ -143,7 +145,7 @@ class Loader {
 	}
 	
 	public function loadProject(call: Void -> Void) {
-		enqueue(new Asset("project.kha", "blob"));
+		enqueue(new Asset("project.kha", "project.kha", "blob"));
 		loadFiles(call);
 	}
 	
@@ -160,7 +162,7 @@ class Loader {
 		
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
-			var asset = new Asset(assets[i].file, assets[i].type);
+			var asset = new Asset(assets[i].name, assets[i].file, assets[i].type);
 			this.assets.set(assets[i].id, asset);
 		}
 		
