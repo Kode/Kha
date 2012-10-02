@@ -5,8 +5,8 @@ import kha.Key;
 import kha.Loader;
 
 class Starter {
-	static var game : Game;
-	static var painter : kha.cpp.Painter;
+	static var game: Game;
+	static var painter: kha.cpp.Painter;
 	
 	public function new() {
 		Loader.init(new kha.cpp.Loader());
@@ -14,9 +14,18 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
+		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		Loader.the().loadProject(loadFinished);
 	}
 	
 	public static function loadFinished() {
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
+		Loader.the().initProject();
+		System.setScreen(game);
+		System.screen().setInstance();
 		game.loadFinished();
 		painter = new kha.cpp.Painter();
 	}
