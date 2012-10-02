@@ -13,28 +13,8 @@ class Loader extends kha.Loader {
 	public function new() {
 		super();
 	}
-	
-	public override function loadWindowDefinition() {
-		var r = new haxe.Http("data.xml");
-		r.onError = Lib.alert;
-		r.onData = function(data : String) {
-			xmls.set("data.xml", Xml.parse(data));
-			loadWindowSize();
-		};
-		r.request(false);
-	}
-	
-	public override function loadDataDefinition() {
-		var r = new haxe.Http("data.xml");
-		r.onError = Lib.alert;
-		r.onData = function(data : String) {
-			xmls.set("data.xml", Xml.parse(data));
-			loadFiles();
-		};
-		r.request(false);
-	}
-	
-	override function loadXml(filename : String) {
+		
+	override function loadXml(filename: String) {
 		var r = new haxe.Http(filename);
 		r.onError = function(error:String) {
 			Lib.alert("Error loading " + filename + ": " + error);
@@ -47,19 +27,19 @@ class Loader extends kha.Loader {
 		r.request(false);
 	}
 	
-	override function loadMusic(filename : String) {
+	override function loadMusic(filename: String) {
 		musics.set(filename, new Music(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadSound(filename : String) {
+	override function loadSound(filename: String) {
 		sounds.set(filename, new Sound(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadImage(filename : String) {
+	override function loadImage(filename: String) {
 		var img : js.Image = cast Lib.document.createElement("img");
 		img.src = filename;
 		img.onload = function(event : Event) {
@@ -69,7 +49,7 @@ class Loader extends kha.Loader {
 		};
 	}
 	
-	override function loadVideo(filename : String) : Void {
+	override function loadVideo(filename: String): Void {
 		videos.set(filename, new Video(filename));
 		--numberOfFiles;
 		checkComplete();
@@ -91,7 +71,7 @@ class Loader extends kha.Loader {
 		return untyped __js__("arr(a).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(a)");
 }
 	
-	override function loadBlob(filename : String) {
+	override function loadBlob(filename: String) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
 		if (request.overrideMimeType != null) request.overrideMimeType('text/plain; charset=x-user-defined');
@@ -120,15 +100,8 @@ class Loader extends kha.Loader {
 		request.send(null);
 	}
 	
-	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
+	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return new Font(name, style, size);
-	}
-	
-	function checkComplete() {
-		if (numberOfFiles <= 0) {
-			//Lib.alert("Complete");
-			Starter.loadFinished();
-		}
 	}
 	
 	override public function setNormalCursor() {

@@ -8,7 +8,6 @@ import js.Lib;
 import js.Dom;
 
 class Starter {
-	static var screen : Game;
 	static var game : Game;
 	static var painter : Painter;
 	static var keyreleased : Array<Bool>;
@@ -38,14 +37,8 @@ class Starter {
 		}
 	}
 	
-	public function start(game : Game) : Void {
+	public function start(game: Game): Void {
 		Starter.game = game;
-		Loader.getInstance().preLoad();
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
-		}
-		screen = new LoadingScreen(game.getWidth(), game.getHeight());
 		
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
@@ -85,22 +78,33 @@ class Starter {
 				}
 			}
 			
-			screen.update();
+			System.screen().update();
 			
 			if (canvas.getContext) {
 				painter.begin();
-				screen.render(painter);
+				System.screen().render(painter);
 				painter.end();
 			}
 		}
 		
 		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 		else requestAnimationFrame(animate);
-		
-		Loader.getInstance().load();
+	
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
+		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		Loader.the().loadProject(loadFinished);
 	}
 	
 	public static function loadFinished() {
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
+		Loader.the().initProject();
+		
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
 		Lib.document.onmousedown = function(event : js.Event) {
@@ -123,9 +127,9 @@ class Starter {
 			releaseKey(event.keyCode);
 		};
 		
+		System.setScreen(game);
+		System.screen().setInstance();
 		game.loadFinished();
-		screen = game;
-		screen.setInstance();
 	}
 	
 	static function pressKey(keycode : Int) {
