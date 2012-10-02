@@ -1,15 +1,18 @@
 package kha.wpf;
 import system.Uri;
 import system.UriKind;
-import system.windows.media.MediaPlayer;
+import system.windows.controls.MediaElement;
+import system.windows.controls.MediaState;
 
 class Sound extends kha.Sound {
-	var player : MediaPlayer;
+	var player : MediaElement;
 	
 	public function new(filename : String) : Void {
 		super();
-		player = new MediaPlayer();
-        player.Open(new Uri(filename, UriKind.Relative));
+		player = new MediaElement();
+		player.LoadedBehavior = MediaState.Manual;
+		player.UnloadedBehavior = MediaState.Manual;
+		player.Source = new Uri(filename, UriKind.Relative);
 	}
 	
 	public override function play() : Void {

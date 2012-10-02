@@ -30,6 +30,8 @@ class Loader {
 	var xmls : Hash<Xml>;
 	var loadcount : Int;
 	var numberOfFiles : Int;
+	var width : Int;
+	var height : Int;
 	
 	var assets: Hash<Asset>;
 	var rooms: Hash<Room>;
@@ -46,6 +48,8 @@ class Loader {
 		enqueued = new Array<Asset>();
 		loadcount = 100;
 		numberOfFiles = 100;
+		width = -1;
+		height = -1;
 	}
 	
 	public static function init(loader : Loader) {
@@ -58,6 +62,14 @@ class Loader {
 	
 	public static function getInstance() : Loader {
 		return the();
+	}
+	
+	public function getWidth() : Int {
+		return width;
+	}
+	
+	public function getHeight() : Int {
+		return height;
 	}
 	
 	public function getLoadPercentage() : Int {

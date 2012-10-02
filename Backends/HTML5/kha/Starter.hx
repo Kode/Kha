@@ -40,6 +40,11 @@ class Starter {
 	
 	public function start(game : Game) : Void {
 		Starter.game = game;
+		Loader.getInstance().preLoad();
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
 		screen = new LoadingScreen(game.getWidth(), game.getHeight());
 		
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");

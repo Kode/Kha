@@ -110,7 +110,10 @@ class Loader extends kha.Loader {
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
 			var blob = new Blob(Bytes.ofData(urlLoader.data));
 			blobs.set("project.kha", blob);
-			loadFiles();
+			if (isPreLoad)
+				loadWindowSize();
+			else
+				loadFiles();
 		});
 		urlLoader.load(urlRequest);
 	}*/

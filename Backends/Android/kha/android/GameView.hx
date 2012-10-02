@@ -11,13 +11,18 @@ import java.lang.InterruptedException;
 class GameView extends SurfaceView, implements SurfaceHolderCallback {
 	var thread : GameThread;
 	//private int lastTouch;
-
+	public static var instance : GameView;
+	
+	public static function the() : GameView {
+		return instance;
+	}
+	
 	public function new(context : Context) {
 		super(context);
-		
+		instance = this;
 		//new OpenGLES20Renderer(context);
 		
-		var holder : SurfaceHolder = getHolder();
+		var holder = getHolder();
 		holder.addCallback(this);
 		thread = new GameThread(holder, context, getWidth(), getHeight());
 		setFocusable(true);
