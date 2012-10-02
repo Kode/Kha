@@ -47,16 +47,13 @@ class Starter {
 		this.game = game;
 		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
 		Loader.the().loadProject(loadFinished);
-		Loader.getInstance().preLoad();
+	}
+		
+	public function loadFinished(): Void {
 		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
 			game.setWidth(Loader.getInstance().getWidth());
 			game.setHeight(Loader.getInstance().getHeight());
 		}
-		screen = new LoadingScreen(game.getWidth(), game.getHeight());
-		Loader.getInstance().load();
-	}
-		
-	public function loadFinished(): Void {
 		Loader.the().initProject();
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
