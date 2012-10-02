@@ -1,5 +1,23 @@
 package kha;
 
+import haxe.Json;
+
+class Asset {
+	public function new(file: String, type: String) {
+		this.file = file;
+		this.type = type;
+	}
+	public var file: String;
+	public var type: String;
+}
+
+class Room {
+	public function new() {
+		assets = new Array<Asset>();
+	}
+	public var assets: Array<Asset>;
+}
+
 class Loader {
 	static var instance : Loader;
 	var blobs : Hash<Blob>;
@@ -11,6 +29,9 @@ class Loader {
 	var loadcount : Int;
 	var numberOfFiles : Int;
 	
+	var assets: Hash<Asset>;
+	var rooms: Hash<Room>;
+	
 	public function new() {
 		blobs = new Hash<Blob>();
 		images = new Hash<Image>();
@@ -18,6 +39,9 @@ class Loader {
 		musics = new Hash<Music>();
 		videos = new Hash<Video>();
 		xmls = new Hash<Xml>();
+		assets = new Hash<Asset>();
+		rooms = new Hash<Room>();
+		enqueued = new Array<Asset>();
 		loadcount = 100;
 		numberOfFiles = 100;
 	}
@@ -26,8 +50,12 @@ class Loader {
 		instance = loader;
 	}
 	
-	public static function getInstance() : Loader {
+	public static function the() : Loader {
 		return instance;
+	}
+	
+	public static function getInstance() : Loader {
+		return the();
 	}
 	
 	public function getLoadPercentage() : Int {
@@ -85,42 +113,80 @@ class Loader {
 		return xmls.keys();
 	}
 	
-	public function load() {
-		loadDataDefinition();
+	var enqueued: Array<Asset>;
+	public var loadFinished: Void -> Void;
+	
+	public function enqueue(asset: Asset) {
+		enqueued.push(asset);
 	}
 	
-	//override for asynchronous loading
-	public function loadDataDefinition() {
-		loadXml("data.xml");
-		loadFiles();
-	}
-	
-	private function loadFiles() {
-		var node : Xml = getXml("data.xml");
-		var size : Int = 0;
-		for (element in node.elements().next().elements()) ++size;
-		loadStarted(size);
-		for (dataNode in node.elements().next().elements()) {
-			switch (dataNode.nodeName) {
+	public function loadFiles(call: Void -> Void) {
+		loadFinished = call;
+		loadStarted(enqueued.length);
+		for (i in 0...enqueued.length) {
+			switch (enqueued[i].type) {
 				case "image":
-					if (!images.exists(dataNode.firstChild().nodeValue)) loadImage(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!images.exists(enqueued[i].file)) loadImage(enqueued[i].file); else loadDummyFile();
 				case "xml":
-					if (!xmls.exists(dataNode.firstChild().nodeValue)) loadXml(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!xmls.exists(enqueued[i].file))   loadXml(enqueued[i].file);   else loadDummyFile();
 				case "music":
-					if (!musics.exists(dataNode.firstChild().nodeValue)) loadMusic(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!musics.exists(enqueued[i].file)) loadMusic(enqueued[i].file); else loadDummyFile();
 				case "sound":
-					if (!sounds.exists(dataNode.firstChild().nodeValue)) loadSound(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!sounds.exists(enqueued[i].file)) loadSound(enqueued[i].file); else loadDummyFile();
 				case "video":
-					if (!videos.exists(dataNode.firstChild().nodeValue)) loadVideo(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!videos.exists(enqueued[i].file)) loadVideo(enqueued[i].file); else loadDummyFile();
 				case "blob":
-					if (!blobs.exists(dataNode.firstChild().nodeValue)) loadBlob(dataNode.firstChild().nodeValue) else loadDummyFile();
+					if (!blobs.exists(enqueued[i].file))  loadBlob(enqueued[i].file);  else loadDummyFile();
 			}
+		}
+		enqueued = new Array<Asset>();
+	}
+	
+	public function loadProject(call: Void -> Void) {
+		enqueue(new Asset("project.kha", "blob"));
+		loadFiles(call);
+	}
+	
+	public function loadRoom(name: String, call: Void -> Void) {
+		var room = rooms.get(name);
+		for (i in 0...room.assets.length) {
+			enqueue(room.assets[i]);
+		}
+		loadFiles(call);
+	}
+	
+	public function initProject() {
+		var project = Json.parse(getBlob("project.kha").toString());
+		
+		var assets: Dynamic = project.assets;
+		for (i in 0...assets.length) {
+			var asset = new Asset(assets[i].file, assets[i].type);
+			this.assets.set(assets[i].id, asset);
+		}
+		
+		var rooms: Dynamic = project.rooms;
+		for (i in 0...rooms.length) {
+			var room = new Room();
+			var roomAssets: Dynamic = rooms[i].assets;
+			for (i2 in 0...roomAssets.length) {
+				room.assets.push(this.assets.get(roomAssets[i2]));
+			}
+			this.rooms.set(rooms[i].name, room);
 		}
 	}
 	
-	private function loadDummyFile() : Void { }
+	function checkComplete() {
+		if (numberOfFiles <= 0) {
+			loadFinished();
+		}
+	}
 	
-	function loadStarted(numberOfFiles : Int) {
+	function loadDummyFile(): Void {
+		--numberOfFiles;
+		checkComplete();
+	}
+	
+	function loadStarted(numberOfFiles: Int) {
 		this.loadcount = numberOfFiles;
 		this.numberOfFiles = numberOfFiles;
 	}

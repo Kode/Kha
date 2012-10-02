@@ -46,10 +46,11 @@ class Starter {
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
 		screen = new LoadingScreen(game.getWidth(), game.getHeight());
-		Loader.getInstance().load();
+		Loader.the().loadProject(loadFinished);
 	}
-	
-	public function loadFinished() {
+		
+	public function loadFinished(): Void {
+		Loader.the().initProject();
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);

@@ -15,16 +15,8 @@ import flash.utils.ByteArray;
 import haxe.io.Bytes;
 
 class Loader extends kha.Loader {
-	var xmlName : String;
-	var main : Starter;
-		
 	public function new(main : Starter) {
 		super();
-		this.main = main;
-	}
-	
-	public override function loadDataDefinition() {
-		loadDataXml();
 	}
 	
 	override function loadMusic(filename : String) {
@@ -98,49 +90,40 @@ class Loader extends kha.Loader {
 		//video.attachNetStream(new NetStream(urlRequest));*/
 	}
 	
-	override function loadDummyFile() : Void {
-		--numberOfFiles;
-		checkComplete();
-	}
-	
-	override function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
+	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return new kha.flash.Font(name, style, size);
 	}
   
-	override public function loadURL(url : String) : Void {
-		try{
-      flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
+	override public function loadURL(url: String): Void {
+		try {
+			flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
 		}
-		catch (ex:Dynamic) {
+		catch (ex: Dynamic) {
 			trace(ex);
 		}
 	}
 	
-	function loadDataXml() : Void {
-		var urlRequest : URLRequest = new URLRequest("data.xml");
+	/*function loadDataXml() : Void {
+		var urlRequest : URLRequest = new URLRequest("project.kha");
 		var urlLoader : URLLoader = new URLLoader();
+		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
-			xmls.set("data.xml", Xml.parse(urlLoader.data));
+			var blob = new Blob(Bytes.ofData(urlLoader.data));
+			blobs.set("project.kha", blob);
 			loadFiles();
 		});
 		urlLoader.load(urlRequest);
-	}
-	
-	function checkComplete() {
-		if (numberOfFiles <= 0) {
-			main.loadFinished();
-		}
-	}
+	}*/
 	
 	override function setNormalCursor() {
-		Mouse.cursor="auto";
+		Mouse.cursor = "auto";
 	}
 	
 	override function setHandCursor() {
-		Mouse.cursor="button";
+		Mouse.cursor = "button";
 	}
 	
-	override function setCursorBusy(busy : Bool) {
+	override function setCursorBusy(busy: Bool) {
 		if (busy)
 			Mouse.hide();
 		else
