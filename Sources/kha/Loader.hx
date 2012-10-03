@@ -14,10 +14,14 @@ class Asset {
 }
 
 class Room {
-	public function new() {
+	public function new(id: String) {
+		this.id = id;
 		assets = new Array<Asset>();
+		parent = null;
 	}
+	public var id: String;
 	public var assets: Array<Asset>;
+	public var parent: Room;
 }
 
 class Loader {
@@ -161,11 +165,15 @@ class Loader {
 		loadFiles(call);
 	}
 	
-	public function loadRoom(name: String, call: Void -> Void) {
-		var room = rooms.get(name);
+	function loadRoomAssets(room: Room) {
 		for (i in 0...room.assets.length) {
 			enqueue(room.assets[i]);
 		}
+		if (room.parent != null) loadRoomAssets(room.parent);
+	}
+	
+	public function loadRoom(name: String, call: Void -> Void) {
+		loadRoomAssets(rooms.get(name));
 		loadFiles(call);
 	}
 	
@@ -180,12 +188,26 @@ class Loader {
 		
 		var rooms: Dynamic = project.rooms;
 		for (i in 0...rooms.length) {
-			var room = new Room();
+			var room = new Room(rooms[i].id);
 			var roomAssets: Dynamic = rooms[i].assets;
 			for (i2 in 0...roomAssets.length) {
 				room.assets.push(this.assets.get(roomAssets[i2]));
 			}
+			if (rooms[i].parent != null) {
+				room.parent = new Room(rooms[i].parent);
+			}
 			this.rooms.set(rooms[i].name, room);
+		}
+
+		for (room in this.rooms) {
+			if (room.parent != null) {
+				for (room2 in this.rooms) {
+					if (room2.id == room.parent.id) {
+						room.parent = room2;
+						break;
+					}
+				}
+			}
 		}
 	}
 	
