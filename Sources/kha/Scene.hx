@@ -21,9 +21,13 @@ class Scene {
 	public var camx : Int;
 	public var camy : Int;
 	
-	public static function getInstance() : Scene {
+	public static function the(): Scene {
 		if (instance == null) instance = new Scene();
 		return instance;
+	}
+	
+	public static function getInstance(): Scene {
+		return the();
 	}
 	
 	function new() {
