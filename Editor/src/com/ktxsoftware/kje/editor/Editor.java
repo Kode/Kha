@@ -15,7 +15,8 @@ import javax.swing.UIManager;
 
 public class Editor extends JFrame{
 	private static final long serialVersionUID = 1L;
-
+	public static String tilesetimage;
+	
 	public Editor() {
 		super("Editor");
 		try {
@@ -68,6 +69,7 @@ public class Editor extends JFrame{
 	}
 
 	public static void main(String[] args) {
+		tilesetimage = args[0];
 		javax.swing.SwingUtilities.invokeLater(
 			new Runnable() {
 				public void run() {
