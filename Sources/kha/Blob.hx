@@ -11,6 +11,10 @@ class Blob {
 		position = 0;
 	}
 	
+	public function reset() {
+		position = 0;
+	}
+	
 	public function readByte(): Int {
 		var byte = bytes.get(position);
 		++position;
