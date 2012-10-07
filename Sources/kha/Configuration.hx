@@ -1,6 +1,6 @@
 package kha;
 
-class System {
+class Configuration {
 	static var theScreen: Game;
 	
 	public static function screen(): Game {

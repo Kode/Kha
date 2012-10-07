@@ -1,5 +1,6 @@
 package kha.wpf;
 
+import haxe.io.Bytes;
 import kha.FontStyle;
 import kha.Starter;
 import system.io.File;
@@ -13,11 +14,6 @@ class Loader extends kha.Loader {
 	public static var forceBusyCursor : Bool = false;
 	var savedCursor : Cursor;
 	var busyCursor : Bool = false;
-	
-	override public function loadDataDefinition() : Void {
-		xmls.set("data.xml", Xml.parse(File.ReadAllText(path + "data.xml")));
-		loadFiles();
-	}
 	
 	override function loadXml(filename : String) : Void {
 		xmls.set(filename, Xml.parse(File.ReadAllText(path + filename)));
@@ -43,8 +39,8 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 
-	override function loadBlob(filename : String) : Void {
-		blobs.set(filename, null);//new Blob(File.getBytes(filename)));
+	override function loadBlob(filename :String): Void {
+		blobs.set(filename, new Blob(Bytes.ofData(File.ReadAllBytes(filename))));
 		--numberOfFiles;
 		checkComplete();
 	}
@@ -55,11 +51,6 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 	
-	override function loadDummyFile() : Void {
-		--numberOfFiles;
-		checkComplete();
-	}
-
 	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
 		var font : kha.Font = new Font(name, style, size);
 		return (font != null ? font : new Font("Arial", style, size));
@@ -72,12 +63,12 @@ class Loader extends kha.Loader {
 		
 	}
 
-	function checkComplete() : Void {
+	override function checkComplete(): Void {
 		if (numberOfFiles <= 0) {
 			if (forceBusyCursor)
 				Starter.frameworkElement.Cursor = Cursors.Wait;
-			kha.Starter.loadFinished();
 		}
+		super.checkComplete();
 	}
 	
 	override function setNormalCursor() {

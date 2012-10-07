@@ -1,11 +1,9 @@
 package kha;
 
-import icml.Player;
 import kha.Game;
 import kha.Key;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
-import tools.RandomNumberGenerator;
 
 @:classContents('
 	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
@@ -14,7 +12,7 @@ import tools.RandomNumberGenerator;
 		if (kha.Starter.painter != null && kha.Starter.game != null) {
 			Starter.painter.context = drawingContext;
 			Starter.painter.begin();
-			Starter.game.render(Starter.painter);
+			Configuration.screen().render(Starter.painter);
 			if (drawMousePos) {
 				Starter.painter.setColor(255, 255, 255);
 				Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
@@ -44,7 +42,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		double heightTransform = canvas.ActualHeight/Starter.game.getHeight();
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
-		Starter.game.update();
+		Configuration.screen().update();
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
@@ -173,7 +171,7 @@ class MainWindow extends system.windows.Window {
 }
 
 class Starter {
-	static var game : Game;
+	static var game: Game;
 	static var mainWindow : MainWindow;
 	static var openWindow : Bool = true;
 	public static var painter : kha.wpf.Painter;
@@ -188,25 +186,21 @@ class Starter {
 		Starter.openWindow = openWindow;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
-        Player.suppressLogging = suppressLogging;
-		Player.suppressRandomSeed = suppressRandomSeed;
+        //Player.suppressLogging = suppressLogging;
+		//Player.suppressRandomSeed = suppressRandomSeed;
 	}
 	
-	public function start(game : Game) {
+	public function start(game: Game) {
 		try {
 			if (openWindow) {
 				mainWindow = new MainWindow();
 				Starter.frameworkElement = mainWindow.canvas;
 			}
 			Starter.game = game;
-			Loader.getInstance().preLoad();
-			if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-				game.setWidth(Loader.getInstance().getWidth());
-				game.setHeight(Loader.getInstance().getHeight());
-			}
-			Loader.getInstance().load();
+			Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+			Loader.the().loadProject(loadFinished);
 		}
-		catch( unknown : Dynamic ) {
+		catch (unknown: Dynamic) {
 			if (openWindow)
 				displayErrorMessage("Unknown exception : " + Std.string(unknown));
 			else
@@ -222,9 +216,15 @@ class Starter {
 	}
 	
 	public static function loadFinished() {
-		game.loadFinished();
+		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
+			game.setWidth(Loader.getInstance().getWidth());
+			game.setHeight(Loader.getInstance().getHeight());
+		}
+		Loader.the().initProject();
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter();
-		
+		game.loadFinished();
 		if (openWindow)
 			startWindow();
 	}
