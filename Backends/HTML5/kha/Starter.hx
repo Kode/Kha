@@ -78,11 +78,11 @@ class Starter {
 				}
 			}
 			
-			System.screen().update();
+			Configuration.screen().update();
 			
 			if (canvas.getContext) {
 				painter.begin();
-				System.screen().render(painter);
+				Configuration.screen().render(painter);
 				painter.end();
 			}
 		}
@@ -94,7 +94,7 @@ class Starter {
 			game.setWidth(Loader.getInstance().getWidth());
 			game.setHeight(Loader.getInstance().getHeight());
 		}
-		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
 		Loader.the().loadProject(loadFinished);
 	}
 	
@@ -127,8 +127,8 @@ class Starter {
 			releaseKey(event.keyCode);
 		};
 		
-		System.setScreen(game);
-		System.screen().setInstance();
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		game.loadFinished();
 	}
 	

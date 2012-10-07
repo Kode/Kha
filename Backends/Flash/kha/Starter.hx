@@ -45,7 +45,7 @@ class Starter {
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
-		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
 		Loader.the().loadProject(loadFinished);
 	}
 		
@@ -63,8 +63,8 @@ class Starter {
 		stage3D.requestContext3D(
 			//"software"
 		);
-		System.setScreen(game);
-		System.screen().setInstance();
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		game.loadFinished();
 	}
 	
@@ -76,9 +76,9 @@ class Starter {
 	}
 	
 	function update(_) {
-		System.screen().update();
+		Configuration.screen().update();
 		painter.begin();
-		System.screen().render(painter);
+		Configuration.screen().render(painter);
 		painter.end();
 	}
 	

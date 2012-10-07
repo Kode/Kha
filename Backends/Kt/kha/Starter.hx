@@ -14,7 +14,7 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
-		System.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
 		Loader.the().loadProject(loadFinished);
 	}
 	
@@ -24,8 +24,8 @@ class Starter {
 			game.setHeight(Loader.getInstance().getHeight());
 		}
 		Loader.the().initProject();
-		System.setScreen(game);
-		System.screen().setInstance();
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		game.loadFinished();
 		painter = new kha.cpp.Painter();
 	}
