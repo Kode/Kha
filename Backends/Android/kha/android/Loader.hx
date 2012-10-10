@@ -12,12 +12,12 @@ import kha.Blob;
 import kha.FontStyle;
 
 class Loader extends kha.Loader {
-	var assets : AssetManager;
+	var assetManager : AssetManager;
 	
 	public function new(context : Context) {
 		super();
-		this.assets = context.getAssets();
-		Image.assets = assets;
+		this.assetManager = context.getAssets();
+		Image.assets = assetManager;
 	}
 	
 	override public function loadImage(filename : String) {
@@ -28,7 +28,7 @@ class Loader extends kha.Loader {
 
 	override public function loadSound(filename : String) {
 		try {
-			sounds.set(filename, new Sound(assets.openFd(filename + ".wav")));
+			sounds.set(filename, new Sound(assetManager.openFd(filename + ".wav")));
 		}
 		catch (ex : IOException) {
 			ex.printStackTrace();
@@ -39,7 +39,7 @@ class Loader extends kha.Loader {
 
 	override public function loadMusic(filename : String) {
 		try {
-			musics.set(filename, new Music(assets.openFd(filename + ".ogg")));
+			musics.set(filename, new Music(assetManager.openFd(filename + ".ogg")));
 		}
 		catch (ex : IOException) {
 			ex.printStackTrace();
@@ -50,7 +50,7 @@ class Loader extends kha.Loader {
 	
 	override private function loadVideo(filename : String) {
 		try {
-			videos.set(filename, new Video(assets.openFd(filename + ".mp4")));
+			videos.set(filename, new Video(assetManager.openFd(filename + ".mp4")));
 		}
 		catch (ex : IOException) {
 			ex.printStackTrace();
@@ -66,7 +66,7 @@ class Loader extends kha.Loader {
 	override private function loadBlob(filename : String) : Void {
 		var bytes : Array<Byte> = new Array<Byte>();
 		try {
-			var stream : java.io.InputStream = new java.io.BufferedInputStream(assets.open(filename));
+			var stream : java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(filename));
 			var c : Int = -1;
 			while ((c = stream.read()) != -1) {
 				bytes.push(cast(c, Byte));
@@ -83,18 +83,6 @@ class Loader extends kha.Loader {
 		--numberOfFiles;
 		checkComplete();
 	}
-
-	override public function loadDataDefinition() : Void {
-		var everything : String = "";
-		try {
-			everything = new java.util.Scanner(assets.open("data.xml")).useDelimiter("\\A").next();
-		}
-		catch (e : java.util.NoSuchElementException) {
-			return;
-		}
-		xmls.set("data.xml", Xml.parse(everything));
-		loadFiles();
-	}
 	
 	@:functionBody('
 		
@@ -102,7 +90,7 @@ class Loader extends kha.Loader {
 	override function loadXml(filename : String) : Void {
 		var everything : String = "";
 		try {
-			everything = new java.util.Scanner(assets.open(filename)).useDelimiter("\\A").next();
+			everything = new java.util.Scanner(assetManager.open(filename)).useDelimiter("\\A").next();
 		}
 		catch (e : java.util.NoSuchElementException) {
 			return;
@@ -110,11 +98,5 @@ class Loader extends kha.Loader {
 		xmls.set(filename, Xml.parse(everything));
 		--numberOfFiles;
 		checkComplete();
-	}
-	
-	function checkComplete() : Void {
-		if (numberOfFiles <= 0) {
-			kha.Starter.loadFinished();
-		}
 	}
 }

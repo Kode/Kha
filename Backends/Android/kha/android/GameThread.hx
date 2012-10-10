@@ -23,19 +23,25 @@ class GameThread extends Thread {
 		this.height = height;
 	}
 
-	override public function run() : Void {
+	override public function run(): Void {
 		kha.Loader.init(new Loader(context));
 		game = new StoryPublish();//GameInfo.createGame();
-		kha.Loader.getInstance().preLoad();
-		if (kha.Loader.getInstance().getWidth() > 0 && kha.Loader.getInstance().getHeight() > 0) {
-			game.setWidth(kha.Loader.getInstance().getWidth());
-			game.setHeight(kha.Loader.getInstance().getHeight());
+		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
+		kha.Loader.the().loadProject(loadFinished);
+	}
+	
+	public function loadFinished(): Void {
+		if (kha.Loader.the().getWidth() > 0 && kha.Loader.the().getHeight() > 0) {
+			game.setWidth(kha.Loader.the().getWidth());
+			game.setHeight(kha.Loader.the().getHeight());
 		}
-		kha.Loader.getInstance().load();
-		game.init();
+		kha.Loader.the().initProject();
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
+		game.loadFinished();
 		
 		while (running) {
-			var c : Canvas = null;
+			var c :Canvas = null;
 			//try {
 				c = surface.lockCanvas(null);
 				p = new Painter(c, width, height);
