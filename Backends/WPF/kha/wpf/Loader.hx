@@ -15,6 +15,11 @@ class Loader extends kha.Loader {
 	var savedCursor : Cursor;
 	var busyCursor : Bool = false;
 	
+	public override function loadProject(call: Void -> Void) {
+		enqueue(new kha.Loader.Asset("project.kha", path + "project.kha", "blob"));
+		loadFiles(call);
+	}
+	
 	override function loadXml(filename : String) : Void {
 		xmls.set(filename, Xml.parse(File.ReadAllText(path + filename)));
 		--numberOfFiles;

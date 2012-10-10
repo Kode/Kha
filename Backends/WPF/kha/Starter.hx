@@ -182,12 +182,10 @@ class Starter {
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool, suppressLogging : Bool, suppressRandomSeed : Bool) {
+	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool) {
 		Starter.openWindow = openWindow;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
-        //Player.suppressLogging = suppressLogging;
-		//Player.suppressRandomSeed = suppressRandomSeed;
 	}
 	
 	public function start(game: Game) {
