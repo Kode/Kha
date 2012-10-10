@@ -1,6 +1,7 @@
 package kha.wpf;
 
 import haxe.io.Bytes;
+import haxe.Json;
 import kha.FontStyle;
 import kha.Starter;
 import system.io.File;
@@ -16,8 +17,12 @@ class Loader extends kha.Loader {
 	var busyCursor : Bool = false;
 	
 	public override function loadProject(call: Void -> Void) {
-		enqueue(new kha.Loader.Asset("project.kha", path + "project.kha", "blob"));
+		enqueue(new kha.Loader.Asset(path + "project.kha", path + "project.kha", "blob"));
 		loadFiles(call);
+	}
+	
+	private override function parseProject() : Dynamic {
+		return Json.parse(getBlob(path + "project.kha").toString());
 	}
 	
 	override function loadXml(filename : String) : Void {

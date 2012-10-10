@@ -178,8 +178,7 @@ class Loader {
 	}
 	
 	public function initProject() {
-		var project = Json.parse(getBlob("project.kha").toString());
-		
+		var project = parseProject();
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
 			var asset = new Asset(assets[i].name, assets[i].file, assets[i].type);
@@ -209,6 +208,10 @@ class Loader {
 				}
 			}
 		}
+	}
+	
+	private function parseProject() : Dynamic {
+		return Json.parse(getBlob("project.kha").toString());
 	}
 	
 	function checkComplete() {
