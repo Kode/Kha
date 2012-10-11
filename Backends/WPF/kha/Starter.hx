@@ -89,6 +89,9 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 			case System.Windows.Input.Key.Enter:
 				kha.Starter.game.keyDown(Key.ENTER, "");
 				break;
+			case System.Windows.Input.Key.Escape:
+				kha.Starter.game.keyDown(Key.ESC, "");
+				break;
 			case System.Windows.Input.Key.Up:
 				kha.Starter.game.buttonDown(Button.UP);
 				break;
@@ -118,6 +121,9 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 				break;
 			case System.Windows.Input.Key.Enter:
 				kha.Starter.game.keyUp(Key.ENTER, "");
+				break;
+			case System.Windows.Input.Key.Escape:
+				kha.Starter.game.keyUp(Key.ESC, "");
 				break;
 			case System.Windows.Input.Key.Up:
 				kha.Starter.game.buttonUp(Button.UP);

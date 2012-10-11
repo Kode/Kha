@@ -8,4 +8,5 @@ enum Key {
 	CTRL;
 	ALT;
 	CHAR;
+	ESC;
 }

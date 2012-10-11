@@ -90,6 +90,8 @@ class Starter {
 			game.keyDown(Key.BACKSPACE, "");
 		case 13:
 			game.keyDown(Key.ENTER, "");
+		case 27:
+			game.keyDown(Key.ESC, "");
 		case 38:
 			game.buttonDown(Button.UP);
 		case 40:
@@ -117,6 +119,8 @@ class Starter {
 			game.keyUp(Key.BACKSPACE, "");
 		case 13:
 			game.keyUp(Key.ENTER, "");
+		case 27:
+			game.keyUp(Key.ESC, "");
 		case 38:
 			game.buttonUp(Button.UP);
 		case 40:
