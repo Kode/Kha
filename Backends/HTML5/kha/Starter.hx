@@ -166,6 +166,8 @@ class Starter {
 					game.keyDown(Key.ALT, null);
 				case 27:
 					game.keyDown(Key.ESC, null);
+				case 127:
+					game.keyDown(Key.DEL, null);
 				}
 			}
 		}
@@ -204,6 +206,8 @@ class Starter {
 				game.keyUp(Key.ALT, null);
 			case 27:
 				game.keyUp(Key.ESC, null);
+			case 127:
+				game.keyUp(Key.DEL, null);
 			}
 		}
 	}

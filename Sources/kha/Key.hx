@@ -9,4 +9,5 @@ enum Key {
 	ALT;
 	CHAR;
 	ESC;
+	DEL;
 }
