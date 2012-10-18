@@ -23,6 +23,7 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionBody('
+		text.Replace(\' \', (char)160); // Non-breaking space 
 		System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
 			System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
 			new System.Windows.Media.Typeface(font.name), font.size, new System.Windows.Media.SolidColorBrush(color));

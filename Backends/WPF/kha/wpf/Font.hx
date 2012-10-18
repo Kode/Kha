@@ -40,7 +40,7 @@ class Font implements kha.Font {
 	}
 
 	@:functionBody('
-		return getFormat(str).Width;
+		return getFormat(str).WidthIncludingTrailingWhitespace;
 	')
 	public function stringWidth(str : String) : Float {
 		return 0;
