@@ -179,6 +179,8 @@ class Loader {
 	
 	public function initProject() {
 		var project = parseProject();
+		width = project.game.width;
+		height = project.game.height;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
 			var asset = new Asset(assets[i].name, assets[i].file, assets[i].type);
