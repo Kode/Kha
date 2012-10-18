@@ -68,10 +68,12 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		base.OnTextInput(e);
 		
 		// Printable characters only
-		char[] chararray = e.Text.ToCharArray();
-		int c = System.Convert.ToInt32((char)chararray[0]);
-		if (c > 32)
-			kha.Starter.game.keyDown(Key.CHAR, e.Text);
+		if (e.Text != "") {
+			char[] chararray = e.Text.ToCharArray();
+			int c = System.Convert.ToInt32((char)chararray[0]);
+			if (c > 32)
+				kha.Starter.game.keyDown(Key.CHAR, e.Text);
+		}
 	}
 	
 	protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
