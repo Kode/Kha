@@ -25,7 +25,6 @@ class Room {
 }
 
 class Loader {
-	static var instance : Loader;
 	var blobs : Hash<Blob>;
 	var images : Hash<Image>;
 	var sounds : Hash<Sound>;
@@ -34,8 +33,6 @@ class Loader {
 	var xmls : Hash<Xml>;
 	var loadcount : Int;
 	var numberOfFiles : Int;
-	var width : Int;
-	var height : Int;
 	
 	var assets: Hash<Asset>;
 	var rooms: Hash<Room>;
@@ -56,24 +53,12 @@ class Loader {
 		height = -1;
 	}
 	
-	public static function init(loader : Loader) {
-		instance = loader;
-	}
+	public static var the(default, null): Loader;
+	public var width(default, null): Int;
+	public var height(default, null): Int;
 	
-	public static function the() : Loader {
-		return instance;
-	}
-	
-	public static function getInstance() : Loader {
-		return the();
-	}
-	
-	public function getWidth() : Int {
-		return width;
-	}
-	
-	public function getHeight() : Int {
-		return height;
+	public static function init(loader: Loader) {
+		the = loader;
 	}
 	
 	public function getLoadPercentage() : Int {

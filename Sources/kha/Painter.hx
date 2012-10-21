@@ -19,7 +19,7 @@ class Painter {
 	public function translate(x : Float, y : Float) : Void { }
 	
 	public function clear() : Void {
-		fillRect(0, 0, Game.getInstance().getWidth(), Game.getInstance().getHeight());
+		fillRect(0, 0, Game.the.width, Game.the.height);
 	}
 	
 	public function begin() : Void { }

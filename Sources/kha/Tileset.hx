@@ -8,11 +8,11 @@ class Tileset {
 	var image : Image;
 	var tiles : Array<Tile>;
 
-	public function new(imagename : String, tileWidth : Int, tileHeight : Int, tiles : Array<Tile> = null) {
+	public function new(imagename: String, tileWidth: Int, tileHeight: Int, tiles: Array<Tile> = null) {
 		TILE_WIDTH = 32;
 		TILE_HEIGHT = 32;
 		
-		this.image = Loader.getInstance().getImage(imagename);
+		this.image = Loader.the.getImage(imagename);
 		TILE_WIDTH = tileWidth;
 		TILE_HEIGHT = tileHeight;
 		xmax = Std.int(image.getWidth() / TILE_WIDTH);
@@ -24,18 +24,18 @@ class Tileset {
 		else this.tiles = tiles;
 	}
 	
-	public function render(painter : Painter, tile : Int, x : Int, y : Int) : Void {
+	public function render(painter: Painter, tile: Int, x: Int, y: Int): Void {
 		var index = tiles[tile].imageIndex;
 		var ytile : Int = Std.int(index / xmax);
 		var xtile : Int = index - ytile * xmax;
 		painter.drawImage2(image, xtile * TILE_WIDTH, ytile * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x, y, TILE_WIDTH, TILE_HEIGHT);
 	}
 	
-	public function tile(index : Int) : Tile {
+	public function tile(index: Int): Tile {
 		return tiles[index];
 	}
 
-	public function getLength() : Int {
+	public function getLength(): Int {
 		return xmax * ymax;
 	}
 }

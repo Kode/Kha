@@ -1,19 +1,19 @@
 package kha;
 
 class EmptyScreen extends Game {
-	var color: Color;
-	
-	public function new(width: Int, height: Int, color: Color) {
-		super("Nothing", width, height, false);
-		this.color = color;
+	public function new(color: Color) {
+		super("Nothing", false);
+		myColor = color;
 	}
 	
-	override public function render(painter : Painter) {
-		painter.setColor(color.r, color.g, color.b);
-		painter.fillRect(0, 0, width, height);
+	override public function render(painter: Painter) {
+		painter.setColor(myColor.r, myColor.g, myColor.b);
+		painter.fillRect(0, 0, 10000, 10000);
 	}
 	
 	override public function update() {
 		
 	}
+	
+	private var myColor: Color;
 }

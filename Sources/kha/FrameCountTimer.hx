@@ -1,29 +1,27 @@
 package kha;
 
-class FrameCountTimer 
-{
-	var miliseconds : Int;
-	var repeating : Bool;
-	var active : Bool = false;
-	var count : Int = 0;
-	var currentTimerValue : Int = 0;
+class FrameCountTimer {
+	var miliseconds: Int;
+	var repeating: Bool;
+	var active: Bool = false;
+	var count: Int = 0;
+	var currentTimerValue: Int = 0;
 	
-	public function new(miliseconds : Int, repeating : Bool) 
-	{
+	public function new(miliseconds: Int, repeating: Bool) {
 		this.miliseconds = miliseconds;
 		this.repeating = repeating;
-		Game.getInstance().registerTimer(this);
+		Game.the.registerTimer(this);
 	}
 	
-	public function setMiliseconds(miliseconds : Int) {
+	public function setMiliseconds(miliseconds: Int) {
 		this.miliseconds = miliseconds;
 	}
 	
-	public function setRepeating(repeating : Bool) {
+	public function setRepeating(repeating: Bool) {
 		this.repeating = repeating;
 	}
 	
-	public function getActive() : Bool {
+	public function getActive(): Bool {
 		return active;
 	}
 	
@@ -41,11 +39,10 @@ class FrameCountTimer
 	}
 	
 	public function unregister() {
-		Game.getInstance().removeTimer(this);
+		Game.the.removeTimer(this);
 	}
 	
 	public function update() {
-		
 		currentTimerValue = Std.int(count / Game.FPS);
 		
 		if (!active)
@@ -63,8 +60,7 @@ class FrameCountTimer
 	
 	private function fireEvent() { }
 	
-	public function getCurrentTimerValue() : Int {
+	public function getCurrentTimerValue(): Int {
 		return currentTimerValue;
 	}
-	
 }

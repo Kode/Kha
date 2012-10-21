@@ -115,8 +115,8 @@ class Scene {
 	
 	function adjustCamX() : Int {
 		if (colissionMap != null) {
-			var realcamx : Int = Std.int(Math.min(Math.max(0, camx - Game.getInstance().getWidth() / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.getInstance().getWidth()));
-			if (getWidth() < Game.getInstance().getWidth()) realcamx = 0;
+			var realcamx : Int = Std.int(Math.min(Math.max(0, camx - Game.the.width / 2), colissionMap.getWidth() * colissionMap.getTileset().TILE_WIDTH - Game.the.width));
+			if (getWidth() < Game.the.width) realcamx = 0;
 			return realcamx;
 		}
 		else return camx;
@@ -124,8 +124,8 @@ class Scene {
 	
 	function adjustCamY() : Int {
 		if (colissionMap != null) {
-			var realcamy : Int = Std.int(Math.min(Math.max(0, camy - Game.getInstance().getHeight() / 2), colissionMap.getHeight() * colissionMap.getTileset().TILE_HEIGHT - Game.getInstance().getHeight()));
-			if (getHeight() < Game.getInstance().getHeight()) realcamy = 0;
+			var realcamy : Int = Std.int(Math.min(Math.max(0, camy - Game.the.height / 2), colissionMap.getHeight() * colissionMap.getTileset().TILE_HEIGHT - Game.the.height));
+			if (getHeight() < Game.the.height) realcamy = 0;
 			return realcamy;
 		}
 		else return camy;
@@ -133,7 +133,7 @@ class Scene {
 	
 	function sort(sprites : Array<Sprite>) {
 		if (sprites.length == 0) return;
-		sprites.sort(function(arg0 : Sprite, arg1 : Sprite) {
+		sprites.sort(function(arg0: Sprite, arg1: Sprite) {
 			if (arg0.x < arg1.x) return -1;
 			else if (arg0.x == arg1.x) return 0;
 			else return 1;
@@ -150,7 +150,7 @@ class Scene {
 		}
 		while (i < sprites.length) {
 			var sprite : Sprite = sprites[i];
-			if (sprite.x > camx + Game.getInstance().getWidth()) break;
+			if (sprite.x > camx + Game.the.width) break;
 			//updatedSprites.push(sprite);
 			sprite.update();
 			move(sprite);
@@ -176,7 +176,7 @@ class Scene {
 			++i;
 		}
 		while (i < enemies.length) {
-			if (enemies[i].x > camx + Game.getInstance().getWidth()) break;
+			if (enemies[i].x > camx + Game.the.width) break;
 			var rect1 : Rectangle = enemies[i].collisionRect();
 			for (i2 in 0...heroes.length) {
 				var rect2 : Rectangle = heroes[i2].collisionRect();
@@ -201,7 +201,7 @@ class Scene {
 			++i;
 		}
 		while (i < projectiles.length) {
-			if (projectiles[i].x > camx + Game.getInstance().getWidth()) break;
+			if (projectiles[i].x > camx + Game.the.width) break;
 			var rect1 : Rectangle = projectiles[i].collisionRect();
 			for (i2 in 0...heroes.length) {
 				var rect2 : Rectangle = heroes[i2].collisionRect();
@@ -344,7 +344,7 @@ class Scene {
 			var ystart = sprite.y;
 			sprite.x = xaim;
 			sprite.y = yaim;
-			if (colissionMap.collides(sprite)) {
+			if (colissionMap != null && colissionMap.collides(sprite)) {
 				line(xstart, ystart, xaim, yaim, sprite);
 			}
 
@@ -384,7 +384,7 @@ class Scene {
 		
 		for (i in 0...backgrounds.length) {
 			painter.translate(Math.round(-camx * backgroundSpeeds[i]), Math.round(-camy * backgroundSpeeds[i]));
-			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), Std.int(camy * backgroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), Std.int(camy * backgroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 		
 		painter.translate(-camx, -camy);
@@ -396,7 +396,7 @@ class Scene {
 				++i;
 			}
 			while (i < sprites.length) {
-				if (sprites[i].x > camx + Game.getInstance().getWidth()) break;
+				if (sprites[i].x > camx + Game.the.width) break;
 				if (i < sprites.length && sprites[i].z == z) sprites[i].render(painter);
 				++i;
 			}
@@ -404,7 +404,7 @@ class Scene {
 		
 		for (i in 0...foregrounds.length) {
 			painter.translate(Math.round(-camx * foregroundSpeeds[i]), Math.round(-camy * foregroundSpeeds[i]));
-			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), Std.int(camy * foregroundSpeeds[i]), Game.getInstance().getWidth(), Game.getInstance().getHeight());
+			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), Std.int(camy * foregroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 	}
 	

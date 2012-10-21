@@ -40,21 +40,20 @@ class Starter {
 		Loader.init(new kha.flash.Loader(this));
 	}
 	
-	public function start(game : Game) {
+	public function start(game: Game) {
 		stage = flash.Lib.current.stage;
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
-		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
-		Loader.the().loadProject(loadFinished);
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Loader.the.loadProject(loadFinished);
 	}
 		
 	public function loadFinished(): Void {
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
-		}
-		Loader.the().initProject();
+		Loader.the.initProject();
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
+		
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);

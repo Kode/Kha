@@ -1,94 +1,74 @@
 package kha;
 
 class Game {
-	static var instance : Game;
-	var scene : Scene;
-	var name : String;
-	var width : Int;
-	var height : Int;
-	var highscores : HighscoreList;
-	var timers : Array<FrameCountTimer>;
-	public static var FPS : Int = 60;
+	private var scene: Scene;
+	private var name: String;
+	private var timers: Array<FrameCountTimer>;
 	
-	public static function getInstance() : Game {
-		return instance;
-	}
+	public static var FPS: Int = 60;
 	
-	public function new(name : String, width : Int, height : Int, hasHighscores : Bool = true) {
-		instance = this;
+	public static var the(default, null): Game;
+	
+	public var width(default, default): Int;
+	public var height(default, default): Int;
+	public var highscores(default, null): HighscoreList;
+	
+	public function new(name: String, hasHighscores: Bool = true) {
+		setInstance();
 		timers = new Array<FrameCountTimer>();
 		this.name = name;
-		this.width = width;
-		this.height = height;
 		if (hasHighscores) highscores = new HighscoreList(name);
 		scene = Scene.getInstance();
+		width = Loader.the.width;
+		height = Loader.the.height;
 	}
 	
-	public function setInstance() {
-		instance = this;
+	public function setInstance(): Void {
+		the = this;
 	}
 	
-	public function getWidth() : Int {
-		return width;
-	}
-	
-	public function setWidth(width : Int) : Void {
-		this.width = width;
-	}
-	
-	public function getHeight() : Int {
-		return height;
-	}
-	
-	public function setHeight(height : Int) : Void {
-		this.height = height;
-	}
-	
-	public function loadFinished() : Void {
-		var w = Loader.getInstance().getWidth();
+	public function loadFinished(): Void {
+		var w = Loader.the.width;
 		if (w > 0) width = w;
-		var h = Loader.getInstance().getHeight();
+		var h = Loader.the.height;
 		if (h > 0) height = h;
 		init();
 	}
 	
-	public function init() : Void { }
+	public function init(): Void { }
 	
-	public function update() : Void {
-		for (timer in timers)
-			timer.update();
-		
+	public function update(): Void {
+		for (timer in timers) timer.update();
 		scene.update();
 	}
 	
-	public function registerTimer(timer : FrameCountTimer) {
+	public function registerTimer(timer: FrameCountTimer) {
 		for (existingTimer in timers) {
 			if (existingTimer == timer)
 				return;
 		}
-		
 		timers.push(timer);
 	}
 	
-	public function removeTimer(timer : FrameCountTimer) {
+	public function removeTimer(timer: FrameCountTimer) {
 		timers.remove(timer);
 	}
 	
-	public function render(painter : Painter) : Void {
+	public function render(painter: Painter): Void {
 		scene.render(painter);
 	}
 	
-	public function getHighscores() : HighscoreList {
+	public function getHighscores(): HighscoreList {
 		return highscores;
 	}
 	
-	public function buttonDown(button : Button) : Void { }
-	public function buttonUp(button : Button) : Void { }
+	public function buttonDown(button: Button): Void { }
+	public function buttonUp  (button: Button): Void { }
 	
-	public function keyDown(key : Key, char : String) : Void { }
-	public function keyUp(key : Key, char : String) : Void { }
+	public function keyDown(key: Key, char: String): Void { }
+	public function keyUp  (key: Key, char: String): Void { }
 	
-	public function mouseDown(x : Int, y : Int) : Void { }
-	public function mouseUp(x : Int, y : Int) : Void { }
-	public function mouseMove(x : Int, y : Int) : Void { }
+	public function mouseDown(x: Int, y: Int): Void { }
+	public function mouseUp  (x: Int, y: Int): Void { }
+	public function mouseMove(x: Int, y: Int): Void { }
 }
