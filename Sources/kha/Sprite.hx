@@ -18,7 +18,7 @@ class Sprite {
 	public var z : Int;
 	var tempcollider : Rectangle;
 	
-	public function new(image : Image, width : Int, height : Int, z : Int) {
+	public function new(image: Image, width: Int, height: Int, z: Int) {
 		this.image = image;
 		x = 0;
 		y = 0;

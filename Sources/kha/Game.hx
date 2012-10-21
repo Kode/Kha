@@ -18,7 +18,7 @@ class Game {
 		timers = new Array<FrameCountTimer>();
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList(name);
-		scene = Scene.getInstance();
+		scene = Scene.the;
 		width = Loader.the.width;
 		height = Loader.the.height;
 	}

@@ -1,7 +1,7 @@
 package kha;
 
 class Scene {
-	static var instance : Scene;
+	private static var instance : Scene;
 	
 	var colissionMap : Tilemap;
 	var backgrounds : Array<Tilemap>;
@@ -21,13 +21,11 @@ class Scene {
 	public var camx : Int;
 	public var camy : Int;
 	
-	public static function the(): Scene {
+	public static var the(getThe, null): Scene;
+	
+	private static function getThe(): Scene {
 		if (instance == null) instance = new Scene();
 		return instance;
-	}
-	
-	public static function getInstance(): Scene {
-		return the();
 	}
 	
 	function new() {
