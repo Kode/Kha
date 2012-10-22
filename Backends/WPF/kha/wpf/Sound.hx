@@ -1,4 +1,5 @@
 package kha.wpf;
+import system.io.Path;
 import system.Uri;
 import system.UriKind;
 import system.windows.controls.MediaElement;
@@ -12,7 +13,9 @@ class Sound extends kha.Sound {
 		player = new MediaElement();
 		player.LoadedBehavior = MediaState.Manual;
 		player.UnloadedBehavior = MediaState.Manual;
-		player.Source = new Uri(filename, UriKind.Relative);
+		// MediaElement needs Absolute URI. Relative won't work
+		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
+		// TODO: perhaps files should be checked for validity? 
 	}
 	
 	public override function play() : Void {
