@@ -48,7 +48,7 @@ class Starter {
 		catch (e : Dynamic) {
 			trace(e);
 		}
-		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.getWidth(), game.getHeight());
+		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
 		
 		var window : Dynamic = Lib.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
@@ -90,20 +90,20 @@ class Starter {
 		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 		else requestAnimationFrame(animate);
 	
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
+		if (Loader.the.width > 0 && Loader.the.height > 0) {
+			game.width = Loader.the.width;
+			game.height = Loader.the.height;
 		}
-		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
-		Loader.the().loadProject(loadFinished);
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Loader.the.loadProject(loadFinished);
 	}
 	
 	public static function loadFinished() {
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
+		if (Loader.the.width > 0 && Loader.the.height > 0) {
+			game.width = Loader.the.width;
+			game.height = Loader.the.height;
 		}
-		Loader.the().initProject();
+		Loader.the.initProject();
 		
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
