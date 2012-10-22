@@ -14,16 +14,14 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
-		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
-		Loader.the().loadProject(loadFinished);
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Loader.the.loadProject(loadFinished);
 	}
 	
 	public static function loadFinished() {
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
-		}
-		Loader.the().initProject();
+		Loader.the.initProject();
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
