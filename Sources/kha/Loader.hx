@@ -56,6 +56,7 @@ class Loader {
 	public static var the(default, null): Loader;
 	public var width(default, null): Int;
 	public var height(default, null): Int;
+	public var name(default, null): String;
 	
 	public static function init(loader: Loader) {
 		the = loader;
@@ -164,6 +165,7 @@ class Loader {
 	
 	public function initProject() {
 		var project = parseProject();
+		name = project.game.name;
 		width = project.game.width;
 		height = project.game.height;
 		var assets: Dynamic = project.assets;

@@ -6,6 +6,7 @@
 #include <Kt/Sound/Sound.h>
 #include <stdio.h>
 #include <kha/Starter.h>
+#include <kha/Loader.h>
 
 extern "C" const char *hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
@@ -90,8 +91,7 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 
    // Register additional ndll libaries ...
    // nme_register_prims();
-	Kt::Application app(params, 640, 520);
-	Kt::Sound::init();
+	
 	//printf("Begin!\n");
  	const char *err = hxRunLibrary();
 	if (err) {
@@ -99,6 +99,9 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 		fprintf(stderr,"Error %s\n", err );
 		return -1;
 	}
+
+	Kt::Application app(params, kha::Loader_obj::the->width, kha::Loader_obj::the->height, false, kha::Loader_obj::the->name.c_str());
+	Kt::Sound::init();
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
 	Kt::Scene::the()->add(Kt::Handle<HaxeItem>(new HaxeItem));
