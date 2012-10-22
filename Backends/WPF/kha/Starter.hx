@@ -38,8 +38,8 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth/Starter.game.getWidth();
-		double heightTransform = canvas.ActualHeight/Starter.game.getHeight();
+		double widthTransform = canvas.ActualWidth/Starter.game.width;
+		double heightTransform = canvas.ActualHeight/Starter.game.height;
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
 		Configuration.screen().update();
@@ -156,8 +156,8 @@ class MainWindow extends system.windows.Window {
 	
 	@:functionBody('
 		canvas = new StoryPublishCanvas();
-        canvas.Width = Game.getInstance().getWidth();
-        canvas.Height = Game.getInstance().getHeight();
+        canvas.Width = Game.the.width;
+        canvas.Height = Game.the.height;
         AddChild(canvas);
         
 		System.Windows.Data.Binding widthBinding = new System.Windows.Data.Binding {
@@ -173,8 +173,8 @@ class MainWindow extends system.windows.Window {
 
 		canvas.SetBinding(System.Windows.Controls.Canvas.HeightProperty, heightBinding);
 		
-		Width = kha.Game.getInstance().getWidth() + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
-        Height = kha.Game.getInstance().getHeight() + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		Width = kha.Game.the.width + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
+        Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
@@ -204,13 +204,8 @@ class Starter {
 	
 	public function start(game: Game) {
 		try {
-			if (openWindow) {
-				mainWindow = new MainWindow();
-				Starter.frameworkElement = mainWindow.canvas;
-			}
 			Starter.game = game;
-			Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
-			Loader.the().loadProject(loadFinished);
+			Loader.the.loadProject(loadFinished);
 		}
 		catch (unknown: Dynamic) {
 			if (openWindow)
@@ -228,11 +223,14 @@ class Starter {
 	}
 	
 	public static function loadFinished() {
-		if (Loader.getInstance().getWidth() > 0 && Loader.getInstance().getHeight() > 0) {
-			game.setWidth(Loader.getInstance().getWidth());
-			game.setHeight(Loader.getInstance().getHeight());
+		Loader.the.initProject();
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
+		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
+		if (openWindow) {
+			mainWindow = new MainWindow();
+			Starter.frameworkElement = mainWindow.canvas;
 		}
-		Loader.the().initProject();
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter();
