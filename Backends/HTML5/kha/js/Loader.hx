@@ -55,22 +55,6 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 	
-	static function convertResponseBodyToText(binary) {
-		var byteMapping = new Hash<String>();
-		for (i in 0...256) {
-			for (j in 0...256) {
-				byteMapping.set(String.fromCharCode(i + j * 256), String.fromCharCode(i) + String.fromCharCode(j));
-			}
-		}
-		var rawBytes = untyped __js__("IEBinaryToArray_ByteStr(binary)");
-		var lastChr = untyped __js__("IEBinaryToArray_ByteStr_Last(binary)");
-		return untyped __js__("rawBytes.replace(/[\\s\\S]/g, function( match ) { return byteMapping[match]; }) + lastChr");
-	}
-	
-	static function bin2arr(a) {
-		return untyped __js__("arr(a).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(a)");
-}
-	
 	override function loadBlob(filename: String) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
@@ -83,8 +67,7 @@ class Loader extends kha.Loader {
 			if (request.status >= 200 && request.status < 400) {
 				var data : String = null;
 				if (request.responseBody != null) {
-					//data = untyped __js__("kha.js.Loader.convertResponseBodyToText(request.responseBody)");
-					data = untyped __js__("kha.js.Loader.bin2arr(request.responseBody)");
+					data = untyped __js__("arr(request.responseBody).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(request.responseBody)");
 				}
 				else {
 					data = request.responseText;
