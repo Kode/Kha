@@ -36,6 +36,7 @@ class Loader {
 	
 	var assets: Hash<Asset>;
 	var rooms: Hash<Room>;
+	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
 	
 	public function new() {
 		blobs = new Hash<Blob>();
@@ -233,4 +234,6 @@ class Loader {
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
 	public function setCursorBusy(busy : Bool) { }
+	
+	public function quit() : Void { }
 }

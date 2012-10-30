@@ -9,7 +9,7 @@ import system.windows.FrameworkElement;
 	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
 		base.OnRender(drawingContext);
 
-		if (kha.Starter.painter != null && kha.Starter.game != null) {
+		if (kha.Starter.painter != null && kha.Starter.game != null && Configuration.screen() != null) {
 			Starter.painter.context = drawingContext;
 			Starter.painter.begin();
 			Configuration.screen().render(Starter.painter);
@@ -175,6 +175,10 @@ class MainWindow extends system.windows.Window {
 		
 		Width = kha.Game.the.width + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
         Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		
+		// Go fullscreen
+		WindowStyle = System.Windows.WindowStyle.None;
+        WindowState = System.Windows.WindowState.Maximized;
 		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);

@@ -23,14 +23,16 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionBody('
-		text.Replace(\' \', (char)160); // Non-breaking space 
-		System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
-			System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
-			new System.Windows.Media.Typeface(font.name), font.size, new System.Windows.Media.SolidColorBrush(color));
-		if (font.style.getBold()) fText.SetFontWeight(System.Windows.FontWeights.Bold);
-		if (font.style.getItalic()) fText.SetFontStyle(System.Windows.FontStyles.Italic);
-		if (font.style.getUnderlined()) fText.SetTextDecorations(System.Windows.TextDecorations.Underline);
-		context.DrawText(fText, new System.Windows.Point(x, y));
+		if (text != null) {
+			text.Replace(\' \', (char)160); // Non-breaking space 
+			System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
+				System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
+				new System.Windows.Media.Typeface(font.name), font.size, new System.Windows.Media.SolidColorBrush(color));
+			if (font.style.getBold()) fText.SetFontWeight(System.Windows.FontWeights.Bold);
+			if (font.style.getItalic()) fText.SetFontStyle(System.Windows.FontStyles.Italic);
+			if (font.style.getUnderlined()) fText.SetTextDecorations(System.Windows.TextDecorations.Underline);
+			context.DrawText(fText, new System.Windows.Point(x, y));
+		}
 	')
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		

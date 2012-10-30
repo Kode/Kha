@@ -16,6 +16,11 @@ class Loader extends kha.Loader {
 	var savedCursor : Cursor;
 	var busyCursor : Bool = false;
 	
+	public function new() {
+		super();
+		isQuitable = true;
+	}
+	
 	public override function loadProject(call: Void -> Void) {
 		enqueue(new kha.Loader.Asset(path + "project.kha", path + "project.kha", "blob"));
 		loadFiles(call);
@@ -98,4 +103,9 @@ class Loader extends kha.Loader {
 		else
 			Starter.frameworkElement.Cursor = savedCursor;
 	}
+	
+	@:functionBody('
+		System.Windows.Application.Current.Shutdown();
+	')
+	override function quit() : Void { }
 }

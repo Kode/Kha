@@ -20,6 +20,7 @@ class Starter {
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
 		Loader.init(new kha.js.Loader());
+		Storage.init(new Storage());
 	}
 	
 	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {
@@ -149,7 +150,7 @@ class Starter {
 			case 83:
 				game.buttonDown(Button.BUTTON_2);
 			}
-			if (keycode >= 48 && keycode <= 90) game.keyDown(null, String.fromCharCode(keycode));
+			if (keycode >= 48 && keycode <= 90) game.keyDown(Key.CHAR, String.fromCharCode(keycode));
 			else {
 				switch (keycode) {
 				case 8:
@@ -189,7 +190,7 @@ class Starter {
 		case 83:
 			game.buttonUp(Button.BUTTON_2);
 		}
-		if (keycode >= 48 && keycode <= 90) game.keyUp(null, String.fromCharCode(keycode));
+		if (keycode >= 48 && keycode <= 90) game.keyUp(Key.CHAR, String.fromCharCode(keycode));
 		else {
 			switch (keycode) {
 			case 8:
