@@ -25,6 +25,7 @@ class Tileset {
 	}
 	
 	public function render(painter: Painter, tile: Int, x: Int, y: Int): Void {
+		if (tile < 0) return;
 		var index = tiles[tile].imageIndex;
 		var ytile : Int = Std.int(index / xmax);
 		var xtile : Int = index - ytile * xmax;

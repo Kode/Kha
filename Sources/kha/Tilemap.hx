@@ -6,22 +6,35 @@ class Tilemap {
 	var levelWidth : Int;
 	var levelHeight : Int;
 	var collissionRectCache : Rectangle;
+	var repeat: Bool;
 	
-	public function new(imagename : String, tileWidth : Int, tileHeight : Int, map : Array<Array<Int>>, tiles : Array<Tile> = null) {
+	public function new(imagename: String, tileWidth: Int, tileHeight: Int, map: Array<Array<Int>>, tiles: Array<Tile> = null, repeat: Bool = false) {
 		tileset = new Tileset(imagename, tileWidth, tileHeight, tiles);
 		this.map = map;
 		levelWidth = map.length;
 		levelHeight = map[0].length;
 		collissionRectCache = new Rectangle(0, 0, 32, 32);
+		this.repeat = repeat;
 	}
 	
-	public function render(painter : Painter, xleft : Int, ytop : Int, width : Int, height : Int) {
-		var xstart : Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH, 0));
-		var xend : Int = Std.int(Math.min((xleft + width) / tileset.TILE_WIDTH + 1, levelWidth));
-		var ystart : Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0));
-		var yend : Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 2, levelHeight));
-		for (x in xstart...xend) for (y in ystart...yend) {
-			tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int) {
+		if (repeat) {
+			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH);
+			var xend: Int = Std.int((xleft + width) / tileset.TILE_WIDTH + 1);
+			var ystart: Int = Std.int(ytop / tileset.TILE_HEIGHT);
+			var yend: Int = Std.int((ytop + height) / tileset.TILE_HEIGHT + 2);
+			for (x in xstart...xend) for (y in ystart...yend) {
+				tileset.render(painter, map[x % levelWidth][y % levelHeight], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+			}			
+		}
+		else {
+			var xstart: Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH, 0));
+			var xend: Int = Std.int(Math.min((xleft + width) / tileset.TILE_WIDTH + 1, levelWidth));
+			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0));
+			var yend: Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 2, levelHeight));
+			for (x in xstart...xend) for (y in ystart...yend) {
+				tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+			}
 		}
 	}
 	
