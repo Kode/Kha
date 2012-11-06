@@ -1,4 +1,5 @@
 package kha.wpf;
+import system.io.Path;
 import system.Uri;
 import system.UriKind;
 import system.windows.media.MediaPlayer;
@@ -9,7 +10,7 @@ class Video extends kha.Video {
 	public function new(filename : String) : Void {
 		super();
 		player = new MediaPlayer();
-        player.Open(new Uri(filename, UriKind.Relative));
+		player.Open(new Uri( Path.GetFullPath( filename ), UriKind.Absolute));
 	}
 	
 	public function getPlayer() : MediaPlayer {
