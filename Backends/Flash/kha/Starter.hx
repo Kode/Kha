@@ -1,5 +1,6 @@
 package kha;
 
+import flash.display.StageScaleMode;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.flash.utils.PerspectiveMatrix3D;
 import kha.Game;
@@ -42,6 +43,8 @@ class Starter {
 	
 	public function start(game: Game) {
 		stage = flash.Lib.current.stage;
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.addEventListener(Event.RESIZE, resizeHandler);
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
@@ -53,12 +56,6 @@ class Starter {
 		Loader.the.initProject();
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
-		
-		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-		stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 		stage3D.requestContext3D(
 			//"software"
 		);
@@ -69,8 +66,14 @@ class Starter {
 	
 	function onReady(_) : Void {
 		context = stage3D.context3D;
-		painter = new Painter(context, stage.stageWidth, stage.stageHeight);
+		painter = new Painter(context);
 
+		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+		
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
 	
@@ -145,14 +148,21 @@ class Starter {
 	}
 	
 	function mouseDownHandler(event : MouseEvent) : Void {
-		game.mouseDown(Std.int(event.stageX), Std.int(event.stageY));
+		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		game.mouseDown(Std.int(xy.x), Std.int(xy.y));
 	}
 	
 	function mouseUpHandler(event : MouseEvent) : Void {
-		game.mouseUp(Std.int(event.stageX), Std.int(event.stageY));
+		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		game.mouseUp(Std.int(xy.x), Std.int(xy.y));
 	}
 	
 	function mouseMoveHandler(event : MouseEvent) : Void {
-		game.mouseMove(Std.int(event.stageX), Std.int(event.stageY));
+		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		game.mouseMove(Std.int(xy.x), Std.int(xy.y));
+	}
+	
+	function resizeHandler(event : Event) : Void {
+		painter.resize();
 	}
 }

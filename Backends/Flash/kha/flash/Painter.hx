@@ -4,6 +4,7 @@ import flash.media.StageVideo;
 import flash.net.NetStream;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.Color;
+import kha.Game;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.display.Stage3D;
@@ -27,6 +28,10 @@ import flash.Vector;
 class Painter extends kha.Painter {
 	var tx : Float;
 	var ty : Float;
+	var borderX : Float;
+	var borderY : Float;
+	var scaleX : Float;
+	var scaleY : Float;
 	var color : Color;
 	var context : Context3D;
 	var vertexBuffer : VertexBuffer3D;
@@ -40,43 +45,42 @@ class Painter extends kha.Painter {
 	var program : Program3D;
 	var noTexProgram : Program3D;
 	
-	public function new(context : Context3D, width : Int, height : Int) {
+	public function new(context : Context3D) {
 		this.context = context;
 		tx = 0;
 		ty = 0;
 		
 		font = new Font("Arial", new FontStyle(false, false, false), 12);
 		
+		var gameWidth = Game.the.width;
+		var gameHeight = Game.the.height;
+		
+		var textureWidth = gameWidth;
+		var i = 0;
+		do {
+			textureWidth = textureWidth >> 1;
+			++i;
+		} while (textureWidth > 0);
+		textureWidth = 1 << i;
+		
+		var textureHeight = gameHeight;
+		i = -1;
+		do {
+			textureHeight = textureHeight >> 1;
+			++i;
+		} while (textureHeight > 0);
+		textureHeight = 1 << i;
+		
 		textField = new TextField();
-		textField.width = 1024;
-		textField.height = 1024;
-		textBitmap = new BitmapData(1024, 1024, true, 0xffffff);
-		textTexture = Starter.context.createTexture(1024, 1024, Context3DTextureFormat.BGRA, false);
+		textField.width = textureWidth;
+		textField.height = textureHeight;
+		textField.border = false;
+		textBitmap = new BitmapData(textureWidth , textureHeight, true, 0xffffff);
+		textTexture = context.createTexture(textureWidth, textureHeight, Context3DTextureFormat.BGRA, false);
 		
-		projection = new Matrix3D();
-		var right : Float = width;
-		var left : Float = 0;
-		var top : Float = 0;
-		var bottom : Float = height;
-		var zNear : Float = 0.1;
-		var zFar : Float = 512;
-		
-		var tx : Float = -(right + left) / (right - left);
-		var ty : Float = -(top + bottom) / (top - bottom);
-		var tz : Float = -zNear / (zFar - zNear);
-			
-		var vec : Vector<Float> = new Vector<Float>(16);
-		
-		vec[ 0] = 2.0 / (right - left); vec[ 1] = 0.0;                  vec[ 2] = 0.0;                  vec[ 3] = 0.0;
-		vec[ 4] = 0.0;                  vec[ 5] = 2.0 / (top - bottom); vec[ 6] = 0.0;                  vec[ 7] = 0.0;
-		vec[ 8] = 0.0;                  vec[ 9] = 0.0;                  vec[10] = 1.0 / (zFar - zNear); vec[11] = 0.0;
-		vec[12] = tx;                   vec[13] = ty;                   vec[14] = tz;                   vec[15] = 1.0;
-		
-		projection.copyRawDataFrom(vec);
 		#if debug
 		context.enableErrorChecking = true;
 		#end
-		context.configureBackBuffer(width, height, 0, false);
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 
 		var vertexShader : Array<String> = [
@@ -128,7 +132,93 @@ class Painter extends kha.Painter {
 		context.setVertexBufferAt(0, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 		context.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
 		
+		resize();
+	}
+	
+	public function resize() {
+		var stageWidth = flash.Lib.current.stage.stageWidth;
+		var stageHeight = flash.Lib.current.stage.stageHeight;
+		
+		var gameWidth : Float = Game.the.width;
+		var gameHeight : Float = Game.the.height;
+		
+		// fix for large text beeing truncated on height resolusion
+		if (textField.width < gameWidth || textField.height < gameHeight) {
+			var textureWidth = Game.the.width;
+			var i = 0;
+			do {
+				textureWidth = textureWidth >> 1;
+				++i;
+			} while (textureWidth > 0);
+			textureWidth = 1 << i;
+			
+			var textureHeight = Game.the.height;
+			i = -1;
+			do {
+				textureHeight = textureHeight >> 1;
+				++i;
+			} while (textureHeight > 0);
+			textureHeight = 1 << i;
+			
+			textField.width = textureWidth;
+			textField.height = textureHeight;
+			
+			
+			textTexture.dispose();
+			textBitmap.dispose();
+			
+			textBitmap = new BitmapData(textureWidth, textureHeight, true, 0xffffff);
+			textTexture = context.createTexture(textureWidth, textureHeight, Context3DTextureFormat.BGRA, false);
+		}
+		
+		var gameRatio = gameWidth / gameHeight;
+		var stageRatio = stageWidth / stageHeight;
+		
+		if (gameRatio > stageRatio) {
+			gameHeight = gameWidth / stageRatio;
+			borderX = 0;
+			borderY = (gameHeight - Game.the.height) * 0.5;
+		} else {
+			gameWidth = gameHeight * stageRatio;
+			borderX = (gameWidth - Game.the.width) * 0.5;
+			borderY = 0;
+		}
+	
+		scaleX = gameWidth / stageWidth;
+		scaleY = gameHeight / stageHeight;
+		
+		context.configureBackBuffer(stageWidth, stageHeight, 0, false);
+		
+		projection = new Matrix3D();
+		var right : Float = gameWidth;
+		var left : Float = 0;
+		var top : Float = 0;
+		var bottom : Float = gameHeight;
+		var zNear : Float = 0.1;
+		var zFar : Float = 512;
+		
+		var tx : Float = -(right + left) / (right - left);
+		var ty : Float = -(top + bottom) / (top - bottom);
+		var tz : Float = -zNear / (zFar - zNear);
+			
+		var vec : Vector<Float> = new Vector<Float>(16);
+		
+		vec[ 0] = 2.0 / (right - left); vec[ 1] = 0.0;                  vec[ 2] = 0.0;                  vec[ 3] = 0.0;
+		vec[ 4] = 0.0;                  vec[ 5] = 2.0 / (top - bottom); vec[ 6] = 0.0;                  vec[ 7] = 0.0;
+		vec[ 8] = 0.0;                  vec[ 9] = 0.0;                  vec[10] = 1.0 / (zFar - zNear); vec[11] = 0.0;
+		vec[12] = tx;                   vec[13] = ty;                   vec[14] = tz;                   vec[15] = 1.0;
+		
+		projection.copyRawDataFrom(vec);
+		
+		projection.prependTranslation(borderX, borderY, 0.0);
+		
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, projection, true);
+	}
+	
+	public function calculateGamePosition(x : Float, y : Float) : { x : Float, y : Float } {
+		var gameX = x * scaleX - borderX;
+		var gameY = y * scaleY - borderY;
+		return { x: gameX, y: gameY };
 	}
 	
 	public override function begin() {
@@ -189,7 +279,7 @@ class Painter extends kha.Painter {
 		var stageVideo = new flash.media.Video(Std.int(width), Std.int(height));
 		stageVideo.attachNetStream(cast(video, Video).stream);
 				
-		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
+		textBitmap.fillRect(new Rectangle(0, 0, textBitmap.width, textBitmap.height), 0xffffff);
 		textBitmap.draw(stageVideo);
 		textTexture.uploadFromBitmapData(textBitmap, 0);
 		
@@ -197,8 +287,8 @@ class Painter extends kha.Painter {
 		
 		var dx = x;
 		var dy = y;
-		var dw = 1024;
-		var dh = 1024;
+		var dw = textField.width;
+		var dh = textField.height;
 		var u1 = 0.0;
 		var u2 = 1.0;
 		var v1 = 0.0;
@@ -219,7 +309,7 @@ class Painter extends kha.Painter {
 		//return;
 		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt(), font.style.getBold(), font.style.getItalic(), font.style.getUnderlined());
 		textField.text = text;
-		textBitmap.fillRect(new Rectangle(0, 0, 1024, 1024), 0xffffff);
+		textBitmap.fillRect(new Rectangle(0, 0, textBitmap.width, textBitmap.height), 0xffffff);
 		textBitmap.draw(textField);
 		textTexture.uploadFromBitmapData(textBitmap, 0);
 		
@@ -227,8 +317,8 @@ class Painter extends kha.Painter {
 		
 		var dx = x;
 		var dy = y;
-		var dw = 1024;
-		var dh = 1024;
+		var dw = textField.width;
+		var dh = textField.height;
 		var u1 = 0.0;
 		var u2 = 1.0;
 		var v1 = 0.0;
