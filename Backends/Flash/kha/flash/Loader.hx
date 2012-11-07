@@ -77,17 +77,9 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadVideo(filename : String) {
-		// TODO
-			--numberOfFiles;
-			checkComplete();
-		/*var urlRequest : URLRequest = new URLRequest(filename);
-		var video : flash.media.Video = new flash.media.Video();
-		video.addEventListener(Event.COMPLETE, function(e : Event) {
-			videos.set(filename, new Video(video));
-			--numberOfFiles;
-			checkComplete();
-		});
-		//video.attachNetStream(new NetStream(urlRequest));*/
+		videos.set(filename, new Video(filename + ".mp4"));
+		--numberOfFiles;
+		checkComplete();
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
