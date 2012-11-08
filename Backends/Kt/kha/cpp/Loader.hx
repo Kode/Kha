@@ -38,4 +38,8 @@ class Loader extends kha.Loader {
 		--numberOfFiles;
 		checkComplete();
 	}
+	
+	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
+		return new kha.cpp.Font(name, style, size);
+	}
 }
