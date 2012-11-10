@@ -206,7 +206,7 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
-			loadFinished();
+			if (loadFinished != null) loadFinished();
 		}
 	}
 	

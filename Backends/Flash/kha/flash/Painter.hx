@@ -45,6 +45,17 @@ class Painter extends kha.Painter {
 	var program : Program3D;
 	var noTexProgram : Program3D;
 	
+	private static function upperPowerOfTwo(v: Int): Int {
+		v--;
+		v |= v >>> 1;
+		v |= v >>> 2;
+		v |= v >>> 4;
+		v |= v >>> 8;
+		v |= v >>> 16;
+		v++;
+		return v;
+	}
+	
 	public function new(context : Context3D) {
 		this.context = context;
 		tx = 0;
@@ -55,21 +66,8 @@ class Painter extends kha.Painter {
 		var gameWidth = Game.the.width;
 		var gameHeight = Game.the.height;
 		
-		var textureWidth = gameWidth;
-		var i = 0;
-		do {
-			textureWidth = textureWidth >> 1;
-			++i;
-		} while (textureWidth > 0);
-		textureWidth = 1 << i;
-		
-		var textureHeight = gameHeight;
-		i = -1;
-		do {
-			textureHeight = textureHeight >> 1;
-			++i;
-		} while (textureHeight > 0);
-		textureHeight = 1 << i;
+		var textureWidth = upperPowerOfTwo(gameWidth);
+		var textureHeight = upperPowerOfTwo(gameHeight);
 		
 		textField = new TextField();
 		textField.width = textureWidth;

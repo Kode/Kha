@@ -34,7 +34,7 @@ class Video extends kha.Video {
 			/*case "NetStream.Play.Start":
 				trace(filename + ": Start [" + Std.int(stream.time * 1000) / 1000 + " seconds]");*/
 			case "NetStream.Play.Stop": 
-				trace(filename + ": Stop [" + Std.int(stream.time * 1000) / 1000 + " seconds]");
+				//trace(filename + ": Stop [" + Std.int(stream.time * 1000) / 1000 + " seconds]");
 				finished = true;
 		}
 	}
