@@ -142,21 +142,9 @@ class Painter extends kha.Painter {
 		
 		// fix for large text beeing truncated on height resolusion
 		if (textField.width < gameWidth || textField.height < gameHeight) {
-			var textureWidth = Game.the.width;
-			var i = 0;
-			do {
-				textureWidth = textureWidth >> 1;
-				++i;
-			} while (textureWidth > 0);
-			textureWidth = 1 << i;
+			var textureWidth = upperPowerOfTwo(Game.the.width);
+			var textureHeight = upperPowerOfTwo(Game.the.height);
 			
-			var textureHeight = Game.the.height;
-			i = -1;
-			do {
-				textureHeight = textureHeight >> 1;
-				++i;
-			} while (textureHeight > 0);
-			textureHeight = 1 << i;
 			
 			textField.width = textureWidth;
 			textField.height = textureHeight;
