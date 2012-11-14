@@ -3,6 +3,7 @@
 #include <Kt/Scene.h>
 #include <Kt/Item.h>
 #include <Kt/Input/Keyboard.h>
+#include <Kt/Input/Mouse.h>
 #include <Kt/Sound/Sound.h>
 #include <stdio.h>
 #include <kha/Starter.h>
@@ -83,6 +84,18 @@ namespace {
 			break;
 		}
 	}
+
+	void mouseDown(Kt::MouseEvent event) {
+		Starter_obj::mouseDown(event.x(), event.y());
+	}
+
+	void mouseUp(Kt::MouseEvent event) {
+		Starter_obj::mouseUp(event.x(), event.y());
+	}
+
+	void mouseMove(Kt::MouseEvent event) {
+		Starter_obj::mouseMove(event.x(), event.y());
+	}
 }
 
 int ktmain(const Kt::List<Kt::Text>& params) {
@@ -93,7 +106,7 @@ int ktmain(const Kt::List<Kt::Text>& params) {
    // nme_register_prims();
 	
 	//printf("Begin!\n");
- 	const char *err = hxRunLibrary();
+	const char *err = hxRunLibrary();
 	if (err) {
 		// Unhandled exceptions ...
 		fprintf(stderr,"Error %s\n", err );
@@ -104,6 +117,9 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 	Kt::Sound::init();
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
+	Kt::Mouse::the()->MouseDown += mouseDown;
+	Kt::Mouse::the()->MouseUp += mouseUp;
+	Kt::Mouse::the()->MouseMove += mouseMove;
 	Kt::Scene::the()->add(Kt::Handle<HaxeItem>(new HaxeItem));
 	app.start();
 	//printf("Done!\n");
