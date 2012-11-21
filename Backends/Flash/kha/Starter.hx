@@ -90,8 +90,16 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyDown(Key.BACKSPACE, "");
+		case 9:
+			game.keyDown(Key.TAB, "");
 		case 13:
 			game.keyDown(Key.ENTER, "");
+		case 16:
+			game.keyDown(Key.SHIFT, "");
+		case 17:
+			game.keyDown(Key.CTRL, "");
+		case 18:
+			game.keyDown(Key.ALT, "");
 		case 27:
 			game.keyDown(Key.ESC, "");
 		case 46:
@@ -121,8 +129,16 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyUp(Key.BACKSPACE, "");
+		case 9:
+			game.keyUp(Key.TAB, "");
 		case 13:
 			game.keyUp(Key.ENTER, "");
+		case 16:
+			game.keyUp(Key.SHIFT, "");
+		case 17:
+			game.keyUp(Key.CTRL, "");
+		case 18:
+			game.keyUp(Key.ALT, "");
 		case 27:
 			game.keyUp(Key.ESC, "");
 		case 46:
