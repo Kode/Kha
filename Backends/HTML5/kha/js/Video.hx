@@ -24,4 +24,12 @@ class Video extends kha.Video {
 	override public function stop() : Void {
 		element.pause();
 	}
+	
+	override public function getCurrentPos() : Int {
+		return Std.int(element.currentTime * 1000);  // Miliseconds
+	}
+	
+	override public function getLength() : Int {
+		return Std.int(element.duration * 1000); // Miliseconds
+	}
 }
