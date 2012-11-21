@@ -1,8 +1,16 @@
 package kha.cpp;
 
+import kha.FontStyle;
+
 class Font implements kha.Font {
+	public var name: String;
+	public var style: FontStyle;
+	public var size: Int;
+	
 	public function new(name: String, style: FontStyle, size: Int) {
-		
+		this.name = name;
+		this.style = style;
+		this.size = size;
 	}
 	
 	public function getHeight(): Float {
