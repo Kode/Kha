@@ -10,12 +10,17 @@ import js.Dom;
 class Starter {
 	static var game : Game;
 	static var painter : Painter;
-	static var keyreleased : Array<Bool>;
+	static var pressedKeys : Array<Bool>;
+	static var lastPressedKey : Int;
+	static var pressedKeyToChar : Array<String>;
 	static var buttonspressed : Array<Bool>;
 	
 	public function new() {
-		keyreleased = new Array<Bool>();
-		for (i in 0...256) keyreleased.push(true);
+		pressedKeys = new Array<Bool>();
+		for (i in 0...256) pressedKeys.push(false);
+		lastPressedKey = null;
+		pressedKeyToChar = new Array<String>();
+		for (i in 0...256) pressedKeys.push(null);
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
@@ -121,11 +126,15 @@ class Starter {
 		}
 
 		Lib.document.onkeydown = function(event : js.Event) {
-			pressKey(event.keyCode);
+			keyDown(cast event);
 		};
 		
+		Lib.document.onkeypress = function(event : js.Event) {
+			keyPress(cast event);
+		}
+		
 		Lib.document.onkeyup = function(event : js.Event) {
-			releaseKey(event.keyCode);
+			keyUp(cast event);
 		};
 		
 		Configuration.setScreen(game);
@@ -133,50 +142,88 @@ class Starter {
 		game.loadFinished();
 	}
 	
-	static function pressKey(keycode : Int) {
-		if (keyreleased[keycode]) { //avoid auto-repeat
-			keyreleased[keycode] = false;
-			switch (keycode) {
-			case 38:
-				game.buttonDown(Button.UP);
-			case 40:
-				game.buttonDown(Button.DOWN);
-			case 37:
-				game.buttonDown(Button.LEFT);
-			case 39:
-				game.buttonDown(Button.RIGHT);
-			case 65:
-				game.buttonDown(Button.BUTTON_1);
-			case 83:
-				game.buttonDown(Button.BUTTON_2);
-			}
-			if (keycode >= 48 && keycode <= 90) game.keyDown(Key.CHAR, String.fromCharCode(keycode));
-			else {
-				switch (keycode) {
-				case 8:
-					game.keyDown(Key.BACKSPACE, null);
-				case 9:
-					game.keyDown(Key.TAB, null);
-				case 13:
-					game.keyDown(Key.ENTER, null);
-				case 16:
-					game.keyDown(Key.SHIFT, null);
-				case 17:
-					game.keyDown(Key.CTRL, null);
-				case 18:
-					game.keyDown(Key.ALT, null);
-				case 27:
-					game.keyDown(Key.ESC, null);
-				case 127:
-					game.keyDown(Key.DEL, null);
-				}
+	static function keyDown(event : { > js.Event, char : String, key : String, charCode : Null<Int>}) {
+		trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '"+event.key+"')");
+		if (pressedKeys[event.keyCode]) {
+			lastPressedKey = 0;
+			return;
+		}
+		lastPressedKey = event.keyCode;
+		pressedKeys[event.keyCode] = true;
+		switch (event.keyCode) {
+		case 8:
+			game.keyDown(Key.BACKSPACE, "");
+		case 9:
+			game.keyDown(Key.TAB, "");
+		case 13:
+			game.keyDown(Key.ENTER, "");
+		case 16:
+			game.keyDown(Key.SHIFT, "");
+		case 17:
+			game.keyDown(Key.CTRL, "");
+		case 18:
+			game.keyDown(Key.ALT, "");
+		case 27:
+			game.keyDown(Key.ESC, "");
+		case 46:
+			game.keyDown(Key.DEL, "");
+		case 38:
+			game.buttonDown(Button.UP);
+		case 40:
+			game.buttonDown(Button.DOWN);
+		case 37:
+			game.buttonDown(Button.LEFT);
+		case 39:
+			game.buttonDown(Button.RIGHT);
+		case 65:
+			game.buttonDown(Button.BUTTON_1);
+		case 83:
+			game.buttonDown(Button.BUTTON_2);
+		}
+	}
+	
+	static function keyPress(event : { > js.Event, charCode : Int, char : String, key : String } ) {
+		trace ("keyPress(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
+		// we cannot determine the keycode crossplatform yet. Situation will be better when Gecko implements key and char:
+		// https://developer.mozilla.org/en-US/docs/DOM/KeyboardEvent
+		if (lastPressedKey == 0) return;
+		lastPressedKey = 0;
+		
+		if (event.keyCode == 0) {
+			// current Gecko
+			var char = String.fromCharCode(event.charCode);
+			game.keyDown(Key.CHAR, char);
+			pressedKeyToChar[lastPressedKey] = char;
+			
+		}
+		// DOM3
+		else if (event.char != null) { // IE
+			if (event.char != "") { // Gecko (planned)
+				game.keyDown(Key.CHAR, event.char);
+				pressedKeyToChar[lastPressedKey] = event.char;
 			}
 		}
 	}
 	
-	static function releaseKey(keycode : Int) {
-		keyreleased[keycode] = true;
-		switch (keycode) {
+	static function keyUp(event : { > js.Event, charCode : Int, char : String, key : String }) {
+		trace ("keyUp(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '"+event.key+"')");
+		pressedKeys[event.keyCode] = false;
+		
+		switch (event.keyCode) {
+		case 8:
+			game.keyUp(Key.BACKSPACE, "");
+		case 9:
+			game.keyUp(Key.TAB, "");
+		case 13:
+			game.keyUp(Key.ENTER, "");
+		case 17:
+			game.keyUp(Key.CTRL, "");
+		case 18:
+			game.keyUp(Key.ALT, "");
+		case 27:
+			game.keyUp(Key.ESC, "");
+		case 46:
+			game.keyUp(Key.DEL, "");
 		case 38:
 			game.buttonUp(Button.UP);
 		case 40:
@@ -186,30 +233,15 @@ class Starter {
 		case 39:
 			game.buttonUp(Button.RIGHT);
 		case 65:
-			game.buttonUp(Button.BUTTON_1);
+			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
 		case 83:
-			game.buttonUp(Button.BUTTON_2);
+			game.buttonUp(Button.BUTTON_2); // This is also an 's'
 		}
-		if (keycode >= 48 && keycode <= 90) game.keyUp(Key.CHAR, String.fromCharCode(keycode));
-		else {
-			switch (keycode) {
-			case 8:
-				game.keyUp(Key.BACKSPACE, null);
-			case 9:
-				game.keyUp(Key.TAB, null);
-			case 13:
-				game.keyUp(Key.ENTER, null);
-			case 16:
-				game.keyUp(Key.SHIFT, null);
-			case 17:
-				game.keyUp(Key.CTRL, null);
-			case 18:
-				game.keyUp(Key.ALT, null);
-			case 27:
-				game.keyUp(Key.ESC, null);
-			case 127:
-				game.keyUp(Key.DEL, null);
-			}
+		
+		if (pressedKeyToChar[event.keyCode] != null) {
+			// Key.Char
+			game.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
+			pressedKeyToChar[event.keyCode] = null;
 		}
 	}
 }
