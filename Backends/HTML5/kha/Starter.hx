@@ -111,41 +111,55 @@ class Starter {
 		}
 		Loader.the.initProject();
 		
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
-		
-		Lib.document.onmousedown = function(event : js.Event) {
-			game.mouseDown(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
-		}
-		
-		Lib.document.onmouseup = function(event : js.Event) {
-			game.mouseUp(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
-		}
-		
-		Lib.document.onmousemove = function(event : js.Event) {
-			game.mouseMove(Std.int(event.clientX - canvas.offsetLeft), Std.int(event.clientY - canvas.offsetTop));
-		}
-
-		Lib.document.onkeydown = function(event : js.Event) {
-			keyDown(cast event);
-		};
-		
-		Lib.document.onkeypress = function(event : js.Event) {
-			keyPress(cast event);
-		}
-		
-		Lib.document.onkeyup = function(event : js.Event) {
-			keyUp(cast event);
-		};
-		
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
+		
+		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		
+		// Autofocus
+		if (canvas.getAttribute("tabindex") == null) {
+			canvas.setAttribute("tabindex", "0"); // needed for keypress events
+		}
+		canvas.focus();
+		
+		// disable context menu
+		canvas.oncontextmenu = function(event : js.Event) { event.stopPropagation(); event.preventDefault(); }
+		
+		//Lib.document.onmousedown = function(event : js.Event) {
+		canvas.onmousedown = function(event : js.Event) {
+			game.mouseDown(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		}
+		
+		//Lib.document.onmouseup = function(event : js.Event) {
+		canvas.onmouseup = function(event : js.Event) {
+			game.mouseUp(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		}
+		
+		//Lib.document.onmousemove = function(event : js.Event) {
+		canvas.onmousemove = function(event : js.Event) {
+			game.mouseMove(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		}
+
+		//Lib.document.onkeydown = function(event : js.Event) {
+		canvas.onkeydown = keyDown;
+		
+		//Lib.document.onkeypress = keyPress;
+		canvas.onkeypress = keyPress;
+		
+		//Lib.document.onkeyup = keyUp;
+		canvas.onkeyup = keyUp;
+		
 		game.loadFinished();
 	}
 	
-	static function keyDown(event : { > js.Event, char : String, key : String, charCode : Null<Int>}) {
-		trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '"+event.key+"')");
+	static function keyDown(event : js.Event) {
+		trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
+		
+		event.stopPropagation();
+		
 		if (pressedKeys[event.keyCode]) {
 			lastPressedKey = 0;
+			event.preventDefault();
 			return;
 		}
 		lastPressedKey = event.keyCode;
@@ -153,39 +167,60 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyDown(Key.BACKSPACE, "");
+			event.preventDefault();
 		case 9:
 			game.keyDown(Key.TAB, "");
+			event.preventDefault();
 		case 13:
 			game.keyDown(Key.ENTER, "");
+			event.preventDefault();
 		case 16:
 			game.keyDown(Key.SHIFT, "");
+			event.preventDefault();
 		case 17:
 			game.keyDown(Key.CTRL, "");
+			event.preventDefault();
 		case 18:
 			game.keyDown(Key.ALT, "");
+			event.preventDefault();
 		case 27:
 			game.keyDown(Key.ESC, "");
+			event.preventDefault();
+		case 32:
+			game.keyDown(Key.CHAR, " ");
+			event.preventDefault(); // don't scroll down in IE
 		case 46:
 			game.keyDown(Key.DEL, "");
+			event.preventDefault();
 		case 38:
 			game.buttonDown(Button.UP);
+			event.preventDefault();
 		case 40:
 			game.buttonDown(Button.DOWN);
+			event.preventDefault();
 		case 37:
 			game.buttonDown(Button.LEFT);
+			event.preventDefault();
 		case 39:
 			game.buttonDown(Button.RIGHT);
+			event.preventDefault();
 		case 65:
-			game.buttonDown(Button.BUTTON_1);
+			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
 		case 83:
-			game.buttonDown(Button.BUTTON_2);
+			game.buttonDown(Button.BUTTON_2); // This is also an 's'
 		}
 	}
 	
-	static function keyPress(event : { > js.Event, charCode : Int, char : String, key : String } ) {
-		trace ("keyPress(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
-		// we cannot determine the keycode crossplatform yet. Situation will be better when Gecko implements key and char:
-		// https://developer.mozilla.org/en-US/docs/DOM/KeyboardEvent
+	static function keyPress(event : js.Event ) {
+		//trace ("keyPress(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
+		
+		event.preventDefault();
+		event.stopPropagation();
+		
+		// Determine the keycode crossplatform is a bit tricky.
+		// Situation will be better when Gecko implements key and char: https://developer.mozilla.org/en-US/docs/DOM/KeyboardEvent
+		// We saved the keycode in keyDown() and map pressed char to that code.
+		// In keyUp() we can then get the char from keycode again.
 		if (lastPressedKey == 0) return;
 		lastPressedKey = 0;
 		
@@ -205,8 +240,12 @@ class Starter {
 		}
 	}
 	
-	static function keyUp(event : { > js.Event, charCode : Int, char : String, key : String }) {
-		trace ("keyUp(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '"+event.key+"')");
+	static function keyUp(event : js.Event) {
+		//trace ("keyUp(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
+		
+		event.preventDefault();
+		event.stopPropagation();
+		
 		pressedKeys[event.keyCode] = false;
 		
 		switch (event.keyCode) {
@@ -239,7 +278,6 @@ class Starter {
 		}
 		
 		if (pressedKeyToChar[event.keyCode] != null) {
-			// Key.Char
 			game.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
 			pressedKeyToChar[event.keyCode] = null;
 		}
