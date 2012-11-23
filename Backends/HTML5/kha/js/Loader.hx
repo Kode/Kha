@@ -1,5 +1,6 @@
 package kha.js;
 
+import js.Boot;
 import kha.FontStyle;
 import kha.Blob;
 import kha.Starter;
@@ -37,13 +38,16 @@ class Loader extends kha.Loader {
 		//trace ("loadSound " + filename);
 		var sound = new Sound(filename);
 		//sound.element.onloadstart = trace ("onloadstart( " + element.src + " )");
-		sounds.set(filename, sound);
+		sound.element.onerror = function(ex : Dynamic) {
+			Lib.alert("Error loading " + sound.element.src);
+		}
 		sound.element.oncanplaythrough = function () {
 				//trace ("loaded " + sound.element.src);
 				sound.element.oncanplaythrough = null;
 				--numberOfFiles;
 				checkComplete();
 			};
+		sounds.set(filename, sound);
 	}
 	
 	override function loadImage(filename: String) {
@@ -57,9 +61,19 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadVideo(filename: String): Void {
-		videos.set(filename, new Video(filename));
-		--numberOfFiles;
-		checkComplete();
+		//trace ("loadVideo( " + filename + " )");
+		var video = new Video(filename);
+		//video.element.onloadstart = trace ("onloadstart( " + video.element.src + " )");
+		video.element.onerror = function(ex : Dynamic) {
+			Lib.alert("Error loading " + video.element.src);
+		}
+		video.element.oncanplaythrough = function () {
+				//trace ("loaded " + video.element.src);
+				video.element.oncanplaythrough = null;
+				--numberOfFiles;
+				checkComplete();
+			};
+		videos.set(filename, video);
 	}
 	
 	override function loadBlob(filename: String) {

@@ -16,6 +16,8 @@ class Starter {
 	static var buttonspressed : Array<Bool>;
 	
 	public function new() {
+		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
+		
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		lastPressedKey = null;

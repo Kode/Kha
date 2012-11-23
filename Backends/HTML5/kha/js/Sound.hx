@@ -25,7 +25,7 @@ class Sound extends kha.Sound {
 	
 	override public function stop() : Void {
 		element.pause();
-		element.currentTime = 0.0;
+		element.currentTime = 0;
 	}
 	
 	override public function getCurrentPos() : Int {
