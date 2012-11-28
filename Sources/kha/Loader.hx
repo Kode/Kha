@@ -90,31 +90,31 @@ class Loader {
 		return videos.get(name);
 	}
 	
-	public function getXml(name : String) : Xml {
+	public function getXml(name: String): Xml {
 		return xmls.get(name);
 	}
 	
-	public function getAvailableBlobs() : Iterator<String> {
+	public function getAvailableBlobs(): Iterator<String> {
 		return blobs.keys();
 	}
 	
-	public function getAvailableImages() : Iterator<String> {
+	public function getAvailableImages(): Iterator<String> {
 		return images.keys();
 	}
 	
-	public function getAvailableMusic() : Iterator<String> {
+	public function getAvailableMusic(): Iterator<String> {
 		return musics.keys();
 	}
 	
-	public function getAvailableSounds() : Iterator<String> {
+	public function getAvailableSounds(): Iterator<String> {
 		return sounds.keys();
 	}
 	
-	public function getAvailableVideos() : Iterator<String> {
+	public function getAvailableVideos(): Iterator<String> {
 		return videos.keys();
 	}
 	
-	public function getAvailableXmls() : Iterator<String> {
+	public function getAvailableXmls(): Iterator<String> {
 		return xmls.keys();
 	}
 	
@@ -125,9 +125,22 @@ class Loader {
 		enqueued.push(asset);
 	}
 	
+	public static function containsAsset(assetName: String, assetType: String, map: Array<Asset>): Bool {
+		for (asset in map) {
+			if (asset.type == assetType && asset.name == assetName) return true;
+		}
+		return false;
+	}
+	
 	public function loadFiles(call: Void -> Void) {
 		loadFinished = call;
 		loadStarted(enqueued.length);
+		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) images.remove(imagename);
+		for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
+		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) musics.remove(musicname);
+		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) sounds.remove(soundname);
+		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) videos.remove(videoname);
+		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) blobs.remove(blobname);
 		for (i in 0...enqueued.length) {
 			switch (enqueued[i].type) {
 				case "image":
