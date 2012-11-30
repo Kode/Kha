@@ -5,7 +5,7 @@ import kha.Image;
 #include <kha/cpp/Image.h>
 #include <Kt/stdafx.h>
 #include <Kt/Graphics/Painter.h>
-#include <Kt/GUI/Font.h>
+#include <Kt/Graphics/Font.h>
 
 extern Kt::Painter* haxePainter;
 ')
