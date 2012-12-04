@@ -7,20 +7,20 @@ class Texture implements kha.graphics.Texture {
 	private var texture: Dynamic;
 	
 	public function new(image: Image) {
-		texture = System.gl.createTexture();
+		texture = Sys.gl.createTexture();
 		texture.image = cast(image, kha.js.Image).image;
-		Sys.gl.bindTexture(System.gl.TEXTURE_2D, texture);
-		Sys.gl.pixelStorei(System.gl.UNPACK_FLIP_Y_WEBGL, true);
-		Sys.gl.texImage2D(System.gl.TEXTURE_2D, 0, System.gl.RGBA, System.gl.RGBA, System.gl.UNSIGNED_BYTE, texture.image);
-		Sys.gl.texParameteri(System.gl.TEXTURE_2D, System.gl.TEXTURE_MAG_FILTER, System.gl.LINEAR);
-		Sys.gl.texParameteri(System.gl.TEXTURE_2D, System.gl.TEXTURE_MIN_FILTER, System.gl.LINEAR_MIPMAP_LINEAR);
-		Sys.gl.generateMipmap(System.gl.TEXTURE_2D);
-		Sys.gl.bindTexture(System.gl.TEXTURE_2D, null);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+		Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
+		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, texture.image);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR_MIPMAP_LINEAR);
+		Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 	}
 	
 	public function set(stage: Int): Void {
 		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
-		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, tex);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
 	}
 	
 	public function width(): Int {

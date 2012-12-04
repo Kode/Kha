@@ -11,12 +11,12 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Array<Float> {
-		
+		return data;
 	}
 	
 	public function unlock(): Void {
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, Sys.gl.createBuffer());
-		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(arr), Sys.gl.STATIC_DRAW);
+		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(data), Sys.gl.STATIC_DRAW);
 	}
 	
 	public function set(): Void {
