@@ -26,6 +26,7 @@ class Starter {
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
+		Sys.init();
 		Loader.init(new kha.js.Loader());
 		Storage.init(new Storage());
 	}
