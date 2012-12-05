@@ -52,7 +52,7 @@ class Starter {
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
 		try {
-			//if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.getWidth(), game.getHeight());
+			if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.width, game.height);
 		}
 		catch (e : Dynamic) {
 			trace(e);
