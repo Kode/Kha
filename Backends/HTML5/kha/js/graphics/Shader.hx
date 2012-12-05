@@ -21,4 +21,8 @@ class Shader implements VertexShader, implements FragmentShader{
 	public function setFloat(name: String, value: Float): Void {
 		Sys.gl.uniform1f(cast(Sys.graphics, Graphics).getLocation(name), value);
 	}
+	
+	public function setFloat2(name: String, value1: Float, value2: Float): Void {
+		Sys.gl.uniform2f(cast(Sys.graphics, Graphics).getLocation(name), value1, value2);
+	}
 }
