@@ -38,21 +38,13 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		Sys.gl.useProgram(program);
 		vertexBuffer.bind(program);
-		/*var attr = Sys.gl.getAttribLocation(program, "pos");
-		Sys.gl.enableVertexAttribArray(attr);
-		//void vertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLintptr offset)
-		Sys.gl.vertexAttribPointer(attr, vertexBuffer.size(), Sys.gl.FLOAT, false, vertexBuffer.stride(), 0);
-		
-		attr = Sys.gl.getAttribLocation(program, "tex");
-		Sys.gl.enableVertexAttribArray(attr);
-		Sys.gl.vertexAttribPointer(attr, vertexBuffer.size(), Sys.gl.FLOAT, false, vertexBuffer.stride(), 3 * 4);*/
-		
-		var location = Sys.gl.getUniformLocation(program, "sampler");
-		Sys.gl.uniform1i(location, 0);
 		if (count == null) count = vertexBuffer.size() - start;
 		Sys.gl.drawArrays(Sys.gl.TRIANGLE_STRIP, start, 4);
+	}
+	
+	public function getLocation(name: String): Int {
+		return Sys.gl.getUniformLocation(program, "sampler");
 	}
 	
 	public function createVertexShader(source: String): VertexShader {
@@ -92,5 +84,6 @@ class Graphics implements kha.graphics.Graphics {
 		if (!Sys.gl.getProgramParameter(program, Sys.gl.LINK_STATUS)) {
 			throw "Could not link the shader program.";
 		}
+		Sys.gl.useProgram(program);
 	}
 }
