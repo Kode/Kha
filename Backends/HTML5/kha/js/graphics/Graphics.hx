@@ -2,6 +2,7 @@ package kha.js.graphics;
 
 import kha.graphics.VertexShader;
 import kha.graphics.FragmentShader;
+import kha.graphics.VertexStructure;
 
 class Graphics implements kha.graphics.Graphics {
 	private var vertexShader: Shader;
@@ -13,8 +14,8 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function createVertexBuffer(vertexCount: Int, stride: Int): kha.graphics.VertexBuffer {
-		return new VertexBuffer(vertexCount, stride);
+	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
+		return new VertexBuffer(vertexCount, structure);
 	}
 	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
@@ -38,15 +39,15 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function drawArrays(start: Int = 0, ?count: Int): Void {
 		Sys.gl.useProgram(program);
-		vertexBuffer.bind();
-		var attr = Sys.gl.getAttribLocation(program, "pos");
+		vertexBuffer.bind(program);
+		/*var attr = Sys.gl.getAttribLocation(program, "pos");
 		Sys.gl.enableVertexAttribArray(attr);
 		//void vertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLintptr offset)
 		Sys.gl.vertexAttribPointer(attr, vertexBuffer.size(), Sys.gl.FLOAT, false, vertexBuffer.stride(), 0);
 		
 		attr = Sys.gl.getAttribLocation(program, "tex");
 		Sys.gl.enableVertexAttribArray(attr);
-		Sys.gl.vertexAttribPointer(attr, vertexBuffer.size(), Sys.gl.FLOAT, false, vertexBuffer.stride(), 3 * 4);
+		Sys.gl.vertexAttribPointer(attr, vertexBuffer.size(), Sys.gl.FLOAT, false, vertexBuffer.stride(), 3 * 4);*/
 		
 		var location = Sys.gl.getUniformLocation(program, "sampler");
 		Sys.gl.uniform1i(location, 0);

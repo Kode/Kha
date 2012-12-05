@@ -3,7 +3,7 @@ package kha.graphics;
 import kha.Image;
 
 interface Graphics {
-	function createVertexBuffer(vertexCount: Int, stride: Int): VertexBuffer;
+	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function createIndexBuffer(indexCount: Int): IndexBuffer;
 	function createTexture(image: Image): Texture;
