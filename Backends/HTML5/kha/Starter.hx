@@ -48,11 +48,24 @@ class Starter {
 	
 	public function start(game: Game): Void {
 		Starter.game = game;
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Loader.the.loadProject(loadFinished);
+	}
+	
+	public function loadFinished() {
+		Loader.the.initProject();
+		if (Loader.the.width > 0 && Loader.the.height > 0) {
+			game.width = Loader.the.width;
+			game.height = Loader.the.height;
+		}
 		
 		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
 		try {
-			if (canvas.getContext("experimental-webgl") != null) painter = new PainterGL(canvas.getContext("experimental-webgl"), game.width, game.height);
+			if (Sys.needs3d && canvas.getContext("experimental-webgl") != null) {
+				painter = new PainterGL(canvas.getContext("experimental-webgl"), game.width, game.height);
+				Sys.gl = canvas.getContext("experimental-webgl");
+			}
 		}
 		catch (e : Dynamic) {
 			trace(e);
@@ -98,26 +111,6 @@ class Starter {
 		
 		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 		else requestAnimationFrame(animate);
-	
-		if (Loader.the.width > 0 && Loader.the.height > 0) {
-			game.width = Loader.the.width;
-			game.height = Loader.the.height;
-		}
-		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
-		Loader.the.loadProject(loadFinished);
-	}
-	
-	public static function loadFinished() {
-		if (Loader.the.width > 0 && Loader.the.height > 0) {
-			game.width = Loader.the.width;
-			game.height = Loader.the.height;
-		}
-		Loader.the.initProject();
-		
-		Configuration.setScreen(game);
-		Configuration.screen().setInstance();
-		
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
 		
 		// Autofocus
 		if (canvas.getAttribute("tabindex") == null) {
@@ -151,6 +144,9 @@ class Starter {
 		
 		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
+		
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		
 		game.loadFinished();
 	}

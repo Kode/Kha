@@ -3,11 +3,16 @@ package kha.js.graphics;
 class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var buffer: Dynamic;
 	private var data: Array<Float>;
+	private var mySize: Int;
+	private var myStride: Int;
 	
-	public function new(vertexCount: Int) {
+	public function new(vertexCount: Int, stride: Int) {
+		mySize = vertexCount;
+		myStride = stride;
 		buffer = Sys.gl.createBuffer();
 		data = new Array<Float>();
-		data[vertexCount - 1] = 0;
+		++vertexCount; //evil hack - browser stride bug?
+		data[Std.int(vertexCount * stride / 4) - 1] = 0;
 	}
 	
 	public function lock(?start: Int, ?count: Int): Array<Float> {
@@ -15,15 +20,19 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	}
 	
 	public function unlock(): Void {
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, Sys.gl.createBuffer());
+		bind();
 		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(data), Sys.gl.STATIC_DRAW);
 	}
 	
-	//void vertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLintptr offset)
-	public function set(): Void {
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, Sys.gl.createBuffer());
-		//var attr = gl.getAttribLocation(prog, attr_name);
-		Sys.gl.enableVertexAttribArray(0);
-		Sys.gl.vertexAttribPointer(0, data.length, Sys.gl.FLOAT, false, 0, 0);
+	public function stride(): Int {
+		return myStride;
+	}
+	
+	public function size(): Int {
+		return mySize;
+	}
+	
+	public function bind(): Void {
+		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
 	}
 }
