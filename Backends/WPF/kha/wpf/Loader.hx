@@ -3,6 +3,7 @@ package kha.wpf;
 import haxe.io.Bytes;
 import haxe.Json;
 import kha.FontStyle;
+import kha.loader.Asset;
 import kha.Starter;
 import system.io.File;
 import system.windows.FrameworkElement;
@@ -22,7 +23,7 @@ class Loader extends kha.Loader {
 	}
 	
 	public override function loadProject(call: Void -> Void) {
-		enqueue(new kha.Loader.Asset(path + "project.kha", path + "project.kha", "blob"));
+		enqueue(new kha.loader.Asset(path + "project.kha", path + "project.kha", "blob"));
 		loadFiles(call);
 	}
 	
@@ -30,38 +31,38 @@ class Loader extends kha.Loader {
 		return Json.parse(getBlob(path + "project.kha").toString());
 	}
 	
-	override function loadXml(filename : String) : Void {
-		xmls.set(filename, Xml.parse(File.ReadAllText(path + filename)));
+	override function loadXml(asset: Asset) : Void {
+		xmls.set(asset.name, Xml.parse(File.ReadAllText(path + asset.file)));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadMusic(filename : String) : Void {
-		musics.set(filename, null);//new Music(filename));
+	override function loadMusic(asset: Asset) : Void {
+		musics.set(asset.name, null);//new Music(filename));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadSound(filename : String) : Void {
-		sounds.set(filename, new Sound(path + filename + ".wav"));
+	override function loadSound(asset: Asset) : Void {
+		sounds.set(asset.name, new Sound(path + asset.file + ".wav"));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadImage(filename : String) : Void {
-		images.set(filename, new Image(path + filename));
+	override function loadImage(asset: Asset) : Void {
+		images.set(asset.name, new Image(path + asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadBlob(filename :String): Void {
-		blobs.set(filename, new Blob(Bytes.ofData(File.ReadAllBytes(filename))));
+	override function loadBlob(asset: Asset): Void {
+		blobs.set(asset.name, new Blob(Bytes.ofData(File.ReadAllBytes(asset.file))));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadVideo(filename : String) : Void {
-		videos.set(filename, new Video(path + filename + ".wmv"));
+	override function loadVideo(asset: Asset) : Void {
+		videos.set(asset.name, new Video(path + asset.file + ".wmv"));
 		--numberOfFiles;
 		checkComplete();
 	}
