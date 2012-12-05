@@ -4,6 +4,7 @@ import js.Boot;
 import kha.FontStyle;
 import kha.Blob;
 import kha.Starter;
+import kha.loader.Asset;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Dom;
@@ -15,70 +16,70 @@ class Loader extends kha.Loader {
 		super();
 	}
 		
-	override function loadXml(filename: String) {
-		var r = new haxe.Http(filename);
+	override function loadXml(asset: Asset) {
+		var r = new haxe.Http(asset.file);
 		r.onError = function(error:String) {
-			Lib.alert("Error loading " + filename + ": " + error);
+			Lib.alert("Error loading " + asset.file + ": " + error);
 		}
 		r.onData = function(data : String) {
-			xmls.set(filename, Xml.parse(data));
+			xmls.set(asset.name, Xml.parse(data));
 			--numberOfFiles;
 			checkComplete();
 		};
 		r.request(false);
 	}
 	
-	override function loadMusic(filename: String) {
-		musics.set(filename, new Music(filename));
+	override function loadMusic(asset: Asset) {
+		musics.set(asset.name, new Music(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadSound(filename: String) {
+	override function loadSound(asset: Asset) {
 		//trace ("loadSound " + filename);
-		var sound = new Sound(filename);
+		var sound = new Sound(asset.file);
 		//sound.element.onloadstart = trace ("onloadstart( " + element.src + " )");
-		sound.element.onerror = function(ex : Dynamic) {
+		sound.element.onerror = function(ex: Dynamic) {
 			Lib.alert("Error loading " + sound.element.src);
 		}
 		sound.element.oncanplaythrough = function () {
-				//trace ("loaded " + sound.element.src);
-				sound.element.oncanplaythrough = null;
-				--numberOfFiles;
-				checkComplete();
-			};
-		sounds.set(filename, sound);
+			//trace ("loaded " + sound.element.src);
+			sound.element.oncanplaythrough = null;
+			--numberOfFiles;
+			checkComplete();
+		};
+		sounds.set(asset.name, sound);
 	}
 	
-	override function loadImage(filename: String) {
+	override function loadImage(asset: Asset) {
 		var img : js.Image = cast Lib.document.createElement("img");
-		img.src = filename;
+		img.src = asset.file;
 		img.onload = function(event : Event) {
-			images.set(filename, new kha.js.Image(img));
+			images.set(asset.name, new kha.js.Image(img));
 			--numberOfFiles;
 			checkComplete();
 		};
 	}
 	
-	override function loadVideo(filename: String): Void {
+	override function loadVideo(asset: Asset): Void {
 		//trace ("loadVideo( " + filename + " )");
-		var video = new Video(filename);
+		var video = new Video(asset.file);
 		//video.element.onloadstart = trace ("onloadstart( " + video.element.src + " )");
 		video.element.onerror = function(ex : Dynamic) {
 			Lib.alert("Error loading " + video.element.src);
 		}
 		video.element.oncanplaythrough = function () {
-				//trace ("loaded " + video.element.src);
-				video.element.oncanplaythrough = null;
-				--numberOfFiles;
-				checkComplete();
-			};
-		videos.set(filename, video);
+			//trace ("loaded " + video.element.src);
+			video.element.oncanplaythrough = null;
+			--numberOfFiles;
+			checkComplete();
+		};
+		videos.set(asset.name, video);
 	}
 	
-	override function loadBlob(filename: String) {
+	override function loadBlob(asset : Asset) {
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", filename, true);
+		request.open("GET", asset.file, true);
 		if (request.overrideMimeType != null) request.overrideMimeType('text/plain; charset=x-user-defined');
 		else {
 			request.setRequestHeader("Accept-Charset", "x-user-defined");
@@ -95,7 +96,7 @@ class Loader extends kha.Loader {
 				}
 				var bytes = Bytes.alloc(data.length);
 				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
-				blobs.set(filename, new Blob(bytes));
+				blobs.set(asset.name, new Blob(bytes));
 				--numberOfFiles;
 				checkComplete();
 			}

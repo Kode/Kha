@@ -1,28 +1,8 @@
 package kha;
 
 import haxe.Json;
-
-class Asset {
-	public function new(name: String, file: String, type: String) {
-		this.name = name;
-		this.file = file;
-		this.type = type;
-	}
-	public var name: String;
-	public var file: String;
-	public var type: String;
-}
-
-class Room {
-	public function new(id: String) {
-		this.id = id;
-		assets = new Array<Asset>();
-		parent = null;
-	}
-	public var id: String;
-	public var assets: Array<Asset>;
-	public var parent: Room;
-}
+import kha.loader.Asset;
+import kha.loader.Room;
 
 class Loader {
 	var blobs : Hash<Blob>;
@@ -144,17 +124,17 @@ class Loader {
 		for (i in 0...enqueued.length) {
 			switch (enqueued[i].type) {
 				case "image":
-					if (!images.exists(enqueued[i].file)) loadImage(enqueued[i].file); else loadDummyFile();
+					if (!images.exists(enqueued[i].name)) loadImage(enqueued[i]); else loadDummyFile();
 				case "xml":
-					if (!xmls.exists(enqueued[i].file))   loadXml(enqueued[i].file);   else loadDummyFile();
+					if (!xmls.exists(enqueued[i].name))   loadXml(enqueued[i]);   else loadDummyFile();
 				case "music":
-					if (!musics.exists(enqueued[i].file)) loadMusic(enqueued[i].file); else loadDummyFile();
+					if (!musics.exists(enqueued[i].name)) loadMusic(enqueued[i]); else loadDummyFile();
 				case "sound":
-					if (!sounds.exists(enqueued[i].file)) loadSound(enqueued[i].file); else loadDummyFile();
+					if (!sounds.exists(enqueued[i].name)) loadSound(enqueued[i]); else loadDummyFile();
 				case "video":
-					if (!videos.exists(enqueued[i].file)) loadVideo(enqueued[i].file); else loadDummyFile();
+					if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
 				case "blob":
-					if (!blobs.exists(enqueued[i].file))  loadBlob(enqueued[i].file);  else loadDummyFile();
+					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
 			}
 		}
 		enqueued = new Array<Asset>();
@@ -233,12 +213,12 @@ class Loader {
 		this.numberOfFiles = numberOfFiles;
 	}
 	
-	private function loadImage(filename : String) { }
-	private function loadBlob(filename : String) { }
-	private function loadSound(filename : String) { }
-	private function loadMusic(filename : String) { }
-	private function loadVideo(filename : String) { }
-	private function loadXml(filename : String) { }
+	private function loadImage(asset : Asset) { }
+	private function loadBlob(asset : Asset) { }
+	private function loadSound(asset : Asset) { }
+	private function loadMusic(asset : Asset) { }
+	private function loadVideo(asset : Asset) { }
+	private function loadXml(asset : Asset) { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	
