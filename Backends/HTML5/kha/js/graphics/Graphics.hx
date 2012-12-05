@@ -1,8 +1,9 @@
 package kha.js.graphics;
 
-import kha.graphics.VertexShader;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexStructure;
+import kha.graphics.TextureWrap;
+import kha.graphics.VertexShader;
 
 class Graphics implements kha.graphics.Graphics {
 	private var vertexShader: Shader;
@@ -24,6 +25,22 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function createTexture(image: kha.Image): kha.graphics.Texture {
 		return new Texture(image);
+	}
+	
+	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
+		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
+		switch (u) {
+		case TextureWrap.ClampToEdge:
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
+		case TextureWrap.Repeat:
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.REPEAT);
+		}
+		switch (v) {
+		case TextureWrap.ClampToEdge:
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
+		case TextureWrap.Repeat:
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.REPEAT);
+		}
 	}
 	
 	public function setVertexBuffer(aVertexBuffer: kha.graphics.VertexBuffer): Void {
