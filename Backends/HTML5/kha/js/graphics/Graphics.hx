@@ -61,7 +61,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function getLocation(name: String): Int {
-		return Sys.gl.getUniformLocation(program, "sampler");
+		return Sys.gl.getUniformLocation(program, name);
 	}
 	
 	public function createVertexShader(source: String): VertexShader {
