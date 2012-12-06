@@ -3,38 +3,39 @@ package kha.cpp;
 import kha.Blob;
 import cpp.io.File;
 import haxe.io.Bytes;
+import kha.loader.Asset;
 
 class Loader extends kha.Loader {
 	public function new() {
 		super();
 	}
 	
-	override function loadXml(filename: String) {
-		xmls.set(filename, Xml.parse(File.getContent(filename)));
+	override function loadXml(asset: Asset) {
+		xmls.set(asset.name, Xml.parse(File.getContent(asset.file)));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadMusic(filename: String) {
-		musics.set(filename, new Music(filename));
+	override function loadMusic(asset: Asset) {
+		musics.set(asset.name, new Music(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadSound(filename: String) {
-		sounds.set(filename, new Sound(filename));
+	override function loadSound(asset: Asset) {
+		sounds.set(asset.name, new Sound(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadImage(filename: String) {
-		images.set(filename, new kha.cpp.Image(filename));
+	override function loadImage(asset: Asset) {
+		images.set(asset.name, new kha.cpp.Image(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 	
-	override function loadBlob(filename: String) {
-		blobs.set(filename, new Blob(File.getBytes(filename)));
+	override function loadBlob(asset: Asset) {
+		blobs.set(asset.name, new Blob(File.getBytes(asset.file)));
 		--numberOfFiles;
 		checkComplete();
 	}
