@@ -24,4 +24,12 @@ class Vector3 {
 		z *= mul;
 		return length;
 	}
+	
+	public function add(vec: Vector3): Vector3 {
+		return new Vector3(x + vec.x, y + vec.y, z + vec.z);
+	}
+	
+	public function sub(vec: Vector3): Vector3 {
+		return new Vector3(x - vec.x, y - vec.y, z - vec.z);
+	}
 }
