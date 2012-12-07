@@ -1,5 +1,7 @@
 package kha.cpp;
+
 import kha.Image;
+import kha.FontStyle;
 
 @:cppFileCode('
 #include <kha/cpp/Image.h>
@@ -21,6 +23,7 @@ class Painter extends kha.Painter {
 	public function new() {
 		tx = 0;
 		ty = 0;
+		font = new Font("Arial", new FontStyle(false, false, false), 12);
 	}
 	
 	public override function begin() {
