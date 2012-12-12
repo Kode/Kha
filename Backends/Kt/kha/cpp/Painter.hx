@@ -74,4 +74,11 @@ class Painter extends kha.Painter {
 	override public function drawString(text: String, x: Float, y: Float): Void {
 		
 	}
+	
+	@:functionCode('
+	haxePainter->drawLine(x1, y1, x2, y2, Kt::Color(r, g, b));
+	')
+	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+		
+	}
 }
