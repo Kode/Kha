@@ -14,7 +14,7 @@ class Font implements kha.Font {
 	}
 	
 	public function getHeight(): Float {
-		return 10;
+		return size;
 	}
 	
 	public function charWidth(ch: String): Float {
@@ -22,7 +22,7 @@ class Font implements kha.Font {
 	}
 	
 	public function charsWidth(ch: String, offset: Int, length: Int): Float {
-		return 10 * length;
+		return stringWidth(ch.substr(offset, length));
 	}
 	
 	public function stringWidth(str: String): Float {
