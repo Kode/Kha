@@ -2,7 +2,7 @@ package kha;
 
 import haxe.io.Bytes;
 
-class Blob {
+class Blob implements Resource{
 	var bytes: Bytes;
 	var position: Int;
 	
@@ -39,5 +39,9 @@ class Blob {
 	
 	public function toString(): String {
 		return bytes.toString();
+	}
+	
+	public function unload(): Void {
+		bytes = null;
 	}
 }

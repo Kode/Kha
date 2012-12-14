@@ -30,4 +30,9 @@ class Image implements kha.Image {
 	public function isOpaque(x : Int, y : Int) : Bool {
 		return true;
 	}
+	
+	@:functionCode("image = Kt::Image();")
+	public function unload(): Void {
+		
+	}
 }

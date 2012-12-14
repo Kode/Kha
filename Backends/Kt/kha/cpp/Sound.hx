@@ -25,4 +25,9 @@ class Sound extends kha.Sound {
 	override public function stop() : Void {
 		
 	}
+	
+	@:functionCode("delete sound;")
+	override public function unload():Void {
+
+	}
 }
