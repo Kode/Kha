@@ -47,4 +47,8 @@ class Image implements kha.Image {
 		context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
 		data = context.getImageData(0, 0, image.width, image.height);
 	}
+	
+	public function unload(): Void {
+		
+	}
 }
