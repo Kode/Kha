@@ -5,7 +5,7 @@ class Tilemap {
 	var map : Array<Array<Int>>;
 	var levelWidth : Int;
 	var levelHeight : Int;
-	var collissionRectCache : Rectangle;
+	var collisionRectCache : Rectangle;
 	var repeat: Bool;
 	
 	public function new(imagename: String, tileWidth: Int, tileHeight: Int, map: Array<Array<Int>>, tiles: Array<Tile> = null, repeat: Bool = false) {
@@ -13,7 +13,7 @@ class Tilemap {
 		this.map = map;
 		levelWidth = map.length;
 		levelHeight = map[0].length;
-		collissionRectCache = new Rectangle(0, 0, 32, 32);
+		collisionRectCache = new Rectangle(0, 0, 32, 32);
 		this.repeat = repeat;
 	}
 	
@@ -40,18 +40,19 @@ class Tilemap {
 	
 	public function collides(sprite : Sprite) {
 		var rect = sprite.collisionRect();
-		var xtilestart : Int = Std.int(rect.x / tileset.TILE_WIDTH);
-		var xtileend : Int = Std.int((rect.x + rect.width) / tileset.TILE_WIDTH);
-		var ytilestart : Int = Std.int(rect.y / tileset.TILE_HEIGHT);
-		var ytileend : Int = Std.int((rect.y + rect.height) / tileset.TILE_HEIGHT);
+		var delta = 0.001;
+		var xtilestart : Int = Std.int((rect.x + delta) / tileset.TILE_WIDTH);
+		var xtileend : Int = Std.int((rect.x + rect.width - delta) / tileset.TILE_WIDTH);
+		var ytilestart : Int = Std.int((rect.y + delta) / tileset.TILE_HEIGHT);
+		var ytileend : Int = Std.int((rect.y + rect.height - delta) / tileset.TILE_HEIGHT);
 		for (ytile in ytilestart...ytileend + 1) {
 			for (xtile in xtilestart...xtileend + 1) {
-				collissionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
-				collissionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
-				collissionRectCache.width = rect.width;
-				collissionRectCache.height = rect.height;
+				collisionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
+				collisionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
+				collisionRectCache.width = rect.width;
+				collisionRectCache.height = rect.height;
 				if (xtile > 0 && ytile > 0 && xtile < map.length && ytile < map[xtile].length && tileset.tile(map[xtile][ytile]) != null)
-					if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
+					if (tileset.tile(map[xtile][ytile]).collision(collisionRectCache)) return true;
 			}
 		}
 		return false;
@@ -63,11 +64,11 @@ class Tilemap {
 		var xtileend : Int = Std.int(x2 / tileset.TILE_WIDTH);
 		var ytile : Int = Std.int(y / tileset.TILE_HEIGHT);
 		for (xtile in xtilestart...xtileend + 1) {
-			collissionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
-			collissionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
-			collissionRectCache.width = rect.width;
-			collissionRectCache.height = rect.height;
-			if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
+			collisionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
+			collisionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
+			collisionRectCache.width = rect.width;
+			collisionRectCache.height = rect.height;
+			if (tileset.tile(map[xtile][ytile]).collision(collisionRectCache)) return true;
 		}
 		return false;
 	}
@@ -79,11 +80,11 @@ class Tilemap {
 		var xtile : Int = Std.int(x / tileset.TILE_WIDTH);
 		for (ytile in ytilestart...ytileend + 1) {
 			if (ytile < 0 || ytile >= levelHeight) continue;
-			collissionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
-			collissionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
-			collissionRectCache.width = rect.width;
-			collissionRectCache.height = rect.height;
-			if (tileset.tile(map[xtile][ytile]).collission(collissionRectCache)) return true;
+			collisionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
+			collisionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
+			collisionRectCache.width = rect.width;
+			collisionRectCache.height = rect.height;
+			if (tileset.tile(map[xtile][ytile]).collision(collisionRectCache)) return true;
 		}
 		return false;
 	}
