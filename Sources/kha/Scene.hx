@@ -127,7 +127,10 @@ class Scene {
 	}
 	
 	public function update(): Void {
-		if (collisionLayer != null) collisionLayer.advance(camx, camx + Game.the.width);
+		if (collisionLayer != null) {
+			var camx: Int = adjustCamX();
+			collisionLayer.advance(camx, camx + Game.the.width);
+		}
 		for (sprite in sprites) sprite.update();
 	}
 
