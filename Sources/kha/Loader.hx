@@ -229,6 +229,7 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
+			enqueued = new Array<Asset>();
 			if (loadFinished != null) loadFinished();
 		}
 	}
