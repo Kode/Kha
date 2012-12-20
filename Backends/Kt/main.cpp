@@ -101,18 +101,20 @@ namespace {
 int ktmain(const Kt::List<Kt::Text>& params) {
 	hxcpp_set_top_of_stack();
 
-	Kt::Application app(params, 640, 480, false, "Kha", false);
-	Kt::Sound::init();
-
+	
 	const char* err = hxRunLibrary();
 	if (err) {
 		fprintf(stderr, "Error %s\n", err);
 		return 1;
 	}
 
+	Kt::Application app(params, 1920, 1080, false, "Kha", false);
+	Kt::Sound::init();
+
 	Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
 	Kt::System::setTitle(kha::Loader_obj::the->name.c_str());
 	Kt::System::showWindow();
+	
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
 	Kt::Mouse::the()->MouseDown += mouseDown;
