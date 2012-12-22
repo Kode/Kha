@@ -4,21 +4,21 @@ package kha.java;
 	public java.awt.image.BufferedImage image;
 ')
 class Image implements kha.Image {
-	public function new(filename : String) {
+	public function new(filename: String) {
 		
 	}
 
 	@:functionBody('
 		return image.getWidth(null);
 	')
-	public function getWidth() : Int {
+	public function getWidth(): Int {
 		return 0;
 	}
 	
 	@:functionBody('
 		return image.getHeight(null);
 	')
-	public function getHeight() : Int {
+	public function getHeight(): Int {
 		return 0;
 	}
 	
@@ -29,7 +29,11 @@ class Image implements kha.Image {
 		}
 		else return false;
 	')
-	public function isOpaque(x : Int, y : Int) : Bool {
+	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
+	}
+	
+	public function unload(): Void {
+		
 	}
 }
