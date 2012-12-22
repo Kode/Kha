@@ -12,8 +12,9 @@ import java.lang.Runnable;
 	boolean playing;
 	boolean notYetEOF;
 ')
-class Music implements kha.Music, implements Runnable {
-	public function new(filename : String) {
+class Music extends kha.Music, implements Runnable {
+	public function new(filename: String) {
+		super();
 		init(filename);
 	}
 	
@@ -110,7 +111,7 @@ class Music implements kha.Music, implements Runnable {
 			playThread.start();
 		line.start();
 	')
-	public function start() : Void {
+	public function play() : Void {
 		
 	}
 	

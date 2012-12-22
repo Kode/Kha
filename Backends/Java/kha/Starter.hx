@@ -105,8 +105,8 @@ import kha.Key;
 		}
 
 		private void createGame() {
-			WIDTH = game.getWidth();
-			HEIGHT = game.getHeight();
+			WIDTH = game.width;
+			HEIGHT = game.height;
 		}
 
 		private void resetGame() {
@@ -258,28 +258,37 @@ import kha.Key;
 	private Window window;
 ')
 class Starter {
-	static var instance : Starter;
-	static var game : Game;
-	static var painter : kha.java.Painter;
+	static var instance: Starter;
+	static var game: Game;
+	static var painter: kha.java.Painter;
 	
 	public function new() {
 		instance = this;
 		kha.Loader.init(new kha.java.Loader());
 	}
 	
-	public function start(game : Game) {
+	public function start(game: Game): Void {
 		Starter.game = game;
-		Loader.getInstance().load();
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Loader.the.loadProject(loadFinished);
+	}
+	
+	public static function loadFinished(): Void {
+		Loader.the.initProject();
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
+		game.loadFinished();
+		startMainLoop();
 	}
 	
 	@:functionBody('
-		game.loadFinished();
-		//start main loop
 		Window window = instance.new Window();
 		window.game = game;
 		window.start();
 	')
-	public static function loadFinished() {
-	
+	private static function startMainLoop(): Void {
+		
 	}
 }
