@@ -42,12 +42,16 @@ class Animation {
 		if (index < indices.length) this.index = index;
 	}
 	
-	public function next(): Void {
+	public function next(): Bool {
 		++count;
 		if (count % speeddiv == 0) {
 			++index;
-			if (index >= indices.length) index = 0;
+			if (index >= indices.length) {
+				index = 0;
+				return false;
+			}
 		}
+		return true;
 	}
 	
 	public function reset(): Void {
