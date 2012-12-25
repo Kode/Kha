@@ -19,10 +19,16 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
+		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
 	
 	public static function loadFinished(): Void {
+		Loader.the.initProject();
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
 		game.loadFinished();
 		while (true) {
 			checkEvents();

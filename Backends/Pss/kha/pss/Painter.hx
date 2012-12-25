@@ -67,6 +67,8 @@ class Painter extends kha.Painter {
 		);	
 	
 		shaderProgram.SetUniformValue(0, ref unitScreenMatrix);
+		
+		graphics.SetBlendFunc(Sce.PlayStation.Core.Graphics.BlendFuncMode.Add,Sce.PlayStation.Core.Graphics.BlendFuncFactor.SrcAlpha, Sce.PlayStation.Core.Graphics.BlendFuncFactor.OneMinusSrcAlpha);
 	')
 	function initGraphics() : Void {
 		
