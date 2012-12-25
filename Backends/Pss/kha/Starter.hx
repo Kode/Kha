@@ -35,8 +35,8 @@ class Starter {
 	}
 	
 	@:functionBody('
-		Sce.Pss.Core.Input.GamePadData gamePadData = Sce.Pss.Core.Input.GamePad.GetData(0);
-		if ((gamePadData.Buttons & Sce.Pss.Core.Input.GamePadButtons.Left) != 0) {
+		Sce.PlayStation.Core.Input.GamePadData gamePadData = Sce.PlayStation.Core.Input.GamePad.GetData(0);
+		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Left) != 0) {
 			if (!left) {
 				game.buttonDown(Button.LEFT);
 				left = true;
@@ -48,7 +48,7 @@ class Starter {
 				left = false;
 			}
 		}
-		if ((gamePadData.Buttons & Sce.Pss.Core.Input.GamePadButtons.Right) != 0) {
+		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Right) != 0) {
 			if (!right) {
 				game.buttonDown(Button.RIGHT);
 				right = true;
@@ -60,7 +60,7 @@ class Starter {
 				right = false;
 			}
 		}
-		if ((gamePadData.Buttons & Sce.Pss.Core.Input.GamePadButtons.Up) != 0) {
+		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Up) != 0) {
 			if (!up) {
 				game.buttonDown(Button.UP);
 				up = true;
@@ -72,7 +72,7 @@ class Starter {
 				up = false;
 			}
 		}
-		if ((gamePadData.Buttons & Sce.Pss.Core.Input.GamePadButtons.Down) != 0) {
+		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Down) != 0) {
 			if (!down) {
 				game.buttonDown(Button.DOWN);
 				down = true;
@@ -90,7 +90,7 @@ class Starter {
 	}
 	
 	@:functionBody('
-		Sce.Pss.Core.Environment.SystemEvents.CheckEvents();
+		Sce.PlayStation.Core.Environment.SystemEvents.CheckEvents();
 	')
 	static function checkEvents(): Void {
 		

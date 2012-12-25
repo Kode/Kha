@@ -1,15 +1,15 @@
 package kha.pss;
 
-class Music implements kha.Music {
-	public function new(filename : String) {
+class Music extends kha.Music {
+	public function new(filename: String) {
+		super();
+	}
+	
+	public function start(): Void {
 		
 	}
 	
-	public function start() : Void {
-		
-	}
-	
-	public function stop() : Void {
+	public function stop(): Void {
 		
 	}
 }

@@ -3,9 +3,9 @@ package kha.pss;
 import kha.Image;
 
 @:classContents('
-	private Sce.Pss.Core.Graphics.GraphicsContext graphics;
-	private Sce.Pss.Core.Graphics.ShaderProgram shaderProgram;
-	private Sce.Pss.Core.Graphics.VertexBuffer vertexBuffer;
+	private Sce.PlayStation.Core.Graphics.GraphicsContext graphics;
+	private Sce.PlayStation.Core.Graphics.ShaderProgram shaderProgram;
+	private Sce.PlayStation.Core.Graphics.VertexBuffer vertexBuffer;
 	private float[] vertices;
 	private float[] texcoords;
 ')
@@ -20,8 +20,8 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionBody('
-		graphics = new Sce.Pss.Core.Graphics.GraphicsContext();
-		shaderProgram = new Sce.Pss.Core.Graphics.ShaderProgram("/Application/shaders/Texture.cgx");
+		graphics = new Sce.PlayStation.Core.Graphics.GraphicsContext();
+		shaderProgram = new Sce.PlayStation.Core.Graphics.ShaderProgram("/Application/shaders/Texture.cgx");
 		shaderProgram.SetUniformBinding(0, "WorldViewProj");
 
 		vertices = new float[12];
@@ -29,7 +29,7 @@ class Painter extends kha.Painter {
 		float[] colors = new float[4 * 4];
 		for (int i = 0; i < 16; ++i) colors[i] = 1.0f;
 
-		vertexBuffer = new Sce.Pss.Core.Graphics.VertexBuffer(4, 6, Sce.Pss.Core.Graphics.VertexFormat.Float3, Sce.Pss.Core.Graphics.VertexFormat.Float2, Sce.Pss.Core.Graphics.VertexFormat.Float4);
+		vertexBuffer = new Sce.PlayStation.Core.Graphics.VertexBuffer(4, 6, Sce.PlayStation.Core.Graphics.VertexFormat.Float3, Sce.PlayStation.Core.Graphics.VertexFormat.Float2, Sce.PlayStation.Core.Graphics.VertexFormat.Float4);
 
 		vertexBuffer.SetVertices(2, colors);
 
@@ -46,7 +46,7 @@ class Painter extends kha.Painter {
 		graphics.SetVertexBuffer(0, vertexBuffer);
 		graphics.SetShaderProgram(shaderProgram);
 		
-		Sce.Pss.Core.Imaging.ImageRect rectScreen = graphics.Screen.Rectangle;
+		Sce.PlayStation.Core.Imaging.ImageRect rectScreen = graphics.Screen.Rectangle;
 		
 		float right = rectScreen.Width;
 		float left = 0;
@@ -59,7 +59,7 @@ class Painter extends kha.Painter {
 		float ty = -(top + bottom) / (top - bottom);
 		float tz = -zNear / (zFar - zNear);
 		
-		var unitScreenMatrix = new Sce.Pss.Core.Matrix4(
+		var unitScreenMatrix = new Sce.PlayStation.Core.Matrix4(
 			2.0f / (right - left), 0.0f,                  0.0f,                  0.0f,
 			0.0f,                  2.0f / (top - bottom), 0.0f,                  0.0f,
 			0.0f,                  0.0f,                  1.0f / (zFar - zNear), 0.0f,
@@ -97,7 +97,7 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionBody('
-		Sce.Pss.Core.Graphics.Texture2D texture = ((kha.pss.Image)image).texture;
+		Sce.PlayStation.Core.Graphics.Texture2D texture = ((kha.pss.Image)image).texture;
 		int Width = texture.Width;
 		int Height = texture.Height;
 			
@@ -134,7 +134,7 @@ class Painter extends kha.Painter {
 		vertexBuffer.SetVertices(0, vertices);
 		vertexBuffer.SetVertices(1, texcoords);
 	
-		graphics.DrawArrays(Sce.Pss.Core.Graphics.DrawMode.Triangles, 0, 6);
+		graphics.DrawArrays(Sce.PlayStation.Core.Graphics.DrawMode.Triangles, 0, 6);
 	')
 	override public function drawImage2(image : Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
 		

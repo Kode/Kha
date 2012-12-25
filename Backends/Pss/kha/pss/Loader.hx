@@ -10,7 +10,7 @@ class Loader extends kha.Loader {
 		checkComplete();
 	')
 	override function loadXml(asset: Asset): Void {
-		
+		Xml.parse("");
 	}
 
 	override function loadMusic(asset: Asset): Void {
@@ -33,9 +33,7 @@ class Loader extends kha.Loader {
 
 	@:functionBody('
 		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + asset.file);
-		int[] bigBytes = new int[bytes.Length];
-		for (int i = 0; i < bytes.Length; ++i) bigBytes[i] = bytes[i];
-		blobs.set(asset.name, new Blob(new haxe.io.Bytes(bytes.Length, new haxe.root.Array<int>(bigBytes))));
+		blobs.set(asset.name, new Blob(new haxe.io.Bytes(bytes.Length, bytes)));
 		--numberOfFiles;
 		checkComplete();
 	')
