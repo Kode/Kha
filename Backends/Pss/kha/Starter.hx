@@ -17,12 +17,12 @@ class Starter {
 		down = false;
 	}
 	
-	public function start(game : Game) {
+	public function start(game: Game) {
 		Starter.game = game;
-		Loader.getInstance().load();
+		Loader.the.loadProject(loadFinished);
 	}
 	
-	public static function loadFinished() {
+	public static function loadFinished(): Void {
 		game.loadFinished();
 		while (true) {
 			checkEvents();
@@ -85,14 +85,14 @@ class Starter {
 			}
 		}
 	')
-	static function checkGamepad() {
+	static function checkGamepad(): Void {
 		
 	}
 	
 	@:functionBody('
 		Sce.Pss.Core.Environment.SystemEvents.CheckEvents();
 	')
-	static function checkEvents() : Void {
+	static function checkEvents(): Void {
 		
 	}
 }

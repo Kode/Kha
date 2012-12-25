@@ -1,62 +1,49 @@
 package kha.pss;
 
 import haxe.io.Bytes;
+import kha.loader.Asset;
 
 class Loader extends kha.Loader {
 	@:functionBody('
-		xmls.set("data.xml", Xml.parse(System.IO.File.ReadAllText("/Application/resources/data.xml")));
-		loadFiles();
-	')
-	override public function loadDataDefinition() : Void {
-		
-	}
-	
-	@:functionBody('
-		xmls.set(filename, Xml.parse(System.IO.File.ReadAllText("/Application/resources/" + filename)));
+		xmls.set(asset.name, Xml.parse(System.IO.File.ReadAllText("/Application/resources/" + asset.file)));
 		--numberOfFiles;
 		checkComplete();
 	')
-	override function loadXml(filename : String) : Void {
+	override function loadXml(asset: Asset): Void {
 		
 	}
 
-	override function loadMusic(filename : String) : Void {
-		musics.set(filename, new Music(filename));
+	override function loadMusic(asset: Asset): Void {
+		musics.set(asset.name, new Music(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadSound(filename : String) : Void {
-		sounds.set(filename, new Sound(filename));
+	override function loadSound(asset: Asset): Void {
+		sounds.set(asset.name, new Sound(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadImage(filename : String) : Void {
-		images.set(filename, new Image(filename));
+	override function loadImage(asset: Asset): Void {
+		images.set(asset.name, new Image(asset.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
 	@:functionBody('
-		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + filename);
+		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + asset.file);
 		int[] bigBytes = new int[bytes.Length];
 		for (int i = 0; i < bytes.Length; ++i) bigBytes[i] = bytes[i];
-		blobs.set(filename, new Blob(new haxe.io.Bytes(bytes.Length, new haxe.root.Array<int>(bigBytes))));
+		blobs.set(asset.name, new Blob(new haxe.io.Bytes(bytes.Length, new haxe.root.Array<int>(bigBytes))));
 		--numberOfFiles;
 		checkComplete();
 	')
-	override function loadBlob(filename : String) : Void {
+	override function loadBlob(asset: Asset): Void {
 		
 	}
 
-	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
+	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return null; //new Font(name, style, size);
-	}
-
-	function checkComplete() : Void {
-		if (numberOfFiles <= 0) {
-			kha.Starter.loadFinished();
-		}
 	}
 }
