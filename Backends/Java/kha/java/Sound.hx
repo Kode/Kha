@@ -37,7 +37,7 @@ package kha.java;
 							while (true) {
 								Sound last = it.next();
 								if (last.isLoaded()) {
-									javax.sound.sampled.Clip clip = last.unload();
+									javax.sound.sampled.Clip clip = last.unloadit();
 									sound.load(clip);
 									break;
 								}
@@ -76,7 +76,7 @@ package kha.java;
 	private static SoundThread thread;
 	private javax.sound.sampled.Clip clip;
 	
-	public javax.sound.sampled.Clip unload() {
+	public javax.sound.sampled.Clip unloadit() {
 		javax.sound.sampled.Clip clip = this.clip;
 		this.clip = null;
 		return clip;
@@ -95,11 +95,12 @@ package kha.java;
 		}
 	}
 ')
-class Sound implements kha.Sound {
-	var index : Int;
-	var filename : String;
+class Sound extends kha.Sound {
+	var index: Int;
+	var filename: String;
 	
-	public function new(filename : String) {
+	public function new(filename: String) {
+		super();
 		init(filename);
 	}
 	

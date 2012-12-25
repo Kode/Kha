@@ -9,49 +9,53 @@ import flash.display3D.textures.Texture;
 import flash.geom.Matrix;
 
 class Image implements kha.Image {
-	static var maxTextureControll : List<Image> = new List<Image>();
+	static var maxTextureControll: List<Image> = new List<Image>();
 	
-	public var image : Bitmap;
-	var tex : Texture;
-	var texWidth : Int;
-	var texHeight : Int;
+	public var image: Bitmap;
+	var tex: Texture;
+	var texWidth: Int;
+	var texHeight: Int;
 	
-	public function new(image : DisplayObject)  {
+	public function new(image: DisplayObject)  {
 		this.image = cast(image, Bitmap);
 	}
 	
-	public function dispose() : Void {
+	public function unload(): Void {
+		dispose();
+	}
+	
+	public function dispose(): Void {
 		if (tex != null) {
 			tex.dispose();
 			tex = null;
 		}
 	}
 	
-	public function getWidth() : Int {
+	public function getWidth(): Int {
 		return Std.int(image.width);
 	}
 	
-	public function getHeight() : Int {
+	public function getHeight(): Int {
 		return Std.int(image.height);
 	}
 	
-	public function isOpaque(x : Int, y : Int) : Bool {
+	public function isOpaque(x: Int, y: Int): Bool {
 		return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
 	}
 	
-	public function getTexture() : Texture {
+	public function getTexture(): Texture {
 		if (tex == null) uploadTextureWithMipmaps();
 		return tex;
 	}
 	
-	function pow(pow : Int) : Int {
+	function pow(pow: Int): Int {
         var ret : Int = 1;
         for (i in 0...pow) ret *= 2;
         return ret;
     }
 
-    function toPow2(i : Int) : Int {
-        var power : Int = 0;
+    function toPow2(i: Int): Int {
+        var power: Int = 0;
 		while (true) {
             if (pow(power) >= i) return pow(power);
 			++power;
@@ -59,7 +63,7 @@ class Image implements kha.Image {
 		return -1;
     }
 	
-	function uploadTextureWithMipmaps() : Void {		
+	function uploadTextureWithMipmaps(): Void {		
 		texWidth = toPow2(Std.int(image.width));
 		texHeight = toPow2(Std.int(image.height));
 		while (tex == null) {
@@ -93,11 +97,11 @@ class Image implements kha.Image {
 		tmp.dispose();*/
 	}
 	
-	public function correctU(u : Float) : Float {
+	public function correctU(u: Float): Float {
 		return u * image.width / texWidth;
 	}
 
-	public function correctV(v : Float) : Float {
+	public function correctV(v: Float): Float {
 		return v * image.height / texHeight;
 	}
 }

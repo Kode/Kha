@@ -1,7 +1,7 @@
 package kha;
 
 // This class is used for dynamic media like sounds or videos
-class Media {
+class Media implements Resource {
 	public function new() : Void { }
 	
 	public function play() : Void { }
@@ -20,5 +20,9 @@ class Media {
 	
 	public function isFinished() : Bool {
 		return getCurrentPos() >= getLength();
+	}
+	
+	public function unload(): Void {
+		
 	}
 }

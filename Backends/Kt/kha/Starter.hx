@@ -9,6 +9,7 @@ class Starter {
 	static var painter: kha.cpp.Painter;
 	
 	public function new() {
+		Storage.init(new kha.cpp.Storage());
 		Loader.init(new kha.cpp.Loader());
 	}
 	

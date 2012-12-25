@@ -112,15 +112,45 @@ class Loader {
 		return false;
 	}
 	
+	private function removeImage(resources: Hash<Image>, resourceName: String) {
+		var resource = resources.get(resourceName);
+		resource.unload();
+		resources.remove(resourceName);
+	}
+	
+	private function removeBlob(resources: Hash<Blob>, resourceName: String) {
+		var resource = resources.get(resourceName);
+		resource.unload();
+		resources.remove(resourceName);
+	}
+	
+	private function removeMusic(resources: Hash<Music>, resourceName: String) {
+		var resource = resources.get(resourceName);
+		resource.unload();
+		resources.remove(resourceName);
+	}
+	
+	private function removeSound(resources: Hash<Sound>, resourceName: String) {
+		var resource = resources.get(resourceName);
+		resource.unload();
+		resources.remove(resourceName);
+	}
+	
+	private function removeVideo(resources: Hash<Video>, resourceName: String) {
+		var resource = resources.get(resourceName);
+		resource.unload();
+		resources.remove(resourceName);
+	}
+	
 	public function loadFiles(call: Void -> Void) {
 		loadFinished = call;
 		loadStarted(enqueued.length);
-		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) images.remove(imagename);
+		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
 		for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
-		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) musics.remove(musicname);
-		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) sounds.remove(soundname);
-		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) videos.remove(videoname);
-		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) blobs.remove(blobname);
+		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
+		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
+		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
+		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
 		for (i in 0...enqueued.length) {
 			switch (enqueued[i].type) {
 				case "image":
@@ -199,6 +229,7 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
+			enqueued = new Array<Asset>();
 			if (loadFinished != null) loadFinished();
 		}
 	}

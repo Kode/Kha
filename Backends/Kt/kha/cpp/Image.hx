@@ -3,31 +3,38 @@ package kha.cpp;
 @:headerCode('
 #include <Kt/stdafx.h>
 #include <Kt/Resources/Image.h>
+#include <Kt/Graphics/Graphics.h>
 ')
 
-@:headerClassCode("Kt::Image image;")
+@:headerClassCode("Kt::Image image; Kt::Texture* texture;")
 class Image implements kha.Image {
-	public function new(filename : String) {
+	public function new(filename: String) {
 		loadImage(filename);
 	}
 	
-	@:functionCode("image = Kt::Image(filename.c_str());")
-	function loadImage(filename : String) {
+	@:functionCode("image = Kt::Image(filename.c_str()); texture = image.Tex(); image.grabTexture(); image = Kt::Image();")
+	function loadImage(filename: String) {
 		
 	}
 	
-	@:functionCode("return (int)image.Width();")
-	public function getWidth() : Int {
+	@:functionCode("return texture->width();")
+	public function getWidth(): Int {
 		return 0; 
 	}
 	
-	@:functionCode("return (int)image.Height();")
-	public function getHeight() : Int {
+	@:functionCode("return texture->height();")
+	public function getHeight(): Int {
 		return 0;
 	}
 	
-	@:functionCode("return image.At(x, y).Ab() > 0;")
-	public function isOpaque(x : Int, y : Int) : Bool {
+	//@:functionCode("return image.At(x, y).Ab() > 0;")
+	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
+	}
+	
+	//@:functionCode("image = Kt::Image();")
+	@:functionCode("delete texture; texture = nullptr;")
+	public function unload(): Void {
+		
 	}
 }

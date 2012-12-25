@@ -99,22 +99,22 @@ namespace {
 }
 
 int ktmain(const Kt::List<Kt::Text>& params) {
-	// Do this first
 	hxcpp_set_top_of_stack();
 
-   // Register additional ndll libaries ...
-   // nme_register_prims();
 	
-	//printf("Begin!\n");
-	const char *err = hxRunLibrary();
+	const char* err = hxRunLibrary();
 	if (err) {
-		// Unhandled exceptions ...
-		fprintf(stderr,"Error %s\n", err );
-		return -1;
+		fprintf(stderr, "Error %s\n", err);
+		return 1;
 	}
 
-	Kt::Application app(params, kha::Loader_obj::the->width, kha::Loader_obj::the->height, false, kha::Loader_obj::the->name.c_str());
+	Kt::Application app(params, 1920, 1080, false, "Kha", false);
 	Kt::Sound::init();
+
+	Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
+	Kt::System::setTitle(kha::Loader_obj::the->name.c_str());
+	Kt::System::showWindow();
+	
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
 	Kt::Mouse::the()->MouseDown += mouseDown;
@@ -122,6 +122,5 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 	Kt::Mouse::the()->MouseMove += mouseMove;
 	Kt::Scene::the()->add(Kt::Handle<HaxeItem>(new HaxeItem));
 	app.start();
-	//printf("Done!\n");
 	return 0;
 }
