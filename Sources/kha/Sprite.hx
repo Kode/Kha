@@ -18,12 +18,14 @@ class Sprite {
 	public var z : Int;
 	var tempcollider : Rectangle;
 	
-	public function new(image: Image, width: Int, height: Int, z: Int) {
+	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {
 		this.image = image;
 		x = 0;
 		y = 0;
 		this.width = width;
 		this.height = height;
+		if (this.width  == 0) this.width  = image.getWidth ();
+		if (this.height == 0) this.height = image.getHeight();
 		this.z = z;
 		collider = new Rectangle(0, 0, width, height);
 		speedx = speedy = 0;

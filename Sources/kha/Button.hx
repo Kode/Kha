@@ -1,6 +1,7 @@
 package kha;
 
 enum Button {
+	NONE;
 	UP;
 	RIGHT;
 	DOWN;
