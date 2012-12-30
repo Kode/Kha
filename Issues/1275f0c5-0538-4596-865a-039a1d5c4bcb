@@ -1,0 +1,9 @@
+#Sun Dec 30 15:44:32 CET 2012
+IssueType=NewFeature
+Reporter=martin
+Assignee=robert
+Priority=Major
+Changed=1356878672995
+Description=Ein "Compile Data"-Button wird gebraucht, und\n(ebenso eigentlich "Launch Project") sollte von\nüberall aus erreichbar sein.
+Created=1356878672995
+Summary=Compile Data Button
