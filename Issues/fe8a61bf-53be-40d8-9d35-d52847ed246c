@@ -1,0 +1,9 @@
+#Sun Dec 30 15:54:58 CET 2012
+IssueType=Bug
+Reporter=martin
+Assignee=robert
+Priority=Major
+Changed=1356879298970
+Description=Der Leveleditor klappt bei mir irgendwie noch\nüberhaupt nicht richtig...\nTileset wird nicht angezeigt, es gibt Java-Exceptions,\nwenn ich auf das Level klicke. Das Level wird auch\ndann angezeigt, wenn ich die Asset-Kategorie\nwechsle (vielleicht soll das auch so sein). Und Images\nwerden bei mir hier momentan glaube gar nicht\nangezeigt, hmm.
+Created=1356879199123
+Summary=Leveleditor
