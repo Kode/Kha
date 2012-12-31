@@ -253,7 +253,7 @@ class CollisionLayer {
 				}
 			}
 			for (i2 in 0...projectiles.length) {
-				var projectile = projectiles[i];
+				var projectile = projectiles[i2];
 				if (rect.collision(projectile.collisionRect())) {
 					projectile.hit(enemy);
 					enemy.hit(projectile);
