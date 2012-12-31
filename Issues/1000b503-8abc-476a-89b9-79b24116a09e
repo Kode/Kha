@@ -1,9 +1,10 @@
-#Fri Sep 14 12:09:09 CEST 2012
-IssueType=NewFeature
+#Mon Dec 31 19:54:55 CET 2012
+Created=1347617349220
+Description=Als width und height-Attribut in data.xml.
+Summary=Fenstergröße
 Reporter=robert
+Changed=1347617349220
 Assignee=robert
 Priority=Major
-Changed=1347617349220
-Description=Als width und height-Attribut in data.xml.
-Created=1347617349220
-Summary=Fenstergröße
+IssueType=NewFeature
+ResolveType=Fixed

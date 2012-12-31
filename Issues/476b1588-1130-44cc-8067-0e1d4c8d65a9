@@ -1,9 +1,10 @@
-#Fri Sep 14 12:09:29 CEST 2012
-IssueType=Bug
+#Mon Dec 31 19:55:17 CET 2012
+Created=1347617369198
+Description=
+Summary=Kt-Backend checken
 Reporter=robert
+Changed=1347617369198
 Assignee=robert
 Priority=Blocker
-Changed=1347617369198
-Description=
-Created=1347617369198
-Summary=Kt-Backend checken
+IssueType=Bug
+ResolveType=Fixed
