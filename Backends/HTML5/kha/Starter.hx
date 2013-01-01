@@ -152,7 +152,7 @@ class Starter {
 	}
 	
 	static function keyDown(event : js.Event) {
-		trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
+		//trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
 		
 		event.stopPropagation();
 		

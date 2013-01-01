@@ -2,10 +2,11 @@ package kha.js;
 
 import js.Lib;
 
-class Music implements kha.Music {
+class Music extends kha.Music {
 	var element : Dynamic;
 	
 	public function new(filename : String) {
+		super();
 		element = Lib.document.createElement("audio");
 		element.loop = "true"; //not working in Firefox until version 11
 		if (!element.canPlayType("audio/mp4")) element.src = filename + ".ogg";
@@ -13,15 +14,11 @@ class Music implements kha.Music {
 		element.load();
 	}
 	
-	public function start() : Void {
+	override public function play() : Void {
 		element.play();
 	}
 	
-	public function stop() : Void {
+	override public function stop() : Void {
 		element.pause();
-	}
-	
-	public function update() : Void {
-		
 	}
 }
