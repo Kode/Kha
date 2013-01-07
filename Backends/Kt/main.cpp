@@ -34,7 +34,7 @@ namespace {
 		virtual void mouseButtonUp(Kt::MouseEvent* event) override {
 			Starter_obj::mouseUp(event->x(), event->y());
 		}
-		
+
 		virtual void mouseMove(Kt::MouseEvent* event) override {
 			Starter_obj::mouseMove(event->x(), event->y());
 		}
@@ -99,22 +99,21 @@ namespace {
 }
 
 int ktmain(const Kt::List<Kt::Text>& params) {
+	Kt::Application app(params, 640, 520, false, "Kha", false);
+	Kt::Sound::init();
+
 	hxcpp_set_top_of_stack();
 
-	
 	const char* err = hxRunLibrary();
 	if (err) {
 		fprintf(stderr, "Error %s\n", err);
 		return 1;
 	}
 
-	Kt::Application app(params, 1920, 1080, false, "Kha", false);
-	Kt::Sound::init();
-
 	Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
 	Kt::System::setTitle(kha::Loader_obj::the->name.c_str());
 	Kt::System::showWindow();
-	
+
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
 	Kt::Mouse::the()->MouseDown += mouseDown;
