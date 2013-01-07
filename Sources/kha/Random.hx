@@ -1,5 +1,17 @@
 package kha;
 
+//
+// Random number generator
+//
+// Please use this one instead of the native Haxe one, to
+// keep consistency between different platforms, and avoid
+// problems if Haxe changes its random number generator.
+//
+
+// TODO: Give credits
+//
+// MT = Mersenne twister ?
+
 class Random {
 	public static function init(seed: Int): Void {
 		MT = new Array<Int>();
