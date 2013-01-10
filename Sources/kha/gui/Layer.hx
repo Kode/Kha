@@ -1,9 +1,10 @@
 package kha.gui;
+import kha.Painter;
 
 class Layer {
 	public static var xtrans: Int = 0;
 	public static var ytrans: Int = 0;
-	private var objects: Array<Item>;
+	public var objects: Array<Item>;
 	private var pressed: Item = null;
 	
 	public function new() {
@@ -53,6 +54,21 @@ class Layer {
 				}
 				--i;
 			}
+		}
+	}
+	
+	private function renderItem(painter: Painter, item: Item): Void {
+		item.render(painter);
+		painter.translate(-item.x, -item.y);
+		for (child in item.children) {
+			renderItem(painter, child);
+		}
+		painter.translate(item.x, item.y);
+	}
+	
+	public function render(painter: Painter): Void {
+		for (object in objects) {
+			renderItem(painter, object);
 		}
 	}
 }

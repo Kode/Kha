@@ -7,7 +7,7 @@ import kha.gui.MouseEvent;
 class Button extends Item {
 	public function new(text: String) {
 		super();
-		width = 300;
+		width = 150;
 		height = 25;
 		this.text = text;
 	}
