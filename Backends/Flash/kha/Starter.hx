@@ -48,7 +48,7 @@ class Starter {
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
-		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
 		

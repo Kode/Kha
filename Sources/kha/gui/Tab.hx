@@ -34,7 +34,7 @@ class Tab extends Item {
 		return 5 + position * (tabTopWidth + 2);
 	}
 
-	public function add(item: Item): Void {
+	override public function add(item: Item): Void {
 		content.children.push(item);
 	}
 

@@ -321,21 +321,21 @@ class Painter extends kha.Painter {
 		context.drawTriangles(indexBuffer, 0, 2 * 1);
 	}
 	
-	public override function setColor(r : Int, g : Int, b : Int) {
-		color = new Color(r, g, b);
+	public override function setColor(r: Int, g: Int, b: Int) {
+		color = Color.fromBytes(r, g, b);
 	}
 	
 	function getColorVector() : Vector<Float> {
 		var vec = new Vector<Float>();
-		vec.push(color.r / 256);
-		vec.push(color.g / 256);
-		vec.push(color.b / 256);
+		vec.push(color.R);
+		vec.push(color.G);
+		vec.push(color.B);
 		vec.push(1);
 		return vec;
 	}
 	
 	function getColorInt() : Int {
-		return color.r * 256 * 256 + color.g * 256 + color.b;
+		return color.Rb * 256 * 256 + color.Gb * 256 + color.Bb;
 	}
 	
 	public override function fillRect(x : Float, y : Float, width : Float, height : Float) {

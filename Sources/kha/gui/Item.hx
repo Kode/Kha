@@ -4,22 +4,44 @@ import kha.Painter;
 
 class Item {
 	public function new() {
+		cursor = CursorStyle.Ignore;
 		children = new Array<Item>();
 	}
 	
 	public var children: Array<Item>;
 	
-	public var x: Int = 0;
+	public var x: Float = 0;
 	
-	public var y: Int = 0;
+	public var y: Float = 0;
 	
-	public var width: Int = 100;
+	public var width(getWidth, setWidth): Float;
 	
-	public var height: Int = 100;
+	public var height(getHeight, setHeight): Float;
 	
 	public var clipping = false;
 	
 	public var visible = true;
+	
+	private var myWidth: Float = 100;
+	private var myHeight: Float = 100;
+	
+	private function getWidth(): Float {
+		return myWidth;
+	}
+	
+	private function setWidth(value: Float): Float {
+		myWidth = value;
+		return myWidth;
+	}
+	
+	private function getHeight(): Float {
+		return myHeight;
+	}
+	
+	private function setHeight(value: Float): Float {
+		myHeight = value;
+		return myHeight;
+	}
 	
 	public function mouseDown(event: MouseEvent): Item {
 		var mouseX = event.x;
@@ -63,7 +85,59 @@ class Item {
 		event.translate(x, y);
 	}
 	
+	public function mouseEnter(): Void {
+		
+	}
+	
+	public function mouseLeave(): Void {
+		
+	}
+	
 	public function render(painter: Painter): Void {
 		
+	}
+	
+	public var parent: Item;
+
+	public var hover: Bool = false;
+	
+	public var moveable: Bool = false;
+
+	public var cursor: CursorStyle;
+	
+	public function add(item: Item): Void {
+		if (contains(item)) return;
+		item.parent = this;
+		children.push(item);
+	}
+
+	public function remove(item: Item): Void {
+		item.parent = null;
+		children.remove(item);
+	}
+	
+	public function contains(item: Item): Bool {
+		for (child in children) {
+			if (child == item) return true;
+		}
+		return false;
+	}
+	
+	public function setPos(x: Float, y: Float): Void {
+		this.x = x;
+		this.y = y;
+	}
+
+	public function centerX(): Void {
+		x = parent.width / 2 - width / 2;
+	}
+	
+	public function centerY(): Void {
+		y = parent.height / 2 - height / 2;
+	}
+	
+	public function center(): Void {
+		centerX();
+		centerY();
 	}
 }

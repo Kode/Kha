@@ -2,8 +2,8 @@ package kha.gui;
 import kha.Painter;
 
 class Layer {
-	public static var xtrans: Int = 0;
-	public static var ytrans: Int = 0;
+	public static var xtrans: Float = 0;
+	public static var ytrans: Float = 0;
 	public var objects: Array<Item>;
 	private var pressed: Item = null;
 	
