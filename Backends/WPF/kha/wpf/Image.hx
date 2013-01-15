@@ -37,4 +37,8 @@ class Image implements kha.Image {
 	public function isOpaque(x : Int, y : Int) : Bool {
 		return true;
 	}
+	
+	public function unload(): Void {
+		image = null;
+	}
 }
