@@ -192,6 +192,7 @@ class Starter {
 	static var game: Game;
 	static var mainWindow : MainWindow;
 	static var openWindow : Bool = true;
+	static var autostartGame : Bool = true;
 	public static var painter : kha.wpf.Painter;
 	public static var frameworkElement: StoryPublishCanvas;
 	
@@ -200,8 +201,9 @@ class Starter {
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool) {
+	public static function configure(path : String, openWindow : Bool, autostartGame : Bool, forceBusyCursor : Bool) {
 		Starter.openWindow = openWindow;
+		Starter.autostartGame = autostartGame;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
 	}
@@ -238,7 +240,8 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter();
-		game.loadFinished();
+		if (autostartGame)
+			game.loadFinished();
 		if (openWindow)
 			startWindow();
 	}
