@@ -13,7 +13,7 @@ class Game {
 	public var height(default, default): Int;
 	public var highscores(default, null): HighscoreList;
 	
-	public function new(name: String, hasHighscores: Bool = true) {
+	public function new(name: String, hasHighscores: Bool = false) {
 		setInstance();
 		timers = new Array<FrameCountTimer>();
 		this.name = name;
