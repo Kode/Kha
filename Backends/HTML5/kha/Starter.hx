@@ -48,7 +48,7 @@ class Starter {
 	
 	public function start(game: Game): Void {
 		Starter.game = game;
-		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
 	
