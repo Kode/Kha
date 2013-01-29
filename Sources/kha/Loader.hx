@@ -74,6 +74,10 @@ class Loader {
 		return xmls.get(name);
 	}
 	
+	public function getShader(name: String): Blob {
+		return getBlob(name);
+	}
+	
 	public function getAvailableBlobs(): Iterator<String> {
 		return blobs.keys();
 	}
@@ -164,6 +168,8 @@ class Loader {
 				case "video":
 					if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
 				case "blob":
+					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
+				case "shader":
 					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
 			}
 		}

@@ -109,6 +109,10 @@ class Loader extends kha.Loader {
 		request.send(null);
 	}
 	
+	override public function getShader(name: String): Blob {
+		return getBlob(name + ".glsl.essl");
+	}
+	
 	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return new Font(name, style, size);
 	}
