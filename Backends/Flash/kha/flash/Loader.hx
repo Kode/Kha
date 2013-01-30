@@ -69,6 +69,11 @@ class Loader extends kha.Loader {
 	override function loadSound(asset: Asset) {
 		var urlRequest : URLRequest = new URLRequest(asset.file + ".mp3");
 		var sound : flash.media.Sound = new flash.media.Sound();
+		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e : flash.events.ErrorEvent) {
+			trace ("Couldn't load " + asset.file + ".mp3");
+			--numberOfFiles;
+			checkComplete();
+		});
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
 			sounds.set(asset.name, new Sound(sound));
 			--numberOfFiles;

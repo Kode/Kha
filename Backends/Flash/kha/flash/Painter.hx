@@ -262,14 +262,14 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
+		flushBuffers();
+		
 		var stageVideo = new flash.media.Video(Std.int(width), Std.int(height));
 		stageVideo.attachNetStream(cast(video, Video).stream);
 				
 		textBitmap.fillRect(new Rectangle(0, 0, textBitmap.width, textBitmap.height), 0xffffff);
 		textBitmap.draw(stageVideo);
 		textTexture.uploadFromBitmapData(textBitmap, 0);
-		
-		flushBuffers();
 		
 		var dx = x;
 		var dy = y;
@@ -292,14 +292,13 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function drawString(text : String, x : Float, y : Float) : Void {
-		//return;
+		flushBuffers();
+		
 		textField.defaultTextFormat = new TextFormat(font.name, font.size, getColorInt(), font.style.getBold(), font.style.getItalic(), font.style.getUnderlined());
 		textField.text = text;
 		textBitmap.fillRect(new Rectangle(0, 0, textBitmap.width, textBitmap.height), 0xffffff);
 		textBitmap.draw(textField);
 		textTexture.uploadFromBitmapData(textBitmap, 0);
-		
-		flushBuffers();
 		
 		var dx = x;
 		var dy = y;

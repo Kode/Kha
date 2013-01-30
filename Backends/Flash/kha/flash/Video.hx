@@ -40,6 +40,9 @@ class Video extends kha.Video {
 	}
 	
 	public override function play() : Void {
+		if (finished == true)
+			stop();
+		
 		if (stream == null) {
 			finished = false;
 			var connection = new NetConnection();
