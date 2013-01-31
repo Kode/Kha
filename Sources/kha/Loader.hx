@@ -53,7 +53,7 @@ class Loader {
 	}
 	
 	public function getImage(name : String) : Image {
-		if (!images.exists(name)) {
+		if (!images.exists(name) && name != "") {
 			trace("Could not find image " + name + ".");
 		}
 		return images.get(name);
