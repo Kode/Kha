@@ -10,6 +10,13 @@ import kha.Image;
 @:headerClassCode("Kt::Texture* texture;")
 class Texture implements kha.graphics.Texture {
 	public function new(image: Image) {
+		loadImage(cast(image, kha.cpp.Image));
+	}
+	
+	@:functionCode("
+		texture = image->texture;
+	")
+	private function loadImage(image: kha.cpp.Image): Void {
 		
 	}
 	

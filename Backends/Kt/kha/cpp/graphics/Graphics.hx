@@ -43,11 +43,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createVertexShader(source: String): VertexShader {
-		return new Shader(source, null);
+		return new Shader(source, ShaderType.VertexShader);
 	}
 	
 	public function createFragmentShader(source: String): FragmentShader {
-		return null;
+		return new Shader(source, ShaderType.FragmentShader);
 	}
 	
 	public function setVertexShader(shader: VertexShader): Void {
