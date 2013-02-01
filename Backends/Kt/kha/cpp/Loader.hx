@@ -10,34 +10,20 @@ class Loader extends kha.Loader {
 		super();
 	}
 	
-	override function loadXml(asset: Asset) {
-		xmls.set(asset.name, Xml.parse(File.getContent(asset.file)));
-		--numberOfFiles;
-		checkComplete();
+	override function loadMusic(filename: String, done: kha.Music -> Void) {
+		done(new Music(filename));
 	}
 	
-	override function loadMusic(asset: Asset) {
-		musics.set(asset.name, new Music(asset.file));
-		--numberOfFiles;
-		checkComplete();
+	override function loadSound(filename: String, done: kha.Sound -> Void) {
+		done(new Sound(filename));
 	}
 	
-	override function loadSound(asset: Asset) {
-		sounds.set(asset.name, new Sound(asset.file));
-		--numberOfFiles;
-		checkComplete();
+	override function loadImage(filename: String, done: kha.Image -> Void) {
+		done(new kha.cpp.Image(filename));
 	}
 	
-	override function loadImage(asset: Asset) {
-		images.set(asset.name, new kha.cpp.Image(asset.file));
-		--numberOfFiles;
-		checkComplete();
-	}
-	
-	override function loadBlob(asset: Asset) {
-		blobs.set(asset.name, new Blob(File.getBytes(asset.file)));
-		--numberOfFiles;
-		checkComplete();
+	override function loadBlob(filename: String, done: Blob -> Void) {
+		done(new Blob(File.getBytes(filename)));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
