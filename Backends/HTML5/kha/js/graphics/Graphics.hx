@@ -45,7 +45,6 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function setVertexBuffer(aVertexBuffer: kha.graphics.VertexBuffer): Void {
 		vertexBuffer = cast(aVertexBuffer, VertexBuffer);
-		
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
