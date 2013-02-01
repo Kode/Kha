@@ -16,13 +16,11 @@ class Loader extends kha.Loader {
 		super();
 	}
 		
-	override function loadMusic(asset: Asset) {
-		musics.set(asset.name, new Music(asset.file));
-		--numberOfFiles;
-		checkComplete();
+	override function loadMusic(filename: String, done: kha.Music -> Void) {
+		done(new Music(filename));
 	}
 	
-	override function loadSound(asset: Asset) {
+	override function loadSound(filename: String, done: kha.Sound -> Void) {
 		/*//trace ("loadSound " + filename);
 		var sound = new Sound(asset.file);
 		//sound.element.onloadstart = trace ("onloadstart( " + element.src + " )");
@@ -37,24 +35,20 @@ class Loader extends kha.Loader {
 		};
 		sounds.set(asset.name, sound);*/
 		
-		sounds.set(asset.name, new Sound(asset.file));
-		--numberOfFiles;
-		checkComplete();
+		done(new Sound(filename));
 	}
 	
-	override function loadImage(asset: Asset) {
-		var img : js.Image = cast Lib.document.createElement("img");
-		img.src = asset.file;
-		img.onload = function(event : Event) {
-			images.set(asset.name, new kha.js.Image(img));
-			--numberOfFiles;
-			checkComplete();
+	override function loadImage(filename: String, done: kha.Image -> Void) {
+		var img: js.Image = cast Lib.document.createElement("img");
+		img.src = filename;
+		img.onload = function(event: Event) {
+			done(new kha.js.Image(img));
 		};
 	}
 	
-	override function loadVideo(asset: Asset): Void {
+	override function loadVideo(filename: String, done: kha.Video -> Void): Void {
 		//trace ("loadVideo( " + filename + " )");
-		var video = new Video(asset.file);
+		var video = new Video(filename);
 		//video.element.onloadstart = trace ("onloadstart( " + video.element.src + " )");
 		video.element.onerror = function(ex : Dynamic) {
 			Lib.alert("Error loading " + video.element.src);
@@ -62,10 +56,8 @@ class Loader extends kha.Loader {
 		video.element.oncanplaythrough = function () {
 			//trace ("loaded " + video.element.src);
 			video.element.oncanplaythrough = null;
-			--numberOfFiles;
-			checkComplete();
+			done(video);
 		};
-		videos.set(asset.name, video);
 	}
 	
 	override function loadBlob(filename: String, done: Blob -> Void) {
@@ -88,9 +80,6 @@ class Loader extends kha.Loader {
 				var bytes = Bytes.alloc(data.length);
 				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
 				done(new Blob(bytes));
-				//blobs.set(asset.name, new Blob(bytes));
-				//--numberOfFiles;
-				//checkComplete();
 			}
 			else Lib.alert("loadBlob failed");
 		};

@@ -149,19 +149,59 @@ class Loader {
 		for (i in 0...enqueued.length) {
 			switch (enqueued[i].type) {
 				case "image":
-					if (!images.exists(enqueued[i].name)) loadImage(enqueued[i]); else loadDummyFile();
+					if (!images.exists(enqueued[i].name)) {
+						var imageName = enqueued[i].name;
+						loadImage(enqueued[i].file, function(image: Image) {
+							if (!images.exists(imageName)) {
+								images.set(imageName, image);
+								--numberOfFiles;
+								checkComplete();
+							}
+						});
+					}
+					else loadDummyFile();
 				case "music":
-					if (!musics.exists(enqueued[i].name)) loadMusic(enqueued[i]); else loadDummyFile();
+					if (!musics.exists(enqueued[i].name)) {
+						var musicName = enqueued[i].name;
+						loadMusic(enqueued[i].file, function(music: Music) {
+							if (!musics.exists(musicName)) {
+								musics.set(musicName, music);
+								--numberOfFiles;
+								checkComplete();
+							}
+						});
+					}
+					else loadDummyFile();
 				case "sound":
-					if (!sounds.exists(enqueued[i].name)) loadSound(enqueued[i]); else loadDummyFile();
+					if (!sounds.exists(enqueued[i].name)) {
+						var soundName = enqueued[i].name;
+						loadSound(enqueued[i].file, function(sound: Sound) {
+							if (!sounds.exists(soundName)) {
+								sounds.set(soundName, sound);
+								--numberOfFiles;
+								checkComplete();
+							}
+						});
+					}
+					else loadDummyFile();
 				case "video":
-					if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
+					if (!videos.exists(enqueued[i].name)) {
+						var videoName = enqueued[i].name;
+						loadVideo(enqueued[i].file, function(video: Video) {
+							if (!videos.exists(videoName)) {
+								videos.set(videoName, video);
+								--numberOfFiles;
+								checkComplete();
+							}
+						});
+					}
+					else loadDummyFile();
 				case "blob":
 					if (!blobs.exists(enqueued[i].name)) {
 						var blobName = enqueued[i].name;
 						loadBlob(enqueued[i].file, function(blob: Blob) {
 							if (!blobs.exists(blobName)) {
-								blobs.set(name, blob);
+								blobs.set(blobName, blob);
 								--numberOfFiles;
 								checkComplete();
 							}
@@ -173,20 +213,12 @@ class Loader {
 		enqueued = new Array<Asset>();
 	}
 	
-	private function checkBlob(name: String, blob: Blob): Void {
-		
-	}
-	
 	public function loadProject(call: Void -> Void) {
 		enqueue(new Asset("project.kha", "project.kha", "blob"));
 		loadFiles(function() { loadShaders(call); } );
 	}
 	
-	//private var shaderCount: Int;
-	//private var shaderCall: Void -> Void;
-	
 	private function loadShaders(call: Void -> Void): Void {
-		//shaderCall = call;
 		var project = parseProject();
 		if (project.shaders != null) {
 			var shaders: Dynamic = project.shaders;
@@ -194,7 +226,7 @@ class Loader {
 			for (i in 0...shaderCount) {
 				var shader = shaders[i];
 				loadBlob(shader.file, function(blob: Blob) {
-					if (!this.shaders.exists(shader.name)) {
+					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
 						this.shaders.set(shader.name, blob);
 						--shaderCount;
 						if (shaderCount == 0) call();
@@ -204,12 +236,6 @@ class Loader {
 		}
 		else call();
 	}
-	
-	//private function shaderLoaded(name: String, blob: Blob): Void {
-	//	shaders.set(name, blob);
-	//	--shaderCount;
-	//	//if (shaderCount == 0) shaderCall();
-	//}
 	
 	private function loadRoomAssets(room: Room) {
 		for (i in 0...room.assets.length) {
@@ -280,12 +306,11 @@ class Loader {
 		this.numberOfFiles = numberOfFiles;
 	}
 	
-	private function loadImage(asset : Asset) { }
-	private function loadBlob(filename: String, done: Blob -> Void) { }
-	private function loadSound(asset : Asset) { }
-	private function loadMusic(asset : Asset) { }
-	private function loadVideo(asset : Asset) { }
-	private function loadXml(asset : Asset) { }
+	private function loadImage(filename: String, done: Image -> Void) { }
+	private function loadBlob (filename: String, done: Blob  -> Void) { }
+	private function loadSound(filename: String, done: Sound -> Void) { }
+	private function loadMusic(filename: String, done: Music -> Void) { }
+	private function loadVideo(filename: String, done: Video -> Void) { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	
