@@ -20,67 +20,45 @@ class Loader extends kha.Loader {
 		super();
 	}
 	
-	override function loadMusic(asset: Asset) {
-		var urlRequest : URLRequest = new URLRequest(asset.file + ".mp3");
-		var music : flash.media.Sound = new flash.media.Sound();
+	override function loadMusic(filename: String, done: kha.Music -> Void) {
+		var urlRequest = new URLRequest(filename + ".mp3");
+		var music = new flash.media.Sound();
 		music.addEventListener(Event.COMPLETE, function(e : Event) {
-			musics.set(asset.name, new Music(music));
-			--numberOfFiles;
-			checkComplete();
+			done(new Music(music));
 		});
 		music.load(urlRequest);
 	}
 	
-	override function loadXml(asset: Asset) {
-		var urlRequest : URLRequest = new URLRequest(asset.file);
-		var urlLoader : URLLoader = new URLLoader();
-		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
-			xmls.set(asset.name, Xml.parse(urlLoader.data));
-			--numberOfFiles;
-			checkComplete();
-		});
-		urlLoader.load(urlRequest);
-	}
-	
-	override function loadImage(asset: Asset) {
-		var urlRequest : URLRequest = new URLRequest(asset.file);
-		var loader : flash.display.Loader = new flash.display.Loader();
+	override function loadImage(filename: String, done: Image -> Void) {
+		var urlRequest = new URLRequest(filename);
+		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e : Event) {
-			images.set(asset.name, new Image(loader.content));
-			--numberOfFiles;
-			checkComplete();
+			done(new Image(loader.content));
 		});
 		loader.load(urlRequest);
 	}
 	
-	override function loadBlob(asset: Asset) {
-		var urlRequest : URLRequest = new URLRequest(asset.file);
-		var urlLoader : URLLoader = new URLLoader();
+	override function loadBlob(filename: String, done: Blob -> Void) {
+		var urlRequest = new URLRequest(filename);
+		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-			var blob = new Blob(Bytes.ofData(urlLoader.data));
-			blobs.set(asset.name, blob);
-			--numberOfFiles;
-			checkComplete();
+			done(new Blob(Bytes.ofData(urlLoader.data)));
 		});
 		urlLoader.load(urlRequest);
 	}
 
-	override function loadSound(asset: Asset) {
-		var urlRequest : URLRequest = new URLRequest(asset.file + ".mp3");
-		var sound : flash.media.Sound = new flash.media.Sound();
+	override function loadSound(filename: String, done: kha.Sound -> Void) {
+		var urlRequest = new URLRequest(filename + ".mp3");
+		var sound = new flash.media.Sound();
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
-			sounds.set(asset.name, new Sound(sound));
-			--numberOfFiles;
-			checkComplete();
+			done(new Sound(sound));
 		});
 		sound.load(urlRequest);
 	}
 
-	override function loadVideo(asset: Asset) {
-		videos.set(asset.name, new Video(asset.file + ".mp4"));
-		--numberOfFiles;
-		checkComplete();
+	override function loadVideo(filename: String, done: kha.Video -> Void) {
+		done(new Video(filename + ".mp4"));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
@@ -95,21 +73,6 @@ class Loader extends kha.Loader {
 			trace(ex);
 		}
 	}
-	
-	/*function loadDataXml() : Void {
-		var urlRequest : URLRequest = new URLRequest("project.kha");
-		var urlLoader : URLLoader = new URLLoader();
-		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-		urlLoader.addEventListener(Event.COMPLETE, function(e : Event) {
-			var blob = new Blob(Bytes.ofData(urlLoader.data));
-			blobs.set("project.kha", blob);
-			if (isPreLoad)
-				loadWindowSize();
-			else
-				loadFiles();
-		});
-		urlLoader.load(urlRequest);
-	}*/
 	
 	override function setNormalCursor() {
 		Mouse.cursor = "auto";

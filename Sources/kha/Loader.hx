@@ -220,7 +220,7 @@ class Loader {
 	
 	private function loadShaders(call: Void -> Void): Void {
 		var project = parseProject();
-		if (project.shaders != null) {
+		if (project.shaders != null && project.shaders.length > 0) {
 			var shaders: Dynamic = project.shaders;
 			var shaderCount = shaders.length;
 			for (i in 0...shaderCount) {
