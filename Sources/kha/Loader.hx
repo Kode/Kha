@@ -5,14 +5,14 @@ import kha.loader.Asset;
 import kha.loader.Room;
 
 class Loader {
-	var blobs : Hash<Blob>;
-	var images : Hash<Image>;
-	var sounds : Hash<Sound>;
-	var musics : Hash<Music>;
-	var videos : Hash<Video>;
-	var xmls : Hash<Xml>;
-	var loadcount : Int;
-	var numberOfFiles : Int;
+	var blobs: Hash<Blob>;
+	var images: Hash<Image>;
+	var sounds: Hash<Sound>;
+	var musics: Hash<Music>;
+	var videos: Hash<Video>;
+	var shaders: Hash<Blob>;
+	var loadcount: Int;
+	var numberOfFiles: Int;
 	
 	var assets: Hash<Asset>;
 	var rooms: Hash<Room>;
@@ -24,8 +24,8 @@ class Loader {
 		sounds = new Hash<Sound>();
 		musics = new Hash<Music>();
 		videos = new Hash<Video>();
-		xmls = new Hash<Xml>();
 		assets = new Hash<Asset>();
+		shaders = new Hash<Blob>();
 		rooms = new Hash<Room>();
 		enqueued = new Array<Asset>();
 		loadcount = 100;
@@ -70,12 +70,8 @@ class Loader {
 		return videos.get(name);
 	}
 	
-	public function getXml(name: String): Xml {
-		return xmls.get(name);
-	}
-	
 	public function getShader(name: String): Blob {
-		return getBlob(name);
+		return shaders.get(name);
 	}
 	
 	public function getAvailableBlobs(): Iterator<String> {
@@ -96,10 +92,6 @@ class Loader {
 	
 	public function getAvailableVideos(): Iterator<String> {
 		return videos.keys();
-	}
-	
-	public function getAvailableXmls(): Iterator<String> {
-		return xmls.keys();
 	}
 	
 	var enqueued: Array<Asset>;
@@ -150,7 +142,6 @@ class Loader {
 		loadFinished = call;
 		loadStarted(enqueued.length);
 		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
-		for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
 		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
 		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
@@ -159,8 +150,6 @@ class Loader {
 			switch (enqueued[i].type) {
 				case "image":
 					if (!images.exists(enqueued[i].name)) loadImage(enqueued[i]); else loadDummyFile();
-				case "xml":
-					if (!xmls.exists(enqueued[i].name))   loadXml(enqueued[i]);   else loadDummyFile();
 				case "music":
 					if (!musics.exists(enqueued[i].name)) loadMusic(enqueued[i]); else loadDummyFile();
 				case "sound":
@@ -168,20 +157,61 @@ class Loader {
 				case "video":
 					if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
 				case "blob":
-					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
-				case "shader":
-					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
+					if (!blobs.exists(enqueued[i].name)) {
+						var blobName = enqueued[i].name;
+						loadBlob(enqueued[i].file, function(blob: Blob) {
+							if (!blobs.exists(blobName)) {
+								blobs.set(name, blob);
+								--numberOfFiles;
+								checkComplete();
+							}
+						});
+					}
+					else loadDummyFile();
 			}
 		}
 		enqueued = new Array<Asset>();
 	}
 	
-	public function loadProject(call: Void -> Void) {
-		enqueue(new Asset("project.kha", "project.kha", "blob"));
-		loadFiles(call);
+	private function checkBlob(name: String, blob: Blob): Void {
+		
 	}
 	
-	function loadRoomAssets(room: Room) {
+	public function loadProject(call: Void -> Void) {
+		enqueue(new Asset("project.kha", "project.kha", "blob"));
+		loadFiles(function() { loadShaders(call); } );
+	}
+	
+	//private var shaderCount: Int;
+	//private var shaderCall: Void -> Void;
+	
+	private function loadShaders(call: Void -> Void): Void {
+		//shaderCall = call;
+		var project = parseProject();
+		if (project.shaders != null) {
+			var shaders: Dynamic = project.shaders;
+			var shaderCount = shaders.length;
+			for (i in 0...shaderCount) {
+				var shader = shaders[i];
+				loadBlob(shader.file, function(blob: Blob) {
+					if (!this.shaders.exists(shader.name)) {
+						this.shaders.set(shader.name, blob);
+						--shaderCount;
+						if (shaderCount == 0) call();
+					}
+				} );
+			}
+		}
+		else call();
+	}
+	
+	//private function shaderLoaded(name: String, blob: Blob): Void {
+	//	shaders.set(name, blob);
+	//	--shaderCount;
+	//	//if (shaderCount == 0) shaderCall();
+	//}
+	
+	private function loadRoomAssets(room: Room) {
 		for (i in 0...room.assets.length) {
 			enqueue(room.assets[i]);
 		}
@@ -251,7 +281,7 @@ class Loader {
 	}
 	
 	private function loadImage(asset : Asset) { }
-	private function loadBlob(asset : Asset) { }
+	private function loadBlob(filename: String, done: Blob -> Void) { }
 	private function loadSound(asset : Asset) { }
 	private function loadMusic(asset : Asset) { }
 	private function loadVideo(asset : Asset) { }

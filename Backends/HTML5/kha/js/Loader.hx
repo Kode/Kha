@@ -16,19 +16,6 @@ class Loader extends kha.Loader {
 		super();
 	}
 		
-	override function loadXml(asset: Asset) {
-		var r = new haxe.Http(asset.file);
-		r.onError = function(error:String) {
-			Lib.alert("Error loading " + asset.file + ": " + error);
-		}
-		r.onData = function(data : String) {
-			xmls.set(asset.name, Xml.parse(data));
-			--numberOfFiles;
-			checkComplete();
-		};
-		r.request(false);
-	}
-	
 	override function loadMusic(asset: Asset) {
 		musics.set(asset.name, new Music(asset.file));
 		--numberOfFiles;
@@ -81,9 +68,9 @@ class Loader extends kha.Loader {
 		videos.set(asset.name, video);
 	}
 	
-	override function loadBlob(asset : Asset) {
+	override function loadBlob(filename: String, done: Blob -> Void) {
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", asset.file, true);
+		request.open("GET", filename, true);
 		if (request.overrideMimeType != null) request.overrideMimeType('text/plain; charset=x-user-defined');
 		else {
 			request.setRequestHeader("Accept-Charset", "x-user-defined");
@@ -100,17 +87,14 @@ class Loader extends kha.Loader {
 				}
 				var bytes = Bytes.alloc(data.length);
 				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
-				blobs.set(asset.name, new Blob(bytes));
-				--numberOfFiles;
-				checkComplete();
+				done(new Blob(bytes));
+				//blobs.set(asset.name, new Blob(bytes));
+				//--numberOfFiles;
+				//checkComplete();
 			}
 			else Lib.alert("loadBlob failed");
 		};
 		request.send(null);
-	}
-	
-	override public function getShader(name: String): Blob {
-		return getBlob(name + ".glsl.essl");
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
