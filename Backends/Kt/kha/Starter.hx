@@ -10,6 +10,7 @@ class Starter {
 	
 	public function new() {
 		Storage.init(new kha.cpp.Storage());
+		Sys.init();
 		Loader.init(new kha.cpp.Loader());
 	}
 	
