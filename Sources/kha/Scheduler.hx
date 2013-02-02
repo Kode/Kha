@@ -1,18 +1,23 @@
 package kha;
+import haxe.Int32;
 import haxe.Int64;
 
 class TimeTask {
 	public var task: Void -> Bool;
 	
-	public var start: Int64;
-	public var period: Int64;
-	public var duration: Int64;
-	public var last: Int64;
-	public var next: Int64;
+	public var start: Int;
+	public var period: Int;
+	public var duration: Int;
+	public var last: Int;
+	public var next: Int;
 	
 	public var id: Int;
 	public var groupId: Int;
 	public var active: Bool;
+	
+	public function new() {
+		
+	}
 }
 
 class FrameTask {
@@ -34,9 +39,9 @@ class Scheduler {
 	private static var timeTasks: Array<TimeTask>;
 	private static var frameTasks: Array<FrameTask>;
 	
-	private static var current: Int64;
-	private static var frameEnd: Int64;
-	private static var startstamp: Int64;
+	private static var current: Int;
+	private static var frameEnd: Int;
+	private static var startstamp: Int;
 	
 	private static var frame_tasks_sorted: Bool;
 	private static var running: Bool;
@@ -56,6 +61,9 @@ class Scheduler {
 	private static var maxframetime = 1.0;
 	
 	public static function init(): Void {
+		difs = new Array<Float>();
+		difs[DIF_COUNT - 1] = 0;
+		
 		running = false;
 		stopped = false;
 		halted_count = 0;
@@ -63,7 +71,7 @@ class Scheduler {
 		current = 0;
 		frameEnd = 0;
 		startstamp = 0;
-		frequency = getFrequency();
+		frequency = Sys.getFrequency();
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -71,7 +79,7 @@ class Scheduler {
 	}
 	
 	public static function start(): Void {
-		//if (Graphics::hasWindow()) {
+		/*if (Graphics::hasWindow()) {
 			var test1 = getTimestamp();
 			for (i in 0...3) Graphics::swapBuffers();
 			ticks test2 = getTimestamp();
@@ -79,15 +87,18 @@ class Scheduler {
 				vsync = false;
 			}
 			else vsync = true;
-			var hz = 60;// Graphics::getHz();
+			var hz = 60.0;// Graphics::getHz();
 			if (hz >= 57 && hz <= 63) hz = 60;
 			onedifhz = 1.0 / hz;
-		//}
+		}*/
+		vsync = true;
+		var hz = 60.0;
+		onedifhz = 1.0 / hz;
 		//std::cout << "Using " << hz << " Hz" << std::endl;
 		//std::cout << "Using vsync = " << (vsync ? "true" : "false") << std::endl;
 
 		running = true;
-		startstamp = getTimestamp();
+		startstamp = Sys.getTimestamp();
 		initSchedulerRun();
 		//#ifndef SYS_ANDROID
 		//runScheduler();
@@ -153,7 +164,7 @@ class Scheduler {
 			current = t.next;
 			t.last = t.next;
 			t.next += t.period;
-			timeTasks.pop_front();
+			timeTasks.remove(timeTasks[0]);
 			//printf("timeTasks.pop_front(-> %d)\n", timeTasks.size());
 			//printf("<");
 			if (t.active && t.task()) {
@@ -218,7 +229,7 @@ class Scheduler {
 	}
 	
 	public static function addFrameTask(task: Void -> Void, priority: Int): Int {
-		return addBreakableFrameTask(function() { task(); return true; } , priority);
+		return addBreakableFrameTask(function() { task(); return true; }, priority);
 	}
 	
 	public static function removeFrameTask(id: Int): Void {
@@ -255,7 +266,7 @@ class Scheduler {
 	}
 	
 	public static function addTimeTaskToGroup(groupId: Int, task: Void -> Void, start: Float, period: Float = 0, duration: Float = 0): Int {
-		return addBreakableTimeTaskToGroup(groupId, function() { task(); return true; } , start, period, duration);
+		return addBreakableTimeTaskToGroup(groupId, function() { task(); return true; }, start, period, duration);
 	}
 	
 	public static function addBreakableTimeTask(task: Void -> Bool, start: Float, period: Float = 0, duration: Float = 0): Int {
@@ -290,6 +301,50 @@ class Scheduler {
 	}
 
 	public static function numTasksInSchedule(): Int {
-		return timeTasks.length + frameTasks.length);
+		return timeTasks.length + frameTasks.length;
 	}
+	
+	private static function initSchedulerRun(): Void {
+		stamp = getCurrentTimestamp();
+		for (i in 0...DIF_COUNT) difs[i] = 0;
+	}
+	
+	private static function getCurrentTimestamp(): Int {
+		return Sys.getTimestamp() - startstamp;
+	}
+	
+	private static function ticksToTimespan(t: Int): Float {
+		return t / frequency;
+	}
+	
+	private static function timespanToTicks(timespan: Float) {
+		return Math.round(timespan * frequency);
+	}
+	
+	private static function timestampToTime(t: Int): Float {
+		return t / frequency;
+	}
+	
+	private static function timeToTimestamp(time: Float): Int {
+		return Std.int(time * frequency);
+	}
+	
+	private static function insertSorted(list: Array<TimeTask>, task: TimeTask) {
+		for (i in 0...timeTasks.length) {
+			if (timeTasks[i].next > task.next) {
+				list.insert(i, task);
+				return;
+			}
+		}
+		list.push(task);
+	}
+	
+	private static function sortFrameTasks(): Void {
+		if (frame_tasks_sorted) return;
+		frameTasks.sort(function(a: FrameTask, b: FrameTask): Int { return a.priority > b.priority ? 1 : ((a.priority < b.priority) ? -1 : 0); } );
+		frame_tasks_sorted = true;
+	}
+
+	private static var stamp: Int;
+	private static var difs: Array<Float>;
 }

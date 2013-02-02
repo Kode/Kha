@@ -39,6 +39,7 @@ class Starter {
 		for (i in 0...256) pressedKeys.push(false);
 		Storage.init(new kha.flash.Storage());
 		Loader.init(new kha.flash.Loader(this));
+		Scheduler.init();
 	}
 	
 	public function start(game: Game) {
