@@ -154,22 +154,26 @@ class Loader {
 			for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 			for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
 		}
-		for (i in 0...enqueued.length) {
-			switch (enqueued[i].type) {
-				case "image":
-					if (!images.exists(enqueued[i].name)) loadImage(enqueued[i]); else loadDummyFile();
-				case "xml":
-					if (!xmls.exists(enqueued[i].name))   loadXml(enqueued[i]);   else loadDummyFile();
-				case "music":
-					if (!musics.exists(enqueued[i].name)) loadMusic(enqueued[i]); else loadDummyFile();
-				case "sound":
-					if (!sounds.exists(enqueued[i].name)) loadSound(enqueued[i]); else loadDummyFile();
-				case "video":
-					if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
-				case "blob":
-					if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
+		if (enqueued.length > 0) {
+			for (i in 0...enqueued.length) {
+				switch (enqueued[i].type) {
+					case "image":
+						if (!images.exists(enqueued[i].name)) loadImage(enqueued[i]); else loadDummyFile();
+					case "xml":
+						if (!xmls.exists(enqueued[i].name))   loadXml(enqueued[i]);   else loadDummyFile();
+					case "music":
+						if (!musics.exists(enqueued[i].name)) loadMusic(enqueued[i]); else loadDummyFile();
+					case "sound":
+						if (!sounds.exists(enqueued[i].name)) loadSound(enqueued[i]); else loadDummyFile();
+					case "video":
+						if (!videos.exists(enqueued[i].name)) loadVideo(enqueued[i]); else loadDummyFile();
+					case "blob":
+						if (!blobs.exists(enqueued[i].name))  loadBlob(enqueued[i]);  else loadDummyFile();
+				}
 			}
 		}
+		else
+			checkComplete();
 	}
 	
 	public function loadProject(call: Void -> Void) {
