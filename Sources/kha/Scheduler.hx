@@ -76,6 +76,9 @@ class Scheduler {
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
 		currentGroupId     = 0;
+		
+		timeTasks = new Array<TimeTask>();
+		frameTasks = new Array<FrameTask>();
 	}
 	
 	public static function start(): Void {

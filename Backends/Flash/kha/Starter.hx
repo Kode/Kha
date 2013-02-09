@@ -26,13 +26,12 @@ import flash.display.Sprite;
 import flash.Vector;
 
 class Starter {
-	//var screen : Game;
-	var game : Game;
-	var painter : Painter;
-	var pressedKeys : Array<Bool>;
-	var stage : Stage;
-	var stage3D : Stage3D;
-	public static var context : Context3D;
+	var game: Game;
+	var painter: Painter;
+	var pressedKeys: Array<Bool>;
+	var stage: Stage;
+	var stage3D: Stage3D;
+	public static var context: Context3D;
 	
 	public function new() {
 		pressedKeys = new Array<Bool>();
@@ -42,12 +41,12 @@ class Starter {
 		Scheduler.init();
 	}
 	
-	public function start(game: Game) {
+	public function start(game: Game): Void {
 		stage = flash.Lib.current.stage;
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.addEventListener(Event.RESIZE, resizeHandler);
 		stage3D = stage.stage3Ds[0];
-		stage3D.addEventListener(flash.events.Event.CONTEXT3D_CREATE, onReady);
+		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 		this.game = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
@@ -65,7 +64,7 @@ class Starter {
 		game.loadFinished();
 	}
 	
-	function onReady(_) : Void {
+	function onReady(_): Void {
 		context = stage3D.context3D;
 		painter = new Painter(context);
 
@@ -78,14 +77,14 @@ class Starter {
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
 	
-	function update(_) {
-		Configuration.screen().update();
+	function update(_): Void {
+		Scheduler.executeFrame();
 		painter.begin();
 		Configuration.screen().render(painter);
 		painter.end();
 	}
 	
-	function keyDownHandler(event : KeyboardEvent) : Void {
+	function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
@@ -125,7 +124,7 @@ class Starter {
 		}
 	}
 
-	function keyUpHandler(event : KeyboardEvent) : Void {
+	function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
 		case 8:
@@ -164,22 +163,22 @@ class Starter {
 		}
 	}
 	
-	function mouseDownHandler(event : MouseEvent) : Void {
+	function mouseDownHandler(event: MouseEvent): Void {
 		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
 		game.mouseDown(Std.int(xy.x), Std.int(xy.y));
 	}
 	
-	function mouseUpHandler(event : MouseEvent) : Void {
+	function mouseUpHandler(event: MouseEvent): Void {
 		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
 		game.mouseUp(Std.int(xy.x), Std.int(xy.y));
 	}
 	
-	function mouseMoveHandler(event : MouseEvent) : Void {
+	function mouseMoveHandler(event: MouseEvent): Void {
 		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
 		game.mouseMove(Std.int(xy.x), Std.int(xy.y));
 	}
 	
-	function resizeHandler(event : Event) : Void {
+	function resizeHandler(event: Event): Void {
 		painter.resize();
 	}
 }
