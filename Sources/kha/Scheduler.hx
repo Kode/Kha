@@ -1,6 +1,4 @@
 package kha;
-import haxe.Int32;
-import haxe.Int64;
 
 class TimeTask {
 	public var task: Void -> Bool;

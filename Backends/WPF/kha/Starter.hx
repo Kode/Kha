@@ -23,7 +23,7 @@ import system.windows.FrameworkElement;
 		}
 	}
 ')
-class StoryPublishCanvas extends system.windows.controls.Canvas {
+class WpfCanvas extends system.windows.controls.Canvas {
 	var mousePosX : Int;
 	var mousePosY : Int;
 	var drawMousePos : Bool;
@@ -152,10 +152,10 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	}
 ')
 class MainWindow extends system.windows.Window {
-	public var canvas : StoryPublishCanvas;
+	public var canvas : WpfCanvas;
 	
 	@:functionBody('
-		canvas = new StoryPublishCanvas();
+		canvas = new WpfCanvas();
         canvas.Width = Game.the.width;
         canvas.Height = Game.the.height;
         AddChild(canvas);
@@ -193,7 +193,7 @@ class Starter {
 	static var mainWindow : MainWindow;
 	static var openWindow : Bool = true;
 	public static var painter : kha.wpf.Painter;
-	public static var frameworkElement: StoryPublishCanvas;
+	public static var frameworkElement: WpfCanvas;
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
