@@ -18,6 +18,7 @@ import haxe.io.Bytes;
 class Loader extends kha.Loader {
 	public function new(main : Starter) {
 		super();
+		isQuitable = true;
 	}
 	
 	override function loadMusic(asset: Asset) {
@@ -129,5 +130,10 @@ class Loader extends kha.Loader {
 			Mouse.hide();
 		else
 			Mouse.show();
+	}
+	
+	override public function quit() : Void {
+		flash.Lib.fscommand("quit");
+		//flash.system.FSCommand()._fscommand("quit","");
 	}
 }
