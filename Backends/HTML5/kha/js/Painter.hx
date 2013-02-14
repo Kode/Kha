@@ -1,4 +1,5 @@
 package kha.js;
+import kha.FontStyle;
 
 class Painter extends kha.Painter {
 	var canvas : Dynamic;
@@ -16,6 +17,7 @@ class Painter extends kha.Painter {
 		tx = 0;
 		ty = 0;
 		instance = this;
+		webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 	}
 	
 	public static function stringWidth(font : kha.Font, text : String) {

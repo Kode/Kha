@@ -11,4 +11,13 @@ class Sys {
 	public static function init(): Void {
 		graphics = new kha.js.graphics.Graphics();
 	}
+	
+	public static function getFrequency(): Int {
+		return 1000;
+	}
+	
+	public static function getTimestamp(): Int {
+		var date: Dynamic = untyped __js__("new Date()");
+		return date.getMilliseconds();
+	}
 }

@@ -1,6 +1,7 @@
 package kha.js.graphics;
 
 import kha.graphics.VertexStructure;
+import kha.graphics.VertexData;
 
 class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var buffer: Dynamic;
@@ -13,7 +14,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
-			switch (element.type) {
+			switch (element.data) {
 			case VertexData.Float2:
 				myStride += 4 * 2;
 			case VertexData.Float3:
@@ -51,7 +52,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			var attribute = Sys.gl.getAttribLocation(program, element.name);
 			Sys.gl.enableVertexAttribArray(attribute);
 			Sys.gl.vertexAttribPointer(attribute, mySize, Sys.gl.FLOAT, false, myStride, offset);
-			switch (element.type) {
+			switch (element.data) {
 			case VertexData.Float2:
 				offset += 4 * 2;
 			case VertexData.Float3:

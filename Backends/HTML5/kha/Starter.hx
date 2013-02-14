@@ -29,6 +29,7 @@ class Starter {
 		Sys.init();
 		Loader.init(new kha.js.Loader());
 		Storage.init(new Storage());
+		Scheduler.init();
 	}
 	
 	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {
@@ -72,6 +73,8 @@ class Starter {
 		}
 		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
 		
+		Scheduler.start();
+		
 		var window : Dynamic = Lib.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
@@ -100,7 +103,7 @@ class Starter {
 				}
 			}
 			
-			Configuration.screen().update();
+			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
 				painter.begin();
