@@ -61,6 +61,7 @@ class Starter {
 		);
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
+		Scheduler.start();
 		game.loadFinished();
 	}
 	
