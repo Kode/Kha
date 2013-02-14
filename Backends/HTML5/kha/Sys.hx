@@ -12,7 +12,7 @@ class Sys {
 		graphics = new kha.js.graphics.Graphics();
 	}
 	
-	public static function getFrequency(): Int {
+	public static function getFrequency(): Float {
 		return 1000;
 	}
 	

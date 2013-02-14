@@ -12,6 +12,7 @@ class Starter {
 		Storage.init(new kha.cpp.Storage());
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
+		Scheduler.init();
 	}
 	
 	public function start(game: Game) {
@@ -26,11 +27,13 @@ class Starter {
 		game.height = Loader.the.height;
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
+		Scheduler.start();
 		game.loadFinished();
 		painter = new kha.cpp.Painter();
 	}
 
 	public static function frame() {
+		Scheduler.executeFrame();
 		game.update();
 		painter.begin();
 		game.render(painter);
