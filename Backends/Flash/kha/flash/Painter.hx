@@ -37,6 +37,7 @@ class Painter extends kha.Painter {
 	var vertexBuffer : VertexBuffer3D;
 	var vertices : Vector<Float>;
 	var indexBuffer : IndexBuffer3D;
+	var triangleIndexBuffer: IndexBuffer3D;
 	var projection : Matrix3D;
 	var font : Font;
 	var textField : TextField;
@@ -122,6 +123,13 @@ class Painter extends kha.Painter {
 			indices[6 * i + 5] = i * 4 + 3;
 		}
 		indexBuffer.uploadFromVector(indices, 0, 6 * maxCount);
+		
+		triangleIndexBuffer = context.createIndexBuffer(3);
+		indices = new Vector<UInt>(3);
+		indices[0] = 0;
+		indices[1] = 1;
+		indices[2] = 2;
+		triangleIndexBuffer.uploadFromVector(indices, 0, 3);
 		
 		vertexBuffer = context.createVertexBuffer(4 * maxCount, 5);
 		vertices = new Vector<Float>(20 * maxCount);
@@ -382,6 +390,22 @@ class Painter extends kha.Painter {
 		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, getColorVector());
 		vertexBuffer.uploadFromVector(vertices, 0, 4 * 1);
 		context.drawTriangles(indexBuffer, 0, 2 * 1);
+		context.setProgram(program);
+	}
+	
+	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+		flushBuffers();
+		
+		var offset = count * 20;
+		vertices[offset +  0] = tx + x1; vertices[offset +  1] = ty + y1; vertices[offset +  2] = 1; vertices[offset +  3] = 0; vertices[offset +  4] = 0;
+		vertices[offset +  5] = tx + x2; vertices[offset +  6] = ty + y2; vertices[offset +  7] = 1; vertices[offset +  8] = 0; vertices[offset +  9] = 0;
+		vertices[offset + 10] = tx + x3; vertices[offset + 11] = ty + y3; vertices[offset + 12] = 1; vertices[offset + 13] = 0; vertices[offset + 14] = 0;
+		
+		context.setTextureAt(0, null);
+		context.setProgram(noTexProgram);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, getColorVector());
+		vertexBuffer.uploadFromVector(vertices, 0, 3);
+		context.drawTriangles(triangleIndexBuffer, 0, 1);
 		context.setProgram(program);
 	}
 	
