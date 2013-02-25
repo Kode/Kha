@@ -356,10 +356,10 @@ class Painter extends kha.Painter {
 	}
 	
 	public override function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
-		drawLine(tx + x, ty + y, tx + x + width, ty + y);
-		drawLine(tx + x + width, ty + y, tx + x + width, ty + y + height);
-		drawLine(tx + x + width, ty + y + height, tx + x, ty + y + height);
-		drawLine(tx + x, ty + y + height, tx + x, ty + y);
+		drawLine(x, y, x + width, y);
+		drawLine(x + width, y, x + width, y + height);
+		drawLine(x + width, y + height, x, y + height);
+		drawLine(x, y + height, x, y);
 	}
 	
 	public override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
