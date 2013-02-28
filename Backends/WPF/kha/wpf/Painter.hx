@@ -2,21 +2,41 @@ package kha.wpf;
 
 import kha.Animation;
 import kha.FontStyle;
+import kha.Image;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 
 class Painter extends kha.Painter {
-	public var context : DrawingContext;
-	var color : Color;
-	var font : Font;
+	public var context: DrawingContext;
+	private var color: Color;
+	private var font: Font;
+	private var tx: Float;
+	private var ty: Float;
 
 	public function new() {
 		font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
+	
+	override public function translate(x: Float, y: Float): Void {
+		tx = x;
+		ty = y;
+	}
+	
+	@:functionBody('
+		var img = (Image)image;
+		context.DrawImage(img.image, new System.Windows.Rect(tx + x, ty + y, image.getWidth(), image.getHeight()));
+	')
+	override public function drawImage(image: Image, x: Float, y: Float): Void {
+		
+	}
 
 	@:functionBody('
 		var img = (Image)image;
-		context.DrawImage(img.image, new System.Windows.Rect(dx, dy, dw, dh));
+		//var cropped = new System.Windows.Media.Imaging.CroppedBitmap(img.image, new System.Windows.Int32Rect((int)sx, (int)sy, (int)sw, (int)sh));
+		//context.DrawImage(cropped, new System.Windows.Rect(tx + dx, ty + dy, dw, dh)); //super slow
+		var brush = new System.Windows.Media.ImageBrush(img.image);
+		brush.Viewbox = new System.Windows.Rect(sx / image.getWidth(), sy / image.getHeight(), sw / image.getWidth(), sh / image.getHeight());
+		context.DrawRectangle(brush, null, new System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
 	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
 		
@@ -31,7 +51,7 @@ class Painter extends kha.Painter {
 			if (font.style.getBold()) fText.SetFontWeight(System.Windows.FontWeights.Bold);
 			if (font.style.getItalic()) fText.SetFontStyle(System.Windows.FontStyles.Italic);
 			if (font.style.getUnderlined()) fText.SetTextDecorations(System.Windows.TextDecorations.Underline);
-			context.DrawText(fText, new System.Windows.Point(x, y));
+			context.DrawText(fText, new System.Windows.Point(tx + x, ty + y));
 		}
 	')
 	override public function drawString(text : String, x : Float, y : Float) : Void {
@@ -50,28 +70,28 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionBody('
-		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Rect(x, y, width, height));
+		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
 		
 	}
 
 	@:functionBody('
-		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(x, y, width, height));
+		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
 		
 	}
 	
 	@:functionBody('
-		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
+		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(tx + x1, ty + y1), new System.Windows.Point(tx + x2, ty + y2));
 	')
 	override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
 		
 	}
 		
 	@:functionBody('
-	context.DrawVideo(((Video)video).getPlayer(), new System.Windows.Rect(x, y, width, height));
+		context.DrawVideo(((Video)video).getPlayer(), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
 

@@ -42,7 +42,7 @@ class WpfCanvas extends system.windows.controls.Canvas {
 		double heightTransform = canvas.ActualHeight/Starter.game.height;
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
-		Configuration.screen().update();
+		Scheduler.executeFrame();
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
@@ -177,8 +177,8 @@ class MainWindow extends system.windows.Window {
         Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
 		// Go fullscreen
-		WindowStyle = System.Windows.WindowStyle.None;
-        WindowState = System.Windows.WindowState.Maximized;
+		//WindowStyle = System.Windows.WindowStyle.None;
+        //WindowState = System.Windows.WindowState.Maximized;
 		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
@@ -198,6 +198,8 @@ class Starter {
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
+		Sys.init();
+		Scheduler.init();
 	}
 	
 	public static function configure(path : String, openWindow : Bool, forceBusyCursor : Bool) {

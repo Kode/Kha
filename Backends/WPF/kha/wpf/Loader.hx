@@ -33,7 +33,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadMusic(filename: String, done: kha.Music -> Void) : Void {
-		done(null);
+		done(new Music());
 	}
 
 	override function loadSound(filename: String, done: kha.Sound -> Void) : Void {
