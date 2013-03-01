@@ -165,20 +165,18 @@ class Scheduler {
 			current = t.next;
 			t.last = t.next;
 			t.next += t.period;
-			timeTasks.remove(timeTasks[0]);
-			//printf("timeTasks.pop_front(-> %d)\n", timeTasks.size());
-			//printf("<");
+			
 			if (t.active && t.task()) {
+				timeTasks.remove(t);
 				if (t.period != 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
 					insertSorted(timeTasks, t);
 				}
 			}
 			else {
 				t.active = false;
-				//timeTasks.erase(t);
+				timeTasks.remove(t);
 			}
 		}
-		//printf("b\n");
 
 		// TODO: Man könnte direkt bei "t.active = false;" entfernen
 		while (true) {
@@ -331,8 +329,8 @@ class Scheduler {
 	}
 	
 	private static function insertSorted(list: Array<TimeTask>, task: TimeTask) {
-		for (i in 0...timeTasks.length) {
-			if (timeTasks[i].next > task.next) {
+		for (i in 0...list.length) {
+			if (list[i].next > task.next) {
 				list.insert(i, task);
 				return;
 			}
