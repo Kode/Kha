@@ -34,7 +34,6 @@ class Starter {
 
 	public static function frame() {
 		Scheduler.executeFrame();
-		game.update();
 		painter.begin();
 		game.render(painter);
 		painter.end();

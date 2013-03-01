@@ -17,23 +17,13 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	@:functionCode("sound->play();")
-	override public function play(): Void {
-		
-	}
-	
-	override public function stop(): Void {
-		
+	@:functionCode("sound->play(); return null();")
+	override public function play(): kha.SoundChannel {
+		return null;
 	}
 	
 	@:functionCode("delete sound;")
 	override public function unload(): Void {
 
 	}
-	
-	@:functionCode("return sound->length();")
-	override public function getLength(): Int { return 0; } // Miliseconds
-	
-	@:functionCode("return sound->position();")
-	override public function getCurrentPos(): Int { return 0; } // Miliseconds
 }

@@ -52,19 +52,29 @@ class SoundChannel extends kha.SoundChannel {
 }
 
 class Sound extends kha.Sound {
-	private var player: MediaElement;
+	//private var player: MediaElement;
+	private var filename: String;
 	
 	public function new(filename: String) : Void {
 		super();
-		player = new MediaElement();
+		this.filename = filename;
+		/*player = new MediaElement();
+		player.LoadedBehavior = MediaState.Manual;
+		player.UnloadedBehavior = MediaState.Manual;
+		// MediaElement needs Absolute URI. Relative won't work
+		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
+		// TODO: perhaps files should be checked for validity? */
+	}
+	
+	public override function play(): kha.SoundChannel {
+		var player = new MediaElement();
 		player.LoadedBehavior = MediaState.Manual;
 		player.UnloadedBehavior = MediaState.Manual;
 		// MediaElement needs Absolute URI. Relative won't work
 		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
 		// TODO: perhaps files should be checked for validity? 
-	}
-	
-	public override function play(): kha.SoundChannel {
+
+		
 		player.Play();
 		return new SoundChannel(player);
 	}
