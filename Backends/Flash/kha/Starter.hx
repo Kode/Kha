@@ -59,14 +59,16 @@ class Starter {
 		stage3D.requestContext3D(
 			//"software"
 		);
-		Configuration.setScreen(game);
-		Configuration.screen().setInstance();
-		Scheduler.start();
-		game.loadFinished();
 	}
 	
 	function onReady(_): Void {
 		context = stage3D.context3D;
+		Sys.init(context);
+		Configuration.setScreen(game);
+		Configuration.screen().setInstance();
+		Scheduler.start();
+		game.loadFinished();
+		
 		painter = new Painter(context);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
