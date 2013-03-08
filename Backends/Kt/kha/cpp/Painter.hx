@@ -69,7 +69,7 @@ class Painter extends kha.Painter {
 	Kt::Text fontName = font->name.c_str();
 	int fontSize = font->size;
 	if (Kt::fonts.find(Kt::pair<Kt::Text, int>(fontName, fontSize)) == Kt::fonts.end()) Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)] = new Kt::Font(fontName, fontSize);
-	Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)]->render(haxePainter, text.c_str(), x + tx, y + ty, Kt::Color(r, g, b));	
+	Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)]->render(haxePainter, text.__WCStr(), x + tx, y + ty, Kt::Color(r, g, b));	
 	')
 	override public function drawString(text: String, x: Float, y: Float): Void {
 		
