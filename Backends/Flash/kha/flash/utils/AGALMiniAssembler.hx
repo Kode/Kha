@@ -92,7 +92,11 @@ class AGALMiniAssembler {
 		i = 0;
 		while (i < lng && _error == "") {
 			var line : String = new String(lines[i]);
-
+			if (line == "") {
+				++i;
+				continue;
+			}
+			
 			// remove comments
 			var startcomment : Int = line.indexOf("//");
 			if (startcomment != -1) line = line.substr(0, startcomment);
