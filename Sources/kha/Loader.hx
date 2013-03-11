@@ -306,11 +306,11 @@ class Loader {
 		this.numberOfFiles = numberOfFiles;
 	}
 	
-	private function loadImage(filename: String, done: Image -> Void) { }
-	private function loadBlob (filename: String, done: Blob  -> Void) { }
-	private function loadSound(filename: String, done: Sound -> Void) { }
-	private function loadMusic(filename: String, done: Music -> Void) { }
-	private function loadVideo(filename: String, done: Video -> Void) { }
+	public function loadImage(filename: String, done: Image -> Void) { }
+	public function loadBlob (filename: String, done: Blob  -> Void) { }
+	public function loadSound(filename: String, done: Sound -> Void) { }
+	public function loadMusic(filename: String, done: Music -> Void) { }
+	public function loadVideo(filename: String, done: Video -> Void) { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	
