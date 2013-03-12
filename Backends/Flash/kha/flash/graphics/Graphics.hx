@@ -33,6 +33,7 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
 		this.vertexBuffer = cast(vertexBuffer, VertexBuffer);
+		this.vertexBuffer.set();
 	}
 	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
@@ -48,25 +49,10 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		context.setVertexBufferAt(0, vertexBuffer.vertexBuffer);
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
 	}
 	
 	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		context.setVertexBufferAt(0, vertexBuffer.vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
-		context.setVertexBufferAt(1, null);
-		var vc = new Vector<Float>(4);
-		vc[0] = 0.5;
-		vc[1] = 1.0;
-		vc[2] = 0;
-		vc[3] = 0;
-		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vc, 1);
-		var fc = new Vector<Float>(4);
-		fc[0] = 1;
-		fc[1] = 0;
-		fc[2] = 0;
-		fc[3] = 1;
-		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, fc, 1);
 		context.drawTriangles(stupidIndexBuffer, 0, 1);// Std.int(vertexBuffer.size() / 3));
 	}
 	
@@ -89,5 +75,7 @@ class Graphics implements kha.graphics.Graphics {
 	public function linkShaders(): Void {
 		program.upload(vertexShader.assembler.agalcode(), fragmentShader.assembler.agalcode());
 		context.setProgram(program);
+		vertexShader.set();
+		fragmentShader.set();
 	}
 }
