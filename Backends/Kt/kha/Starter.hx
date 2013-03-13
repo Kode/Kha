@@ -9,6 +9,7 @@ class Starter {
 	static var painter: kha.cpp.Painter;
 	
 	public function new() {
+		haxe.Timer.stamp();
 		Storage.init(new kha.cpp.Storage());
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());

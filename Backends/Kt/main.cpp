@@ -99,7 +99,7 @@ namespace {
 }
 
 int ktmain(const Kt::List<Kt::Text>& params) {
-	Kt::Application app(params, 640, 520, false, "Kha", false);
+	Kt::Application app(params, 1024, 768, false, "Kha", false);
 	Kt::Sound::init();
 
 	hxcpp_set_top_of_stack();
