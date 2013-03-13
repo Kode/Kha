@@ -12,9 +12,9 @@ class Image implements kha.Image {
 	static var maxTextureControll: List<Image> = new List<Image>();
 	
 	public var image: Bitmap;
-	var tex: Texture;
-	var texWidth: Int;
-	var texHeight: Int;
+	private var tex: Texture;
+	private var texWidth: Int;
+	private var texHeight: Int;
 	
 	public function new(image: DisplayObject)  {
 		this.image = cast(image, Bitmap);
