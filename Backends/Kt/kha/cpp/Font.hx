@@ -2,6 +2,11 @@ package kha.cpp;
 
 import kha.FontStyle;
 
+@:cppFileCode('
+#include <Kt/stdafx.h>
+#include <Kt/Graphics/Font.h>
+')
+
 class Font implements kha.Font {
 	public var name: String;
 	public var style: FontStyle;
@@ -18,15 +23,19 @@ class Font implements kha.Font {
 	}
 	
 	public function charWidth(ch: String): Float {
-		return 10;
+		return stringWidth(ch);
 	}
 	
 	public function charsWidth(ch: String, offset: Int, length: Int): Float {
 		return stringWidth(ch.substr(offset, length));
 	}
 	
+	@:functionCode("
+		if (Kt::fonts.find(Kt::pair<Kt::Text, int>(name.c_str(), size)) == Kt::fonts.end()) Kt::fonts[Kt::pair<Kt::Text, int>(name.c_str(), size)] = new Kt::Font(name.c_str(), size);
+		return Kt::fonts[Kt::pair<Kt::Text, int>(name.c_str(), size)]->width(str.c_str());
+	")
 	public function stringWidth(str: String): Float {
-		return str.length * 10;
+		return 10;
 	}
 	
 	public function getBaselinePosition() : Float {

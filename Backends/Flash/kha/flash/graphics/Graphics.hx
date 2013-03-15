@@ -2,17 +2,29 @@ package kha.flash.graphics;
 
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DTextureFormat;
+import flash.display3D.Context3DVertexBufferFormat;
+import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
+import flash.utils.ByteArray;
+import flash.Vector;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
 	private var program: Program3D;
 	private var vertexShader: Shader;
 	private var fragmentShader: Shader;
+	private var vertexBuffer: VertexBuffer;
+	private var stupidIndexBuffer: IndexBuffer3D;
 	
 	public function new(context: Context3D) {
 		Graphics.context = context;
 		program = context.createProgram();
+		var indexCount = 3;
+		stupidIndexBuffer = context.createIndexBuffer(indexCount);
+		var vec = new Vector<UInt>(indexCount);
+		for (i in 0...indexCount) vec[i] = i;
+		stupidIndexBuffer.uploadFromVector(vec, 0, indexCount);
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
@@ -20,7 +32,8 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
-		
+		this.vertexBuffer = cast(vertexBuffer, VertexBuffer);
+		this.vertexBuffer.set();
 	}
 	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
@@ -36,11 +49,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		
+		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
 	}
 	
 	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
+		context.drawTriangles(stupidIndexBuffer, 0, 1);// Std.int(vertexBuffer.size() / 3));
 	}
 	
 	public function createVertexShader(source: String): kha.graphics.VertexShader {
@@ -61,5 +74,8 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function linkShaders(): Void {
 		program.upload(vertexShader.assembler.agalcode(), fragmentShader.assembler.agalcode());
+		context.setProgram(program);
+		vertexShader.set();
+		fragmentShader.set();
 	}
 }

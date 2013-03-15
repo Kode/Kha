@@ -9,6 +9,8 @@ class Starter {
 	static var painter: kha.cpp.Painter;
 	
 	public function new() {
+		haxe.Timer.stamp();
+		painter = null;
 		Storage.init(new kha.cpp.Storage());
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -33,6 +35,7 @@ class Starter {
 	}
 
 	public static function frame() {
+		if (painter == null) return;
 		Scheduler.executeFrame();
 		painter.begin();
 		game.render(painter);
