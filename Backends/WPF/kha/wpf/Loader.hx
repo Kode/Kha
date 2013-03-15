@@ -32,23 +32,23 @@ class Loader extends kha.Loader {
 		return Json.parse(getBlob(path + "project.kha").toString());
 	}
 	
-	override function loadMusic(filename: String, done: kha.Music -> Void) : Void {
+	override public function loadMusic(filename: String, done: kha.Music -> Void) : Void {
 		done(new Music());
 	}
 
-	override function loadSound(filename: String, done: kha.Sound -> Void) : Void {
+	override public function loadSound(filename: String, done: kha.Sound -> Void) : Void {
 		done(new Sound(path + filename + ".wav"));
 	}
 
-	override function loadImage(filename: String, done: kha.Image -> Void) : Void {
+	override public function loadImage(filename: String, done: kha.Image -> Void) : Void {
 		done(new Image(path + filename));
 	}
 
-	override private function loadBlob(filename: String, done: kha.Blob -> Void): Void {
+	override public function loadBlob(filename: String, done: kha.Blob -> Void): Void {
 		done(new Blob(Bytes.ofData(File.ReadAllBytes(filename))));
 	}
 
-	override function loadVideo(filename: String, done: kha.Video -> Void) : Void {
+	override public function loadVideo(filename: String, done: kha.Video -> Void) : Void {
 		done(new Video(path + filename + ".wmv"));
 	}
 	
