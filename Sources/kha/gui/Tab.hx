@@ -6,8 +6,8 @@ import kha.Painter;
 class Tab extends Item {
 	public function new() {
 		super();
-		width = 700;
-		height = 500;
+		width = 320;
+		height = 426 + tabTopHeight;
 		
 		content = new Item();
 		content.y = tabTopHeight;
@@ -27,7 +27,7 @@ class Tab extends Item {
 	
 	public var text: String = "";
 	
-	private var tabTopWidth = 100;
+	private var tabTopWidth = 70;
 	private var tabTopHeight = 30;
 
 	public function tabTopPosition(position: Int): Int {
