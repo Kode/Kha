@@ -57,18 +57,18 @@ class Layer {
 		}
 	}
 	
-	private function renderItem(painter: Painter, item: Item): Void {
+	private function renderItem(painter: Painter, item: Item, tx: Float, ty: Float): Void {
 		item.render(painter);
-		painter.translate(-item.x, -item.y);
+		painter.translate(tx + item.x, ty + item.y);
 		for (child in item.children) {
-			renderItem(painter, child);
+			renderItem(painter, child, tx + item.x, ty + item.y);
 		}
-		painter.translate(item.x, item.y);
+		painter.translate(tx, ty);
 	}
 	
 	public function render(painter: Painter): Void {
 		for (object in objects) {
-			renderItem(painter, object);
+			renderItem(painter, object, 0, 0);
 		}
 	}
 }

@@ -6,6 +6,7 @@ import kha.Painter;
 
 class ImageItem extends Item {
 	public function new(img: Image = null) {
+		super();
 		this.img = img;
 		myColor = Color.fromBytes(0xff, 0xff, 0xff);
 	}
