@@ -3,11 +3,11 @@ package kha;
 class TimeTask {
 	public var task: Void -> Bool;
 	
-	public var start: Int;
+	public var start: Float;
 	public var period: Int;
-	public var duration: Int;
-	public var last: Int;
-	public var next: Int;
+	public var duration: Float;
+	public var last: Float;
+	public var next: Float;
 	
 	public var id: Int;
 	public var groupId: Int;
@@ -37,9 +37,9 @@ class Scheduler {
 	private static var timeTasks: Array<TimeTask>;
 	private static var frameTasks: Array<FrameTask>;
 	
-	private static var current: Int;
-	private static var frameEnd: Int;
-	private static var startstamp: Int;
+	private static var current: Float;
+	private static var frameEnd: Float;
+	private static var startstamp: Float;
 	
 	private static var frame_tasks_sorted: Bool;
 	private static var running: Bool;
@@ -217,7 +217,7 @@ class Scheduler {
 		return timestampToTime(getCurrentTimestamp());
 	}
 	
-	public static function realticktime(): Int { //just for random generator initialization
+	public static function realticktime(): Float { //just for random generator initialization
 		return getCurrentTimestamp();
 	}
 	
@@ -308,11 +308,11 @@ class Scheduler {
 		for (i in 0...DIF_COUNT) difs[i] = 0;
 	}
 	
-	private static function getCurrentTimestamp(): Int {
+	private static function getCurrentTimestamp(): Float {
 		return Sys.getTimestamp() - startstamp;
 	}
 	
-	private static function ticksToTimespan(t: Int): Float {
+	private static function ticksToTimespan(t: Float): Float {
 		return t / frequency;
 	}
 	
@@ -320,7 +320,7 @@ class Scheduler {
 		return Math.round(timespan * frequency);
 	}
 	
-	private static function timestampToTime(t: Int): Float {
+	private static function timestampToTime(t: Float): Float {
 		return t / frequency;
 	}
 	
@@ -344,6 +344,6 @@ class Scheduler {
 		frame_tasks_sorted = true;
 	}
 
-	private static var stamp: Int;
+	private static var stamp: Float;
 	private static var difs: Array<Float>;
 }

@@ -23,9 +23,9 @@ class Sys {
 	
 	@:functionCode("
 		static Kt::Scheduler::ticks start = Kt::Scheduler::getTimestamp();
-		return scast<int>(Kt::Scheduler::getTimestamp() - start);
+		return scast<double>(Kt::Scheduler::getTimestamp() - start);
 	")
-	public static function getTimestamp(): Int {
+	public static function getTimestamp(): Float {
 		return 0;
 	}
 }
