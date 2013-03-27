@@ -222,8 +222,8 @@ class Loader {
 		var project = parseProject();
 		if (project.shaders != null && project.shaders.length > 0) {
 			var shaders: Dynamic = project.shaders;
-			var shaderCount = shaders.length;
-			for (i in 0...shaderCount) {
+			var shaderCount: Int = shaders.length;
+			for (i in 0...shaders.length) {
 				var shader = shaders[i];
 				loadBlob(shader.file, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times

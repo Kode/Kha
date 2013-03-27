@@ -51,11 +51,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setVertexShader(shader: VertexShader): Void {
-	
+		cast(shader, Shader).set();
 	}
 	
 	public function setFragmentShader(shader: FragmentShader): Void {
-	
+		cast(shader, Shader).set();
 	}
 	
 	public function linkShaders(): Void {

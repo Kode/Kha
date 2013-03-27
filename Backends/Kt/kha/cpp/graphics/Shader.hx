@@ -63,4 +63,11 @@ class Shader implements VertexShader, implements FragmentShader {
 	public function setFloat3(name: String, value1: Float, value2: Float, value3: Float): Void {
 		
 	}
+	
+	@:functionCode("
+		shader->set();
+	")
+	public function set(): Void {
+		
+	}
 }
