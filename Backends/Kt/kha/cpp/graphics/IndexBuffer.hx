@@ -14,12 +14,19 @@ class IndexBuffer implements kha.graphics.IndexBuffer{
 		myCount = indexCount;
 		data = new Array<Int>();
 		data[myCount - 1] = 0;
+		init(indexCount);
+	}
+	
+	@:functionCode('
+		buffer = Kt::Graphics::createIndexBuffer(count);
+	')
+	private function init(count: Int) {
+		
 	}
 	
 	public function lock(): Array<Int> {
 		return data;
 	}
-	
 	
 	@:functionCode("
 		int* indices = buffer->lock();

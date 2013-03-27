@@ -5,9 +5,21 @@ import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
 import kha.graphics.VertexShader;
 
+@:headerCode('
+#include <Kt/stdafx.h>
+#include <Kt/Graphics/Graphics.h>
+')
+
 class Graphics implements kha.graphics.Graphics {
+	private var stupidIndexBuffer: IndexBuffer;
+	
 	public function new() {
-		
+		stupidIndexBuffer = new IndexBuffer(3);
+		var indices = stupidIndexBuffer.lock();
+		indices[0] = 0;
+		indices[1] = 1;
+		indices[2] = 2;
+		stupidIndexBuffer.unlock();
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
@@ -26,16 +38,20 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setVertexBuffer(aVertexBuffer: kha.graphics.VertexBuffer): Void {
-		
+	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
+		cast(vertexBuffer, VertexBuffer).set();
 	}
 	
+	@:functionCode("
+		Kt::Graphics::drawIndexedVertices(start, count);
+	")
 	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
 		
 	}
 	
 	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		
+		stupidIndexBuffer.set();
+		drawIndexedVertices(start, count);
 	}
 	
 	public function getLocation(name: String): Int {

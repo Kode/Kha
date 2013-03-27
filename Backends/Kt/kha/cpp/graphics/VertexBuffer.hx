@@ -85,7 +85,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	@:functionCode("
 		buffer->set();
 	")
-	public function bind(program: Dynamic): Void {
+	public function set(): Void {
 		
 	}
 }
