@@ -6,11 +6,6 @@ import kha.graphics.TextureWrap;
 import kha.graphics.VertexShader;
 
 class Graphics implements kha.graphics.Graphics {
-	private var vertexShader: Shader;
-	private var fragmentShader: Shader;
-	private var program: Dynamic;
-	private var vertexBuffer: VertexBuffer;
-	
 	public function new() {
 		
 	}
@@ -19,8 +14,16 @@ class Graphics implements kha.graphics.Graphics {
 		return new VertexBuffer(vertexCount, structure);
 	}
 	
+	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
+		cast(vertexBuffer, VertexBuffer).set();
+	}
+	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
+	}
+	
+	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
+		cast(indexBuffer, IndexBuffer).set();
 	}
 	
 	public function createTexture(image: kha.Image): kha.graphics.Texture {
@@ -43,25 +46,9 @@ class Graphics implements kha.graphics.Graphics {
 		}
 	}
 	
-	public function setVertexBuffer(aVertexBuffer: kha.graphics.VertexBuffer): Void {
-		vertexBuffer = cast(aVertexBuffer, VertexBuffer);
-	}
-	
-	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		Sys.gl.useProgram(program);
-		if (count == null) count = vertexBuffer.size() - start;
-		Sys.gl.drawArrays(Sys.gl.TRIANGLE_STRIP, start, count);
-	}
-	
-	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		vertexBuffer.bind(program);
-		if (count == null) count = vertexBuffer.size() - start;
-		Sys.gl.drawArrays(Sys.gl.TRIANGLE_STRIP, start, 4);
-	}
-	
-	public function getLocation(name: String): Int {
-		return Sys.gl.getUniformLocation(program, name);
-	}
+	//public function getLocation(name: String): Int {
+	//	return Sys.gl.getUniformLocation(program, name);
+	//}
 	
 	public function createVertexShader(source: String): VertexShader {
 		return new Shader(source, Sys.gl.VERTEX_SHADER);
@@ -71,7 +58,15 @@ class Graphics implements kha.graphics.Graphics {
 		return new Shader(source, Sys.gl.FRAGMENT_SHADER);
 	}
 	
-	public function setVertexShader(shader: VertexShader): Void {
+	public function createProgram(): kha.graphics.Program {
+		return new Program();
+	}
+	
+	public function setProgram(program: kha.graphics.Program): Void {
+		cast(program, Program).set();
+	}
+	
+	/*public function setVertexShader(shader: VertexShader): Void {
 		vertexShader = cast(shader, Shader);
 		compileShader(vertexShader);
 	}
@@ -101,5 +96,10 @@ class Graphics implements kha.graphics.Graphics {
 			throw "Could not link the shader program.";
 		}
 		Sys.gl.useProgram(program);
+	}*/
+	
+	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
+		if (count == null) count = 3;//count = vertexBuffer.size() - start;
+		Sys.gl.drawArrays(Sys.gl.TRIANGLE_STRIP, start, count);
 	}
 }

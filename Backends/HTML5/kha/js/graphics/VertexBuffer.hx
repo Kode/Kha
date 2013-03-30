@@ -24,8 +24,38 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		myStructure = structure;
 		buffer = Sys.gl.createBuffer();
 		data = new Array<Float>();
-		++vertexCount; //evil hack - browser stride bug?
 		data[Std.int(vertexCount * myStride / 4) - 1] = 0;
+		
+		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
+		var stride = 0;
+		for (element in myStructure.elements) {
+			switch (element.data) {
+			case VertexData.Float2:
+				stride += 4 * 2;
+			case VertexData.Float3:
+				stride += 4 * 3;
+			}
+		}
+		var offset = 0;
+		var index = 0;
+		for (element in myStructure.elements) {
+			Sys.gl.enableVertexAttribArray(index);
+			var size;
+			switch (element.data) {
+			case VertexData.Float2:
+				size = 2;
+			case VertexData.Float3:
+				size = 3;
+			}
+			Sys.gl.vertexAttribPointer(index, size, Sys.gl.FLOAT, false, stride, offset);
+			switch (element.data) {
+			case VertexData.Float2:
+				offset += 4 * 2;
+			case VertexData.Float3:
+				offset += 4 * 3;
+			}
+			++index;
+		}
 	}
 	
 	public function lock(?start: Int, ?count: Int): Array<Float> {
@@ -45,19 +75,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		return mySize;
 	}
 	
-	public function bind(program: Dynamic): Void {
+	public function set(): Void {
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		var offset = 0;
-		for (element in myStructure.elements) {
-			var attribute = Sys.gl.getAttribLocation(program, element.name);
-			Sys.gl.enableVertexAttribArray(attribute);
-			Sys.gl.vertexAttribPointer(attribute, mySize, Sys.gl.FLOAT, false, myStride, offset);
-			switch (element.data) {
-			case VertexData.Float2:
-				offset += 4 * 2;
-			case VertexData.Float3:
-				offset += 4 * 3;
-			}
-		}
 	}
 }
