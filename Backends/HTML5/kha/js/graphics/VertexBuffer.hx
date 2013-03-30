@@ -8,6 +8,8 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var data: Array<Float>;
 	private var mySize: Int;
 	private var myStride: Int;
+	private var sizes: Array<Int>;
+	private var offsets: Array<Int>;
 	
 	public function new(vertexCount: Int, structure: VertexStructure) {
 		mySize = vertexCount;
@@ -25,11 +27,14 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		data = new Array<Float>();
 		data[Std.int(vertexCount * myStride / 4) - 1] = 0;
 		
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
+		sizes = new Array<Int>();
+		offsets = new Array<Int>();
+		sizes[structure.elements.length - 1] = 0;
+		offsets[structure.elements.length - 1] = 0;
+		
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
-			Sys.gl.enableVertexAttribArray(index);
 			var size;
 			switch (element.data) {
 			case VertexData.Float2:
@@ -37,7 +42,8 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			case VertexData.Float3:
 				size = 3;
 			}
-			Sys.gl.vertexAttribPointer(index, size, Sys.gl.FLOAT, false, myStride, offset);
+			sizes[index] = size;
+			offsets[index] = offset;
 			switch (element.data) {
 			case VertexData.Float2:
 				offset += 4 * 2;
@@ -67,5 +73,9 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	
 	public function set(): Void {
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
+		for (i in 0...sizes.length) {
+			Sys.gl.enableVertexAttribArray(i);
+			Sys.gl.vertexAttribPointer(i, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
+		}
 	}
 }
