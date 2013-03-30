@@ -25,7 +25,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
-		indicesCount = indexBuffer.size();
+		indicesCount = indexBuffer.count();
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	

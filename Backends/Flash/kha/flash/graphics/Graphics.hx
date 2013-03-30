@@ -11,20 +11,9 @@ import flash.Vector;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
-	private var program: Program3D;
-	private var vertexShader: Shader;
-	private var fragmentShader: Shader;
-	private var vertexBuffer: VertexBuffer;
-	private var stupidIndexBuffer: IndexBuffer3D;
-	
+
 	public function new(context: Context3D) {
 		Graphics.context = context;
-		program = context.createProgram();
-		var indexCount = 3;
-		stupidIndexBuffer = context.createIndexBuffer(indexCount);
-		var vec = new Vector<UInt>(indexCount);
-		for (i in 0...indexCount) vec[i] = i;
-		stupidIndexBuffer.uploadFromVector(vec, 0, indexCount);
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
@@ -32,12 +21,23 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
-		this.vertexBuffer = cast(vertexBuffer, VertexBuffer);
-		this.vertexBuffer.set();
+		cast(vertexBuffer, VertexBuffer).set();
 	}
 	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
+	}
+	
+	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
+		cast(indexBuffer, IndexBuffer).set();
+	}
+	
+	public function createProgram(): kha.graphics.Program {
+		return new Program();
+	}
+	
+	public function setProgram(program: kha.graphics.Program): Void {
+		cast(program, Program).set();
 	}
 	
 	public function createTexture(image: kha.Image): kha.graphics.Texture {
@@ -48,12 +48,8 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
+	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
-	}
-	
-	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		context.drawTriangles(stupidIndexBuffer, 0, 1);// Std.int(vertexBuffer.size() / 3));
 	}
 	
 	public function createVertexShader(source: String): kha.graphics.VertexShader {
@@ -64,18 +60,19 @@ class Graphics implements kha.graphics.Graphics {
 		return new Shader(source, Context3DProgramType.FRAGMENT);
 	}
 	
-	public function setVertexShader(shader: kha.graphics.VertexShader): Void {
-		vertexShader = cast(shader, Shader);
+	public function setInt(location: Int, value: Int): Void {
+		
 	}
 
-	public function setFragmentShader(shader: kha.graphics.FragmentShader): Void {
-		fragmentShader = cast(shader, Shader);
+	public function setFloat(location: Int, value: Float): Void {
+		
 	}
 	
-	public function linkShaders(): Void {
-		program.upload(vertexShader.assembler.agalcode(), fragmentShader.assembler.agalcode());
-		context.setProgram(program);
-		vertexShader.set();
-		fragmentShader.set();
+	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
+		
+	}
+	
+	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
+		
 	}
 }

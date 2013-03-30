@@ -61,7 +61,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		return myStride;
 	}
 	
-	public function size(): Int {
+	public function count(): Int {
 		return mySize;
 	}
 	

@@ -25,7 +25,7 @@ class IndexBuffer implements kha.graphics.IndexBuffer {
 		Sys.gl.bindBuffer(Sys.gl.ELEMENT_ARRAY_BUFFER, buffer);
 	}
 	
-	public function size(): Int {
+	public function count(): Int {
 		return mySize;
 	}
 }

@@ -27,6 +27,10 @@ class IndexBuffer implements kha.graphics.IndexBuffer {
 		indexBuffer.uploadFromVector(indices, 0, indices.length);
 	}
 	
+	public function count(): Int {
+		return indices.length;
+	}
+	
 	public function set(): Void {
 		current = this;
 	}
