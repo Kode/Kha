@@ -54,4 +54,8 @@ class Program implements kha.graphics.Program {
 		}
 		shader.shader = s;
 	}
+	
+	public function getConstantLocation(name: String): Int {
+		return Sys.gl.getUniformLocation(program, name);
+	}
 }

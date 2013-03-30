@@ -16,9 +16,11 @@ interface Graphics {
 	function createFragmentShader(source: String): FragmentShader;
 	function createProgram(): Program;
 	function setProgram(program: Program): Void;
-	//function setVertexShader(shader: VertexShader): Void;
-	//function setFragmentShader(shader: FragmentShader): Void;
-	//function linkShaders(): Void;
+	
+	function setInt(location: Int, value: Int): Void;
+	function setFloat(location: Int, value: Float): Void;
+	function setFloat2(location: Int, value1: Float, value2: Float): Void;
+	function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void;
 	
 	function drawIndexedVertices(start: Int = 0, ?count: Int): Void;
 }

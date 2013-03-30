@@ -6,6 +6,8 @@ import kha.graphics.TextureWrap;
 import kha.graphics.VertexShader;
 
 class Graphics implements kha.graphics.Graphics {
+	private var indicesCount: Int;
+	
 	public function new() {
 		
 	}
@@ -23,6 +25,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
+		indicesCount = indexBuffer.size();
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
@@ -46,10 +49,6 @@ class Graphics implements kha.graphics.Graphics {
 		}
 	}
 	
-	//public function getLocation(name: String): Int {
-	//	return Sys.gl.getUniformLocation(program, name);
-	//}
-	
 	public function createVertexShader(source: String): VertexShader {
 		return new Shader(source, Sys.gl.VERTEX_SHADER);
 	}
@@ -66,40 +65,23 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	/*public function setVertexShader(shader: VertexShader): Void {
-		vertexShader = cast(shader, Shader);
-		compileShader(vertexShader);
+	public function setInt(location: Int, value: Int): Void {
+		Sys.gl.uniform1i(location, value);
 	}
 	
-	public function setFragmentShader(shader: FragmentShader): Void {
-		fragmentShader = cast(shader, Shader);
-		compileShader(fragmentShader);
+	public function setFloat(location: Int, value: Float): Void {
+		Sys.gl.uniform1f(location, value);
 	}
 	
-	private function compileShader(shader: Shader): Void {
-		if (shader.shader != null) return;
-		var s = Sys.gl.createShader(shader.type);
-		Sys.gl.shaderSource(s, shader.source);
-		Sys.gl.compileShader(s);
-		if (!Sys.gl.getShaderParameter(s, Sys.gl.COMPILE_STATUS)) {
-			throw "Could not compile shader:\n" + Sys.gl.getShaderInfoLog(s);
-		}
-		shader.shader = s;
+	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
+		Sys.gl.uniform2f(location, value1, value2);
 	}
 	
-	public function linkShaders(): Void {
-		program = Sys.gl.createProgram();
-		Sys.gl.attachShader(program, vertexShader.shader);
-		Sys.gl.attachShader(program, fragmentShader.shader);
-		Sys.gl.linkProgram(program);
-		if (!Sys.gl.getProgramParameter(program, Sys.gl.LINK_STATUS)) {
-			throw "Could not link the shader program.";
-		}
-		Sys.gl.useProgram(program);
-	}*/
-	
+	public function setFloat3(location, value1: Float, value2: Float, value3: Float): Void {
+		Sys.gl.uniform3f(location, value1, value2, value3);
+	}
+
 	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		if (count == null) count = 3;//count = vertexBuffer.size() - start;
-		Sys.gl.drawArrays(Sys.gl.TRIANGLE_STRIP, start, count);
+		Sys.gl.drawElements(Sys.gl.TRIANGLES, count == null ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2);
 	}
 }
