@@ -55,18 +55,30 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
+	@:functionCode('
+		Kt::Graphics::setInt(location, value);
+	')
 	public function setInt(location: Int, value: Int): Void {
 		
 	}
 
+	@:functionCode('
+		Kt::Graphics::setFloat(location, value);
+	')
 	public function setFloat(location: Int, value: Float): Void {
 		
 	}
 	
+	@:functionCode('
+		Kt::Graphics::setFloat2(location, value1, value2);
+	')
 	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
 		
 	}
 	
+	@:functionCode('
+		Kt::Graphics::setFloat3(location, value1, value2, value3);
+	')
 	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
 		
 	}
@@ -76,16 +88,16 @@ class Graphics implements kha.graphics.Graphics {
 		else drawSomeIndexedVertices(start, count);
 	}
 	
-	@:functionCode("
+	@:functionCode('
 		Kt::Graphics::drawIndexedVertices();
-	")
+	')
 	private function drawAllIndexedVertices(): Void {
 		
 	}
 	
-	@:functionCode("
+	@:functionCode('
 		Kt::Graphics::drawIndexedVertices(start, count);
-	")
+	')
 	public function drawSomeIndexedVertices(start: Int, count: Int): Void {
 		
 	}
