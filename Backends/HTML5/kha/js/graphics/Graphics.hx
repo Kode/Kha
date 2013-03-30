@@ -81,7 +81,7 @@ class Graphics implements kha.graphics.Graphics {
 		Sys.gl.uniform3f(location, value1, value2, value3);
 	}
 
-	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		Sys.gl.drawElements(Sys.gl.TRIANGLES, count == null ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2);
+	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
+		Sys.gl.drawElements(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2);
 	}
 }
