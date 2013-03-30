@@ -71,8 +71,8 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		if (count == null) drawAllIndexedVertices();
+	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
+		if (count < 0) drawAllIndexedVertices();
 		else drawSomeIndexedVertices(start, count);
 	}
 	
