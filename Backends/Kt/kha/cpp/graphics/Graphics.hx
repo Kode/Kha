@@ -1,9 +1,9 @@
 package kha.cpp.graphics;
 
 import kha.graphics.FragmentShader;
+import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
-import kha.graphics.VertexShader;
 
 @:headerCode('
 #include <Kt/stdafx.h>
@@ -11,23 +11,24 @@ import kha.graphics.VertexShader;
 ')
 
 class Graphics implements kha.graphics.Graphics {
-	private var stupidIndexBuffer: IndexBuffer;
-	
 	public function new() {
-		stupidIndexBuffer = new IndexBuffer(3);
-		var indices = stupidIndexBuffer.lock();
-		indices[0] = 0;
-		indices[1] = 1;
-		indices[2] = 2;
-		stupidIndexBuffer.unlock();
+		
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
 	
+	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
+		cast(vertexBuffer, VertexBuffer).set();
+	}
+	
 	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
+	}
+	
+	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
+		cast(indexBuffer, IndexBuffer).set();
 	}
 	
 	public function createTexture(image: kha.Image): kha.graphics.Texture {
@@ -38,26 +39,6 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set();
-	}
-	
-	@:functionCode("
-		Kt::Graphics::drawIndexedVertices(start, count);
-	")
-	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
-		
-	}
-	
-	public function drawArrays(start: Int = 0, ?count: Int): Void {
-		stupidIndexBuffer.set();
-		drawIndexedVertices(start, count);
-	}
-	
-	public function getLocation(name: String): Int {
-		return 0;
-	}
-	
 	public function createVertexShader(source: String): VertexShader {
 		return new Shader(source, ShaderType.VertexShader);
 	}
@@ -66,15 +47,46 @@ class Graphics implements kha.graphics.Graphics {
 		return new Shader(source, ShaderType.FragmentShader);
 	}
 	
-	public function setVertexShader(shader: VertexShader): Void {
-		cast(shader, Shader).set();
+	public function createProgram(): kha.graphics.Program {
+		return new Program();
 	}
 	
-	public function setFragmentShader(shader: FragmentShader): Void {
-		cast(shader, Shader).set();
+	public function setProgram(program: kha.graphics.Program): Void {
+		cast(program, Program).set();
 	}
 	
-	public function linkShaders(): Void {
+	public function setInt(location: Int, value: Int): Void {
+		
+	}
 
+	public function setFloat(location: Int, value: Float): Void {
+		
+	}
+	
+	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
+		
+	}
+	
+	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
+		
+	}
+	
+	public function drawIndexedVertices(start: Int = 0, ?count: Int): Void {
+		if (count == null) drawAllIndexedVertices();
+		else drawSomeIndexedVertices(start, count);
+	}
+	
+	@:functionCode("
+		Kt::Graphics::drawIndexedVertices();
+	")
+	private function drawAllIndexedVertices(): Void {
+		
+	}
+	
+	@:functionCode("
+		Kt::Graphics::drawIndexedVertices(start, count);
+	")
+	public function drawSomeIndexedVertices(start: Int, count: Int): Void {
+		
 	}
 }

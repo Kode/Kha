@@ -26,15 +26,6 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		data[Std.int(vertexCount * myStride / 4) - 1] = 0;
 		
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		var stride = 0;
-		for (element in structure.elements) {
-			switch (element.data) {
-			case VertexData.Float2:
-				stride += 4 * 2;
-			case VertexData.Float3:
-				stride += 4 * 3;
-			}
-		}
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
@@ -46,7 +37,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			case VertexData.Float3:
 				size = 3;
 			}
-			Sys.gl.vertexAttribPointer(index, size, Sys.gl.FLOAT, false, stride, offset);
+			Sys.gl.vertexAttribPointer(index, size, Sys.gl.FLOAT, false, myStride, offset);
 			switch (element.data) {
 			case VertexData.Float2:
 				offset += 4 * 2;

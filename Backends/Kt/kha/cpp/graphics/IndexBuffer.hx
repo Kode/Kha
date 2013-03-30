@@ -45,4 +45,8 @@ class IndexBuffer implements kha.graphics.IndexBuffer{
 	public function set(): Void {
 		
 	}
+	
+	public function count(): Int {
+		return myCount;
+	}
 }

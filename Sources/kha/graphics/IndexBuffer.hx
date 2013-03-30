@@ -4,5 +4,5 @@ interface IndexBuffer {
 	function lock(): Array<Int>;
 	function unlock(): Void;
 	function set(): Void;
-	function size(): Int;
+	function count(): Int;
 }

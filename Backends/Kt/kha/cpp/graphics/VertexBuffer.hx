@@ -17,8 +17,9 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	public function new(vertexCount: Int, structure: VertexStructure) {
 		init(vertexCount, structure);
 		data = new Array<Float>();
-		data[stride() * size() - 1] = 0;
-		var a = new VertexElement("a", VertexData.Float2, VertexType.Position);
+		data[Std.int(stride() / 4) * count() - 1] = 0;
+		
+		var a: VertexElement = new VertexElement("a", VertexData.Float2, VertexType.Color); //to generate include
 	}
 	
 	@:functionCode("
@@ -59,7 +60,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	
 	@:functionCode("
 		float* vertices = buffer->lock();
-		for (int i = 0; i < buffer->count * buffer->stride; ++i) {
+		for (int i = 0; i < buffer->count() * buffer->stride() / 4; ++i) {
 			vertices[i] = data[i];
 		}
 		buffer->unlock();
@@ -69,16 +70,16 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	}
 	
 	@:functionCode("
-		return buffer->stride;
+		return buffer->stride();
 	")
 	public function stride(): Int {
 		return 0;
 	}
 	
 	@:functionCode("
-		return buffer->count;
+		return buffer->count();
 	")
-	public function size(): Int {
+	public function count(): Int {
 		return 0;
 	}
 	
