@@ -10,6 +10,7 @@ interface Graphics {
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
 	function createTexture(image: Image): Texture;
+	function setTexture(texture: Texture, stage: Int): Void;
 	function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void;
 	
 	function createVertexShader(source: String): VertexShader;
@@ -21,6 +22,7 @@ interface Graphics {
 	function setFloat(location: Int, value: Float): Void;
 	function setFloat2(location: Int, value1: Float, value2: Float): Void;
 	function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void;
+	function setMatrix(location: Int, matrix: Array<Float>): Void;
 	
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
 }

@@ -1,6 +1,5 @@
 package kha;
 
-import kha.js.PainterGL;
 import kha.Game;
 import kha.Key;
 import kha.Loader;
@@ -26,7 +25,6 @@ class Starter {
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
-		Sys.init();
 		Loader.init(new kha.js.Loader());
 		Storage.init(new Storage());
 		Scheduler.init();
@@ -60,12 +58,13 @@ class Starter {
 			game.height = Loader.the.height;
 		}
 		
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		var canvas: Dynamic = Lib.document.getElementById("khanvas");
 		
 		try {
 			if (Sys.needs3d && canvas.getContext("experimental-webgl") != null) {
-				painter = new PainterGL(canvas.getContext("experimental-webgl"), game.width, game.height);
 				Sys.gl = canvas.getContext("experimental-webgl");
+				Sys.init();
+				painter = new ShaderPainter(game.width, game.height);
 			}
 		}
 		catch (e : Dynamic) {

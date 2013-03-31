@@ -9,7 +9,8 @@ class Graphics implements kha.graphics.Graphics {
 	private var indicesCount: Int;
 	
 	public function new() {
-		
+		Sys.gl.enable(Sys.gl.BLEND);
+		Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
@@ -33,8 +34,12 @@ class Graphics implements kha.graphics.Graphics {
 		return new Texture(image);
 	}
 	
+	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
+		cast(texture, Texture).set(stage);
+	}
+	
 	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
-		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
+		/*Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
 		switch (u) {
 		case TextureWrap.ClampToEdge:
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
@@ -46,7 +51,7 @@ class Graphics implements kha.graphics.Graphics {
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
 		case TextureWrap.Repeat:
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.REPEAT);
-		}
+		}*/
 	}
 	
 	public function createVertexShader(source: String): VertexShader {
@@ -77,8 +82,12 @@ class Graphics implements kha.graphics.Graphics {
 		Sys.gl.uniform2f(location, value1, value2);
 	}
 	
-	public function setFloat3(location, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
 		Sys.gl.uniform3f(location, value1, value2, value3);
+	}
+	
+	public function setMatrix(location: Int, matrix: Array<Float>): Void {
+		Sys.gl.uniformMatrix4fv(location, false, matrix);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

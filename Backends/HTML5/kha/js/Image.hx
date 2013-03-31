@@ -1,13 +1,14 @@
 package kha.js;
 
 import js.Dom;
+import kha.graphics.Texture;
 
 class Image implements kha.Image {
-	public var image : js.Image;
-	public var tex : Dynamic;
+	public var image: js.Image;
+	private var tex: Texture = null;
 	
-	static var context : Dynamic;
-	var data : Dynamic;
+	private static var context : Dynamic;
+	private var data : Dynamic;
 	
 	public static function init() {
 		var canvas : Dynamic = js.Lib.document.createElement("canvas");
@@ -50,5 +51,13 @@ class Image implements kha.Image {
 	
 	public function unload(): Void {
 		
+	}
+	
+	public function setTexture(texture: Texture): Void {
+		tex = texture;
+	}
+	
+	public function getTexture(): Texture {
+		return tex;
 	}
 }
