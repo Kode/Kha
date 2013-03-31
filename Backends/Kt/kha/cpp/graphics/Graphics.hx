@@ -39,6 +39,10 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
+	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
+		cast(texture, Texture).set(stage);
+	}
+	
 	public function createVertexShader(source: String): VertexShader {
 		return new Shader(source, ShaderType.VertexShader);
 	}
@@ -80,6 +84,10 @@ class Graphics implements kha.graphics.Graphics {
 		Kt::Graphics::setFloat3(location, value1, value2, value3);
 	')
 	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
+		
+	}
+	
+	public function setMatrix(location: Int, matrix: Array<Float>): Void {
 		
 	}
 	

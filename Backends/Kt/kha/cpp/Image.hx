@@ -1,4 +1,5 @@
 package kha.cpp;
+import kha.graphics.Texture;
 
 @:headerCode('
 #include <Kt/stdafx.h>
@@ -8,6 +9,8 @@ package kha.cpp;
 
 @:headerClassCode("Kt::Image image; Kt::Texture* texture;")
 class Image implements kha.Image {
+	private var texture: Texture = null;
+	
 	public function new(filename: String) {
 		loadImage(filename);
 	}
@@ -36,5 +39,13 @@ class Image implements kha.Image {
 	@:functionCode("delete texture; texture = nullptr;")
 	public function unload(): Void {
 		
+	}
+	
+	public function getTexture(): Texture {
+		return texture;
+	}
+	
+	public function setTexture(texture: Texture): Void {
+		this.texture = texture;
 	}
 }
