@@ -9,7 +9,7 @@ import kha.graphics.Texture;
 
 @:headerClassCode("Kt::Image image; Kt::Texture* texture;")
 class Image implements kha.Image {
-	private var texture: Texture = null;
+	private var tex: Texture = null;
 	
 	public function new(filename: String) {
 		loadImage(filename);
@@ -42,10 +42,10 @@ class Image implements kha.Image {
 	}
 	
 	public function getTexture(): Texture {
-		return texture;
+		return tex;
 	}
 	
 	public function setTexture(texture: Texture): Void {
-		this.texture = texture;
+		this.tex = texture;
 	}
 }
