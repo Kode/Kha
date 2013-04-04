@@ -109,11 +109,15 @@ class Loader extends kha.Loader {
 		return new Font(name, style, size);
 	}
 	
+	override public function loadURL(url: String): Void {
+		Lib.window.open(url);
+	}
+	
 	override public function setNormalCursor() {
-		Lib.document.getElementById("haxvas").style.cursor = "default";
+		Lib.document.getElementById("khanvas").style.cursor = "default";
 	}
 
 	override public function setHandCursor() {
-		Lib.document.getElementById("haxvas").style.cursor = "pointer";
+		Lib.document.getElementById("khanvas").style.cursor = "pointer";
 	}
 }

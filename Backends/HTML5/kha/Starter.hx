@@ -59,7 +59,7 @@ class Starter {
 			game.height = Loader.the.height;
 		}
 		
-		var canvas : Dynamic = Lib.document.getElementById("haxvas");
+		var canvas : Dynamic = Lib.document.getElementById("khanvas");
 		
 		try {
 			if (Sys.needs3d && canvas.getContext("experimental-webgl") != null) {
