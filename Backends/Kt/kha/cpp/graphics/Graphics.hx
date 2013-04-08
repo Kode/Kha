@@ -1,5 +1,6 @@
 package kha.cpp.graphics;
 
+import kha.Blob;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
@@ -43,11 +44,11 @@ class Graphics implements kha.graphics.Graphics {
 		cast(texture, Texture).set(stage);
 	}
 	
-	public function createVertexShader(source: String): VertexShader {
+	public function createVertexShader(source: Blob): VertexShader {
 		return new Shader(source, ShaderType.VertexShader);
 	}
 	
-	public function createFragmentShader(source: String): FragmentShader {
+	public function createFragmentShader(source: Blob): FragmentShader {
 		return new Shader(source, ShaderType.FragmentShader);
 	}
 	

@@ -1,5 +1,6 @@
 package kha.graphics;
 
+import kha.Blob;
 import kha.Image;
 
 interface Graphics {
@@ -13,8 +14,8 @@ interface Graphics {
 	function setTexture(texture: Texture, stage: Int): Void;
 	function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void;
 	
-	function createVertexShader(source: String): VertexShader;
-	function createFragmentShader(source: String): FragmentShader;
+	function createVertexShader(source: Blob): VertexShader;
+	function createFragmentShader(source: Blob): FragmentShader;
 	function createProgram(): Program;
 	function setProgram(program: Program): Void;
 	

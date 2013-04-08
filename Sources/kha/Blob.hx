@@ -3,8 +3,8 @@ package kha;
 import haxe.io.Bytes;
 
 class Blob implements Resource{
-	var bytes: Bytes;
-	var position: Int;
+	private var bytes: Bytes;
+	private var position: Int;
 	
 	public function new(bytes: Bytes) {
 		this.bytes = bytes;
@@ -39,6 +39,10 @@ class Blob implements Resource{
 	
 	public function toString(): String {
 		return bytes.toString();
+	}
+	
+	public function toBytes(): Bytes {
+		return bytes;
 	}
 	
 	public function unload(): Void {

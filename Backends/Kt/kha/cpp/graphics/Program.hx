@@ -16,8 +16,6 @@ import kha.graphics.VertexType;
 class Program implements kha.graphics.Program {
 	public function new() {
 		init();
-		
-		var a: VertexElement = new VertexElement("a", VertexData.Float2, VertexType.Color); //to generate include
 	}
 	
 	@:functionCode('
@@ -93,5 +91,9 @@ class Program implements kha.graphics.Program {
 	')
 	public function set(): Void {
 		
+	}
+	
+	public function unused(): Void {
+		var include: VertexElement = new VertexElement("include", VertexData.Float2, VertexType.Color);
 	}
 }
