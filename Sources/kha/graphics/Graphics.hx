@@ -19,11 +19,11 @@ interface Graphics {
 	function createProgram(): Program;
 	function setProgram(program: Program): Void;
 	
-	function setInt(location: Int, value: Int): Void;
-	function setFloat(location: Int, value: Float): Void;
-	function setFloat2(location: Int, value1: Float, value2: Float): Void;
-	function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void;
-	function setMatrix(location: Int, matrix: Array<Float>): Void;
+	function setInt(location: ConstantLocation, value: Int): Void;
+	function setFloat(location: ConstantLocation, value: Float): Void;
+	function setFloat2(location: ConstantLocation, value1: Float, value2: Float): Void;
+	function setFloat3(location: ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
+	function setMatrix(location: ConstantLocation, matrix: Array<Float>): Void;
 	
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
 }

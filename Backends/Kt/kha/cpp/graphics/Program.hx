@@ -79,13 +79,19 @@ class Program implements kha.graphics.Program {
 		
 	}
 	
-	@:functionCode('
-		return program->getConstantLocation(name.c_str());
-	')
-	public function getConstantLocation(name: String): Int {
-		return 0;
+	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
+		var location = new ConstantLocation();
+		initConstantLocation(location, name);
+		return location;
 	}
 	
+	@:functionCode('
+		location->location = program->getConstantLocation(name.c_str());
+	')
+	private function initConstantLocation(location: ConstantLocation, name: String): Void {
+		
+	}
+		
 	@:functionCode('
 		program->set();
 	')

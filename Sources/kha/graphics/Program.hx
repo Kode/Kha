@@ -5,5 +5,5 @@ interface Program {
 	function setFragmentShader(shader: FragmentShader): Void;
 	function link(structure: VertexStructure): Void;
 	
-	function getConstantLocation(name: String): Int;
+	function getConstantLocation(name: String): ConstantLocation;
 }

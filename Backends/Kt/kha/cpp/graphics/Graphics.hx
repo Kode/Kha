@@ -60,35 +60,51 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
+	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
+		setIntPrivate(cast(location, ConstantLocation), value);
+	}
+	
 	@:functionCode('
-		Kt::Graphics::setInt(location, value);
+		Kt::Graphics::setInt(location->location, value);
 	')
-	public function setInt(location: Int, value: Int): Void {
+	private function setIntPrivate(location: ConstantLocation, value: Int): Void {
 		
 	}
 
-	@:functionCode('
-		Kt::Graphics::setFloat(location, value);
-	')
-	public function setFloat(location: Int, value: Float): Void {
-		
+	public function setFloat(location: kha.graphics.ConstantLocation, value: Float): Void {
+		setFloatPrivate(cast(location, ConstantLocation), value);
 	}
 	
 	@:functionCode('
-		Kt::Graphics::setFloat2(location, value1, value2);
+		Kt::Graphics::setFloat(location->location, value);
 	')
-	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
+	private function setFloatPrivate(location: ConstantLocation, value: Float): Void {
 		
+	}
+	
+	public function setFloat2(location: kha.graphics.ConstantLocation, value1: Float, value2: Float): Void {
+		setFloat2Private(cast(location, ConstantLocation), value1, value2);
 	}
 	
 	@:functionCode('
-		Kt::Graphics::setFloat3(location, value1, value2, value3);
+		Kt::Graphics::setFloat2(location->location, value1, value2);
 	')
-	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
+	private function setFloat2Private(location: ConstantLocation, value1: Float, value2: Float): Void {
 		
 	}
 	
-	public function setMatrix(location: Int, matrix: Array<Float>): Void {
+	public function setFloat3(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+		setFloat3Private(cast(location, ConstantLocation), value1, value2, value3);
+	}
+	
+	@:functionCode('
+		Kt::Graphics::setFloat3(location->location, value1, value2, value3);
+	')
+	private function setFloat3Private(location: ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+		
+	}
+	
+	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
 		
 	}
 	
