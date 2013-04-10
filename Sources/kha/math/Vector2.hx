@@ -1,4 +1,4 @@
-package kha;
+package kha.math;
 
 class Vector2 {
 	public function new(x: Float = 0, y: Float = 0): Void {
