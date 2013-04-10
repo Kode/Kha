@@ -18,12 +18,27 @@ class Video extends kha.Video {
 	}
 	
 	@:functionCode('video->play();')
-	public override function play(): Void {
+	override public function play(): Void {
 		
 	}
 	
 	@:functionCode('video->pause();')
-	public override function pause(): Void {
+	override public function pause(): Void {
 		
+	}
+	
+	@:functionCode('return scast<int>(video->duration * 1000.0);')
+	override public function getLength(): Int { // Miliseconds
+		return 0;
+	}
+	
+	@functionCode('return scast<int>(video->position * 1000.0);')
+	override public function getCurrentPos(): Int { // Miliseconds
+		return 0;
+	}
+	
+	@:functionCode('return video->finished;')
+	override public function isFinished(): Bool {
+		return false;
 	}
 }
