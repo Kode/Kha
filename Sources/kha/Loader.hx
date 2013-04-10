@@ -260,12 +260,12 @@ class Loader {
 		this.numberOfFiles = numberOfFiles;
 	}
 	
-	private function loadImage(asset : Asset) { }
-	private function loadBlob(asset : Asset) { }
-	private function loadSound(asset : Asset) { }
-	private function loadMusic(asset : Asset) { }
-	private function loadVideo(asset : Asset) { }
-	private function loadXml(asset : Asset) { }
+	private function loadImage(asset: Asset): Void { }
+	private function loadBlob(asset: Asset): Void { }
+	private function loadSound(asset: Asset): Void { }
+	private function loadMusic(asset: Asset): Void { }
+	private function loadVideo(asset: Asset): Void { }
+	private function loadXml(asset: Asset): Void { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
 	

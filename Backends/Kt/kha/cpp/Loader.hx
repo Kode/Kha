@@ -40,6 +40,12 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 	
+	override private function loadVideo(asset: Asset): Void {
+		videos.set(asset.name, new Video(asset.file));
+		--numberOfFiles;
+		checkComplete();
+	}
+	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return new kha.cpp.Font(name, style, size);
 	}
