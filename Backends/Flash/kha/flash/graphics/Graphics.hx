@@ -8,6 +8,7 @@ import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
 import flash.utils.ByteArray;
 import flash.Vector;
+import kha.Blob;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
@@ -44,6 +45,10 @@ class Graphics implements kha.graphics.Graphics {
 		return null;
 	}
 
+	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
+		
+	}
+	
 	public function setTextureWrap(stage: Int, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
 		
 	}
@@ -52,27 +57,31 @@ class Graphics implements kha.graphics.Graphics {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
 	}
 	
-	public function createVertexShader(source: String): kha.graphics.VertexShader {
-		return new Shader(source, Context3DProgramType.VERTEX);
+	public function createVertexShader(source: Blob): kha.graphics.VertexShader {
+		return new Shader(source.toString(), Context3DProgramType.VERTEX);
 	}
 
-	public function createFragmentShader(source: String): kha.graphics.FragmentShader {
-		return new Shader(source, Context3DProgramType.FRAGMENT);
+	public function createFragmentShader(source: Blob): kha.graphics.FragmentShader {
+		return new Shader(source.toString(), Context3DProgramType.FRAGMENT);
 	}
 	
-	public function setInt(location: Int, value: Int): Void {
+	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
 		
 	}
 
-	public function setFloat(location: Int, value: Float): Void {
+	public function setFloat(location: kha.graphics.ConstantLocation, value: Float): Void {
 		
 	}
 	
-	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
+	public function setFloat2(location: kha.graphics.ConstantLocation, value1: Float, value2: Float): Void {
 		
 	}
 	
-	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+		
+	}
+	
+	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
 		
 	}
 }

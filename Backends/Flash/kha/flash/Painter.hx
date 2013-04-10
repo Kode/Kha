@@ -235,7 +235,7 @@ class Painter extends kha.Painter {
 	
 	function flushBuffers() : Void {
 		if (image != null) {
-			context.setTextureAt(0, image.getTexture());
+			context.setTextureAt(0, image.getFlashTexture());
 			vertexBuffer.uploadFromVector(vertices, 0, 4 * count);
 			context.drawTriangles(indexBuffer, 0, 2 * count);
 			count = 0;
@@ -250,8 +250,8 @@ class Painter extends kha.Painter {
 		if (image != img || count >= maxCount) {
 			if (image != null) flushBuffers();
 			image = cast(img, Image);
-			image.getTexture();
-			context.setTextureAt(0, image.getTexture());
+			image.getFlashTexture();
+			context.setTextureAt(0, image.getFlashTexture());
 		}
 
 		var u1 = image.correctU(sx / image.getWidth());

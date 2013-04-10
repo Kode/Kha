@@ -34,8 +34,8 @@ class Program implements kha.graphics.Program {
 		program.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
 	}
 	
-	public function getConstantLocation(name: String): Int {
-		return 0;
+	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
+		return new ConstantLocation();
 	}
 	
 	public function set(): Void {

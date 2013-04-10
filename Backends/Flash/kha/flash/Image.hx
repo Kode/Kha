@@ -43,18 +43,26 @@ class Image implements kha.Image {
 		return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
 	}
 	
-	public function getTexture(): Texture {
+	public function getFlashTexture(): Texture {
 		if (tex == null) uploadTextureWithMipmaps();
 		return tex;
 	}
 	
-	function pow(pow: Int): Int {
+	public function getTexture(): kha.graphics.Texture {
+		return null;
+	}
+	
+	public function setTexture(texture: kha.graphics.Texture): Void {
+		
+	}
+	
+	private function pow(pow: Int): Int {
         var ret : Int = 1;
         for (i in 0...pow) ret *= 2;
         return ret;
     }
 
-    function toPow2(i: Int): Int {
+    private function toPow2(i: Int): Int {
         var power: Int = 0;
 		while (true) {
             if (pow(power) >= i) return pow(power);
