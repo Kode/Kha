@@ -1,5 +1,6 @@
 package kha;
 
+import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
 import kha.graphics.VertexBuffer;
@@ -23,9 +24,9 @@ class ShaderPainter extends Painter {
 	var tx: Float;
 	var ty: Float;
 	private var structure: VertexStructure;
-	private var projectionLocation: Int;
+	private var projectionLocation: ConstantLocation;
 	private var projectionMatrix: Array<Float>;
-	private var textureLocation: Int;
+	private var textureLocation: ConstantLocation;
 	
 	public function new(width: Int, height: Int) {
 		initShaders();
@@ -38,8 +39,8 @@ class ShaderPainter extends Painter {
 	}
 	
 	function initShaders(): Void {
-		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter.frag").toString());
-		var vertexShader = Sys.graphics.createVertexShader(Loader.the.getShader("painter.vert").toString());
+		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter.frag"));
+		var vertexShader = Sys.graphics.createVertexShader(Loader.the.getShader("painter.vert"));
 	
 		shaderProgram = Sys.graphics.createProgram();
 		shaderProgram.setFragmentShader(fragmentShader);

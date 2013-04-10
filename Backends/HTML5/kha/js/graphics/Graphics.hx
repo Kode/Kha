@@ -1,5 +1,6 @@
 package kha.js.graphics;
 
+import kha.Blob;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
@@ -54,12 +55,12 @@ class Graphics implements kha.graphics.Graphics {
 		}*/
 	}
 	
-	public function createVertexShader(source: String): VertexShader {
-		return new Shader(source, Sys.gl.VERTEX_SHADER);
+	public function createVertexShader(source: Blob): VertexShader {
+		return new Shader(source.toString(), Sys.gl.VERTEX_SHADER);
 	}
 	
-	public function createFragmentShader(source: String): FragmentShader {
-		return new Shader(source, Sys.gl.FRAGMENT_SHADER);
+	public function createFragmentShader(source: Blob): FragmentShader {
+		return new Shader(source.toString(), Sys.gl.FRAGMENT_SHADER);
 	}
 	
 	public function createProgram(): kha.graphics.Program {
@@ -70,24 +71,24 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	public function setInt(location: Int, value: Int): Void {
-		Sys.gl.uniform1i(location, value);
+	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
+		Sys.gl.uniform1i(cast(location, ConstantLocation).value, value);
 	}
 	
-	public function setFloat(location: Int, value: Float): Void {
-		Sys.gl.uniform1f(location, value);
+	public function setFloat(location: kha.graphics.ConstantLocation, value: Float): Void {
+		Sys.gl.uniform1f(cast(location, ConstantLocation).value, value);
 	}
 	
-	public function setFloat2(location: Int, value1: Float, value2: Float): Void {
-		Sys.gl.uniform2f(location, value1, value2);
+	public function setFloat2(location: kha.graphics.ConstantLocation, value1: Float, value2: Float): Void {
+		Sys.gl.uniform2f(cast(location, ConstantLocation).value, value1, value2);
 	}
 	
-	public function setFloat3(location: Int, value1: Float, value2: Float, value3: Float): Void {
-		Sys.gl.uniform3f(location, value1, value2, value3);
+	public function setFloat3(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+		Sys.gl.uniform3f(cast(location, ConstantLocation).value, value1, value2, value3);
 	}
 	
-	public function setMatrix(location: Int, matrix: Array<Float>): Void {
-		Sys.gl.uniformMatrix4fv(location, false, matrix);
+	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
+		Sys.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrix);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
