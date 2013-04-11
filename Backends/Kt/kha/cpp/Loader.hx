@@ -5,6 +5,11 @@ import cpp.io.File;
 import haxe.io.Bytes;
 import kha.loader.Asset;
 
+@:headerCode('
+#include <Kt/stdafx.h>
+#include <Kt/System.h>
+')
+
 class Loader extends kha.Loader {
 	public function new() {
 		super();
@@ -48,5 +53,15 @@ class Loader extends kha.Loader {
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		return new kha.cpp.Font(name, style, size);
+	}
+
+	@:functionCode('Kt::System::showKeyboard();')
+	override public function showKeyboard(): Void {
+
+	}
+
+	@:functionCode('Kt::System::hideKeyboard();')
+	override public function hideKeyboard(): Void {
+
 	}
 }

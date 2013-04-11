@@ -274,6 +274,9 @@ class Loader {
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
 	public function setCursorBusy(busy : Bool) { }
+
+	public function showKeyboard(): Void { }
+	public function hideKeyboard(): Void { }
 	
 	public function quit() : Void { }
 }
