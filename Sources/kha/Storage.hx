@@ -16,4 +16,5 @@ class Storage {
 	
 	public function saveToFile(filename : String, content : String) { }
 	public function appendToFile(filename : String, content : String) { }
+	public function loadFromFile(filename : String) : String { return null; }
 }

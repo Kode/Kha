@@ -28,7 +28,7 @@ class Starter {
 		kha.js.Image.init();
 		Sys.init();
 		Loader.init(new kha.js.Loader());
-		Storage.init(new Storage());
+		Storage.init(new kha.js.Storage());
 	}
 	
 	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {
@@ -144,6 +144,10 @@ class Starter {
 		
 		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
+		
+		Lib.window.onunload = function(event : js.Event) {
+			game.onClose();
+		}
 		
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
