@@ -35,7 +35,7 @@ class Program implements kha.graphics.Program {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
-		return new ConstantLocation();
+		return new ConstantLocation(0);
 	}
 	
 	public function set(): Void {

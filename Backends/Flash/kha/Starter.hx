@@ -27,7 +27,7 @@ import flash.Vector;
 
 class Starter {
 	var game: Game;
-	var painter: Painter;
+	var painter: ShaderPainter;
 	var pressedKeys: Array<Bool>;
 	var stage: Stage;
 	var stage3D: Stage3D;
@@ -51,7 +51,7 @@ class Starter {
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
-		
+	
 	public function loadFinished(): Void {
 		Loader.the.initProject();
 		game.width = Loader.the.width;
@@ -69,7 +69,7 @@ class Starter {
 		Scheduler.start();
 		game.loadFinished();
 		
-		painter = new Painter(context);
+		painter = new ShaderPainter(game.width, game.height); //new Painter(context);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
@@ -167,21 +167,21 @@ class Starter {
 	}
 	
 	function mouseDownHandler(event: MouseEvent): Void {
-		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		game.mouseDown(Std.int(xy.x), Std.int(xy.y));
+		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		//game.mouseDown(Std.int(xy.x), Std.int(xy.y));
 	}
 	
 	function mouseUpHandler(event: MouseEvent): Void {
-		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		game.mouseUp(Std.int(xy.x), Std.int(xy.y));
+		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		//game.mouseUp(Std.int(xy.x), Std.int(xy.y));
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {
-		var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		game.mouseMove(Std.int(xy.x), Std.int(xy.y));
+		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
+		//game.mouseMove(Std.int(xy.x), Std.int(xy.y));
 	}
 	
 	function resizeHandler(event: Event): Void {
-		painter.resize();
+		//painter.resize();
 	}
 }

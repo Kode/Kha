@@ -6,6 +6,7 @@ import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
+import flash.geom.Matrix3D;
 import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
@@ -42,11 +43,12 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(image: kha.Image): kha.graphics.Texture {
-		return null;
+		var flashImage = cast(image, Image);
+		return new Texture(flashImage.getFlashTexture(), image.getWidth(), image.getHeight());
 	}
 
 	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
-		
+		cast(texture, Texture).set(stage);
 	}
 	
 	public function setTextureWrap(stage: Int, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
@@ -82,6 +84,10 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
-		
+		var projection = new Matrix3D();
+		var vec : Vector<Float> = new Vector<Float>(16);
+		for (i in 0...16) vec[i] = matrix[i];
+		projection.copyRawDataFrom(vec);
+		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, cast(location, ConstantLocation).value, projection, true);
 	}
 }

@@ -48,12 +48,14 @@ class Image implements kha.Image {
 		return tex;
 	}
 	
+	private var texture: kha.graphics.Texture = null;
+	
 	public function getTexture(): kha.graphics.Texture {
-		return null;
+		return texture;
 	}
 	
 	public function setTexture(texture: kha.graphics.Texture): Void {
-		
+		this.texture = texture;
 	}
 	
 	private function pow(pow: Int): Int {

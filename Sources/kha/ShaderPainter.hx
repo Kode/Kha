@@ -33,12 +33,16 @@ class ShaderPainter extends Painter {
 		
 		initBuffers();
 
-		projectionMatrix = ortho(0, width, height, 0, 0.1, 1000);
+		setScreenSize(width, height);
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getConstantLocation("tex");
 	}
 	
-	function initShaders(): Void {
+	public function setScreenSize(width: Int, height: Int) {
+		projectionMatrix = ortho(0, width, height, 0, 0.1, 1000);
+	}
+	
+	private function initShaders(): Void {
 		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter.frag"));
 		var vertexShader = Sys.graphics.createVertexShader(Loader.the.getShader("painter.vert"));
 	
@@ -85,9 +89,9 @@ class ShaderPainter extends Painter {
 	}
 	
 	private function ortho(left : Float, right : Float, bottom : Float, top : Float, zn : Float, zf : Float) : Array<Float> {
-		var tx : Float = -(right + left) / (right - left);
-		var ty : Float = -(top + bottom) / (top - bottom);
-		var tz : Float = -(zf + zn) / (zf - zn);
+		var tx: Float = -(right + left) / (right - left);
+		var ty: Float = -(top + bottom) / (top - bottom);
+		var tz: Float = -(zf + zn) / (zf - zn);
 		return [
 			2 / (right - left), 0,                  0,              0,
 			0,                  2 / (top - bottom), 0,              0,
