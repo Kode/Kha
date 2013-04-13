@@ -7,6 +7,8 @@ import kha.graphics.FragmentShader;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
 
+using StringTools;
+
 class Program implements kha.graphics.Program {
 	private var program: Program3D;
 	private var fragmentShader: Shader;
@@ -35,7 +37,17 @@ class Program implements kha.graphics.Program {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
-		return new ConstantLocation(0);
+		var type: Context3DProgramType;
+		var value: Int;
+		if (Reflect.hasField(vertexShader.names, name)) {
+			type = Context3DProgramType.VERTEX;
+			value = Reflect.field(vertexShader.names, name).substr(2);
+		}
+		else {
+			type = Context3DProgramType.FRAGMENT;
+			value = Reflect.field(fragmentShader.names, name).substr(2);
+		}
+		return new ConstantLocation(value, type);
 	}
 	
 	public function set(): Void {

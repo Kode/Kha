@@ -10,10 +10,12 @@ import kha.graphics.VertexShader;
 class Shader implements FragmentShader, implements VertexShader {
 	public var source: String;
 	public var constants: Dynamic;
+	public var names: Dynamic;
 	
 	public function new(shader: String, type: Context3DProgramType) {
 		var json = JSON.parse(shader);
 		source = json.agalasm;
 		constants = json.consts;
+		names = json.varnames;
 	}
 }

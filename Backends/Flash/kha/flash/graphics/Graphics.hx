@@ -56,7 +56,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count);
+		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}
 	
 	public function createVertexShader(source: Blob): kha.graphics.VertexShader {
@@ -68,26 +68,42 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
-		
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 
 	public function setFloat(location: kha.graphics.ConstantLocation, value: Float): Void {
-		
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
 	public function setFloat2(location: kha.graphics.ConstantLocation, value1: Float, value2: Float): Void {
-		
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
 	public function setFloat3(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
-		
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		vec[2] = value3;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
 	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
 		var projection = new Matrix3D();
-		var vec : Vector<Float> = new Vector<Float>(16);
+		var vec = new Vector<Float>(16);
 		for (i in 0...16) vec[i] = matrix[i];
 		projection.copyRawDataFrom(vec);
-		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, cast(location, ConstantLocation).value, projection, true);
+		var flashLocation = cast(location, ConstantLocation);
+		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, false);
 	}
 }

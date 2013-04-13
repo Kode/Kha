@@ -69,7 +69,7 @@ class ShaderPainter extends Painter {
 		*/
 	}
 	
-	function initBuffers() : Void {
+	function initBuffers(): Void {
 		//triangleVertexBuffer = Sys.graphics.createVertexBuffer(3, structure);
 		
 		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure);
@@ -88,7 +88,7 @@ class ShaderPainter extends Painter {
 		indexBuffer.unlock();
 	}
 	
-	private function ortho(left : Float, right : Float, bottom : Float, top : Float, zn : Float, zf : Float) : Array<Float> {
+	private function ortho(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Array<Float> {
 		var tx: Float = -(right + left) / (right - left);
 		var ty: Float = -(top + bottom) / (top - bottom);
 		var tz: Float = -(zf + zn) / (zf - zn);

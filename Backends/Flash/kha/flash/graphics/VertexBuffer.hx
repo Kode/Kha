@@ -51,12 +51,15 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	
 	public function set(): Void {
 		var index: Int = 0;
+		var offset: Int = 0;
 		for (element in myStructure.elements) {
 			switch (element.data) {
 			case VertexData.Float2:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_2);
+				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
+				offset += 2;
 			case VertexData.Float3:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
+				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_3);
+				offset += 3;
 			}
 			++index;
 		}

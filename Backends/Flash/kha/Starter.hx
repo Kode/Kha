@@ -63,7 +63,11 @@ class Starter {
 	
 	function onReady(_): Void {
 		context = stage3D.context3D;
+		context.configureBackBuffer(game.width, game.height, 0, false);
 		Sys.init(context);
+		#if debug
+		context.enableErrorChecking = true;
+		#end
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		Scheduler.start();
@@ -82,9 +86,11 @@ class Starter {
 	
 	function update(_): Void {
 		Scheduler.executeFrame();
+		context.clear(0, 0, 0, 0);
 		painter.begin();
 		Configuration.screen().render(painter);
 		painter.end();
+		context.present();
 	}
 	
 	function keyDownHandler(event: KeyboardEvent): Void {

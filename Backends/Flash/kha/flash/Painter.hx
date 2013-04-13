@@ -77,9 +77,6 @@ class Painter extends kha.Painter {
 		textBitmap = new BitmapData(textureWidth , textureHeight, true, 0xffffff);
 		textTexture = context.createTexture(textureWidth, textureHeight, Context3DTextureFormat.BGRA, false);
 		
-		#if debug
-		context.enableErrorChecking = true;
-		#end
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 
 		var vertexShader : Array<String> = [
