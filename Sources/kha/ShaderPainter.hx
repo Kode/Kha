@@ -92,6 +92,7 @@ class ShaderPainter extends Painter {
 		var tx: Float = -(right + left) / (right - left);
 		var ty: Float = -(top + bottom) / (top - bottom);
 		var tz: Float = -(zf + zn) / (zf - zn);
+		//var tz : Float = -zn / (zf - zn);
 		return [
 			2 / (right - left), 0,                  0,              0,
 			0,                  2 / (top - bottom), 0,              0,

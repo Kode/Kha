@@ -104,6 +104,6 @@ class Graphics implements kha.graphics.Graphics {
 		for (i in 0...16) vec[i] = matrix[i];
 		projection.copyRawDataFrom(vec);
 		var flashLocation = cast(location, ConstantLocation);
-		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, false);
+		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
 	}
 }

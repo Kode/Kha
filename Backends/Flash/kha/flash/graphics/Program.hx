@@ -58,11 +58,11 @@ class Program implements kha.graphics.Program {
 		vec[1] = vertexShader.constants.vc0[1];
 		vec[2] = vertexShader.constants.vc0[2];
 		vec[3] = vertexShader.constants.vc0[3];
-		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vec, 1);
+		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vec);
 		vec[0] = fragmentShader.constants.fc0[0];
 		vec[1] = fragmentShader.constants.fc0[1];
 		vec[2] = fragmentShader.constants.fc0[2];
 		vec[3] = fragmentShader.constants.fc0[3];
-		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec, 1);
+		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec);
 	}
 }

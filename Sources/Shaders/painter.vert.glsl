@@ -8,4 +8,5 @@ varying vec2 texCoord;
 void main() {
 	gl_Position = projectionMatrix * vec4(vertexPosition, 1.0);
 	texCoord = texPosition;
+	gl_Position.z = 0.5;//(gl_Position.z + gl_Position.w) * 0.5;
 }
