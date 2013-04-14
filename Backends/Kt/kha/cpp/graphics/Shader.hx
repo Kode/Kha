@@ -18,14 +18,14 @@ class Shader implements VertexShader, implements FragmentShader {
 	}
 	
 	@:functionCode("
-		shader = Kt::Graphics::createVertexShader(source->toBytes()->b->Pointer());
+		shader = Kt::Graphics::createVertexShader(source->toBytes()->b->Pointer(), source->length());
 	")
 	private function initVertexShader(source: Blob): Void {
 		
 	}
 	
 	@:functionCode("
-		shader = Kt::Graphics::createFragmentShader(source->toBytes()->b->Pointer());
+		shader = Kt::Graphics::createFragmentShader(source->toBytes()->b->Pointer(), source->length());
 	")
 	private function initFragmentShader(source: Blob): Void {
 		

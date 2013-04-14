@@ -11,6 +11,10 @@ class Blob implements Resource{
 		position = 0;
 	}
 	
+	public function length() {
+		return bytes.length;
+	}
+	
 	public function reset() {
 		position = 0;
 	}
