@@ -104,6 +104,16 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
+	@:functionCode('
+		Kt::Matrix4x4f value;
+		for (int y = 0; y < 4; ++y) {
+			for (int x = 0; x < 4; ++x) {
+				value.Set(x, y, matrix[y * 4 + x]);
+			}
+		}
+		::kha::cpp::graphics::ConstantLocation_obj* loc = dynamic_cast< ::kha::cpp::graphics::ConstantLocation_obj*>(location->__GetRealObject());
+		Kt::Graphics::setMatrix(loc->location, value);
+	')
 	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
 		
 	}

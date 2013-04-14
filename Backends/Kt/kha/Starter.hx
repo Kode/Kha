@@ -6,7 +6,7 @@ import kha.Loader;
 
 class Starter {
 	static var game: Game;
-	static var painter: kha.cpp.Painter;
+	static var painter: ShaderPainter;
 	
 	public function new() {
 		haxe.Timer.stamp();
@@ -31,7 +31,7 @@ class Starter {
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		game.loadFinished();
-		painter = new kha.cpp.Painter();
+		painter = new ShaderPainter(game.width, game.height);
 	}
 
 	public static function frame() {
