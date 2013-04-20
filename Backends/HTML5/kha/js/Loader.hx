@@ -42,13 +42,13 @@ class Loader extends kha.Loader {
 		sound.element.onerror = function(ex: Dynamic) {
 			Lib.alert("Error loading " + sound.element.src);
 		}
-		sound.element.oncanplaythrough = function () {
+		sound.element.addEventListener('canplaythrough', function() {
 			//trace ("loaded " + sound.element.src);
+			sounds.set(asset.name, sound);
 			sound.element.oncanplaythrough = null;
 			--numberOfFiles;
 			checkComplete();
-		};
-		sounds.set(asset.name, sound);
+		}, false);
 	}
 	
 	override function loadImage(asset: Asset) {
