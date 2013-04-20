@@ -150,6 +150,12 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 				break;
 		}
 	}
+	
+	protected override void OnClosed(System.EventArgs e) {
+		base.OnClosed(e);
+		
+		Starter.game.onClose();
+	}
 ')
 class MainWindow extends system.windows.Window {
 	public var canvas : StoryPublishCanvas;

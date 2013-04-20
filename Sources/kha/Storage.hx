@@ -14,7 +14,19 @@ class Storage {
 		return instance;
 	}
 	
-	public function saveToFile(filename : String, content : String) { }
-	public function appendToFile(filename : String, content : String) { }
-	public function loadFromFile(filename : String) : String { return null; }
+	public function getTextStorage(filename : String) : TextStorage { return null;  }
+	public function getKeyValueStorage(path : String) : KeyValueStorage { return null; }
+	
+	public function makeFilenameString(path : String) : String { return path; }
+}
+
+interface KeyValueStorage {
+	public function get(key : String) : Dynamic;
+	public function set(key : String, value : Dynamic) : Void;
+}
+
+interface TextStorage {
+	public function save(content : String) : Void;
+	public function append(content : String) : Void;
+	public function load() : String;
 }

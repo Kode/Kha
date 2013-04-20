@@ -8,4 +8,5 @@ extern class File {
 	public static function ReadAllText(filename: String): String;
 	public static function WriteAllText(path: String, contents: String): Void;
 	public static function ReadAllBytes(path: String): BytesData;
+	public static function Exists(path: String): Bool;
 }
