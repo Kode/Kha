@@ -50,7 +50,8 @@ private class TextStorage implements kha.TextStorage {
 	public function new(filename : String) {
 		file = new Path(filename);
 		
-		Directory.CreateDirectory(file.dir);
+		if (file.dir != null)
+			Directory.CreateDirectory(file.dir);
 	}
 	
 	public function save(content : String) {
