@@ -17,7 +17,7 @@ class Loader {
 	var assets: Hash<Asset>;
 	var rooms: Hash<Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
-	public var cleanupAfterLoading : Bool = false;
+	public var autoCleanupAssets : Bool = true;
 	
 	public function new() {
 		blobs = new Hash<Blob>();
@@ -143,17 +143,21 @@ class Loader {
 		resources.remove(resourceName);
 	}
 	
+	public function cleanup() {
+		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
+		for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
+		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
+		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
+		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
+		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
+		
+		enqueued = new Array();
+	}
+	
 	public function loadFiles(call: Void -> Void) {
 		loadFinished = call;
 		loadStarted(enqueued.length);
-		if (!cleanupAfterLoading) {
-			for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
-			for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
-			for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
-			for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
-			for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
-			for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
-		}
+		
 		if (enqueued.length > 0) {
 			for (i in 0...enqueued.length) {
 				switch (enqueued[i].type) {
@@ -174,6 +178,9 @@ class Loader {
 		}
 		else
 			checkComplete();
+		
+		if (autoCleanupAssets)
+			cleanup();
 	}
 	
 	public function loadProject(call: Void -> Void) {
@@ -236,17 +243,6 @@ class Loader {
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
 			if (loadFinished != null) loadFinished();
-			
-			if (cleanupAfterLoading) {
-				for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
-				for (xmlname   in xmls.keys())   if (!containsAsset(xmlname,   "xml",   enqueued)) xmls.remove(xmlname);
-				for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
-				for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
-				for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
-				for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
-			}
-			
-			enqueued = new Array<Asset>();
 		}
 	}
 	
