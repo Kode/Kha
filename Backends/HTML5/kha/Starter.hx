@@ -54,23 +54,32 @@ class Starter {
 	
 	public function loadFinished() {
 		Loader.the.initProject();
-		if (Loader.the.width > 0 && Loader.the.height > 0) {
-			game.width = Loader.the.width;
-			game.height = Loader.the.height;
-		}
 		
 		var canvas : Dynamic = Lib.document.getElementById("khanvas");
+		
+		var widthTransform : Float = canvas.width / Loader.the.width;
+		var heightTransform : Float = canvas.height / Loader.the.height;
+		var transform : Float = Math.min(widthTransform, heightTransform);
+		
+		if (Loader.the.width > 0 && Loader.the.height > 0) {
+			game.width = Math.round(Loader.the.width * transform);
+			game.height = Math.round(Loader.the.height * transform);
+		}
 		
 		try {
 			if (Sys.needs3d && canvas.getContext("experimental-webgl") != null) {
 				painter = new PainterGL(canvas.getContext("experimental-webgl"), game.width, game.height);
+				canvas.getContext("experimental-webgl").scale(transform, transform);
 				Sys.gl = canvas.getContext("experimental-webgl");
 			}
 		}
 		catch (e : Dynamic) {
 			trace(e);
 		}
-		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
+		if (painter == null) {
+			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
+			canvas.getContext("2d").scale(transform, transform);
+		}
 		
 		var window : Dynamic = Lib.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
@@ -123,17 +132,17 @@ class Starter {
 		
 		//Lib.document.onmousedown = function(event : js.Event) {
 		canvas.onmousedown = function(event : js.Event) {
-			game.mouseDown(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+			game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmouseup = function(event : js.Event) {
 		canvas.onmouseup = function(event : js.Event) {
-			game.mouseUp(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+			game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmousemove = function(event : js.Event) {
 		canvas.onmousemove = function(event : js.Event) {
-			game.mouseMove(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+			game.mouseMove(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 
 		//Lib.document.onkeydown = function(event : js.Event) {
