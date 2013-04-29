@@ -1,5 +1,6 @@
 package kha.wpf;
 
+import kha.graphics.Texture;
 import system.windows.media.imaging.BitmapImage;
 
 class Image implements kha.Image {
@@ -40,5 +41,13 @@ class Image implements kha.Image {
 	
 	public function unload(): Void {
 		image = null;
+	}
+	
+	public function getTexture(): Texture {
+		return null;
+	}
+
+	public function setTexture(texture: Texture): Void {
+		
 	}
 }
