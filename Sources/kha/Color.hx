@@ -31,27 +31,27 @@ class Color {
 	/**
 		Contains a byte representing the red color component.
 	**/
-	public var Rb(getRedByte,   null): Int;
+	public var Rb(get,   null): Int;
 	
 	/**
 		Contains a byte representing the green color component.
 	**/
-	public var Gb(getGreenByte, null): Int;
+	public var Gb(get, null): Int;
 	
 	/**
 		Contains a byte representing the blue color component.
 	**/
-	public var Bb(getBlueByte,  null): Int;
+	public var Bb(get,  null): Int;
 	
 	/**
 		Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	**/
-	public var Ab(getAlphaByte, null): Int;
+	public var Ab(get, null): Int;
 	
-	public var R(getRed,   null): Float;
-	public var G(getGreen, null): Float;
-	public var B(getBlue,  null): Float;
-	public var A(getAlpha, null): Float;
+	public var R(get,   null): Float;
+	public var G(get, null): Float;
+	public var B(get,  null): Float;
+	public var A(get, null): Float;
 	
 	public var value(default, null): Int;
 	
@@ -59,35 +59,35 @@ class Color {
 		
 	}
 	
-	private function getRedByte(): Int {
+	private function get_Rb(): Int {
 		return (value & 0x00ff0000) >>> 16;
 	}
 	
-	private function getGreenByte(): Int {
+	private function get_Gb(): Int {
 		return (value & 0x0000ff00) >>> 8;
 	}
 	
-	private function getBlueByte(): Int {
+	private function get_Bb(): Int {
 		return value & 0x000000ff;
 	}
 	
-	private function getAlphaByte(): Int {
+	private function get_Ab(): Int {
 		return (value & 0xff000000) >>> 24;
 	}
 	
-	private function getRed(): Float {
-		return getRedByte() / 255;
+	private function get_R(): Float {
+		return get_Rb() / 255;
 	}
 	
-	private function getGreen(): Float {
-		return getGreenByte() / 255;
+	private function get_G(): Float {
+		return get_Gb() / 255;
 	}
 	
-	private function getBlue(): Float {
-		return getBlueByte() / 255;
+	private function get_B(): Float {
+		return get_Bb() / 255;
 	}
 	
-	private function getAlpha(): Float {
-		return getAlphaByte() / 255;
+	private function get_A(): Float {
+		return get_Ab() / 255;
 	}
 }

@@ -7,7 +7,7 @@ import kha.flash.utils.AGALMiniAssembler;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexShader;
 
-class Shader implements FragmentShader, implements VertexShader {
+class Shader implements FragmentShader implements VertexShader {
 	public var source: String;
 	public var constants: Dynamic;
 	public var names: Dynamic;

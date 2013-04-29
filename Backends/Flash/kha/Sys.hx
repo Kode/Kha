@@ -2,8 +2,6 @@ package kha;
 
 import flash.display3D.Context3D;
 import flash.Lib;
-import haxe.Int32;
-import haxe.Int64;
 import kha.graphics.Graphics;
 
 class Sys {

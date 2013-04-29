@@ -3,6 +3,7 @@ package kha.flash.graphics;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
+import kha.graphics.VertexData;
 
 class VertexBuffer implements kha.graphics.VertexBuffer {
 	public var vertexBuffer: VertexBuffer3D;

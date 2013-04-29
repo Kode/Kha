@@ -485,9 +485,9 @@ class AGALMiniAssembler {
 	// ======================================================================
 	//  Constants
 	// ----------------------------------------------------------------------
-	private static var OPMAP : Hash<OpCode>      = new Hash<OpCode>();
-	private static var REGMAP : Hash<Register>   = new Hash<Register>();
-	private static var SAMPLEMAP : Hash<Sampler> = new Hash<Sampler>();
+	private static var OPMAP : Map<String, OpCode>      = new Map<String, OpCode>();
+	private static var REGMAP : Map<String, Register>   = new Map<String, Register>();
+	private static var SAMPLEMAP : Map<String, Sampler> = new Map<String, Sampler>();
 
 	private static var MAX_NESTING : Int         = 4;
 	private static var MAX_OPCODES : Int         = 256;

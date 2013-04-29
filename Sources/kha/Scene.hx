@@ -18,9 +18,9 @@ class Scene {
 	public var camx : Int;
 	public var camy : Int;
 	
-	public static var the(getThe, null): Scene;
+	public static var the(get, null): Scene;
 	
-	private static function getThe(): Scene {
+	private static function get_the(): Scene {
 		if (instance == null) instance = new Scene();
 		return instance;
 	}
