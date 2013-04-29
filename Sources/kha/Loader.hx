@@ -5,29 +5,29 @@ import kha.loader.Asset;
 import kha.loader.Room;
 
 class Loader {
-	var blobs : Hash<Blob>;
-	var images : Hash<Image>;
-	var sounds : Hash<Sound>;
-	var musics : Hash<Music>;
-	var videos : Hash<Video>;
-	var xmls : Hash<Xml>;
+	var blobs : Map<String, Blob>;
+	var images : Map<String, Image>;
+	var sounds : Map<String, Sound>;
+	var musics : Map<String, Music>;
+	var videos : Map<String, Video>;
+	var xmls : Map<String, Xml>;
 	var loadcount : Int;
 	var numberOfFiles : Int;
 	
-	var assets: Hash<Asset>;
-	var rooms: Hash<Room>;
+	var assets: Map<String, Asset>;
+	var rooms: Map<String, Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
 	public var autoCleanupAssets : Bool = true;
 	
 	public function new() {
-		blobs = new Hash<Blob>();
-		images = new Hash<Image>();
-		sounds = new Hash<Sound>();
-		musics = new Hash<Music>();
-		videos = new Hash<Video>();
-		xmls = new Hash<Xml>();
-		assets = new Hash<Asset>();
-		rooms = new Hash<Room>();
+		blobs = new Map<String, Blob>();
+		images = new Map<String, Image>();
+		sounds = new Map<String, Sound>();
+		musics = new Map<String, Music>();
+		videos = new Map<String, Video>();
+		xmls = new Map<String, Xml>();
+		assets = new Map<String, Asset>();
+		rooms = new Map<String, Room>();
 		enqueued = new Array<Asset>();
 		loadcount = 100;
 		numberOfFiles = 100;
@@ -113,31 +113,31 @@ class Loader {
 		return false;
 	}
 	
-	private function removeImage(resources: Hash<Image>, resourceName: String) {
+	private function removeImage(resources: Map<String, Image>, resourceName: String) {
 		var resource = resources.get(resourceName);
 		resource.unload();
 		resources.remove(resourceName);
 	}
 	
-	private function removeBlob(resources: Hash<Blob>, resourceName: String) {
+	private function removeBlob(resources: Map<String, Blob>, resourceName: String) {
 		var resource = resources.get(resourceName);
 		resource.unload();
 		resources.remove(resourceName);
 	}
 	
-	private function removeMusic(resources: Hash<Music>, resourceName: String) {
+	private function removeMusic(resources: Map<String, Music>, resourceName: String) {
 		var resource = resources.get(resourceName);
 		resource.unload();
 		resources.remove(resourceName);
 	}
 	
-	private function removeSound(resources: Hash<Sound>, resourceName: String) {
+	private function removeSound(resources: Map<String, Sound>, resourceName: String) {
 		var resource = resources.get(resourceName);
 		resource.unload();
 		resources.remove(resourceName);
 	}
 	
-	private function removeVideo(resources: Hash<Video>, resourceName: String) {
+	private function removeVideo(resources: Map<String, Video>, resourceName: String) {
 		var resource = resources.get(resourceName);
 		resource.unload();
 		resources.remove(resourceName);
