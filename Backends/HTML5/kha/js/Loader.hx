@@ -1,15 +1,17 @@
 package kha.js;
 
 import js.Boot;
+import js.Browser;
+import js.html.audio.DynamicsCompressorNode;
+import js.html.ImageElement;
 import kha.FontStyle;
 import kha.Blob;
 import kha.Starter;
 import kha.loader.Asset;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import js.Dom;
 import js.Lib;
-import js.XMLHttpRequest;
+import js.html.XMLHttpRequest;
 
 class Loader extends kha.Loader {
 	public function new() {
@@ -39,9 +41,9 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadImage(filename: String, done: kha.Image -> Void) {
-		var img: js.Image = cast Lib.document.createElement("img");
+		var img: ImageElement = cast Browser.document.createElement("img");
 		img.src = filename;
-		img.onload = function(event: Event) {
+		img.onload = function(event: Dynamic) {
 			done(new kha.js.Image(img));
 		};
 	}
@@ -53,9 +55,11 @@ class Loader extends kha.Loader {
 		video.element.onerror = function(ex : Dynamic) {
 			Lib.alert("Error loading " + video.element.src);
 		}
-		video.element.oncanplaythrough = function () {
+		
+		var videoElement: Dynamic = video.element;
+		videoElement.oncanplaythrough = function() {
 			//trace ("loaded " + video.element.src);
-			video.element.oncanplaythrough = null;
+			videoElement.oncanplaythrough = null;
 			done(video);
 		};
 	}
@@ -91,10 +95,10 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function setNormalCursor() {
-		Lib.document.getElementById("haxvas").style.cursor = "default";
+		Browser.document.getElementById("khanvas").style.cursor = "default";
 	}
 
 	override public function setHandCursor() {
-		Lib.document.getElementById("haxvas").style.cursor = "pointer";
+		Browser.document.getElementById("khanvas").style.cursor = "pointer";
 	}
 }
