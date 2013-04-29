@@ -11,7 +11,7 @@ import kha.graphics.VertexShader;
 ')
 
 @:headerClassCode("Kt::Shader* shader;")
-class Shader implements VertexShader, implements FragmentShader {
+class Shader implements VertexShader implements FragmentShader {
 	public function new(source: Blob, type: ShaderType) {
 		if (type == ShaderType.FragmentShader) initFragmentShader(source);
 		else initVertexShader(source);

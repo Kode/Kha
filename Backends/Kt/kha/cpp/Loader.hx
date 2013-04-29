@@ -1,9 +1,9 @@
 package kha.cpp;
 
 import kha.Blob;
-import cpp.io.File;
 import haxe.io.Bytes;
 import kha.loader.Asset;
+import sys.io.File;
 
 class Loader extends kha.Loader {
 	public function new() {
