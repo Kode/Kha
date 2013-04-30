@@ -4,9 +4,8 @@ import js.Browser;
 import js.html.ImageElement;
 import kha.graphics.Texture;
 
-class Image implements kha.Image {
+class Image implements Texture {
 	public var image: ImageElement;
-	private var tex: Texture = null;
 	
 	private static var context : Dynamic;
 	private var data : Dynamic;
@@ -22,13 +21,28 @@ class Image implements kha.Image {
 	
 	public function new(image: ImageElement) {
 		this.image = image;
+		createTexture();
 	}
 	
-	public function getWidth() : Int {
+	public var width(get, null): Int;
+	public var height(get, null): Int;
+	
+	public function get_width() : Int {
 		return image.width;
 	}
 	
-	public function getHeight() : Int {
+	public function get_height() : Int {
+		return image.height;
+	}
+	
+	public var realWidth(get, null): Int;
+	public var realHeight(get, null): Int;
+	
+	public function get_realWidth(): Int {
+		return image.width;
+	}
+	
+	public function get_realHeight(): Int {
 		return image.height;
 	}
 	
@@ -53,12 +67,38 @@ class Image implements kha.Image {
 	public function unload(): Void {
 		
 	}
+		
+	private var texture: Dynamic;
 	
-	public function setTexture(texture: Texture): Void {
-		tex = texture;
+	private static function upperPowerOfTwo(v: Int): Int {
+		v--;
+		v |= v >>> 1;
+		v |= v >>> 2;
+		v |= v >>> 4;
+		v |= v >>> 8;
+		v |= v >>> 16;
+		v++;
+		return v;
 	}
 	
-	public function getTexture(): Texture {
-		return tex;
+	public function createTexture() {
+		if (Sys.gl == null) return;
+		texture = Sys.gl.createTexture();
+		texture.image = image;
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
+		
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
+		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, texture.image);
+		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+	}
+	
+	public function set(stage: Int): Void {
+		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
 	}
 }

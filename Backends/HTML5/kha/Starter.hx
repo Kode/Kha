@@ -64,7 +64,7 @@ class Starter {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
 		try {
-			if (Sys.needs3d && canvas.getContext("experimental-webgl") != null) {
+			if (canvas.getContext("experimental-webgl") != null) {
 				Sys.gl = canvas.getContext("experimental-webgl");
 				Sys.init();
 				painter = new ShaderPainter(game.width, game.height);
