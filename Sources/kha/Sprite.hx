@@ -24,8 +24,8 @@ class Sprite {
 		y = 0;
 		this.width = width;
 		this.height = height;
-		if (this.width  == 0) this.width  = image.getWidth ();
-		if (this.height == 0) this.height = image.getHeight();
+		if (this.width  == 0) this.width  = image.width;
+		if (this.height == 0) this.height = image.height;
 		this.z = z;
 		collider = new Rectangle(0, 0, width, height);
 		speedx = speedy = 0;
@@ -55,7 +55,7 @@ class Sprite {
 	
 	public function render(painter : Painter) : Void {
 		if (image != null) {
-			painter.drawImage2(image, Std.int(animation.get() * width) % image.getWidth(), Math.floor(animation.get() * width / image.getWidth()) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
+			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
 		}
 	}
 	

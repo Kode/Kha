@@ -15,8 +15,8 @@ class Tileset {
 		this.image = Loader.the.getImage(imagename);
 		TILE_WIDTH = tileWidth;
 		TILE_HEIGHT = tileHeight;
-		xmax = Std.int(image.getWidth() / TILE_WIDTH);
-		ymax = Std.int(image.getHeight() / TILE_HEIGHT);
+		xmax = Std.int(image.width / TILE_WIDTH);
+		ymax = Std.int(image.height / TILE_HEIGHT);
 		if (tiles == null) {
 			this.tiles = new Array<Tile>();
 			for (i in 0...getLength()) this.tiles.push(new Tile(i, false));

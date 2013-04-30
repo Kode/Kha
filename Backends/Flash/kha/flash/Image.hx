@@ -8,13 +8,24 @@ import flash.display3D.Context3DTextureFormat;
 import flash.display3D.textures.Texture;
 import flash.geom.Matrix;
 
-class Image implements kha.Image {
+class Image implements kha.graphics.Texture {
 	static var maxTextureControll: List<Image> = new List<Image>();
 	
 	public var image: Bitmap;
 	private var tex: Texture;
 	private var texWidth: Int;
 	private var texHeight: Int;
+	
+	public var width(get, null): Int;
+	public var height(get, null): Int;
+	
+	public function get_width(): Int {
+		return Std.int(image.width);
+	}
+	
+	public function get_height(): Int {
+		return Std.int(image.height);
+	}
 	
 	public function new(image: DisplayObject)  {
 		this.image = cast(image, Bitmap);

@@ -240,7 +240,7 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function drawImage(img : kha.Image, x : Float, y : Float) : Void {
-		drawImage2(img, 0, 0, img.getWidth(), img.getHeight(), x, y, img.getWidth(), img.getHeight());
+		drawImage2(img, 0, 0, img.width, img.height, x, y, img.width, img.height);
 	}
 	
 	override public function drawImage2(img : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {

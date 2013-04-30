@@ -42,13 +42,8 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	public function createTexture(image: kha.Image): kha.graphics.Texture {
-		var flashImage = cast(image, Image);
-		return new Texture(flashImage.getFlashTexture(), image.getWidth(), image.getHeight());
-	}
-
-	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
-		cast(texture, Texture).set(stage);
+	public function setTexture(texture: kha.Image, stage: Int): Void {
+		context.setTextureAt(stage, cast(texture, Image).getFlashTexture());
 	}
 	
 	public function setTextureWrap(stage: Int, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {

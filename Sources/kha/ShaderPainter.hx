@@ -136,12 +136,7 @@ class ShaderPainter extends Painter {
 	}
 
 	function setTexture(img: Image) : Void {
-		if (img.getTexture() == null) {
-			img.setTexture(Sys.graphics.createTexture(img));
-			Sys.graphics.setTexture(img.getTexture(), 0);
-			//gl.uniform1i(textureUniform, 0);
-		}
-		else Sys.graphics.setTexture(img.getTexture(), 0);
+		Sys.graphics.setTexture(img, 0);
 	}
 	
 	private function drawBuffer(): Void {
@@ -164,8 +159,8 @@ class ShaderPainter extends Painter {
 		
 		var left: Float = tx + x;
 		var top: Float = ty + y;
-		var right: Float = tx + x + img.getWidth();
-		var bottom: Float = ty + y + img.getHeight();
+		var right: Float = tx + x + img.width;
+		var bottom: Float = ty + y + img.height;
 		
 		setRectTexCoords(0, 0, 1, 1);
 		setRectVertices(left, top, right, bottom);
@@ -181,7 +176,7 @@ class ShaderPainter extends Painter {
 		var right : Float = tx + dx + dw;
 		var bottom : Float = ty + dy + dh;
 		
-		setRectTexCoords(sx / img.getWidth(), sy / img.getHeight(), (sx + sw) / img.getWidth(), (sy + sh) / img.getHeight());
+		setRectTexCoords(sx / img.width, sy / img.height, (sx + sw) / img.width, (sy + sh) / img.height);
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
 		lastTexture = cast(img, Image);

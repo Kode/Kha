@@ -10,8 +10,7 @@ interface Graphics {
 	function createIndexBuffer(indexCount: Int): IndexBuffer;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
-	function createTexture(image: Image): Texture;
-	function setTexture(texture: Texture, stage: Int): Void;
+	function setTexture(texture: Image, stage: Int): Void;
 	function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void;
 	
 	function createVertexShader(source: Blob): VertexShader;
