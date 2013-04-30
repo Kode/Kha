@@ -32,16 +32,12 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function createTexture(image: kha.Image): kha.graphics.Texture {
-		return new Texture(image);
-	}
-	
 	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
 		
 	}
 	
-	public function setTexture(texture: kha.graphics.Texture, stage: Int): Void {
-		cast(texture, Texture).set(stage);
+	public function setTexture(texture: kha.Image, stage: Int): Void {
+		cast(texture, Image).set(stage);
 	}
 	
 	public function createVertexShader(source: Blob): VertexShader {

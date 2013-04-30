@@ -1,4 +1,5 @@
 package kha.cpp;
+
 import kha.graphics.Texture;
 
 @:headerCode('
@@ -8,7 +9,7 @@ import kha.graphics.Texture;
 ')
 
 @:headerClassCode("Kt::Image image; Kt::Texture* texture;")
-class Image implements kha.Image {
+class Image implements Texture {
 	private var tex: Texture = null;
 	
 	public function new(filename: String) {
@@ -20,14 +21,37 @@ class Image implements kha.Image {
 		
 	}
 	
+	public var width(get, null): Int;
+	public var height(get, null): Int;
+	
 	@:functionCode("return texture->width();")
-	public function getWidth(): Int {
+	public function get_width(): Int {
 		return 0; 
 	}
 	
 	@:functionCode("return texture->height();")
-	public function getHeight(): Int {
+	public function get_height(): Int {
 		return 0;
+	}
+	
+	public var realWidth(get, null): Int;
+	public var realHeight(get, null): Int;
+	
+	@:functionCode("return texture->realWidth();")
+	public function get_realWidth(): Int {
+		return 0;
+	}
+	
+	@:functionCode("return texture->realHeight();")
+	public function get_realHeight(): Int {
+		return 0;
+	}
+	
+	@:functionCode("
+		texture->set(stage);
+	")
+	public function set(stage: Int): Void {
+		
 	}
 	
 	//@:functionCode("return image.At(x, y).Ab() > 0;")
