@@ -251,10 +251,10 @@ class Painter extends kha.Painter {
 			context.setTextureAt(0, image.getFlashTexture());
 		}
 
-		var u1 = image.correctU(sx / image.getWidth());
-		var u2 = image.correctU((sx + sw) / image.getWidth());
-		var v1 = image.correctV(sy / image.getHeight());
-		var v2 = image.correctV((sy + sh) / image.getHeight());
+		var u1 = image.correctU(sx / image.width);
+		var u2 = image.correctU((sx + sw) / image.width);
+		var v1 = image.correctV(sy / image.height);
+		var v2 = image.correctV((sy + sh) / image.height);
 		var offset = count * 20;
 		vertices[offset +  0] = tx + dx;      vertices[offset +  1] = ty + dy;      vertices[offset +  2] = 1; vertices[offset +  3] = u1; vertices[offset +  4] = v1;
 		vertices[offset +  5] = tx + dx + dw; vertices[offset +  6] = ty + dy;      vertices[offset +  7] = 1; vertices[offset +  8] = u2; vertices[offset +  9] = v1;

@@ -27,6 +27,17 @@ class Image implements kha.graphics.Texture {
 		return Std.int(image.height);
 	}
 	
+	public var realWidth(get, null): Int;
+	public var realHeight(get, null): Int;
+	
+	public function get_realWidth(): Int {
+		return texWidth;
+	}
+	
+	public function get_realHeight(): Int {
+		return texHeight;
+	}
+	
 	public function new(image: DisplayObject)  {
 		this.image = cast(image, Bitmap);
 	}
@@ -42,14 +53,6 @@ class Image implements kha.graphics.Texture {
 		}
 	}
 	
-	public function getWidth(): Int {
-		return Std.int(image.width);
-	}
-	
-	public function getHeight(): Int {
-		return Std.int(image.height);
-	}
-	
 	public function isOpaque(x: Int, y: Int): Bool {
 		return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
 	}
@@ -59,34 +62,20 @@ class Image implements kha.graphics.Texture {
 		return tex;
 	}
 	
-	private var texture: kha.graphics.Texture = null;
-	
-	public function getTexture(): kha.graphics.Texture {
-		return texture;
+	private static function upperPowerOfTwo(v: Int): Int {
+		v--;
+		v |= v >>> 1;
+		v |= v >>> 2;
+		v |= v >>> 4;
+		v |= v >>> 8;
+		v |= v >>> 16;
+		v++;
+		return v;
 	}
-	
-	public function setTexture(texture: kha.graphics.Texture): Void {
-		this.texture = texture;
-	}
-	
-	private function pow(pow: Int): Int {
-        var ret : Int = 1;
-        for (i in 0...pow) ret *= 2;
-        return ret;
-    }
-
-    private function toPow2(i: Int): Int {
-        var power: Int = 0;
-		while (true) {
-            if (pow(power) >= i) return pow(power);
-			++power;
-		}
-		return -1;
-    }
 	
 	function uploadTextureWithMipmaps(): Void {		
-		texWidth = toPow2(Std.int(image.width));
-		texHeight = toPow2(Std.int(image.height));
+		texWidth = upperPowerOfTwo(Std.int(image.width));
+		texHeight = upperPowerOfTwo(Std.int(image.height));
 		while (tex == null) {
 			try {
 				tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, false);

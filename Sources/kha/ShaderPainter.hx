@@ -3,6 +3,7 @@ package kha;
 import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
+import kha.graphics.Texture;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
@@ -20,7 +21,7 @@ class ShaderPainter extends Painter {
 	var indexBuffer: IndexBuffer;
 	static var bufferSize: Int = 100;
 	var bufferIndex: Int;
-	var lastTexture: Image;
+	var lastTexture: Texture;
 	var tx: Float;
 	var ty: Float;
 	private var structure: VertexStructure;
@@ -155,31 +156,33 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function drawImage(img: kha.Image, x: Float, y: Float) : Void {
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
+		var tex = cast(img, Texture);
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
 		var left: Float = tx + x;
 		var top: Float = ty + y;
 		var right: Float = tx + x + img.width;
 		var bottom: Float = ty + y + img.height;
 		
-		setRectTexCoords(0, 0, 1, 1);
+		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
-		lastTexture = cast(img, Image);
+		lastTexture = tex;
 	}
 	
-	public override function drawImage2(img : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && img != lastTexture)) drawBuffer();
+	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
+		var tex = cast(img, Texture);
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
-		var left : Float = tx + dx;
-		var top : Float = ty + dy;
-		var right : Float = tx + dx + dw;
-		var bottom : Float = ty + dy + dh;
+		var left: Float = tx + dx;
+		var top: Float = ty + dy;
+		var right: Float = tx + dx + dw;
+		var bottom: Float = ty + dy + dh;
 		
-		setRectTexCoords(sx / img.width, sy / img.height, (sx + sw) / img.width, (sy + sh) / img.height);
+		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
-		lastTexture = cast(img, Image);
+		lastTexture = tex;
 	}
 	
 	public override function setColor(r : Int, g : Int, b : Int) : Void {

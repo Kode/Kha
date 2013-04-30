@@ -1,6 +1,7 @@
 package kha.flash.graphics;
 
 import flash.display3D.Context3D;
+import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DVertexBufferFormat;
@@ -15,6 +16,7 @@ class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
 
 	public function new(context: Context3D) {
+		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 		Graphics.context = context;
 	}
 	
