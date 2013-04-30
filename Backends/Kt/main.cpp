@@ -5,6 +5,9 @@
 #include <Kt/Input/Keyboard.h>
 #include <Kt/Input/Mouse.h>
 #include <Kt/Sound/Sound.h>
+#include <Kt/Files/File.h>
+#include <Kt/Files/Json.h>
+#include <Kt/Files/TextReader.h>
 #include <stdio.h>
 #include <kha/Starter.h>
 #include <kha/Loader.h>
@@ -99,8 +102,23 @@ namespace {
 }
 
 int ktmain(const Kt::List<Kt::Text>& params) {
-	Kt::Application app(params, 1024, 768, false, "Kha", false);
+	int width;
+	int height;
+	Kt::Text name;
+	
+	{
+		Kt::DiskFile file("project.kha", Kt::DiskFile::MODE_READ);
+		Kt::TextReader reader(&file);
+		Kt::Json::Data json(reader.readAll());
+		Kt::Json::Value& game = json["game"];
+		name = game["name"].string();
+		width = game["width"].number();
+		height = game["height"].number();
+	}
+
+	Kt::Application app(params, width, height, false, name.c_str(), false);
 	Kt::Sound::init();
+	Kt::System::showWindow();
 
 	hxcpp_set_top_of_stack();
 
@@ -109,10 +127,6 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 		fprintf(stderr, "Error %s\n", err);
 		return 1;
 	}
-
-	Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
-	Kt::System::setTitle(kha::Loader_obj::the->name.c_str());
-	Kt::System::showWindow();
 
 	Kt::Keyboard::the()->KeyDown += keyDown;
 	Kt::Keyboard::the()->KeyUp += keyUp;
