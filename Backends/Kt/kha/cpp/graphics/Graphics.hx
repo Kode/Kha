@@ -32,8 +32,22 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
+	@:functionCode('
+		Kt::Graphics::setTextureAddressing(stage, Kt::U, (Kt::TextureAddressing)uWrap);
+		Kt::Graphics::setTextureAddressing(stage, Kt::V, (Kt::TextureAddressing)vWrap);
+	')
+	private function setTextureWrapNative(stage: Int, uWrap: Int, vWrap: Int): Void {
 		
+	}
+	
+	//enum TextureAddressing {
+	//	Repeat,
+	//	Mirror,
+	//	Clamp,
+	//	Border
+	//};
+	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
+		setTextureWrapNative(stage, u == TextureWrap.ClampToEdge ? 2 : 0, v == TextureWrap.ClampToEdge ? 2 : 0);
 	}
 	
 	public function setTexture(texture: kha.Image, stage: Int): Void {
