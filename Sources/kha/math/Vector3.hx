@@ -10,15 +10,15 @@ class Vector3 {
 	public var x: Float;
 	public var y: Float;
 	public var z: Float;
-	public var length(getLength, setLength): Float;
+	public var length(get, set): Float;
 	
-	private function getLength(): Float {
+	private function get_length(): Float {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 	
-	private function setLength(length: Float): Float {
-		if (getLength() == 0) return 0;
-		var mul = length / getLength();
+	private function set_length(length: Float): Float {
+		if (get_length() == 0) return 0;
+		var mul = length / get_length();
 		x *= mul;
 		y *= mul;
 		z *= mul;
