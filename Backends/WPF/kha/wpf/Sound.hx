@@ -30,7 +30,7 @@ class Sound extends kha.Sound {
 		player.Stop();
 	}
 
-	@:functionBody('
+	@:functionCode('
 		if (player.NaturalDuration.HasTimeSpan)
 		return Math.round(player.NaturalDuration.TimeSpan.TotalMilliseconds);
 		else return int.MaxValue;
@@ -39,7 +39,7 @@ class Sound extends kha.Sound {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return Math.round(player.Position.TotalMilliseconds);
 	')
 	public override function getCurrentPos() : Int {

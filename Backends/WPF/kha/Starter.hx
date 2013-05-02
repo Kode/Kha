@@ -5,7 +5,7 @@ import kha.Key;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
-@:classContents('
+@:classCode('
 	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
 		base.OnRender(drawingContext);
 
@@ -34,7 +34,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	}
 }
 
-@:classContents('
+@:classCode('
 	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, System.EventArgs e) {
@@ -160,7 +160,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 class MainWindow extends system.windows.Window {
 	public var canvas : StoryPublishCanvas;
 	
-	@:functionBody('
+	@:functionCode('
 		canvas = new StoryPublishCanvas();
         canvas.Width = Game.the.width;
         canvas.Height = Game.the.height;
@@ -227,7 +227,7 @@ class Starter {
 		}
 	}
 	
-	@:functionBody('
+	@:functionCode('
 	System.Windows.MessageBox.Show(msg, "Exeption", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
 	')
 	private function displayErrorMessage(msg : String) {
@@ -252,7 +252,7 @@ class Starter {
 			startWindow();
 	}
 
-	@:functionBody('
+	@:functionCode('
 		new System.Windows.Application().Run(mainWindow);
 	')
 	static function startWindow() : Void {

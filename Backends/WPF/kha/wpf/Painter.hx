@@ -14,7 +14,7 @@ class Painter extends kha.Painter {
 		font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 
-	@:functionBody('
+	@:functionCode('
 		var img = (Image)image;
 		context.DrawImage(img.image, new System.Windows.Rect(dx, dy, dw, dh));
 	')
@@ -22,7 +22,7 @@ class Painter extends kha.Painter {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		if (text != null) {
 			text.Replace(\' \', (char)160); // Non-breaking space 
 			System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
@@ -42,35 +42,35 @@ class Painter extends kha.Painter {
 		this.font = cast(font, Font);
 	}
 
-	@:functionBody('
+	@:functionCode('
 		color = System.Windows.Media.Color.FromRgb((byte)r, (byte)g, (byte)b);
 	')
 	override public function setColor(r : Int, g : Int, b : Int) : Void {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Rect(x, y, width, height));
 	')
 	override public function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(x, y, width, height));
 	')
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
 	')
 	override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
 		
 	}
 		
-	@:functionBody('
+	@:functionCode('
 	context.DrawVideo(((Video)video).getPlayer(), new System.Windows.Rect(x, y, width, height));
 	')
 	override function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
