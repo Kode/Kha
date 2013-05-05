@@ -91,6 +91,19 @@ class Program implements kha.graphics.Program {
 	private function initConstantLocation(location: ConstantLocation, name: String): Void {
 		
 	}
+	
+	public function getTextureUnit(name: String): kha.graphics.TextureUnit {
+		var unit = new TextureUnit();
+		initTextureUnit(unit, name);
+		return unit;
+	}
+	
+	@:functionCode('
+		unit->unit = program->getTextureUnit(name.c_str());
+	')
+	private function initTextureUnit(unit: TextureUnit, name: String): Void {
+		
+	}
 		
 	@:functionCode('
 		program->set();

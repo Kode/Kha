@@ -1,5 +1,6 @@
 package kha.cpp;
 
+import kha.cpp.graphics.TextureUnit;
 import kha.graphics.Texture;
 
 @:headerCode('
@@ -48,9 +49,9 @@ class Image implements Texture {
 	}
 	
 	@:functionCode("
-		texture->set(stage);
+		texture->set(unit->unit);
 	")
-	public function set(stage: Int): Void {
+	public function set(unit: TextureUnit): Void {
 		
 	}
 	

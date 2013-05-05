@@ -33,10 +33,10 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	@:functionCode('
-		Kt::Graphics::setTextureAddressing(stage, Kt::U, (Kt::TextureAddressing)uWrap);
-		Kt::Graphics::setTextureAddressing(stage, Kt::V, (Kt::TextureAddressing)vWrap);
+		Kt::Graphics::setTextureAddressing(unit->unit, Kt::U, (Kt::TextureAddressing)uWrap);
+		Kt::Graphics::setTextureAddressing(unit->unit, Kt::V, (Kt::TextureAddressing)vWrap);
 	')
-	private function setTextureWrapNative(stage: Int, uWrap: Int, vWrap: Int): Void {
+	private function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
 		
 	}
 	
@@ -46,12 +46,12 @@ class Graphics implements kha.graphics.Graphics {
 	//	Clamp,
 	//	Border
 	//};
-	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
-		setTextureWrapNative(stage, u == TextureWrap.ClampToEdge ? 2 : 0, v == TextureWrap.ClampToEdge ? 2 : 0);
+	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: TextureWrap, v: TextureWrap): Void {
+		setTextureWrapNative(cast unit, u == TextureWrap.ClampToEdge ? 2 : 0, v == TextureWrap.ClampToEdge ? 2 : 0);
 	}
 	
-	public function setTexture(texture: kha.Image, stage: Int): Void {
-		cast(texture, Image).set(stage);
+	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
+		cast(texture, Image).set(cast unit);
 	}
 	
 	public function createVertexShader(source: Blob): VertexShader {
