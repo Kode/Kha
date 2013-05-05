@@ -137,7 +137,7 @@ class ShaderPainter extends Painter {
 	}
 
 	function setTexture(img: Image) : Void {
-		Sys.graphics.setTexture(img, 0);
+		Sys.graphics.setTexture(textureLocation, img);
 	}
 	
 	private function drawBuffer(): Void {

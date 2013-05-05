@@ -6,4 +6,5 @@ interface Program {
 	function link(structure: VertexStructure): Void;
 	
 	function getConstantLocation(name: String): ConstantLocation;
+	function getTextureUnit(name: String): TextureUnit;
 }

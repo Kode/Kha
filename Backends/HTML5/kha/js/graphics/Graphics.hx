@@ -31,12 +31,13 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function setTexture(texture: kha.Image, stage: Int): Void {
-		cast(texture, Image).set(stage);
+	public function setTexture(stage: kha.graphics.ConstantLocation, texture: kha.Image): Void {
+		cast(texture, Image).set(cast(stage, ConstantLocation).value);
 	}
 	
-	public function setTextureWrap(stage: Int, u: TextureWrap, v: TextureWrap): Void {
-		/*Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
+	public function setTextureWrap(stage: kha.graphics.ConstantLocation, u: TextureWrap, v: TextureWrap): Void {
+		var stageValue = cast(stage, ConstantLocation).value;
+		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
 		switch (u) {
 		case TextureWrap.ClampToEdge:
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
@@ -48,7 +49,7 @@ class Graphics implements kha.graphics.Graphics {
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
 		case TextureWrap.Repeat:
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.REPEAT);
-		}*/
+		}
 	}
 	
 	public function createVertexShader(source: Blob): VertexShader {
