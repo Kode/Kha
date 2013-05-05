@@ -1,9 +1,9 @@
 package kha.js.graphics;
 
 class ConstantLocation implements kha.graphics.ConstantLocation {
-	public var value: Int;
+	public var value: Dynamic;
 	
-	public function new(value: Int) {
+	public function new(value: Dynamic) {
 		this.value = value;
 	}
 }

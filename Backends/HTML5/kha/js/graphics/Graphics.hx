@@ -31,13 +31,12 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function setTexture(stage: kha.graphics.ConstantLocation, texture: kha.Image): Void {
-		cast(texture, Image).set(cast(stage, ConstantLocation).value);
+	public function setTexture(stage: kha.graphics.TextureUnit, texture: kha.Image): Void {
+		cast(texture, Image).set(cast(stage, TextureUnit).value);
 	}
 	
-	public function setTextureWrap(stage: kha.graphics.ConstantLocation, u: TextureWrap, v: TextureWrap): Void {
-		var stageValue = cast(stage, ConstantLocation).value;
-		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
+	public function setTextureWrap(stage: kha.graphics.TextureUnit, u: TextureWrap, v: TextureWrap): Void {
+		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(stage, TextureUnit).value);
 		switch (u) {
 		case TextureWrap.ClampToEdge:
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);

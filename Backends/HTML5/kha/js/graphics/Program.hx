@@ -9,9 +9,13 @@ class Program implements kha.graphics.Program {
 	private var program: Dynamic;
 	private var vertexShader: Shader;
 	private var fragmentShader: Shader;
+	private var textures: Array<String>;
+	private var textureValues: Array<Dynamic>;
 	
 	public function new() {
 		program = Sys.gl.createProgram();
+		textures = new Array<String>();
+		textureValues = new Array<Dynamic>();
 	}
 	
 	public function setVertexShader(vertexShader: VertexShader): Void {
@@ -42,6 +46,7 @@ class Program implements kha.graphics.Program {
 	
 	public function set(): Void {
 		Sys.gl.useProgram(program);
+		for (index in 0...textureValues.length) Sys.gl.uniform1i(textureValues[index], index);
 	}
 	
 	private function compileShader(shader: Shader): Void {
@@ -57,5 +62,23 @@ class Program implements kha.graphics.Program {
 	
 	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
 		return new ConstantLocation(Sys.gl.getUniformLocation(program, name));
+	}
+	
+	public function getTextureUnit(name: String): kha.graphics.TextureUnit {
+		var index = findTexture(name);
+		if (index < 0) {
+			var location = Sys.gl.getUniformLocation(program, name);
+			index = textures.length;
+			textureValues.push(location);
+			textures.push(name);
+		}
+		return new TextureUnit(index);
+	}
+	
+	private function findTexture(name: String): Int {
+		for (index in 0...textures.length) {
+			if (textures[index] == name) return index;
+		}
+		return -1;
 	}
 }

@@ -4,6 +4,7 @@ import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
 import kha.graphics.Texture;
+import kha.graphics.TextureUnit;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
@@ -27,7 +28,7 @@ class ShaderPainter extends Painter {
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
 	private var projectionMatrix: Array<Float>;
-	private var textureLocation: ConstantLocation;
+	private var textureLocation: TextureUnit;
 	
 	public function new(width: Int, height: Int) {
 		initShaders();
@@ -36,7 +37,7 @@ class ShaderPainter extends Painter {
 
 		setScreenSize(width, height);
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
-		textureLocation = shaderProgram.getConstantLocation("tex");
+		textureLocation = shaderProgram.getTextureUnit("tex");
 	}
 	
 	public function setScreenSize(width: Int, height: Int) {
@@ -121,7 +122,7 @@ class ShaderPainter extends Painter {
 		rectVertices[baseIndex + 17] = -5.0;
 	}
 	
-	function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
+	private function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
 		var baseIndex: Int = bufferIndex * 5 * 4;
 		rectVertices[baseIndex +  3] = left;
 		rectVertices[baseIndex +  4] = bottom;
@@ -136,7 +137,7 @@ class ShaderPainter extends Painter {
 		rectVertices[baseIndex + 19] = bottom;
 	}
 
-	function setTexture(img: Image) : Void {
+	private function setTexture(img: Image) : Void {
 		Sys.graphics.setTexture(textureLocation, img);
 	}
 	
@@ -148,7 +149,6 @@ class ShaderPainter extends Painter {
 		Sys.graphics.setIndexBuffer(indexBuffer);
 		Sys.graphics.setProgram(shaderProgram);
 		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
-		Sys.graphics.setInt(textureLocation, 0);
 		
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
