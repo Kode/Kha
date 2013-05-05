@@ -50,6 +50,17 @@ class Program implements kha.graphics.Program {
 		return new ConstantLocation(value, type);
 	}
 	
+	public function getTextureUnit(name: String): kha.graphics.TextureUnit {
+		var unit = new TextureUnit();
+		if (Reflect.hasField(vertexShader.names, name)) {
+			unit.unit = Reflect.field(vertexShader.names, name).substr(2);
+		}
+		else {
+			unit.unit = Reflect.field(fragmentShader.names, name).substr(2);
+		}
+		return unit;
+	}
+	
 	public function set(): Void {
 		Graphics.context.setProgram(program);
 		

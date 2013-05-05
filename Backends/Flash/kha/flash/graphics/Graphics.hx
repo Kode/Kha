@@ -44,11 +44,11 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	public function setTexture(texture: kha.Image, stage: Int): Void {
-		context.setTextureAt(stage, cast(texture, Image).getFlashTexture());
+	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
+		context.setTextureAt(cast(unit, TextureUnit).unit, cast(texture, Image).getFlashTexture());
 	}
 	
-	public function setTextureWrap(stage: Int, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
+	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
 		
 	}
 	
