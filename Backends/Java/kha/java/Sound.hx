@@ -1,7 +1,8 @@
 package kha.java;
+
 import kha.SoundChannel;
 
-@:classContents('
+@:classCode('
 	class SoundThread implements Runnable {
 		private java.util.ArrayList<Sound> sounds = new java.util.ArrayList<Sound>();
 		private java.util.Queue<Integer> queue = new java.util.ArrayDeque<Integer>();
@@ -105,7 +106,7 @@ class Sound extends kha.Sound {
 		init(filename);
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		this.filename = filename;
 		if (thread == null) {
 			thread = new SoundThread();
@@ -118,7 +119,7 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		thread.play(index);
 		return null;
 	')
@@ -126,7 +127,7 @@ class Sound extends kha.Sound {
 		return null;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		if (clip.isRunning()) {
 			clip.stop();
 		}
@@ -136,14 +137,14 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return clip != null;
 	')
 	public function isLoaded() : Bool {
 		return true;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		if (!clip.isRunning()) {
 			clip.setFramePosition(0);
 			clip.loop(0);
@@ -154,7 +155,7 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return clip.isRunning();
 	')
 	public function isRunning() : Bool {

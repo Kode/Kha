@@ -2,7 +2,7 @@ package kha.java;
 
 import kha.FontStyle;
 
-@:classContents('
+@:classCode('
 	private static java.awt.image.BufferedImage testImage = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB);
 	private static java.awt.Graphics2D testGraphics;
 	public java.awt.Font font;
@@ -16,42 +16,42 @@ class Font implements kha.Font {
 		init(name, style, size);
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		font = new java.awt.Font(name, 0, size);
 	')
 	function init(name : String, style : FontStyle, size : Int) {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return testGraphics.getFontMetrics(font).getHeight();
 	')
 	public function getHeight() : Float {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return testGraphics.getFontMetrics(font).charWidth(ch.charAt(0));
 	')
 	public function charWidth(ch : String) : Float {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return stringWidth(ch.substring(offset, offset + length));
 	')
 	public function charsWidth(ch : String, offset : Int, length : Int) : Float {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return testGraphics.getFontMetrics(font).stringWidth(str);
 	')
 	public function stringWidth(str : String) : Float {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return testGraphics.getFontMetrics(font).getHeight() - testGraphics.getFontMetrics(font).getLeading();
 	')
 	public function getBaselinePosition() : Float {

@@ -3,7 +3,7 @@ package kha;
 import kha.Game;
 import kha.Key;
 
-@:classContents('
+@:classCode('
 	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener {
 		private static final long serialVersionUID = 1L;
 		public Window instance;
@@ -265,6 +265,7 @@ class Starter {
 	public function new() {
 		instance = this;
 		kha.Loader.init(new kha.java.Loader());
+		Scheduler.init();
 	}
 	
 	public function start(game: Game): Void {
@@ -283,7 +284,7 @@ class Starter {
 		startMainLoop();
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		Window window = instance.new Window();
 		window.game = game;
 		window.start();

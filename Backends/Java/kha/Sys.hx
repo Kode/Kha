@@ -5,7 +5,7 @@ class Sys {
 		return 1000;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return (int) System.currentTimeMillis();
 	')
 	public static function getTimestamp(): Int {

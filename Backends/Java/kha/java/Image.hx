@@ -1,6 +1,6 @@
 package kha.java;
 
-@:classContents('
+@:classCode('
 	public java.awt.image.BufferedImage image;
 ')
 class Image implements kha.Image {
@@ -11,22 +11,22 @@ class Image implements kha.Image {
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 
-	@:functionBody('
+	@:functionCode('
 		return image.getWidth(null);
 	')
 	public function get_width(): Int {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return image.getHeight(null);
 	')
 	public function get_height(): Int {
 		return 0;
 	}
 	
-	@:functionBody('
-		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()) {
+	@:functionCode('
+		if (x >= 0 && x < get_width() && y >= 0 && y < get_height()) {
 			int argb = image.getRGB(x, y);
 			return argb >> 24 != 0;
 		}

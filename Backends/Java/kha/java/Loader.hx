@@ -1,11 +1,12 @@
 package kha.java;
 
 import haxe.io.Bytes;
+import java.io.InputStream;
 import kha.FontStyle;
 import kha.loader.Asset;
 
 class Loader extends kha.Loader {
-	@:functionBody('
+	@:functionCode('
 		String everything = "";
 		try {
 		java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(filename));
@@ -46,7 +47,7 @@ class Loader extends kha.Loader {
 		done(image);
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		try {
 			image.image = javax.imageio.ImageIO.read(new java.io.File(filename));
 		} catch (java.io.IOException e) {
@@ -57,7 +58,7 @@ class Loader extends kha.Loader {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		java.util.List<Byte> bytes = new java.util.ArrayList<Byte>();
 		try {
 			java.io.InputStream in = new java.io.BufferedInputStream(new java.io.FileInputStream(filename));
@@ -71,9 +72,9 @@ class Loader extends kha.Loader {
 		}
 		byte[] realbytes = new byte[bytes.size()];
 		for (int i = 0; i < bytes.size(); ++i) realbytes[i] = bytes.get(i);
-		done(new kha.Blob(new haxe.io.Bytes(bytes.size(), realbytes)));
+		done.__hx_invoke1_o(0.0, new kha.Blob(new haxe.io.Bytes(bytes.size(), realbytes)));
 	')
-	override function loadBlob(filename: String, done: Blob  -> Void): Void {
+	override function loadBlob(filename: String, done: Blob -> Void): Void {
 		
 	}
 

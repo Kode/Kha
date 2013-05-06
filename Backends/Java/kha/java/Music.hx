@@ -2,7 +2,7 @@ package kha.java;
 
 import java.lang.Runnable;
 
-@:classContents('
+@:classCode('
 	java.io.File file;
 	javax.sound.sampled.AudioInputStream in;
 	javax.sound.sampled.SourceDataLine line;
@@ -18,7 +18,7 @@ class Music extends kha.Music implements Runnable {
 		init(filename);
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		try {
 			//instance = this;
 			java.io.File f = new java.io.File(filename);
@@ -52,7 +52,7 @@ class Music extends kha.Music implements Runnable {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		int readPoint = 0;
 		int bytesRead = 0;
 
@@ -105,7 +105,7 @@ class Music extends kha.Music implements Runnable {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		playing = true;
 		if (!playThread.isAlive())
 			playThread.start();
@@ -115,7 +115,7 @@ class Music extends kha.Music implements Runnable {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		playing = false;
 		line.stop();
 	')
