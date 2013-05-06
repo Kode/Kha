@@ -23,8 +23,8 @@ class ShaderPainter extends Painter {
 	static var bufferSize: Int = 100;
 	var bufferIndex: Int;
 	var lastTexture: Texture;
-	var tx: Float;
-	var ty: Float;
+	var tx: Float = 0;
+	var ty: Float = 0;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
 	private var projectionMatrix: Array<Float>;
@@ -32,7 +32,6 @@ class ShaderPainter extends Painter {
 	
 	public function new(width: Int, height: Int) {
 		initShaders();
-		
 		initBuffers();
 
 		setScreenSize(width, height);
@@ -231,6 +230,7 @@ class ShaderPainter extends Painter {
 	public override function begin() : Void {
 		//gl.clearColor(0, 0, 0, 255);
 		//gl.clear(gl.COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+		translate(0, 0);
 	}
 	
 	public override function end() : Void {
