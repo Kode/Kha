@@ -5,28 +5,28 @@ import system.windows.media.imaging.BitmapImage;
 class Image implements kha.Image {
 	public var image : BitmapImage;
 	
-	@:functionBody('
+	@:functionCode('
 		image = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(filename, System.UriKind.Relative));
 	')
 	public function new(filename : String) {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		return image.PixelWidth;
 	')
 	public function getWidth() : Int {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return image.PixelHeight;
 	')
 	public function getHeight() : Int {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		if (x < 0 || y < 0 || x >= image.PixelWidth || y >= image.PixelHeight)
             return false;
 		

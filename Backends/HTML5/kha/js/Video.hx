@@ -1,6 +1,6 @@
 package kha.js;
 
-import js.Lib;
+import js.Browser;
 
 class Video extends kha.Video {
 	public var element : Dynamic;
@@ -8,7 +8,7 @@ class Video extends kha.Video {
 	public function new(filename : String) {
 		super();
 		
-		element = Lib.document.createElement("video");
+		element = Browser.document.createElement("video");
 		element.preload = "auto";
 		
 		if (!element.canPlayType("video/webm")) element.src = filename + ".mp4";

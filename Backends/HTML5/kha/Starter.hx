@@ -5,7 +5,7 @@ import kha.Game;
 import kha.Key;
 import kha.Loader;
 import js.Lib;
-import js.Dom;
+import js.Browser;
 
 class Starter {
 	static var game : Game;
@@ -55,7 +55,7 @@ class Starter {
 	public function loadFinished() {
 		Loader.the.initProject();
 		
-		var canvas : Dynamic = Lib.document.getElementById("khanvas");
+		var canvas : Dynamic = Browser.document.getElementById("khanvas");
 		
 		var widthTransform : Float = canvas.width / Loader.the.width;
 		var heightTransform : Float = canvas.height / Loader.the.height;
@@ -81,14 +81,14 @@ class Starter {
 			canvas.getContext("2d").scale(transform, transform);
 		}
 		
-		var window : Dynamic = Lib.window;
+		var window: Dynamic = Browser.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
 		
 		function animate(timestamp) {
-			var window : Dynamic = Lib.window;
+			var window: Dynamic = Browser.window;
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 			
@@ -128,20 +128,20 @@ class Starter {
 		canvas.focus();
 		
 		// disable context menu
-		canvas.oncontextmenu = function(event : js.Event) { event.stopPropagation(); event.preventDefault(); }
+		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
 		
 		//Lib.document.onmousedown = function(event : js.Event) {
-		canvas.onmousedown = function(event : js.Event) {
+		canvas.onmousedown = function(event: Dynamic) {
 			game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmouseup = function(event : js.Event) {
-		canvas.onmouseup = function(event : js.Event) {
+		canvas.onmouseup = function(event: Dynamic) {
 			game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmousemove = function(event : js.Event) {
-		canvas.onmousemove = function(event : js.Event) {
+		canvas.onmousemove = function(event: Dynamic) {
 			game.mouseMove(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 
@@ -154,7 +154,7 @@ class Starter {
 		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
 		
-		Lib.window.onunload = function(event : js.Event) {
+		Browser.window.onunload = function(event: Dynamic) {
 			game.onClose();
 		}
 		
@@ -164,7 +164,7 @@ class Starter {
 		game.loadFinished();
 	}
 	
-	static function keyDown(event : js.Event) {
+	static function keyDown(event: Dynamic) {
 		trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
 		
 		event.stopPropagation();
@@ -223,7 +223,7 @@ class Starter {
 		}
 	}
 	
-	static function keyPress(event : js.Event ) {
+	static function keyPress(event: Dynamic) {
 		//trace ("keyPress(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
 		
 		event.preventDefault();
@@ -252,7 +252,7 @@ class Starter {
 		}
 	}
 	
-	static function keyUp(event : js.Event) {
+	static function keyUp(event: Dynamic) {
 		//trace ("keyUp(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
 		
 		event.preventDefault();

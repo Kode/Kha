@@ -1,6 +1,7 @@
 package kha.js.graphics;
 
 import kha.graphics.VertexStructure;
+import kha.graphics.VertexData;
 
 class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var buffer: Dynamic;

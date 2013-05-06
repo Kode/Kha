@@ -29,7 +29,7 @@ class Video extends kha.Video {
 		player.Stop();
 	}
 
-	@:functionBody('
+	@:functionCode('
 		if (player.NaturalDuration.HasTimeSpan)
 		return Math.round(player.NaturalDuration.TimeSpan.TotalMilliseconds);
 		else return int.MaxValue;
@@ -38,7 +38,7 @@ class Video extends kha.Video {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return Math.round(player.Position.TotalMilliseconds);
 	')
 	public override function getCurrentPos() : Int {

@@ -1,16 +1,17 @@
 package kha.js;
 
-import js.Dom;
+import js.Browser;
+import js.html.ImageElement;
 
 class Image implements kha.Image {
-	public var image : js.Image;
+	public var image : ImageElement;
 	public var tex : Dynamic;
 	
 	static var context : Dynamic;
 	var data : Dynamic;
 	
 	public static function init() {
-		var canvas : Dynamic = js.Lib.document.createElement("canvas");
+		var canvas: Dynamic = js.Browser.document.createElement("canvas");
 		if (canvas != null) {
 			context = canvas.getContext("2d");
 			canvas.width = 2048;
@@ -18,7 +19,7 @@ class Image implements kha.Image {
 		}
 	}
 	
-	public function new(image : js.Image) {
+	public function new(image: ImageElement) {
 		this.image = image;
 	}
 	

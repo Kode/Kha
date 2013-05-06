@@ -3,7 +3,7 @@ package kha.js.graphics;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexShader;
 
-class Shader implements VertexShader, implements FragmentShader{
+class Shader implements VertexShader implements FragmentShader{
 	public var source: String;
 	public var type: Dynamic;
 	public var shader: Dynamic;

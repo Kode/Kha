@@ -1,15 +1,16 @@
 package kha.js;
 
 import js.Boot;
+import js.html.ImageElement;
 import kha.FontStyle;
 import kha.Blob;
 import kha.Starter;
 import kha.loader.Asset;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import js.Dom;
+import js.Browser;
 import js.Lib;
-import js.XMLHttpRequest;
+import js.html.XMLHttpRequest;
 
 class Loader extends kha.Loader {
 	public function new() {
@@ -53,9 +54,9 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadImage(asset: Asset) {
-		var img : js.Image = cast Lib.document.createElement("img");
+		var img: ImageElement = Browser.document.createImageElement();
 		img.src = asset.file;
-		img.onload = function(event : Event) {
+		img.onload = function(event: Dynamic) {
 			images.set(asset.name, new kha.js.Image(img));
 			--numberOfFiles;
 			checkComplete();
@@ -111,14 +112,14 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadURL(url: String): Void {
-		Lib.window.open(url);
+		Browser.window.open(url, "URL");
 	}
 	
 	override public function setNormalCursor() {
-		Lib.document.getElementById("khanvas").style.cursor = "default";
+		Browser.document.getElementById("khanvas").style.cursor = "default";
 	}
 
 	override public function setHandCursor() {
-		Lib.document.getElementById("khanvas").style.cursor = "pointer";
+		Browser.document.getElementById("khanvas").style.cursor = "pointer";
 	}
 }

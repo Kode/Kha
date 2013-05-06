@@ -2,7 +2,7 @@ package kha.wpf;
 
 import kha.FontStyle;
 
-@:classContents('
+@:classCode('
 	private System.Windows.Media.FormattedText getFormat(string text = "ABC") {
 		System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text,
 				System.Globalization.CultureInfo.GetCultureInfo("en-us"), System.Windows.FlowDirection.LeftToRight,
@@ -24,7 +24,7 @@ class Font implements kha.Font {
 		this.size = size;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return getFormat().Height;
 	')
 	public function getHeight() : Float {
@@ -39,14 +39,14 @@ class Font implements kha.Font {
 		return stringWidth(ch.substr(offset, length));
 	}
 
-	@:functionBody('
+	@:functionCode('
 		return getFormat(str).WidthIncludingTrailingWhitespace;
 	')
 	public function stringWidth(str : String) : Float {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return getFormat().Baseline;
 	')
 	public function getBaselinePosition() : Float {
