@@ -10,7 +10,7 @@ class FrameCountTimer {
 	public function new(miliseconds: Int, repeating: Bool) {
 		this.miliseconds = miliseconds;
 		this.repeating = repeating;
-		Game.the.registerTimer(this);
+		register();
 	}
 	
 	public function setMiliseconds(miliseconds: Int) {
@@ -38,6 +38,9 @@ class FrameCountTimer {
 		stop();
 	}
 	
+	public function register() {
+		Game.the.registerTimer(this);
+	}
 	public function unregister() {
 		Game.the.removeTimer(this);
 	}
