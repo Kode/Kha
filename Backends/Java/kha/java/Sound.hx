@@ -1,4 +1,5 @@
 package kha.java;
+import kha.SoundChannel;
 
 @:classContents('
 	class SoundThread implements Runnable {
@@ -119,9 +120,10 @@ class Sound extends kha.Sound {
 	
 	@:functionBody('
 		thread.play(index);
+		return null;
 	')
-	public function play() : Void {
-		
+	override public function play(): SoundChannel {
+		return null;
 	}
 	
 	@:functionBody('

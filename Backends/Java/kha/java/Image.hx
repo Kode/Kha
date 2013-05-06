@@ -7,18 +7,21 @@ class Image implements kha.Image {
 	public function new(filename: String) {
 		
 	}
+	
+	public var width(get, null): Int;
+	public var height(get, null): Int;
 
 	@:functionBody('
 		return image.getWidth(null);
 	')
-	public function getWidth(): Int {
+	public function get_width(): Int {
 		return 0;
 	}
 	
 	@:functionBody('
 		return image.getHeight(null);
 	')
-	public function getHeight(): Int {
+	public function get_height(): Int {
 		return 0;
 	}
 	

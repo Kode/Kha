@@ -111,7 +111,7 @@ class Music extends kha.Music implements Runnable {
 			playThread.start();
 		line.start();
 	')
-	public function play() : Void {
+	override public function play() : Void {
 		
 	}
 	
@@ -119,7 +119,7 @@ class Music extends kha.Music implements Runnable {
 		playing = false;
 		line.stop();
 	')
-	public function stop() : Void {
+	override public function stop() : Void {
 		
 	}
 }

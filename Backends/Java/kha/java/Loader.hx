@@ -5,13 +5,6 @@ import kha.FontStyle;
 import kha.loader.Asset;
 
 class Loader extends kha.Loader {
-	
-	override function loadXml(asset: Asset) : Void {
-		xmls.set(asset.name, Xml.parse(loadText(asset.file)));
-		--numberOfFiles;
-		checkComplete();
-	}
-	
 	@:functionBody('
 		String everything = "";
 		try {
@@ -39,24 +32,18 @@ class Loader extends kha.Loader {
 		return "";
 	}
 
-	override function loadMusic(asset: Asset): Void {
-		musics.set(asset.name, new Music(asset.file + ".wav"));
-		--numberOfFiles;
-		checkComplete();
+	override function loadMusic(filename: String, done: kha.Music -> Void): Void {
+		done(new Music(filename + ".wav"));
 	}
 
-	override function loadSound(asset: Asset): Void {
-		sounds.set(asset.name, new Sound(asset.file + ".wav"));
-		--numberOfFiles;
-		checkComplete();
+	override function loadSound(filename: String, done: kha.Sound -> Void): Void {
+		done(new Sound(filename + ".wav"));
 	}
 
-	override function loadImage(asset: Asset): Void {
-		var image = new kha.java.Image(asset.file);
-		loadRealImage(asset.file, image);
-		images.set(asset.name, image);
-		--numberOfFiles;
-		checkComplete();
+	override function loadImage(filename: String, done: Image -> Void): Void {
+		var image = new kha.java.Image(filename);
+		loadRealImage(filename, image);
+		done(image);
 	}
 	
 	@:functionBody('
@@ -73,7 +60,7 @@ class Loader extends kha.Loader {
 	@:functionBody('
 		java.util.List<Byte> bytes = new java.util.ArrayList<Byte>();
 		try {
-			java.io.InputStream in = new java.io.BufferedInputStream(new java.io.FileInputStream(asset.file));
+			java.io.InputStream in = new java.io.BufferedInputStream(new java.io.FileInputStream(filename));
 			for (int c; (c = in.read()) != -1;) {
 				bytes.add((byte)c);
 			}
@@ -84,11 +71,9 @@ class Loader extends kha.Loader {
 		}
 		byte[] realbytes = new byte[bytes.size()];
 		for (int i = 0; i < bytes.size(); ++i) realbytes[i] = bytes.get(i);
-		blobs.set(asset.name, new kha.Blob(new haxe.io.Bytes(bytes.size(), realbytes)));
-		--numberOfFiles;
-		checkComplete();
+		done(new kha.Blob(new haxe.io.Bytes(bytes.size(), realbytes)));
 	')
-	override function loadBlob(asset: Asset): Void {
+	override function loadBlob(filename: String, done: Blob  -> Void): Void {
 		
 	}
 
