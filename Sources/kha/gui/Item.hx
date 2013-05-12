@@ -14,9 +14,9 @@ class Item {
 	
 	public var y: Float = 0;
 	
-	public var width(getWidth, setWidth): Float;
+	public var width(get, set): Float;
 	
-	public var height(getHeight, setHeight): Float;
+	public var height(get, set): Float;
 	
 	public var clipping = false;
 	
@@ -25,20 +25,20 @@ class Item {
 	private var myWidth: Float = 100;
 	private var myHeight: Float = 100;
 	
-	private function getWidth(): Float {
+	private function get_width(): Float {
 		return myWidth;
 	}
 	
-	private function setWidth(value: Float): Float {
+	private function set_width(value: Float): Float {
 		myWidth = value;
 		return myWidth;
 	}
 	
-	private function getHeight(): Float {
+	private function get_height(): Float {
 		return myHeight;
 	}
 	
-	private function setHeight(value: Float): Float {
+	private function set_height(value: Float): Float {
 		myHeight = value;
 		return myHeight;
 	}

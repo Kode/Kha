@@ -34,14 +34,14 @@ class TextItem extends Item {
 		defaultsize = size;
 	}
 
-	override private function getWidth(): Float {
+	override private function get_width(): Float {
 		if (myWidth > 0) return myWidth;
 		//if (fonts.find(pair<Text, int>(myfont, mysize)) == fonts.end()) fonts[pair<Text, int>(myfont, mysize)] = new Font(myfont, mysize);
 		//return fonts[pair<Text, int>(myfont, mysize)]->width(mytext);
 		return 50;
 	}
 
-	override private function getHeight(): Float {
+	override private function get_height(): Float {
 		//if (mywidth > 0) {
 		//	if (fonts.find(pair<Text, int>(myfont, mysize)) == fonts.end()) fonts[pair<Text, int>(myfont, mysize)] = new Font(myfont, mysize);
 		//	return fonts[pair<Text, int>(myfont, mysize)]->height(mytext, static_cast<real>(mywidth));
@@ -58,13 +58,13 @@ class TextItem extends Item {
 		painter.drawString(text, 0, 0);
 	}
 
-	public var text(getText, setText): String;
+	public var text(get, set): String;
 	
-	private function getText(): String {
+	private function get_text(): String {
 		return mytext;
 	}
 	
-	private function setText(text: String): String {
+	private function set_text(text: String): String {
 		mytext = text;
 		dirty = true;
 		return mytext;
