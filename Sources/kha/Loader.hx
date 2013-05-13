@@ -64,6 +64,9 @@ class Loader {
 	}
 	
 	public function getSound(name : String) : Sound {
+		if (name != "" && !sounds.exists(name)) {
+			trace("Sound '" + name + "' not found");
+		}
 		return sounds.get(name);
 	}
 	
@@ -252,8 +255,13 @@ class Loader {
 	}
 	
 	function loadStarted(numberOfFiles: Int) {
-		this.loadcount = numberOfFiles;
-		this.numberOfFiles = numberOfFiles;
+		if (numberOfFiles > 0) {
+			this.loadcount = numberOfFiles;
+			this.numberOfFiles = numberOfFiles;
+		} else {
+			this.loadcount = 1;
+			this.numberOfFiles = 0;
+		}
 	}
 	
 	private function loadImage(asset: Asset): Void { }
