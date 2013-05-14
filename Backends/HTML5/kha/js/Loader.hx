@@ -64,18 +64,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadVideo(asset: Asset): Void {
-		//trace ("loadVideo( " + filename + " )");
 		var video = new Video(asset.file);
-		//video.element.onloadstart = trace ("onloadstart( " + video.element.src + " )");
-		video.element.onerror = function(ex : Dynamic) {
-			Lib.alert("Error loading " + video.element.src);
-		}
-		video.element.oncanplaythrough = function () {
-			//trace ("loaded " + video.element.src);
-			video.element.oncanplaythrough = null;
-			--numberOfFiles;
-			checkComplete();
-		};
 		videos.set(asset.name, video);
 	}
 	
@@ -121,5 +110,13 @@ class Loader extends kha.Loader {
 
 	override public function setHandCursor() {
 		Browser.document.getElementById("khanvas").style.cursor = "pointer";
+	}
+	
+	/**
+	 * called by video when finished loading
+	 */
+	public function finishAsset(): Void {
+		--numberOfFiles;
+		checkComplete();
 	}
 }
