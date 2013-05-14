@@ -37,20 +37,8 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadSound(asset: Asset) {
-		//trace ("loadSound " + filename);
 		var sound = new Sound(asset.file);
-		//sound.element.onloadstart = trace ("onloadstart( " + element.src + " )");
-		sound.element.onerror = function(ex: Dynamic) {
-			Lib.alert("Error loading " + sound.element.src);
-		}
-		function canPlayThroughListener() {
-			//trace ("loaded " + sound.element.src); 
-			sounds.set(asset.name, sound);
-			sound.element.removeEventListener("canplaythrough", canPlayThroughListener,false);
-			--numberOfFiles; 
-			checkComplete(); 
-		}
-		sound.element.addEventListener("canplaythrough", canPlayThroughListener, false);
+		sounds.set(asset.name, sound);
 	}
 	
 	override function loadImage(asset: Asset) {

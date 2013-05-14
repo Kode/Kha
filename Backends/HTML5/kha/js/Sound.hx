@@ -1,31 +1,64 @@
 package kha.js;
 
 import js.Browser;
+import js.html.AudioElement;
+import js.html.ErrorEvent;
+import js.html.Event;
+import js.html.MediaError;
+
+using StringTools;
 
 class Sound extends kha.Sound {
-	public var element : Dynamic;
+	static var extensions : Array<String> = null;
+	
+	public var element : AudioElement;
 	
 	public function new(filename : String) {
 		super();
 		
-		element = Browser.document.createElement("audio");
+		element = cast Browser.document.createElement("audio");
+		
+		if (extensions == null) {
+			extensions = new Array();
+			if ( element.canPlayType("audio/ogg") != "" ) {
+				extensions.push(".ogg");
+			}
+			if ( element.canPlayType("audio/mp4") != "" ) {
+				extensions.push(".mp4");
+			}
+		}
+		
 		element.preload = "auto";
 		
-		if (!element.canPlayType("audio/mp4")) element.src = filename + ".ogg";
-		else element.src = filename + ".mp4";
+		element.addEventListener("error", errorListener, false);
+		element.addEventListener("canplaythrough", canPlayThroughListener, false);
+		
+		element.src = filename + extensions[0];
 	}
 	
 	override public function play() : Void {
-		element.play();
+		try {
+			element.play();
+		} catch ( e : Dynamic ) {
+			trace ( e );
+		}
 	}
 	
 	override public function pause() : Void {
-		element.pause();
+		try {
+			element.pause();
+		} catch ( e : Dynamic ) {
+			trace ( e );
+		}
 	}
 	
 	override public function stop() : Void {
-		element.pause();
-		element.currentTime = 0;
+		try {
+			element.pause();
+			element.currentTime = 0;
+		} catch (e : Dynamic) {
+			trace ( e );
+		}
 	}
 	
 	override public function getCurrentPos() : Int {
@@ -33,6 +66,46 @@ class Sound extends kha.Sound {
 	}
 	
 	override public function getLength() : Int {
-		return Math.floor(element.duration * 1000); // Miliseconds
+		if ( Math.isFinite(element.duration) ) {
+			return Math.floor(element.duration * 1000); // Miliseconds
+		} else {
+			return -1;
+		}
+	}
+	
+	function errorListener(eventInfo : ErrorEvent) : Void {
+		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+			for ( i in 0 ... extensions.length - 1 ) {
+				var ext = extensions[i];
+				if ( element.src.endsWith(extensions[i]) ) {
+					// try loading with next extension:
+					element.src = element.src.substr(0, element.src.length - extensions[i].length) + extensions[i + 1];
+					return;
+				}
+			}
+		}
+		
+		{
+			var str = "";
+			var i = extensions.length - 2;
+			while ( i >= 0 ) {
+				str = "|" + extensions[i];
+			}
+			
+			trace("Error loading " + element.src + str);
+		}
+		
+		finishAsset();
+	}
+	
+	function canPlayThroughListener(eventInfo : Event) : Void {
+		finishAsset();
+	}
+	
+	function finishAsset() {
+		element.removeEventListener("error", errorListener, false);
+		element.removeEventListener("canplaythrough", canPlayThroughListener,false);
+		var l : Loader = cast kha.Loader.the;
+		l.finishAsset();
 	}
 }

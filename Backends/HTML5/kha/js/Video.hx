@@ -1,6 +1,7 @@
 package kha.js;
 
 import js.Browser;
+import js.html.ErrorEvent;
 import js.html.Event;
 import js.html.MediaError;
 import js.html.VideoElement;
@@ -8,32 +9,54 @@ import js.html.VideoElement;
 using StringTools;
 
 class Video extends kha.Video {
-	static var extensions = [".webm", ".mp4"];
+	static var extensions : Array<String> = null;
 	public var element : VideoElement;
 	
 	public function new(filename : String) {
 		super();
 		
 		element = cast(Browser.document.createElement("video"), VideoElement);
-		element.preload = "auto";
+		
+		if (extensions == null) {
+			extensions = new Array();
+			if ( element.canPlayType("video/webm") != "" ) {
+				extensions.push(".webm");
+			}
+			if ( element.canPlayType("video/mp4") != "" ) {
+				extensions.push(".mp4");
+			}
+		}
 		
 		element.addEventListener("error", errorListener, false);
 		element.addEventListener("canplaythrough", canPlayThroughListener, false);
 		
+		element.preload = "auto";
 		element.src = filename + extensions[0];
 	}
 	
 	override public function play() : Void {
-		element.play();
+		try {
+			element.play();
+		} catch ( e : Dynamic ) {
+			trace ( e );
+		}
 	}
 	
 	override public function pause() : Void {
-		element.pause();
+		try {
+			element.pause();
+		} catch ( e : Dynamic ) {
+			trace ( e );
+		}
 	}
 	
 	override public function stop() : Void {
-		element.pause();
-		element.currentTime = 0;
+		try {
+			element.pause();
+			element.currentTime = 0;
+		} catch ( e : Dynamic ) {
+			trace ( e );
+		}
 	}
 	
 	override public function getCurrentPos() : Int {
@@ -41,10 +64,14 @@ class Video extends kha.Video {
 	}
 	
 	override public function getLength() : Int {
-		return Math.floor(element.duration * 1000); // Miliseconds
+		if ( Math.isFinite(element.duration) ) {
+			return Math.floor(element.duration * 1000); // Miliseconds
+		} else {
+			return -1;
+		}
 	}
 	
-	function errorListener(eventInfo : Event) : Void {
+	function errorListener(eventInfo : ErrorEvent) : Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
 			for ( i in 0 ... extensions.length - 1 ) {
 				var ext = extensions[i];
@@ -58,8 +85,9 @@ class Video extends kha.Video {
 		
 		{
 			var str = "";
-			for ( i in extensions.length - 2 ... 1 ) {
-				str = "/" + extensions[i];
+			var i = extensions.length - 2;
+			while ( i >= 0 ) {
+				str = "|" + extensions[i];
 			}
 			
 			trace("Error loading " + element.src + str);
@@ -68,7 +96,7 @@ class Video extends kha.Video {
 		finishAsset();
 	}
 	
-	function canPlayThroughListener(eventInfo : Dynamic) : Void {
+	function canPlayThroughListener(eventInfo : Event) : Void {
 		finishAsset();
 	}
 	
