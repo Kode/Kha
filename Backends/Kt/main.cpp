@@ -45,7 +45,42 @@ namespace {
 		}
 	};
 
+	bool shiftDown = false;
+
 	void keyDown(Kt::KeyEvent* event) {
+		if (event->isChar()) {
+			if (shiftDown) Starter_obj::pushChar((int)Kt::Char(event->tochar()).toUpper().value);
+			else Starter_obj::pushChar((int)Kt::Char(event->tochar()).toLower().value);
+		}
+		else {
+			switch (event->keycode()) {
+			case Kt::Key_Backspace:
+				Starter_obj::backspaceDown();
+				break;
+			case Kt::Key_Tab:
+				Starter_obj::tabDown();
+				break;
+			case Kt::Key_Enter:
+				Starter_obj::enterDown();
+				break;
+			case Kt::Key_Shift:
+				shiftDown = true;
+				Starter_obj::shiftDown();
+				break;
+			case Kt::Key_Control:
+				Starter_obj::controlDown();
+				break;
+			case Kt::Key_Alt:
+				Starter_obj::altDown();
+				break;
+			case Kt::Key_Escape:
+				Starter_obj::escapeDown();
+				break;
+			case Kt::Key_Delete:
+				Starter_obj::deleteDown();
+				break;
+			}
+		}
 		switch (event->keycode()) {
 		case Kt::Key_Up:
 			Starter_obj::pushUp();
@@ -66,6 +101,39 @@ namespace {
 	}
 
 	void keyUp(Kt::KeyEvent* event) {
+		if (event->isChar()) {
+			if (shiftDown) Starter_obj::releaseChar((int)Kt::Char(event->tochar()).toUpper().value);
+			else Starter_obj::releaseChar((int)Kt::Char(event->tochar()).toLower().value);
+		}
+		else {
+			switch (event->keycode()) {
+			case Kt::Key_Backspace:
+				Starter_obj::backspaceUp();
+				break;
+			case Kt::Key_Tab:
+				Starter_obj::tabUp();
+				break;
+			case Kt::Key_Enter:
+				Starter_obj::enterUp();
+				break;
+			case Kt::Key_Shift:
+				shiftDown = false;
+				Starter_obj::shiftUp();
+				break;
+			case Kt::Key_Control:
+				Starter_obj::controlUp();
+				break;
+			case Kt::Key_Alt:
+				Starter_obj::altUp();
+				break;
+			case Kt::Key_Escape:
+				Starter_obj::escapeUp();
+				break;
+			case Kt::Key_Delete:
+				Starter_obj::deleteUp();
+				break;
+			}
+		}
 		switch (event->keycode()) {
 		case Kt::Key_Up:
 			Starter_obj::releaseUp();
@@ -108,10 +176,10 @@ int ktmain(const Kt::List<Kt::Text>& params) {
 		return 1;
 	}
 
-	Kt::Application app(params, 1920, 1080, false, "Kha", false);
+	Kt::Application app(params, 1024, 768, false, "Kha", false);
 	Kt::Sound::init();
 
-	Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
+	//Kt::System::ChangeResolution(kha::Loader_obj::the->width, kha::Loader_obj::the->height, false);
 	Kt::System::setTitle(kha::Loader_obj::the->name.c_str());
 	Kt::System::showWindow();
 	

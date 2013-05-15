@@ -76,6 +76,78 @@ class Starter {
 		game.buttonUp(Button.BUTTON_1);
 	}
 	
+	public static function pushChar(c: Int): Void {
+		game.keyDown(Key.CHAR, String.fromCharCode(c));
+	}
+	
+	public static function releaseChar(c: Int): Void {
+		game.keyUp(Key.CHAR, String.fromCharCode(c));
+	}
+
+	public static function backspaceDown(): Void {
+		game.keyDown(Key.BACKSPACE, "");
+	}
+	
+	public static function backspaceUp(): Void {
+		game.keyUp(Key.BACKSPACE, "");
+	}
+	
+	public static function tabDown(): Void {
+		game.keyDown(Key.TAB, "");
+	}
+	
+	public static function tabUp(): Void {
+		game.keyUp(Key.TAB, "");
+	}
+	
+	public static function enterDown(): Void {
+		game.keyDown(Key.ENTER, "");
+	}
+	
+	public static function enterUp(): Void {
+		game.keyUp(Key.ENTER, "");
+	}
+	
+	public static function shiftDown(): Void {
+		game.keyDown(Key.SHIFT, "");
+	}
+	
+	public static function shiftUp(): Void {
+		game.keyUp(Key.SHIFT, "");
+	}
+	
+	public static function controlDown(): Void {
+		game.keyDown(Key.CTRL, "");
+	}
+	
+	public static function controlUp(): Void {
+		game.keyUp(Key.CTRL, "");
+	}
+	
+	public static function altDown(): Void {
+		game.keyDown(Key.ALT, "");
+	}
+	
+	public static function altUp(): Void {
+		game.keyUp(Key.ALT, "");
+	}
+	
+	public static function escapeDown(): Void {
+		game.keyDown(Key.ESC, "");
+	}
+	
+	public static function escapeUp(): Void {
+		game.keyUp(Key.ESC, "");
+	}
+	
+	public static function deleteDown(): Void {
+		game.keyDown(Key.DEL, "");
+	}
+	
+	public static function deleteUp(): Void {
+		game.keyUp(Key.DEL, "");
+	}
+	
 	public static function mouseDown(x: Int, y: Int) : Void {
 		game.mouseDown(x, y);
 	}
