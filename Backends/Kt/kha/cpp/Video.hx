@@ -12,7 +12,7 @@ class Video extends kha.Video {
 		init(filename + ".webm");
 	}
 	
-	@:functionCode('video = new Kt::Video(Kt::Text(filename.c_str()));')
+	@:functionCode('video = new Kt::Video(Kt::Text(filename.__WCStr()));')
 	private function init(filename: String) {
 		
 	}
