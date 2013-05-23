@@ -173,18 +173,15 @@ class Starter {
 	}
 	
 	function mouseDownHandler(event: MouseEvent): Void {
-		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		//game.mouseDown(Std.int(xy.x), Std.int(xy.y));
+		game.mouseDown(Std.int(event.stageX), Std.int(event.stageY));
 	}
 	
 	function mouseUpHandler(event: MouseEvent): Void {
-		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		//game.mouseUp(Std.int(xy.x), Std.int(xy.y));
+		game.mouseUp(Std.int(event.stageX), Std.int(event.stageY));
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {
-		//var xy = painter.calculateGamePosition(event.stageX, event.stageY);
-		//game.mouseMove(Std.int(xy.x), Std.int(xy.y));
+		game.mouseMove(Std.int(event.stageX), Std.int(event.stageY));
 	}
 	
 	function resizeHandler(event: Event): Void {
