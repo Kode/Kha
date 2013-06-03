@@ -3,6 +3,7 @@ package kha.flash;
 import flash.net.NetStream;
 import kha.Blob;
 import kha.FontStyle;
+import kha.Game;
 import kha.loader.Asset;
 import kha.Starter;
 import flash.display.Bitmap;
@@ -133,6 +134,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function quit() : Void {
+		Game.the.onClose();
 		flash.Lib.fscommand("quit");
 		//flash.system.FSCommand()._fscommand("quit","");
 	}
