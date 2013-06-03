@@ -46,10 +46,10 @@ class FrameCountTimer {
 	}
 	
 	public function update() {
-		currentTimerValue = Std.int(count / Game.FPS);
-		
 		if (!active)
 			return;
+		
+		currentTimerValue = Std.int(count / Game.FPS);
 		
 		count ++;
 		if ((count / Game.FPS) > miliseconds / 1000) {
