@@ -49,9 +49,9 @@ class Program implements kha.graphics.Program {
 	
 	@:functionCode('
 		Kt::VertexStructure structure2;
-		for (int i = 0; i < structure->elements->size(); ++i) {
+		for (int i = 0; i < structure->size(); ++i) {
 			Kt::VertexData data;
-			switch (structure->elements[i]->data->index) {
+			switch (structure->get(i)->data->index) {
 			case 0:
 				data = Kt::Float2VertexData;
 				break;
@@ -60,7 +60,7 @@ class Program implements kha.graphics.Program {
 				break;
 			}
 			Kt::VertexType type;
-			switch (structure->elements[i]->type->index) {
+			switch (structure->get(i)->type->index) {
 			case 0:
 				type = Kt::PositionVertexType;
 				break;
@@ -71,7 +71,7 @@ class Program implements kha.graphics.Program {
 				type = Kt::TexCoordVertexType;
 				break;
 			}
-			structure2.add(Kt::Text(structure->elements[i]->name), data, type);
+			structure2.add(Kt::Text(structure->get(i)->name), data, type);
 		}
 		program->link(structure2);
 	')

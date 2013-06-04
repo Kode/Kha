@@ -24,9 +24,9 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	
 	@:functionCode("
 		Kt::VertexStructure structure2;
-		for (int i = 0; i < structure->elements->size(); ++i) {
+		for (int i = 0; i < structure->size(); ++i) {
 			Kt::VertexData data;
-			switch (structure->elements[i]->data->index) {
+			switch (structure->get(i)->data->index) {
 			case 0:
 				data = Kt::Float2VertexData;
 				break;
@@ -35,7 +35,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 				break;
 			}
 			Kt::VertexType type;
-			switch (structure->elements[i]->type->index) {
+			switch (structure->get(i)->type->index) {
 			case 0:
 				type = Kt::PositionVertexType;
 				break;
@@ -46,7 +46,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 				type = Kt::TexCoordVertexType;
 				break;
 			}
-			structure2.add(Kt::Text(structure->elements[i]->name), data, type);
+			structure2.add(Kt::Text(structure->get(i)->name), data, type);
 		}
 		buffer = Kt::Graphics::createVertexBuffer(vertexCount, structure2);
 	")

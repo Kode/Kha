@@ -10,4 +10,12 @@ class VertexStructure {
 	public function add(name: String, data: VertexData, type: VertexType) {
 		elements.push(new VertexElement(name, data, type));
 	}
+	
+	public function size(): Int {
+		return elements.length;
+	}
+	
+	public function get(index: Int): VertexElement {
+		return elements[index];
+	}
 }
