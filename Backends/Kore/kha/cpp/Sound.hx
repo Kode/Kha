@@ -3,6 +3,7 @@ package kha.cpp;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Audio/Sound.h>
+#include <Kore/Audio/Mixer.h>
 ')
 
 @:headerClassCode("Kore::Sound* sound;")
@@ -17,7 +18,7 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	//@:functionCode("sound->play(); return null();")
+	@:functionCode("Kore::Mixer::play(sound); return null();")
 	override public function play(): kha.SoundChannel {
 		return null;
 	}
