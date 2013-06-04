@@ -1,0 +1,80 @@
+package kha.cpp.graphics;
+
+import kha.graphics.VertexData;
+import kha.graphics.VertexElement;
+import kha.graphics.VertexStructure;
+import kha.graphics.VertexType;
+
+@:headerCode('
+#include <Kore/pch.h>
+#include <Kore/Graphics/Graphics.h>
+')
+
+@:headerClassCode("Kore::VertexBuffer* buffer;")
+class VertexBuffer implements kha.graphics.VertexBuffer {
+	private var data: Array<Float>;
+	
+	public function new(vertexCount: Int, structure: VertexStructure) {
+		init(vertexCount, structure);
+		data = new Array<Float>();
+		data[Std.int(stride() / 4) * count() - 1] = 0;
+		
+		var a: VertexElement = new VertexElement("a", VertexData.Float2, VertexType.Color); //to generate include
+	}
+	
+	@:functionCode("
+		Kore::VertexStructure structure2;
+		for (int i = 0; i < structure->size(); ++i) {
+			Kore::VertexData data;
+			switch (structure->get(i)->data->index) {
+			case 0:
+				data = Kore::Float2VertexData;
+				break;
+			case 1:
+				data = Kore::Float3VertexData;
+				break;
+			}
+			structure2.add(structure->get(i)->name, data);
+		}
+		buffer = new Kore::VertexBuffer(vertexCount, structure2);
+	")
+	private function init(vertexCount: Int, structure: VertexStructure) {
+		
+	}
+	
+	public function lock(?start: Int, ?count: Int): Array<Float> {
+		return data;
+	}
+	
+	@:functionCode("
+		float* vertices = buffer->lock();
+		for (int i = 0; i < buffer->count() * buffer->stride() / 4; ++i) {
+			vertices[i] = data[i];
+		}
+		buffer->unlock();
+	")
+	public function unlock(): Void {
+		
+	}
+	
+	@:functionCode("
+		return buffer->stride();
+	")
+	public function stride(): Int {
+		return 0;
+	}
+	
+	@:functionCode("
+		return buffer->count();
+	")
+	public function count(): Int {
+		return 0;
+	}
+	
+	@:functionCode("
+		buffer->set();
+	")
+	public function set(): Void {
+		
+	}
+}
