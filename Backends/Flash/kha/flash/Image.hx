@@ -103,6 +103,10 @@ class Image implements kha.graphics.Texture {
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
 				for (y in 0...texHeight) for (x in 0...texWidth) {
 					var value = bytes.get(y * texWidth + x);
+					if (value != 0) {
+						var a = 3;
+						++a;
+					}
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, 0);
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, 0);
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, 0);
