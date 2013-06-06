@@ -1,5 +1,8 @@
 package kha.flash;
 
+import flash.utils.ByteArray;
+import haxe.io.Bytes;
+import kha.graphics.TextureFormat;
 import kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -9,22 +12,38 @@ import flash.display3D.textures.Texture;
 import flash.geom.Matrix;
 
 class Image implements kha.graphics.Texture {
-	static var maxTextureControll: List<Image> = new List<Image>();
-	
-	public var image: Bitmap;
 	private var tex: Texture;
+	private var myWidth: Int;
+	private var myHeight: Int;
 	private var texWidth: Int;
 	private var texHeight: Int;
+	private var format: TextureFormat;
+	
+	public function new(width: Int, height: Int, format: TextureFormat) {
+		myWidth = width;
+		myHeight = height;
+		texWidth = upperPowerOfTwo(Std.int(myWidth));
+		texHeight = upperPowerOfTwo(Std.int(myHeight));
+		this.format = format;
+		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, false);
+	}
+	
+	public static function fromBitmap(image: DisplayObject): Image {
+		var bitmap = cast(image, Bitmap);
+		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32);
+		texture.tex.uploadFromBitmapData(bitmap.bitmapData, 0);
+		return texture;
+	}
 	
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
 	public function get_width(): Int {
-		return Std.int(image.width);
+		return Std.int(myWidth);
 	}
 	
 	public function get_height(): Int {
-		return Std.int(image.height);
+		return Std.int(myHeight);
 	}
 	
 	public var realWidth(get, null): Int;
@@ -38,15 +57,7 @@ class Image implements kha.graphics.Texture {
 		return texHeight;
 	}
 	
-	public function new(image: DisplayObject)  {
-		this.image = cast(image, Bitmap);
-	}
-	
 	public function unload(): Void {
-		dispose();
-	}
-	
-	public function dispose(): Void {
 		if (tex != null) {
 			tex.dispose();
 			tex = null;
@@ -54,11 +65,10 @@ class Image implements kha.graphics.Texture {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
-		return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		return true; // (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
 	}
 	
 	public function getFlashTexture(): Texture {
-		if (tex == null) uploadTextureWithMipmaps();
 		return tex;
 	}
 	
@@ -73,45 +83,34 @@ class Image implements kha.graphics.Texture {
 		return v;
 	}
 	
-	function uploadTextureWithMipmaps(): Void {		
-		texWidth = upperPowerOfTwo(Std.int(image.width));
-		texHeight = upperPowerOfTwo(Std.int(image.height));
-		while (tex == null) {
-			try {
-				tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, false);
-				maxTextureControll.add(this);
-			}
-			catch (e : Dynamic) {
-				var toDispose = maxTextureControll.pop();
-				toDispose.dispose();
-			}
+	private var bytes: Bytes;
+	
+	public function lock(): Bytes {
+		switch (format) {
+			case RGBA32:
+				bytes = Bytes.alloc(texWidth * texHeight * 4);
+			case L8:
+				bytes = Bytes.alloc(texWidth * texHeight);
 		}
-		tex.uploadFromBitmapData(image.bitmapData, 0);
-		
-		/*var level : Int = 0;
-		var transform = new Matrix();
-		var tmp = new BitmapData(ws, hs, true, 0x00000000);
-
-		while (ws >= 1 && hs >= 1) {
-			tmp.draw(image.bitmapData, transform, null, null, null, true);
-			tex.uploadFromBitmapData(tmp, level);
-			transform.scale(0.5, 0.5);
-			++level;
-			ws >>= 1;
-			hs >>= 1;
-			if (hs != 0 && ws != 0) {
-				tmp.dispose();
-				tmp = new BitmapData(ws, hs, true, 0x00000000);
-			}
-		}
-		tmp.dispose();*/
+		return bytes;
 	}
 	
-	public function correctU(u: Float): Float {
-		return u * image.width / texWidth;
-	}
-
-	public function correctV(v: Float): Float {
-		return v * image.height / texHeight;
+	public function unlock(): Void {
+		switch (format) {
+			case RGBA32:
+				tex.uploadFromByteArray(bytes.getData(), 0);
+			case L8:
+				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
+				for (y in 0...texHeight) for (x in 0...texWidth) {
+					var value = bytes.get(y * texWidth + x);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, 0);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, 0);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, 0);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, value);
+				}
+				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
+		}
+		
+		bytes = null;
 	}
 }

@@ -1,14 +1,22 @@
 package kha;
 
+import flash.utils.Endian;
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 
-class Blob implements Resource{
-	private var bytes: Bytes;
-	private var position: Int;
+class Blob implements Resource {
+	private var bytes: BytesData;
 	
 	public function new(bytes: Bytes) {
-		this.bytes = bytes;
-		position = 0;
+		this.bytes = bytes.getData();
+	}
+	
+	private function le(): Void {
+		bytes.endian = Endian.LITTLE_ENDIAN;
+	}
+	
+	private function be(): Void {
+		bytes.endian = Endian.BIG_ENDIAN;
 	}
 	
 	public function length() {
@@ -16,39 +24,93 @@ class Blob implements Resource{
 	}
 	
 	public function reset() {
-		position = 0;
+		bytes.position = 0;
 	}
 	
-	public function readByte(): Int {
-		var byte = bytes.get(position);
-		++position;
-		return byte;
+	public function readS8LE(): Int {
+		le();
+		return bytes.readByte();
 	}
 	
-	public function readUInt16LE(): Int {
-		var second = bytes.get(position + 0);
-		var first  = bytes.get(position + 1);
-		position += 2;
-		return first * 256 + second;
+	public function readS8BE(): Int {
+		be();
+		return bytes.readByte();
+	}
+	
+	public function readU8LE(): UInt {
+		le();
+		return bytes.readUnsignedByte();
+	}
+	
+	public function readU8BE(): UInt {
+		be();
+		return bytes.readUnsignedByte();
+	}
+	
+	public function readS16LE(): Int {
+		le();
+		return bytes.readShort();
+	}
+	
+	public function readS16BE(): Int {
+		be();
+		return bytes.readShort();
+	}
+	
+	public function readU16LE(): UInt {
+		le();
+		return bytes.readUnsignedShort();
+	}
+	
+	public function readU16BE(): UInt {
+		be();
+		return bytes.readUnsignedShort();
 	}
 
-	public function readInt(): Int {
-		var fourth = bytes.get(position + 0);
-		var third  = bytes.get(position + 1);
-		var second = bytes.get(position + 2);
-		var first  = bytes.get(position + 3);
-		position += 4;
-		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
+	public function readS32LE(): Int {
+		le();
+		return bytes.readInt();
+	}
+	
+	public function readS32BE(): Int {
+		be();
+		return bytes.readInt();
+	}
+	
+	public function readU32LE(): UInt {
+		le();
+		return bytes.readUnsignedInt();
+	}
+	
+	public function readU32BE(): UInt {
+		be();
+		return bytes.readUnsignedInt();
+	}
+	
+	public function readF32LE(): Float {
+		le();
+		return bytes.readFloat();
+	}
+	
+	public function readF32BE(): Float {
+		be();
+		return bytes.readFloat();
+	}
+	
+	public function readF64LE(): Float {
+		le();
+		return bytes.readDouble();
+	}
+	
+	public function readF64BE(): Float {
+		be();
+		return bytes.readDouble();
 	}
 	
 	public function toString(): String {
 		return bytes.toString();
 	}
-	
-	public function toBytes(): Bytes {
-		return bytes;
-	}
-	
+		
 	public function unload(): Void {
 		bytes = null;
 	}

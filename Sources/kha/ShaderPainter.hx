@@ -29,6 +29,7 @@ class ShaderPainter extends Painter {
 	private var projectionLocation: ConstantLocation;
 	private var projectionMatrix: Array<Float>;
 	private var textureLocation: TextureUnit;
+	private var font: Kravur;
 	
 	public function new(width: Int, height: Int) {
 		initShaders();
@@ -202,17 +203,25 @@ class ShaderPainter extends Painter {
 		ty = y;
 	}
 
-	public override function drawString(text : String, x : Float, y : Float) : Void {
-		//context.fillText(text, tx + x, ty + y);
+	public override function drawString(text: String, x: Float, y: Float): Void {
+		var tex = font.getTexture();
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+
+		var xpos = x + tx;
+		var ypos = y + ty;
+		for (i in 0...text.length) {
+			var q = font.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+			setRectTexCoords(q.s0 / tex.realWidth, q.t0 / tex.realHeight, q.s1 / tex.realWidth, q.t1 / tex.realHeight);
+			setRectVertices(q.x0, q.y0, q.x1, q.y1);
+			xpos += q.xadvance;
+			++bufferIndex;
+		}
+		lastTexture = tex;
 	}
 
-	public override function setFont(font : Font) : Void {
-		//context.setFont(((WebFont)font).name);
+	public override function setFont(font: Font): Void {
+		this.font = cast(font, Kravur);
 	}
-
-	//public override function drawChars(text : String, offset : Int, length : Int, x : Float, y : Float) : Void {
-	//	drawString(new String(text, offset, length), x, y);
-	//}
 
 	public override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
 		/*context.moveTo(tx + x1, ty + y1);

@@ -2,6 +2,7 @@ package kha.flash.graphics;
 
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
+import flash.display3D.Context3DClearMask;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DVertexBufferFormat;
@@ -11,6 +12,9 @@ import flash.geom.Matrix3D;
 import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
+import kha.flash.Image;
+import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
@@ -18,6 +22,18 @@ class Graphics implements kha.graphics.Graphics {
 	public function new(context: Context3D) {
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 		Graphics.context = context;
+	}
+	
+	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
+		var mask: UInt = 0;
+		if (color != null) mask |= Context3DClearMask.COLOR;
+		if (depth != null) mask |= Context3DClearMask.DEPTH;
+		if (stencil != null) mask |= Context3DClearMask.STENCIL;
+		var r = color == null ? 0.0 : color.R;
+		var g = color == null ? 0.0 : color.G;
+		var b = color == null ? 0.0 : color.B;
+		var a = color == null ? 1.0 : color.A;
+		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
@@ -42,6 +58,10 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function setProgram(program: kha.graphics.Program): Void {
 		cast(program, Program).set();
+	}
+	
+	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
+		return new Image(width, height, format);
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {

@@ -5,7 +5,7 @@ import kha.Color;
 import kha.Image;
 
 interface Graphics {
-	function clear(?color: Color, ?z: Float, ?stencil: Int): Void;
+	function clear(?color: Color, ?depth: Float, ?stencil: UInt): Void;
 	
 	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
@@ -13,6 +13,7 @@ interface Graphics {
 	function createIndexBuffer(indexCount: Int): IndexBuffer;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
+	function createTexture(width: Int, height: Int, format: TextureFormat): Texture;
 	function setTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureWrap(unit: TextureUnit, u: TextureWrap, v: TextureWrap): Void;
 	

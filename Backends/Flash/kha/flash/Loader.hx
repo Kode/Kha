@@ -3,6 +3,7 @@ package kha.flash;
 import flash.net.NetStream;
 import kha.Blob;
 import kha.FontStyle;
+import kha.Kravur;
 import kha.loader.Asset;
 import kha.Starter;
 import flash.display.Bitmap;
@@ -33,7 +34,7 @@ class Loader extends kha.Loader {
 		var urlRequest = new URLRequest(filename);
 		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e : Event) {
-			done(new Image(loader.content));
+			done(Image.fromBitmap(loader.content));
 		});
 		loader.load(urlRequest);
 	}
@@ -62,7 +63,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
-		return new kha.flash.Font(name, style, size);
+		return new Kravur(name, style, size);
 	}
   
 	override public function loadURL(url: String): Void {

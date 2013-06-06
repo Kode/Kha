@@ -6,7 +6,6 @@ import kha.flash.utils.PerspectiveMatrix3D;
 import kha.Game;
 import kha.Key;
 import kha.Loader;
-import kha.flash.Painter;
 import flash.display.Stage;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
