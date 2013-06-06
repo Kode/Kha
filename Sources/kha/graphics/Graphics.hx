@@ -1,9 +1,12 @@
 package kha.graphics;
 
 import kha.Blob;
+import kha.Color;
 import kha.Image;
 
 interface Graphics {
+	function clear(?color: Color, ?z: Float, ?stencil: Int): Void;
+	
 	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	

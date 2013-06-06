@@ -1,6 +1,7 @@
 package kha.cpp.graphics;
 
 import kha.Blob;
+import kha.Color;
 import kha.graphics.FragmentShader;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
@@ -13,6 +14,21 @@ import kha.graphics.TextureWrap;
 
 class Graphics implements kha.graphics.Graphics {
 	public function new() {
+		
+	}
+	
+	public function clear(?color: Color, ?z: Float, ?stencil: Int): Void {
+		var flags: Int = 0;
+		if (color != null) flags |= 1;
+		if (z != null) flags |= 2;
+		if (stencil != null) flags |= 4;
+		clear2(flags, color, z, stencil);
+	}
+	
+	@:functionCode('
+		Kore::Graphics::clear(flags, color->value, z, stencil);
+	')
+	private function clear2(flags: Int, color: Color, z: Float, stencil: Int): Void {
 		
 	}
 	

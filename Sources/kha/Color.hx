@@ -48,9 +48,9 @@ class Color {
 	**/
 	public var Ab(get, null): Int;
 	
-	public var R(get,   null): Float;
+	public var R(get, null): Float;
 	public var G(get, null): Float;
-	public var B(get,  null): Float;
+	public var B(get, null): Float;
 	public var A(get, null): Float;
 	
 	public var value(default, null): Int;

@@ -227,15 +227,13 @@ class ShaderPainter extends Painter {
 		context.fill();*/
 	}
 	
-	public override function begin() : Void {
-		//gl.clearColor(0, 0, 0, 255);
-		//gl.clear(gl.COLOR_BUFFER_BIT);// | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+	public override function begin(): Void {
+		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0));
 		translate(0, 0);
 	}
 	
-	public override function end() : Void {
+	public override function end(): Void {
 		if (bufferIndex > 0) drawBuffer();
 		lastTexture = null;
-		//gl.flush();
 	}
 }
