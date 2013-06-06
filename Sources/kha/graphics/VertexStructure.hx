@@ -7,8 +7,8 @@ class VertexStructure {
 		elements = new Array<VertexElement>();
 	}
 	
-	public function add(name: String, data: VertexData, type: VertexType) {
-		elements.push(new VertexElement(name, data, type));
+	public function add(name: String, data: VertexData) {
+		elements.push(new VertexElement(name, data));
 	}
 	
 	public function size(): Int {

@@ -5,7 +5,6 @@ import kha.graphics.VertexData;
 import kha.graphics.VertexElement;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
-import kha.graphics.VertexType;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -101,6 +100,6 @@ class Program implements kha.graphics.Program {
 	}
 	
 	public function unused(): Void {
-		var include: VertexElement = new VertexElement("include", VertexData.Float2, VertexType.Color);
+		var include: VertexElement = new VertexElement("include", VertexData.Float2);
 	}
 }

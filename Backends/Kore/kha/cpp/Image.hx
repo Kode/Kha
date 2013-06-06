@@ -1,7 +1,9 @@
 package kha.cpp;
 
+import haxe.io.Bytes;
 import kha.cpp.graphics.TextureUnit;
 import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -10,14 +12,31 @@ import kha.graphics.Texture;
 
 @:headerClassCode("Kore::Texture* texture;")
 class Image implements Texture {
-	private var tex: Texture = null;
+	private var format: TextureFormat;
 	
-	public function new(filename: String) {
-		loadImage(filename);
+	public function new() { }
+	
+	public static function create(width: Int, height: Int, format: TextureFormat): Image {
+		var image = new Image();
+		image.format = format;
+		image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		return image;
 	}
 	
-	@:functionCode("texture = new Kore::Texture(filename.c_str());")
-	function loadImage(filename: String) {
+	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format);')
+	private function init(width: Int, height: Int, format: Int): Void {
+		
+	}
+	
+	public static function fromFile(filename: String): Image {
+		var image = new Image();
+		image.format = TextureFormat.L8;
+		image.initFromFile(filename);
+		return image;
+	}
+	
+	@:functionCode('texture = new Kore::Texture(filename.c_str());')
+	private function initFromFile(filename: String): Void {
 		
 	}
 	
@@ -64,11 +83,20 @@ class Image implements Texture {
 		
 	}
 	
-	public function getTexture(): Texture {
-		return tex;
+	private var bytes: Bytes = null;
+	
+	public function lock(): Bytes {
+		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		return bytes;
 	}
 	
-	public function setTexture(texture: Texture): Void {
-		this.tex = texture;
+	@:functionCode('
+		Kore::u8* b = bytes->b->Pointer();
+		Kore::u8* tex = texture->lock();
+		for (int i = 0; i < ((texture->format == Kore::Image::RGBA32) ? (4 * texture->width * texture->height) : (texture->width * texture->height)); ++i) tex[i] = b[i];
+		texture->unlock();
+	')
+	public function unlock(): Void {	
+		bytes = null;
 	}
 }

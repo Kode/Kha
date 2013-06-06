@@ -3,6 +3,8 @@ package kha.cpp.graphics;
 import kha.Blob;
 import kha.Color;
 import kha.graphics.FragmentShader;
+import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
@@ -46,6 +48,10 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
 		cast(indexBuffer, IndexBuffer).set();
+	}
+	
+	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
+		return Image.create(width, height, format);
 	}
 	
 	@:functionCode('

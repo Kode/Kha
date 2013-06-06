@@ -66,9 +66,10 @@ class Kravur implements Font {
 		height = blob.readS32LE();
 		texture = Sys.graphics.createTexture(width, height, TextureFormat.L8);
 		var bytes = texture.lock();
-		var data = bytes.getData();
+		var pos: Int = 0;
 		for (y in 0...height) for (x in 0...width) {
-			data.writeByte(blob.readS8LE());
+			bytes.set(pos, blob.readS8());
+			++pos;
 		}
 		texture.unlock();
 	}

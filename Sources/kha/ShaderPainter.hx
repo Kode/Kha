@@ -8,7 +8,6 @@ import kha.graphics.TextureUnit;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
-import kha.graphics.VertexType;
 
 class ShaderPainter extends Painter {
     var shaderProgram: Program;
@@ -53,8 +52,8 @@ class ShaderPainter extends Painter {
 		shaderProgram.setVertexShader(vertexShader);
 
 		structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3, VertexType.Position);
-		structure.add("texPosition", VertexData.Float2, VertexType.TexCoord);
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
 		
 		shaderProgram.link(structure);
 		/*

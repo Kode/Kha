@@ -2,6 +2,7 @@ package kha.cpp;
 
 import kha.Blob;
 import haxe.io.Bytes;
+import kha.Kravur;
 import kha.loader.Asset;
 import sys.io.File;
 
@@ -19,7 +20,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadImage(filename: String, done: kha.Image -> Void) {
-		done(new kha.cpp.Image(filename));
+		done(kha.cpp.Image.fromFile(filename));
 	}
 	
 	override function loadBlob(filename: String, done: Blob -> Void) {
@@ -27,6 +28,6 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
-		return new kha.cpp.Font(name, style, size);
+		return new Kravur(name, style, size);
 	}
 }

@@ -3,7 +3,6 @@ package kha.cpp.graphics;
 import kha.graphics.VertexData;
 import kha.graphics.VertexElement;
 import kha.graphics.VertexStructure;
-import kha.graphics.VertexType;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -19,7 +18,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		data = new Array<Float>();
 		data[Std.int(stride() / 4) * count() - 1] = 0;
 		
-		var a: VertexElement = new VertexElement("a", VertexData.Float2, VertexType.Color); //to generate include
+		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
 	
 	@:functionCode("
