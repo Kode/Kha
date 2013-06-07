@@ -2,9 +2,12 @@ package kha.js.graphics;
 
 import kha.Blob;
 import kha.graphics.FragmentShader;
+import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
 import kha.graphics.VertexShader;
+import kha.js.Image;
 
 class Graphics implements kha.graphics.Graphics {
 	private var indicesCount: Int;
@@ -12,6 +15,10 @@ class Graphics implements kha.graphics.Graphics {
 	public function new() {
 		Sys.gl.enable(Sys.gl.BLEND);
 		Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
+	}
+	
+	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
+		
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
@@ -29,6 +36,10 @@ class Graphics implements kha.graphics.Graphics {
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
 		indicesCount = indexBuffer.count();
 		cast(indexBuffer, IndexBuffer).set();
+	}
+	
+	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
+		return new Image(width, height, format);
 	}
 	
 	public function setTexture(stage: kha.graphics.TextureUnit, texture: kha.Image): Void {

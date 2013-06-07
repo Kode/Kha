@@ -1,14 +1,21 @@
 package kha.js;
 
+import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
+import js.html.Uint8Array;
 import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 
 class Image implements Texture {
 	public var image: ImageElement;
 	
 	private static var context : Dynamic;
 	private var data : Dynamic;
+	
+	private var myWidth: Int;
+	private var myHeight: Int;
+	private var format: TextureFormat;
 	
 	public static function init() {
 		var canvas : Dynamic = Browser.document.createElement("canvas");
@@ -19,31 +26,39 @@ class Image implements Texture {
 		}
 	}
 	
-	public function new(image: ImageElement) {
-		this.image = image;
-		createTexture();
+	public function new(width: Int, height: Int, format: TextureFormat) {
+		myWidth = width;
+		myHeight = height;
+		this.format = format;
+	}
+	
+	public static function fromImage(image: ImageElement): Image {
+		var img = new Image(image.width, image.height, TextureFormat.RGBA32);
+		img.image = image;
+		img.createTexture();
+		return img;
 	}
 	
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
 	public function get_width() : Int {
-		return image.width;
+		return myWidth;
 	}
 	
 	public function get_height() : Int {
-		return image.height;
+		return myHeight;
 	}
 	
 	public var realWidth(get, null): Int;
 	public var realHeight(get, null): Int;
 	
 	public function get_realWidth(): Int {
-		return image.width;
+		return myWidth;
 	}
 	
 	public function get_realHeight(): Int {
-		return image.height;
+		return myHeight;
 	}
 	
 	public function isOpaque(x : Int, y : Int) : Bool {
@@ -84,7 +99,7 @@ class Image implements Texture {
 	public function createTexture() {
 		if (Sys.gl == null) return;
 		texture = Sys.gl.createTexture();
-		texture.image = image;
+		//texture.image = image;
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
 		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
 		
@@ -92,7 +107,7 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, texture.image);
+		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 	}
@@ -100,5 +115,28 @@ class Image implements Texture {
 	public function set(stage: Int): Void {
 		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+	}
+	
+	private var bytes: Bytes;
+	
+	public function lock(): Bytes {
+		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		return bytes;
+	}
+	
+	public function unlock(): Void {
+		texture = Sys.gl.createTexture();
+		//texture.image = image;
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
+		
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
+		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
+		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.ALPHA, width, height, 0, Sys.gl.ALPHA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
+		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+		bytes = null;
 	}
 }

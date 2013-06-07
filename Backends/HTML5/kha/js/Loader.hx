@@ -6,6 +6,7 @@ import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
 import kha.FontStyle;
 import kha.Blob;
+import kha.Kravur;
 import kha.Starter;
 import kha.loader.Asset;
 import haxe.io.Bytes;
@@ -44,7 +45,7 @@ class Loader extends kha.Loader {
 		var img: ImageElement = cast Browser.document.createElement("img");
 		img.src = filename;
 		img.onload = function(event: Dynamic) {
-			done(new kha.js.Image(img));
+			done(kha.js.Image.fromImage(img));
 		};
 	}
 	
@@ -91,7 +92,8 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
-		return new Font(name, style, size);
+		if (Sys.gl != null) return new Kravur(name, style, size);
+		else return new Font(name, style, size);
 	}
 	
 	override public function setNormalCursor() {
