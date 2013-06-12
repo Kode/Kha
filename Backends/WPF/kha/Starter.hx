@@ -2,6 +2,7 @@ package kha;
 
 import kha.Game;
 import kha.Key;
+import kha.wpf.storyPlayAPIWPF.StoryPlayAPIWPF;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
@@ -26,7 +27,7 @@ import system.windows.FrameworkElement;
 class StoryPublishCanvas extends system.windows.controls.Canvas {
 	var mousePosX : Int;
 	var mousePosY : Int;
-	var drawMousePos : Bool;
+	public var drawMousePos : Bool;
 	
 	public function setMousePos(posX : Int, posY : Int) : Void {
 		mousePosX = posX;
@@ -46,115 +47,47 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
-
-	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
-		base.OnMouseDown(e);
-		Starter.mouseDown((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
-	}
-
-	protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
-		base.OnMouseUp(e);
-		Starter.mouseUp((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
-	}
-
-	protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
-		base.OnMouseMove(e);
-		Starter.mouseMove((int)e.GetPosition(canvas).X, (int)e.GetPosition(canvas).Y);
-	}
-
 	
 	protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e) {
-		// Used for text input since KeyEventArgs does not provide a string representation
 		base.OnTextInput(e);
 		
-		// Printable characters only
-		if (e.Text != "") {
-			char[] chararray = e.Text.ToCharArray();
-			int c = System.Convert.ToInt32((char)chararray[0]);
-			if (c > 32)
-				kha.Starter.game.keyDown(Key.CHAR, e.Text);
-		}
+		Starter.OnTextInput(e);
 	}
 	
 	protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
 		base.OnKeyDown(e);
 
-		if (pressedKeys.Contains(e.Key))
-			return;
-		pressedKeys.Add(e.Key);
-
-		switch (e.Key)
-		{
-			case System.Windows.Input.Key.Back:
-				kha.Starter.game.keyDown(Key.BACKSPACE, "");
-				break;
-			case System.Windows.Input.Key.Enter:
-				kha.Starter.game.keyDown(Key.ENTER, "");
-				break;
-			case System.Windows.Input.Key.Escape:
-				kha.Starter.game.keyDown(Key.ESC, "");
-				break;
-			case System.Windows.Input.Key.Delete:
-				kha.Starter.game.keyDown(Key.DEL, "");
-				break;
-			case System.Windows.Input.Key.Up:
-				kha.Starter.game.buttonDown(Button.UP);
-				break;
-			case System.Windows.Input.Key.Down:
-				kha.Starter.game.buttonDown(Button.DOWN);
-				break;
-			case System.Windows.Input.Key.Left:
-				kha.Starter.game.buttonDown(Button.LEFT);
-				break;
-			case System.Windows.Input.Key.Right:
-				kha.Starter.game.buttonDown(Button.RIGHT);
-				break;
-			case System.Windows.Input.Key.A:
-				kha.Starter.game.buttonDown(Button.BUTTON_1);
-				break;
-		}
+		Starter.OnKeyDown(e);
 	}
 
 	protected override void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
 		base.OnKeyUp(e);
 
-		pressedKeys.Remove(e.Key);
-
-		switch (e.Key) {
-			case System.Windows.Input.Key.Back:
-				kha.Starter.game.keyUp(Key.BACKSPACE, "");
-				break;
-			case System.Windows.Input.Key.Enter:
-				kha.Starter.game.keyUp(Key.ENTER, "");
-				break;
-			case System.Windows.Input.Key.Escape:
-				kha.Starter.game.keyUp(Key.ESC, "");
-				break;
-			case System.Windows.Input.Key.Delete:
-				kha.Starter.game.keyUp(Key.DEL, "");
-				break;
-			case System.Windows.Input.Key.Up:
-				kha.Starter.game.buttonUp(Button.UP);
-				break;
-			case System.Windows.Input.Key.Down:
-				kha.Starter.game.buttonUp(Button.DOWN);
-				break;
-			case System.Windows.Input.Key.Left:
-				kha.Starter.game.buttonUp(Button.LEFT);
-				break;
-			case System.Windows.Input.Key.Right:
-				kha.Starter.game.buttonUp(Button.RIGHT);
-				break;
-			case System.Windows.Input.Key.A:
-				kha.Starter.game.buttonUp(Button.BUTTON_1);
-				break;
-		}
+		Starter.OnKeyUp(e);
 	}
 	
 	protected override void OnClosed(System.EventArgs e) {
 		base.OnClosed(e);
 		
 		Starter.game.onClose();
+	}
+
+	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
+		base.OnMouseDown(e);
+		
+		Starter.OnMouseDown(e);
+	}
+
+	protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
+		base.OnMouseUp(e);
+		
+		Starter.OnMouseUp(e);
+	}
+
+	protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
+		base.OnMouseMove(e);
+		
+		Starter.OnMouseMove(e);
 	}
 ')
 class MainWindow extends system.windows.Window {
@@ -194,22 +127,131 @@ class MainWindow extends system.windows.Window {
 	}
 }
 
+@:classCode('
+	private static System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
+
+	public static void OnTextInput(System.Windows.Input.TextCompositionEventArgs e) {
+		if (!System.String.IsNullOrEmpty(e.Text)) {
+			// Used for text input since KeyEventArgs does not provide a string representation
+			// Printable characters only
+			if (e.Text != "") {
+				char[] chararray = e.Text.ToCharArray();
+				int c = System.Convert.ToInt32((char)chararray[0]);
+				if (c > 32)
+					game.keyDown(Key.CHAR, e.Text);
+			}
+		}
+	}
+	
+	public static void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
+		if (pressedKeys.Contains(e.Key))
+			return;
+		pressedKeys.Add(e.Key);
+
+		switch (e.Key)
+		{
+			case System.Windows.Input.Key.Back:
+				game.keyDown(Key.BACKSPACE, "");
+				break;
+			case System.Windows.Input.Key.Enter:
+				game.keyDown(Key.ENTER, "");
+				break;
+			case System.Windows.Input.Key.Escape:
+				game.keyDown(Key.ESC, "");
+				break;
+			case System.Windows.Input.Key.Delete:
+				game.keyDown(Key.DEL, "");
+				break;
+			case System.Windows.Input.Key.Up:
+				game.buttonDown(Button.UP);
+				break;
+			case System.Windows.Input.Key.Down:
+				game.buttonDown(Button.DOWN);
+				break;
+			case System.Windows.Input.Key.Left:
+				game.buttonDown(Button.LEFT);
+				break;
+			case System.Windows.Input.Key.Right:
+				game.buttonDown(Button.RIGHT);
+				break;
+			case System.Windows.Input.Key.A:
+				game.buttonDown(Button.BUTTON_1);
+				break;
+		}
+	}
+	
+	public static void OnKeyDown(Key key, string c) {
+		game.keyDown(key, c);
+	}
+
+	public static void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
+		pressedKeys.Remove(e.Key);
+
+		switch (e.Key) {
+			case System.Windows.Input.Key.Back:
+				game.keyUp(Key.BACKSPACE, "");
+				break;
+			case System.Windows.Input.Key.Enter:
+				game.keyUp(Key.ENTER, "");
+				break;
+			case System.Windows.Input.Key.Escape:
+				game.keyUp(Key.ESC, "");
+				break;
+			case System.Windows.Input.Key.Delete:
+				game.keyUp(Key.DEL, "");
+				break;
+			case System.Windows.Input.Key.Up:
+				game.buttonUp(Button.UP);
+				break;
+			case System.Windows.Input.Key.Down:
+				game.buttonUp(Button.DOWN);
+				break;
+			case System.Windows.Input.Key.Left:
+				game.buttonUp(Button.LEFT);
+				break;
+			case System.Windows.Input.Key.Right:
+				game.buttonUp(Button.RIGHT);
+				break;
+			case System.Windows.Input.Key.A:
+				game.buttonUp(Button.BUTTON_1);
+				break;
+		}
+	}
+
+	public static void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
+		Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	}
+
+	public static void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
+		Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	}
+
+	public static void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
+		Starter.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	}
+	
+	public static void OnClosed(System.EventArgs e) {
+		game.onClose();
+	}
+')
 class Starter {
-	static var game: Game;
 	static var mainWindow : MainWindow;
 	static var openWindow : Bool = true;
 	static var autostartGame : Bool = true;
-	public static var painter : kha.wpf.Painter;
-	public static var frameworkElement: StoryPublishCanvas;
+	static var showMousePos : Bool = false;
+	static var painter : kha.wpf.Painter;
+	public static var game : Game;
+	public static var frameworkElement : StoryPublishCanvas;
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
 	}
 	
-	public static function configure(path : String, openWindow : Bool, autostartGame : Bool, forceBusyCursor : Bool) {
+	public static function configure(path : String, openWindow : Bool, autostartGame : Bool, showMousePos : Bool, forceBusyCursor : Bool) {
 		Starter.openWindow = openWindow;
 		Starter.autostartGame = autostartGame;
+		Starter.showMousePos = showMousePos;
 		kha.wpf.Loader.path = path;
 		kha.wpf.Loader.forceBusyCursor = forceBusyCursor;
 	}
@@ -230,7 +272,7 @@ class Starter {
 	@:functionCode('
 	System.Windows.MessageBox.Show(msg, "Exeption", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
 	')
-	private function displayErrorMessage(msg : String) {
+	private static function displayErrorMessage(msg : String) {
 		
 	}
 	
@@ -250,6 +292,7 @@ class Starter {
 			game.loadFinished();
 		if (openWindow)
 			startWindow();
+		Starter.frameworkElement.drawMousePos = Starter.showMousePos;
 	}
 
 	@:functionCode('
@@ -312,9 +355,5 @@ class Starter {
 	public static function mouseMove(x : Int, y : Int) : Void {
 		game.mouseMove(x, y);
 		frameworkElement.setMousePos(x, y);
-	}
-	
-	public static function keyDown(key : Key, c : String) : Void {
-		game.keyDown(key, c);
 	}
 }
