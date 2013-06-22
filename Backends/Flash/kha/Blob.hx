@@ -27,26 +27,14 @@ class Blob implements Resource {
 		bytes.position = 0;
 	}
 	
-	public function readS8LE(): Int {
-		le();
+	public function readS8(): Int {
 		return bytes.readByte();
 	}
 	
-	public function readS8BE(): Int {
-		be();
-		return bytes.readByte();
-	}
-	
-	public function readU8LE(): UInt {
-		le();
+	public function readU8(): UInt {
 		return bytes.readUnsignedByte();
 	}
-	
-	public function readU8BE(): UInt {
-		be();
-		return bytes.readUnsignedByte();
-	}
-	
+		
 	public function readS16LE(): Int {
 		le();
 		return bytes.readShort();
