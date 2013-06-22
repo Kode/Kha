@@ -83,20 +83,50 @@ class Scene {
 		if (collisionLayer != null) collisionLayer.addProjectile(sprite);
 		sprites.push(sprite);
 	}
+
+	public function removeHero(sprite: Sprite) {
+		if (collisionLayer != null) collisionLayer.removeHero(sprite);
+		sprites.remove(sprite);
+	}
 	
 	public function removeEnemy(sprite: Sprite) {
 		if (collisionLayer != null) collisionLayer.removeEnemy(sprite);
 		sprites.remove(sprite);
 	}
 	
-	public function removeHero(sprite: Sprite) {
-		if (collisionLayer != null) collisionLayer.removeHero(sprite);
-		sprites.remove(sprite);
-	}
-	
 	public function removeProjectile(sprite: Sprite) {
 		if (collisionLayer != null) collisionLayer.removeProjectile(sprite);
 		sprites.remove(sprite);
+	}
+	
+	public function getHero(index: Int): Sprite {
+		if (collisionLayer == null) return null;
+		else return collisionLayer.getHero(index);
+	}
+	
+	public function getEnemy(index: Int): Sprite {
+		if (collisionLayer == null) return null;
+		else return collisionLayer.getEnemy(index);
+	}
+	
+	public function getProjectile(index: Int): Sprite {
+		if (collisionLayer == null) return null;
+		else return collisionLayer.getProjectile(index);
+	}
+	
+	public function countHeroes(): Int {
+		if (collisionLayer == null) return 0;
+		else return collisionLayer.countHeroes();
+	}
+	
+	public function countEnemies(): Int {
+		if (collisionLayer == null) return 0;
+		else return collisionLayer.countEnemies();
+	}
+
+	public function countProjectiles(): Int {
+		if (collisionLayer == null) return 0;
+		else return collisionLayer.countProjectiles();
 	}
 	
 	function adjustCamX(): Int {

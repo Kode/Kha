@@ -29,16 +29,40 @@ class CollisionLayer {
 		projectiles.push(sprite);
 	}
 	
-	public function removeEnemy(sprite: Sprite): Void {
-		enemies.remove(sprite);
-	}
-	
 	public function removeHero(sprite: Sprite): Void {
 		heroes.remove(sprite);
 	}
 	
+	public function removeEnemy(sprite: Sprite): Void {
+		enemies.remove(sprite);
+	}
+		
 	public function removeProjectile(sprite: Sprite): Void {
 		projectiles.remove(sprite);
+	}
+	
+	public function getHero(index: Int): Sprite {
+		return heroes[index];
+	}
+	
+	public function getEnemy(index: Int): Sprite {
+		return enemies[index];
+	}
+	
+	public function getProjectile(index: Int): Sprite {
+		return projectiles[index];
+	}
+	
+	public function countHeroes(): Int {
+		return heroes.length;
+	}
+	
+	public function countEnemies(): Int {
+		return enemies.length;
+	}
+
+	public function countProjectiles(): Int {
+		return projectiles.length;
 	}
 	
 	private function sort(sprites: Array<Sprite>): Void {
