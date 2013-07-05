@@ -14,14 +14,32 @@ import kha.FontStyle;
 	}
 ')
 class Font implements kha.Font {
-	public var name : String;
-	public var style : FontStyle;
-	public var size : Int;
+	public var myName: String;
+	public var myStyle: FontStyle;
+	public var mySize: Int;
 
-	public function new(name : String, style : FontStyle, size : Int) {
-		this.name = name;
-		this.style = style;
-		this.size = size;
+	public function new(name: String, style: FontStyle, size: Int) {
+		myName = name;
+		myStyle = style;
+		mySize = size;
+	}
+	
+	public var name(get, null): String;
+	
+	public function get_name(): String {
+		return myName;
+	}
+	
+	public var style(get, null): FontStyle;
+	
+	public function get_style(): FontStyle {
+		return myStyle;
+	}
+	
+	public var size(get, null): Int;
+	
+	public function get_size(): Int {
+		return mySize;
 	}
 	
 	@:functionCode('

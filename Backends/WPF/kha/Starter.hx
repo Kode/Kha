@@ -2,7 +2,6 @@ package kha;
 
 import kha.Game;
 import kha.Key;
-import kha.wpf.storyPlayAPIWPF.StoryPlayAPIWPF;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
@@ -116,8 +115,8 @@ class MainWindow extends system.windows.Window {
         Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
 		// Go fullscreen
-		WindowStyle = System.Windows.WindowStyle.None;
-        WindowState = System.Windows.WindowState.Maximized;
+		//WindowStyle = System.Windows.WindowStyle.None;
+        //WindowState = System.Windows.WindowState.Maximized;
 		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
@@ -290,6 +289,7 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter();
+		Scheduler.start();
 		if (autostartGame)
 			game.loadFinished();
 		if (openWindow)

@@ -55,7 +55,7 @@ class Loader extends kha.Loader {
 		var urlRequest = new URLRequest(filename + ".mp3");
 		var sound = new flash.media.Sound();
 		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
-			trace ("Couldn't load " + asset.file + ".mp3");
+			trace ("Couldn't load " + filename + ".mp3");
 			done(new Sound(sound));
 		});
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
