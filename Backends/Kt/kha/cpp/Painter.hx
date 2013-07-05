@@ -5,6 +5,7 @@ import kha.FontStyle;
 
 @:cppFileCode('
 #include <kha/cpp/Image.h>
+#include <kha/cpp/Video.h>
 #include <Kt/stdafx.h>
 #include <Kt/Graphics/Painter.h>
 #include <Kt/Graphics/Font.h>
@@ -40,16 +41,16 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionCode('
-	::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
-	haxePainter->drawImage(img->texture, tx + x, ty + y);
+		::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
+		haxePainter->drawImage(img->texture, tx + x, ty + y);
 	')
 	override public function drawImage(image: Image, x: Float, y: Float) : Void {
 		
 	}
 	
 	@:functionCode('
-	::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
-	haxePainter->drawSubImage(img->texture, tx + dx, ty + dy, dw, dh, sx, sy, sw, sh);
+		::kha::cpp::Image_obj* img = dynamic_cast< ::kha::cpp::Image_obj*>(image->__GetRealObject());
+		haxePainter->drawSubImage(img->texture, tx + dx, ty + dy, dw, dh, sx, sy, sw, sh);
 	')
 	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) {
 		
@@ -66,19 +67,27 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionCode('
-	Kt::Text fontName = font->name.c_str();
-	int fontSize = font->size;
-	if (Kt::fonts.find(Kt::pair<Kt::Text, int>(fontName, fontSize)) == Kt::fonts.end()) Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)] = new Kt::Font(fontName, fontSize);
-	Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)]->render(haxePainter, text.__WCStr(), x + tx, y + ty, Kt::Color(r, g, b));	
+		Kt::Text fontName = font->name.c_str();
+		int fontSize = font->size;
+		if (Kt::fonts.find(Kt::pair<Kt::Text, int>(fontName, fontSize)) == Kt::fonts.end()) Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)] = new Kt::Font(fontName, fontSize);
+		Kt::fonts[Kt::pair<Kt::Text, int>(fontName, fontSize)]->render(haxePainter, text.__WCStr(), x + tx, y + ty, Kt::Color(r, g, b));	
 	')
 	override public function drawString(text: String, x: Float, y: Float): Void {
 		
 	}
 	
 	@:functionCode('
-	haxePainter->drawLine(x1, y1, x2, y2, Kt::Color(r, g, b));
+		haxePainter->drawLine(x1, y1, x2, y2, Kt::Color(r, g, b));
 	')
 	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+		
+	}
+
+	@:functionCode('
+		::kha::cpp::Video_obj* v = dynamic_cast< ::kha::cpp::Video_obj*>(video->__GetRealObject());
+		haxePainter->drawImage(v->video->currentImage(), x, y, width / v->video->width(), height / v->video->height());
+	')
+	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		
 	}
 }

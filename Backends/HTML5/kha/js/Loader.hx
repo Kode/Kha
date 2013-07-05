@@ -40,6 +40,11 @@ class Loader extends kha.Loader {
 		
 		done(new Sound(filename));
 	}
+
+	override function loadSound(filename: String, done: kha.Sound -> Void) {
+		var sound = new Sound(filename, done);
+		sounds.set(asset.name, sound);
+	}
 	
 	override function loadImage(filename: String, done: kha.Image -> Void) {
 		var img: ImageElement = cast Browser.document.createElement("img");
@@ -48,21 +53,10 @@ class Loader extends kha.Loader {
 			done(kha.js.Image.fromImage(img));
 		};
 	}
-	
+
 	override function loadVideo(filename: String, done: kha.Video -> Void): Void {
-		//trace ("loadVideo( " + filename + " )");
-		var video = new Video(filename);
-		//video.element.onloadstart = trace ("onloadstart( " + video.element.src + " )");
-		video.element.onerror = function(ex : Dynamic) {
-			Lib.alert("Error loading " + video.element.src);
-		}
-		
-		var videoElement: Dynamic = video.element;
-		videoElement.oncanplaythrough = function() {
-			//trace ("loaded " + video.element.src);
-			videoElement.oncanplaythrough = null;
-			done(video);
-		};
+		var video = new Video(filename, done);
+		videos.set(asset.name, video);
 	}
 	
 	override function loadBlob(filename: String, done: Blob -> Void) {
@@ -94,6 +88,10 @@ class Loader extends kha.Loader {
 	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
 		if (Sys.gl != null) return new Kravur(name, style, size);
 		else return new Font(name, style, size);
+	}
+
+	override public function loadURL(url: String): Void {
+		Lib.window.open(url);
 	}
 	
 	override public function setNormalCursor() {

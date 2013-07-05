@@ -17,7 +17,8 @@ class Loader {
 	var assets: Map<String, Asset>;
 	var rooms: Map<String, Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
-	
+	public var autoCleanupAssets : Bool = true;
+
 	public function new() {
 		blobs = new Map<String, Blob>();
 		images = new Map<String, Image>();
@@ -52,7 +53,7 @@ class Loader {
 	}
 	
 	public function getImage(name : String) : Image {
-		if (!images.exists(name)) {
+		if (!images.exists(name) && name != "") {
 			trace("Could not find image " + name + ".");
 		}
 		return images.get(name);
@@ -63,6 +64,9 @@ class Loader {
 	}
 	
 	public function getSound(name : String) : Sound {
+		if (name != "" && !sounds.exists(name)) {
+			trace("Sound '" + name + "' not found");
+		}
 		return sounds.get(name);
 	}
 	
@@ -137,80 +141,92 @@ class Loader {
 		resource.unload();
 		resources.remove(resourceName);
 	}
-	
-	public function loadFiles(call: Void -> Void) {
-		loadFinished = call;
-		loadStarted(enqueued.length);
+
+	public function cleanup(): Void {
 		for (imagename in images.keys()) if (!containsAsset(imagename, "image", enqueued)) removeImage(images, imagename);
 		for (musicname in musics.keys()) if (!containsAsset(musicname, "music", enqueued)) removeMusic(musics, musicname);
 		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
-		for (i in 0...enqueued.length) {
-			switch (enqueued[i].type) {
-				case "image":
-					if (!images.exists(enqueued[i].name)) {
-						var imageName = enqueued[i].name;
-						loadImage(enqueued[i].file, function(image: Image) {
-							if (!images.exists(imageName)) {
-								images.set(imageName, image);
-								--numberOfFiles;
-								checkComplete();
-							}
-						});
-					}
-					else loadDummyFile();
-				case "music":
-					if (!musics.exists(enqueued[i].name)) {
-						var musicName = enqueued[i].name;
-						loadMusic(enqueued[i].file, function(music: Music) {
-							if (!musics.exists(musicName)) {
-								musics.set(musicName, music);
-								--numberOfFiles;
-								checkComplete();
-							}
-						});
-					}
-					else loadDummyFile();
-				case "sound":
-					if (!sounds.exists(enqueued[i].name)) {
-						var soundName = enqueued[i].name;
-						loadSound(enqueued[i].file, function(sound: Sound) {
-							if (!sounds.exists(soundName)) {
-								sounds.set(soundName, sound);
-								--numberOfFiles;
-								checkComplete();
-							}
-						});
-					}
-					else loadDummyFile();
-				case "video":
-					if (!videos.exists(enqueued[i].name)) {
-						var videoName = enqueued[i].name;
-						loadVideo(enqueued[i].file, function(video: Video) {
-							if (!videos.exists(videoName)) {
-								videos.set(videoName, video);
-								--numberOfFiles;
-								checkComplete();
-							}
-						});
-					}
-					else loadDummyFile();
-				case "blob":
-					if (!blobs.exists(enqueued[i].name)) {
-						var blobName = enqueued[i].name;
-						loadBlob(enqueued[i].file, function(blob: Blob) {
-							if (!blobs.exists(blobName)) {
-								blobs.set(blobName, blob);
-								--numberOfFiles;
-								checkComplete();
-							}
-						});
-					}
-					else loadDummyFile();
+
+		enqueued = new Array<Asset>();
+	}
+	
+	public function loadFiles(call: Void -> Void) {
+		loadFinished = call;
+		loadStarted(enqueued.length);
+		
+		if (enqueued.length > 0) {
+			for (i in 0...enqueued.length) {
+				switch (enqueued[i].type) {
+					case "image":
+						if (!images.exists(enqueued[i].name)) {
+							var imageName = enqueued[i].name;
+							loadImage(enqueued[i].file, function(image: Image) {
+								if (!images.exists(imageName)) {
+									images.set(imageName, image);
+									--numberOfFiles;
+									checkComplete();
+								}
+							});
+						}
+						else loadDummyFile();
+					case "music":
+						if (!musics.exists(enqueued[i].name)) {
+							var musicName = enqueued[i].name;
+							loadMusic(enqueued[i].file, function(music: Music) {
+								if (!musics.exists(musicName)) {
+									musics.set(musicName, music);
+									--numberOfFiles;
+									checkComplete();
+								}
+							});
+						}
+						else loadDummyFile();
+					case "sound":
+						if (!sounds.exists(enqueued[i].name)) {
+							var soundName = enqueued[i].name;
+							loadSound(enqueued[i].file, function(sound: Sound) {
+								if (!sounds.exists(soundName)) {
+									sounds.set(soundName, sound);
+									--numberOfFiles;
+									checkComplete();
+								}
+							});
+						}
+						else loadDummyFile();
+					case "video":
+						if (!videos.exists(enqueued[i].name)) {
+							var videoName = enqueued[i].name;
+							loadVideo(enqueued[i].file, function(video: Video) {
+								if (!videos.exists(videoName)) {
+									videos.set(videoName, video);
+									--numberOfFiles;
+									checkComplete();
+								}
+							});
+						}
+						else loadDummyFile();
+					case "blob":
+						if (!blobs.exists(enqueued[i].name)) {
+							var blobName = enqueued[i].name;
+							loadBlob(enqueued[i].file, function(blob: Blob) {
+								if (!blobs.exists(blobName)) {
+									blobs.set(blobName, blob);
+									--numberOfFiles;
+									checkComplete();
+								}
+							});
+						}
+						else loadDummyFile();
+				}
 			}
 		}
-		enqueued = new Array<Asset>();
+		else {
+			checkComplete();
+		}
+		
+		if (autoCleanupAssets) cleanup();
 	}
 	
 	public function loadProject(call: Void -> Void) {
@@ -291,7 +307,6 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
-			enqueued = new Array<Asset>();
 			if (loadFinished != null) loadFinished();
 		}
 	}
@@ -302,8 +317,13 @@ class Loader {
 	}
 	
 	function loadStarted(numberOfFiles: Int) {
-		this.loadcount = numberOfFiles;
-		this.numberOfFiles = numberOfFiles;
+		if (numberOfFiles > 0) {
+			this.loadcount = numberOfFiles;
+			this.numberOfFiles = numberOfFiles;
+		} else {
+			this.loadcount = 1;
+			this.numberOfFiles = 0;
+		}
 	}
 	
 	public function loadImage(filename: String, done: Image -> Void) { }
@@ -320,5 +340,8 @@ class Loader {
 	public function setHandCursor() { }
 	public function setCursorBusy(busy : Bool) { }
 	
+	public function showKeyboard(): Void { }
+	public function hideKeyboard(): Void { }
+
 	public function quit() : Void { }
 }

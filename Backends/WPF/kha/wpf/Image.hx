@@ -6,7 +6,7 @@ import system.windows.media.imaging.BitmapImage;
 class Image implements kha.Image {
 	public var image: BitmapImage;
 	
-	@:functionBody('
+	@:functionCode('
 		image = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(filename, System.UriKind.Relative));
 	')
 	public function new(filename: String) {
@@ -15,7 +15,7 @@ class Image implements kha.Image {
 	
 	public var width(get, null): Int;
 	
-	@:functionBody('
+	@:functionCode('
 		return image.PixelWidth;
 	')
 	public function get_width(): Int {
@@ -24,14 +24,14 @@ class Image implements kha.Image {
 
 	public var height(get, null): Int;
 	
-	@:functionBody('
+	@:functionCode('
 		return image.PixelHeight;
 	')
 	public function get_height(): Int {
 		return 0;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		if (x < 0 || y < 0 || x >= image.PixelWidth || y >= image.PixelHeight)
             return false;
 		

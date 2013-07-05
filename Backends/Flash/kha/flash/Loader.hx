@@ -3,6 +3,7 @@ package kha.flash;
 import flash.net.NetStream;
 import kha.Blob;
 import kha.FontStyle;
+import kha.Game;
 import kha.Kravur;
 import kha.loader.Asset;
 import kha.Starter;
@@ -19,6 +20,7 @@ import haxe.io.Bytes;
 class Loader extends kha.Loader {
 	public function new(main : Starter) {
 		super();
+		isQuitable = true;
 	}
 	
 	override function loadMusic(filename: String, done: kha.Music -> Void) {
@@ -52,6 +54,10 @@ class Loader extends kha.Loader {
 	override function loadSound(filename: String, done: kha.Sound -> Void) {
 		var urlRequest = new URLRequest(filename + ".mp3");
 		var sound = new flash.media.Sound();
+		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
+			trace ("Couldn't load " + asset.file + ".mp3");
+			done(new Sound(sound));
+		});
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
 			done(new Sound(sound));
 		});
@@ -88,5 +94,11 @@ class Loader extends kha.Loader {
 			Mouse.hide();
 		else
 			Mouse.show();
+	}
+
+	override public function quit(): Void {
+		Game.the.onClose();
+		flash.Lib.fscommand("quit");
+		//flash.system.FSCommand()._fscommand("quit","");
 	}
 }

@@ -57,7 +57,7 @@ class Loader extends kha.Loader {
 		return (font != null ? font : new Font("Arial", style, size));
 	}
 
-	@:functionBody('
+	@:functionCode('
 		System.Diagnostics.Process.Start(new System.Uri(url).AbsoluteUri);
 	')
 	override public function loadURL(url : String) : Void {
@@ -90,7 +90,7 @@ class Loader extends kha.Loader {
 			Starter.frameworkElement.Cursor = savedCursor;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		System.Windows.Application.Current.Shutdown();
 	')
 	override function quit() : Void { }

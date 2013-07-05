@@ -24,8 +24,8 @@ class Sprite {
 		y = 0;
 		this.width = width;
 		this.height = height;
-		if (this.width  == 0) this.width  = image.width;
-		if (this.height == 0) this.height = image.height;
+		if (this.width  == 0 && image != null) this.width  = image.width;
+		if (this.height == 0 && image != null) this.height = image.height;
 		this.z = z;
 		collider = new Rectangle(0, 0, width, height);
 		speedx = speedy = 0;

@@ -8,6 +8,7 @@ import kha.Game;
 import kha.Key;
 import kha.Loader;
 import js.Lib;
+import js.Browser;
 
 class Starter {
 	static var game : Game;
@@ -29,7 +30,7 @@ class Starter {
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
 		Loader.init(new kha.js.Loader());
-		Storage.init(new Storage());
+		Storage.init(new kha.js.Storage());
 		Scheduler.init();
 	}
 	
@@ -56,16 +57,22 @@ class Starter {
 	
 	public function loadFinished() {
 		Loader.the.initProject();
+		
+		var canvas : Dynamic = Browser.document.getElementById("khanvas");
+		
+		var widthTransform : Float = canvas.width / Loader.the.width;
+		var heightTransform : Float = canvas.height / Loader.the.height;
+		var transform : Float = Math.min(widthTransform, heightTransform);
+		
 		if (Loader.the.width > 0 && Loader.the.height > 0) {
-			game.width = Loader.the.width;
-			game.height = Loader.the.height;
+			game.width = Math.round(Loader.the.width * transform);
+			game.height = Math.round(Loader.the.height * transform);
 		}
-		
-		var canvas: Dynamic = Browser.document.getElementById("khanvas");
-		
+
 		try {
 			if (canvas.getContext("experimental-webgl") != null) {
 				Sys.gl = canvas.getContext("experimental-webgl");
+				Sys.gl.scale(transform, transform);
 				Sys.init();
 				painter = new ShaderPainter(game.width, game.height);
 			}
@@ -73,8 +80,11 @@ class Starter {
 		catch (e : Dynamic) {
 			trace(e);
 		}
-		if (painter == null) painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
-		
+		if (painter == null) {
+			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
+			canvas.getContext("2d").scale(transform, transform);
+		}
+
 		Scheduler.start();
 		
 		var window: Dynamic = Browser.window;
@@ -127,18 +137,18 @@ class Starter {
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
 		
 		//Lib.document.onmousedown = function(event : js.Event) {
-		canvas.onmousedown = function(event: Dynamic) {
-			game.mouseDown(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		canvas.onmousedown = function(event : Dynamic) {
+			game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmouseup = function(event : js.Event) {
-		canvas.onmouseup = function(event: Dynamic) {
-			game.mouseUp(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		canvas.onmouseup = function(event : Dynamic) {
+			game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 		
 		//Lib.document.onmousemove = function(event : js.Event) {
-		canvas.onmousemove = function(event: Dynamic) {
-			game.mouseMove(Std.int(event.pageX - canvas.offsetLeft), Std.int(event.pageY - canvas.offsetTop));
+		canvas.onmousemove = function(event : Dynamic) {
+			game.mouseMove(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 		}
 
 		//Lib.document.onkeydown = function(event : js.Event) {
@@ -150,6 +160,10 @@ class Starter {
 		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
 		
+		Lib.window.onunload = function(event: Dynamic) {
+			game.onClose();
+		}
+
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		
