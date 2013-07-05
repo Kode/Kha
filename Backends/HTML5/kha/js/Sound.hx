@@ -52,11 +52,13 @@ class SoundChannel extends kha.SoundChannel {
 
 class Sound extends kha.Sound {
 	static var extensions : Array<String> = null;
-	
 	public var element : AudioElement;
+	private var done: kha.Sound -> Void;
 	
-	public function new(filename : String) {
+	public function new(filename : String, done: kha.Sound -> Void) {
 		super();
+		
+		this.done = done;
 		
 		element = cast Browser.document.createElement("audio");
 		
@@ -78,7 +80,7 @@ class Sound extends kha.Sound {
 		element.src = filename + extensions[0];
 	}
 	
-	override public function play() : Void {
+	override public function play(): kha.SoundChannel {
 		try {
 			element.play();
 		} catch ( e : Dynamic ) {
@@ -87,7 +89,7 @@ class Sound extends kha.Sound {
 		return new SoundChannel(element);
 	}
 	
-	function errorListener(eventInfo : ErrorEvent) : Void {
+	function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
 			for ( i in 0 ... extensions.length - 1 ) {
 				var ext = extensions[i];
@@ -119,7 +121,6 @@ class Sound extends kha.Sound {
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener,false);
-		var l : Loader = cast kha.Loader.the;
-		l.finishAsset();
+		done(this);
 	}
 }

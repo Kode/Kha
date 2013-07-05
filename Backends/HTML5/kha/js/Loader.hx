@@ -24,26 +24,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadSound(filename: String, done: kha.Sound -> Void) {
-		/*//trace ("loadSound " + filename);
-		var sound = new Sound(asset.file);
-		//sound.element.onloadstart = trace ("onloadstart( " + element.src + " )");
-		sound.element.onerror = function(ex: Dynamic) {
-			Lib.alert("Error loading " + sound.element.src);
-		}
-		sound.element.oncanplaythrough = function () {
-			//trace ("loaded " + sound.element.src);
-			sound.element.oncanplaythrough = null;
-			--numberOfFiles;
-			checkComplete();
-		};
-		sounds.set(asset.name, sound);*/
-		
-		done(new Sound(filename));
-	}
-
-	override function loadSound(filename: String, done: kha.Sound -> Void) {
 		var sound = new Sound(filename, done);
-		sounds.set(asset.name, sound);
 	}
 	
 	override function loadImage(filename: String, done: kha.Image -> Void) {
@@ -56,7 +37,6 @@ class Loader extends kha.Loader {
 
 	override function loadVideo(filename: String, done: kha.Video -> Void): Void {
 		var video = new Video(filename, done);
-		videos.set(asset.name, video);
 	}
 	
 	override function loadBlob(filename: String, done: Blob -> Void) {
@@ -91,7 +71,7 @@ class Loader extends kha.Loader {
 	}
 
 	override public function loadURL(url: String): Void {
-		Lib.window.open(url);
+		Browser.window.open(url, "Kha");
 	}
 	
 	override public function setNormalCursor() {

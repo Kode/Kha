@@ -11,9 +11,12 @@ using StringTools;
 class Video extends kha.Video {
 	static var extensions : Array<String> = null;
 	public var element : VideoElement;
+	private var done: kha.Video -> Void;
 	
-	public function new(filename : String) {
+	public function new(filename : String, done: kha.Video -> Void) {
 		super();
+		
+		this.done = done;
 		
 		element = cast(Browser.document.createElement("video"), VideoElement);
 		
@@ -103,7 +106,6 @@ class Video extends kha.Video {
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener,false);
-		var l : Loader = cast kha.Loader.the;
-		l.finishAsset();
+		done(this);
 	}
 }

@@ -72,7 +72,7 @@ class Starter {
 		try {
 			if (canvas.getContext("experimental-webgl") != null) {
 				Sys.gl = canvas.getContext("experimental-webgl");
-				Sys.gl.scale(transform, transform);
+				//Sys.gl.scale(transform, transform);
 				Sys.init();
 				painter = new ShaderPainter(game.width, game.height);
 			}
@@ -160,7 +160,7 @@ class Starter {
 		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
 		
-		Lib.window.onunload = function(event: Dynamic) {
+		Browser.window.onunload = function(event: Dynamic) {
 			game.onClose();
 		}
 
