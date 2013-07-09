@@ -72,6 +72,7 @@ class Kravur implements Font {
 			++pos;
 		}
 		texture.unlock();
+		blob.reset();
 	}
 	
 	public function getTexture(): Texture {
