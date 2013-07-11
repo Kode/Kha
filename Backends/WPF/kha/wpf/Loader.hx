@@ -1,6 +1,8 @@
 package kha.wpf;
 
+import haxe.CallStack;
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 import haxe.Json;
 import kha.Blob;
 import kha.FontStyle;
@@ -24,12 +26,12 @@ class Loader extends kha.Loader {
 	}
 	
 	public override function loadProject(call: Void -> Void) {
-		enqueue(new kha.loader.Asset(path + "project.kha", path + "project.kha", "blob"));
+		enqueue(new kha.loader.Asset("project.kha", "project.kha", "blob"));
 		loadFiles(call);
 	}
 	
 	private override function parseProject() : Dynamic {
-		return Json.parse(getBlob(path + "project.kha").toString());
+		return Json.parse(getBlob("project.kha").toString());
 	}
 	
 	override public function loadMusic(filename: String, done: kha.Music -> Void) : Void {
@@ -45,7 +47,7 @@ class Loader extends kha.Loader {
 	}
 
 	override public function loadBlob(filename: String, done: kha.Blob -> Void): Void {
-		done(new Blob(Bytes.ofData(File.ReadAllBytes(filename))));
+		done(new Blob(Bytes.ofData(File.ReadAllBytes(path + filename))));
 	}
 
 	override public function loadVideo(filename: String, done: kha.Video -> Void) : Void {
