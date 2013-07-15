@@ -102,7 +102,9 @@ class Loader {
 	public var loadFinished: Void -> Void;
 	
 	public function enqueue(asset: Asset) {
-		enqueued.push(asset);
+		if ( !Lambda.has(enqueued,asset) ) {
+			enqueued.push(asset);
+		}
 	}
 	
 	public static function containsAsset(assetName: String, assetType: String, map: Array<Asset>): Bool {
