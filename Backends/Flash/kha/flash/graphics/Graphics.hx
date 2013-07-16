@@ -65,7 +65,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
-		context.setTextureAt(cast(unit, TextureUnit).unit, cast(texture, Image).getFlashTexture());
+		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
 	
 	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
