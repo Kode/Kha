@@ -5,9 +5,9 @@ precision highp float;
 #endif
 
 uniform sampler2D tex;
-uniform vec4 color;
 varying vec2 texCoord;
+varying vec4 color;
 
 void kmain() {
-	gl_FragColor = texture2D(tex, texCoord).r * color;
+	gl_FragColor = vec4(color.rgb, texture2D(tex, texCoord).r);
 }

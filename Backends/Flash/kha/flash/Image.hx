@@ -107,10 +107,10 @@ class Image implements kha.graphics.Texture {
 						var a = 3;
 						++a;
 					}
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, 0);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, 0);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, 0);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, value);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, value);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, value);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, value);
+					rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, 255);
 				}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 		}

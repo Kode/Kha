@@ -292,8 +292,8 @@ class TextShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter-image.frag"));
-		var vertexShader = Sys.graphics.createVertexShader(Loader.the.getShader("painter-image.vert"));
+		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter-text.frag"));
+		var vertexShader = Sys.graphics.createVertexShader(Loader.the.getShader("painter-text.vert"));
 	
 		shaderProgram = Sys.graphics.createProgram();
 		shaderProgram.setFragmentShader(fragmentShader);
@@ -302,6 +302,7 @@ class TextShaderPainter {
 		structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
 		
 		shaderProgram.link(structure);
 	}
@@ -324,39 +325,62 @@ class TextShaderPainter {
 	}
 	
 	private function setRectVertices(left: Float, top: Float, right: Float, bottom: Float): Void {
-		var baseIndex: Int = bufferIndex * 5 * 4;
+		var baseIndex: Int = bufferIndex * 9 * 4;
 		rectVertices[baseIndex +  0] = left;
 		rectVertices[baseIndex +  1] = bottom;
 		rectVertices[baseIndex +  2] = -5.0;
 		
-		rectVertices[baseIndex +  5] = left;
-		rectVertices[baseIndex +  6] = top;
-		rectVertices[baseIndex +  7] = -5.0;
+		rectVertices[baseIndex +  9] = left;
+		rectVertices[baseIndex + 10] = top;
+		rectVertices[baseIndex + 11] = -5.0;
 		
-		rectVertices[baseIndex + 10] = right;
-		rectVertices[baseIndex + 11] = top;
-		rectVertices[baseIndex + 12] = -5.0;
+		rectVertices[baseIndex + 18] = right;
+		rectVertices[baseIndex + 19] = top;
+		rectVertices[baseIndex + 20] = -5.0;
 		
-		rectVertices[baseIndex + 15] = right;
-		rectVertices[baseIndex + 16] = bottom;
-		rectVertices[baseIndex + 17] = -5.0;
+		rectVertices[baseIndex + 27] = right;
+		rectVertices[baseIndex + 28] = bottom;
+		rectVertices[baseIndex + 29] = -5.0;
 	}
 	
 	private function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
-		var baseIndex: Int = bufferIndex * 5 * 4;
+		var baseIndex: Int = bufferIndex * 9 * 4;
 		rectVertices[baseIndex +  3] = left;
 		rectVertices[baseIndex +  4] = bottom;
 		
-		rectVertices[baseIndex +  8] = left;
-		rectVertices[baseIndex +  9] = top;
+		rectVertices[baseIndex + 12] = left;
+		rectVertices[baseIndex + 13] = top;
 		
-		rectVertices[baseIndex + 13] = right;
-		rectVertices[baseIndex + 14] = top;
+		rectVertices[baseIndex + 21] = right;
+		rectVertices[baseIndex + 22] = top;
 		
-		rectVertices[baseIndex + 18] = right;
-		rectVertices[baseIndex + 19] = bottom;
+		rectVertices[baseIndex + 30] = right;
+		rectVertices[baseIndex + 31] = bottom;
 	}
-
+	
+	private function setRectColors(color: Color): Void {
+		var baseIndex: Int = bufferIndex * 9 * 4;
+		rectVertices[baseIndex +  5] = color.R;
+		rectVertices[baseIndex +  6] = color.G;
+		rectVertices[baseIndex +  7] = color.B;
+		rectVertices[baseIndex +  8] = color.A;
+		
+		rectVertices[baseIndex + 14] = color.R;
+		rectVertices[baseIndex + 15] = color.G;
+		rectVertices[baseIndex + 16] = color.B;
+		rectVertices[baseIndex + 17] = color.A;
+		
+		rectVertices[baseIndex + 23] = color.R;
+		rectVertices[baseIndex + 24] = color.G;
+		rectVertices[baseIndex + 25] = color.B;
+		rectVertices[baseIndex + 26] = color.A;
+		
+		rectVertices[baseIndex + 32] = color.R;
+		rectVertices[baseIndex + 33] = color.G;
+		rectVertices[baseIndex + 34] = color.B;
+		rectVertices[baseIndex + 35] = color.A;
+	}
+	
 	private function drawBuffer(): Void {
 		Sys.graphics.setTexture(textureLocation, lastTexture);
 		
@@ -376,7 +400,7 @@ class TextShaderPainter {
 		this.font = cast(font, Kravur);
 	}
 	
-	public function drawString(text: String, x: Float, y: Float): Void {
+	public function drawString(text: String, color: Color, x: Float, y: Float): Void {
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 
@@ -386,6 +410,7 @@ class TextShaderPainter {
 			var q = font.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+				setRectColors(color);
 				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
 				setRectVertices(q.x0, q.y0, q.x1, q.y1);
 				xpos += q.xadvance;
@@ -469,7 +494,7 @@ class ShaderPainter extends Painter {
 	public override function drawString(text: String, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
-		textPainter.drawString(text, tx + x, ty + y);
+		textPainter.drawString(text, color, tx + x, ty + y);
 	}
 
 	public override function setFont(font: Font): Void {
