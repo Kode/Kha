@@ -18,10 +18,14 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
+			case VertexData.Float1:
+				myStride += 1;
 			case VertexData.Float2:
 				myStride += 2;
 			case VertexData.Float3:
 				myStride += 3;
+			case VertexData.Float4:
+				myStride += 4;
 			}
 		}
 		myStructure = structure;
@@ -55,12 +59,18 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 		var offset: Int = 0;
 		for (element in myStructure.elements) {
 			switch (element.data) {
+			case VertexData.Float1:
+				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
+				offset += 1;
 			case VertexData.Float2:
 				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
 				offset += 2;
 			case VertexData.Float3:
 				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_3);
 				offset += 3;
+			case VertexData.Float4:
+				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
+				offset += 4;
 			}
 			++index;
 		}
