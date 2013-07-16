@@ -1,4 +1,5 @@
 package kha;
+
 import kha.graphics.Texture;
 import kha.graphics.TextureFormat;
 
@@ -43,13 +44,18 @@ class Kravur implements Font {
 	private var texture: Texture;
 	private var width: Int;
 	private var height: Int;
+	private var baseline: Float;
 	
 	public function new(name: String, style: FontStyle, size: Int) {
+		myName = name;
+		myStyle = style;
+		mySize = size;
 		var blob = Loader.the.getBlob(name + size + ".kravur");
 		var size = blob.readS32LE();
 		var ascent = blob.readS32LE();
 		var descent = blob.readS32LE();
 		var lineGap = blob.readS32LE();
+		baseline = ascent;
 		chars = new Array<BakedChar>();
 		for (i in 0...256 - 32) {
 			var char = new BakedChar();
@@ -103,6 +109,11 @@ class Kravur implements Font {
 		return q;
 	}
 	
+	private function getCharWidth(charIndex: Int): Float {
+		if (charIndex >= chars.length) return 0;
+		return chars[charIndex].xadvance;
+	}
+	
 	public var name(get, null): String;
 	public var style(get, null): FontStyle;
 	public var size(get, null): Int;
@@ -124,18 +135,22 @@ class Kravur implements Font {
 	}
 	
 	public function charWidth(ch: String): Float {
-		return 5;
+		return getCharWidth(ch.charCodeAt(0));
 	}
 
 	public function charsWidth(ch: String, offset: Int, length: Int): Float {
-		return 5 * length;
+		return stringWidth(ch.substr(offset, length));
 	}
 
 	public function stringWidth(str: String): Float {
-		return 5 * str.length;
+		var width: Float = 0;
+		for (c in 0...str.length) {
+			width += getCharWidth(str.charCodeAt(c));
+		}
+		return width;
 	}
 
 	public function getBaselinePosition(): Float {
-		return 0;
+		return baseline;
 	}
 }
