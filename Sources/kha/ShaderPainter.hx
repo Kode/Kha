@@ -448,7 +448,10 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {
-		//context.rect(tx + x, ty + y, width, height);
+		coloredPainter.fillRect(color, tx + x, ty + y, width, 1);
+		coloredPainter.fillRect(color, tx + x, ty + y, 1, height);
+		coloredPainter.fillRect(color, tx + x, ty + y + height, width, 1);
+		coloredPainter.fillRect(color, tx + x + width, ty + y, 1, height);
 	}
 	
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
