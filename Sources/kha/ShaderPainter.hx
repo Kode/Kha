@@ -378,16 +378,19 @@ class TextShaderPainter {
 	
 	public function drawString(text: String, x: Float, y: Float): Void {
 		var tex = font.getTexture();
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+		if (lastTexture != null && tex != lastTexture) drawBuffer();
 
 		var xpos = x;
 		var ypos = y;
 		for (i in 0...text.length) {
 			var q = font.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
-			setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
-			setRectVertices(q.x0, q.y0, q.x1, q.y1);
-			xpos += q.xadvance;
-			++bufferIndex;
+			if (q != null) {
+				if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
+				setRectVertices(q.x0, q.y0, q.x1, q.y1);
+				xpos += q.xadvance;
+				++bufferIndex;
+			}
 		}
 		lastTexture = tex;
 	}

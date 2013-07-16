@@ -80,6 +80,7 @@ class Kravur implements Font {
 	}
 	
 	public function getBakedQuad(char_index: Int, xpos: Float, ypos: Float): AlignedQuad {
+		if (char_index >= chars.length) return null;
 		var ipw: Float = 1.0 / width;
 		var iph: Float = 1.0 / height;
 		var b = chars[char_index];
