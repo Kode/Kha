@@ -8,6 +8,7 @@ import kha.graphics.TextureUnit;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
+import kha.math.Vector2;
 
 class ImageShaderPainter {
 	private var projectionMatrix: Array<Float>;
@@ -152,12 +153,19 @@ class ColoredShaderPainter {
 	private var shaderProgram: Program;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
+	
 	private static var bufferSize: Int = 100;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;
     private var rectVertices: Array<Float>;
 	private var indexBuffer: IndexBuffer;
-
+	
+	private static var triangleBufferSize: Int = 100;
+	private var triangleBufferIndex: Int;
+	private var triangleVertexBuffer: VertexBuffer;
+    private var triangleVertices: Array<Float>;
+	private var triangleIndexBuffer: IndexBuffer;
+	
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
 		initShaders();
@@ -195,6 +203,18 @@ class ColoredShaderPainter {
 			indices[i * 3 * 2 + 5] = i * 4 + 3;
 		}
 		indexBuffer.unlock();
+		
+		triangleVertexBuffer = Sys.graphics.createVertexBuffer(triangleBufferSize * 3, structure);
+		triangleVertices = triangleVertexBuffer.lock();
+		
+		triangleIndexBuffer = Sys.graphics.createIndexBuffer(triangleBufferSize * 3);
+		var triIndices = triangleIndexBuffer.lock();
+		for (i in 0...bufferSize) {
+			triIndices[i * 3 + 0] = i * 3 + 0;
+			triIndices[i * 3 + 1] = i * 3 + 1;
+			triIndices[i * 3 + 2] = i * 3 + 2;
+		}
+		triangleIndexBuffer.unlock();
 	}
 	
 	private function setRectVertices(left: Float, top: Float, right: Float, bottom: Float): Void {
@@ -238,8 +258,43 @@ class ColoredShaderPainter {
 		rectVertices[baseIndex + 26] = color.B;
 		rectVertices[baseIndex + 27] = color.A;
 	}
+	
+	private function setTriVertices(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+		triangleVertices[baseIndex +  0] = x1;
+		triangleVertices[baseIndex +  1] = y1;
+		triangleVertices[baseIndex +  2] = -5.0;
+		
+		triangleVertices[baseIndex +  7] = x2;
+		triangleVertices[baseIndex +  8] = y2;
+		triangleVertices[baseIndex +  9] = -5.0;
+		
+		triangleVertices[baseIndex + 14] = x3;
+		triangleVertices[baseIndex + 15] = y3;
+		triangleVertices[baseIndex + 16] = -5.0;
+	}
+	
+	private function setTriColors(color: Color): Void {
+		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+		triangleVertices[baseIndex +  3] = color.R;
+		triangleVertices[baseIndex +  4] = color.G;
+		triangleVertices[baseIndex +  5] = color.B;
+		triangleVertices[baseIndex +  6] = color.A;
+		
+		triangleVertices[baseIndex + 10] = color.R;
+		triangleVertices[baseIndex + 11] = color.G;
+		triangleVertices[baseIndex + 12] = color.B;
+		triangleVertices[baseIndex + 13] = color.A;
+		
+		triangleVertices[baseIndex + 17] = color.R;
+		triangleVertices[baseIndex + 18] = color.G;
+		triangleVertices[baseIndex + 19] = color.B;
+		triangleVertices[baseIndex + 20] = color.A;
+	}
 
 	private function drawBuffer(): Void {
+		endTris();
+		
 		rectVertexBuffer.unlock();
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
 		Sys.graphics.setIndexBuffer(indexBuffer);
@@ -249,6 +304,20 @@ class ColoredShaderPainter {
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		bufferIndex = 0;
+	}
+	
+	private function drawTriBuffer(): Void {
+		endRects();
+		
+		triangleVertexBuffer.unlock();
+		Sys.graphics.setVertexBuffer(triangleVertexBuffer);
+		Sys.graphics.setIndexBuffer(triangleIndexBuffer);
+		Sys.graphics.setProgram(shaderProgram);
+		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
+		
+		Sys.graphics.drawIndexedVertices(0, triangleBufferIndex * 3);
+
+		triangleBufferIndex = 0;
 	}
 	
 	public function fillRect(color: Color, x: Float, y: Float, width: Float, height: Float): Void {
@@ -264,8 +333,25 @@ class ColoredShaderPainter {
 		++bufferIndex;
 	}
 	
-	public function end(): Void {
+	public function fillTriangle(color: Color, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
+		if (triangleBufferIndex + 1 >= triangleBufferSize) drawTriBuffer();
+		
+		setTriColors(color);
+		setTriVertices(x1, y1, x2, y2, x3, y3);
+		++triangleBufferIndex;
+	}
+	
+	public function endTris(): Void {
+		if (triangleBufferIndex > 0) drawTriBuffer();
+	}
+	
+	public function endRects(): Void {
 		if (bufferIndex > 0) drawBuffer();
+	}
+	
+	public function end(): Void {
+		endTris();
+		endRects();
 	}
 }
 
@@ -502,16 +588,24 @@ class ShaderPainter extends Painter {
 	}
 
 	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void {
-		/*context.moveTo(tx + x1, ty + y1);
-		context.lineTo(tx + x2, ty + y2);
-		context.moveTo(0, 0);*/
+		x1 += tx;
+		y1 += ty;
+		x2 += tx;
+		y2 += ty;
+
+		var vec: Vector2;
+		if (y2 == y1) vec = new Vector2(0, -1);
+		else vec = new Vector2(1, -(x2 - x1) / (y2 - y1));
+		vec.length = 1;
+		var vec1 = new Vector2(x1, y1);
+		var vec2 = new Vector2(x2, y2);
+		
+		coloredPainter.fillTriangle(color, x1, y1, vec1.add(vec).x, vec1.add(vec).y, x2, y2);
+		coloredPainter.fillTriangle(color, vec1.add(vec).x, vec1.add(vec).y, vec2.add(vec).x, vec2.add(vec).y, x2, y2);		
 	}
 
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
-		/*context.beginPath();
-		
-		context.closePath();
-		context.fill();*/
+		coloredPainter.fillTriangle(color, tx + x1, ty + y1, tx + x2, ty + y2, tx + x3, ty + y3);
 	}
 	
 	public override function begin(): Void {
