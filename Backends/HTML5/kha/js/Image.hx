@@ -134,7 +134,7 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.ALPHA, width, height, 0, Sys.gl.ALPHA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 		bytes = null;

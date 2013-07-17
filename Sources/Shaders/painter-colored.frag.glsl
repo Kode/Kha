@@ -4,8 +4,8 @@
 precision highp float;
 #endif
 
-varying vec4 color;
+varying vec4 fragmentColor;
 
 void kmain() {
-	gl_FragColor = color;
+	gl_FragColor = fragmentColor;
 }

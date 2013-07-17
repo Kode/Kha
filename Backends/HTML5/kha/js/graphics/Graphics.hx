@@ -43,7 +43,13 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setTexture(stage: kha.graphics.TextureUnit, texture: kha.Image): Void {
-		cast(texture, Image).set(cast(stage, TextureUnit).value);
+		if (texture == null) {
+			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(stage, TextureUnit).value);
+			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+		}
+		else {
+			cast(texture, Image).set(cast(stage, TextureUnit).value);
+		}
 	}
 	
 	public function setTextureWrap(stage: kha.graphics.TextureUnit, u: TextureWrap, v: TextureWrap): Void {

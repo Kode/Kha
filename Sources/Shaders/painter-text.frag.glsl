@@ -6,8 +6,8 @@ precision highp float;
 
 uniform sampler2D tex;
 varying vec2 texCoord;
-varying vec4 color;
+varying vec4 fragmentColor;
 
 void kmain() {
-	gl_FragColor = vec4(color.rgb, texture2D(tex, texCoord).r);
+	gl_FragColor = vec4(fragmentColor.rgb, texture2D(tex, texCoord).r);
 }
