@@ -25,6 +25,7 @@ class ImageShaderPainter {
 
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
+		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
@@ -168,6 +169,7 @@ class ColoredShaderPainter {
 	
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
+		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
@@ -371,6 +373,7 @@ class TextShaderPainter {
 	
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
+		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
