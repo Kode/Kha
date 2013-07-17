@@ -1,4 +1,5 @@
 package kha.js;
+import kha.Color;
 
 class CSSPainter extends Painter {
 	var tx : Float;
@@ -38,7 +39,7 @@ class CSSPainter extends Painter {
 	//	image.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + url + "')";
 	//}-*/;
 
-	override public function setColor(r : Int, g : Int, b : Int) {
+	override public function setColor(color: Color) {
 		
 	}
 

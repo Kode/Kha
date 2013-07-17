@@ -525,6 +525,7 @@ class ShaderPainter extends Painter {
 	private var textPainter: TextShaderPainter;
 	
 	public function new(width: Int, height: Int) {
+		color = Color.fromBytes(0, 0, 0);
 		setScreenSize(width, height);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
@@ -560,8 +561,8 @@ class ShaderPainter extends Painter {
 		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
 	}
 	
-	public override function setColor(r: Int, g: Int, b: Int): Void {
-		color = Color.fromBytes(r, g, b);
+	public override function setColor(color: Color): Void {
+		color = Color.fromBytes(color.Rb, color.Gb, color.Bb, color.Ab);
 	}
 	
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {

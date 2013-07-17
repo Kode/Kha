@@ -1,4 +1,5 @@
 package kha.js;
+import kha.Color;
 import kha.FontStyle;
 
 class Painter extends kha.Painter {
@@ -54,9 +55,9 @@ class Painter extends kha.Painter {
 		}
 	}
 	
-	override public function setColor(r : Int, g : Int, b : Int) {
-		canvas.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
-		canvas.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+	override public function setColor(color: Color) {
+		canvas.strokeStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
+		canvas.fillStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
 	}
 	
 	override public function drawRect(x :Float, y : Float, width : Float, height : Float) {
