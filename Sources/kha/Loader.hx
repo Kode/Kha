@@ -334,7 +334,7 @@ class Loader {
 	public function loadMusic(filename: String, done: Music -> Void) { }
 	public function loadVideo(filename: String, done: Video -> Void) { }
 	
-	public function loadFont(name : String, style : FontStyle, size : Int) : Font { return null; }
+	public function loadFont(name : String, style : FontStyle, size : Float) : Font { return null; }
 	
 	public function loadURL(url : String) : Void { }
 	

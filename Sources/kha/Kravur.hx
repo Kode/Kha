@@ -38,7 +38,7 @@ class AlignedQuad {
 class Kravur implements Font {
 	private var myName: String;
 	private var myStyle: FontStyle;
-	private var mySize: Int;
+	private var mySize: Float;
 	
 	private var chars: Array<BakedChar>;
 	private var texture: Texture;
@@ -46,7 +46,7 @@ class Kravur implements Font {
 	private var height: Int;
 	private var baseline: Float;
 	
-	public function new(name: String, style: FontStyle, size: Int) {
+	public function new(name: String, style: FontStyle, size: Float) {
 		myName = name;
 		myStyle = style;
 		mySize = size;
@@ -116,7 +116,7 @@ class Kravur implements Font {
 	
 	public var name(get, null): String;
 	public var style(get, null): FontStyle;
-	public var size(get, null): Int;
+	public var size(get, null): Float;
 	
 	public function get_name(): String {
 		return myName;
@@ -126,7 +126,7 @@ class Kravur implements Font {
 		return myStyle;
 	}
 	
-	public function get_size(): Int {
+	public function get_size(): Float {
 		return mySize;
 	}
 	

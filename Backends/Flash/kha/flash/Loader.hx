@@ -71,7 +71,7 @@ class Loader extends kha.Loader {
 		done(new Video(filename + ".mp4"));
 	}
 	
-	override function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
+	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
 		var fontName = name + size;
 		if (!fontCache.exists(fontName)) {
 			fontCache.set(fontName, new Kravur(name, style, size));

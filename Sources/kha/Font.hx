@@ -3,7 +3,7 @@ package kha;
 interface Font {
 	var name(get, null): String;
 	var style(get, null): FontStyle;
-	var size(get, null): Int;
+	var size(get, null): Float;
 	function getHeight(): Float;
 	function charWidth(ch: String): Float;
 	function charsWidth(ch: String, offset: Int, length: Int): Float;

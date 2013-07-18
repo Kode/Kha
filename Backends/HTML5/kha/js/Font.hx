@@ -5,9 +5,9 @@ import kha.FontStyle;
 class Font implements kha.Font {
 	public var myName: String;
 	public var myStyle: FontStyle;
-	public var mySize: Int;
+	public var mySize: Float;
 	
-	public function new(name: String, style: FontStyle, size: Int) {
+	public function new(name: String, style: FontStyle, size: Float) {
 		myName = name;
 		myStyle = style;
 		mySize = size;
@@ -15,7 +15,7 @@ class Font implements kha.Font {
 	
 	public var name(get, null): String;
 	public var style(get, null): FontStyle;
-	public var size(get, null): Int;
+	public var size(get, null): Float;
 	
 	public function get_name(): String {
 		return myName;
@@ -25,7 +25,7 @@ class Font implements kha.Font {
 		return myStyle;
 	}
 	
-	public function get_size(): Int {
+	public function get_size(): Float {
 		return mySize;
 	}
 	
