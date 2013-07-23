@@ -14,7 +14,7 @@ class Configuration {
 		id = Scheduler.addTimeTask(update, 0, 1 / 60);
 	}
 	
-	private static function update(): Void {
+	public static function update(): Void {
 		theScreen.update();
 	}
 }
