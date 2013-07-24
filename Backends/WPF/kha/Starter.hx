@@ -43,7 +43,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		double heightTransform = canvas.ActualHeight/Starter.game.height;
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
-		Scheduler.executeFrame();
+		Scheduler.executeFrame(); // Main loop
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
