@@ -17,6 +17,7 @@ class SoundChannel extends kha.SoundChannel {
 	}
 	
 	override public function play(): Void {
+		super.play();
 		element.play();
 	}
 	
@@ -32,6 +33,7 @@ class SoundChannel extends kha.SoundChannel {
 		try {
 			element.pause();
 			element.currentTime = 0;
+      super.stop();
 		} catch (e : Dynamic) {
 			trace ( e );
 		}
