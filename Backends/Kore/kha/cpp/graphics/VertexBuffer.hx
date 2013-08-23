@@ -27,10 +27,16 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			Kore::VertexData data;
 			switch (structure->get(i)->data->index) {
 			case 0:
-				data = Kore::Float2VertexData;
+				data = Kore::Float1VertexData;
 				break;
 			case 1:
+				data = Kore::Float2VertexData;
+				break;
+			case 2:
 				data = Kore::Float3VertexData;
+				break;
+			case 3:
+				data = Kore::Float4VertexData;
 				break;
 			}
 			structure2.add(structure->get(i)->name, data);

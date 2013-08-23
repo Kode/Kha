@@ -6,7 +6,7 @@
 #include <Kore/Input/Mouse.h>
 #include <Kore/Audio/Audio.h>
 #include <Kore/Audio/Mixer.h>
-#include <Kore/Files/File.h>
+#include <Kore/IO/FileReader.h>
 #include "Json.h"
 #include <stdio.h>
 #include <kha/Starter.h>
@@ -85,8 +85,8 @@ int kore(int argc, char** argv) {
 	std::string name;
 	
 	{
-		Kore::DiskFile file; file.open("project.kha", Kore::DiskFile::ReadMode);
-		int filesize = file.getSize();
+		Kore::FileReader file("project.kha");
+		int filesize = file.size();
 		char* string = new char[filesize + 1];
 		char* data = (char*)file.readAll();
 		for (int i = 0; i < filesize; ++i) string[i] = data[i];

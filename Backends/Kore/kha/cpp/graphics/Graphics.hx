@@ -73,6 +73,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
+		if (texture == null) return;
 		cast(texture, Image).set(cast unit);
 	}
 	

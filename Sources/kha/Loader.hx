@@ -154,7 +154,7 @@ class Loader {
 		enqueued = new Array<Asset>();
 	}
 	
-	public function loadFiles(call: Void -> Void) {
+	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
 		loadFinished = call;
 		loadStarted(enqueued.length);
 		
@@ -228,12 +228,12 @@ class Loader {
 			checkComplete();
 		}
 		
-		if (autoCleanupAssets) cleanup();
+		if (autoCleanup) cleanup();
 	}
 	
 	public function loadProject(call: Void -> Void) {
 		enqueue(new Asset("project.kha", "project.kha", "blob"));
-		loadFiles(function() { loadShaders(call); } );
+		loadFiles(function() { loadShaders(call); }, false);
 	}
 	
 	private function loadShaders(call: Void -> Void): Void {
@@ -264,7 +264,7 @@ class Loader {
 	
 	public function loadRoom(name: String, call: Void -> Void) {
 		loadRoomAssets(rooms.get(name));
-		loadFiles(call);
+		loadFiles(call, autoCleanupAssets);
 	}
 	
 	public function initProject() {

@@ -14,7 +14,7 @@ import kha.graphics.TextureFormat;
 class Image implements Texture {
 	private var format: TextureFormat;
 	
-	public function new() { }
+	private function new() { }
 	
 	public static function create(width: Int, height: Int, format: TextureFormat): Image {
 		var image = new Image();

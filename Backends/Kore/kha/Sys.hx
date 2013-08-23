@@ -16,14 +16,14 @@ class Sys {
 		graphics = new kha.cpp.graphics.Graphics();
 	}
 	
-	@:functionCode("return Kore::System::getFrequency();")
+	@:functionCode("return Kore::System::frequency();")
 	public static function getFrequency(): Float {
 		return 1000;
 	}
 	
 	@:functionCode("
-		static Kore::System::ticks start = Kore::System::getTimestamp();
-		return static_cast<double>(Kore::System::getTimestamp() - start);
+		static Kore::System::ticks start = Kore::System::timestamp();
+		return static_cast<double>(Kore::System::timestamp() - start);
 	")
 	public static function getTimestamp(): Float {
 		return 0;
