@@ -161,7 +161,19 @@ class Scene {
 			var camx: Int = adjustCamX();
 			collisionLayer.advance(camx, camx + Game.the.width);
 		}
-		for (sprite in sprites) sprite.update();
+		var xleft = camx;
+		var xright = camx + Game.the.width;
+		var i: Int = 0;
+		while (i < sprites.length) {
+			if (sprites[i].x + sprites[i].width > xleft) break;
+			++i;
+		}
+		while (i < sprites.length) {
+			var sprite: Sprite = sprites[i];
+			if (sprite.x > xright) break;
+			sprite.update();
+			++i;
+		}
 	}
 
 	public function render(painter: Painter) {
