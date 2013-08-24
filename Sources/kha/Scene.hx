@@ -15,8 +15,10 @@ class Scene {
 	
 	var backgroundColor : Color;
 	
-	public var camx : Int;
-	public var camy : Int;
+	public var camx(default, set): Int;
+	public var camy(default, set): Int;
+	public var screenOffsetX: Int;
+	public var screenOffsetY: Int;
 	
 	private var dirtySprites: Bool = false;
 	
@@ -140,22 +142,24 @@ class Scene {
 		else return collisionLayer.countProjectiles();
 	}
 	
-	function adjustCamX(): Int {
+	function set_camx(newcamx: Int): Int {
+		camx = newcamx;
 		if (collisionLayer != null) {
-			var realcamx: Int = Std.int(Math.min(Math.max(0, camx - Game.the.width / 2), collisionLayer.getMap().getWidth() * collisionLayer.getMap().getTileset().TILE_WIDTH - Game.the.width));
-			if (getWidth() < Game.the.width) realcamx = 0;
-			return realcamx;
+			screenOffsetX = Std.int(Math.min(Math.max(0, camx - Game.the.width / 2), collisionLayer.getMap().getWidth() * collisionLayer.getMap().getTileset().TILE_WIDTH - Game.the.width));
+			if (getWidth() < Game.the.width) screenOffsetX = 0;
 		}
-		else return camx;
+		else screenOffsetX = camx;
+		return camx;
 	}
 	
-	function adjustCamY(): Int {
+	function set_camy(newcamy: Int): Int {
+		camy = newcamy;
 		if (collisionLayer != null) {
-			var realcamy: Int = Std.int(Math.min(Math.max(0, camy - Game.the.height / 2), collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT - Game.the.height));
-			if (getHeight() < Game.the.height) realcamy = 0;
-			return realcamy;
+			screenOffsetY = Std.int(Math.min(Math.max(0, camy - Game.the.height / 2), collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT - Game.the.height));
+			if (getHeight() < Game.the.height) screenOffsetY = 0;
 		}
-		else return camy;
+		else screenOffsetY = camy;
+		return camy;
 	}
 	
 	function sort(sprites : Array<Sprite>) {
@@ -185,12 +189,11 @@ class Scene {
 	public function update(): Void {
 		cleanSprites();
 		if (collisionLayer != null) {
-			var camx: Int = adjustCamX();
-			collisionLayer.advance(camx, camx + Game.the.width);
+			collisionLayer.advance(screenOffsetX, screenOffsetX + Game.the.width);
 		}
 		cleanSprites();
-		var xleft = camx;
-		var xright = camx + Game.the.width;
+		var xleft = screenOffsetX;
+		var xright = screenOffsetX + Game.the.width;
 		var i: Int = 0;
 		while (i < sprites.length) {
 			if (sprites[i].x + sprites[i].width > xleft) break;
@@ -210,34 +213,31 @@ class Scene {
 		//painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
 		//painter.clear();
 		
-		var camx: Int = adjustCamX();
-		var camy: Int = adjustCamY();
-		
 		for (i in 0...backgrounds.length) {
-			painter.translate(Math.round(-camx * backgroundSpeeds[i]), Math.round(-camy * backgroundSpeeds[i]));
-			backgrounds[i].render(painter, Std.int(camx * backgroundSpeeds[i]), Std.int(camy * backgroundSpeeds[i]), Game.the.width, Game.the.height);
+			painter.translate(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
+			backgrounds[i].render(painter, Std.int(screenOffsetX * backgroundSpeeds[i]), Std.int(screenOffsetY * backgroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 		
-		painter.translate( -camx, -camy);
+		painter.translate(-screenOffsetX, -screenOffsetY);
 		
 		sort(sprites);
 		
 		for (z in 0...10) {
 			var i : Int = 0;
 			while (i < sprites.length) {
-				if (sprites[i].x + sprites[i].width > camx) break;
+				if (sprites[i].x + sprites[i].width > screenOffsetX) break;
 				++i;
 			}
 			while (i < sprites.length) {
-				if (sprites[i].x > camx + Game.the.width) break;
+				if (sprites[i].x > screenOffsetX + Game.the.width) break;
 				if (i < sprites.length && sprites[i].z == z) sprites[i].render(painter);
 				++i;
 			}
 		}
 		
 		for (i in 0...foregrounds.length) {
-			painter.translate(Math.round(-camx * foregroundSpeeds[i]), Math.round(-camy * foregroundSpeeds[i]));
-			foregrounds[i].render(painter, Std.int(camx * foregroundSpeeds[i]), Std.int(camy * foregroundSpeeds[i]), Game.the.width, Game.the.height);
+			painter.translate(Math.round(-screenOffsetX * foregroundSpeeds[i]), Math.round(-screenOffsetY * foregroundSpeeds[i]));
+			foregrounds[i].render(painter, Std.int(screenOffsetX * foregroundSpeeds[i]), Std.int(screenOffsetY * foregroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 	}
 	
