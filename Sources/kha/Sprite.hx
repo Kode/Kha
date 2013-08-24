@@ -16,6 +16,7 @@ class Sprite {
 	public var maxspeedy : Float;
 	public var collides : Bool;
 	public var z : Int;
+	public var removed: Bool = false;
 	var tempcollider : Rectangle;
 	
 	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {

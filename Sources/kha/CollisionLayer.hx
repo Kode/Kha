@@ -305,4 +305,37 @@ class CollisionLayer {
 			++i;
 		}
 	}
+	
+	public function cleanSprites(): Void {
+		var found = true;
+		while (found) {
+			found = false;
+			for (sprite in heroes) {
+				if (sprite.removed) {
+					heroes.remove(sprite);
+					found = true;
+				}
+			}
+		}
+		found = true;
+		while (found) {
+			found = false;
+			for (sprite in enemies) {
+				if (sprite.removed) {
+					enemies.remove(sprite);
+					found = true;
+				}
+			}
+		}
+		found = true;
+		while (found) {
+			found = false;
+			for (sprite in projectiles) {
+				if (sprite.removed) {
+					projectiles.remove(sprite);
+					found = true;
+				}
+			}
+		}
+	}
 }

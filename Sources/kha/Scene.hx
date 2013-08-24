@@ -18,6 +18,8 @@ class Scene {
 	public var camx : Int;
 	public var camy : Int;
 	
+	private var dirtySprites: Bool = false;
+	
 	public static var the(get, null): Scene;
 	
 	private static function get_the(): Scene {
@@ -70,33 +72,42 @@ class Scene {
 	}
 	
 	public function addHero(sprite: Sprite) {
+		sprite.removed = false;
 		if (collisionLayer != null) collisionLayer.addHero(sprite);
 		sprites.push(sprite);
 	}
 	
 	public function addEnemy(sprite: Sprite) {
+		sprite.removed = false;
 		if (collisionLayer != null) collisionLayer.addEnemy(sprite);
 		sprites.push(sprite);
 	}
 	
 	public function addProjectile(sprite: Sprite) {
+		sprite.removed = false;
 		if (collisionLayer != null) collisionLayer.addProjectile(sprite);
 		sprites.push(sprite);
 	}
 
 	public function removeHero(sprite: Sprite) {
-		if (collisionLayer != null) collisionLayer.removeHero(sprite);
-		sprites.remove(sprite);
+		sprite.removed = true;
+		dirtySprites = true;
+		//if (collisionLayer != null) collisionLayer.removeHero(sprite);
+		//sprites.remove(sprite);
 	}
 	
 	public function removeEnemy(sprite: Sprite) {
-		if (collisionLayer != null) collisionLayer.removeEnemy(sprite);
-		sprites.remove(sprite);
+		sprite.removed = true;
+		dirtySprites = true;
+		//if (collisionLayer != null) collisionLayer.removeEnemy(sprite);
+		//sprites.remove(sprite);
 	}
 	
 	public function removeProjectile(sprite: Sprite) {
-		if (collisionLayer != null) collisionLayer.removeProjectile(sprite);
-		sprites.remove(sprite);
+		sprite.removed = true;
+		dirtySprites = true;
+		//if (collisionLayer != null) collisionLayer.removeProjectile(sprite);
+		//sprites.remove(sprite);
 	}
 	
 	public function getHero(index: Int): Sprite {
@@ -156,11 +167,28 @@ class Scene {
 		});
 	}
 	
+	private function cleanSprites(): Void {
+		if (!dirtySprites) return;
+		var found = true;
+		while (found) {
+			found = false;
+			for (sprite in sprites) {
+				if (sprite.removed) {
+					sprites.remove(sprite);
+					found = true;
+				}
+			}
+		}
+		if (collisionLayer != null) collisionLayer.cleanSprites();
+	}
+	
 	public function update(): Void {
+		cleanSprites();
 		if (collisionLayer != null) {
 			var camx: Int = adjustCamX();
 			collisionLayer.advance(camx, camx + Game.the.width);
 		}
+		cleanSprites();
 		var xleft = camx;
 		var xright = camx + Game.the.width;
 		var i: Int = 0;
@@ -174,6 +202,7 @@ class Scene {
 			sprite.update();
 			++i;
 		}
+		cleanSprites();
 	}
 
 	public function render(painter: Painter) {
