@@ -294,8 +294,8 @@ class ColoredShaderPainter {
 		triangleVertices[baseIndex + 20] = color.A;
 	}
 
-	private function drawBuffer(): Void {
-		endTris();
+	private function drawBuffer(trisDone: Bool): Void {
+		if (!trisDone) endTris(true);
 		
 		rectVertexBuffer.unlock();
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
@@ -308,8 +308,8 @@ class ColoredShaderPainter {
 		bufferIndex = 0;
 	}
 	
-	private function drawTriBuffer(): Void {
-		endRects();
+	private function drawTriBuffer(rectsDone: Bool): Void {
+		if (!rectsDone) endRects(true);
 		
 		triangleVertexBuffer.unlock();
 		Sys.graphics.setVertexBuffer(triangleVertexBuffer);
@@ -323,7 +323,7 @@ class ColoredShaderPainter {
 	}
 	
 	public function fillRect(color: Color, x: Float, y: Float, width: Float, height: Float): Void {
-		if (bufferIndex + 1 >= bufferSize) drawBuffer();
+		if (bufferIndex + 1 >= bufferSize) drawBuffer(false);
 		
 		var left: Float = x;
 		var top: Float = y;
@@ -336,24 +336,24 @@ class ColoredShaderPainter {
 	}
 	
 	public function fillTriangle(color: Color, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
-		if (triangleBufferIndex + 1 >= triangleBufferSize) drawTriBuffer();
+		if (triangleBufferIndex + 1 >= triangleBufferSize) drawTriBuffer(false);
 		
 		setTriColors(color);
 		setTriVertices(x1, y1, x2, y2, x3, y3);
 		++triangleBufferIndex;
 	}
 	
-	public function endTris(): Void {
-		if (triangleBufferIndex > 0) drawTriBuffer();
+	public function endTris(rectsDone: Bool): Void {
+		if (triangleBufferIndex > 0) drawTriBuffer(rectsDone);
 	}
 	
-	public function endRects(): Void {
-		if (bufferIndex > 0) drawBuffer();
+	public function endRects(trisDone: Bool): Void {
+		if (bufferIndex > 0) drawBuffer(trisDone);
 	}
 	
 	public function end(): Void {
-		endTris();
-		endRects();
+		endTris(false);
+		endRects(false);
 	}
 }
 
