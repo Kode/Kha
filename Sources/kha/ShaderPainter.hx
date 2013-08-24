@@ -562,7 +562,7 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function setColor(color: Color): Void {
-		color = Color.fromBytes(color.Rb, color.Gb, color.Bb, color.Ab);
+		this.color = Color.fromBytes(color.Rb, color.Gb, color.Bb, color.Ab);
 	}
 	
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {
