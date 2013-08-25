@@ -1,4 +1,5 @@
 package kha;
+import kha.math.Vector2;
 
 class Tilemap {
 	var tileset : Tileset;
@@ -36,6 +37,12 @@ class Tilemap {
 				tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
 			}
 		}
+	}
+	
+	public function collidesPoint(point: Vector2): Bool {
+		var xtile: Int = Std.int(point.x / tileset.TILE_WIDTH);
+		var ytile: Int = Std.int(point.y / tileset.TILE_HEIGHT);
+		return tileset.tile(map[xtile][ytile]).collides;
 	}
 	
 	public function collides(sprite : Sprite) {

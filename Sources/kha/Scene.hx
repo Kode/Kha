@@ -1,4 +1,5 @@
 package kha;
+import kha.math.Vector2;
 
 class Scene {
 	private static var instance : Scene;
@@ -169,6 +170,10 @@ class Scene {
 			else if (arg0.x == arg1.x) return 0;
 			else return 1;
 		});
+	}
+	
+	public function collidesPoint(point: Vector2): Bool {
+		return collisionLayer != null && collisionLayer.collidesPoint(point);
 	}
 	
 	private function cleanSprites(): Void {

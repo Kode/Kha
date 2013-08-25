@@ -1,4 +1,5 @@
 package kha;
+import kha.math.Vector2;
 
 class CollisionLayer {
 	private var map: Tilemap;
@@ -78,6 +79,10 @@ class CollisionLayer {
 		sort(heroes);
 		sort(enemies);
 		sort(projectiles);
+	}
+	
+	public function collidesPoint(point: Vector2): Bool {
+		return map.collidesPoint(point);
 	}
 	
 	//Bresenhahm

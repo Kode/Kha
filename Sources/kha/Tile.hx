@@ -3,7 +3,7 @@ package kha;
 class Tile {
 	public var imageIndex : Int;
 	public var visible : Bool;
-	var collides : Bool;
+	public var collides : Bool;
 	
 	public function new(imageIndex: Int, collides: Bool) {
 		this.imageIndex = imageIndex;
