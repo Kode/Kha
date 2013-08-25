@@ -176,6 +176,10 @@ class Scene {
 		return collisionLayer != null && collisionLayer.collidesPoint(point);
 	}
 	
+	public function collidesSprite(sprite: Sprite): Bool {
+		return collisionLayer != null && collisionLayer.collidesSprite(sprite);
+	}
+	
 	private function cleanSprites(): Void {
 		if (!dirtySprites) return;
 		var found = true;

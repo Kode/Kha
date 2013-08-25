@@ -84,6 +84,10 @@ class CollisionLayer {
 	public function collidesPoint(point: Vector2): Bool {
 		return map.collidesPoint(point);
 	}
+
+	public function collidesSprite(sprite: Sprite): Bool {
+		return map.collides(sprite);
+	}
 	
 	//Bresenhahm
 	private function line(xstart: Float, ystart: Float, xend: Float, yend: Float, sprite: Sprite): Void {
