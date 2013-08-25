@@ -45,8 +45,9 @@ class Tilemap {
 		return tileset.tile(map[xtile][ytile]).collides;
 	}
 	
-	public function collides(sprite : Sprite) {
+	public function collides(sprite: Sprite) {
 		var rect = sprite.collisionRect();
+		if (rect.x <= 0 || rect.y <= 0 || rect.x + rect.width >= getWidth() * tileset.TILE_WIDTH || rect.y + rect.height >= getHeight() * tileset.TILE_HEIGHT) return true;
 		var delta = 0.001;
 		var xtilestart : Int = Std.int((rect.x + delta) / tileset.TILE_WIDTH);
 		var xtileend : Int = Std.int((rect.x + rect.width - delta) / tileset.TILE_WIDTH);
