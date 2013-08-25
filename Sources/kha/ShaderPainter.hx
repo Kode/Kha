@@ -128,7 +128,7 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
+	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -138,10 +138,69 @@ class ImageShaderPainter {
 		var bottom: Float = dy + dh;
 		
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
-		setRectVertices(left, top, right, bottom);
+		
+		if (rotation != null) {
+			var lefttop = rotate(left, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
+			var rightbottom = rotate(right, bottom, left + rotation.center.x, top + rotation.center.y, rotation.angle);
+			var righttop = rotate(right, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
+			var leftbottom = rotate(left, bottom, left + rotation.center.x, top + rotation.center.y, rotation.angle);
+			
+			var baseIndex: Int = bufferIndex * 5 * 4;
+			rectVertices[baseIndex +  0] = leftbottom.x;
+			rectVertices[baseIndex +  1] = leftbottom.y;
+			rectVertices[baseIndex +  2] = -5.0;
+			
+			rectVertices[baseIndex +  5] = lefttop.x;
+			rectVertices[baseIndex +  6] = lefttop.y;
+			rectVertices[baseIndex +  7] = -5.0;
+			
+			rectVertices[baseIndex + 10] = righttop.x;
+			rectVertices[baseIndex + 11] = righttop.y;
+			rectVertices[baseIndex + 12] = -5.0;
+			
+			rectVertices[baseIndex + 15] = rightbottom.x;
+			rectVertices[baseIndex + 16] = rightbottom.y;
+			rectVertices[baseIndex + 17] = -5.0;
+		}
+		else {
+			setRectVertices(left, top, right, bottom);
+		}
 		++bufferIndex;
 		lastTexture = tex;
 	}
+
+	private function rotate(x: Float, y: Float, centerx: Float, centery: Float, angle: Float): Vector2 {
+		var s = Math.sin(angle);
+		var c = Math.cos(angle);
+		
+		x -= centerx;
+		y -= centery;
+		
+		var xnew = x * c - y * s;
+		var ynew = x * s + y * c;
+		
+		return new Vector2(xnew + centerx, ynew + centery);
+	}
+	
+	/*
+	POINT rotate_point(float cx,float cy,float angle,POINT p)
+{
+  float s = sin(angle);
+  float c = cos(angle);
+
+  // translate point back to origin:
+  p.x -= cx;
+  p.y -= cy;
+
+  // rotate point
+  float xnew = p.x * c - p.y * s;
+  float ynew = p.x * s + p.y * c;
+
+  // translate point back:
+  p.x = xnew + cx;
+  p.y = ynew + cy;
+}
+	*/
 	
 	public function end(): Void {
 		if (bufferIndex > 0) drawBuffer();
@@ -555,10 +614,10 @@ class ShaderPainter extends Painter {
 		imagePainter.drawImage(img, tx + x, ty + y);
 	}
 	
-	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
+	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		coloredPainter.end();
 		textPainter.end();
-		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation);
 	}
 	
 	public override function setColor(color: Color): Void {

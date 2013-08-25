@@ -17,6 +17,7 @@ class Sprite {
 	public var collides : Bool;
 	public var z : Int;
 	public var removed: Bool = false;
+	public var rotation: Rotation = null;
 	var tempcollider : Rectangle;
 	
 	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {
@@ -56,7 +57,7 @@ class Sprite {
 	
 	public function render(painter : Painter) : Void {
 		if (image != null) {
-			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height);
+			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
 		}
 	}
 	
