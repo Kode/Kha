@@ -139,6 +139,11 @@ class Scene {
 		else return collisionLayer.getProjectile(index);
 	}
 	
+	public function getOther(index: Int): Sprite {
+		if (collisionLayer == null) return null;
+		else return collisionLayer.getOther(index);
+	}
+	
 	public function countHeroes(): Int {
 		if (collisionLayer == null) return 0;
 		else return collisionLayer.countHeroes();
@@ -152,6 +157,11 @@ class Scene {
 	public function countProjectiles(): Int {
 		if (collisionLayer == null) return 0;
 		else return collisionLayer.countProjectiles();
+	}
+
+	public function countOthers(): Int {
+		if (collisionLayer == null) return 0;
+		else return collisionLayer.countOthers();
 	}
 	
 	function set_camx(newcamx: Int): Int {
