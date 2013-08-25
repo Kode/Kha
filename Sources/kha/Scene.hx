@@ -91,6 +91,12 @@ class Scene {
 		if (collisionLayer != null) collisionLayer.addProjectile(sprite);
 		sprites.push(sprite);
 	}
+	
+	public function addOther(sprite: Sprite) {
+		sprite.removed = false;
+		if (collisionLayer != null) collisionLayer.addOther(sprite);
+		sprites.push(sprite);
+	}
 
 	public function removeHero(sprite: Sprite) {
 		sprite.removed = true;
@@ -111,6 +117,11 @@ class Scene {
 		dirtySprites = true;
 		//if (collisionLayer != null) collisionLayer.removeProjectile(sprite);
 		//sprites.remove(sprite);
+	}
+	
+	public function removeOther(sprite: Sprite) {
+		sprite.removed = true;
+		dirtySprites = true;
 	}
 	
 	public function getHero(index: Int): Sprite {

@@ -6,12 +6,14 @@ class CollisionLayer {
 	private var heroes     : Array<Sprite>;
 	private var enemies    : Array<Sprite>;
 	private var projectiles: Array<Sprite>;
+	private var others     : Array<Sprite>;
 	
 	public function new(map: Tilemap) {
 		this.map = map;
 		heroes      = new Array<Sprite>();
 		enemies     = new Array<Sprite>();
 		projectiles = new Array<Sprite>();
+		others      = new Array<Sprite>();
 	}
 	
 	public function getMap(): Tilemap {
@@ -30,6 +32,10 @@ class CollisionLayer {
 		projectiles.push(sprite);
 	}
 	
+	public function addOther(sprite: Sprite): Void {
+		others.push(sprite);
+	}
+	
 	public function removeHero(sprite: Sprite): Void {
 		heroes.remove(sprite);
 	}
@@ -40,6 +46,10 @@ class CollisionLayer {
 		
 	public function removeProjectile(sprite: Sprite): Void {
 		projectiles.remove(sprite);
+	}
+	
+	public function removeOther(sprite: Sprite): Void {
+		others.remove(sprite);
 	}
 	
 	public function getHero(index: Int): Sprite {
@@ -54,6 +64,10 @@ class CollisionLayer {
 		return projectiles[index];
 	}
 	
+	public function getOther(index: Int): Sprite {
+		return others[index];
+	}
+	
 	public function countHeroes(): Int {
 		return heroes.length;
 	}
@@ -64,6 +78,10 @@ class CollisionLayer {
 
 	public function countProjectiles(): Int {
 		return projectiles.length;
+	}
+	
+	public function countOthers(): Int {
+		return others.length;
 	}
 	
 	private function sort(sprites: Array<Sprite>): Void {
@@ -79,6 +97,7 @@ class CollisionLayer {
 		sort(heroes);
 		sort(enemies);
 		sort(projectiles);
+		sort(others);
 	}
 	
 	public function collidesPoint(point: Vector2): Bool {
@@ -263,6 +282,7 @@ class CollisionLayer {
 		moveSprites(heroes, xleft, xright);
 		moveSprites(enemies, xleft, xright);
 		moveSprites(projectiles, xleft, xright);
+		moveSprites(others, xleft, xright);
 	}
 	
 	public function advance(xleft: Float, xright: Float): Void {
@@ -312,6 +332,36 @@ class CollisionLayer {
 				}
 			}
 			++i;
+		}
+		
+		for (other in others) {
+			var rect: Rectangle = other.collisionRect();
+			for (hero in heroes) {
+				if (rect.collision(hero.collisionRect())) {
+					hero.hit(other);
+					other.hit(hero);
+				}
+			}
+			for (enemy in enemies) {
+				if (rect.collision(enemy.collisionRect())) {
+					enemy.hit(other);
+					other.hit(enemy);
+				}
+			}
+			for (projectile in projectiles) {
+				if (rect.collision(projectile.collisionRect())) {
+					projectile.hit(other);
+					other.hit(projectile);
+				}
+			}
+			for (other2 in others) {
+				if (rect.collision(other2.collisionRect())) {
+					if (other != other2) {
+						other2.hit(other);
+						other.hit(other2);
+					}
+				}
+			}
 		}
 	}
 	
