@@ -39,6 +39,7 @@ class Sprite {
 		tempcollider = new Rectangle(0, 0, 0, 0);
 	}
 	
+	// change sprite x,y, width, height as collisionrect and add a image rect
 	public function collisionRect() : Rectangle {
 		tempcollider.x = x;
 		tempcollider.y = y;

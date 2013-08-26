@@ -355,8 +355,8 @@ class CollisionLayer {
 				}
 			}
 			for (other2 in others) {
-				if (rect.collision(other2.collisionRect())) {
-					if (other != other2) {
+				if (other != other2) {
+					if (rect.collision(other2.collisionRect())) {
 						other2.hit(other);
 						other.hit(other2);
 					}

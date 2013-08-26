@@ -73,6 +73,7 @@ class Starter {
 		game.loadFinished();
 		
 		painter = new ShaderPainter(game.width, game.height); //new Painter(context);
+		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
@@ -172,18 +173,53 @@ class Starter {
 	}
 	
 	function mouseDownHandler(event: MouseEvent): Void {
-		game.mouseDown(Std.int(event.stageX), Std.int(event.stageY));
+		game.mouseDown(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
 	}
 	
 	function mouseUpHandler(event: MouseEvent): Void {
-		game.mouseUp(Std.int(event.stageX), Std.int(event.stageY));
+		game.mouseUp(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {
-		game.mouseMove(Std.int(event.stageX), Std.int(event.stageY));
+		game.mouseMove(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
 	}
 	
+	var borderX : Float;
+	var borderY : Float;
+	var scale : Float;
 	function resizeHandler(event: Event): Void {
-		//painter.resize();
+		var gameRatio = Game.the.width / Game.the.height;
+		var screenRatio = stage.stageWidth / stage.stageHeight;
+		var realHeight;
+		var realWidth;
+		if (gameRatio > screenRatio) {
+			scale = stage.stageWidth / Game.the.width;
+			realWidth = Game.the.width * scale;
+			realHeight = Game.the.height * scale;
+			borderX = 0;
+			// 1000:100 = 10
+			// 100:100 = 1
+			// => scale = 100/1000 = 0.1
+			// => borderY = 100*0.1
+			borderY = (stage.stageHeight - realHeight) * 0.5;
+		} else {
+			scale = stage.stageHeight / Game.the.height;
+			realWidth = Game.the.width * scale;
+			realHeight = Game.the.height * scale;
+			// 100:1000 = 0.1
+			// 100:100 = 1
+			// => scale = 100/1000 = 0.1
+			// => borderX = 100 - 100*0.1
+			borderX= (stage.stageWidth - realWidth) * 0.5;
+			borderY = 0;
+		}
+		if (painter != null) {
+			trace( 'stageSize = ${stage.stageWidth} / ${stage.stageHeight}' );
+			trace( ' gameSize = ${Game.the.width} / ${Game.the.height}' );
+			trace( ' realSize = $realWidth / $realHeight' );
+			trace( '   border = $borderX / $borderY' );
+			context.configureBackBuffer( stage.stageWidth, stage.stageHeight, 0, false );
+			painter.setScreenSize(Game.the.width, Game.the.height, borderX/scale, borderY/scale);
+		}
 	}
 }

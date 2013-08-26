@@ -582,17 +582,27 @@ class ShaderPainter extends Painter {
 	private var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
+	private var width : Float;
+	private var height : Float;
+	private var borderX : Float;
+	private var borderY : Float;
 	
 	public function new(width: Int, height: Int) {
 		color = Color.fromBytes(0, 0, 0);
-		setScreenSize(width, height);
+		
+		setScreenSize(width, height, 0, 0);
+	}
+	
+	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
+		this.width = width;
+		this.height = height;
+		this.borderX = borderX;
+		this.borderY = borderY;
+		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
+		projectionMatrix = ortho( -borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
-	}
-	
-	public function setScreenSize(width: Int, height: Int) {
-		projectionMatrix = ortho(0, width, height, 0, 0.1, 1000);
 	}
 	
 	private function ortho(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Array<Float> {
@@ -611,12 +621,14 @@ class ShaderPainter extends Painter {
 	public override function drawImage(img: kha.Image, x: Float, y: Float): Void {
 		coloredPainter.end();
 		textPainter.end();
+		
 		imagePainter.drawImage(img, tx + x, ty + y);
 	}
 	
 	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		coloredPainter.end();
 		textPainter.end();
+		
 		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation);
 	}
 	
@@ -625,6 +637,9 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+		
 		coloredPainter.fillRect(color, tx + x, ty + y, width, 1);
 		coloredPainter.fillRect(color, tx + x, ty + y, 1, height);
 		coloredPainter.fillRect(color, tx + x, ty + y + height, width, 1);
@@ -632,6 +647,9 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+		
 		coloredPainter.fillRect(color, tx + x, ty + y, width, height);
 	}
 
@@ -643,6 +661,7 @@ class ShaderPainter extends Painter {
 	public override function drawString(text: String, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
+		
 		textPainter.drawString(text, color, tx + x, ty + y);
 	}
 
@@ -651,6 +670,9 @@ class ShaderPainter extends Painter {
 	}
 
 	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+		
 		x1 += tx;
 		y1 += ty;
 		x2 += tx;
@@ -668,6 +690,9 @@ class ShaderPainter extends Painter {
 	}
 
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
+		imagePainter.end();
+		textPainter.end();
+		
 		coloredPainter.fillTriangle(color, tx + x1, ty + y1, tx + x2, ty + y2, tx + x3, ty + y3);
 	}
 	
@@ -678,7 +703,11 @@ class ShaderPainter extends Painter {
 	
 	public override function end(): Void {
 		imagePainter.end();
-		coloredPainter.end();
 		textPainter.end();
+		coloredPainter.fillRect( Color.ColorBlack, -borderX, 0, borderX, height );
+		coloredPainter.fillRect( Color.ColorBlack, width, 0, borderX, height );
+		coloredPainter.fillRect( Color.ColorBlack, 0, -borderY, width, borderY );
+		coloredPainter.fillRect( Color.ColorBlack, 0, height, width, borderY );
+		coloredPainter.end();
 	}
 }
