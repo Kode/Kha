@@ -80,6 +80,8 @@ class Starter {
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, rightMouseDownHandler);
+		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, rightMouseUpHandler);
 		
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -178,6 +180,14 @@ class Starter {
 	
 	function mouseUpHandler(event: MouseEvent): Void {
 		game.mouseUp(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+	}
+	
+	function rightMouseDownHandler(event: MouseEvent): Void {
+		game.rightMouseDown(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+	}
+	
+	function rightMouseUpHandler(event: MouseEvent): Void {
+		game.rightMouseUp(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {

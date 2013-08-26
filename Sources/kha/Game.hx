@@ -68,9 +68,11 @@ class Game {
 	public function keyDown(key: Key, char: String): Void { }
 	public function keyUp  (key: Key, char: String): Void { }
 	
-	public function mouseDown(x: Int, y: Int): Void { }
-	public function mouseUp  (x: Int, y: Int): Void { }
-	public function mouseMove(x: Int, y: Int): Void { }
+	public function mouseDown     (x: Int, y: Int): Void { }
+	public function mouseUp       (x: Int, y: Int): Void { }
+	public function rightMouseDown(x: Int, y: Int): Void { }
+	public function rightMouseUp  (x: Int, y: Int): Void { }
+	public function mouseMove     (x: Int, y: Int): Void { }
 	
 	public function onClose(): Void { }
 }
