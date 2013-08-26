@@ -1,6 +1,8 @@
 package kha;
 
 class Color {
+	public static var ColorBlack : Color = Color.fromBytes(0,0,0);
+	
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.
 	**/
