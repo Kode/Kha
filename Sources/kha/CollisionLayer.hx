@@ -265,7 +265,7 @@ class CollisionLayer {
 	}
 	
 	private function moveSprites(sprites: Array<Sprite>, xleft: Float, xright: Float): Void {
-		var i: Int = 0;
+		/*var i: Int = 0;
 		while (i < sprites.length) {
 			if (sprites[i].x + sprites[i].width > xleft) break;
 			++i;
@@ -275,7 +275,8 @@ class CollisionLayer {
 			if (sprite.x > xright) break;
 			moveSprite(sprite);
 			++i;
-		}
+		}*/
+		for (sprite in sprites) moveSprite(sprite);
 	}
 	
 	private function moveAllSprites(xleft: Float, xright: Float): Void {
@@ -289,49 +290,48 @@ class CollisionLayer {
 		sortAllSprites();
 		moveAllSprites(xleft, xright);
 		
-		var i: Int = 0;
+		/*var i: Int = 0;
 		while (i < enemies.length) {
 			if (enemies[i].x + enemies[i].width > xleft) break;
 			++i;
 		}
 		while (i < enemies.length) {
 			var enemy = enemies[i];
-			if (enemy.x > xright) break;
+			if (enemy.x > xright) break;*/
+		for (enemy in enemies) {
 			var rect: Rectangle = enemy.collisionRect();
-			for (i2 in 0...heroes.length) {
-				var hero = heroes[i2];
+			for (hero in heroes) {
 				if (rect.collision(hero.collisionRect())) {
 					hero.hit(enemy);
 					enemy.hit(hero);
 				}
 			}
-			for (i2 in 0...projectiles.length) {
-				var projectile = projectiles[i2];
+			for (projectile in projectiles) {
 				if (rect.collision(projectile.collisionRect())) {
 					projectile.hit(enemy);
 					enemy.hit(projectile);
 				}
 			}
-			++i;
+			/* ++i; */
 		}
 		
-		i = 0;
+		/*i = 0;
 		while (i < projectiles.length) {
 			if (projectiles[i].x + projectiles[i].width > xleft) break;
 			++i;
 		}
 		while (i < projectiles.length) {
 			var projectile = projectiles[i];
-			if (projectile.x > xright) break;
+			if (projectile.x > xright) break;*/
+		for (projectile in projectiles) {
 			var rect: Rectangle = projectile.collisionRect();
-			for (i2 in 0...heroes.length) {
-				var hero = heroes[i2];
+			for (hero in heroes) {
 				if (rect.collision(hero.collisionRect())) {
 					hero.hit(projectile);
 					projectile.hit(hero);
 				}
 			}
-			++i;
+			/*++i;*/
 		}
 		
 		for (other in others) {

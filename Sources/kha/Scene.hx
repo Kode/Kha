@@ -212,7 +212,7 @@ class Scene {
 			collisionLayer.advance(screenOffsetX, screenOffsetX + Game.the.width);
 		}
 		cleanSprites();
-		var xleft = screenOffsetX;
+		/*var xleft = screenOffsetX;
 		var xright = screenOffsetX + Game.the.width;
 		var i: Int = 0;
 		while (i < sprites.length) {
@@ -224,7 +224,8 @@ class Scene {
 			if (sprite.x > xright) break;
 			sprite.update();
 			++i;
-		}
+		}*/
+		for (sprite in sprites) sprite.update();
 		cleanSprites();
 	}
 
