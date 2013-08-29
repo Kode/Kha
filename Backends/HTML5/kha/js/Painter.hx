@@ -64,7 +64,7 @@ class Painter extends kha.Painter {
 	override public function drawRect(x :Float, y : Float, width : Float, height : Float, strength: Float = 1.0) {
 		canvas.beginPath();
 		var oldStrength = canvas.lineWidth;
-		canvas.linewidth = strength;
+		canvas.lineWidth = Math.round(strength);
 		canvas.rect(tx + x, ty + y, width, height);
 		canvas.stroke();
 		canvas.lineWidth = oldStrength;
@@ -86,7 +86,7 @@ class Painter extends kha.Painter {
 	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float, strength: Float = 1.0) {
 		canvas.beginPath();
 		var oldWith = canvas.lineWidth;
-		canvas.lineWidth = strength;
+		canvas.lineWidth = Math.round(strength);
 		canvas.moveTo(tx + x1, ty + y1);
 		canvas.lineTo(tx + x2, ty + y2);
 		canvas.moveTo(0, 0);

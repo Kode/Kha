@@ -142,7 +142,7 @@ class Starter {
 		//Lib.document.onmousedown = function(event : js.Event) {
 		canvas.onmousedown = function(event : MouseEvent) {
 			checkMouseShift(event);
-			trace ( 'mouse (${event.button}) DOWN' );
+			//trace ( 'mouse (${event.button}) DOWN' );
 			if (event.button == 0) {
 				game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 			} else {
@@ -153,7 +153,7 @@ class Starter {
 		//Lib.document.onmouseup = function(event : js.Event) {
 		canvas.onmouseup = function(event : MouseEvent) {
 			checkMouseShift(event);
-			trace ( 'mouse (${event.button}) UP' );
+			//trace ( 'mouse (${event.button}) UP' );
 			if (event.button == 0) {
 				game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 			} else {
