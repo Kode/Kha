@@ -26,6 +26,7 @@ class ImageShaderPainter {
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
+		triangleBufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
