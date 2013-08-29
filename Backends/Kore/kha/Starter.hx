@@ -82,12 +82,36 @@ class Starter {
 		game.buttonUp(Button.BUTTON_1);
 	}
 	
+	public static function pushChar(charCode: Int): Void {
+		game.keyDown(Key.CHAR, String.fromCharCode(charCode));
+	}
+	
+	public static function releaseChar(charCode: Int): Void {
+		game.keyUp(Key.CHAR, String.fromCharCode(charCode));
+	}
+	
+	public static function pushShift(): Void {
+		game.keyDown(Key.SHIFT, null);
+	}
+	
+	public static function releaseShift(): Void {
+		game.keyUp(Key.SHIFT, null);
+	}
+	
 	public static function mouseDown(x: Int, y: Int) : Void {
 		game.mouseDown(x, y);
 	}
 
 	public static function mouseUp(x: Int, y: Int) : Void {
 		game.mouseUp(x, y);
+	}
+	
+	public static function rightMouseDown(x: Int, y: Int) : Void {
+		game.rightMouseDown(x, y);
+	}
+
+	public static function rightMouseUp(x: Int, y: Int) : Void {
+		game.rightMouseUp(x, y);
 	}
 	
 	public static function mouseMove(x: Int, y: Int): Void {
