@@ -128,6 +128,7 @@ int kore(int argc, char** argv) {
 	Kore::Application* app = new Kore::Application(argc, argv, width, height, false, name.c_str());
 	Kore::Mixer::init();
 	Kore::Audio::init();
+	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 	app->setCallback(update);
 	
 	hxcpp_set_top_of_stack();
