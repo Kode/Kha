@@ -241,8 +241,8 @@ class Scene {
 
 	public function render(painter: Painter) {
 		painter.translate(0, 0);
-		//painter.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
-		//painter.clear();
+		painter.setColor(backgroundColor);
+		painter.clear();
 		
 		for (i in 0...backgrounds.length) {
 			painter.translate(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
