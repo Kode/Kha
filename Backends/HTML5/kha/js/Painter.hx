@@ -50,13 +50,40 @@ class Painter extends kha.Painter {
 	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float, rotation : Rotation = null) {
 		try {
 			if (rotation != null) {
-				canvas.save(); 
+				canvas.save();
 				canvas.translate( tx + dx + rotation.center.x, ty + dy + rotation.center.y );
 				canvas.rotate(rotation.angle);
-				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, -rotation.center.x, -rotation.center.y, dw, dh);
+				var x = -rotation.center.x;
+				var y = -rotation.center.y;
+				if (dw < 0) {
+					canvas.scale( -1, 1);
+					x -= dw;
+				}
+				if (dh < 0) {
+					canvas.scale( 1, -1);
+					y -= dh;
+				}
+				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, x, y, dw, dh);
 				canvas.restore();
 			} else {
-				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+				if (dw < 0 || dh < 0) {
+					canvas.save();
+					canvas.translate( tx + dx, ty + dy );
+					var x = 0.0;
+					var y = 0.0;
+					if (dw < 0) {
+						canvas.scale( -1, 1);
+						x = -dw;
+					}
+					if (dh < 0) {
+						canvas.scale( 1, -1);
+						y = -dh;
+					}
+					canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, x, y, dw, dh);
+					canvas.restore();
+				} else {
+					canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+				}
 			}
 		}
 		catch (ex : Dynamic) {
