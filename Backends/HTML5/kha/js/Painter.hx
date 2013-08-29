@@ -49,7 +49,15 @@ class Painter extends kha.Painter {
 	
 	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float, rotation : Rotation = null) {
 		try {
-			canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation);
+			if (rotation != null) {
+				canvas.save(); 
+				canvas.translate( tx + dx + rotation.center.x, ty + dy + rotation.center.y );
+				canvas.rotate(rotation.angle);
+				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, -rotation.center.x, -rotation.center.y, dw, dh);
+				canvas.restore();
+			} else {
+				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+			}
 		}
 		catch (ex : Dynamic) {
 			
