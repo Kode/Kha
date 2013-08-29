@@ -230,6 +230,7 @@ class ColoredShaderPainter {
 	public function new(projectionMatrix: Array<Float>) {
 		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
+		triangleBufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
@@ -279,7 +280,7 @@ class ColoredShaderPainter {
 		triangleIndexBuffer.unlock();
 	}
 	
-	private function setRectVertices(left: Float, top: Float, right: Float, bottom: Float): Void {
+	public function setRectVertices(left: Float, top: Float, right: Float, bottom: Float): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
 		rectVertices[baseIndex +  0] = left;
 		rectVertices[baseIndex +  1] = bottom;
@@ -298,7 +299,7 @@ class ColoredShaderPainter {
 		rectVertices[baseIndex + 23] = -5.0;
 	}
 	
-	private function setRectColors(color: Color): Void {
+	public function setRectColors(color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
 		rectVertices[baseIndex +  3] = color.R;
 		rectVertices[baseIndex +  4] = color.G;
@@ -637,14 +638,14 @@ class ShaderPainter extends Painter {
 		this.color = Color.fromBytes(color.Rb, color.Gb, color.Bb, color.Ab);
 	}
 	
-	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {
+	public override function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0 ): Void {
 		imagePainter.end();
 		textPainter.end();
 		
-		coloredPainter.fillRect(color, tx + x, ty + y, width, 1);
-		coloredPainter.fillRect(color, tx + x, ty + y, 1, height);
-		coloredPainter.fillRect(color, tx + x, ty + y + height, width, 1);
-		coloredPainter.fillRect(color, tx + x + width, ty + y, 1, height);
+		coloredPainter.fillRect(color, tx + x, ty + y, width, strength);
+		coloredPainter.fillRect(color, tx + x, ty + y, strength, height);
+		coloredPainter.fillRect(color, tx + x, ty + y + height, width, -strength);
+		coloredPainter.fillRect(color, tx + x + width, ty + y, -strength, height);
 	}
 	
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
@@ -670,7 +671,7 @@ class ShaderPainter extends Painter {
 		textPainter.setFont(font);
 	}
 
-	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 		imagePainter.end();
 		textPainter.end();
 		
@@ -678,16 +679,18 @@ class ShaderPainter extends Painter {
 		y1 += ty;
 		x2 += tx;
 		y2 += ty;
-
+		
 		var vec: Vector2;
 		if (y2 == y1) vec = new Vector2(0, -1);
 		else vec = new Vector2(1, -(x2 - x1) / (y2 - y1));
-		vec.length = 1;
-		var vec1 = new Vector2(x1, y1);
-		var vec2 = new Vector2(x2, y2);
+		vec.length = strength;
+		var p1 = new Vector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
+		var p2 = new Vector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
+		var p3 = p1.sub(vec);
+		var p4 = p2.sub(vec);
 		
-		coloredPainter.fillTriangle(color, x1, y1, vec1.add(vec).x, vec1.add(vec).y, x2, y2);
-		coloredPainter.fillTriangle(color, vec1.add(vec).x, vec1.add(vec).y, vec2.add(vec).x, vec2.add(vec).y, x2, y2);		
+		coloredPainter.fillTriangle(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		coloredPainter.fillTriangle(color, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);		
 	}
 
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {

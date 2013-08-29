@@ -4,7 +4,7 @@ class Painter {
 	public function drawImage(img: Image, x: Float, y: Float): Void { }
 	public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void { }
 	public function setColor(color: Color): Void { }
-	public function drawRect(x: Float, y: Float, width: Float, height: Float): Void { }
+	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
 	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
 	public function setFont(font: Font): Void { }
 	
@@ -13,7 +13,7 @@ class Painter {
 	}
 	
 	public function drawString(text: String, x: Float, y: Float): Void { }
-	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float): Void { }
+	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
 	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
 	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 	public function translate(x: Float, y: Float): Void { }

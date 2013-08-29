@@ -1,6 +1,7 @@
 package kha.js;
 import kha.Color;
 import kha.FontStyle;
+import kha.Rotation;
 
 class Painter extends kha.Painter {
 	var canvas : Dynamic;
@@ -46,9 +47,9 @@ class Painter extends kha.Painter {
 		canvas.drawImage(cast(img, Image).image, tx + x, ty + y);
 	}
 	
-	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) {
+	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float, rotation : Rotation = null) {
 		try {
-			canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
+			canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation);
 		}
 		catch (ex : Dynamic) {
 			
@@ -60,10 +61,13 @@ class Painter extends kha.Painter {
 		canvas.fillStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
 	}
 	
-	override public function drawRect(x :Float, y : Float, width : Float, height : Float) {
+	override public function drawRect(x :Float, y : Float, width : Float, height : Float, strength: Float = 1.0) {
 		canvas.beginPath();
+		var oldStrength = canvas.lineWidth;
+		canvas.linewidth = strength;
 		canvas.rect(tx + x, ty + y, width, height);
 		canvas.stroke();
+		canvas.lineWidth = oldStrength;
 	}
 	
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) {
@@ -79,12 +83,15 @@ class Painter extends kha.Painter {
 		canvas.font = webfont.size + "px " + webfont.name;
 	}
 
-	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) {
+	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float, strength: Float = 1.0) {
 		canvas.beginPath();
+		var oldWith = canvas.lineWidth;
+		canvas.lineWidth = strength;
 		canvas.moveTo(tx + x1, ty + y1);
 		canvas.lineTo(tx + x2, ty + y2);
 		canvas.moveTo(0, 0);
 		canvas.stroke();
+		canvas.lineWidth = oldWith;
 	}
 
 	override public function fillTriangle(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : Float, y3 : Float) {
