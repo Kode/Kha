@@ -49,15 +49,17 @@ class Loader extends kha.Loader {
 		request.onreadystatechange = function() {
 			if (request.readyState != 4) return;
 			if (request.status >= 200 && request.status < 400) {
-				var data : String = null;
-				if (request.overrideMimeType == null) {
-					data = untyped __js__("arr(request.responseBody).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(request.responseBody)");
+				var bytes: Bytes = null;
+				if (request.responseBody != null) {
+					var data: Dynamic = untyped __js__("VBArray(request.responseBody).toArray()");
+					bytes = Bytes.alloc(data.length);
+					for (i in 0...data.length) bytes.set(i, data[i]);
 				}
 				else {
-					data = request.responseText;
+					var data = request.responseText;
+					bytes = Bytes.alloc(data.length);
+					for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
 				}
-				var bytes = Bytes.alloc(data.length);
-				for (i in 0...data.length) bytes.set(i, data.charCodeAt(i) & 0xff);
 				done(new Blob(bytes));
 			}
 			else Lib.alert("loadBlob failed");
