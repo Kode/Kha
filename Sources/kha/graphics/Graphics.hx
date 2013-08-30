@@ -5,6 +5,9 @@ import kha.Color;
 import kha.Image;
 
 interface Graphics {
+	function vsynced(): Bool;
+	function refreshRate(): Int;
+	
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 	
 	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;

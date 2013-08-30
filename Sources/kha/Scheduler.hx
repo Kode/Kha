@@ -80,21 +80,11 @@ class Scheduler {
 	}
 	
 	public static function start(): Void {
-		/*if (Graphics::hasWindow()) {
-			var test1 = getTimestamp();
-			for (i in 0...3) Graphics::swapBuffers();
-			ticks test2 = getTimestamp();
-			if (test2 - test1 < timespanToTicks(1.0 / 100.0)) {
-				vsync = false;
-			}
-			else vsync = true;
-			var hz = 60.0;// Graphics::getHz();
-			if (hz >= 57 && hz <= 63) hz = 60;
-			onedifhz = 1.0 / hz;
-		}*/
-		vsync = true;
-		var hz = 60.0;
+		vsync = Sys.graphics.vsynced();
+		var hz = Sys.graphics.refreshRate();
+		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
+
 		//std::cout << "Using " << hz << " Hz" << std::endl;
 		//std::cout << "Using vsync = " << (vsync ? "true" : "false") << std::endl;
 

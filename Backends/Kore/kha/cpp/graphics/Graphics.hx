@@ -19,6 +19,20 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
+	@:functionCode('
+		return Kore::Graphics::vsynced();
+	')
+	public function vsynced(): Bool {
+		return true;
+	}
+
+	@:functionCode('
+		return (Int)Kore::Graphics::refreshRate();
+	')
+	public function refreshRate(): Int {
+		return 0;
+	}
+	
 	public function clear(?color: Color, ?z: Float, ?stencil: Int): Void {
 		var flags: Int = 0;
 		if (color != null) flags |= 1;
