@@ -16,7 +16,7 @@ class Sys {
 		return 1000;
 	}
 
-	public static function getTimestamp(): Int {
+	public static function getTimestamp(): Float {
 		return Lib.getTimer();
 	}
 }

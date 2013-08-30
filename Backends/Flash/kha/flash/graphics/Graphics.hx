@@ -24,6 +24,13 @@ class Graphics implements kha.graphics.Graphics {
 		Graphics.context = context;
 	}
 	
+	public function vsynced(): Bool {
+		return true;
+	}
+	public function refreshRate(): Int {
+		return Std.int(flash.Lib.current.stage.frameRate);
+	}
+	
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var mask: UInt = 0;
 		if (color != null) mask |= Context3DClearMask.COLOR;
