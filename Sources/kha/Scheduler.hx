@@ -56,11 +56,11 @@ class Scheduler {
 	private static var halted_count: Int;
 
 	private static var DIF_COUNT = 3;
-	private static var maxframetime = 1.0;
+	private static var maxframetime = 0.1;
 	
 	public static function init(): Void {
 		difs = new Array<Float>();
-		difs[DIF_COUNT - 1] = 0;
+		difs[DIF_COUNT - 2] = 0;
 		
 		running = false;
 		stopped = false;
@@ -125,27 +125,33 @@ class Scheduler {
 				while (realdif < tdif - onedifhz) { //0.3 -> 0.7
 					realdif += onedifhz;
 				}
-
-				for (i in 0...DIF_COUNT - 1) difs[i + 1] = difs[i];
+				
+				tdif = realdif;
+				for (i in 0...DIF_COUNT-2) {
+					tdif += difs[i];
+					difs[i] = difs[i+1];
+				}
+				tdif += difs[DIF_COUNT-2];
+				tdif /= DIF_COUNT;
 				difs[0] = realdif;
-
-				realdif = 0;
-				for (i in 0...DIF_COUNT) realdif += difs[i];
-				realdif /= DIF_COUNT;
-
-				frameEnd += timespanToTicks(realdif);
-				startstamp += stamp - current - timespanToTicks(realdif); //nein, startstamp ist hier immer noch korrekt //öhm...
+				
+				frameEnd += timespanToTicks(tdif);
 			}
 			else {
-				for (i in 0...DIF_COUNT - 1) difs[i + 1] = difs[i];
-				difs[0] = tdif;
-
-				tdif = 0;
-				for (i in 0...DIF_COUNT) tdif += difs[i];
-				tdif /= DIF_COUNT;
-
-				frameEnd += timespanToTicks(tdif); //= stamp;
-				frameEnd = stamp;
+				#if true
+					var interpolated_tdif = tdif;
+					for (i in 0...DIF_COUNT-2) {
+						interpolated_tdif += difs[i];
+						difs[i] = difs[i+1];
+					}
+					interpolated_tdif += difs[DIF_COUNT-2];
+					interpolated_tdif /= DIF_COUNT;
+					difs[0] = tdif;
+					
+					frameEnd += timespanToTicks(interpolated_tdif); // Interpolierte vorhersage des Frame endes
+				#else
+					frameEnd = stamp; // Keine vorhersage des Frame endes. */
+				#end
 			}
 		}
 
