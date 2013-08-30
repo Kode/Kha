@@ -12,9 +12,11 @@ import kha.js.Image;
 class Graphics implements kha.graphics.Graphics {
 	private var indicesCount: Int;
 	
-	public function new() {
-		Sys.gl.enable(Sys.gl.BLEND);
-		Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
+	public function new(webgl: Bool) {
+		if (webgl) {
+			Sys.gl.enable(Sys.gl.BLEND);
+			Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
+		}
 	}
 	
 	public function vsynced(): Bool {

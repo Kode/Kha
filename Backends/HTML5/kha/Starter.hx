@@ -76,7 +76,7 @@ class Starter {
 			if (canvas.getContext("experimental-webgl") != null) {
 				Sys.gl = canvas.getContext("experimental-webgl");
 				//Sys.gl.scale(transform, transform);
-				Sys.init();
+				Sys.init(true);
 				painter = new ShaderPainter(game.width, game.height);
 			}
 		}
@@ -84,6 +84,7 @@ class Starter {
 			trace(e);
 		}
 		if (painter == null) {
+			Sys.init(false);
 			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
 			canvas.getContext("2d").scale(transform, transform);
 		}
