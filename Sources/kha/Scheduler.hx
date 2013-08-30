@@ -133,7 +133,7 @@ class Scheduler {
 				}
 				tdif += difs[DIF_COUNT-2];
 				tdif /= DIF_COUNT;
-				difs[0] = realdif;
+				difs[DIF_COUNT-2] = realdif;
 				
 				frameEnd += timespanToTicks(tdif);
 			}
@@ -146,7 +146,7 @@ class Scheduler {
 					}
 					interpolated_tdif += difs[DIF_COUNT-2];
 					interpolated_tdif /= DIF_COUNT;
-					difs[0] = tdif;
+					difs[DIF_COUNT-2] = tdif;
 					
 					frameEnd += timespanToTicks(interpolated_tdif); // Interpolierte vorhersage des Frame endes
 				#else
