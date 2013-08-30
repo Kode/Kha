@@ -17,7 +17,6 @@ class Sys {
 	}
 	
 	public static function getTimestamp(): Int {
-		var date: Dynamic = untyped __js__("new Date()");
-		return date.getMilliseconds();
+		return untyped __js__("Date.now()");
 	}
 }
