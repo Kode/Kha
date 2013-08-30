@@ -106,6 +106,8 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
+		stamp = getCurrentTimestamp();
+		
 		current = frameEnd;
 		var tdif = ticksToTimespan(stamp - current);
 		//tdif = 1.0 / 60.0; //force fixed frame rate
@@ -199,8 +201,6 @@ class Scheduler {
 			}
 			break;
 		}
-
-		stamp = getCurrentTimestamp();
 	}
 
 	public static function time(): Float {
