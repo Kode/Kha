@@ -50,7 +50,7 @@ class Loader extends kha.Loader {
 			if (request.readyState != 4) return;
 			if (request.status >= 200 && request.status < 400) {
 				var data : String = null;
-				if (request.responseBody != null) {
+				if (request.overrideMimeType == null) {
 					data = untyped __js__("arr(request.responseBody).replace(/[\\s\\S]/g, function(t){ var v= t.charCodeAt(0); return String.fromCharCode(v&0xff, v>>8); }) + arrl(request.responseBody)");
 				}
 				else {
