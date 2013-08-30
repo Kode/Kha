@@ -17,6 +17,14 @@ class Graphics implements kha.graphics.Graphics {
 		Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
 	}
 	
+	public function vsynced(): Bool {
+		return true;
+	}
+	
+	public function refreshRate(): Int {
+		return 60;
+	}
+	
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		
 	}
