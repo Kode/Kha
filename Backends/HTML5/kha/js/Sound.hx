@@ -79,7 +79,7 @@ class Sound extends kha.Sound {
 		element.src = filename + extensions[0];
 		
 		element.load();
-		element.volume = 0;
+		element.muted = true;
 		element.play(); //force preload
 	}
 	
@@ -127,7 +127,7 @@ class Sound extends kha.Sound {
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
 		element.pause();
 		element.currentTime = 0;
-		element.volume = 1;
+		element.muted = false;
 		done(this);
 	}
 }
