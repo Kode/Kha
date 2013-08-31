@@ -5,6 +5,7 @@ import js.html.AudioElement;
 import js.html.ErrorEvent;
 import js.html.Event;
 import js.html.MediaError;
+import js.Lib;
 
 using StringTools;
 
@@ -72,12 +73,14 @@ class Sound extends kha.Sound {
 			}
 		}
 		
-		element.preload = "auto";
-		
 		element.addEventListener("error", errorListener, false);
-		element.addEventListener("canplaythrough", canPlayThroughListener, false);
+		element.addEventListener("canplay", canPlayThroughListener, false);
 		
 		element.src = filename + extensions[0];
+		
+		element.load();
+		element.volume = 0;
+		element.play(); //force preload
 	}
 	
 	override public function play(): kha.SoundChannel {
@@ -109,6 +112,7 @@ class Sound extends kha.Sound {
 			}
 			
 			trace("Error loading " + element.src + str);
+			Lib.alert("loadSound failed");
 		}
 		
 		finishAsset();
@@ -120,7 +124,10 @@ class Sound extends kha.Sound {
 	
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
-		element.removeEventListener("canplaythrough", canPlayThroughListener,false);
+		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
+		element.pause();
+		element.currentTime = 0;
+		element.volume = 1;
 		done(this);
 	}
 }
