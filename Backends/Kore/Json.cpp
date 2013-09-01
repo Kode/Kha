@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Json.h"
+#include <stdlib.h>
 
 using namespace Json;
 
