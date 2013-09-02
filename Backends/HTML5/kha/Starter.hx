@@ -20,6 +20,7 @@ class Starter {
 	static var lastPressedKey : Int;
 	static var pressedKeyToChar : Array<String>;
 	static var buttonspressed : Array<Bool>;
+	static var leftMouseCtrlDown: Bool = false;
 	
 	public function new() {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
@@ -141,22 +142,35 @@ class Starter {
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
 		
 		//Lib.document.onmousedown = function(event : js.Event) {
-		canvas.onmousedown = function(event : MouseEvent) {
+		canvas.onmousedown = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) DOWN' );
 			if (event.button == 0) {
-				game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				if (event.ctrlKey) {
+					leftMouseCtrlDown = true;
+					game.rightMouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				}
+				else {
+					leftMouseCtrlDown = false;
+					game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				}
 			} else {
 				game.rightMouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 			}
 		}
 		
 		//Lib.document.onmouseup = function(event : js.Event) {
-		canvas.onmouseup = function(event : MouseEvent) {
+		canvas.onmouseup = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) UP' );
 			if (event.button == 0) {
-				game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				if (leftMouseCtrlDown) {
+					game.rightMouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				}
+				else {
+					game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				}
+				leftMouseCtrlDown = false;
 			} else {
 				game.rightMouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
 			}
