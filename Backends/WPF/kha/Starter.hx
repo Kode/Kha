@@ -2,7 +2,6 @@ package kha;
 
 import kha.Game;
 import kha.Key;
-import kha.wpf.storyPlayAPIWPF.StoryPlayAPIWPF;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
@@ -242,7 +241,6 @@ class Starter {
 	static var painter : kha.wpf.Painter;
 	public static var game : Game;
 	public static var frameworkElement : StoryPublishCanvas;
-	public static var api : StoryPlayAPIWPF; // To trick dead code elimination
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
