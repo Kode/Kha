@@ -325,7 +325,7 @@ class Scheduler {
 	}
 	
 	private static function getCurrentTimestamp(): Float {
-		return Sys.getTimestamp() - startstamp;
+		return current - startstamp;
 	}
 	
 	private static function ticksToTimespan(t: Float): Float {
