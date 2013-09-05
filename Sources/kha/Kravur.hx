@@ -64,7 +64,7 @@ class Kravur implements Font {
 			char.x1 = blob.readS16LE();
 			char.y1 = blob.readS16LE();
 			char.xoff = blob.readF32LE();
-			char.yoff = blob.readF32LE();
+			char.yoff = blob.readF32LE() + baseline;
 			char.xadvance = blob.readF32LE();
 			chars.push(char);
 		}
