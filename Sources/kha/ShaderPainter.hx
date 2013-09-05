@@ -526,14 +526,16 @@ class ShaderPainter extends Painter {
 	
 	public function new(width: Int, height: Int) {
 		color = Color.fromBytes(0, 0, 0);
-		setScreenSize(width, height);
+		
+		setScreenSize(width, height, 0, 0);
+	}
+	
+	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
+		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
+		projectionMatrix = ortho( -borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
-	}
-	
-	public function setScreenSize(width: Int, height: Int) {
-		projectionMatrix = ortho(0, width, height, 0, 0.1, 1000);
 	}
 	
 	private function ortho(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Array<Float> {
@@ -562,7 +564,7 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function setColor(color: Color): Void {
-		color = Color.fromBytes(color.Rb, color.Gb, color.Bb, color.Ab);
+		this.color = Color.fromValue(color.value);
 	}
 	
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float): Void {
