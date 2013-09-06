@@ -23,6 +23,21 @@ class Color {
 	}
 	
 	/**
+		Creates a new Color object from #AARRGGBB string.
+	**/
+	public static function fromString(value : String) {
+		if ( (value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
+			var colorValue = Std.parseInt("0x" + value.substr(1));
+			if (value.length == 7) {
+				colorValue += 0xFF000000;
+			}
+			return fromValue( colorValue );
+		} else {
+			throw "Invalid Color string: '" + value + "'";
+		}
+	}
+	
+	/**
 		Contains a byte representing the red color component.
 	**/
 	public var Rb(get, never): Int;
