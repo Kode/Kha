@@ -125,18 +125,44 @@ class Image implements Texture {
 	}
 	
 	public function unlock(): Void {
-		texture = Sys.gl.createTexture();
-		//texture.image = image;
-		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
-		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
-		
-		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
-		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
-		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
-		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
-		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
-		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
-		bytes = null;
+		if (Sys.gl != null) {
+			texture = Sys.gl.createTexture();
+			//texture.image = image;
+			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+			//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
+			
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
+			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
+			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
+			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+			bytes = null;
+		}
+		else {
+			
+			//context.putImageData(imgData, 10, 10);
+			
+			var canvas: Dynamic = Browser.document.createElement("canvas");
+			canvas.width = myWidth;
+			canvas.height = myHeight;
+			var ctx = canvas.getContext("2d");
+			ctx.fillStyle = "red";
+			ctx.fillRect(0, 0, myWidth, myHeight);
+			
+			var imageData = ctx.getImageData(0, 0, myWidth, myHeight);
+			for (i in 0...bytes.length) {
+				imageData.data[i * 4 + 0] = 0;
+				imageData.data[i * 4 + 1] = 0;
+				imageData.data[i * 4 + 2] = 0;
+				imageData.data[i * 4 + 3] = bytes.get(i);
+			}
+			ctx.putImageData(imageData, 0, 0);
+			
+			var img: ImageElement = cast Browser.document.createElement("img");
+			img.src = canvas.toDataURL("image/png");
+			image = img;
+		}
 	}
 }

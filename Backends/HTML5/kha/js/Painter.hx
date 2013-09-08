@@ -1,11 +1,13 @@
 package kha.js;
+
 import kha.Color;
 import kha.FontStyle;
+import kha.Kravur;
 import kha.Rotation;
 
 class Painter extends kha.Painter {
 	var canvas : Dynamic;
-	var webfont : Font;
+	var webfont: Kravur;
 	var tx : Float;
 	var ty : Float;
 	var width : Int;
@@ -19,7 +21,7 @@ class Painter extends kha.Painter {
 		tx = 0;
 		ty = 0;
 		instance = this;
-		webfont = new Font("Arial", new FontStyle(false, false, false), 12);
+		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 	}
 	
 	public static function stringWidth(font : kha.Font, text : String) {
@@ -109,13 +111,25 @@ class Painter extends kha.Painter {
 		canvas.fillRect(tx + x, ty + y, width, height);
 	}
 
-	override public function drawString(text : String, x : Float, y : Float) {
-		canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
+	override public function drawString(text: String, x: Float, y: Float) {
+		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
+		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
+		
+		var image = cast(webfont.getTexture(), Image);
+		var xpos = tx + x;
+		var ypos = ty + y;
+		for (i in 0...text.length) {
+			var q = webfont.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+			if (q != null) {
+				canvas.drawImage(image.image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+				xpos += q.xadvance;
+			}
+		}
 	}
 
 	override public function setFont(font : kha.Font) {
-		webfont = cast(font, Font);
-		canvas.font = webfont.size + "px " + webfont.name;
+		webfont = cast(font, Kravur);
+		//canvas.font = webfont.size + "px " + webfont.name;
 	}
 
 	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float, strength: Float = 1.0) {

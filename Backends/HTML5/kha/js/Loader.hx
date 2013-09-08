@@ -68,8 +68,9 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
-		if (Sys.gl != null) return new Kravur(name, style, size);
-		else return new Font(name, style, size);
+		return new Kravur(name, style, size);
+		//if (Sys.gl != null) return new Kravur(name, style, size);
+		//else return new Font(name, style, size);
 	}
 
 	override public function loadURL(url: String): Void {
