@@ -61,7 +61,7 @@ class Image implements Texture {
 		return myHeight;
 	}
 	
-	public function isOpaque(x : Int, y : Int) : Bool {
+	public function isOpaque(x: Int, y: Int): Bool {
 		if (data == null) {
 			if (context == null) return true;
 			else createImageData();
@@ -69,6 +69,14 @@ class Image implements Texture {
 		var r = data.data[y * image.width * 4 + x * 4 + 0];
 		var g = data.data[y * image.width * 4 + x * 4 + 1];
 		return !(data.data[y * image.width * 4 + x * 4 + 0] == 255 && data.data[y * image.width * 4 + x * 4 + 1] == 255);
+	}
+	
+	public function getData(): Dynamic {
+		if (data == null) {
+			if (context == null) return null;
+			else createImageData();
+		}
+		return data;
 	}
 	
 	function createImageData() {
@@ -117,7 +125,7 @@ class Image implements Texture {
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
 	}
 	
-	private var bytes: Bytes;
+	public var bytes: Bytes;
 	
 	public function lock(): Bytes {
 		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);

@@ -73,7 +73,7 @@ class Starter {
 			game.height = Math.round(Loader.the.height * transform);
 		}
 
-		try {
+		/*try {
 			if (canvas.getContext("experimental-webgl") != null) {
 				Sys.gl = canvas.getContext("experimental-webgl");
 				//Sys.gl.scale(transform, transform);
@@ -83,7 +83,7 @@ class Starter {
 		}
 		catch (e : Dynamic) {
 			trace(e);
-		}
+		}*/
 		if (painter == null) {
 			Sys.init(false);
 			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
