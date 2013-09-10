@@ -9,9 +9,11 @@ class SoundChannel extends kha.SoundChannel {
 		super();
 		this.channel = channel;
 		this.position = 0;
+		this.length = length;
 	}
 	
 	public override function play(): Void {
+		super.play();
 		//channel.play();
 	}
 	
@@ -21,6 +23,7 @@ class SoundChannel extends kha.SoundChannel {
 	
 	public override function stop(): Void {
 		channel.stop();
+		super.stop();
 	}
 	
 	override public function getLength(): Int {

@@ -16,6 +16,14 @@ class TimeTask {
 	public function new() {
 		
 	}
+	
+	public function elapsed() : Float {
+		return Scheduler.time() - Scheduler.timestampToTime(last);
+	}
+	
+	public function remaining() : Float {
+		return Scheduler.timestampToTime(next) - Scheduler.time();
+	}
 }
 
 class FrameTask {
@@ -256,6 +264,7 @@ class Scheduler {
 		if (duration != 0) t.duration = t.start + timeToTimestamp(duration); //-1 ?
 
 		t.next = t.start;
+		t.last = current;
 		insertSorted(timeTasks, t);
 		return t.id;
 	}
@@ -272,13 +281,20 @@ class Scheduler {
 		return addTimeTaskToGroup(0, task, start, period, duration);
 	}
 
-	public static function removeTimeTask(id: Int): Void {
+	public static function getTimeTask(id: Int): TimeTask {
 		for (timeTask in timeTasks) {
 			if (timeTask.id == id) {
-				timeTask.active = false;
-				timeTasks.remove(timeTask);
-				break;
+				return timeTask;
 			}
+		}
+		return null;
+	}
+
+	public static function removeTimeTask(id: Int): Void {
+		var timeTask : TimeTask = getTimeTask(id);
+		if (timeTask != null) {
+			timeTask.active = false;
+			timeTasks.remove(timeTask);
 		}
 	}
 	
@@ -305,7 +321,7 @@ class Scheduler {
 	}
 	
 	private static function getCurrentTimestamp(): Float {
-		return Sys.getTimestamp() - startstamp;
+		return current - startstamp;
 	}
 	
 	private static function ticksToTimespan(t: Float): Float {
@@ -316,7 +332,7 @@ class Scheduler {
 		return Math.round(timespan * frequency);
 	}
 	
-	private static function timestampToTime(t: Float): Float {
+	public static function timestampToTime(t: Float): Float {
 		return t / frequency;
 	}
 	

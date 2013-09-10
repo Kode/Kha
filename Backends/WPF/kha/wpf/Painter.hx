@@ -63,13 +63,13 @@ class Painter extends kha.Painter {
 	}
 
 	override public function setColor(color: kha.Color) : Void {
-		setColorInternal(color.Rb, color.Gb, color.Bb);
+		setColorInternal(color.Ab, color.Rb, color.Gb, color.Bb);
 	}
 	
 	@:functionCode('
-		color = System.Windows.Media.Color.FromRgb((byte)r, (byte)g, (byte)b);
+		color = System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
 	')
-	private function setColorInternal(r : Int, g : Int, b : Int) : Void {
+	private function setColorInternal(a : Int, r : Int, g : Int, b : Int) : Void {
 		
 	}
 

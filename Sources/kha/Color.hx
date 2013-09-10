@@ -7,48 +7,57 @@ class Color {
 		Creates a new Color object from a packed 32 bit ARGB value.
 	**/
 	public static function fromValue(value: Int): Color {
-		var color = new Color();
-		color.value = value;
-		return color;
+		return new Color(value);
 	}
 	
 	/**
 		Creates a new Color object from components in the range 0 - 255.
 	**/
 	public static function fromBytes(r: Int, g: Int, b: Int, a: Int = 255): Color {
-		var color = new Color();
-		color.value = (a << 24) | (r << 16) | (g << 8) | b;
-		return color;
+		return new Color((a << 24) | (r << 16) | (g << 8) | b);
 	}
 	
 	/**
 		Creates a new Color object from components in the range 0 - 1.
 	**/
 	public static function fromFloats(r: Float, g: Float, b: Float, a: Float = 1): Color {
-		var color = new Color();
-		color.value = (Std.int(a * 255) << 24) | (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255);
-		return color;
+		return new Color((Std.int(a * 255) << 24) | (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255));
+	}
+	
+	/**
+		Creates a new Color object from #AARRGGBB string.
+	**/
+	public static function fromString(value : String) {
+		if ( (value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
+			var colorValue = Std.parseInt("0x" + value.substr(1));
+			if (value.length == 7) {
+				colorValue += 0xFF000000;
+			}
+			return fromValue( colorValue );
+		} else {
+			throw "Invalid Color string: '" + value + "'";
+		}
 	}
 	
 	/**
 		Contains a byte representing the red color component.
 	**/
-	public var Rb(get,   null): Int;
+	public var Rb(get, never): Int;
 	
 	/**
 		Contains a byte representing the green color component.
 	**/
-	public var Gb(get, null): Int;
+	public var Gb(get, never): Int;
 	
 	/**
 		Contains a byte representing the blue color component.
 	**/
-	public var Bb(get,  null): Int;
+	public var Bb(get, never): Int;
 	
 	/**
 		Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	**/
-	public var Ab(get, null): Int;
+	public var Ab(get, never): Int;
 	
 	public var R(get, null): Float;
 	public var G(get, null): Float;
@@ -57,8 +66,8 @@ class Color {
 	
 	public var value(default, null): Int;
 	
-	private function new() {
-		
+	private function new(value: Int) {
+		this.value = value;
 	}
 	
 	private function get_Rb(): Int {
@@ -74,7 +83,7 @@ class Color {
 	}
 	
 	private function get_Ab(): Int {
-		return (value & 0xff000000) >>> 24;
+		return value >>> 24;
 	}
 	
 	private function get_R(): Float {

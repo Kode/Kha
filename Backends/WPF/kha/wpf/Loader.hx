@@ -54,7 +54,7 @@ class Loader extends kha.Loader {
 		done(new Video(path + filename + ".wmv"));
 	}
 	
-	override public function loadFont(name : String, style : FontStyle, size : Int) : kha.Font {
+	override public function loadFont(name : String, style : FontStyle, size : Float) : kha.Font {
 		var font : kha.Font = new Font(name, style, size);
 		return (font != null ? font : new Font("Arial", style, size));
 	}

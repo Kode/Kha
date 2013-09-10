@@ -15,6 +15,7 @@ class SoundChannel extends kha.SoundChannel {
 	}
 	
 	public override function play(): Void {
+		super.play();
 		player.Play();
 	}
 	
@@ -24,6 +25,7 @@ class SoundChannel extends kha.SoundChannel {
 
 	public override function stop(): Void {
 		player.Stop();
+		super.stop();
 	}
 
 	@:functionCode('

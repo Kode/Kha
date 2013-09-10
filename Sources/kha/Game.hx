@@ -3,7 +3,6 @@ package kha;
 class Game {
 	private var scene: Scene;
 	private var name: String;
-	private var timers: Array<FrameCountTimer>;
 	
 	public static var FPS: Int = 60;
 	
@@ -15,7 +14,6 @@ class Game {
 	
 	public function new(name: String, hasHighscores: Bool = false) {
 		setInstance();
-		timers = new Array<FrameCountTimer>();
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList(name);
 		scene = Scene.the;
@@ -38,20 +36,7 @@ class Game {
 	public function init(): Void { }
 	
 	public function update(): Void {
-		for (timer in timers) timer.update();
 		scene.update();
-	}
-	
-	public function registerTimer(timer: FrameCountTimer) {
-		for (existingTimer in timers) {
-			if (existingTimer == timer)
-				return;
-		}
-		timers.push(timer);
-	}
-	
-	public function removeTimer(timer: FrameCountTimer) {
-		timers.remove(timer);
 	}
 	
 	public function render(painter: Painter): Void {

@@ -2,7 +2,6 @@ package kha;
 
 import kha.Game;
 import kha.Key;
-import kha.wpf.storyPlayAPIWPF.StoryPlayAPIWPF;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
@@ -15,9 +14,9 @@ import system.windows.FrameworkElement;
 			Starter.painter.begin();
 			Configuration.screen().render(Starter.painter);
 			if (drawMousePos) {
-				Starter.painter.setColor(255, 255, 255);
+				Starter.painter.setColor(kha.Color.fromBytes(255, 255, 255, default(global::haxe.lang.Null<int>)));
 				Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
-				Starter.painter.setColor(0, 0, 0);
+				Starter.painter.setColor(kha.Color.fromBytes(0, 0, 0, default(global::haxe.lang.Null<int>)));
 				Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10);
 			}
 			Starter.painter.end();
@@ -43,7 +42,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		double heightTransform = canvas.ActualHeight/Starter.game.height;
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
-		Scheduler.executeFrame();
+		Scheduler.executeFrame(); // Main loop
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
@@ -242,7 +241,6 @@ class Starter {
 	static var painter : kha.wpf.Painter;
 	public static var game : Game;
 	public static var frameworkElement : StoryPublishCanvas;
-	public static var api : StoryPlayAPIWPF; // To trick dead code elimination
 	
 	public function new() {
 		kha.Storage.init(new kha.wpf.Storage());
