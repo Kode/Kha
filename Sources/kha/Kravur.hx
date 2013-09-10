@@ -42,8 +42,8 @@ class Kravur implements Font {
 	
 	private var chars: Array<BakedChar>;
 	private var texture: Texture;
-	private var width: Int;
-	private var height: Int;
+	public var width: Int;
+	public var height: Int;
 	private var baseline: Float;
 	
 	public function new(name: String, style: FontStyle, size: Int) {

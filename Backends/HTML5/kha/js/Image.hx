@@ -71,14 +71,6 @@ class Image implements Texture {
 		return !(data.data[y * image.width * 4 + x * 4 + 0] == 255 && data.data[y * image.width * 4 + x * 4 + 1] == 255);
 	}
 	
-	public function getData(): Dynamic {
-		if (data == null) {
-			if (context == null) return null;
-			else createImageData();
-		}
-		return data;
-	}
-	
 	function createImageData() {
 		context.strokeStyle = "rgb(255,255,0)";
 		context.fillStyle = "rgb(255,255,0)";
@@ -147,30 +139,6 @@ class Image implements Texture {
 			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 			bytes = null;
-		}
-		else {
-			
-			//context.putImageData(imgData, 10, 10);
-			
-			var canvas: Dynamic = Browser.document.createElement("canvas");
-			canvas.width = myWidth;
-			canvas.height = myHeight;
-			var ctx = canvas.getContext("2d");
-			ctx.fillStyle = "red";
-			ctx.fillRect(0, 0, myWidth, myHeight);
-			
-			var imageData = ctx.getImageData(0, 0, myWidth, myHeight);
-			for (i in 0...bytes.length) {
-				imageData.data[i * 4 + 0] = 0;
-				imageData.data[i * 4 + 1] = 0;
-				imageData.data[i * 4 + 2] = 0;
-				imageData.data[i * 4 + 3] = bytes.get(i);
-			}
-			ctx.putImageData(imageData, 0, 0);
-			
-			var img: ImageElement = cast Browser.document.createElement("img");
-			img.src = canvas.toDataURL("image/png");
-			image = img;
 		}
 	}
 }
