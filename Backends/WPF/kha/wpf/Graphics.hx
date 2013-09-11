@@ -1,8 +1,14 @@
 package kha.wpf;
 
+import kha.graphics.TextureFormat;
+
 class Graphics {
 	public function new() {
 		
+	}
+	
+	public function createTexture(width: Int, height: Int, format: TextureFormat): Image {
+		return new Image(width, height, format);
 	}
 	
 	public function vsynced(): Bool {

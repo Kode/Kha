@@ -3,6 +3,7 @@ package kha.wpf;
 import kha.Animation;
 import kha.FontStyle;
 import kha.Image;
+import kha.Kravur;
 import kha.Rotation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
@@ -10,12 +11,12 @@ import system.windows.media.DrawingContext;
 class Painter extends kha.Painter {
 	public var context: DrawingContext;
 	private var color: Color;
-	private var font: Font;
+	private var font: Kravur;
 	private var tx: Float;
 	private var ty: Float;
 
 	public function new() {
-		font = new Font("Arial", new FontStyle(false, false, false), 20);
+		//font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 	
 	override public function translate(x: Float, y: Float): Void {
@@ -43,7 +44,7 @@ class Painter extends kha.Painter {
 		
 	}
 
-	@:functionCode('
+	/*@:functionCode('
 		if (text != null) {
 			text.Replace(\' \', (char)160); // Non-breaking space 
 			System.Windows.Media.FormattedText fText = new System.Windows.Media.FormattedText(text, 
@@ -57,10 +58,31 @@ class Painter extends kha.Painter {
 	')
 	override public function drawString(text : String, x : Float, y : Float) : Void {
 		
+	}*/
+	
+	
+	@:functionCode('
+		var img = (Image)font.getTexture();
+		var xpos = tx + x;
+		var ypos = ty + y;
+		for (int i = 0; i < text.Length; ++i) {
+			var q = font.getBakedQuad(text[i] - 32, xpos, ypos);
+			if (q != null) {
+				var brush = new System.Windows.Media.ImageBrush(img.image);
+				brush.Viewbox = new System.Windows.Rect(q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0);
+				context.PushOpacityMask(brush);
+				context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), null, new System.Windows.Rect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0));
+				context.Pop();
+				xpos += q.xadvance;
+			}
+		}
+	')
+	override public function drawString(text: String, x: Float, y: Float): Void {
+		
 	}
 
-	override public function setFont(font : kha.Font) : Void {
-		this.font = cast(font, Font);
+	override public function setFont(font: kha.Font): Void {
+		this.font = cast(font, Kravur);
 	}
 
 	override public function setColor(color: kha.Color) : Void {

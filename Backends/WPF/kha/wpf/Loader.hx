@@ -6,6 +6,7 @@ import haxe.io.BytesData;
 import haxe.Json;
 import kha.Blob;
 import kha.FontStyle;
+import kha.Kravur;
 import kha.loader.Asset;
 import kha.Starter;
 import system.io.File;
@@ -15,10 +16,10 @@ import system.windows.input.Cursors;
 import system.windows.input.Mouse;
 
 class Loader extends kha.Loader {
-	public static var path : String = "";
-	public static var forceBusyCursor : Bool = false;
-	var savedCursor : Cursor;
-	var busyCursor : Bool = false;
+	public static var path: String = "";
+	public static var forceBusyCursor: Bool = false;
+	var savedCursor: Cursor;
+	var busyCursor: Bool = false;
 	
 	public function new() {
 		super();
@@ -30,33 +31,34 @@ class Loader extends kha.Loader {
 		loadFiles(call, false);
 	}
 	
-	private override function parseProject() : Dynamic {
+	private override function parseProject(): Dynamic {
 		return Json.parse(getBlob("project.kha").toString());
 	}
 	
-	override public function loadMusic(filename: String, done: kha.Music -> Void) : Void {
+	override public function loadMusic(filename: String, done: kha.Music -> Void): Void {
 		done(new Music());
 	}
 
-	override public function loadSound(filename: String, done: kha.Sound -> Void) : Void {
+	override public function loadSound(filename: String, done: kha.Sound -> Void): Void {
 		done(new Sound(path + filename + ".wav"));
 	}
 
-	override public function loadImage(filename: String, done: kha.Image -> Void) : Void {
-		done(new Image(path + filename));
+	override public function loadImage(filename: String, done: kha.Image -> Void): Void {
+		done(Image.fromFilename(path + filename));
 	}
 
 	override public function loadBlob(filename: String, done: kha.Blob -> Void): Void {
 		done(new Blob(Bytes.ofData(File.ReadAllBytes(path + filename))));
 	}
 
-	override public function loadVideo(filename: String, done: kha.Video -> Void) : Void {
+	override public function loadVideo(filename: String, done: kha.Video -> Void): Void {
 		done(new Video(path + filename + ".wmv"));
 	}
 	
-	override public function loadFont(name : String, style : FontStyle, size : Float) : kha.Font {
-		var font : kha.Font = new Font(name, style, size);
-		return (font != null ? font : new Font("Arial", style, size));
+	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
+		//var font : kha.Font = new Font(name, style, size);
+		//return (font != null ? font : new Font("Arial", style, size));
+		return new Kravur(name, style, size);
 	}
 
 	@:functionCode('
