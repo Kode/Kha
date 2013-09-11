@@ -27,7 +27,7 @@ class Loader extends kha.Loader {
 	
 	public override function loadProject(call: Void -> Void) {
 		enqueue(new kha.loader.Asset("project.kha", "project.kha", "blob"));
-		loadFiles(call);
+		loadFiles(call, false);
 	}
 	
 	private override function parseProject() : Dynamic {

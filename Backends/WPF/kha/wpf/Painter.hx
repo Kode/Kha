@@ -3,6 +3,7 @@ package kha.wpf;
 import kha.Animation;
 import kha.FontStyle;
 import kha.Image;
+import kha.Rotation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 
@@ -38,7 +39,7 @@ class Painter extends kha.Painter {
 		brush.Viewbox = new System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
 		context.DrawRectangle(brush, null, new System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
-	override public function drawImage2(image : kha.Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
+	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		
 	}
 
@@ -76,7 +77,7 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
-	override public function drawRect(x : Float, y : Float, width : Float, height : Float) : Void {
+	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
 		
 	}
 
@@ -90,7 +91,7 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(tx + x1, ty + y1), new System.Windows.Point(tx + x2, ty + y2));
 	')
-	override function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float) : Void {
+	override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 		
 	}
 		

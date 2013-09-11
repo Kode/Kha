@@ -17,7 +17,7 @@ import system.windows.FrameworkElement;
 				Starter.painter.setColor(kha.Color.fromBytes(255, 255, 255, default(global::haxe.lang.Null<int>)));
 				Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
 				Starter.painter.setColor(kha.Color.fromBytes(0, 0, 0, default(global::haxe.lang.Null<int>)));
-				Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10);
+				Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10, default(global::haxe.lang.Null<double>));
 			}
 			Starter.painter.end();
 		}
