@@ -115,13 +115,13 @@ class Starter {
 			game.keyDown(Key.ESC, "");
 		case 46:
 			game.keyDown(Key.DEL, "");
-		case 38, 87:
+		case 38:
 			game.buttonDown(Button.UP);
 		case 40:
 			game.buttonDown(Button.DOWN);
-		case 37, 65:
+		case 37:
 			game.buttonDown(Button.LEFT);
-		case 39, 68:
+		case 39:
 			game.buttonDown(Button.RIGHT);
 		/*case 65:
 			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
@@ -154,13 +154,13 @@ class Starter {
 			game.keyUp(Key.ESC, "");
 		case 46:
 			game.keyUp(Key.DEL, "");
-		case 38, 87:
+		case 38:
 			game.buttonUp(Button.UP);
 		case 40:
 			game.buttonUp(Button.DOWN);
-		case 37, 65:
+		case 37:
 			game.buttonUp(Button.LEFT);
-		case 39, 68:
+		case 39:
 			game.buttonUp(Button.RIGHT);
 		/*case 65:
 			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
