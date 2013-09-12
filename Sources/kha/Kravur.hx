@@ -110,8 +110,8 @@ class Kravur implements Font {
 	}
 	
 	private function getCharWidth(charIndex: Int): Float {
-		if (charIndex >= chars.length) return 0;
-		return chars[charIndex].xadvance;
+		if (charIndex - 32 >= chars.length) return 0;
+		return chars[charIndex - 32].xadvance;
 	}
 	
 	public var name(get, null): String;
