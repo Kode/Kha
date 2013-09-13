@@ -75,6 +75,11 @@ class Kravur implements Font {
 		var pos: Int = 0;
 		for (y in 0...height) for (x in 0...width) {
 			bytes.set(pos, blob.readU8());
+			
+			//filter-test
+			//if ((x + y) % 2 == 0) bytes.set(pos, 0xff);
+			//else bytes.set(pos, 0);
+			
 			++pos;
 		}
 		texture.unlock();
