@@ -26,35 +26,35 @@ class Font implements kha.Font {
 	public var size(get, null): Float;
 	
 	public function get_name(): String {
-		return myName;
+		return kravur.get_name();
 	}
 	
 	public function get_style(): FontStyle {
-		return myStyle;
+		return kravur.get_style();
 	}
 	
 	public function get_size(): Float {
-		return mySize;
+		return kravur.get_size();
 	}
 	
 	public function getHeight(): Float {
-		return size;
+		return kravur.getHeight();
 	}
 
 	public function charWidth(ch: String): Float {
-		return stringWidth(ch);
+		return kravur.charWidth(ch);
 	}
 
 	public function charsWidth(ch: String, offset: Int, length: Int): Float {
-		return stringWidth(ch.substr(offset, length));
+		return kravur.charsWidth(ch, offset, length);
 	}
 
 	public function stringWidth(str: String): Float {
-		return Painter.stringWidth(this, str);
+		return kravur.stringWidth(str);
 	}
 
 	public function getBaselinePosition(): Float {
-		return 0;
+		return kravur.getBaselinePosition();
 	}
 	
 	public function getImage(color: Color): ImageElement {
