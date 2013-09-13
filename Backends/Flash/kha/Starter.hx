@@ -26,7 +26,7 @@ import flash.Vector;
 
 class Starter {
 	var game: Game;
-	var painter: ShaderPainter;
+	var painter: kha.flash.ShaderPainter;
 	var pressedKeys: Array<Bool>;
 	var stage: Stage;
 	var stage3D: Stage3D;
@@ -72,7 +72,7 @@ class Starter {
 		Scheduler.start();
 		game.loadFinished();
 		
-		painter = new ShaderPainter(game.width, game.height); //new Painter(context);
+		painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);

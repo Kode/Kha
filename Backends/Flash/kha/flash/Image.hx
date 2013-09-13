@@ -35,6 +35,10 @@ class Image implements kha.graphics.Texture {
 		return texture;
 	}
 	
+	public function uploadtBitmap(bitmap: BitmapData): Void {
+		tex.uploadFromBitmapData(bitmap, 0);
+	}
+	
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
