@@ -5,9 +5,12 @@ import haxe.io.Bytes;
 class Blob implements Resource {
 	private var bytes: Bytes;
 	private var position: Int;
+	private var buffer: Array<Int>;
+	private var myFirstLine: Bool = true;
 	
 	public function new(bytes: Bytes) {
 		this.bytes = bytes;
+		buffer = new Array<Int>();
 		position = 0;
 	}
 	
@@ -118,6 +121,83 @@ class Blob implements Resource {
 	
 	public function toString(): String {
 		return bytes.toString();
+	}
+	
+	private function bit(value: Int, position: Int): Bool {
+		var b = (value >>> position) & 1 == 1;
+		if (b) {
+			var a = 3;
+			++a;
+			return true;
+		}
+		else {
+			var c = 4;
+			--c;
+			return false;
+		}
+	}
+	
+	private function readUtf8Char(): Int {
+		if (position >= length()) return -1;
+		var c: Int = readU8();
+		var value: Int = 0;
+		if (!bit(c, 7)) {
+			value = c;
+		}
+		else if (bit(c, 7) && bit(c, 6) && !bit(c, 5)) { //110xxxxx 10xxxxxx
+			var a = c & 0x1f;
+			var c2 = readU8();
+			var b = c2 & 0x3f;
+			value = (a << 6) | b;
+		}
+		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && !bit(c, 4)) { //1110xxxx 10xxxxxx 10xxxxxx
+			//currently ignored
+			for (i in 0...2) readU8();
+		}
+		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && bit(c, 4) && !bit(c, 3)) { //11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+			//currently ignored
+			for (i in 0...3) readU8();
+		}
+		return value;
+	}
+	
+	private function readUtf8Line(): String {
+		var bufferindex: Int = 0;
+		var c = readUtf8Char();
+		if (c < 0) return "";
+		while (c != '\n'.charCodeAt(0) && bufferindex < 2000) {
+			buffer[bufferindex] = c;
+			++bufferindex;
+			c = readUtf8Char();
+			if (position >= length()) {
+				buffer[bufferindex] = c;
+				++bufferindex;
+				break;
+			}
+		}
+		if (myFirstLine) {
+			myFirstLine = false;
+			if (bufferindex > 2 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF) { //byte order mark created by stupid Windows programs
+				var chars: Array<Int> = new Array<Int>();
+				for (i in 3...bufferindex - 3) chars[i - 3] = buffer[i];
+				return toText(chars, bufferindex - 3);
+			}
+		}
+		var chars = new Array<Int>();
+		for (i in 0...bufferindex) chars[i] = buffer[i];
+		return toText(chars, bufferindex);
+	}
+	
+	private function toText(chars: Array<Int>, length: Int): String {
+		var value = "";
+		for (i in 0...length) value += String.fromCharCode(chars[i]);
+		return value;
+	}
+
+	public function readUtf8String(): String {
+		var text = "";
+		while (position < length()) text += readUtf8Line() + "\n";
+		return text;
 	}
 	
 	public function toBytes(): Bytes {
