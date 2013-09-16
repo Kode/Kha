@@ -4,11 +4,13 @@ import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
 import js.html.Uint8Array;
+import js.html.VideoElement;
 import kha.graphics.Texture;
 import kha.graphics.TextureFormat;
 
 class Image implements Texture {
 	public var image: ImageElement;
+	private var video: VideoElement;
 	
 	private static var context : Dynamic;
 	private var data : Dynamic;
@@ -30,11 +32,20 @@ class Image implements Texture {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
+		image = null;
+		video = null;
 	}
 	
 	public static function fromImage(image: ImageElement): Image {
 		var img = new Image(image.width, image.height, TextureFormat.RGBA32);
 		img.image = image;
+		img.createTexture();
+		return img;
+	}
+	
+	public static function fromVideo(video: Video): Image {
+		var img = new Image(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32);
+		img.video = video.element;
 		img.createTexture();
 		return img;
 	}
@@ -107,7 +118,8 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
+		if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
+		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 	}
@@ -115,6 +127,7 @@ class Image implements Texture {
 	public function set(stage: Int): Void {
 		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + stage);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, texture);
+		if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
 	}
 	
 	public var bytes: Bytes;

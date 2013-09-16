@@ -12,6 +12,7 @@ class Video extends kha.Video {
 	static var extensions : Array<String> = null;
 	public var element : VideoElement;
 	private var done: kha.Video -> Void;
+	public var texture: Image;
 	
 	public function new(filename : String, done: kha.Video -> Void) {
 		super();
@@ -99,13 +100,14 @@ class Video extends kha.Video {
 		finishAsset();
 	}
 	
-	function canPlayThroughListener(eventInfo : Event) : Void {
+	function canPlayThroughListener(eventInfo: Event): Void {
 		finishAsset();
 	}
 	
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
-		element.removeEventListener("canplaythrough", canPlayThroughListener,false);
+		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
+		if (Sys.gl != null) texture = Image.fromVideo(this);
 		done(this);
 	}
 }

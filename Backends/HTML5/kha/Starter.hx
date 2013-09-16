@@ -78,7 +78,7 @@ class Starter {
 			if (Sys.gl != null) {
 				//Sys.gl.scale(transform, transform);
 				Sys.init(true);
-				painter = new ShaderPainter(game.width, game.height);
+				painter = new kha.js.ShaderPainter(game.width, game.height);
 			}
 		}
 		catch (e : Dynamic) {
