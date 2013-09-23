@@ -52,4 +52,8 @@ class Video extends kha.Video {
 	public override function setVolume(volume : Float) : Void {
 		player.Volume = volume;
 	}
+	
+	public override function unload(): Void {
+		player = null;
+	}
 }
