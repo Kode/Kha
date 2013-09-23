@@ -2,3 +2,7 @@
 	path = Backends/kxcpp
 	url = ../kxcpp
 	branch = master
+[submodule "Tools/hake"]
+	path = Tools/hake
+	url = ../hake
+	branch = master
