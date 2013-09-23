@@ -1,5 +1,7 @@
 #pragma once
 
+//#include "Path.h"
+#include <fstream>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -16,12 +18,17 @@ namespace Json {
 		virtual Value& operator[](std::string key) { throw std::runtime_error(""); }
 		virtual std::string string() { throw std::runtime_error(""); }
 		virtual int number() { throw std::runtime_error(""); }
+		virtual void add(Value* value) { throw std::runtime_error(""); }
+		virtual void add(std::string name, Value* value) { throw std::runtime_error(""); }
+		virtual bool has(std::string key) { return false; }
+		virtual void serialize(std::ofstream& stream, int indent, bool newline) = 0;
 	};
 
 	class Number : public Value {
 	public:
 		Number(int value) : myValue(value) { }
 		int number() override { return myValue; }
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	private:
 		int myValue;
 	};
@@ -30,16 +37,19 @@ namespace Json {
 	public:
 		String(std::string value) : myValue(value) { }
 		std::string string() override { return myValue; }
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	private:
 		std::string myValue;
 	};
 
 	class True : public Value {
-
+	public:
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	};
 	
 	class False : public Value {
-
+	public:
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	};
 
 	class Array : public Value {
@@ -48,21 +58,28 @@ namespace Json {
 		~Array() { for (size_t i = 0; i < myValues.size(); ++i) delete myValues[i]; }
 		virtual Value& operator[](int index) override { return *myValues[index]; }
 		virtual int size() override { return myValues.size(); }
+		virtual void add(Value* value) { myValues.push_back(value); }
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	private:
 		std::vector<Value*> myValues;
 	};
 
 	class Object : public Value {
 	public:
+		//Object() { }
 		Object(std::map<std::string, Value*>& values) : myValues(values) { }
 		~Object() { for (std::map<std::string, Value*>::iterator it = myValues.begin(); it != myValues.end(); ++it) delete it->second; }
 		virtual Value& operator[](std::string key) override { return *myValues[key]; }
+		void add(std::string name, Value* value) override { myValues[name] = value; }
+		bool has(std::string key) override { return myValues.find(key) != myValues.end(); }
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	private:
 		std::map<std::string, Value*> myValues;
 	};
 
 	class Null : public Value {
-
+	public:
+		void serialize(std::ofstream& stream, int indent, bool newline) override;
 	};
 
 	class Data {
@@ -73,6 +90,9 @@ namespace Json {
 		int size() { return myValue->size(); }
 		Value& operator[](const std::string key) { return (*myValue)[key]; }
 		std::string string() { return myValue->string(); }
+		void add(std::string name, Value* value) { myValue->add(name, value); }
+		bool has(std::string key) { return myValue->has(key); }
+		//void save(kake::Path path);
 	private:
 		Value* myValue;
 	};

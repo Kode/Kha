@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "Json.h"
+#include <fstream>
 #include <stdlib.h>
 
 using namespace Json;
@@ -19,6 +19,7 @@ namespace {
 		virtual bool isBoolean()     { return false; }
 		virtual bool isTrue()        { return false; }
 		virtual bool isFalse()       { return false; }
+		virtual bool isNull()       { return false; }
 		virtual bool isEnd()         { return false; }
 	};
 
@@ -42,8 +43,9 @@ namespace {
 		virtual bool isColon() override { return true ; }
 	};
 
-	class Null {
-
+	class Null : public Token {
+	public:
+		virtual bool isNull() override { return true ; }
 	};
 
 	class ArrayStart : public Token {
@@ -141,6 +143,14 @@ namespace {
 		return new False;
 	}
 
+	Null* parseNull(std::string text, size_t& position) {
+		++position;
+		if (text[position] == 'u') ++position; else throw std::runtime_error("Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
+		return new Null;
+	}
+
 	class TokenStream {
 	public:
 		TokenStream(std::string text) : text(text), position(0) {
@@ -164,6 +174,9 @@ namespace {
 			}
 			else if (text[position] == 'f') {
 				myCurrent = parseFalse(text, position);
+			}
+			else if (text[position] == 'n') {
+				myCurrent = parseNull(text, position);
 			}
 			else if (text[position] == '"') {
 				myCurrent = parseString(text, position);
@@ -210,6 +223,7 @@ namespace {
 	Json::Number* parseNumber(TokenStream&);
 	Json::True* parseTrue(TokenStream&);
 	Json::False* parseFalse(TokenStream&);
+	Json::Null* parseNull(TokenStream&);
 
 	Json::Value* parseValue(TokenStream& stream) {
 		if (stream.current()->isWhitespace()) {
@@ -232,6 +246,9 @@ namespace {
 		}
 		else if (stream.current()->isFalse()) {
 			return parseFalse(stream);
+		}
+		else if (stream.current()->isNull()) {
+			return parseNull(stream);
 		}
 		else throw std::runtime_error("Unexpected token");
 	}
@@ -290,9 +307,79 @@ namespace {
 		stream.advance();
 		return value;
 	}
+
+	Json::Null* parseNull(TokenStream& stream) {
+		Json::Null* value = new Json::Null;
+		stream.advance();
+		return value;
+	}
+
+	void tabs(std::ofstream& stream, int indent) {
+		for (int i = 0; i < indent; ++i) stream << "\t";
+	}
 }
 
-Json::Data::Data(std::string text) {
+Data::Data(std::string text) {
 	TokenStream stream(text);
 	myValue = parseValue(stream);
 }
+
+void Json::Object::serialize(std::ofstream& stream, int indent, bool newline) {
+	if (newline) {
+		stream << "\n";
+		tabs(stream, indent);
+	}
+	stream << "{\n";
+	bool firstloop = true;
+	for (auto value : myValues) {
+		if (!firstloop) stream << ",\n";
+		firstloop = false;
+		tabs(stream, indent + 1); stream << "\"" << value.first << "\": ";
+		value.second->serialize(stream, indent + 1, true);
+	}
+	stream << "\n";
+	tabs(stream, indent); stream << "}";
+}
+
+void Json::Number::serialize(std::ofstream& stream, int indent, bool newline) {
+	stream << myValue;
+}
+
+void Json::String::serialize(std::ofstream& stream, int indent, bool newline) {
+	stream << "\"" << myValue << "\"";
+}
+
+void Json::True::serialize(std::ofstream& stream, int indent, bool newline) {
+	stream << "true";
+}
+
+void Json::False::serialize(std::ofstream& stream, int indent, bool newline) {
+	stream << "false";
+}
+
+void Json::Null::serialize(std::ofstream& stream, int indent, bool newline) {
+	stream << "null";
+}
+
+void Json::Array::serialize(std::ofstream& stream, int indent, bool newline) {
+	if (newline) {
+		stream << "\n";
+		tabs(stream, indent);
+	}
+	stream << "[\n";
+	int count = myValues.size() - 1;
+	bool firstloop = true;
+	for (auto value : myValues) {
+		if (!firstloop) stream << ",\n";
+		firstloop = false;
+		tabs(stream, indent + 1); value->serialize(stream, indent + 1, false);
+	}
+	stream << "\n";
+	tabs(stream, indent); stream << "]";
+}
+
+//void Data::save(kake::Path path) {
+//	std::ofstream file(path.toString());
+//	myValue->serialize(file, 0, false);
+//	file << "\n";
+//}
