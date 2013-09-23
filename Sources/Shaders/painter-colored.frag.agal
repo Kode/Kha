@@ -1,0 +1,25 @@
+{
+ "types": {
+  "v0": "vec4",
+  "oc0": "vec4"
+ },
+ "consts": {
+  "fc0": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "agalasm": "mov oc, v0\n",
+ "storage": {
+  "v0": "ir_var_in",
+  "oc0": "ir_var_out"
+ },
+ "info": "",
+ "varnames": {
+  "unnamed_0": "fc0",
+  "fragmentColor": "v0",
+  "gl_FragColor": "oc0"
+ }
+}

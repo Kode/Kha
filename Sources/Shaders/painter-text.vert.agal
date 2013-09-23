@@ -1,0 +1,42 @@
+{
+ "types": {
+  "va2": "vec4",
+  "v1": "vec2",
+  "va0": "vec3",
+  "op0": "vec4",
+  "v0": "vec4",
+  "va1": "vec2",
+  "vc1": "mat4"
+ },
+ "storage": {
+  "va2": "ir_var_in",
+  "v1": "ir_var_out",
+  "va0": "ir_var_in",
+  "op0": "ir_var_out",
+  "v0": "ir_var_out",
+  "va1": "ir_var_in",
+  "vc1": "ir_var_uniform"
+ },
+ "consts": {
+  "vc0": [
+   1,
+   0.5,
+   0,
+   0
+  ]
+ },
+ "agalasm": "mov vt0.w, vc0.x\nmov vt0.xyz, va0.xyzz\nmov v1, vc0\nmov v1.xy, va1.xyyy\nmov v0, va2\nm44 vt1, vt0, vc1\nmov op, vt1\nadd vt0.x, vt1.z, vt1.w\nmov op, vc0\nmul op.z, vt0.x, vc0.y\nmov op.xy, vt1.xyyy\nmov op.w, vt1.w\n",
+ "info": "",
+ "varnames": {
+  "gl_Position": "op0",
+  "texPosition": "va1",
+  "unnamed_1": "vt0",
+  "unnamed_0": "vc0",
+  "fragmentColor": "v0",
+  "projectionMatrix": "vc1",
+  "texCoord": "v1",
+  "vertexPosition": "va0",
+  "vertexColor": "va2",
+  "unnamed_2": "vt1"
+ }
+}

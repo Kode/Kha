@@ -1,0 +1,33 @@
+{
+ "types": {
+  "fs0": "sampler2D",
+  "v0": "vec4",
+  "oc0": "vec4",
+  "v1": "vec2"
+ },
+ "storage": {
+  "fs0": "ir_var_uniform",
+  "v0": "ir_var_in",
+  "oc0": "ir_var_out",
+  "v1": "ir_var_in"
+ },
+ "consts": {
+  "fc0": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "agalasm": "mov ft1.xyz, v0.xyzz\ntex ft0, v1.xyyy, fs0 <linear mipdisable repeat 2d>\nmov ft1.w, ft0.x\nmov oc, ft1\n",
+ "varnames": {
+  "unnamed_1": "ft0",
+  "fragmentColor": "v0",
+  "unnamed_0": "fc0",
+  "tex": "fs0",
+  "unnamed_2": "ft1",
+  "gl_FragColor": "oc0",
+  "texCoord": "v1"
+ },
+ "info": ""
+}
