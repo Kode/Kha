@@ -237,6 +237,25 @@ class Loader {
 	}
 	
 	private function loadShaders(call: Void -> Void): Void {
+		#if (flash && debug)
+			var shaders = [ "painter-colored.frag",
+							"painter-colored.vert",
+							"painter-image.frag",
+							"painter-image.vert",
+							"painter-text.frag",
+							"painter-text.vert" ];
+			var shaderCount: Int = shaders.length;
+			for (i in 0...shaders.length) {
+				var shader = shaders[i];
+				loadBlob(shader + ".agal", function(blob: Blob) {
+					if (!this.shaders.exists(shader)) { //Chrome tends to call finished loading callbacks multiple times
+						this.shaders.set(shader, blob);
+						--shaderCount;
+						if (shaderCount == 0) call();
+					}
+				} );
+			}
+		#else
 		var project = parseProject();
 		if (project.shaders != null && project.shaders.length > 0) {
 			var shaders: Dynamic = project.shaders;
@@ -253,6 +272,7 @@ class Loader {
 			}
 		}
 		else call();
+		#end
 	}
 	
 	private function loadRoomAssets(room: Room) {
