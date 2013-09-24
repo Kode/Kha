@@ -24,60 +24,60 @@ namespace {
 	};
 
 	class True : public Token {
-		virtual bool isBoolean() override { return true; }
-		virtual bool isTrue() override { return true; }
+		virtual bool isBoolean() { return true; }
+		virtual bool isTrue() { return true; }
 	};
 
 	class False : public Token {
-		virtual bool isBoolean() override { return true; }
-		virtual bool isFalse() override { return true; }
+		virtual bool isBoolean() { return true; }
+		virtual bool isFalse() { return true; }
 	};
 
 	class Whitespace : public Token {
 	public:
-		virtual bool isWhitespace() override { return true; }
+		virtual bool isWhitespace() { return true; }
 	};
 
 	class Colon : public Token {
 	public:
-		virtual bool isColon() override { return true ; }
+		virtual bool isColon() { return true ; }
 	};
 
 	class Null : public Token {
 	public:
-		virtual bool isNull() override { return true ; }
+		virtual bool isNull() { return true ; }
 	};
 
 	class ArrayStart : public Token {
 	public:
-		virtual bool isArrayStart() override { return true; }
+		virtual bool isArrayStart() { return true; }
 	};
 
 	class ArrayEnd : public Token {
 	public:
-		virtual bool isArrayEnd() override { return true; }
+		virtual bool isArrayEnd() { return true; }
 	};
 
 	class Komma : public Token {
 	public:
-		virtual bool isKomma() override { return true; }
+		virtual bool isKomma() { return true; }
 	};
 
 	class ObjectStart : public Token {
 	public:
-		virtual bool isObjectStart() override { return true; }
+		virtual bool isObjectStart() { return true; }
 	};
 
 	class ObjectEnd : public Token {
 	public:
-		virtual bool isObjectEnd() override { return true; }
+		virtual bool isObjectEnd() { return true; }
 	};
 
 	class String : public Token {
 	public:
 		String(std::string value) : myValue(value) { }
 		std::string value() { return myValue; }
-		virtual bool isString() override { return true; }
+		virtual bool isString() { return true; }
 	private:
 		std::string myValue;
 	};
@@ -86,14 +86,14 @@ namespace {
 	public:
 		Number(int value) : myValue(value) { }
 		int value() { return myValue; }
-		virtual bool isNumber() override { return true; }
+		virtual bool isNumber() { return true; }
 	private:
 		int myValue;
 	};
 
 	class End : public Token {
 	public:
-		virtual bool isEnd() override { return true; }
+		virtual bool isEnd() { return true; }
 	};
 
 	bool isNumber(char c) {
@@ -323,7 +323,7 @@ Data::Data(std::string text) {
 	TokenStream stream(text);
 	myValue = parseValue(stream);
 }
-
+/*
 void Json::Object::serialize(std::ofstream& stream, int indent, bool newline) {
 	if (newline) {
 		stream << "\n";
@@ -377,7 +377,7 @@ void Json::Array::serialize(std::ofstream& stream, int indent, bool newline) {
 	stream << "\n";
 	tabs(stream, indent); stream << "]";
 }
-
+*/
 //void Data::save(kake::Path path) {
 //	std::ofstream file(path.toString());
 //	myValue->serialize(file, 0, false);
