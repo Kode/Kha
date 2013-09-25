@@ -123,12 +123,12 @@ class Starter {
 			game.buttonDown(Button.LEFT);
 		case 39:
 			game.buttonDown(Button.RIGHT);
-		/*case 65:
+		case 65:
 			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
 			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonDown(Button.BUTTON_2); // This is also an 's'
-			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));*/
+			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
 			if (event.charCode != 0)
 				game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
@@ -162,12 +162,12 @@ class Starter {
 			game.buttonUp(Button.LEFT);
 		case 39:
 			game.buttonUp(Button.RIGHT);
-		/*case 65:
+		case 65:
 			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
 			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonUp(Button.BUTTON_2); // This is also an 's'
-			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));*/
+			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
 			if (event.charCode != 0)
 				game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
