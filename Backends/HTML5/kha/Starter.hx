@@ -62,17 +62,17 @@ class Starter {
 	public function loadFinished() {
 		Loader.the.initProject();
 		
-		var canvas : Dynamic = Browser.document.getElementById("khanvas");
+		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
-		var widthTransform : Float = canvas.width / Loader.the.width;
-		var heightTransform : Float = canvas.height / Loader.the.height;
-		var transform : Float = Math.min(widthTransform, heightTransform);
+		var widthTransform: Float = canvas.width / Loader.the.width;
+		var heightTransform: Float = canvas.height / Loader.the.height;
+		var transform: Float = Math.min(widthTransform, heightTransform);
 		
 		if (Loader.the.width > 0 && Loader.the.height > 0) {
 			game.width = Math.round(Loader.the.width * transform);
 			game.height = Math.round(Loader.the.height * transform);
 		}
-
+		
 		try {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
@@ -81,13 +81,29 @@ class Starter {
 				painter = new kha.js.ShaderPainter(game.width, game.height);
 			}
 		}
-		catch (e : Dynamic) {
+		catch (e: Dynamic) {
 			trace(e);
 		}
 		if (painter == null) {
 			Sys.init(false);
 			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
 			canvas.getContext("2d").scale(transform, transform);
+		}
+		
+		try {
+			Sys.audio = null;
+			Sys.audio = untyped __js__("new AudioContext()");
+		}
+		catch (e: Dynamic) {
+			
+		}
+		if (Sys.audio == null) {
+			try {
+				Sys.audio = untyped __js__("new webkitAudioContext()");
+			}
+			catch (e: Dynamic) {
+				
+			}
 		}
 
 		Scheduler.start();
