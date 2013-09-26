@@ -272,7 +272,7 @@ namespace {
 			if (stream.current()->isWhitespace()) stream.advance();
 			if (stream.current()->isArrayEnd()) break;
 			values.push_back(parseValue(stream));
-			stream.advance();
+			if (stream.current()->isKomma()) stream.advance();
 		}
 		stream.advance();
 		return new Json::Array(values);
