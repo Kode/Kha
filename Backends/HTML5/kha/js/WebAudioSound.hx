@@ -1,5 +1,7 @@
 package kha.js;
 
+import js.Browser;
+import js.html.AudioElement;
 import js.html.XMLHttpRequest;
 import js.Lib;
 
@@ -55,13 +57,24 @@ class WebAudioChannel extends kha.SoundChannel {
 class WebAudioSound extends kha.Sound {
 	private var done: kha.Sound -> Void;
 	private var buffer: Dynamic;
+	private static var initialized: Bool = false;
+	private static var playsOgg: Bool = false;
+	
+	private static function init(): Void {
+		if (initialized) return;
+		var element: AudioElement = cast Browser.document.createElement("audio");
+		playsOgg = element.canPlayType("audio/ogg") != "";
+		initialized = true;
+	}
 	
 	public function new(filename: String, done: kha.Sound -> Void) {
 		super();
 		this.done = done;
 		
+		init();
+		
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", filename + ".ogg", true);
+		request.open("GET", filename + (playsOgg ? ".ogg" : ".mp4"), true);
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
