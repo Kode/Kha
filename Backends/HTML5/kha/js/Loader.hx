@@ -24,7 +24,8 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadSound(filename: String, done: kha.Sound -> Void) {
-		var sound = new Sound(filename, done);
+		if (Sys.audio != null) new WebAudioSound(filename, done);
+		else new Sound(filename, done);
 	}
 	
 	override function loadImage(filename: String, done: kha.Image -> Void) {

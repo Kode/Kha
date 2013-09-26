@@ -22,43 +22,46 @@ class SoundChannel extends kha.SoundChannel {
 		element.play();
 	}
 	
-	override public function pause() : Void {
+	override public function pause(): Void {
 		try {
 			element.pause();
-		} catch ( e : Dynamic ) {
-			trace ( e );
+		}
+		catch (e: Dynamic) {
+			trace(e);
 		}
 	}
 	
-	override public function stop() : Void {
+	override public function stop(): Void {
 		try {
 			element.pause();
 			element.currentTime = 0;
-      super.stop();
-		} catch (e : Dynamic) {
-			trace ( e );
+			super.stop();
+		}
+		catch (e: Dynamic) {
+			trace(e);
 		}
 	}
 	
-	override public function getCurrentPos() : Int {
+	override public function getCurrentPos(): Int {
 		return Math.ceil(element.currentTime * 1000);  // Miliseconds
 	}
 	
-	override public function getLength() : Int {
-		if ( Math.isFinite(element.duration) ) {
+	override public function getLength(): Int {
+		if (Math.isFinite(element.duration)) {
 			return Math.floor(element.duration * 1000); // Miliseconds
-		} else {
+		}
+		else {
 			return -1;
 		}
 	}
 }
 
 class Sound extends kha.Sound {
-	static var extensions : Array<String> = null;
-	public var element : AudioElement;
+	private static var extensions: Array<String> = null;
 	private var done: kha.Sound -> Void;
+	public var element: AudioElement;
 	
-	public function new(filename : String, done: kha.Sound -> Void) {
+	public function new(filename: String, done: kha.Sound -> Void) {
 		super();
 		
 		this.done = done;
@@ -66,70 +69,71 @@ class Sound extends kha.Sound {
 		element = cast Browser.document.createElement("audio");
 		
 		if (extensions == null) {
-			extensions = new Array();
-			if ( element.canPlayType("audio/ogg") != "" ) {
-				extensions.push(".ogg");
-			}
-			if ( element.canPlayType("audio/mp4") != "" ) {
-				extensions.push(".mp4");
-			}
+			extensions = new Array<String>();
+			if (element.canPlayType("audio/ogg") != "") extensions.push(".ogg");
+			if (element.canPlayType("audio/mp4") != "") extensions.push(".mp4");
 		}
 		
 		element.addEventListener("error", errorListener, false);
 		element.addEventListener("canplay", canPlayThroughListener, false);
 		
 		element.src = filename + extensions[0];
-		
 		element.load();
-		element.muted = true;
-		element.play(); //force preload
+		if (untyped __js__("!('mozChannels' in this.element)")) {
+			element.muted = true;
+			element.play(); //force preload
+		}
 	}
 	
 	override public function play(): kha.SoundChannel {
 		try {
 			element.play();
-		} catch ( e : Dynamic ) {
-			trace ( e );
+		}
+		catch (e: Dynamic) {
+			trace(e);
 		}
 		return new SoundChannel(element);
 	}
 	
-	function errorListener(eventInfo: ErrorEvent): Void {
+	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-			for ( i in 0 ... extensions.length - 1 ) {
-				var ext = extensions[i];
-				if ( element.src.endsWith(extensions[i]) ) {
+			for (i in 0...extensions.length - 1) {
+				if (element.src.endsWith(extensions[i])) {
 					// try loading with next extension:
-					element.src = element.src.substr(0, element.src.length - extensions[i].length) + extensions[i + 1];
+					element.src = extractName(element.src) + extensions[i + 1];
 					return;
 				}
 			}
 		}
 		
-		{
-			var str = "";
-			var i = extensions.length - 2;
-			while ( i >= 0 ) {
-				str = "|" + extensions[i];
-			}
-			
-			trace("Error loading " + element.src + str);
-			Lib.alert("loadSound failed");
-		}
-		
+		trace("Error loading " + extractName(element.src) + concatExtensions());
+		Lib.alert("loadSound failed");
+	
 		finishAsset();
 	}
 	
-	function canPlayThroughListener(eventInfo : Event) : Void {
+	private static function extractName(filename: String): String {
+		return filename.substr(0, filename.lastIndexOf("."));
+	}
+	
+	private static function concatExtensions(): String {
+		var value = extensions[0];
+		for (i in 1...extensions.length) value += "|" + extensions[i];
+		return value;
+	}
+	
+	private function canPlayThroughListener(eventInfo: Event): Void {
 		finishAsset();
 	}
 	
-	function finishAsset() {
+	private function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
-		element.pause();
-		element.currentTime = 0;
-		element.muted = false;
+		if (untyped __js__("!('mozChannels' in this.element)")) {
+			element.pause();
+			element.currentTime = 0;
+			element.muted = false;
+		}
 		done(this);
 	}
 }
