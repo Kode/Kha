@@ -1,7 +1,7 @@
 package kha;
 
 class SoundChannel {
-	private var wasStopped : Bool;
+	private var wasStopped: Bool;
 	
 	public function new() { }
 	
