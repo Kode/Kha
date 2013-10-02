@@ -114,9 +114,8 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		stamp = getCurrentTimestamp();
+		stamp = Sys.getTimestamp() - startstamp;
 		
-		current = frameEnd;
 		var tdif = ticksToTimespan(stamp - current);
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		if (halted_count > 0) {
@@ -183,7 +182,10 @@ class Scheduler {
 				timeTasks.remove(t);
 			}
 		}
-
+		
+		// getCurrentTimestamp auf frameEnd aktualisieren
+		current = frameEnd;
+		
 		// TODO: Man könnte direkt bei "t.active = false;" entfernen
 		while (true) {
 			for (timeTask in timeTasks) {
