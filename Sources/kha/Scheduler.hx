@@ -117,6 +117,9 @@ class Scheduler {
 		stamp = Sys.getTimestamp() - startstamp;
 		
 		var tdif = ticksToTimespan(stamp - current);
+		if (tdif < 0) {
+			return;
+		}
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		if (halted_count > 0) {
 			startstamp += stamp - current;
@@ -161,7 +164,7 @@ class Scheduler {
 				#end
 			}
 		}
-
+		
 		//
 		// TimeTasks bis zum frameEnd ausführen
 		//
@@ -323,7 +326,7 @@ class Scheduler {
 	}
 	
 	private static function getCurrentTimestamp(): Float {
-		return current - startstamp;
+		return current;
 	}
 	
 	private static function ticksToTimespan(t: Float): Float {
