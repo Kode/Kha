@@ -44,6 +44,9 @@ namespace {
 		case Kore::Key_Shift:
 			Starter_obj::pushShift();
 			break;
+		default:
+			Starter_obj::pushChar(event->tochar());
+			break;
 		}
 	}
 
@@ -72,6 +75,9 @@ namespace {
 			break;
 		case Kore::Key_Shift:
 			Starter_obj::releaseShift();
+			break;
+		default:
+			Starter_obj::releaseChar(event->tochar());
 			break;
 		}
 	}
