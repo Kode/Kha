@@ -417,6 +417,7 @@ class ColoredShaderPainter {
 	}
 }
 
+@:headerClassCode("const wchar_t* wtext;")
 class TextShaderPainter {
 	private var projectionMatrix: Array<Float>;
 	private var shaderProgram: Program;
@@ -549,14 +550,45 @@ class TextShaderPainter {
 		this.font = cast(font, Kravur);
 	}
 	
+	private var text: String;
+	
+	@:functionCode('
+		wtext = text.__WCStr();
+	')
+	private function startString(text: String): Void {
+		this.text = text;
+	}
+	
+	@:functionCode('
+		return wtext[position];
+	')
+	private function charCodeAt(position: Int): Int {
+		return text.charCodeAt(position);
+	}
+	
+	@:functionCode('
+		return wcslen(wtext);
+	')
+	private function stringLength(): Int {
+		return text.length;
+	}
+	
+	@:functionCode('
+		wtext = 0;
+	')
+	private function endString(): Void {
+		text = null;
+	}
+	
 	public function drawString(text: String, color: Color, x: Float, y: Float): Void {
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 
 		var xpos = x;
 		var ypos = y;
-		for (i in 0...text.length) {
-			var q = font.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+		startString(text);
+		for (i in 0...stringLength()) {
+			var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(color);
@@ -566,6 +598,7 @@ class TextShaderPainter {
 				++bufferIndex;
 			}
 		}
+		endString();
 		lastTexture = tex;
 	}
 	
