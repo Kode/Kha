@@ -164,8 +164,10 @@ class Loader {
 					case "image":
 						if (!images.exists(enqueued[i].name)) {
 							var imageName = enqueued[i].name;
+							//trace ('image to load: "$imageName"');
 							loadImage(enqueued[i].file, function(image: Image) {
 								if (!images.exists(imageName)) {
+									//trace ('loaded image "$imageName"');
 									images.set(imageName, image);
 									--numberOfFiles;
 									checkComplete();
@@ -176,8 +178,10 @@ class Loader {
 					case "music":
 						if (!musics.exists(enqueued[i].name)) {
 							var musicName = enqueued[i].name;
+							//trace ('music to load: "$musicName"');
 							loadMusic(enqueued[i].file, function(music: Music) {
 								if (!musics.exists(musicName)) {
+									//trace ('loaded music "$musicName"');
 									musics.set(musicName, music);
 									--numberOfFiles;
 									checkComplete();
@@ -188,8 +192,10 @@ class Loader {
 					case "sound":
 						if (!sounds.exists(enqueued[i].name)) {
 							var soundName = enqueued[i].name;
+							//trace ('sound to load: "$soundName"');
 							loadSound(enqueued[i].file, function(sound: Sound) {
 								if (!sounds.exists(soundName)) {
+									//trace ('loaded sound "$soundName"');
 									sounds.set(soundName, sound);
 									--numberOfFiles;
 									checkComplete();
@@ -200,8 +206,10 @@ class Loader {
 					case "video":
 						if (!videos.exists(enqueued[i].name)) {
 							var videoName = enqueued[i].name;
+							//trace ('video to load: "$videoName"');
 							loadVideo(enqueued[i].file, function(video: Video) {
 								if (!videos.exists(videoName)) {
+									//trace ('loaded video "$videoName"');
 									videos.set(videoName, video);
 									--numberOfFiles;
 									checkComplete();
@@ -212,8 +220,10 @@ class Loader {
 					case "blob":
 						if (!blobs.exists(enqueued[i].name)) {
 							var blobName = enqueued[i].name;
+							//trace ('blob to load: "$blobName"');
 							loadBlob(enqueued[i].file, function(blob: Blob) {
 								if (!blobs.exists(blobName)) {
+									//trace ('loaded blob "$blobName"');
 									blobs.set(blobName, blob);
 									--numberOfFiles;
 									checkComplete();
@@ -237,14 +247,35 @@ class Loader {
 	}
 	
 	private function loadShaders(call: Void -> Void): Void {
+		#if (flash && debug)
+			var shaders = [ "painter-colored.frag",
+							"painter-colored.vert",
+							"painter-image.frag",
+							"painter-image.vert",
+							"painter-text.frag",
+							"painter-text.vert" ];
+			var shaderCount: Int = shaders.length;
+			for (i in 0...shaders.length) {
+				var shader = shaders[i];
+				loadBlob(shader + ".agal", function(blob: Blob) {
+					if (!this.shaders.exists(shader)) { //Chrome tends to call finished loading callbacks multiple times
+						this.shaders.set(shader, blob);
+						--shaderCount;
+						if (shaderCount == 0) call();
+					}
+				} );
+			}
+		#else
 		var project = parseProject();
 		if (project.shaders != null && project.shaders.length > 0) {
 			var shaders: Dynamic = project.shaders;
 			var shaderCount: Int = shaders.length;
 			for (i in 0...shaders.length) {
 				var shader = shaders[i];
+				//trace ('shader to load: "${shader.name}"');
 				loadBlob(shader.file, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
+						//trace ('loaded shader "${shader.name}"');
 						this.shaders.set(shader.name, blob);
 						--shaderCount;
 						if (shaderCount == 0) call();
@@ -253,6 +284,7 @@ class Loader {
 			}
 		}
 		else call();
+		#end
 	}
 	
 	private function loadRoomAssets(room: Room) {
@@ -308,6 +340,7 @@ class Loader {
 	}
 	
 	function checkComplete() {
+		//trace ( "Files Left: " + numberOfFiles );
 		if (numberOfFiles <= 0) {
 			if (loadFinished != null) loadFinished();
 		}

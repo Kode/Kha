@@ -18,12 +18,9 @@ import flash.utils.ByteArray;
 import haxe.io.Bytes;
 
 class Loader extends kha.Loader {
-	private var fontCache: Map<String, Kravur>;
-	
 	public function new(main: Starter) {
 		super();
 		isQuitable = true;
-		fontCache = new Map<String, Kravur>();
 	}
 	
 	override function loadMusic(filename: String, done: kha.Music -> Void) {
@@ -72,11 +69,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		var fontName = name + size;
-		if (!fontCache.exists(fontName)) {
-			fontCache.set(fontName, new Kravur(name, style, size));
-		}
-		return fontCache[fontName];
+		return Kravur.get(name, style, size);
 	}
   
 	override public function loadURL(url: String): Void {

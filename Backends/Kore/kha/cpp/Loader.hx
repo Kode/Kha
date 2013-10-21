@@ -6,6 +6,11 @@ import kha.Kravur;
 import kha.loader.Asset;
 import sys.io.File;
 
+@:headerCode('
+#include <Kore/pch.h>
+#include <Kore/System.h>
+')
+
 class Loader extends kha.Loader {
 	public function new() {
 		super();
@@ -28,6 +33,20 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return new Kravur(name, style, size);
+		return Kravur.get(name, style, size);
+	}
+	
+	override public function loadVideo(filename: String, done: Video -> Void) {
+		done(new Video());
+	}
+
+	@:functionCode('Kore::System::showKeyboard();')
+	override public function showKeyboard(): Void {
+
+	}
+
+	@:functionCode('Kore::System::hideKeyboard();')
+	override public function hideKeyboard(): Void {
+
 	}
 }

@@ -114,10 +114,12 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		stamp = getCurrentTimestamp();
+		stamp = Sys.getTimestamp() - startstamp;
 		
-		current = frameEnd;
 		var tdif = ticksToTimespan(stamp - current);
+		if (tdif < 0) {
+			return;
+		}
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		if (halted_count > 0) {
 			startstamp += stamp - current;
@@ -162,7 +164,7 @@ class Scheduler {
 				#end
 			}
 		}
-
+		
 		//
 		// TimeTasks bis zum frameEnd ausführen
 		//
@@ -183,7 +185,10 @@ class Scheduler {
 				timeTasks.remove(t);
 			}
 		}
-
+		
+		// getCurrentTimestamp auf frameEnd aktualisieren
+		current = frameEnd;
+		
 		// TODO: Man könnte direkt bei "t.active = false;" entfernen
 		while (true) {
 			for (timeTask in timeTasks) {
@@ -321,7 +326,7 @@ class Scheduler {
 	}
 	
 	private static function getCurrentTimestamp(): Float {
-		return current - startstamp;
+		return current;
 	}
 	
 	private static function ticksToTimespan(t: Float): Float {
