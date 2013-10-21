@@ -18,7 +18,7 @@ class Sys {
 		return 1000;
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		return (int) watch.ElapsedMilliseconds;
 	')
 	public static function getTimestamp(): Int {
