@@ -33,7 +33,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return new Kravur(name, style, size);
+		return Kravur.get(name, style, size);
 	}
 	
 	override public function loadVideo(filename: String, done: Video -> Void) {

@@ -46,11 +46,34 @@ class Kravur implements Font {
 	public var height: Int;
 	private var baseline: Float;
 	
-	public function new(name: String, style: FontStyle, size: Float) {
-		myName = name;
-		myStyle = style;
-		mySize = size;
-		var blob = Loader.the.getBlob(name + size + ".kravur");
+	private static var fontCache: Map<String, Kravur> = new Map();
+	/**
+		Returns the cached Kravur for name, style and size or loads it.
+	**/
+	public static function get(name: String, style: FontStyle, size: Float) : Kravur {
+		var key = name;
+		if (style.getBold()) {
+			key += "#Bold";
+		}
+		if (style.getItalic()) {
+			key += "#Italic";
+		}
+		key += size + ".kravur";
+		
+		var kravur = fontCache.get(key);
+		if (kravur == null) {
+			kravur = new Kravur(key);
+			kravur.myName = name;
+			kravur.myStyle = style;
+			kravur.mySize = size;
+			
+			fontCache.set(key, kravur);
+		}
+		return kravur;
+	}
+	
+	private function new(name: String) {
+		var blob = Loader.the.getBlob(name);
 		var size = blob.readS32LE();
 		var ascent = blob.readS32LE();
 		var descent = blob.readS32LE();

@@ -56,9 +56,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		//var font : kha.Font = new Font(name, style, size);
-		//return (font != null ? font : new Font("Arial", style, size));
-		return new Kravur(name, style, size);
+		return Kravur.get(name, style, size);
 	}
 
 	@:functionCode('
