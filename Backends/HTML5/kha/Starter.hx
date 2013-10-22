@@ -68,10 +68,8 @@ class Starter {
 		var heightTransform: Float = canvas.height / Loader.the.height;
 		var transform: Float = Math.min(widthTransform, heightTransform);
 		
-		if (Loader.the.width > 0 && Loader.the.height > 0) {
-			game.width = Math.round(Loader.the.width * transform);
-			game.height = Math.round(Loader.the.height * transform);
-		}
+		game.width = Loader.the.width;
+		game.height = Loader.the.height;
 		
 		try {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
@@ -86,7 +84,7 @@ class Starter {
 		}
 		if (painter == null) {
 			Sys.init(false);
-			painter = new kha.js.Painter(canvas.getContext("2d"), game.width, game.height);
+			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			canvas.getContext("2d").scale(transform, transform);
 		}
 		
