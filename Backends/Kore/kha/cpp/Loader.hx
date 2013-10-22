@@ -37,7 +37,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadVideo(filename: String, done: Video -> Void) {
-		done(new Video());
+		done(new Video(filename));
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')
