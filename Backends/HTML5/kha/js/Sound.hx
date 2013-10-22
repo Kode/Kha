@@ -58,6 +58,7 @@ class SoundChannel extends kha.SoundChannel {
 
 class Sound extends kha.Sound {
 	private static var extensions: Array<String> = null;
+	static var loading : List<Sound> = new List();
 	private var done: kha.Sound -> Void;
 	public var element: AudioElement;
 	
@@ -65,6 +66,7 @@ class Sound extends kha.Sound {
 		super();
 		
 		this.done = done;
+		loading.add(this); // prevent gc from removing this
 		
 		element = cast Browser.document.createElement("audio");
 		
@@ -135,5 +137,6 @@ class Sound extends kha.Sound {
 			element.muted = false;
 		}
 		done(this);
+		loading.remove(this);
 	}
 }

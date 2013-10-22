@@ -120,14 +120,17 @@ class Painter extends kha.Painter {
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 		
 		var image = webfont.getImage(myColor);
-		var xpos = tx + x;
-		var ypos = ty + y;
-		for (i in 0...text.length) {
-			var q = webfont.kravur.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
-			if (q != null) {
-				if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
-					canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
-				xpos += q.xadvance;
+		if (image.width > 0) {
+			// the image created in getImage() is not imediately useable
+			var xpos = tx + x;
+			var ypos = ty + y;
+			for (i in 0...text.length) {
+				var q = webfont.kravur.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+				if (q != null) {
+					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
+						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+					xpos += q.xadvance;
+				}
 			}
 		}
 	}

@@ -10,6 +10,7 @@ using StringTools;
 
 class Video extends kha.Video {
 	static var extensions : Array<String> = null;
+	static var loading : List<Video> = new List(); 
 	public var element : VideoElement;
 	private var done: kha.Video -> Void;
 	public var texture: Image;
@@ -18,8 +19,9 @@ class Video extends kha.Video {
 		super();
 		
 		this.done = done;
+		loading.add(this); // prevent gc from removing this
 		
-		element = cast(Browser.document.createElement("video"), VideoElement);
+		element = cast Browser.document.createElement("video");
 		
 		if (extensions == null) {
 			extensions = new Array();
@@ -109,5 +111,6 @@ class Video extends kha.Video {
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
 		if (Sys.gl != null) texture = Image.fromVideo(this);
 		done(this);
+		loading.remove(this);
 	}
 }
