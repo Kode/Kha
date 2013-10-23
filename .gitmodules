@@ -6,3 +6,7 @@
 	path = Tools/hake
 	url = ../hake
 	branch = master
+[submodule "Tools/haxe"]
+	path = Tools/haxe
+	url = ../haxe
+	branch = master
