@@ -13,6 +13,8 @@ import kha.Loader;
 import js.Lib;
 import js.Browser;
 
+
+
 class Starter {
 	static var game : Game;
 	static var painter : Painter;
@@ -36,6 +38,9 @@ class Starter {
 		Loader.init(new kha.js.Loader());
 		Storage.init(new kha.js.Storage());
 		Scheduler.init();
+		
+		// TODO: Move?
+		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 	
 	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {

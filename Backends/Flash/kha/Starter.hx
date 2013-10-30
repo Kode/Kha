@@ -49,6 +49,9 @@ class Starter {
 		this.game = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
+		
+		// TODO: Move?
+		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
 	
 	public function loadFinished(): Void {
