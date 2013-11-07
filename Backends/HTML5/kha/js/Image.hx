@@ -149,6 +149,23 @@ class Image implements Texture {
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
 			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+			
+			if (Sys.gl.getError() == 1282) {
+				var rgbaBytes = Bytes.alloc(width * height * 4);
+				for (y in 0...height) for (x in 0...width) {
+					var value = bytes.get(y * width + x);
+					if (value != 0) {
+						var a = 3;
+						++a;
+					}
+					rgbaBytes.set(y * width * 4 + x * 4 + 0, value);
+					rgbaBytes.set(y * width * 4 + x * 4 + 1, value);
+					rgbaBytes.set(y * width * 4 + x * 4 + 2, value);
+					rgbaBytes.set(y * width * 4 + x * 4 + 3, 255);
+				}
+				Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, width, height, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
+			}
+			
 			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 			bytes = null;

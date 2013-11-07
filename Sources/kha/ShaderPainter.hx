@@ -616,10 +616,10 @@ class ShaderPainter extends Painter {
 	private var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
-	private var width : Float;
-	private var height : Float;
-	private var borderX : Float;
-	private var borderY : Float;
+	private var width: Float;
+	private var height: Float;
+	private var borderX: Float;
+	private var borderY: Float;
 	
 	public function new(width: Int, height: Int) {
 		color = Color.fromBytes(0, 0, 0);
@@ -633,7 +633,7 @@ class ShaderPainter extends Painter {
 		this.borderX = borderX;
 		this.borderY = borderY;
 		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = ortho( -borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
+		projectionMatrix = ortho(-borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
@@ -740,10 +740,10 @@ class ShaderPainter extends Painter {
 	public override function end(): Void {
 		imagePainter.end();
 		textPainter.end();
-		coloredPainter.fillRect( Color.ColorBlack, -borderX, 0, borderX, height );
-		coloredPainter.fillRect( Color.ColorBlack, width, 0, borderX, height );
-		coloredPainter.fillRect( Color.ColorBlack, 0, -borderY, width, borderY );
-		coloredPainter.fillRect( Color.ColorBlack, 0, height, width, borderY );
+		coloredPainter.fillRect(Color.ColorBlack, -borderX, 0, borderX, height);
+		coloredPainter.fillRect(Color.ColorBlack, width, 0, borderX, height);
+		coloredPainter.fillRect(Color.ColorBlack, 0, -borderY, width, borderY);
+		coloredPainter.fillRect(Color.ColorBlack, 0, height, width, borderY);
 		coloredPainter.end();
 	}
 }
