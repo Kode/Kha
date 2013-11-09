@@ -1,9 +1,0 @@
-#Sun Dec 30 15:46:10 CET 2012
-IssueType=Improvement
-Reporter=martin
-Assignee=robert
-Priority=Minor
-Changed=1356878770194
-Description="Commit issues" erzeugt einen Eintrag im Git-Log,\nauch dann, wenn gar nichts comitted wird.
-Created=1356878770194
-Summary=Leerer Issues-Commit

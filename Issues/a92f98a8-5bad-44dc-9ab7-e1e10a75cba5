@@ -1,9 +1,0 @@
-#Sun Dec 30 15:26:00 CET 2012
-IssueType=Bug
-Reporter=martin
-Assignee=robert
-Priority=Minor
-Changed=1356877560684
-Description=In der Projekte-Liste, wenn man ein Projekt updatet,\nwird irgendwohin falsch gescrollt.
-Created=1356877560684
-Summary=Scrolling nach Projekt-Update
