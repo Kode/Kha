@@ -17,6 +17,7 @@ class ImageShaderPainter {
 	private var projectionLocation: ConstantLocation;
 	private var textureLocation: TextureUnit;
 	private static var bufferSize: Int = 100;
+	private static var vertexSize: Int = 9;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;
     private var rectVertices: Array<Float>;
@@ -43,6 +44,7 @@ class ImageShaderPainter {
 		structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
 		
 		shaderProgram.link(structure);
 	}
@@ -65,37 +67,60 @@ class ImageShaderPainter {
 	}
 	
 	private function setRectVertices(left: Float, top: Float, right: Float, bottom: Float): Void {
-		var baseIndex: Int = bufferIndex * 5 * 4;
+		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  0] = left;
 		rectVertices[baseIndex +  1] = bottom;
 		rectVertices[baseIndex +  2] = -5.0;
 		
-		rectVertices[baseIndex +  5] = left;
-		rectVertices[baseIndex +  6] = top;
-		rectVertices[baseIndex +  7] = -5.0;
+		rectVertices[baseIndex +  9] = left;
+		rectVertices[baseIndex + 10] = top;
+		rectVertices[baseIndex + 11] = -5.0;
 		
-		rectVertices[baseIndex + 10] = right;
-		rectVertices[baseIndex + 11] = top;
-		rectVertices[baseIndex + 12] = -5.0;
+		rectVertices[baseIndex + 18] = right;
+		rectVertices[baseIndex + 19] = top;
+		rectVertices[baseIndex + 20] = -5.0;
 		
-		rectVertices[baseIndex + 15] = right;
-		rectVertices[baseIndex + 16] = bottom;
-		rectVertices[baseIndex + 17] = -5.0;
+		rectVertices[baseIndex + 27] = right;
+		rectVertices[baseIndex + 28] = bottom;
+		rectVertices[baseIndex + 29] = -5.0;
 	}
 	
 	private function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
-		var baseIndex: Int = bufferIndex * 5 * 4;
+		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  3] = left;
 		rectVertices[baseIndex +  4] = bottom;
 		
-		rectVertices[baseIndex +  8] = left;
-		rectVertices[baseIndex +  9] = top;
+		rectVertices[baseIndex + 12] = left;
+		rectVertices[baseIndex + 13] = top;
 		
-		rectVertices[baseIndex + 13] = right;
-		rectVertices[baseIndex + 14] = top;
+		rectVertices[baseIndex + 21] = right;
+		rectVertices[baseIndex + 22] = top;
 		
-		rectVertices[baseIndex + 18] = right;
-		rectVertices[baseIndex + 19] = bottom;
+		rectVertices[baseIndex + 30] = right;
+		rectVertices[baseIndex + 31] = bottom;
+	}
+	
+	private function setRectColor(r: Float, g: Float, b: Float, a: Float): Void {
+		var baseIndex: Int = bufferIndex * vertexSize * 4;
+		rectVertices[baseIndex +  5] = r;
+		rectVertices[baseIndex +  6] = g;
+		rectVertices[baseIndex +  7] = b;
+		rectVertices[baseIndex +  8] = a;
+		
+		rectVertices[baseIndex + 14] = r;
+		rectVertices[baseIndex + 15] = g;
+		rectVertices[baseIndex + 16] = b;
+		rectVertices[baseIndex + 17] = a;
+		
+		rectVertices[baseIndex + 23] = r;
+		rectVertices[baseIndex + 24] = g;
+		rectVertices[baseIndex + 25] = b;
+		rectVertices[baseIndex + 26] = a;
+		
+		rectVertices[baseIndex + 32] = r;
+		rectVertices[baseIndex + 33] = g;
+		rectVertices[baseIndex + 34] = b;
+		rectVertices[baseIndex + 35] = a;
 	}
 
 	private function drawBuffer(): Void {
@@ -113,7 +138,7 @@ class ImageShaderPainter {
 		bufferIndex = 0;
 	}
 	
-	public function drawImage(img: kha.Image, x: Float, y: Float): Void {
+	public function drawImage(img: kha.Image, x: Float, y: Float, opacity: Float): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -122,13 +147,14 @@ class ImageShaderPainter {
 		var right: Float = x + img.width;
 		var bottom: Float = y + img.height;
 		
+		setRectColor(1, 1, 1, opacity);
 		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
 		lastTexture = tex;
 	}
 	
-	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation): Void {
+	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation, opacity: Float): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -138,6 +164,7 @@ class ImageShaderPainter {
 		var bottom: Float = dy + dh;
 		
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
+		setRectColor(1, 1, 1, opacity);
 		
 		if (rotation != null) {
 			var lefttop = rotate(left, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
@@ -150,17 +177,17 @@ class ImageShaderPainter {
 			rectVertices[baseIndex +  1] = leftbottom.y;
 			rectVertices[baseIndex +  2] = -5.0;
 			
-			rectVertices[baseIndex +  5] = lefttop.x;
-			rectVertices[baseIndex +  6] = lefttop.y;
-			rectVertices[baseIndex +  7] = -5.0;
+			rectVertices[baseIndex +  9] = lefttop.x;
+			rectVertices[baseIndex + 10] = lefttop.y;
+			rectVertices[baseIndex + 11] = -5.0;
 			
-			rectVertices[baseIndex + 10] = righttop.x;
-			rectVertices[baseIndex + 11] = righttop.y;
-			rectVertices[baseIndex + 12] = -5.0;
+			rectVertices[baseIndex + 18] = righttop.x;
+			rectVertices[baseIndex + 19] = righttop.y;
+			rectVertices[baseIndex + 20] = -5.0;
 			
-			rectVertices[baseIndex + 15] = rightbottom.x;
-			rectVertices[baseIndex + 16] = rightbottom.y;
-			rectVertices[baseIndex + 17] = -5.0;
+			rectVertices[baseIndex + 27] = rightbottom.x;
+			rectVertices[baseIndex + 28] = rightbottom.y;
+			rectVertices[baseIndex + 29] = -5.0;
 		}
 		else {
 			setRectVertices(left, top, right, bottom);
@@ -622,6 +649,7 @@ class ShaderPainter extends Painter {
 	private var borderY: Float;
 	
 	public function new(width: Int, height: Int) {
+		super();
 		color = Color.fromBytes(0, 0, 0);
 		
 		setScreenSize(width, height, 0, 0);
@@ -656,14 +684,14 @@ class ShaderPainter extends Painter {
 		coloredPainter.end();
 		textPainter.end();
 		
-		imagePainter.drawImage(img, tx + x, ty + y);
+		imagePainter.drawImage(img, tx + x, ty + y, opacity);
 	}
 	
 	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		coloredPainter.end();
 		textPainter.end();
 		
-		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation);
+		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation, opacity);
 	}
 	
 	public override function setColor(color: Color): Void {
