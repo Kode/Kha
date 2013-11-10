@@ -1,9 +1,0 @@
-#Sun Dec 30 15:31:53 CET 2012
-IssueType=Bug
-Reporter=martin
-Assignee=robert
-Priority=Minor
-Changed=1356877913530
-Description=Nachdem man ein Sound-Asset hinzugefügt hat,\nwerden erst wieder die Images angezeigt. Damit die\nSounds angezeigt werden, muss man erst in eine\nandere Liste und dann wieder in die Sound-Liste.
-Created=1356877913530
-Summary=Assets anzeigen nach Hinzufügen

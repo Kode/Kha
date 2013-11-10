@@ -1,9 +1,0 @@
-#Sun Dec 30 15:41:14 CET 2012
-IssueType=Improvement
-Reporter=martin
-Assignee=robert
-Priority=Minor
-Changed=1356878474698
-Description=- Alle Gadgets etwas vom Rand absetzen\n- Trennstrich über den Create- und Cancel-Buttons\n- Create- und Cancel-Buttons größer\n   (insb. in Y-Richtung)\n- Kleine Zwischenräume zwischen den Eingabefeldern\n
-Created=1356878474698
-Summary=Fenster/Aussehen - Issue Editor

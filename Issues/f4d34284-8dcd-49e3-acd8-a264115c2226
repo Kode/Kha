@@ -1,9 +1,0 @@
-#Sun Dec 30 15:47:05 CET 2012
-IssueType=Improvement
-Reporter=martin
-Assignee=robert
-Priority=Minor
-Changed=1356878825458
-Description=- Unterseite der Buttons verschwindet im Hintergrund.\n  Kann man da was machen, einen Rand unten?\n- Issues\: "Commit issues" und "Create issue" (i klein)\n  von den Issues absetzen in Y-Richtung. Und mit\n  Trennlinie.\n- Trennstrich oder zumindest Leerraum zwischen\n  "Projects" ganz links oben und dem Projektbuttons\n  rechts daneben.\n- Bei den Tabs "Assets"/"Rooms"/"Issues" sieht man\n  kaum, was gerade aktiviert ist.
-Created=1356878438682
-Summary=Fenster/Aussehen - Hauptfenster
