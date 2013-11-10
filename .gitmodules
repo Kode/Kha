@@ -14,3 +14,7 @@
 	path = Kore
 	url = ../Kore
 	branch = master
+[submodule "KoreVideo"]
+	path = KoreVideo
+	url = ../KoreVideo
+	branch = master
