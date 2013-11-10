@@ -24,4 +24,29 @@ class Painter {
 	
 	public function begin(): Void { }
 	public function end(): Void { }
+	
+	public var opacity(get,set): Float;
+	
+	public function get_opacity(): Float {
+		return opacities[opacities.length - 1];
+	}
+	
+	public function set_opacity(value: Float): Float {
+		return opacities[opacities.length - 1] = value;
+	}
+	
+	public function pushOpacity(): Void {
+		opacities.push(opacity);
+	}
+	
+	public function popOpacity(): Void {
+		opacities.pop();
+	}
+	
+	private var opacities: Array<Float>;
+	
+	public function new() {
+		opacities = new Array<Float>();
+		opacities.push(1);
+	}
 }

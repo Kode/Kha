@@ -17,6 +17,7 @@ class Painter extends kha.Painter {
 	private static var instance: Painter;
 	
 	public function new(canvas: Dynamic, width: Int, height: Int) {
+		super();
 		this.canvas = canvas;
 		this.width = width;
 		this.height = height;
@@ -49,10 +50,13 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
+		canvas.globalAlpha = opacity;
 		canvas.drawImage(cast(img, Image).image, tx + x, ty + y);
+		canvas.globalAlpha = 1;
 	}
 	
 	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null) {
+		canvas.globalAlpha = opacity;
 		try {
 			if (rotation != null) {
 				canvas.save();
@@ -94,6 +98,7 @@ class Painter extends kha.Painter {
 		catch (ex : Dynamic) {
 			
 		}
+		canvas.globalAlpha = 1;
 	}
 	
 	override public function setColor(color: Color) {
