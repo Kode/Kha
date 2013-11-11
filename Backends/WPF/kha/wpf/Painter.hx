@@ -16,6 +16,7 @@ class Painter extends kha.Painter {
 	private var ty: Float;
 
 	public function new() {
+		super();
 		//font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 	
