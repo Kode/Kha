@@ -32,4 +32,8 @@ class Vector3 {
 	public function sub(vec: Vector3): Vector3 {
 		return new Vector3(x - vec.x, y - vec.y, z - vec.z);
 	}
+	
+	public function mult(value: Float): Vector3 {
+		return new Vector3(x * value, y * value, z * value);
+	}
 }
