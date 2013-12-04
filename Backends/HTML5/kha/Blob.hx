@@ -3,7 +3,7 @@ package kha;
 import haxe.io.Bytes;
 
 class Blob implements Resource {
-	private var bytes: Bytes;
+	public var bytes: Bytes;
 	private var position: Int;
 	private var buffer: Array<Int>;
 	private var myFirstLine: Bool = true;
