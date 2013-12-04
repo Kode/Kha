@@ -5,7 +5,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 
 class Blob implements Resource {
-	private var bytes: BytesData;
+	public var bytes: BytesData;
 	
 	public function new(bytes: Bytes) {
 		this.bytes = bytes.getData();

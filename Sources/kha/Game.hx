@@ -15,7 +15,7 @@ class Game {
 	public function new(name: String, hasHighscores: Bool = false) {
 		setInstance();
 		this.name = name;
-		if (hasHighscores) highscores = new HighscoreList(name);
+		if (hasHighscores) highscores = new HighscoreList();
 		scene = Scene.the;
 		width = Loader.the.width;
 		height = Loader.the.height;
