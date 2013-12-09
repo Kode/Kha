@@ -1,15 +1,15 @@
-package kha.pss;
+package kha.psm;
 
 class Music extends kha.Music {
 	public function new(filename: String) {
 		super();
 	}
 	
-	public function start(): Void {
+	override public function play(): Void {
 		
 	}
 	
-	public function stop(): Void {
+	override public function stop(): Void {
 		
 	}
 }
