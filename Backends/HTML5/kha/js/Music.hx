@@ -9,7 +9,7 @@ class Music extends kha.Music {
 		super();
 		element = Browser.document.createElement("audio");
 		element.loop = "true"; //not working in Firefox until version 11
-		if (!element.canPlayType("audio/mp4")) element.src = filename + ".ogg";
+		if (element.canPlayType("audio/ogg")) element.src = filename + ".ogg";
 		else element.src = filename + ".mp4";
 		element.load();
 	}
