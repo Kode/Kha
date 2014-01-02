@@ -1,9 +1,18 @@
 package kha.js.graphics;
 
 import kha.Blob;
+import kha.graphics.BlendingOperation;
+import kha.graphics.DepthCompareMode;
 import kha.graphics.FragmentShader;
+import kha.graphics.MipMapFilter;
+import kha.graphics.RenderState;
+import kha.graphics.TexDir;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TextureArgument;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.TextureOperation;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
 import kha.graphics.VertexShader;
@@ -28,6 +37,72 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
+		
+	}
+	
+	public function setRenderStateBool(state: RenderState, on: Bool): Void {
+		
+	}
+	
+	public function setRenderStateInt(state: RenderState, v: Int): Void {
+		
+	}
+	
+	public function setRenderStateFloat(state: RenderState, value: Float): Void {
+		
+	}
+	
+	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+		switch (mode) {
+		case Always:
+			Sys.gl.disable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.ALWAYS);
+		case Never:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.NEVER);
+		case Equal:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.EQUAL);
+		case NotEqual:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.NOTEQUAL);
+		case Less:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.LESS);
+		case LessEqual:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.LEQUAL);
+		case Greater:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.GREATER);
+		case GreaterEqual:
+			Sys.gl.enable(Sys.gl.DEPTH_TEST);
+			Sys.gl.depthFunc(Sys.gl.GEQUAL);
+		}
+		Sys.gl.depthMask(write);
+	}
+	
+	public function setTextureAddressing(unit: kha.graphics.TextureUnit, dir: TexDir, addressing: TextureAddressing): Void {
+		
+	}
+	
+	public function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+	
+	public function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+	
+	public function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void {
+		
+	}
+	
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+		
+	}
+	
+	public function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void {
 		
 	}
 	

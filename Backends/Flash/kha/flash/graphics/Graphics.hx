@@ -3,6 +3,7 @@ package kha.flash.graphics;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DClearMask;
+import flash.display3D.Context3DCompareMode;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DVertexBufferFormat;
@@ -13,8 +14,17 @@ import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
 import kha.flash.Image;
+import kha.graphics.BlendingOperation;
+import kha.graphics.DepthCompareMode;
+import kha.graphics.MipMapFilter;
+import kha.graphics.RenderState;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TextureArgument;
+import kha.graphics.TexDir;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.TextureOperation;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
@@ -41,6 +51,64 @@ class Graphics implements kha.graphics.Graphics {
 		var b = color == null ? 0.0 : color.B;
 		var a = color == null ? 1.0 : color.A;
 		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
+	}
+	
+	//BlendingState, Normalize, BackfaceCulling, ScissorTestState,	AlphaTestState, AlphaReferenceState
+	public function setRenderStateBool(state: RenderState, on: Bool): Void {
+		
+	}
+	
+	public function setRenderStateInt(state: RenderState, v: Int): Void {
+		
+	}
+	
+	public function setRenderStateFloat(state: RenderState, value: Float): Void {
+		
+	}
+
+	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+		switch (mode) {
+		case Always:
+			context.setDepthTest(write, Context3DCompareMode.ALWAYS);
+		case Equal:
+			context.setDepthTest(write, Context3DCompareMode.EQUAL);
+		case Greater:
+			context.setDepthTest(write, Context3DCompareMode.GREATER);
+		case GreaterEqual:
+			context.setDepthTest(write, Context3DCompareMode.GREATER_EQUAL);
+		case Less:
+			context.setDepthTest(write, Context3DCompareMode.LESS);
+		case LessEqual:
+			context.setDepthTest(write, Context3DCompareMode.LESS_EQUAL);
+		case Never:
+			context.setDepthTest(write, Context3DCompareMode.NEVER);
+		case NotEqual:
+			context.setDepthTest(write, Context3DCompareMode.NOT_EQUAL);
+		}
+	}
+	
+	public function setTextureAddressing(unit: kha.graphics.TextureUnit, dir: TexDir, addressing: TextureAddressing): Void {
+		
+	}
+
+	public function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+
+	public function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+
+	public function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void {
+		
+	}
+
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+		
+	}
+
+	public function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void {
+		
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {

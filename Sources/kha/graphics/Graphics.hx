@@ -10,6 +10,17 @@ interface Graphics {
 	
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 	
+	function setRenderStateBool(state: RenderState, on: Bool): Void;
+	function setRenderStateInt(state: RenderState, v: Int): Void;
+	function setRenderStateFloat(state: RenderState, value: Float): Void;
+	function setDepthMode(write: Bool, mode: DepthCompareMode): Void;
+	function setTextureAddressing(unit: TextureUnit, dir: TexDir, addressing: TextureAddressing): Void;
+	function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void;
+	function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void;
+	function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void;
+	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void;
+	function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void;
+
 	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	

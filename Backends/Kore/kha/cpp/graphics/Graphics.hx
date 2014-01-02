@@ -3,8 +3,17 @@ package kha.cpp.graphics;
 import kha.Blob;
 import kha.Color;
 import kha.graphics.FragmentShader;
+import kha.graphics.BlendingOperation;
+import kha.graphics.DepthCompareMode;
+import kha.graphics.MipMapFilter;
+import kha.graphics.RenderState;
+import kha.graphics.TexDir;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TextureArgument;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.TextureOperation;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
 import kha.graphics.TextureWrap;
@@ -39,6 +48,79 @@ class Graphics implements kha.graphics.Graphics {
 		if (z != null) flags |= 2;
 		if (stencil != null) flags |= 4;
 		clear2(flags, color, z, stencil);
+	}
+	
+	public function setRenderStateBool(state: RenderState, on: Bool): Void {
+		
+	}
+	
+	public function setRenderStateInt(state: RenderState, v: Int): Void {
+		
+	}
+	
+	public function setRenderStateFloat(state: RenderState, value: Float): Void {
+		
+	}
+	
+	@:functionCode('
+		switch (mode) {
+		case 0:
+			Kore::Graphics::setRenderState(Kore::DepthTest, false);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareAlways);
+		case 1:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNever);
+		case 2:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareEqual);
+		case 3:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNotEqual);
+		case 4:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLess);
+		case 5:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLessEqual);
+		case 6:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreater);
+		case 7:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreaterEqual);
+		}
+		Kore::Graphics::setRenderState(Kore::DepthWrite, write);
+	')
+	private function setDepthMode2(write: Bool, mode: Int): Void {
+		
+	}
+	
+	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+		setDepthMode2(write, mode.getIndex());
+	}
+	
+	public function setTextureAddressing(unit: kha.graphics.TextureUnit, dir: TexDir, addressing: TextureAddressing): Void {
+		
+	}
+	
+	public function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+	
+	public function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void {
+		
+	}
+	
+	public function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void {
+		
+	}
+	
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+		
+	}
+	
+	public function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void {
+		
 	}
 	
 	@:functionCode('
