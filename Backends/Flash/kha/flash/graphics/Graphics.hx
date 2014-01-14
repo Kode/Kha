@@ -4,9 +4,13 @@ import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DClearMask;
 import flash.display3D.Context3DCompareMode;
+import flash.display3D.Context3DMipFilter;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DTextureFilter;
 import flash.display3D.Context3DTextureFormat;
+import flash.display3D.Context3DTriangleFace;
 import flash.display3D.Context3DVertexBufferFormat;
+import flash.display3D.Context3DWrapMode;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
 import flash.geom.Matrix3D;
@@ -15,9 +19,9 @@ import flash.Vector;
 import kha.Blob;
 import kha.flash.Image;
 import kha.graphics.BlendingOperation;
+import kha.graphics.CullMode;
 import kha.graphics.DepthCompareMode;
 import kha.graphics.MipMapFilter;
-import kha.graphics.RenderState;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
 import kha.graphics.TextureArgument;
@@ -53,17 +57,15 @@ class Graphics implements kha.graphics.Graphics {
 		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
 	}
 	
-	//BlendingState, Normalize, BackfaceCulling, ScissorTestState,	AlphaTestState, AlphaReferenceState
-	public function setRenderStateBool(state: RenderState, on: Bool): Void {
-		
-	}
-	
-	public function setRenderStateInt(state: RenderState, v: Int): Void {
-		
-	}
-	
-	public function setRenderStateFloat(state: RenderState, value: Float): Void {
-		
+	public function setCullMode(mode: CullMode): Void {
+		switch (mode) {
+		case Clockwise:
+			context.setCulling(Context3DTriangleFace.FRONT);
+		case CounterClockwise:
+			context.setCulling(Context3DTriangleFace.BACK);
+		case None:
+			context.setCulling(Context3DTriangleFace.NONE);
+		}
 	}
 
 	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
@@ -87,30 +89,61 @@ class Graphics implements kha.graphics.Graphics {
 		}
 	}
 	
-	public function setTextureAddressing(unit: kha.graphics.TextureUnit, dir: TexDir, addressing: TextureAddressing): Void {
-		
+	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
+		switch (addressing) {
+		case Border, Clamp:
+			return Context3DWrapMode.CLAMP;
+		case Mirror, Repeat:
+			return Context3DWrapMode.REPEAT;
+		}
 	}
-
-	public function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void {
-		
+	
+	private function getFilter(filter: TextureFilter): Context3DTextureFilter {
+		switch (filter) {
+		case PointFilter:
+			return Context3DTextureFilter.NEAREST;
+		case LinearFilter, AnisotropicFilter:
+			return Context3DTextureFilter.LINEAR;
+		}
 	}
-
-	public function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void {
-		
+	
+	private function getMipFilter(mipFilter: MipMapFilter): Context3DMipFilter {
+		switch (mipFilter) {
+		case NoMipFilter:
+			return Context3DMipFilter.MIPNONE;
+		case PointMipFilter:
+			return Context3DMipFilter.MIPNEAREST;
+		case LinearMipFilter:
+			return Context3DMipFilter.MIPLINEAR;
+		}
 	}
-
-	public function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void {
-		
+	
+	// Flash only supports one texture addressing and filtering mode - we use the v and mag values here
+	public function setTextureParameters(texunit: Int, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		context.setSamplerStateAt(texunit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
+	}
+	
+	private function getBlendFactor(op: BlendingOperation): Context3DBlendFactor {
+		switch (op) {
+			case BlendZero:
+				return Context3DBlendFactor.ZERO;
+			case BlendOne:
+				return Context3DBlendFactor.ONE;
+			case SourceAlpha:
+				return Context3DBlendFactor.SOURCE_ALPHA;
+			case DestinationAlpha:
+				return Context3DBlendFactor.DESTINATION_ALPHA;
+			case InverseSourceAlpha:
+				return Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA;
+			case InverseDestinationAlpha:
+				return Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA;
+		}
 	}
 
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
+		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 
-	public function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void {
-		
-	}
-	
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
