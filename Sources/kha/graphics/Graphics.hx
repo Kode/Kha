@@ -12,7 +12,6 @@ interface Graphics {
 	
 	function setCullMode(mode: CullMode): Void;
 	function setDepthMode(write: Bool, mode: DepthCompareMode): Void;
-	function setTextureParameters(texunit: Int, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void; // One, Zero deactivates blending
 
 	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
@@ -23,7 +22,7 @@ interface Graphics {
 	
 	function createTexture(width: Int, height: Int, format: TextureFormat): Texture;
 	function setTexture(unit: TextureUnit, texture: Image): Void;
-	function setTextureWrap(unit: TextureUnit, u: TextureWrap, v: TextureWrap): Void;
+	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	
 	function createVertexShader(source: Blob): VertexShader;
 	function createFragmentShader(source: Blob): FragmentShader;

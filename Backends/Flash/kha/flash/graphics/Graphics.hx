@@ -24,11 +24,9 @@ import kha.graphics.DepthCompareMode;
 import kha.graphics.MipMapFilter;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
-import kha.graphics.TextureArgument;
 import kha.graphics.TexDir;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
-import kha.graphics.TextureOperation;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
@@ -91,7 +89,7 @@ class Graphics implements kha.graphics.Graphics {
 	
 	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
 		switch (addressing) {
-		case Border, Clamp:
+		case Clamp:
 			return Context3DWrapMode.CLAMP;
 		case Mirror, Repeat:
 			return Context3DWrapMode.REPEAT;
@@ -119,8 +117,8 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	// Flash only supports one texture addressing and filtering mode - we use the v and mag values here
-	public function setTextureParameters(texunit: Int, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		context.setSamplerStateAt(texunit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
+	public function setTextureParameters(texunit: kha.graphics.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		context.setSamplerStateAt(cast(texunit, TextureUnit).unit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
 	}
 	
 	private function getBlendFactor(op: BlendingOperation): Context3DBlendFactor {
@@ -175,11 +173,7 @@ class Graphics implements kha.graphics.Graphics {
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
-	
-	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
 		
-	}
-	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}

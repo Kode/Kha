@@ -4,5 +4,4 @@ enum TextureAddressing {
 	Repeat;
 	Mirror;
 	Clamp;
-	Border;
 }
