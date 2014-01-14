@@ -81,11 +81,11 @@ class Graphics implements kha.graphics.Graphics {
 	
 	private function getBlendFunc(op: BlendingOperation): Int {
 		switch (op) {
-		case BlendingOperation.BlendZero:
+		case BlendZero:
 			return Sys.gl.ZERO;
 		case BlendOne:
 			return Sys.gl.ONE;
-		case BlendingOperation.SourceAlpha:
+		case SourceAlpha:
 			return Sys.gl.SRC_ALPHA;
 		case DestinationAlpha:
 			return Sys.gl.DST_ALPHA;
