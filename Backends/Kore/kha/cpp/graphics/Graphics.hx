@@ -2,21 +2,18 @@ package kha.cpp.graphics;
 
 import kha.Blob;
 import kha.Color;
+import kha.graphics.CullMode;
 import kha.graphics.FragmentShader;
 import kha.graphics.BlendingOperation;
 import kha.graphics.DepthCompareMode;
 import kha.graphics.MipMapFilter;
-import kha.graphics.RenderState;
 import kha.graphics.TexDir;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
-import kha.graphics.TextureArgument;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
-import kha.graphics.TextureOperation;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
-import kha.graphics.TextureWrap;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -48,18 +45,6 @@ class Graphics implements kha.graphics.Graphics {
 		if (z != null) flags |= 2;
 		if (stencil != null) flags |= 4;
 		clear2(flags, color, z, stencil);
-	}
-	
-	public function setRenderStateBool(state: RenderState, on: Bool): Void {
-		
-	}
-	
-	public function setRenderStateInt(state: RenderState, v: Int): Void {
-		
-	}
-	
-	public function setRenderStateFloat(state: RenderState, value: Float): Void {
-		
 	}
 	
 	@:functionCode('
@@ -99,28 +84,39 @@ class Graphics implements kha.graphics.Graphics {
 		setDepthMode2(write, mode.getIndex());
 	}
 	
-	public function setTextureAddressing(unit: kha.graphics.TextureUnit, dir: TexDir, addressing: TextureAddressing): Void {
-		
+	
+	private function getBlendingMode(op: BlendingOperation): Int {
+		switch (op) {
+		case BlendOne:
+			return 0;
+		case BlendZero:
+			return 1;
+		case SourceAlpha:
+			return 2;
+		case DestinationAlpha:
+			return 3;
+		case InverseSourceAlpha:
+			return 4;
+		case InverseDestinationAlpha:
+			return 5;
+		}
 	}
 	
-	public function setTextureMagnificationFilter(texunit: Int, filter: TextureFilter): Void {
-		
-	}
-	
-	public function setTextureMinificationFilter(texunit: Int, filter: TextureFilter): Void {
-		
-	}
-	
-	public function setTextureMipmapFilter(texunit: Int, filter: MipMapFilter): Void {
+	@:functionCode('
+		if (source == 0 && destination == 1) {
+			Kore::Graphics::setRenderState(Kore::BlendingState, false);
+		}
+		else {
+			Kore::Graphics::setRenderState(Kore::BlendingState, true);
+			Kore::Graphics::setBlendingMode((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination);
+		}
+	')
+	private function setBlendingModeNative(source: Int, destination: Int): Void {
 		
 	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
-	}
-	
-	public function setTextureOperation(operation: TextureOperation, arg1: TextureArgument, arg2: TextureArgument): Void {
-		
+		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
 	}
 	
 	@:functionCode('
@@ -158,14 +154,62 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	//enum TextureAddressing {
-	//	Repeat,
-	//	Mirror,
-	//	Clamp,
-	//	Border
-	//};
-	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: TextureWrap, v: TextureWrap): Void {
-		setTextureWrapNative(cast unit, u == TextureWrap.ClampToEdge ? 2 : 0, v == TextureWrap.ClampToEdge ? 2 : 0);
+	@:functionCode('
+		Kore::Graphics::setTextureMinificationFilter(unit->unit, (Kore::TextureFilter)minificationFilter);
+		Kore::Graphics::setTextureMagnificationFilter(unit->unit, (Kore::TextureFilter)magnificationFilter);
+		Kore::Graphics::setTextureMipmapFilter(unit->unit, (Kore::MipmapFilter)mipMapFilter);
+	')
+	private function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
+		
+	}
+	
+	private function getTextureAddressing(addressing: TextureAddressing): Int {
+		switch (addressing) {
+		case TextureAddressing.Repeat:
+			return 0;
+		case TextureAddressing.Mirror:
+			return 1;
+		case TextureAddressing.Clamp:
+			return 2;
+		}
+	}
+	
+	private function getTextureFilter(filter: TextureFilter): Int {
+		switch (filter) {
+		case PointFilter:
+			return 0;
+		case LinearFilter:
+			return 1;
+		case AnisotropicFilter:
+			return 2;
+		}
+	}
+	
+	private function getTextureMipMapFilter(filter: MipMapFilter): Int {
+		switch (filter) {
+		case NoMipFilter:
+			return 0;
+		case PointMipFilter:
+			return 1;
+		case LinearMipFilter:
+			return 2;
+		}
+	}
+	
+	public function setTextureParameters(texunit: kha.graphics.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		setTextureWrapNative(cast texunit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
+		setTextureFiltersNative(cast texunit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+	}
+	
+	@:functionCode('
+		Kore::Graphics::setRenderState(Kore::BackfaceCulling, value);
+	')
+	private function setCullModeNative(value: Bool): Void {
+		
+	}
+	
+	public function setCullMode(mode: CullMode): Void {
+		setCullModeNative(mode != None);
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
