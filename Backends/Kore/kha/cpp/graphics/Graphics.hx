@@ -44,7 +44,7 @@ class Graphics implements kha.graphics.Graphics {
 		if (color != null) flags |= 1;
 		if (z != null) flags |= 2;
 		if (stencil != null) flags |= 4;
-		clear2(flags, color, z, stencil);
+		clear2(flags, color == null ? 0 : color.value, z, stencil);
 	}
 	
 	@:functionCode('
@@ -120,9 +120,9 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	@:functionCode('
-		Kore::Graphics::clear(flags, color->value, z, stencil);
+		Kore::Graphics::clear(flags, color, z, stencil);
 	')
-	private function clear2(flags: Int, color: Color, z: Float, stencil: Int): Void {
+	private function clear2(flags: Int, color: Int, z: Float, stencil: Int): Void {
 		
 	}
 	
