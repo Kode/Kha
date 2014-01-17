@@ -27,7 +27,7 @@ class Painter extends kha.Painter {
 	
 	@:functionCode('
 		var img = (Image)image;
-		context.DrawImage(img.image, new System.Windows.Rect(tx + x, ty + y, img.get_width(), img.get_height()));
+		context.DrawImage(img.image, new System.Windows.Rect(tx + x, ty + y, img._get_width(), img._get_height()));
 	')
 	override public function drawImage(image: Image, x: Float, y: Float): Void {
 		
@@ -38,7 +38,7 @@ class Painter extends kha.Painter {
 		//var cropped = new System.Windows.Media.Imaging.CroppedBitmap(img.image, new System.Windows.Int32Rect((int)sx, (int)sy, (int)sw, (int)sh));
 		//context.DrawImage(cropped, new System.Windows.Rect(tx + dx, ty + dy, dw, dh)); //super slow
 		var brush = new System.Windows.Media.ImageBrush(img.image);
-		brush.Viewbox = new System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
+		brush.Viewbox = new System.Windows.Rect(sx / img._get_width(), sy / img._get_height(), sw / img._get_width(), sh / img._get_height());
 		context.DrawRectangle(brush, null, new System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
 	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
