@@ -127,6 +127,10 @@ class Graphics implements kha.graphics.Graphics {
 		return new Image(width, height, format);
 	}
 	
+	public function maxTextureSize(): Int {
+		return Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
+	}
+	
 	public function setTexture(stage: kha.graphics.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
 			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(stage, TextureUnit).value);

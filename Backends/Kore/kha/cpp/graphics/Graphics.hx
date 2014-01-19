@@ -146,6 +146,10 @@ class Graphics implements kha.graphics.Graphics {
 		return Image.create(width, height, format);
 	}
 	
+	public function maxTextureSize(): Int {
+		return 4096;
+	}
+	
 	@:functionCode('
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::U, (Kore::TextureAddressing)uWrap);
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::V, (Kore::TextureAddressing)vWrap);

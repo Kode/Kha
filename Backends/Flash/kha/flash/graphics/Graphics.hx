@@ -170,6 +170,10 @@ class Graphics implements kha.graphics.Graphics {
 		return new Image(width, height, format);
 	}
 	
+	public function maxTextureSize(): Int {
+		return 2048;
+	}
+	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
