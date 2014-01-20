@@ -1,5 +1,6 @@
 package kha;
 import kha.math.Vector2;
+import stageelements.StageElement;
 
 class Scene {
 	private static var instance : Scene;
@@ -281,4 +282,6 @@ class Scene {
 		if (collisionLayer != null) return collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT;
 		else return 0;
 	}
+	
+	
 }

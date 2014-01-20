@@ -12,6 +12,7 @@ import kha.Key;
 import kha.Loader;
 import js.Lib;
 import js.Browser;
+import js.html.DOMWindow;
 
 
 
@@ -391,5 +392,13 @@ class Starter {
 			//trace ('"${pressedKeyToChar[event.keyCode]}" UP');
 			pressedKeyToChar[event.keyCode] = null;
 		}
+	}
+	
+	// TODO: Check if this function would have to do something else
+	// TODO: Implement on all platforms
+	public static function quit() {
+		// TODO: This will only work if the window has been opened by javascript in the first place.
+		var window: DOMWindow = Browser.window;
+		window.close();		
 	}
 }
