@@ -20,6 +20,14 @@ class StorageFile {
 		write(new Blob(bytes));
 	}
 	
+	public function appendString(data: String): Void {
+		var bytes = Bytes.alloc(data.length);
+		for (i in 0...data.length) {
+			bytes.set(i, data.charCodeAt(i)); //TODO: utf8 encoding
+		}
+		append(new Blob(bytes));
+	}
+	
 	public function readString(): String {
 		var blob = read();
 		if (blob == null) return null;
