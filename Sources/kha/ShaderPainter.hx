@@ -611,6 +611,7 @@ class TextShaderPainter {
 	public function drawString(text: String, color: Color, x: Float, y: Float): Void {
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
+		lastTexture = tex;
 
 		var xpos = x;
 		var ypos = y;
@@ -627,7 +628,6 @@ class TextShaderPainter {
 			}
 		}
 		endString();
-		lastTexture = tex;
 	}
 	
 	public function end(): Void {
