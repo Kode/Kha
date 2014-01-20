@@ -1,16 +1,16 @@
 package kha;
 
 class Starter {
-	static public var game : Game;
-	static public var painter : kha.pss.Painter;
-	static var left : Bool;
-	static var right : Bool;
-	static var up : Bool;
-	static var down : Bool;
+	static public var game: Game;
+	static public var painter: kha.psm.Painter;
+	static var left: Bool;
+	static var right: Bool;
+	static var up: Bool;
+	static var down: Bool;
 	
 	public function new() {
-		painter = new kha.pss.Painter();
-		kha.Loader.init(new kha.pss.Loader());
+		painter = new kha.psm.Painter();
+		kha.Loader.init(new kha.psm.Loader());
 		left = false;
 		right = false;
 		up = false;
@@ -19,7 +19,7 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
-		Configuration.setScreen(new EmptyScreen(new Color(0, 0, 0)));
+		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
 	

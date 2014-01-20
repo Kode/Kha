@@ -1,4 +1,4 @@
-package kha.wpf;
+package kha.psm;
 
 import kha.graphics.TextureFormat;
 
@@ -8,11 +8,7 @@ class Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat): Image {
-		return new Image(width, height, format);
-	}
-
-	public function maxTextureSize(): Int {
-		return 4096;
+		return null; // new Image(width, height, format);
 	}
 	
 	public function vsynced(): Bool {

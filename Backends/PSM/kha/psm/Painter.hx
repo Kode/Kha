@@ -1,6 +1,7 @@
-package kha.pss;
+package kha.psm;
 
 import kha.Image;
+import kha.Rotation;
 
 @:classContents('
 	private Sce.PlayStation.Core.Graphics.GraphicsContext graphics;
@@ -10,10 +11,11 @@ import kha.Image;
 	private float[] texcoords;
 ')
 class Painter extends kha.Painter {
-	var tx : Float;
-	var ty : Float;
+	var tx: Float;
+	var ty: Float;
 	
 	public function new() {
+		super();
 		tx = 0;
 		ty = 0;
 		initGraphics();
@@ -70,7 +72,7 @@ class Painter extends kha.Painter {
 		
 		graphics.SetBlendFunc(Sce.PlayStation.Core.Graphics.BlendFuncMode.Add,Sce.PlayStation.Core.Graphics.BlendFuncFactor.SrcAlpha, Sce.PlayStation.Core.Graphics.BlendFuncFactor.OneMinusSrcAlpha);
 	')
-	function initGraphics() : Void {
+	function initGraphics(): Void {
 		
 	}
 
@@ -78,24 +80,24 @@ class Painter extends kha.Painter {
 		graphics.SetClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		graphics.Clear();
 	')
-	override public function begin() : Void {
+	override public function begin(): Void {
 		
 	}
 	
 	@:functionBody('
 		graphics.SwapBuffers();
 	')
-	override public function end() : Void {
+	override public function end(): Void {
 		
 	}
 	
-	override public function translate(x : Float, y : Float) {
+	override public function translate(x: Float, y: Float) {
 		tx = x;
 		ty = y;
 	}
 	
-	override public function drawImage(img : Image, x : Float, y : Float) : Void {
-		drawImage2(img, 0, 0, img.getWidth(), img.getHeight(), x, y, img.getWidth(), img.getHeight());
+	override public function drawImage(img: Image, x: Float, y: Float): Void {
+		drawImage2(img, 0, 0, img.width, img.height, x, y, img.width, img.height);
 	}
 	
 	@:functionBody('
@@ -138,7 +140,7 @@ class Painter extends kha.Painter {
 	
 		graphics.DrawArrays(Sce.PlayStation.Core.Graphics.DrawMode.Triangles, 0, 6);
 	')
-	override public function drawImage2(image : Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float) : Void {
+	override public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		
 	}
 }

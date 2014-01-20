@@ -11,7 +11,6 @@ class Starter {
 	public function new() {
 		haxe.Timer.stamp();
 		painter = null;
-		Storage.init(new kha.cpp.Storage());
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
 		Scheduler.init();

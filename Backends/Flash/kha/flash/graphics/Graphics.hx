@@ -3,9 +3,14 @@ package kha.flash.graphics;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DClearMask;
+import flash.display3D.Context3DCompareMode;
+import flash.display3D.Context3DMipFilter;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DTextureFilter;
 import flash.display3D.Context3DTextureFormat;
+import flash.display3D.Context3DTriangleFace;
 import flash.display3D.Context3DVertexBufferFormat;
+import flash.display3D.Context3DWrapMode;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.Program3D;
 import flash.geom.Matrix3D;
@@ -13,7 +18,14 @@ import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
 import kha.flash.Image;
+import kha.graphics.BlendingOperation;
+import kha.graphics.CullMode;
+import kha.graphics.DepthCompareMode;
+import kha.graphics.MipMapFilter;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TexDir;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
 
 class Graphics implements kha.graphics.Graphics {
@@ -43,6 +55,93 @@ class Graphics implements kha.graphics.Graphics {
 		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
 	}
 	
+	public function setCullMode(mode: CullMode): Void {
+		switch (mode) {
+		case Clockwise:
+			context.setCulling(Context3DTriangleFace.FRONT);
+		case CounterClockwise:
+			context.setCulling(Context3DTriangleFace.BACK);
+		case None:
+			context.setCulling(Context3DTriangleFace.NONE);
+		}
+	}
+
+	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+		switch (mode) {
+		case Always:
+			context.setDepthTest(write, Context3DCompareMode.ALWAYS);
+		case Equal:
+			context.setDepthTest(write, Context3DCompareMode.EQUAL);
+		case Greater:
+			context.setDepthTest(write, Context3DCompareMode.GREATER);
+		case GreaterEqual:
+			context.setDepthTest(write, Context3DCompareMode.GREATER_EQUAL);
+		case Less:
+			context.setDepthTest(write, Context3DCompareMode.LESS);
+		case LessEqual:
+			context.setDepthTest(write, Context3DCompareMode.LESS_EQUAL);
+		case Never:
+			context.setDepthTest(write, Context3DCompareMode.NEVER);
+		case NotEqual:
+			context.setDepthTest(write, Context3DCompareMode.NOT_EQUAL);
+		}
+	}
+	
+	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
+		switch (addressing) {
+		case Clamp:
+			return Context3DWrapMode.CLAMP;
+		case Mirror, Repeat:
+			return Context3DWrapMode.REPEAT;
+		}
+	}
+	
+	private function getFilter(filter: TextureFilter): Context3DTextureFilter {
+		switch (filter) {
+		case PointFilter:
+			return Context3DTextureFilter.NEAREST;
+		case LinearFilter, AnisotropicFilter:
+			return Context3DTextureFilter.LINEAR;
+		}
+	}
+	
+	private function getMipFilter(mipFilter: MipMapFilter): Context3DMipFilter {
+		switch (mipFilter) {
+		case NoMipFilter:
+			return Context3DMipFilter.MIPNONE;
+		case PointMipFilter:
+			return Context3DMipFilter.MIPNEAREST;
+		case LinearMipFilter:
+			return Context3DMipFilter.MIPLINEAR;
+		}
+	}
+	
+	// Flash only supports one texture addressing and filtering mode - we use the v and mag values here
+	public function setTextureParameters(texunit: kha.graphics.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		context.setSamplerStateAt(cast(texunit, TextureUnit).unit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
+	}
+	
+	private function getBlendFactor(op: BlendingOperation): Context3DBlendFactor {
+		switch (op) {
+			case BlendZero:
+				return Context3DBlendFactor.ZERO;
+			case BlendOne:
+				return Context3DBlendFactor.ONE;
+			case SourceAlpha:
+				return Context3DBlendFactor.SOURCE_ALPHA;
+			case DestinationAlpha:
+				return Context3DBlendFactor.DESTINATION_ALPHA;
+			case InverseSourceAlpha:
+				return Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA;
+			case InverseDestinationAlpha:
+				return Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA;
+		}
+	}
+
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
+	}
+
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
@@ -71,14 +170,14 @@ class Graphics implements kha.graphics.Graphics {
 		return new Image(width, height, format);
 	}
 	
+	public function maxTextureSize(): Int {
+		return 2048;
+	}
+	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
-	
-	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: kha.graphics.TextureWrap, v: kha.graphics.TextureWrap): Void {
 		
-	}
-	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}

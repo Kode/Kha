@@ -2,12 +2,18 @@ package kha.cpp.graphics;
 
 import kha.Blob;
 import kha.Color;
+import kha.graphics.CullMode;
 import kha.graphics.FragmentShader;
+import kha.graphics.BlendingOperation;
+import kha.graphics.DepthCompareMode;
+import kha.graphics.MipMapFilter;
+import kha.graphics.TexDir;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
-import kha.graphics.TextureWrap;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -38,13 +44,85 @@ class Graphics implements kha.graphics.Graphics {
 		if (color != null) flags |= 1;
 		if (z != null) flags |= 2;
 		if (stencil != null) flags |= 4;
-		clear2(flags, color, z, stencil);
+		clear2(flags, color == null ? 0 : color.value, z, stencil);
 	}
 	
 	@:functionCode('
-		Kore::Graphics::clear(flags, color->value, z, stencil);
+		switch (mode) {
+		case 0:
+			Kore::Graphics::setRenderState(Kore::DepthTest, false);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareAlways);
+		case 1:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNever);
+		case 2:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareEqual);
+		case 3:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNotEqual);
+		case 4:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLess);
+		case 5:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLessEqual);
+		case 6:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreater);
+		case 7:
+			Kore::Graphics::setRenderState(Kore::DepthTest, true);
+			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreaterEqual);
+		}
+		Kore::Graphics::setRenderState(Kore::DepthWrite, write);
 	')
-	private function clear2(flags: Int, color: Color, z: Float, stencil: Int): Void {
+	private function setDepthMode2(write: Bool, mode: Int): Void {
+		
+	}
+	
+	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+		setDepthMode2(write, mode.getIndex());
+	}
+	
+	
+	private function getBlendingMode(op: BlendingOperation): Int {
+		switch (op) {
+		case BlendOne:
+			return 0;
+		case BlendZero:
+			return 1;
+		case SourceAlpha:
+			return 2;
+		case DestinationAlpha:
+			return 3;
+		case InverseSourceAlpha:
+			return 4;
+		case InverseDestinationAlpha:
+			return 5;
+		}
+	}
+	
+	@:functionCode('
+		if (source == 0 && destination == 1) {
+			Kore::Graphics::setRenderState(Kore::BlendingState, false);
+		}
+		else {
+			Kore::Graphics::setRenderState(Kore::BlendingState, true);
+			Kore::Graphics::setBlendingMode((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination);
+		}
+	')
+	private function setBlendingModeNative(source: Int, destination: Int): Void {
+		
+	}
+	
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
+	}
+	
+	@:functionCode('
+		Kore::Graphics::clear(flags, color, z, stencil);
+	')
+	private function clear2(flags: Int, color: Int, z: Float, stencil: Int): Void {
 		
 	}
 	
@@ -68,6 +146,10 @@ class Graphics implements kha.graphics.Graphics {
 		return Image.create(width, height, format);
 	}
 	
+	public function maxTextureSize(): Int {
+		return 4096;
+	}
+	
 	@:functionCode('
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::U, (Kore::TextureAddressing)uWrap);
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::V, (Kore::TextureAddressing)vWrap);
@@ -76,14 +158,62 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	//enum TextureAddressing {
-	//	Repeat,
-	//	Mirror,
-	//	Clamp,
-	//	Border
-	//};
-	public function setTextureWrap(unit: kha.graphics.TextureUnit, u: TextureWrap, v: TextureWrap): Void {
-		setTextureWrapNative(cast unit, u == TextureWrap.ClampToEdge ? 2 : 0, v == TextureWrap.ClampToEdge ? 2 : 0);
+	@:functionCode('
+		Kore::Graphics::setTextureMinificationFilter(unit->unit, (Kore::TextureFilter)minificationFilter);
+		Kore::Graphics::setTextureMagnificationFilter(unit->unit, (Kore::TextureFilter)magnificationFilter);
+		Kore::Graphics::setTextureMipmapFilter(unit->unit, (Kore::MipmapFilter)mipMapFilter);
+	')
+	private function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
+		
+	}
+	
+	private function getTextureAddressing(addressing: TextureAddressing): Int {
+		switch (addressing) {
+		case TextureAddressing.Repeat:
+			return 0;
+		case TextureAddressing.Mirror:
+			return 1;
+		case TextureAddressing.Clamp:
+			return 2;
+		}
+	}
+	
+	private function getTextureFilter(filter: TextureFilter): Int {
+		switch (filter) {
+		case PointFilter:
+			return 0;
+		case LinearFilter:
+			return 1;
+		case AnisotropicFilter:
+			return 2;
+		}
+	}
+	
+	private function getTextureMipMapFilter(filter: MipMapFilter): Int {
+		switch (filter) {
+		case NoMipFilter:
+			return 0;
+		case PointMipFilter:
+			return 1;
+		case LinearMipFilter:
+			return 2;
+		}
+	}
+	
+	public function setTextureParameters(texunit: kha.graphics.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		setTextureWrapNative(cast texunit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
+		setTextureFiltersNative(cast texunit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+	}
+	
+	@:functionCode('
+		Kore::Graphics::setRenderState(Kore::BackfaceCulling, value);
+	')
+	private function setCullModeNative(value: Bool): Void {
+		
+	}
+	
+	public function setCullMode(mode: CullMode): Void {
+		setCullModeNative(mode != None);
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {

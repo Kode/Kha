@@ -8,23 +8,23 @@ package kha.cpp;
 
 @:headerClassCode("Kore::SoundStream* stream;")
 class Music extends kha.Music {
-	public function new(filename : String) {
+	public function new(filename: String) {
 		super();
 		loadMusic(filename + ".ogg");
 	}
 	
 	@:functionCode("stream = new Kore::SoundStream(filename.c_str(), true);")
-	function loadMusic(filename : String) {
+	function loadMusic(filename: String) {
 		
 	}
 	
 	@:functionCode("Kore::Mixer::play(stream);")
-	override public function play() : Void {
+	override public function play(): Void {
 		
 	}
 	
-	//@:functionCode("Kt::Music::stop();")
-	override public function stop() : Void {
+	@:functionCode("Kore::Mixer::stop(stream);")
+	override public function stop(): Void {
 		
 	}
 }

@@ -36,7 +36,6 @@ class Starter {
 		for (i in 0...10) buttonspressed.push(false);
 		kha.js.Image.init();
 		Loader.init(new kha.js.Loader());
-		Storage.init(new kha.js.Storage());
 		Scheduler.init();
 		
 		// TODO: Move?
