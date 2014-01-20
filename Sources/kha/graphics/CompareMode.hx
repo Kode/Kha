@@ -1,6 +1,6 @@
 package kha.graphics;
 
-enum DepthCompareMode {
+enum CompareMode {
 	Always;
 	Never;
 	Equal;

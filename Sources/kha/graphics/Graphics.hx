@@ -3,6 +3,7 @@ package kha.graphics;
 import kha.Blob;
 import kha.Color;
 import kha.Image;
+import kha.Rectangle;
 
 interface Graphics {
 	function vsynced(): Bool;
@@ -11,19 +12,28 @@ interface Graphics {
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 	
 	function setCullMode(mode: CullMode): Void;
-	function setDepthMode(write: Bool, mode: DepthCompareMode): Void;
+	function setDepthMode(write: Bool, mode: CompareMode): Void;
 	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void; // One, Zero deactivates blending
 
-	function createVertexBuffer(vertexCount: Int, structure: VertexStructure): VertexBuffer;
+	function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): VertexBuffer;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	
-	function createIndexBuffer(indexCount: Int): IndexBuffer;
+	function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): IndexBuffer;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
-	function createTexture(width: Int, height: Int, format: TextureFormat): Texture;
+	function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture;
+	function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture;
 	function setTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	function maxTextureSize(): Int;
+	function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap;
+	
+	function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void;
+
+	function setScissor(rect: Rectangle): Void;
+	
+	function renderToTexture(texture: Texture): Void;
+	function renderToBackbuffer(): Void;
 	
 	function createVertexShader(source: Blob): VertexShader;
 	function createFragmentShader(source: Blob): FragmentShader;

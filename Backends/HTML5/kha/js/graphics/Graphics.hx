@@ -2,18 +2,22 @@ package kha.js.graphics;
 
 import kha.Blob;
 import kha.graphics.BlendingOperation;
+import kha.graphics.CompareMode;
+import kha.graphics.CubeMap;
 import kha.graphics.CullMode;
-import kha.graphics.DepthCompareMode;
 import kha.graphics.FragmentShader;
 import kha.graphics.MipMapFilter;
+import kha.graphics.StencilAction;
 import kha.graphics.TexDir;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.Usage;
 import kha.graphics.VertexStructure;
 import kha.graphics.VertexShader;
 import kha.js.Image;
+import kha.Rectangle;
 
 class Graphics implements kha.graphics.Graphics {
 	private var indicesCount: Int;
@@ -49,7 +53,7 @@ class Graphics implements kha.graphics.Graphics {
 		Sys.gl.clear(clearMask);
 	}
 	
-	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
 			Sys.gl.disable(Sys.gl.DEPTH_TEST);
@@ -106,7 +110,7 @@ class Graphics implements kha.graphics.Graphics {
 		}
 	}
 	
-	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
+	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
 	
@@ -114,7 +118,7 @@ class Graphics implements kha.graphics.Graphics {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
 	
-	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
+	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
 	}
 	
@@ -123,12 +127,20 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
+	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture {
+		return new Image(width, height, format);
+	}
+	
+	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture {
 		return new Image(width, height, format);
 	}
 	
 	public function maxTextureSize(): Int {
 		return Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
+	}
+	
+	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
+		return null;
 	}
 	
 	public function setTexture(stage: kha.graphics.TextureUnit, texture: kha.Image): Void {
@@ -242,5 +254,21 @@ class Graphics implements kha.graphics.Graphics {
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		Sys.gl.drawElements(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2);
+	}
+	
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+		
+	}
+
+	public function setScissor(rect: Rectangle): Void {
+		
+	}
+	
+	public function renderToTexture(texture: Texture): Void {
+		
+	}
+
+	public function renderToBackbuffer(): Void {
+		
 	}
 }

@@ -6,6 +6,7 @@ import flash.display3D.Context3DClearMask;
 import flash.display3D.Context3DCompareMode;
 import flash.display3D.Context3DMipFilter;
 import flash.display3D.Context3DProgramType;
+import flash.display3D.Context3DStencilAction;
 import flash.display3D.Context3DTextureFilter;
 import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DTriangleFace;
@@ -19,14 +20,18 @@ import flash.Vector;
 import kha.Blob;
 import kha.flash.Image;
 import kha.graphics.BlendingOperation;
+import kha.graphics.CompareMode;
+import kha.graphics.CubeMap;
 import kha.graphics.CullMode;
-import kha.graphics.DepthCompareMode;
 import kha.graphics.MipMapFilter;
+import kha.graphics.StencilAction;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
 import kha.graphics.TexDir;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.Usage;
+import kha.Rectangle;
 
 class Graphics implements kha.graphics.Graphics {
 	public static var context: Context3D;
@@ -65,26 +70,64 @@ class Graphics implements kha.graphics.Graphics {
 			context.setCulling(Context3DTriangleFace.NONE);
 		}
 	}
-
-	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+	
+	private function getCompareMode(mode: CompareMode): Context3DCompareMode {
 		switch (mode) {
 		case Always:
-			context.setDepthTest(write, Context3DCompareMode.ALWAYS);
+			return Context3DCompareMode.ALWAYS;
 		case Equal:
-			context.setDepthTest(write, Context3DCompareMode.EQUAL);
+			return Context3DCompareMode.EQUAL;
 		case Greater:
-			context.setDepthTest(write, Context3DCompareMode.GREATER);
+			return Context3DCompareMode.GREATER;
 		case GreaterEqual:
-			context.setDepthTest(write, Context3DCompareMode.GREATER_EQUAL);
+			return Context3DCompareMode.GREATER_EQUAL;
 		case Less:
-			context.setDepthTest(write, Context3DCompareMode.LESS);
+			return Context3DCompareMode.LESS;
 		case LessEqual:
-			context.setDepthTest(write, Context3DCompareMode.LESS_EQUAL);
+			return Context3DCompareMode.LESS_EQUAL;
 		case Never:
-			context.setDepthTest(write, Context3DCompareMode.NEVER);
+			return Context3DCompareMode.NEVER;
 		case NotEqual:
-			context.setDepthTest(write, Context3DCompareMode.NOT_EQUAL);
+			return Context3DCompareMode.NOT_EQUAL;
 		}
+	}
+
+	public function setDepthMode(write: Bool, mode: CompareMode): Void {
+		context.setDepthTest(write, getCompareMode(mode));
+	}
+	
+	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
+		return null;
+	}
+	
+	private function getStencilAction(action: StencilAction): Context3DStencilAction {
+		switch (action) {
+		case Keep:
+			return Context3DStencilAction.KEEP;
+		case Replace:
+			return Context3DStencilAction.SET;
+		case Zero:
+			return Context3DStencilAction.ZERO;
+		case Invert:
+			return Context3DStencilAction.INVERT;
+		case Increment:
+			return Context3DStencilAction.INCREMENT_SATURATE;
+		case IncrementWrap:
+			return Context3DStencilAction.INCREMENT_WRAP;
+		case Decrement:
+			return Context3DStencilAction.DECREMENT_SATURATE;
+		case DecrementWrap:
+			return Context3DStencilAction.DECREMENT_WRAP;
+		}
+	}
+	
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+		context.setStencilReferenceValue(referenceValue, readMask, writeMask);
+		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, getCompareMode(compareMode), getStencilAction(bothPass), getStencilAction(depthFail), getStencilAction(stencilFail));
+	}
+
+	public function setScissor(rect: Rectangle): Void {
+		context.setScissorRectangle(new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height));
 	}
 	
 	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
@@ -142,7 +185,7 @@ class Graphics implements kha.graphics.Graphics {
 		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 
-	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure): kha.graphics.VertexBuffer {
+	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
 	
@@ -150,7 +193,7 @@ class Graphics implements kha.graphics.Graphics {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
 	
-	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
+	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
 	}
 	
@@ -166,8 +209,12 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
-		return new Image(width, height, format);
+	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture {
+		return new Image(width, height, format, false, false);
+	}
+	
+	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture {
+		return new Image(width, height, format, true, depthStencil);
 	}
 	
 	public function maxTextureSize(): Int {
@@ -228,5 +275,13 @@ class Graphics implements kha.graphics.Graphics {
 		projection.copyRawDataFrom(vec);
 		var flashLocation = cast(location, ConstantLocation);
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
+	}
+	
+	public function renderToBackbuffer(): Void {
+		context.setRenderToBackBuffer();
+	}
+	
+	public function renderToTexture(texture: Texture): Void {
+		context.setRenderToTexture(cast(texture, Image).getFlashTexture(), cast(texture, Image).hasDepthStencil());
 	}
 }

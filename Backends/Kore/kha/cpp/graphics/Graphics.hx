@@ -2,18 +2,22 @@ package kha.cpp.graphics;
 
 import kha.Blob;
 import kha.Color;
+import kha.graphics.CubeMap;
 import kha.graphics.CullMode;
 import kha.graphics.FragmentShader;
 import kha.graphics.BlendingOperation;
-import kha.graphics.DepthCompareMode;
+import kha.graphics.CompareMode;
 import kha.graphics.MipMapFilter;
+import kha.graphics.StencilAction;
 import kha.graphics.TexDir;
 import kha.graphics.Texture;
 import kha.graphics.TextureAddressing;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
+import kha.graphics.Usage;
 import kha.graphics.VertexShader;
 import kha.graphics.VertexStructure;
+import kha.Rectangle;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -80,7 +84,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setDepthMode(write: Bool, mode: DepthCompareMode): Void {
+	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		setDepthMode2(write, mode.getIndex());
 	}
 	
@@ -126,7 +130,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure): kha.graphics.VertexBuffer {
+	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure);
 	}
 	
@@ -134,7 +138,7 @@ class Graphics implements kha.graphics.Graphics {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
 	
-	public function createIndexBuffer(indexCount: Int): kha.graphics.IndexBuffer {
+	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 		return new IndexBuffer(indexCount);
 	}
 	
@@ -142,12 +146,36 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function createTexture(width: Int, height: Int, format: TextureFormat): Texture {
+	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture {
+		return Image.create(width, height, format);
+	}
+	
+	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture {
 		return Image.create(width, height, format);
 	}
 	
 	public function maxTextureSize(): Int {
 		return 4096;
+	}
+	
+	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
+		return null;
+	}
+	
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+		
+	}
+
+	public function setScissor(rect: Rectangle): Void {
+		
+	}
+	
+	public function renderToTexture(texture: Texture): Void {
+		
+	}
+	
+	public function renderToBackbuffer(): Void {
+		
 	}
 	
 	@:functionCode('

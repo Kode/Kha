@@ -5,6 +5,7 @@ import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
 import kha.graphics.Texture;
 import kha.graphics.TextureUnit;
+import kha.graphics.Usage;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
@@ -50,10 +51,10 @@ class ImageShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;
@@ -278,10 +279,10 @@ class ColoredShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;
@@ -293,10 +294,10 @@ class ColoredShaderPainter {
 		}
 		indexBuffer.unlock();
 		
-		triangleVertexBuffer = Sys.graphics.createVertexBuffer(triangleBufferSize * 3, structure);
+		triangleVertexBuffer = Sys.graphics.createVertexBuffer(triangleBufferSize * 3, structure, Usage.Dynamic);
 		triangleVertices = triangleVertexBuffer.lock();
 		
-		triangleIndexBuffer = Sys.graphics.createIndexBuffer(triangleBufferSize * 3);
+		triangleIndexBuffer = Sys.graphics.createIndexBuffer(triangleBufferSize * 3, Usage.Static);
 		var triIndices = triangleIndexBuffer.lock();
 		for (i in 0...bufferSize) {
 			triIndices[i * 3 + 0] = i * 3 + 0;
@@ -485,10 +486,10 @@ class TextShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;

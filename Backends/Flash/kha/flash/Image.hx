@@ -18,19 +18,21 @@ class Image implements kha.graphics.Texture {
 	private var texWidth: Int;
 	private var texHeight: Int;
 	private var format: TextureFormat;
+	private var depthStencil: Bool;
 	
-	public function new(width: Int, height: Int, format: TextureFormat) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: Bool) {
 		myWidth = width;
 		myHeight = height;
 		texWidth = upperPowerOfTwo(Std.int(myWidth));
 		texHeight = upperPowerOfTwo(Std.int(myHeight));
 		this.format = format;
-		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, false);
+		this.depthStencil = depthStencil;
+		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, renderTarget);
 	}
 	
 	public static function fromBitmap(image: DisplayObject): Image {
 		var bitmap = cast(image, Bitmap);
-		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32);
+		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32, false, false);
 		texture.tex.uploadFromBitmapData(bitmap.bitmapData, 0);
 		return texture;
 	}
@@ -74,6 +76,10 @@ class Image implements kha.graphics.Texture {
 	
 	public function getFlashTexture(): Texture {
 		return tex;
+	}
+	
+	public function hasDepthStencil(): Bool {
+		return depthStencil;
 	}
 	
 	private static function upperPowerOfTwo(v: Int): Int {
