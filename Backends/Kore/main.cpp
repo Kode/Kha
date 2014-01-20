@@ -7,6 +7,7 @@
 #include <Kore/Audio/Audio.h>
 #include <Kore/Audio/Mixer.h>
 #include <Kore/IO/FileReader.h>
+#include <Kore/Log.h>
 #include "Json.h"
 #include <stdio.h>
 #include <kha/Starter.h>
@@ -112,11 +113,14 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
+	Kore::log(Kore::Info, "Starting Kore");
+
 	int width;
 	int height;
 	std::string name;
 	
 	{
+		Kore::log(Kore::Info, "Reading project.kha");
 		Kore::FileReader file("project.kha");
 		int filesize = file.size();
 		char* string = new char[filesize + 1];
@@ -137,6 +141,7 @@ int kore(int argc, char** argv) {
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 	app->setCallback(update);
 	
+	Kore::log(Kore::Info, "Initializing Haxe libraries");
 	hxcpp_set_top_of_stack();
 
 	const char* err = hxRunLibrary();
@@ -153,7 +158,9 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->ReleaseRight = rightMouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
 
+	Kore::log(Kore::Info, "Starting application");
 	app->start();
+	Kore::log(Kore::Info, "Application stopped");
 
 	return 0;
 }
