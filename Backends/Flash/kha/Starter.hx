@@ -196,9 +196,10 @@ class Starter {
 		game.mouseMove(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
 	}
 	
-	var borderX : Float;
-	var borderY : Float;
-	var scale : Float;
+	private var borderX: Float;
+	private var borderY: Float;
+	private var scale: Float;
+	
 	function resizeHandler(event: Event): Void {
 		var gameRatio = Game.the.width / Game.the.height;
 		var screenRatio = stage.stageWidth / stage.stageHeight;
@@ -226,10 +227,12 @@ class Starter {
 			borderY = 0;
 		}
 		if (painter != null) {
+			#if debug
 			trace( 'stageSize = ${stage.stageWidth} / ${stage.stageHeight}' );
 			trace( ' gameSize = ${Game.the.width} / ${Game.the.height}' );
 			trace( ' realSize = $realWidth / $realHeight' );
 			trace( '   border = $borderX / $borderY' );
+			#end
 			context.configureBackBuffer( stage.stageWidth, stage.stageHeight, 0, false );
 			painter.setScreenSize(Game.the.width, Game.the.height, borderX/scale, borderY/scale);
 		}

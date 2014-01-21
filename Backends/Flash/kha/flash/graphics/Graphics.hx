@@ -41,9 +41,14 @@ class Graphics implements kha.graphics.Graphics {
 		Graphics.context = context;
 	}
 	
+	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
+		
+	}
+	
 	public function vsynced(): Bool {
 		return true;
 	}
+	
 	public function refreshRate(): Int {
 		return Std.int(flash.Lib.current.stage.frameRate);
 	}
@@ -209,16 +214,20 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
-	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture {
+	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 		return new Image(width, height, format, false, false);
 	}
 	
-	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture {
+	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
 		return new Image(width, height, format, true, depthStencil);
 	}
 	
 	public function maxTextureSize(): Int {
 		return 2048;
+	}
+	
+	public function supportsNonPow2Textures(): Bool {
+		return false;
 	}
 	
 	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {

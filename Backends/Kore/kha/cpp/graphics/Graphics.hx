@@ -29,6 +29,10 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
+	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
+		
+	}
+	
 	@:functionCode('
 		return Kore::Graphics::vsynced();
 	')
@@ -146,16 +150,20 @@ class Graphics implements kha.graphics.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 	
-	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): Texture {
+	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 		return Image.create(width, height, format);
 	}
 	
-	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool): Texture {
+	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
 		return Image.create(width, height, format);
 	}
 	
 	public function maxTextureSize(): Int {
 		return 4096;
+	}
+	
+	public function supportsNonPow2Textures(): Bool {
+		return false;
 	}
 	
 	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {

@@ -85,7 +85,7 @@ class Image implements Texture {
 	
 	private var bytes: Bytes = null;
 	
-	public function lock(): Bytes {
+	public function lock(level: Int = 0): Bytes {
 		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
 		return bytes;
 	}

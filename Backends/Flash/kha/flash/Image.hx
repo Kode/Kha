@@ -95,7 +95,7 @@ class Image implements kha.graphics.Texture {
 	
 	private var bytes: Bytes;
 	
-	public function lock(): Bytes {
+	public function lock(level: Int = 0): Bytes {
 		switch (format) {
 			case RGBA32:
 				bytes = Bytes.alloc(texWidth * texHeight * 4);
