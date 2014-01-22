@@ -101,7 +101,7 @@ class Kravur implements Font {
 			width = Std.int(width / 2);
 			height = Std.int(height / 2);
 		}
-		texture = Sys.graphics.createTexture(width, height, TextureFormat.L8, Usage.Static);
+		texture = Sys.graphics.createTexture(width, height, TextureFormat.L8, Usage.StaticUsage);
 		var bytes = texture.lock();
 		var pos: Int = 0;
 		for (y in 0...height) for (x in 0...width) {
