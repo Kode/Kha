@@ -4,7 +4,7 @@ class TimeTask {
 	public var task: Void -> Bool;
 	
 	public var start: Float;
-	public var period: Int;
+	public var period: Float;
 	public var duration: Float;
 	public var last: Float;
 	public var next: Float;
@@ -17,12 +17,12 @@ class TimeTask {
 		
 	}
 	
-	public function elapsed() : Float {
-		return Scheduler.time() - Scheduler.timestampToTime(last);
+	public function elapsed(): Float {
+		return Scheduler.time() - last;
 	}
 	
-	public function remaining() : Float {
-		return Scheduler.timestampToTime(next) - Scheduler.time();
+	public function remaining(): Float {
+		return next - Scheduler.time();
 	}
 }
 
@@ -38,7 +38,6 @@ class FrameTask {
 		this.id = id;
 		active = true;
 	}
-	//bool operator<(const FrameTask& ft);
 }
 
 class Scheduler {
@@ -46,15 +45,13 @@ class Scheduler {
 	private static var frameTasks: Array<FrameTask>;
 	
 	private static var current: Float;
-	private static var frameEnd: Float;
-	private static var startstamp: Float;
+	private static var startTime: Float;
 	
 	private static var frame_tasks_sorted: Bool;
 	private static var running: Bool;
 	private static var stopped: Bool;
 	private static var vsync: Bool;
 
-	private static var frequency: Float;
 	private static var onedifhz: Float;
 
 	private static var currentFrameTaskId: Int;
@@ -66,6 +63,8 @@ class Scheduler {
 	private static var DIF_COUNT = 3;
 	private static var maxframetime = 0.1;
 	
+	private static var difs: Array<Float>;
+	
 	public static function init(): Void {
 		difs = new Array<Float>();
 		difs[DIF_COUNT - 2] = 0;
@@ -73,11 +72,9 @@ class Scheduler {
 		running = false;
 		stopped = false;
 		halted_count = 0;
-		frame_tasks_sorted = true; // Weil der Vektor noch leer ist
+		frame_tasks_sorted = true;
 		current = 0;
-		frameEnd = 0;
-		startstamp = 0;
-		frequency = Sys.getFrequency();
+		startTime = 0;
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -93,16 +90,9 @@ class Scheduler {
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
 
-		//std::cout << "Using " << hz << " Hz" << std::endl;
-		//std::cout << "Using vsync = " << (vsync ? "true" : "false") << std::endl;
-
 		running = true;
-		startstamp = Sys.getTimestamp();
-		initSchedulerRun();
-		//#ifndef SYS_ANDROID
-		//runScheduler();
-		//stopped = true;
-		//#endif
+		startTime = Sys.getTime();
+		for (i in 0...DIF_COUNT) difs[i] = 0;
 	}
 	
 	public static function stop(): Void {
@@ -114,38 +104,41 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		stamp = Sys.getTimestamp() - startstamp;
+		var stamp: Float = Sys.getTime() - startTime;
 		
-		var tdif = ticksToTimespan(stamp - current);
+		var tdif: Float = stamp - current;
+		var frameEnd: Float = current;
+
 		if (tdif < 0) {
 			return;
 		}
+		
 		//tdif = 1.0 / 60.0; //force fixed frame rate
+		
 		if (halted_count > 0) {
-			startstamp += stamp - current;
+			startTime += stamp - current;
 		}
 		else if (tdif > maxframetime) {
-			var mtft = timespanToTicks(maxframetime);
-			frameEnd += mtft;
-			startstamp += stamp - current - mtft;
+			frameEnd += maxframetime;
+			startTime += tdif - maxframetime;
 		}
 		else {
 			if (vsync) {
 				var realdif = onedifhz;
-				while (realdif < tdif - onedifhz) { //0.3 -> 0.7
+				while (realdif < tdif - onedifhz) {
 					realdif += onedifhz;
 				}
 				
 				tdif = realdif;
-				for (i in 0...DIF_COUNT-2) {
+				for (i in 0...DIF_COUNT - 2) {
 					tdif += difs[i];
-					difs[i] = difs[i+1];
+					difs[i] = difs[i + 1];
 				}
-				tdif += difs[DIF_COUNT-2];
+				tdif += difs[DIF_COUNT - 2];
 				tdif /= DIF_COUNT;
-				difs[DIF_COUNT-2] = realdif;
+				difs[DIF_COUNT - 2] = realdif;
 				
-				frameEnd += timespanToTicks(tdif);
+				frameEnd += tdif;
 			}
 			else {
 				#if true
@@ -158,16 +151,13 @@ class Scheduler {
 					interpolated_tdif /= DIF_COUNT;
 					difs[DIF_COUNT-2] = tdif;
 					
-					frameEnd += timespanToTicks(interpolated_tdif); // Interpolierte vorhersage des Frame endes
+					frameEnd += interpolated_tdif; // average the frame end estimation
 				#else
-					frameEnd = stamp; // Keine vorhersage des Frame endes. */
+					frameEnd = stamp; // No frame end estimation
 				#end
 			}
 		}
 		
-		//
-		// TimeTasks bis zum frameEnd ausführen
-		//
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
 			current = t.next;
@@ -176,7 +166,7 @@ class Scheduler {
 			
 			if (t.active && t.task()) {
 				timeTasks.remove(t);
-				if (t.period != 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
+				if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
 					insertSorted(timeTasks, t);
 				}
 			}
@@ -186,35 +176,27 @@ class Scheduler {
 			}
 		}
 		
-		// getCurrentTimestamp auf frameEnd aktualisieren
 		current = frameEnd;
 		
-		// TODO: Man könnte direkt bei "t.active = false;" entfernen
 		while (true) {
 			for (timeTask in timeTasks) {
 				if (!timeTask.active) {
 					timeTasks.remove(timeTask);
-					//printf("timeTasks.erase(-> %d)\n", timeTasks.size());
 					break;
 				}
 			}
 			break;
 		}
 
-		//
-		// FrameTasks ausführen
-		//
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
 			if (!frameTask.task()) frameTask.active = false;
 		}
 
-		// TODO: Geschickter löschen
 		while (true) {
 			for (frameTask in frameTasks) {
 				if (!frameTask.active) {
 					frameTasks.remove(frameTask);
-					//printf("frameTasks.erase(-> %d)\n", frameTasks.size());
 					break;
 				}
 			}
@@ -223,11 +205,7 @@ class Scheduler {
 	}
 
 	public static function time(): Float {
-		return timestampToTime(getCurrentTimestamp());
-	}
-	
-	public static function realticktime(): Float { //just for random generator initialization
-		return getCurrentTimestamp();
+		return current;
 	}
 	
 	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
@@ -261,12 +239,12 @@ class Scheduler {
 		t.id = ++currentTimeTaskId;
 		t.groupId = groupId;
 
-		t.start = current + timeToTimestamp(start);
+		t.start = current + start;
 		t.period = 0;
-		if (period != 0) t.period = timespanToTicks(period);
+		if (period != 0) t.period = period;
 		//if (t.period == 0) throw std::exception("The period of a task must not be zero.");
 		t.duration = 0; //infinite
-		if (duration != 0) t.duration = t.start + timeToTimestamp(duration); //-1 ?
+		if (duration != 0) t.duration = t.start + duration; //-1 ?
 
 		t.next = t.start;
 		t.last = current;
@@ -320,31 +298,6 @@ class Scheduler {
 		return timeTasks.length + frameTasks.length;
 	}
 	
-	private static function initSchedulerRun(): Void {
-		stamp = getCurrentTimestamp();
-		for (i in 0...DIF_COUNT) difs[i] = 0;
-	}
-	
-	private static function getCurrentTimestamp(): Float {
-		return current;
-	}
-	
-	private static function ticksToTimespan(t: Float): Float {
-		return t / frequency;
-	}
-	
-	private static function timespanToTicks(timespan: Float) {
-		return Math.round(timespan * frequency);
-	}
-	
-	public static function timestampToTime(t: Float): Float {
-		return t / frequency;
-	}
-	
-	private static function timeToTimestamp(time: Float): Int {
-		return Std.int(time * frequency);
-	}
-	
 	private static function insertSorted(list: Array<TimeTask>, task: TimeTask) {
 		for (i in 0...list.length) {
 			if (list[i].next > task.next) {
@@ -360,7 +313,4 @@ class Scheduler {
 		frameTasks.sort(function(a: FrameTask, b: FrameTask): Int { return a.priority > b.priority ? 1 : ((a.priority < b.priority) ? -1 : 0); } );
 		frame_tasks_sorted = true;
 	}
-
-	private static var stamp: Float;
-	private static var difs: Array<Float>;
 }

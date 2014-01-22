@@ -13,11 +13,7 @@ class Sys {
 		graphics = new kha.js.graphics.Graphics(webgl);
 	}
 	
-	public static function getFrequency(): Float {
-		return 1000;
-	}
-	
-	public static function getTimestamp(): Int {
-		return untyped __js__("Date.now()");
+	public static function getTime(): Float {
+		return untyped __js__("Date.now()") / 1000;
 	}
 }

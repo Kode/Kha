@@ -14,14 +14,10 @@ class Sys {
 		watch.Start();
 	}
 	
-	public static function getFrequency(): Int {
-		return 1000;
-	}
-	
 	@:functionCode('
-		return (int) watch.ElapsedMilliseconds;
+		return watch.ElapsedMilliseconds / 1000.0;
 	')
-	public static function getTimestamp(): Int {
+	public static function getTime(): Float {
 		return 0;
 	}
 }

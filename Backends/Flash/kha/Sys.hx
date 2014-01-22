@@ -12,11 +12,7 @@ class Sys {
 		graphics = new kha.flash.graphics.Graphics(context);
 	}
 	
-	public static function getFrequency(): Float {
-		return 1000;
-	}
-
-	public static function getTimestamp(): Float {
-		return Lib.getTimer();
+	public static function getTime(): Float {
+		return Lib.getTimer() / 1000;
 	}
 }
