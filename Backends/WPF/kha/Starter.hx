@@ -243,7 +243,6 @@ class Starter {
 	public static var frameworkElement : StoryPublishCanvas;
 	
 	public function new() {
-		kha.Storage.init(new kha.wpf.Storage());
 		kha.Loader.init(new kha.wpf.Loader());
 		Sys.init();
 		Scheduler.init();
