@@ -3,6 +3,8 @@ package kha;
 import flash.net.SharedObject;
 import haxe.io.Bytes;
 
+using StringTools;
+
 class FlashStorageFile extends StorageFile {
 	private var obj: SharedObject;
 	
@@ -22,6 +24,20 @@ class FlashStorageFile extends StorageFile {
 
 class Storage {
 	public static function namedFile(name: String): StorageFile {
+		name = name.replace(" ", "_");
+		name = name.replace("~", "-");
+		name = name.replace("%", "-");
+		name = name.replace("&", "-");
+		name = name.replace("\\", "/");
+		name = name.replace(";", ".");
+		name = name.replace(":", ".");
+		name = name.replace("\"", "*");
+		name = name.replace("'", "*");
+		name = name.replace(",", ".");
+		name = name.replace("<", "-");
+		name = name.replace(">", "-");
+		name = name.replace("?", "!");
+		name = name.replace("#", "-");
 		return new FlashStorageFile(SharedObject.getLocal(name));
 	}
 

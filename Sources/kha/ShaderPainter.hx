@@ -51,10 +51,10 @@ class ImageShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;
@@ -279,10 +279,10 @@ class ColoredShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;
@@ -294,10 +294,10 @@ class ColoredShaderPainter {
 		}
 		indexBuffer.unlock();
 		
-		triangleVertexBuffer = Sys.graphics.createVertexBuffer(triangleBufferSize * 3, structure, Usage.Dynamic);
+		triangleVertexBuffer = Sys.graphics.createVertexBuffer(triangleBufferSize * 3, structure, Usage.DynamicUsage);
 		triangleVertices = triangleVertexBuffer.lock();
 		
-		triangleIndexBuffer = Sys.graphics.createIndexBuffer(triangleBufferSize * 3, Usage.Static);
+		triangleIndexBuffer = Sys.graphics.createIndexBuffer(triangleBufferSize * 3, Usage.StaticUsage);
 		var triIndices = triangleIndexBuffer.lock();
 		for (i in 0...bufferSize) {
 			triIndices[i * 3 + 0] = i * 3 + 0;
@@ -486,10 +486,10 @@ class TextShaderPainter {
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.Dynamic);
+		rectVertexBuffer = Sys.graphics.createVertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
 		rectVertices = rectVertexBuffer.lock();
 		
-		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.Static);
+		indexBuffer = Sys.graphics.createIndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
 		var indices = indexBuffer.lock();
 		for (i in 0...bufferSize) {
 			indices[i * 3 * 2 + 0] = i * 4 + 0;

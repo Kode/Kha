@@ -94,17 +94,19 @@ class Kravur implements Font {
 		}
 		width = blob.readS32LE();
 		height = blob.readS32LE();
-		while (width > Sys.graphics.maxTextureSize() || height > Sys.graphics.maxTextureSize()) {
-			for (y in 0...height) for (x in 0...width) {
+		var w = width;
+		var h = height;
+		while (w > Sys.graphics.maxTextureSize() || h > Sys.graphics.maxTextureSize()) {
+			for (y in 0...h) for (x in 0...w) {
 				blob.readU8();
 			}
-			width = Std.int(width / 2);
-			height = Std.int(height / 2);
+			w = Std.int(w / 2);
+			h = Std.int(h / 2);
 		}
-		texture = Sys.graphics.createTexture(width, height, TextureFormat.L8, Usage.Static);
+		texture = Sys.graphics.createTexture(w, h, TextureFormat.L8, Usage.StaticUsage);
 		var bytes = texture.lock();
 		var pos: Int = 0;
-		for (y in 0...height) for (x in 0...width) {
+		for (y in 0...h) for (x in 0...w) {
 			bytes.set(pos, blob.readU8());
 			
 			//filter-test
