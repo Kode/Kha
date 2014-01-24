@@ -1,5 +1,6 @@
 package kha.flash;
 
+import kha.Cursor;
 import kha.Image;
 
 class Mouse extends kha.Mouse {
@@ -17,7 +18,7 @@ class Mouse extends kha.Mouse {
 		if (cursorIndex < 0) flash.ui.Mouse.hide();
 	}
 	
-	override public function pushCursor(cursorImage: Image): Void {
+	override public function pushCursor(cursorImage: Cursor): Void {
 		super.pushCursor(cursorImage);
 		flash.ui.Mouse.hide();
 	}

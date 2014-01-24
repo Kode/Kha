@@ -2,11 +2,11 @@ package kha;
 
 class Mouse {
 	private var hidden: Bool = false;
-	private var cursorImages: Array<Image>;
+	private var cursors: Array<Cursor>;
 	private var cursorIndex: Int;
 	
 	public function new() {
-		cursorImages = new Array<Image>();
+		cursors = new Array<Cursor>();
 		cursorIndex = -1;
 	}
 	
@@ -18,9 +18,9 @@ class Mouse {
 		hidden = true;
 	}
 	
-	public function pushCursor(cursorImage: Image): Void {
+	public function pushCursor(cursorImage: Cursor): Void {
 		++cursorIndex;
-		cursorImages[cursorIndex] = cursorImage;
+		cursors[cursorIndex] = cursorImage;
 	}
 	
 	public function popCursor(): Void {
@@ -29,6 +29,10 @@ class Mouse {
 	}
 	
 	public function render(painter: Painter, x: Int, y: Int): Void {
-		if (cursorIndex >= 0) painter.drawImage(cursorImages[cursorIndex], x, y);
+		if (cursorIndex >= 0) cursors[cursorIndex].render(painter, x, y);
+	}
+	
+	public function update(): Void {
+		if (cursorIndex >= 0) cursors[cursorIndex].update();
 	}
 }
