@@ -92,6 +92,7 @@ class Starter {
 		context.clear(0, 0, 0, 0);
 		painter.begin();
 		Configuration.screen().render(painter);
+		Sys.mouse.render(painter, mouseX, mouseY);
 		painter.end();
 		context.present();
 	}
@@ -175,24 +176,37 @@ class Starter {
 		}
 	}
 	
+	private var mouseX: Int;
+	private var mouseY: Int;
+	
+	private function setMousePosition(event: MouseEvent): Void {
+		mouseX = Std.int((event.stageX - borderX) / scale);
+		mouseY = Std.int((event.stageY - borderY) / scale);
+	}
+	
 	function mouseDownHandler(event: MouseEvent): Void {
-		game.mouseDown(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+		setMousePosition(event);
+		game.mouseDown(mouseX, mouseY);
 	}
 	
 	function mouseUpHandler(event: MouseEvent): Void {
-		game.mouseUp(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+		setMousePosition(event);
+		game.mouseUp(mouseX, mouseY);
 	}
 	
 	function rightMouseDownHandler(event: MouseEvent): Void {
-		game.rightMouseDown(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+		setMousePosition(event);
+		game.rightMouseDown(mouseX, mouseY);
 	}
 	
 	function rightMouseUpHandler(event: MouseEvent): Void {
-		game.rightMouseUp(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+		setMousePosition(event);
+		game.rightMouseUp(mouseX, mouseY);
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {
-		game.mouseMove(Std.int((event.stageX - borderX) / scale), Std.int((event.stageY - borderY) / scale));
+		setMousePosition(event);
+		game.mouseMove(mouseX, mouseY);
 	}
 	
 	private var borderX: Float;
