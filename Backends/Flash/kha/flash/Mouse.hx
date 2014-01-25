@@ -8,26 +8,10 @@ class Mouse extends kha.Mouse {
 		super();
 	}
 	
-	override public function show(): Void {
-		super.show();
-		if (cursorIndex < 0) flash.ui.Mouse.show();
-	}
-	
-	override public function hide(): Void {
-		super.hide();
-		if (cursorIndex < 0) flash.ui.Mouse.hide();
-	}
-	
-	override public function pushCursor(cursorImage: Cursor): Void {
-		super.pushCursor(cursorImage);
+	override private function hideSystemCursor():Void {
 		flash.ui.Mouse.hide();
 	}
-	
-	override public function popCursor(): Void {
-		super.popCursor();
-		if (cursorIndex < 0) {
-			if (hidden) flash.ui.Mouse.hide();
-			else flash.ui.Mouse.show();
-		}
+	override private function showSystemCursor():Void {
+		flash.ui.Mouse.show();
 	}
 }
