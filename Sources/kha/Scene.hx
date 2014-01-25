@@ -1,4 +1,5 @@
 package kha;
+import haxe.ds.ArraySort;
 import kha.math.Vector2;
 
 class Scene {
@@ -280,5 +281,18 @@ class Scene {
 	public function getHeight() : Float {
 		if (collisionLayer != null) return collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT;
 		else return 0;
+	}
+	
+	public function getHeroesBelowPoint(px : Int, py : Int) : Array<Sprite> {
+		var heroes = new Array();
+		var count = collisionLayer.countHeroes();
+		for (i in 1...count+1) {
+			var hero = collisionLayer.getHero(count-i);
+			if (hero.x < px && px < hero.x + hero.width && hero.y < py && py < hero.y + hero.height) {
+				heroes.push(hero);
+			}
+		}
+		ArraySort.sort(heroes, function(h1 : Sprite, h2 : Sprite) : Int { if (h1.z == h2.z) return 0; else if (h1.z < h2.z) return 1; else return -1; } );
+		return heroes;
 	}
 }
