@@ -191,7 +191,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 
 	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
-		return new VertexBuffer(vertexCount, structure);
+		return new VertexBuffer(vertexCount, structure, usage);
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
@@ -199,7 +199,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
-		return new IndexBuffer(indexCount);
+		return new IndexBuffer(indexCount, usage);
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
