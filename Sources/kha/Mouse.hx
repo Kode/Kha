@@ -32,7 +32,7 @@ class Mouse {
 		if (cursorIndex >= 0) cursors[cursorIndex].render(painter, x, y);
 	}
 	
-	public function update(): Void {
-		if (cursorIndex >= 0) cursors[cursorIndex].update();
+	public function update(x: Int, y: Int): Void {
+		if (cursorIndex >= 0) cursors[cursorIndex].update(x, y);
 	}
 }

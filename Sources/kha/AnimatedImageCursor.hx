@@ -20,7 +20,7 @@ class AnimatedImageCursor implements Cursor {
 		painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, x - clickX, y - clickY, width, height);
 	}
 	
-	public function update(): Void {
+	public function update(x: Int, y: Int): Void {
 		animation.next();
 	}
 }

@@ -15,7 +15,7 @@ class ImageCursor implements Cursor {
 		painter.drawImage(image, x - clickX, y - clickY);
 	}
 	
-	public function update(): Void {
+	public function update(x: Int, y: Int): Void {
 		
 	}
 }
