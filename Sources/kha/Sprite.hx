@@ -29,7 +29,7 @@ class Sprite {
 		if (this.width  == 0 && image != null) this.width  = image.width;
 		if (this.height == 0 && image != null) this.height = image.height;
 		this.z = z;
-		collider = new Rectangle(0, 0, width, height);
+		collider = new Rectangle(0, 0, this.width, this.height);
 		speedx = speedy = 0;
 		accx = 0;
 		accy = 0.2;
