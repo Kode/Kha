@@ -60,6 +60,12 @@ class Sprite {
 		if (image != null) {
 			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
 		}
+		#if debug
+			painter.setColor(Color.fromBytes(255, 0, 0));
+			painter.drawRect(x - collider.x, y - collider.y, width, height);
+			painter.setColor(Color.fromBytes(0, 255, 0));
+			painter.drawRect(tempcollider.x, tempcollider.y, tempcollider.width, tempcollider.height);
+		#end
 	}
 	
 	public function hitFrom(dir : Direction) : Void {
