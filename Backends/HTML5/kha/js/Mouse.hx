@@ -17,10 +17,8 @@ class Mouse extends kha.Mouse {
 	
 	override private function hideSystemCursor():Void {
 		khanvas.style.cursor = "none";
-		trace ("Cursor: none");
 	}
 	override private function showSystemCursor():Void {
 		khanvas.style.cursor = SystemCursor;
-		trace ('Cursor: $SystemCursor');
 	}
 }
