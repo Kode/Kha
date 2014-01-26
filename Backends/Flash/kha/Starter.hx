@@ -88,12 +88,12 @@ class Starter {
 	}
 	
 	function update(_): Void {
+		Sys.mouse.update();
 		Scheduler.executeFrame();
-		Sys.mouse.update(mouseX, mouseY);
 		context.clear(0, 0, 0, 0);
 		painter.begin();
 		Configuration.screen().render(painter);
-		Sys.mouse.render(painter, mouseX, mouseY);
+		Sys.mouse.render(painter);
 		painter.end();
 		context.present();
 	}
@@ -177,8 +177,8 @@ class Starter {
 		}
 	}
 	
-	private var mouseX: Int;
-	private var mouseY: Int;
+	private static var mouseX: Int;
+	private static var mouseY: Int;
 	
 	private function setMousePosition(event: MouseEvent): Void {
 		mouseX = Std.int((event.stageX - borderX) / scale);

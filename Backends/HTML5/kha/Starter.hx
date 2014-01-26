@@ -24,6 +24,9 @@ class Starter {
 	static var buttonspressed : Array<Bool>;
 	static var leftMouseCtrlDown: Bool = false;
 	
+	@:allow(kha.Scheduler) static var mouseX : Int;
+	@:allow(kha.Scheduler) static var mouseY : Int;
+	
 	public function new() {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
@@ -143,6 +146,7 @@ class Starter {
 			if (canvas.getContext) {
 				painter.begin();
 				Configuration.screen().render(painter);
+				Sys.mouse.render(painter);
 				painter.end();
 			}
 		}
@@ -163,17 +167,21 @@ class Starter {
 		canvas.onmousedown = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) DOWN' );
+			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
+			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			mouseX = x;
+			mouseY = y;
 			if (event.button == 0) {
 				if (event.ctrlKey) {
 					leftMouseCtrlDown = true;
-					game.rightMouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+					game.rightMouseDown(x, y);
 				}
 				else {
 					leftMouseCtrlDown = false;
-					game.mouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+					game.mouseDown(x, y);
 				}
 			} else {
-				game.rightMouseDown(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				game.rightMouseDown(x, y);
 			}
 		}
 		
@@ -181,23 +189,31 @@ class Starter {
 		canvas.onmouseup = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) UP' );
+			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
+			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			mouseX = x;
+			mouseY = y;
 			if (event.button == 0) {
 				if (leftMouseCtrlDown) {
-					game.rightMouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+					game.rightMouseUp(x, y);
 				}
 				else {
-					game.mouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+					game.mouseUp(x, y);
 				}
 				leftMouseCtrlDown = false;
 			} else {
-				game.rightMouseUp(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+				game.rightMouseUp(x, y);
 			}
 		}
 		
 		//Lib.document.onmousemove = function(event : js.Event) {
 		canvas.onmousemove = function(event : MouseEvent) {
 			checkMouseShift(event);
-			game.mouseMove(Std.int((event.pageX - canvas.offsetLeft) / transform), Std.int((event.pageY - canvas.offsetTop) / transform));
+			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
+			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			mouseX = x;
+			mouseY = y;
+			game.mouseMove(x, y);
 		}
 
 		//Lib.document.onkeydown = function(event : js.Event) {

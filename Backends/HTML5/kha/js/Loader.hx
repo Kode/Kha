@@ -78,10 +78,10 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function setNormalCursor() {
-		Browser.document.getElementById("khanvas").style.cursor = "default";
+		Mouse.SystemCursor = "default";
 	}
 
 	override public function setHandCursor() {
-		Browser.document.getElementById("khanvas").style.cursor = "pointer";
+		Mouse.SystemCursor = "pointer";
 	}
 }

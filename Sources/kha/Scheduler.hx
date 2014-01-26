@@ -104,6 +104,8 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
+		Sys.mouse.update();
+		
 		var stamp: Float = Sys.getTime() - startTime;
 		
 		var tdif: Float = stamp - current;
