@@ -1,6 +1,6 @@
 package kha;
 
-import kha.graphics.Graphics;
+import kha.cpp.graphics.Graphics;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -10,10 +10,13 @@ import kha.graphics.Graphics;
 class Sys {
 	public static var needs3d: Bool = false;
 	
-	public static var graphics(default, null): Graphics;
+	public static var graphics(default, null): kha.graphics.Graphics;
+
+	public static var mouse(default, null): kha.Mouse;
 	
 	public static function init(): Void {
-		graphics = new kha.cpp.graphics.Graphics();
+		mouse = new Mouse();
+		graphics = new Graphics();
 	}
 	
 	@:functionCode('
