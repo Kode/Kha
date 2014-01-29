@@ -1,4 +1,4 @@
-package kha.cpp;
+package kha.wpf;
 
 class Mouse extends kha.Mouse {
 	public function new() {

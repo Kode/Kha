@@ -6,9 +6,12 @@ import system.diagnostics.Stopwatch;
 class Sys {
 	private static var watch: Stopwatch;
 	
-	public static var graphics: Graphics;
+	public static var graphics(default, null): kha.wpf.Graphics;
+	
+	public static var mouse(default, null): kha.Mouse;
 	
 	public static function init(): Void {
+		mouse = new Mouse();
 		graphics = new Graphics();
 		watch = new Stopwatch();
 		watch.Start();
