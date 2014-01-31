@@ -19,6 +19,7 @@ class Music extends kha.Music {
 	}
 	
 	@:functionCode('
+		stream->reset();
 		stream->setLooping(loop);
 		Kore::Mixer::play(stream);
 	')
