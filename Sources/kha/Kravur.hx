@@ -179,7 +179,20 @@ class Kravur implements Font {
 	public function charsWidth(ch: String, offset: Int, length: Int): Float {
 		return stringWidth(ch.substr(offset, length));
 	}
-
+	
+	#if cpp
+	@:functionCode('
+		const wchar_t * w = str.__WCStr();
+		float width = 0;
+		for (int c = 0; w[c] != 0; ++c) {
+			width += this->getCharWidth(w[c]);
+		}
+		return width;
+	')
+	public function stringWidth(str: String): Float {
+		return 0;
+	}
+	#else
 	public function stringWidth(str: String): Float {
 		var width: Float = 0;
 		for (c in 0...str.length) {
@@ -187,6 +200,7 @@ class Kravur implements Font {
 		}
 		return width;
 	}
+	#end
 
 	public function getBaselinePosition(): Float {
 		return baseline;
