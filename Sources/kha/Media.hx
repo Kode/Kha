@@ -4,7 +4,7 @@ package kha;
 class Media implements Resource {
 	public function new() : Void { }
 	
-	public function play() : Void { }
+	public function play(loop: Bool = false) : Void { }
 	
 	public function pause() : Void { }
 
