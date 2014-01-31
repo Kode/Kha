@@ -3,7 +3,7 @@ package kha.flash;
 class Music extends kha.Music {
 	private var music: flash.media.Sound;
 	private var channel: flash.media.SoundChannel;
-	
+
 	public function new(music: flash.media.Sound) {
 		super();
 		this.music = music;
@@ -16,5 +16,13 @@ class Music extends kha.Music {
 	
 	public override function stop(): Void {
 		if (channel != null) channel.stop();
+	}
+	
+	override public function getCurrentPos(): Int {
+		return Std.int(channel.position * 1000);
+	}
+	
+	override public function getLength(): Int {
+		return Std.int(music.length * 1000);
 	}
 }
