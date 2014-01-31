@@ -18,8 +18,11 @@ class Music extends kha.Music {
 		
 	}
 	
-	@:functionCode("Kore::Mixer::play(stream);")
-	override public function play(): Void {
+	@:functionCode('
+		stream->setLooping(loop);
+		Kore::Mixer::play(stream);
+	')
+	override public function play(loop: Bool = false): Void {
 		
 	}
 	
