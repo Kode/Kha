@@ -30,4 +30,14 @@ class Music extends kha.Music {
 	override public function stop(): Void {
 		
 	}
+	
+	@:functionCode('return stream->position() * 1000;')
+	override public function getCurrentPos(): Int {
+		return 0;
+	}
+	
+	@:functionCode('return stream->length() * 1000;')
+	override public function getLength(): Int {
+		return 0;
+	}
 }
