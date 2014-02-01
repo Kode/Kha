@@ -1,6 +1,8 @@
 package kha;
 
 class FontStyle {
+	public  static var Default(default, never) : FontStyle = new FontStyle(false, false, false);
+	
 	private var bold : Bool;
 	private var italic : Bool;
 	private var underlined : Bool;
