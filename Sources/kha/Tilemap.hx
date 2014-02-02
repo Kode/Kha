@@ -34,9 +34,9 @@ class Tilemap {
 			}			
 		}
 		else {
-			var xstart: Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH, 0)) - 1;
+			var xstart: Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH - 1, 0));
 			var xend: Int = Std.int(Math.min((xleft + width) / tileset.TILE_WIDTH + 1, levelWidth));
-			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0)) - 1;
+			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT - 1, 0));
 			var yend: Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 2, levelHeight));
 			for (x in xstart...xend) for (y in ystart...yend) {
 				tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
