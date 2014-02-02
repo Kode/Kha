@@ -2,11 +2,11 @@ package kha;
 import kha.math.Vector2;
 
 class Tilemap {
-	var tileset : Tileset;
-	var map : Array<Array<Int>>;
-	var levelWidth : Int;
-	var levelHeight : Int;
-	var collisionRectCache : Rectangle;
+	var tileset: Tileset;
+	var map: Array<Array<Int>>;
+	var levelWidth: Int;
+	var levelHeight: Int;
+	var collisionRectCache: Rectangle;
 	var repeat: Bool;
 	
 	public function new(imagename: String, tileWidth: Int, tileHeight: Int, map: Array<Array<Int>>, tiles: Array<Tile> = null, repeat: Bool = false) {
@@ -18,20 +18,25 @@ class Tilemap {
 		this.repeat = repeat;
 	}
 	
+	private static function mod(a: Int, b: Int): Int {
+		var r = a % b;
+		return r < 0 ? r + b : r;
+	}
+	
 	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int) {
 		if (repeat) {
-			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH);
+			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH) - 1;
 			var xend: Int = Std.int((xleft + width) / tileset.TILE_WIDTH + 1);
-			var ystart: Int = Std.int(ytop / tileset.TILE_HEIGHT);
+			var ystart: Int = Std.int(ytop / tileset.TILE_HEIGHT) - 1;
 			var yend: Int = Std.int((ytop + height) / tileset.TILE_HEIGHT + 2);
 			for (x in xstart...xend) for (y in ystart...yend) {
-				tileset.render(painter, map[x % levelWidth][y % levelHeight], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+				tileset.render(painter, map[mod(x, levelWidth)][mod(y, levelHeight)], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
 			}			
 		}
 		else {
-			var xstart: Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH, 0));
+			var xstart: Int = Std.int(Math.max(xleft / tileset.TILE_WIDTH, 0)) - 1;
 			var xend: Int = Std.int(Math.min((xleft + width) / tileset.TILE_WIDTH + 1, levelWidth));
-			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0));
+			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT, 0)) - 1;
 			var yend: Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 2, levelHeight));
 			for (x in xstart...xend) for (y in ystart...yend) {
 				tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
