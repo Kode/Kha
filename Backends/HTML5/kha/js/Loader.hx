@@ -20,7 +20,7 @@ class Loader extends kha.Loader {
 	}
 		
 	override function loadMusic(filename: String, done: kha.Music -> Void) {
-		done(new Music(filename));
+		new Music(filename, done);
 	}
 	
 	override function loadSound(filename: String, done: kha.Sound -> Void) {
