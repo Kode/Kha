@@ -4,6 +4,7 @@ import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
 import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 import kha.graphics.TextureUnit;
 import kha.graphics.Usage;
 import kha.graphics.VertexBuffer;
@@ -32,6 +33,10 @@ class ImageShaderPainter {
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getTextureUnit("tex");
+	}
+	
+	public function setProjection(projectionMatrix: Array<Float>): Void {
+		this.projectionMatrix = projectionMatrix;
 	}
 	
 	private function initShaders(): Void {
@@ -648,21 +653,22 @@ class ShaderPainter extends Painter {
 	private var height: Float;
 	private var borderX: Float;
 	private var borderY: Float;
+	private var renderTexture: Texture;
 	
 	public function new(width: Int, height: Int) {
 		super();
 		color = Color.fromBytes(0, 0, 0);
-		
 		setScreenSize(width, height, 0, 0);
 	}
 	
 	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
-		this.width = width;
-		this.height = height;
+		renderTexture = Sys.graphics.createRenderTargetTexture(width, height, TextureFormat.RGBA32, false);
+		this.width = renderTexture.realWidth;
+		this.height = renderTexture.realHeight;
 		this.borderX = borderX;
 		this.borderY = borderY;
 		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = ortho(-borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
+		projectionMatrix = ortho(-borderX, renderTexture.realWidth + borderX, renderTexture.realHeight + borderY, -borderY, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
@@ -762,6 +768,7 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function begin(): Void {
+		Sys.graphics.renderToTexture(renderTexture);
 		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0));
 		translate(0, 0);
 	}
@@ -774,5 +781,11 @@ class ShaderPainter extends Painter {
 		coloredPainter.fillRect(Color.ColorBlack, 0, -borderY, width, borderY);
 		coloredPainter.fillRect(Color.ColorBlack, 0, height, width, borderY);
 		coloredPainter.end();
+		
+		Sys.graphics.renderToBackbuffer();
+		imagePainter.setProjection(ortho(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+		imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+		imagePainter.end();
+		imagePainter.setProjection(ortho(-borderX, renderTexture.realWidth + borderX, renderTexture.realHeight + borderY, -borderY, 0.1, 1000));
 	}
 }
