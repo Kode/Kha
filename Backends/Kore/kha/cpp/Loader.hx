@@ -16,28 +16,29 @@ class Loader extends kha.Loader {
 		super();
 	}
 	
-	override function loadMusic(filename: String, done: kha.Music -> Void) {
-		done(new Music(filename));
+	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
+		done(new Music(desc.file));
 	}
 	
-	override function loadSound(filename: String, done: kha.Sound -> Void) {
-		done(new Sound(filename));
+	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
+		done(new Sound(desc.file));
 	}
 	
-	override function loadImage(filename: String, done: kha.Image -> Void) {
-		done(kha.cpp.Image.fromFile(filename));
+	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
+		done(kha.cpp.Image.fromFile(desc.file, readable));
 	}
 	
-	override function loadBlob(filename: String, done: Blob -> Void) {
-		done(new Blob(File.getBytes(filename)));
+	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
+		done(new Blob(File.getBytes(desc.file)));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
 		return Kravur.get(name, style, size);
 	}
 	
-	override public function loadVideo(filename: String, done: Video -> Void) {
-		done(new Video(filename));
+	override public function loadVideo(desc: Dynamic, done: Video -> Void) {
+		done(new Video(desc.file));
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')

@@ -12,8 +12,8 @@ class Image implements Texture {
 	public var image: ImageElement;
 	private var video: VideoElement;
 	
-	private static var context : Dynamic;
-	private var data : Dynamic;
+	private static var context: Dynamic;
+	private var data: Dynamic;
 	
 	private var myWidth: Int;
 	private var myHeight: Int;
@@ -36,7 +36,7 @@ class Image implements Texture {
 		video = null;
 	}
 	
-	public static function fromImage(image: ImageElement): Image {
+	public static function fromImage(image: ImageElement, readable: Bool): Image {
 		var img = new Image(image.width, image.height, TextureFormat.RGBA32);
 		img.image = image;
 		img.createTexture();
@@ -53,11 +53,11 @@ class Image implements Texture {
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
-	public function get_width() : Int {
+	public function get_width(): Int {
 		return myWidth;
 	}
 	
-	public function get_height() : Int {
+	public function get_height(): Int {
 		return myHeight;
 	}
 	

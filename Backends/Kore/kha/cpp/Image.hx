@@ -13,29 +13,32 @@ import kha.graphics.TextureFormat;
 @:headerClassCode("Kore::Texture* texture;")
 class Image implements Texture {
 	private var format: TextureFormat;
+	private var readable: Bool;
 	
-	private function new() { }
+	private function new(readable: Bool) {
+		this.readable = readable;
+	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat): Image {
-		var image = new Image();
+	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool): Image {
+		var image = new Image(readable);
 		image.format = format;
 		image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
 	}
 	
-	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format);')
+	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format, readable);')
 	private function init(width: Int, height: Int, format: Int): Void {
 		
 	}
 	
-	public static function fromFile(filename: String): Image {
-		var image = new Image();
-		image.format = TextureFormat.L8;
+	public static function fromFile(filename: String, readable: Bool): Image {
+		var image = new Image(readable);
+		image.format = TextureFormat.RGBA32;
 		image.initFromFile(filename);
 		return image;
 	}
 	
-	@:functionCode('texture = new Kore::Texture(filename.c_str());')
+	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 		
 	}
@@ -73,7 +76,7 @@ class Image implements Texture {
 		
 	}
 	
-	//@:functionCode("return image.At(x, y).Ab() > 0;")
+	@:functionCode("return texture->at(x, y) & 0xff != 0;")
 	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
 	}
