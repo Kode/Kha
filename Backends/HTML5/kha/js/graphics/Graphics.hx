@@ -31,10 +31,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
-		framebuffer = Sys.gl.createFramebuffer();
-		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, framebuffer);
-		framebuffer.width = Sys.pixelWidth;
-		framebuffer.height = Sys.pixelHeight;
+		
 	}
 	
 	public function vsynced(): Bool {
@@ -277,10 +274,10 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function renderToTexture(texture: Texture): Void {
-		
+		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, cast(texture, Image).frameBuffer);
 	}
 
 	public function renderToBackbuffer(): Void {
-		
+		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
 	}
 }

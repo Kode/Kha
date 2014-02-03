@@ -19,9 +19,10 @@ class Image implements Texture {
 	private var myHeight: Int;
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
+	public var frameBuffer: Dynamic;
 	
 	public static function init() {
-		var canvas : Dynamic = Browser.document.createElement("canvas");
+		var canvas: Dynamic = Browser.document.createElement("canvas");
 		if (canvas != null) {
 			context = canvas.getContext("2d");
 			canvas.width = 2048;
@@ -121,7 +122,13 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		if (renderTarget) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, null);
+		if (renderTarget) {
+			frameBuffer = Sys.gl.createFramebuffer();
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, frameBuffer);
+			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, null);
+			Sys.gl.framebufferTexture2D(Sys.gl.FRAMEBUFFER, Sys.gl.COLOR_ATTACHMENT0, Sys.gl.TEXTURE_2D, texture, 0);
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+		}
 		else if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
 		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
@@ -158,10 +165,6 @@ class Image implements Texture {
 				var rgbaBytes = Bytes.alloc(width * height * 4);
 				for (y in 0...height) for (x in 0...width) {
 					var value = bytes.get(y * width + x);
-					if (value != 0) {
-						var a = 3;
-						++a;
-					}
 					rgbaBytes.set(y * width * 4 + x * 4 + 0, value);
 					rgbaBytes.set(y * width * 4 + x * 4 + 1, value);
 					rgbaBytes.set(y * width * 4 + x * 4 + 2, value);
