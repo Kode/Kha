@@ -20,6 +20,7 @@ import kha.js.Image;
 import kha.Rectangle;
 
 class Graphics implements kha.graphics.Graphics {
+	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	
 	public function new(webgl: Bool) {
@@ -30,7 +31,10 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
-		
+		framebuffer = Sys.gl.createFramebuffer();
+		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, framebuffer);
+		framebuffer.width = Sys.pixelWidth;
+		framebuffer.height = Sys.pixelHeight;
 	}
 	
 	public function vsynced(): Bool {
@@ -132,11 +136,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return new Image(width, height, format);
+		return new Image(width, height, format, false);
 	}
 	
 	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return new Image(width, height, format);
+		return new Image(width, height, format, true);
 	}
 	
 	public function maxTextureSize(): Int {

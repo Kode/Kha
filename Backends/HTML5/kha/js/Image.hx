@@ -18,6 +18,7 @@ class Image implements Texture {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
+	private var renderTarget: Bool;
 	
 	public static function init() {
 		var canvas : Dynamic = Browser.document.createElement("canvas");
@@ -28,23 +29,25 @@ class Image implements Texture {
 		}
 	}
 	
-	public function new(width: Int, height: Int, format: TextureFormat) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool) {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
+		this.renderTarget = renderTarget;
 		image = null;
 		video = null;
+		if (renderTarget) createTexture();
 	}
 	
 	public static function fromImage(image: ImageElement, readable: Bool): Image {
-		var img = new Image(image.width, image.height, TextureFormat.RGBA32);
+		var img = new Image(image.width, image.height, TextureFormat.RGBA32, false);
 		img.image = image;
 		img.createTexture();
 		return img;
 	}
 	
 	public static function fromVideo(video: Video): Image {
-		var img = new Image(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32);
+		var img = new Image(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
 		img.video = video.element;
 		img.createTexture();
 		return img;
@@ -118,7 +121,8 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
+		if (renderTarget) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, null);
+		else if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
 		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
