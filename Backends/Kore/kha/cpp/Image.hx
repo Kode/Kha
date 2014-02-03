@@ -10,7 +10,7 @@ import kha.graphics.TextureFormat;
 #include <Kore/Graphics/Graphics.h>
 ')
 
-@:headerClassCode("Kore::Texture* texture;")
+@:headerClassCode("Kore::Texture* texture; Kore::RenderTarget* renderTarget;")
 class Image implements Texture {
 	private var format: TextureFormat;
 	private var readable: Bool;
@@ -19,14 +19,20 @@ class Image implements Texture {
 		this.readable = readable;
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool): Image {
 		var image = new Image(readable);
 		image.format = format;
-		image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		if (renderTarget) image.initRenderTarget(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
 	}
 	
-	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format, readable);')
+	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, false, false, Kore::Target32Bit); texture = nullptr;')
+	private function initRenderTarget(width: Int, height: Int, format: Int): Void {
+		
+	}
+	
+	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format, readable); renderTarget = nullptr;')
 	private function init(width: Int, height: Int, format: Int): Void {
 		
 	}
@@ -46,12 +52,12 @@ class Image implements Texture {
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
-	@:functionCode("return texture->width;")
+	@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
 	public function get_width(): Int {
 		return 0; 
 	}
 	
-	@:functionCode("return texture->height;")
+	@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
 	public function get_height(): Int {
 		return 0;
 	}
@@ -59,18 +65,19 @@ class Image implements Texture {
 	public var realWidth(get, null): Int;
 	public var realHeight(get, null): Int;
 	
-	@:functionCode("return texture->texWidth;")
+	@:functionCode("if (texture != nullptr) return texture->texWidth; else return renderTarget->texWidth;")
 	public function get_realWidth(): Int {
 		return 0;
 	}
 	
-	@:functionCode("return texture->texHeight;")
+	@:functionCode("if (texture != nullptr) return texture->texHeight; else return renderTarget->texHeight;")
 	public function get_realHeight(): Int {
 		return 0;
 	}
 	
 	@:functionCode("
-		texture->set(unit->unit);
+		if (texture != nullptr) texture-> set(unit->unit);
+		else renderTarget->useColorAsTexture(unit->unit);
 	")
 	public function set(unit: TextureUnit): Void {
 		
@@ -81,7 +88,7 @@ class Image implements Texture {
 		return true;
 	}
 	
-	@:functionCode("delete texture; texture = nullptr;")
+	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr;")
 	public function unload(): Void {
 		
 	}

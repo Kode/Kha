@@ -2,6 +2,7 @@ package kha.cpp.graphics;
 
 import kha.Blob;
 import kha.Color;
+import kha.cpp.Image;
 import kha.graphics.CubeMap;
 import kha.graphics.CullMode;
 import kha.graphics.FragmentShader;
@@ -151,11 +152,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return Image.create(width, height, format, canRead);
+		return Image.create(width, height, format, canRead, false);
 	}
 	
 	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return Image.create(width, height, format, false);
+		return Image.create(width, height, format, false, true);
 	}
 	
 	public function maxTextureSize(): Int {
@@ -178,10 +179,16 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function renderToTexture(texture: Texture): Void {
+	@:functionCode('Kore::Graphics::setRenderTarget(texture->renderTarget, 0);')
+	public function renderToTexture2(texture: Image): Void {
 		
 	}
 	
+	public function renderToTexture(texture: Texture): Void {
+		renderToTexture2(cast texture);
+	}
+	
+	@:functionCode('Kore::Graphics::restoreRenderTarget();')
 	public function renderToBackbuffer(): Void {
 		
 	}
