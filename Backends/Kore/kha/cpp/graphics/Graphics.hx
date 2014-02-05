@@ -61,27 +61,35 @@ class Graphics implements kha.graphics.Graphics {
 		case 0:
 			Kore::Graphics::setRenderState(Kore::DepthTest, false);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareAlways);
+			break;
 		case 1:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNever);
+			break;
 		case 2:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareEqual);
+			break;
 		case 3:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareNotEqual);
+			break;
 		case 4:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLess);
+			break;
 		case 5:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareLessEqual);
+			break;
 		case 6:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreater);
+			break;
 		case 7:
 			Kore::Graphics::setRenderState(Kore::DepthTest, true);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareGreaterEqual);
+			break;
 		}
 		Kore::Graphics::setRenderState(Kore::DepthWrite, write);
 	')
