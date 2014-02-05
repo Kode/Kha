@@ -39,8 +39,19 @@ class Game {
 		scene.update();
 	}
 	
+	private function startRender(painter: Painter): Void {
+		painter.begin();
+	}
+	
+	private function endRender(painter: Painter): Void {
+		Sys.mouse.render(painter);
+		painter.end();
+	}
+	
 	public function render(painter: Painter): Void {
+		startRender(painter);
 		scene.render(painter);
+		endRender(painter);
 	}
 	
 	public function getHighscores(): HighscoreList {

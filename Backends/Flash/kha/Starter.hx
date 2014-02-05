@@ -89,10 +89,7 @@ class Starter {
 	function update(_): Void {
 		Scheduler.executeFrame();
 		context.clear(0, 0, 0, 0);
-		painter.begin();
 		Configuration.screen().render(painter);
-		Sys.mouse.render(painter);
-		painter.end();
 		context.present();
 	}
 	

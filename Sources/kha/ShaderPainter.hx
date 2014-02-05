@@ -1,5 +1,6 @@
 package kha;
 
+import kha.graphics.BlendingOperation;
 import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
@@ -769,7 +770,7 @@ class ShaderPainter extends Painter {
 	
 	public override function begin(): Void {
 		Sys.graphics.renderToTexture(renderTexture);
-		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0));
+		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0, 0));
 		translate(0, 0);
 	}
 	
@@ -783,6 +784,7 @@ class ShaderPainter extends Painter {
 		coloredPainter.end();
 		
 		Sys.graphics.renderToBackbuffer();
+		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		if (Sys.graphics.renderTargetsInvertedY()) {
 			imagePainter.setProjection(ortho(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
 			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
