@@ -280,4 +280,8 @@ class Graphics implements kha.graphics.Graphics {
 	public function renderToBackbuffer(): Void {
 		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
 	}
+	
+	public function renderTargetsInvertedY(): Bool {
+		return true;
+	}
 }

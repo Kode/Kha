@@ -293,4 +293,8 @@ class Graphics implements kha.graphics.Graphics {
 	public function renderToTexture(texture: Texture): Void {
 		context.setRenderToTexture(cast(texture, Image).getFlashTexture(), cast(texture, Image).hasDepthStencil());
 	}
+	
+	public function renderTargetsInvertedY(): Bool {
+		return false;
+	}
 }

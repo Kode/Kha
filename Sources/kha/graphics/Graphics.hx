@@ -32,6 +32,7 @@ interface Graphics {
 	function supportsNonPow2Textures(): Bool;
 	function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap;
 	
+	function renderTargetsInvertedY(): Bool;
 	function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture;
 	function renderToTexture(texture: Texture): Void;
 	function renderToBackbuffer(): Void;

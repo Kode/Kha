@@ -783,8 +783,14 @@ class ShaderPainter extends Painter {
 		coloredPainter.end();
 		
 		Sys.graphics.renderToBackbuffer();
-		imagePainter.setProjection(ortho(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-		imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+		if (Sys.graphics.renderTargetsInvertedY()) {
+			imagePainter.setProjection(ortho(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+		}
+		else {
+			imagePainter.setProjection(ortho(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+		}
 		imagePainter.end();
 		imagePainter.setProjection(ortho(-borderX, renderTexture.realWidth + borderX, renderTexture.realHeight + borderY, -borderY, 0.1, 1000));
 	}

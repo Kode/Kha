@@ -193,6 +193,11 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
+	@:functionCode('return Kore::Graphics::renderTargetsInvertedY();')
+	public function renderTargetsInvertedY(): Bool {
+		return false;
+	}
+	
 	@:functionCode('
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::U, (Kore::TextureAddressing)uWrap);
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::V, (Kore::TextureAddressing)vWrap);
