@@ -243,7 +243,7 @@ class Starter {
 			trace( '   border = $borderX / $borderY' );
 			#end
 			context.configureBackBuffer( stage.stageWidth, stage.stageHeight, 0, false );
-			painter.setScreenSize(Game.the.width, Game.the.height, borderX/scale, borderY/scale);
+			//painter.setScreenSize(Game.the.width, Game.the.height, borderX/scale, borderY/scale);
 		}
 	}
 }

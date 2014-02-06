@@ -660,10 +660,13 @@ class ShaderPainter extends Painter {
 		super();
 		color = Color.fromBytes(0, 0, 0);
 		setScreenSize(width, height, 0, 0);
+		renderTexture == null;
 	}
 	
 	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
-		renderTexture = Sys.graphics.createRenderTargetTexture(width, height, TextureFormat.RGBA32, false);
+		if (renderTexture == null || renderTexture.width != width || renderTexture.height != height) {
+			renderTexture = Sys.graphics.createRenderTargetTexture(width, height, TextureFormat.RGBA32, false);
+		}
 		this.width = renderTexture.realWidth;
 		this.height = renderTexture.realHeight;
 		this.borderX = borderX;
