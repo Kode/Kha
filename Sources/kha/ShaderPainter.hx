@@ -652,27 +652,23 @@ class ShaderPainter extends Painter {
 	private var textPainter: TextShaderPainter;
 	private var width: Float;
 	private var height: Float;
-	private var borderX: Float;
-	private var borderY: Float;
 	private var renderTexture: Texture;
 	
 	public function new(width: Int, height: Int) {
 		super();
 		color = Color.fromBytes(0, 0, 0);
-		setScreenSize(width, height, 0, 0);
+		setScreenSize(width, height);
 		renderTexture == null;
 	}
 	
-	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
+	private function setScreenSize(width: Int, height: Int) {
 		if (renderTexture == null || renderTexture.width != width || renderTexture.height != height) {
 			renderTexture = Sys.graphics.createRenderTargetTexture(width, height, TextureFormat.RGBA32, false);
 		}
 		this.width = renderTexture.realWidth;
 		this.height = renderTexture.realHeight;
-		this.borderX = borderX;
-		this.borderY = borderY;
 		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = ortho(-borderX, renderTexture.realWidth + borderX, renderTexture.realHeight + borderY, -borderY, 0.1, 1000);
+		projectionMatrix = ortho(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
@@ -780,23 +776,39 @@ class ShaderPainter extends Painter {
 	public override function end(): Void {
 		imagePainter.end();
 		textPainter.end();
-		coloredPainter.fillRect(Color.ColorBlack, -borderX, 0, borderX, height);
-		coloredPainter.fillRect(Color.ColorBlack, width, 0, borderX, height);
-		coloredPainter.fillRect(Color.ColorBlack, 0, -borderY, width, borderY);
-		coloredPainter.fillRect(Color.ColorBlack, 0, height, width, borderY);
 		coloredPainter.end();
 		
 		Sys.graphics.renderToBackbuffer();
 		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+	
+		var scalex: Float;
+		var scaley: Float;
+		var scalew: Float;
+		var scaleh: Float;
+		if (renderTexture.width / renderTexture.height > Sys.pixelWidth / Sys.pixelHeight) {
+			var scale = Sys.pixelWidth / renderTexture.width;
+			scalew = renderTexture.width * scale;
+			scaleh = renderTexture.height * scale;
+			scalex = 0;
+			scaley = (Sys.pixelHeight - scaleh) * 0.5;				
+		}
+		else {
+			var scale = Sys.pixelHeight / renderTexture.height;
+			scalew = renderTexture.width * scale;
+			scaleh = renderTexture.height * scale;
+			scalex = (Sys.pixelWidth - scalew) * 0.5;
+			scaley = 0;
+		}
+		
 		if (Sys.graphics.renderTargetsInvertedY()) {
 			imagePainter.setProjection(ortho(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
 		}
 		else {
 			imagePainter.setProjection(ortho(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, 0, 0, Sys.pixelWidth, Sys.pixelHeight, null, 1);
+			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
 		}
 		imagePainter.end();
-		imagePainter.setProjection(ortho(-borderX, renderTexture.realWidth + borderX, renderTexture.realHeight + borderY, -borderY, 0.1, 1000));
+		imagePainter.setProjection(ortho(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
 	}
 }

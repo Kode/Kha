@@ -176,8 +176,8 @@ class Starter {
 	private static var mouseY: Int;
 	
 	private function setMousePosition(event: MouseEvent): Void {
-		mouseX = Std.int((event.stageX - borderX) / scale);
-		mouseY = Std.int((event.stageY - borderY) / scale);
+		mouseX = Std.int(event.stageX);
+		mouseY = Std.int(event.stageY);
 	}
 	
 	function mouseDownHandler(event: MouseEvent): Void {
@@ -205,45 +205,9 @@ class Starter {
 		game.mouseMove(mouseX, mouseY);
 	}
 	
-	private var borderX: Float;
-	private var borderY: Float;
-	private var scale: Float;
-	
-	function resizeHandler(event: Event): Void {
-		var gameRatio = Game.the.width / Game.the.height;
-		var screenRatio = stage.stageWidth / stage.stageHeight;
-		var realHeight;
-		var realWidth;
-		if (gameRatio > screenRatio) {
-			scale = stage.stageWidth / Game.the.width;
-			realWidth = Game.the.width * scale;
-			realHeight = Game.the.height * scale;
-			borderX = 0;
-			// 1000:100 = 10
-			// 100:100 = 1
-			// => scale = 100/1000 = 0.1
-			// => borderY = 100*0.1
-			borderY = (stage.stageHeight - realHeight) * 0.5;
-		} else {
-			scale = stage.stageHeight / Game.the.height;
-			realWidth = Game.the.width * scale;
-			realHeight = Game.the.height * scale;
-			// 100:1000 = 0.1
-			// 100:100 = 1
-			// => scale = 100/1000 = 0.1
-			// => borderX = 100 - 100*0.1
-			borderX= (stage.stageWidth - realWidth) * 0.5;
-			borderY = 0;
-		}
+	private function resizeHandler(event: Event): Void {
 		if (painter != null) {
-			#if debug
-			trace( 'stageSize = ${stage.stageWidth} / ${stage.stageHeight}' );
-			trace( ' gameSize = ${Game.the.width} / ${Game.the.height}' );
-			trace( ' realSize = $realWidth / $realHeight' );
-			trace( '   border = $borderX / $borderY' );
-			#end
-			context.configureBackBuffer( stage.stageWidth, stage.stageHeight, 0, false );
-			//painter.setScreenSize(Game.the.width, Game.the.height, borderX/scale, borderY/scale);
+			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, false);
 		}
 	}
 }

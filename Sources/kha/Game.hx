@@ -58,6 +58,42 @@ class Game {
 		return highscores;
 	}
 	
+	public function painterScale(): Float {
+		if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
+			return Sys.pixelWidth / width;
+		}
+		else {
+			return Sys.pixelHeight / height;
+		}
+	}
+	
+	public function painterTargetRect(): Rectangle {
+		var rect = new Rectangle(0, 0, 1, 1);
+		if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
+			var scale = Sys.pixelWidth / width;
+			rect.width = width * scale;
+			rect.height = height * scale;
+			rect.x = 0;
+			rect.y = (Sys.pixelHeight - rect.height) * 0.5;				
+		}
+		else {
+			var scale = Sys.pixelHeight / height;
+			rect.width = width * scale;
+			rect.height = height * scale;
+			rect.x = (Sys.pixelWidth - rect.width) * 0.5;
+			rect.y = 0;
+		}
+		return rect;
+	}
+	
+	public function painterTransformMouseX(x: Int): Int {
+		return Std.int((x - painterTargetRect().x) / painterScale());
+	}
+	
+	public function painterTransformMouseY(y: Int): Int {
+		return Std.int((y - painterTargetRect().y) / painterScale());
+	}
+	
 	public function buttonDown(button: Button): Void { }
 	public function buttonUp  (button: Button): Void { }
 	
