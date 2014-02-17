@@ -16,12 +16,12 @@ class Mesh {
 	private var posvertices: Array<Float>;
 	private var indices: Array<Int>;
 	
-	private var xmin: Float;
-	private var xmax: Float;
-	private var ymin: Float;
-	private var ymax: Float;
-	private var zmin: Float;
-	private var zmax: Float;
+	public var xmin: Float;
+	public var xmax: Float;
+	public var ymin: Float;
+	public var ymax: Float;
+	public var zmin: Float;
+	public var zmax: Float;
 
-	private var material: Material;
+	public var material: Material;
 }

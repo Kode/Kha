@@ -1,7 +1,7 @@
 package kha.scene;
 
-import kha.flash.graphics.IndexBuffer;
-import kha.flash.graphics.VertexBuffer;
+import kha.graphics.IndexBuffer;
+import kha.graphics.VertexBuffer;
 import kha.graphics.Usage;
 import kha.Loader;
 import kha.math.Matrix4;
@@ -26,7 +26,7 @@ class VertexMesh extends Mesh {
 		//vertices.reserve(vertexcount * 8);
 		//posvertices.reserve(vertexcount * 3);
 		for (i in 0...vertexcount) {
-			var fv = {
+			var fv: {
 				x: Float,
 				y: Float,
 				z: Float,
@@ -35,7 +35,7 @@ class VertexMesh extends Mesh {
 				nz: Float,
 				u: Float,
 				v: Float
-			};
+			} = {x: 0, y: 0, z: 0, nx: 0, ny: 0, nz: 0, u: 0, v: 0};
 
 			fv.x = data.readF32LE();
 			fv.y = data.readF32LE();
@@ -77,7 +77,7 @@ class VertexMesh extends Mesh {
 		this.vertices = new Array<Float>(); //[vertexcount * 6 * animcount];
 		for (i in 0...animcount) {
 			for (vi in 0...vertexcount) {
-				var fv = { x: Float, y: Float, z: Float };
+				var fv: { x: Float, y: Float, z: Float } = { x: 0, y: 0, z: 0 };
 
 				fv.x = data.readF32LE();
 				fv.y = data.readF32LE();
@@ -94,11 +94,11 @@ class VertexMesh extends Mesh {
 			}
 		}
 
-		material.texture = Loader.the.getImage(texture == null ? model : texture);
+		material.texture = cast Loader.the.getImage(texture == null ? model : texture);
 
-		vb = Sys.graphics.createVertexBuffer(vertexcount);
+		vb = Sys.graphics.createVertexBuffer(vertexcount, null, Usage.StaticUsage);
 		var vbdata = vb.lock();
-		for (i = 0...vertexcount) {
+		for (i in 0...vertexcount) {
 			vbdata[i * 9 + 0] = vertices[i * 8 + 0];
 			vbdata[i * 9 + 1] = vertices[i * 8 + 1];
 			vbdata[i * 9 + 2] = vertices[i * 8 + 2];
@@ -112,7 +112,7 @@ class VertexMesh extends Mesh {
 		vb.unlock();
 		ib = Sys.graphics.createIndexBuffer(indexcount, Usage.StaticUsage);
 		var ibdata = ib.lock();
-		for (i = 0...indexcount) {
+		for (i in 0...indexcount) {
 			ibdata[i] = indices[i];
 		}
 		ib.unlock();
@@ -142,14 +142,14 @@ class VertexMesh extends Mesh {
 			++animframe;
 			if (animframe > 58) animframe = 38;
 			var vbdata = vb.lock();
-			for (i = 0...vertexcount) {
+			for (i in 0...vertexcount) {
 				index1 = index2 = anim;
 				var first = new Vector3(this.vertices[index1 * vertexcount * 6 + i * 6 + 0], this.vertices[index1 * vertexcount * 6 + i * 6 + 1], this.vertices[index1 * vertexcount * 6 + i * 6 + 2]);
 				var firstn = new Vector3(this.vertices[index1 * vertexcount * 6 + i * 6 + 3], this.vertices[index1 * vertexcount * 6 + i * 6 + 4], this.vertices[index1 * vertexcount * 6 + i * 6 + 5]);
 				
-				vbdata[i * 9 + 0] = first.x();
-				vbdata[i * 9 + 1] = first.y();
-				vbdata[i * 9 + 2] = first.z();
+				vbdata[i * 9 + 0] = first.x;
+				vbdata[i * 9 + 1] = first.y;
+				vbdata[i * 9 + 2] = first.z;
 				
 				vbdata[i * 9 + 3] = modelvertices[i * 8 + 3];
 				vbdata[i * 9 + 4] = modelvertices[i * 8 + 4];
@@ -160,20 +160,20 @@ class VertexMesh extends Mesh {
 			}
 			vb.unlock();
 		}
-		Sys.graphics.setTexture(0, material.texture);
+		Sys.graphics.setTexture(null, material.texture);
 		//Sys.graphics.setMaterial(material);
 
-		vb.set();
-		ib.set();
+		Sys.graphics.setVertexBuffer(vb);
+		Sys.graphics.setIndexBuffer(ib);
 		Sys.graphics.drawIndexedVertices();
 	}
 	
 	override public function get_size(): Vector3 {
-		return Kt::Vector3f(xmax - xmin, ymax - ymin, zmax - zmin);
+		return new Vector3(xmax - xmin, ymax - ymin, zmax - zmin);
 	}
 	
-	private var vb: VertexBuffer;
-	private var ib: IndexBuffer;
+	public var vb: VertexBuffer;
+	public var ib: IndexBuffer;
 	private var animframe: Int;
 	private var animcount: Int;
 	private var vertexcount: Int;

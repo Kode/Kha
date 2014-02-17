@@ -137,7 +137,7 @@ class ImageShaderPainter {
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
 		Sys.graphics.setIndexBuffer(indexBuffer);
 		Sys.graphics.setProgram(shaderProgram);
-		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
+		Sys.graphics.setFloats(projectionLocation, projectionMatrix);
 		
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -395,7 +395,7 @@ class ColoredShaderPainter {
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
 		Sys.graphics.setIndexBuffer(indexBuffer);
 		Sys.graphics.setProgram(shaderProgram);
-		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
+		Sys.graphics.setFloats(projectionLocation, projectionMatrix);
 		
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -409,7 +409,7 @@ class ColoredShaderPainter {
 		Sys.graphics.setVertexBuffer(triangleVertexBuffer);
 		Sys.graphics.setIndexBuffer(triangleIndexBuffer);
 		Sys.graphics.setProgram(shaderProgram);
-		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
+		Sys.graphics.setFloats(projectionLocation, projectionMatrix);
 		
 		Sys.graphics.drawIndexedVertices(0, triangleBufferIndex * 3);
 
@@ -572,7 +572,7 @@ class TextShaderPainter {
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
 		Sys.graphics.setIndexBuffer(indexBuffer);
 		Sys.graphics.setProgram(shaderProgram);
-		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
+		Sys.graphics.setFloats(projectionLocation, projectionMatrix);
 		
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 

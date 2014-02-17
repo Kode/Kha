@@ -36,4 +36,11 @@ class Vector3 {
 	public function mult(value: Float): Vector3 {
 		return new Vector3(x * value, y * value, z * value);
 	}
+	
+	public function normalize(): Void {
+		var l = 1 / length;
+		x *= l;
+		y *= l;
+		z *= l;
+	}
 }

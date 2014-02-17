@@ -5,7 +5,7 @@ class Matrix4 {
 	private static inline var height: Int = 4;
 	
 	public function new() {
-		matrix = new Array<Float>;
+		matrix = new Array<Float>();
 		for (i in 0...16) matrix.push(0);
 	}
 	
@@ -115,7 +115,7 @@ class Matrix4 {
 		return m;
 	}
 
-	public static function multvec(a: Matrix4, v: Vector4): Matrix4 {
+	public static function multvec(a: Matrix4, v: Vector4): Vector4 {
 		var product = new Vector4();
 		for (y in 0...height) {
 			var value: Float = 0;
@@ -154,14 +154,14 @@ class Matrix4 {
 		var inv = identity();
 
 		for (j in 0...width) {
-			q = matrix.get(j, j);
+			q = get(j, j);
 			if (q == 0) {
 				for (i in j + 1...width) {
 					if (get(j, i) != 0) {
 						for (k in 0...width) {
 							inv.set(k, j, get(k, j) + get(k, i));
 						}
-						q = matrix[j][j];
+						q = get(j, j);
 						break;
 					}
 				}
