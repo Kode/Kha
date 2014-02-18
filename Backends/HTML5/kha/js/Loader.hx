@@ -20,7 +20,7 @@ class Loader extends kha.Loader {
 	}
 		
 	override function loadMusic(filename: String, done: kha.Music -> Void) {
-		done(new Music(filename));
+		new Music(filename, done);
 	}
 	
 	override function loadSound(filename: String, done: kha.Sound -> Void) {
@@ -78,10 +78,10 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function setNormalCursor() {
-		Browser.document.getElementById("khanvas").style.cursor = "default";
+		Mouse.SystemCursor = "default";
 	}
 
 	override public function setHandCursor() {
-		Browser.document.getElementById("khanvas").style.cursor = "pointer";
+		Mouse.SystemCursor = "pointer";
 	}
 }

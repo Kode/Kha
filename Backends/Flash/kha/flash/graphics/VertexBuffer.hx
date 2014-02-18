@@ -3,6 +3,7 @@ package kha.flash.graphics;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
+import kha.graphics.Usage;
 import kha.graphics.VertexData;
 
 class VertexBuffer implements kha.graphics.VertexBuffer {
@@ -13,7 +14,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var myStride: Int;
 	private var myStructure: kha.graphics.VertexStructure;
 	
-	public function new(vertexCount: Int, structure: kha.graphics.VertexStructure) {
+	public function new(vertexCount: Int, structure: kha.graphics.VertexStructure, usage: Usage) {
 		this.vertexCount = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
@@ -29,7 +30,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			}
 		}
 		myStructure = structure;
-		vertexBuffer = Graphics.context.createVertexBuffer(vertexCount, myStride);
+		vertexBuffer = Graphics.context.createVertexBuffer(vertexCount, myStride);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		vertices = new Vector<Float>(myStride * vertexCount);
 		lockedVertices = new Array<Float>();
 		lockedVertices[myStride * vertexCount - 1] = 0;

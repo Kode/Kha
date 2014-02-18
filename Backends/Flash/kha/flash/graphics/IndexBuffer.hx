@@ -2,6 +2,7 @@ package kha.flash.graphics;
 
 import flash.display3D.IndexBuffer3D;
 import flash.Vector;
+import kha.graphics.Usage;
 
 class IndexBuffer implements kha.graphics.IndexBuffer {
 	public var indexBuffer: IndexBuffer3D;
@@ -9,8 +10,8 @@ class IndexBuffer implements kha.graphics.IndexBuffer {
 	private var lockedIndices: Array<Int>;
 	public static var current: IndexBuffer;
 	
-	public function new(indexCount: Int) {
-		indexBuffer = Graphics.context.createIndexBuffer(indexCount);
+	public function new(indexCount: Int, usage: Usage) {
+		indexBuffer = Graphics.context.createIndexBuffer(indexCount);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		indices = new Vector<UInt>(indexCount);
 		lockedIndices = new Array<Int>();
 		lockedIndices[indexCount - 1] = 0;

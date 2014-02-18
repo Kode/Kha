@@ -115,7 +115,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
-		return new VertexBuffer(vertexCount, structure);
+		return new VertexBuffer(vertexCount, structure, usage);
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
@@ -123,7 +123,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
-		return new IndexBuffer(indexCount);
+		return new IndexBuffer(indexCount, usage);
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
@@ -140,7 +140,7 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function maxTextureSize(): Int {
-		return Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
+		return Sys.gl == null ? 8192 : Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
 	}
 	
 	public function supportsNonPow2Textures(): Bool {

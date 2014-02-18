@@ -1,5 +1,6 @@
 package kha.js.graphics;
 
+import kha.graphics.Usage;
 import kha.graphics.VertexStructure;
 import kha.graphics.VertexData;
 
@@ -10,8 +11,10 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var myStride: Int;
 	private var sizes: Array<Int>;
 	private var offsets: Array<Int>;
+	private var usage: Usage;
 	
-	public function new(vertexCount: Int, structure: VertexStructure) {
+	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage) {
+		this.usage = usage;
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
@@ -72,7 +75,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	
 	public function unlock(): Void {
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(data), Sys.gl.STATIC_DRAW);
+		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(data), usage == Usage.DynamicUsage ? Sys.gl.DYNAMIC_DRAW : Sys.gl.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {

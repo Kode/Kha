@@ -39,7 +39,7 @@ class Video extends kha.Video {
 		}
 	}
 	
-	public override function play() : Void {
+	public override function play(loop: Bool = false) : Void {
 		if (finished == true)
 			stop();
 		

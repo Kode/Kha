@@ -341,19 +341,28 @@ class Starter {
 	
 	public static function releaseButton1() : Void {
 		game.buttonUp(Button.BUTTON_1);
-	}	
+	}
 	
-	public static function mouseDown(x : Int, y : Int) : Void {
+	public static var mouseX: Int;
+	public static var mouseY: Int;
+	
+	public static function mouseDown(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
 		game.mouseDown(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 
-	public static function mouseUp(x : Int, y : Int) : Void {
+	public static function mouseUp(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
 		game.mouseUp(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
-	public static function mouseMove(x : Int, y : Int) : Void {
+	public static function mouseMove(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
 		game.mouseMove(x, y);
 		frameworkElement.setMousePos(x, y);
 	}

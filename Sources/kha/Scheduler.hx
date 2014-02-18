@@ -104,6 +104,8 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
+		Sys.mouse.update();
+		
 		var stamp: Float = Sys.getTime() - startTime;
 		
 		var tdif: Float = stamp - current;
@@ -163,16 +165,15 @@ class Scheduler {
 			current = t.next;
 			t.last = t.next;
 			t.next += t.period;
+			timeTasks.remove(t);
 			
 			if (t.active && t.task()) {
-				timeTasks.remove(t);
 				if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
 					insertSorted(timeTasks, t);
 				}
 			}
 			else {
 				t.active = false;
-				timeTasks.remove(t);
 			}
 		}
 		

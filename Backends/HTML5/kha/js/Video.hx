@@ -40,7 +40,7 @@ class Video extends kha.Video {
 		element.src = filename + extensions[0];
 	}
 	
-	override public function play() : Void {
+	override public function play(loop: Bool = false) : Void {
 		try {
 			element.play();
 		} catch ( e : Dynamic ) {

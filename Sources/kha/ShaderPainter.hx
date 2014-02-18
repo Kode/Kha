@@ -173,7 +173,7 @@ class ImageShaderPainter {
 			var righttop = rotate(right, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
 			var leftbottom = rotate(left, bottom, left + rotation.center.x, top + rotation.center.y, rotation.angle);
 			
-			var baseIndex: Int = bufferIndex * 5 * 4;
+			var baseIndex: Int = bufferIndex * vertexSize * 4;
 			rectVertices[baseIndex +  0] = leftbottom.x;
 			rectVertices[baseIndex +  1] = leftbottom.y;
 			rectVertices[baseIndex +  2] = -5.0;
