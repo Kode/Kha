@@ -1,3 +1,4 @@
+/*
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 world;
@@ -19,8 +20,10 @@ varying vec3 normal;
 varying vec4 positionFromLight;
 varying vec3 tangent;
 varying vec4 clipPosition;
-
+*/
 void kore() {
+	gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+	/*
 	oCol = vCol;
 	vec4 position = vPos;
 	worldPosition = world * position;
@@ -30,4 +33,5 @@ void kore() {
 	clipPosition = oPos;
 	oTex = vTex;
 	positionFromLight = lightprojection * lightview * lighworld * vPos;
+	*/
 }

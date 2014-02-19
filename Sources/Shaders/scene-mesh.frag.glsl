@@ -1,3 +1,4 @@
+/*
 uniform sampler2D DiffuseSampler;
 uniform sampler2D shadowSampler;
 uniform sampler2D normalmap;
@@ -110,8 +111,10 @@ float PCSS(vec3 coords) {
 	// STEP 3: filtering 
 	return PCF_Filter(uv, zReceiver, filterRadiusUV);
 }
-
+*/
 void kore() {
+	gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	/*
 	float shadowX;
 	float shadowY;
 	float shadowZ;
@@ -185,4 +188,5 @@ void kore() {
 
 	col.a = alpha;
 	return col;
+	*/
 }
