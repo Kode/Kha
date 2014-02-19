@@ -4,9 +4,8 @@ class Matrix4 {
 	private static inline var width: Int = 4;
 	private static inline var height: Int = 4;
 	
-	public function new() {
-		matrix = new Array<Float>();
-		for (i in 0...16) matrix.push(0);
+	private function new(values: Array<Float>) {
+		matrix = values;
 	}
 	
 	public var matrix: Array<Float>;
@@ -26,11 +25,23 @@ class Matrix4 {
 		m.set(3, 2, z);
 		return m;
 	}
+	
+	public static function empty(): Matrix4 {
+		return new Matrix4([
+			0, 0, 0, 0,
+			0, 0, 0, 0,
+			0, 0, 0, 0,
+			0, 0, 0, 0
+		]);
+	}
 
 	public static function identity(): Matrix4 {
-		var m = new Matrix4();
-		for (x in 0...width) m.set(x, x, 1);
-		return m;
+		return new Matrix4([
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		]);
 	}
 
 	public static function scale(x: Float, y: Float, z: Float): Matrix4 {
@@ -68,32 +79,45 @@ class Matrix4 {
 		return m;
 	}
 	
-	public static function add(a: Matrix4, b: Matrix4): Matrix4 {
-		var m = new Matrix4();
-		for (i in 0...width * height) m.matrix[i] = a.matrix[i] + b.matrix[i];
+	public static function orthogonalProjection(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Matrix4 {
+		var tx: Float = -(right + left) / (right - left);
+		var ty: Float = -(top + bottom) / (top - bottom);
+		var tz: Float = -(zf + zn) / (zf - zn);
+		//var tz : Float = -zn / (zf - zn);
+		return new Matrix4([
+			2 / (right - left), 0,                  0,              0,
+			0,                  2 / (top - bottom), 0,              0,
+			0,                  0,                  -2 / (zf - zn), 0,
+			tx,                 ty,                 tz,             1
+		]);
+	}
+	
+	public function add(value: Matrix4): Matrix4 {
+		var m = empty();
+		for (i in 0...width * height) m.matrix[i] = matrix[i] + value.matrix[i];
 		return m;
 	}
 
-	public static function sub(a: Matrix4, b: Matrix4): Matrix4 {
-		var m = new Matrix4();
-		for (i in 0...width * height) m.matrix[i] = a.matrix[i] - b.matrix[i];
+	public function sub(value: Matrix4): Matrix4 {
+		var m = empty();
+		for (i in 0...width * height) m.matrix[i] = matrix[i] - value.matrix[i];
 		return m;
 	}
 
-	public static function mult(mat: Matrix4, value: Float): Matrix4 {
-		var m = new Matrix4();
-		for (i in 0...width * height) m.matrix[i] = mat.matrix[i] * value;
+	public function mult(value: Float): Matrix4 {
+		var m = empty();
+		for (i in 0...width * height) m.matrix[i] = matrix[i] * value;
 		return m;
 	}
 	
 	public function transpose(): Matrix4 {
-		var m = new Matrix4();
+		var m = empty();
 		for (x in 0...width) for (y in 0...height) m.set(y, x, get(x, y));
 		return m;
 	}
 
 	public function transpose3x3(): Matrix4 {
-		var m = new Matrix4();
+		var m = empty();
 		for (x in 0...3) for (y in 0...3) m.set(y, x, get(x, y));
 		for (x in 3...width) for (y in 3...height) m.set(x, y, get(x, y));
 		return m;
@@ -105,22 +129,22 @@ class Matrix4 {
 		return value;
 	}
 	
-	public static function multmat(a: Matrix4, b: Matrix4): Matrix4 {
-		var m = new Matrix4();
+	public function multmat(value: Matrix4): Matrix4 {
+		var m = empty();
 		for (x in 0...width) for (y in 0...height) {
-			var value: Float = 0;
-			for (i in 0...width) value += a.get(i, y) * b.get(x, i);
-			m.set(x, y, value);
+			var f: Float = 0;
+			for (i in 0...width) f += get(i, y) * value.get(x, i);
+			m.set(x, y, f);
 		}
 		return m;
 	}
 
-	public static function multvec(a: Matrix4, v: Vector4): Vector4 {
+	public function multvec(value: Vector4): Vector4 {
 		var product = new Vector4();
 		for (y in 0...height) {
-			var value: Float = 0;
-			for (i in 0...width) value += a.get(i, y) * v.get(i);
-			product.set(y, value);
+			var f: Float = 0;
+			for (i in 0...width) f += get(i, y) * value.get(i);
+			product.set(y, f);
 		}
 		return product;
 	}
