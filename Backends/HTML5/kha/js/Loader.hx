@@ -74,7 +74,11 @@ class Loader extends kha.Loader {
 	}
 
 	override public function loadURL(url: String): Void {
-		Browser.window.open(url, "Kha");
+		// inDAgo hack
+		if (url.substr(0, 1) == '#')
+			Browser.location.hash = url.substr(1, url.length - 1);
+		else
+			Browser.window.open(url, "Kha");
 	}
 	
 	override public function setNormalCursor() {
