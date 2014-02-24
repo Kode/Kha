@@ -286,7 +286,7 @@ class Scene {
 		}
 		
 		for (i in 0...16) {
-			Sys.graphics.setTextureParameters(null /* i */, TextureAddressing.Repeat, TextureAddressing.Repeat, TextureFilter.AnisotropicFilter, TextureFilter.AnisotropicFilter, MipMapFilter.LinearMipFilter);
+			//Sys.graphics.setTextureParameters(i, TextureAddressing.Repeat, TextureAddressing.Repeat, TextureFilter.AnisotropicFilter, TextureFilter.AnisotropicFilter, MipMapFilter.LinearMipFilter);
 		}
 
 		Sys.graphics.renderToTexture(target);
@@ -295,14 +295,16 @@ class Scene {
 		
 		//Graphics::begin();
 		var cam = new Camera();
-		//Graphics::perspective(pi / 4, static_cast<float>(Application::the()->width()) / static_cast<float>(Application::the()->height()), 10.0f, 10000.0f);
+		var perspective = Matrix4.perspectiveProjection(Math.PI / 4, Game.the.width / Game.the.height, 10.0, 10000.0);
 
-		//Graphics::setRenderState(Kt::Lighting, false);
 		var skyDir = cam.at.sub(cam.eye);
 		skyDir.normalize();
 		skyDir = skyDir.mult(100);
 		var skyheight = 200.0;
-		//Graphics::lookAt(Vector3(0.0f, skyheight, 0.0f), Vector3(skyDir.x(), skyDir.y() + skyheight, skyDir.z()), Vector3(0.0f, 1.0f, 0.0f));
+		//var cam = Matrix4.lookAt(
+		cam.eye = new Vector3(0.0, skyheight, 0.0);
+		cam.at = new Vector3(skyDir.x, skyDir.y + skyheight, skyDir.z);
+		cam.up = new Vector3(0.0, 1.0, 0.0);
 		//Graphics::setWorldMatrix(Matrix4x4f::Identity());
 		var skyMesh = sky.mesh;
 		Sys.graphics.setTexture(null, skyImage);
@@ -311,10 +313,8 @@ class Scene {
 		Sys.graphics.drawIndexedVertices();
 		
 		Sys.graphics.clear(null, 0);
-		//Graphics::perspective(pi / 4, static_cast<float>(Application::the()->width()) / static_cast<float>(Application::the()->height()), cam.zNear, cam.zFar);
-		//Graphics::setRenderState(Kt::Lighting, true);
-		//Graphics::setTexturing(true);
-		//Graphics::lookAt(cam.eye, cam.at, cam.up);
+		perspective = Matrix4.perspectiveProjection(Math.PI / 4, Game.the.width / Game.the.height, cam.zNear, cam.zFar);
+		var view = Matrix4.lookAt(cam.eye, cam.at, cam.up);
 		
 		//for (i in 0...splines.length) {
 		//	splines[i].vertices.set();
@@ -327,36 +327,35 @@ class Scene {
 		//}
 		
 		Sys.graphics.setProgram(program);
-		
-		//Sys.graphics.setMatrix("projection", Graphics::projection());
+		Sys.graphics.setMatrix(program.getConstantLocation("projection"), perspective);
 		if (shadowsEnabled) {
-			Sys.graphics.setBool(null /*"shadows"*/, true);
-			Sys.graphics.setTexture(null /* 1 */, shadow);
+			Sys.graphics.setBool(program.getConstantLocation("shadows"), true);
+			Sys.graphics.setTexture(program.getTextureUnit("shadowSampler"), shadow);
 		}
 		else {
-			Sys.graphics.setBool(null /*"shadows"*/, false);
+			Sys.graphics.setBool(program.getConstantLocation("shadows"), false);
 		}
-		Sys.graphics.setBool(null /*"fog"*/, fog);
+		Sys.graphics.setBool(program.getConstantLocation("fog"), fog);
 
 		if (ambientOcclusionEnabled) {
-			Sys.graphics.setBool(null /*"ambienOcclusion"*/, true);
+			Sys.graphics.setBool(program.getConstantLocation("ambienOcclusion"), true);
 			Sys.graphics.setTexture(null /* 3 */, dssdoTarget);
 		}
 		else {
-			Sys.graphics.setBool(null /*"ambienOcclusion"*/, false);
+			Sys.graphics.setBool(program.getConstantLocation("ambienOcclusion"), false);
 		}
-		Sys.graphics.setTexture(null /* 4 */, environment);
-		Sys.graphics.setBool(null /*"texturing"*/, true);
-		Sys.graphics.setBool(null /*"lighting"*/, true);
-		Sys.graphics.setVector4(null /*"lightDir"*/, lightDirection);
-		Sys.graphics.setFloat(null /*"shininess"*/, 20.0);
-		Sys.graphics.setVector4(null /*"emissiveColor"*/, new Vector4(0.0, 0.0, 0.0, 1.0));
-		Sys.graphics.setVector4(null /*"lightColor"*/, lightColor);
-		Sys.graphics.setVector4(null /*"ambientColor"*/, new Vector4(0.2, 0.2, 0.2, 1.0));
-		Sys.graphics.setVector4(null /*"diffuseColor"*/, new Vector4(1.0, 1.0, 1.0, 1.0));
-		Sys.graphics.setVector4(null /*"specularColor"*/, new Vector4(1.0, 1.0, 1.0, 1.0));
-		Sys.graphics.setFloat(null /*"specularFactor"*/, 0.3);
-		Sys.graphics.setVector4(null /*"eyePos"*/, new Vector4(cam.eye.x, cam.eye.y, cam.eye.z, 1.0));
+		Sys.graphics.setTexture(program.getTextureUnit("environmentmap"), environment);
+		Sys.graphics.setBool(program.getConstantLocation("texturing"), true);
+		Sys.graphics.setBool(program.getConstantLocation("lighting"), true);
+		Sys.graphics.setVector4(program.getConstantLocation("lightDir"), lightDirection);
+		Sys.graphics.setFloat(program.getConstantLocation("shininess"), 20.0);
+		Sys.graphics.setVector4(program.getConstantLocation("emissiveColor"), new Vector4(0.0, 0.0, 0.0, 1.0));
+		Sys.graphics.setVector4(program.getConstantLocation("lightColor"), lightColor);
+		Sys.graphics.setVector4(program.getConstantLocation("ambientColor"), new Vector4(0.2, 0.2, 0.2, 1.0));
+		Sys.graphics.setVector4(program.getConstantLocation("diffuseColor"), new Vector4(1.0, 1.0, 1.0, 1.0));
+		Sys.graphics.setVector4(program.getConstantLocation("specularColor"), new Vector4(1.0, 1.0, 1.0, 1.0));
+		Sys.graphics.setFloat(program.getConstantLocation("specularFactor"), 0.3);
+		Sys.graphics.setVector4(program.getConstantLocation("eyePos"), new Vector4(cam.eye.x, cam.eye.y, cam.eye.z, 1.0));
 
 		//Graphics::setRenderState(RenderState::BackfaceCulling, false);
 		//Graphics::setRenderState(RenderState::AlphaTestState, true);
@@ -366,42 +365,41 @@ class Scene {
 			var mesh = sceneMeshes[i];
 
 			if (!mesh.visible) continue;
-			var trans = mesh.transformation;
-			//Graphics::setWorldMatrix(toMatrix(trans));
+			var world = mesh.transformation;
 			var m = mesh.mesh;
 			m.material.texture.set(0);
 			//Graphics::setMaterial(m->material());
 
-			if (mesh.reflection) Sys.graphics.setBool(null/*"environmentmapping"*/, true);
-			else Sys.graphics.setBool(null/*"environmentmapping"*/, false);
+			if (mesh.reflection) Sys.graphics.setBool(program.getConstantLocation("environmentmapping"), true);
+			else Sys.graphics.setBool(program.getConstantLocation("environmentmapping"), false);
 
 			if (m.hasNormalMap()) {
 				m.normalMap().set(2);
-				Sys.graphics.setBool(null /*"normalmapping"*/, true);
+				Sys.graphics.setBool(program.getConstantLocation("normalmapping"), true);
 			}
 			else {
-				Sys.graphics.setBool(null /*"normalmapping"*/, false);
+				Sys.graphics.setBool(program.getConstantLocation("normalmapping"), false);
 			}
 
-			//vertexShader->assign("view", Graphics::view());
-			//vertexShader->assign("world", Graphics::world());
+			Sys.graphics.setMatrix(program.getConstantLocation("view"), view);
+			Sys.graphics.setMatrix(program.getConstantLocation("world"), world);
 
-			//Matrix4x4f rotation = Graphics::world();
-			//rotation.set(3, 0, 0);
-			//rotation.set(3, 1, 0);
-			//rotation.set(3, 2, 0);
-			//Sys.graphics.setMatrix("worldRotation", rotation);
+			var rotation = new Matrix4(world.matrix);
+			rotation.set(3, 0, 0);
+			rotation.set(3, 1, 0);
+			rotation.set(3, 2, 0);
+			Sys.graphics.setMatrix(program.getConstantLocation("worldRotation"), rotation);
 			if (shadowsEnabled) {
-				Sys.graphics.setMatrix(null /*"lightworld"*/, lightWorld[i]);
-				Sys.graphics.setMatrix(null /*"lightview"*/, lightView[i]);
-				Sys.graphics.setMatrix(null /*"lightprojection"*/, lightProjection);
+				Sys.graphics.setMatrix(program.getConstantLocation("lightworld"), lightWorld[i]);
+				Sys.graphics.setMatrix(program.getConstantLocation("lightview"), lightView[i]);
+				Sys.graphics.setMatrix(program.getConstantLocation("lightprojection"), lightProjection);
 			}
 			m.indexBuffer().set();
 			m.vertexBuffer().set();
 			Sys.graphics.drawIndexedVertices();
 		}
 
-		Sys.graphics.setBool(null /*"environmentmapping"*/, false);
+		Sys.graphics.setBool(program.getConstantLocation("environmentmapping"), false);
 		for (i in 0...skeletonMeshes.length) {
 			var mesh = skeletonMeshes[i];
 			var trans = mesh.transformation;
@@ -487,7 +485,7 @@ class Scene {
 		shadowsEnabled = enabled;
 	}
 
-	public static function init(terrain: Bool, height: Float, terrainPosition: Rectangle, heightmap: Texture, heightnormalmap: Texture) {
+	public static function init(terrain: Bool, height: Float, terrainPosition: Rectangle, heightmap: Texture = null, heightnormalmap: Texture = null): Void {
 		Scene.terrain = terrain;
 		environment = cast Loader.the.getImage("angmap11");
 		sky = new VertexMesh("himmel");

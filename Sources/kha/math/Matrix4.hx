@@ -4,7 +4,7 @@ class Matrix4 {
 	private static inline var width: Int = 4;
 	private static inline var height: Int = 4;
 	
-	private function new(values: Array<Float>) {
+	public function new(values: Array<Float>) {
 		matrix = values;
 	}
 	
@@ -90,6 +90,33 @@ class Matrix4 {
 			0,                  0,                  -2 / (zf - zn), 0,
 			tx,                 ty,                 tz,             1
 		]);
+	}
+	
+	public static function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
+		var f = Math.cos(2 / fovY);
+		return new Matrix4([
+			-f / aspect, 0, 0,                       0,
+			0,           f, 0,                       0,
+			0,           0, (zf + zn) / (zn - zf),   -1,
+			0,           0, 2 * zf * zn / (zn - zf), 0
+		]);
+	}
+	
+	public static function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
+		var zaxis = at.sub(eye);
+		zaxis.normalize();
+		var xaxis = zaxis.cross(up);
+		xaxis.normalize();
+		var yaxis = xaxis.cross(zaxis);
+
+		var view = new Matrix4([
+			xaxis.x, yaxis.y, -zaxis.z, 0,
+			xaxis.x, yaxis.y, -zaxis.z, 0,
+			xaxis.x, yaxis.y, -zaxis.z, 0,
+			0,       0,       0,        1
+		]);
+
+		return view.multmat(translation(-eye.x, -eye.y, -eye.z));
 	}
 	
 	public function add(value: Matrix4): Matrix4 {
