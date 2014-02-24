@@ -36,9 +36,7 @@ class Starter {
 	public static function frame() {
 		if (painter == null) return;
 		Scheduler.executeFrame();
-		painter.begin();
 		game.render(painter);
-		painter.end();
 	}
 	
 	public static function pushUp(): Void {

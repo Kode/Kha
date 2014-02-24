@@ -145,10 +145,14 @@ class Starter {
 			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
-				painter.begin();
 				Configuration.screen().render(painter);
-				Sys.mouse.render(painter);
-				painter.end();
+				if (Sys.gl != null) {
+					// Clear alpha for IE11
+					Sys.gl.clearColor(1, 1, 1, 1);
+					Sys.gl.colorMask(false, false, false, true);
+					Sys.gl.clear(Sys.gl.COLOR_BUFFER_BIT);
+					Sys.gl.colorMask(true, true, true, true);
+				}
 			}
 		}
 		

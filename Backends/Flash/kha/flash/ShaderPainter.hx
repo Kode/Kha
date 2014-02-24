@@ -11,7 +11,7 @@ class ShaderPainter extends kha.ShaderPainter {
 	public function new(width: Int, height: Int) {
 		super(width, height);
 		videoBitmap = new BitmapData(width, height, true, 0xffffff);
-		videoImage = new Image(width, height, TextureFormat.RGBA32, false, false);
+		videoImage = new Image(width, height, TextureFormat.RGBA32, false, false, false);
 	}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
@@ -48,7 +48,7 @@ class ShaderPainter extends kha.ShaderPainter {
 		stageVideo.attachNetStream(cast(video, Video).stream);
 		videoBitmap.fillRect(new Rectangle(0, 0, width, height), 0xffffff);
 		videoBitmap.draw(stageVideo);
-		videoImage.uploadtBitmap(videoBitmap);
+		videoImage.uploadBitmap(videoBitmap, false);
 		drawImage2(videoImage, 0, 0, width, height, x, y, width, height);
 	}
 }

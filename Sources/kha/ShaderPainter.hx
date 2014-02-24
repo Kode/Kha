@@ -1,18 +1,21 @@
 package kha;
 
+import kha.graphics.BlendingOperation;
 import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
 import kha.graphics.Program;
 import kha.graphics.Texture;
+import kha.graphics.TextureFormat;
 import kha.graphics.TextureUnit;
 import kha.graphics.Usage;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
+import kha.math.Matrix4;
 import kha.math.Vector2;
 
 class ImageShaderPainter {
-	private var projectionMatrix: Array<Float>;
+	private var projectionMatrix: Matrix4;
 	private var shaderProgram: Program;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -25,13 +28,17 @@ class ImageShaderPainter {
 	private var indexBuffer: IndexBuffer;
 	private var lastTexture: Texture;
 
-	public function new(projectionMatrix: Array<Float>) {
+	public function new(projectionMatrix: Matrix4) {
 		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getTextureUnit("tex");
+	}
+	
+	public function setProjection(projectionMatrix: Matrix4): Void {
+		this.projectionMatrix = projectionMatrix;
 	}
 	
 	private function initShaders(): Void {
@@ -237,7 +244,7 @@ class ImageShaderPainter {
 }
 
 class ColoredShaderPainter {
-	private var projectionMatrix: Array<Float>;
+	private var projectionMatrix: Matrix4;
 	private var shaderProgram: Program;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -254,7 +261,7 @@ class ColoredShaderPainter {
     private var triangleVertices: Array<Float>;
 	private var triangleIndexBuffer: IndexBuffer;
 	
-	public function new(projectionMatrix: Array<Float>) {
+	public function new(projectionMatrix: Matrix4) {
 		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		triangleBufferIndex = 0;
@@ -447,7 +454,7 @@ class ColoredShaderPainter {
 
 @:headerClassCode("const wchar_t* wtext;")
 class TextShaderPainter {
-	private var projectionMatrix: Array<Float>;
+	private var projectionMatrix: Matrix4;
 	private var shaderProgram: Program;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -460,7 +467,7 @@ class TextShaderPainter {
 	private var font: Kravur;
 	private var lastTexture: Texture;
 	
-	public function new(projectionMatrix: Array<Float>) {
+	public function new(projectionMatrix: Matrix4) {
 		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		initShaders();
@@ -640,45 +647,32 @@ class ShaderPainter extends Painter {
 	private var tx: Float = 0;
 	private var ty: Float = 0;
 	private var color: Color;
-	private var projectionMatrix: Array<Float>;
+	private var projectionMatrix: Matrix4;
 	private var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
 	private var width: Float;
 	private var height: Float;
-	private var borderX: Float;
-	private var borderY: Float;
+	private var renderTexture: Texture;
 	
 	public function new(width: Int, height: Int) {
 		super();
 		color = Color.fromBytes(0, 0, 0);
-		
-		setScreenSize(width, height, 0, 0);
+		setScreenSize(width, height);
+		renderTexture == null;
 	}
 	
-	public function setScreenSize(width: Int, height: Int, borderX: Float, borderY: Float) {
-		this.width = width;
-		this.height = height;
-		this.borderX = borderX;
-		this.borderY = borderY;
+	private function setScreenSize(width: Int, height: Int) {
+		if (renderTexture == null || renderTexture.width != width || renderTexture.height != height) {
+			renderTexture = Sys.graphics.createRenderTargetTexture(width, height, TextureFormat.RGBA32, false);
+		}
+		this.width = renderTexture.realWidth;
+		this.height = renderTexture.realHeight;
 		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = ortho(-borderX, width + borderX, height + borderY, -borderY, 0.1, 1000);
+		projectionMatrix = Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(projectionMatrix);
 		textPainter = new TextShaderPainter(projectionMatrix);
-	}
-	
-	private function ortho(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Array<Float> {
-		var tx: Float = -(right + left) / (right - left);
-		var ty: Float = -(top + bottom) / (top - bottom);
-		var tz: Float = -(zf + zn) / (zf - zn);
-		//var tz : Float = -zn / (zf - zn);
-		return [
-			2 / (right - left), 0,                  0,              0,
-			0,                  2 / (top - bottom), 0,              0,
-			0,                  0,                  -2 / (zf - zn), 0,
-			tx,                 ty,                 tz,             1
-		];
 	}
 	
 	public override function drawImage(img: kha.Image, x: Float, y: Float): Void {
@@ -762,17 +756,47 @@ class ShaderPainter extends Painter {
 	}
 	
 	public override function begin(): Void {
-		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0));
+		Sys.graphics.renderToTexture(renderTexture);
+		Sys.graphics.clear(kha.Color.fromBytes(0, 0, 0, 0));
 		translate(0, 0);
 	}
 	
 	public override function end(): Void {
 		imagePainter.end();
 		textPainter.end();
-		coloredPainter.fillRect(Color.ColorBlack, -borderX, 0, borderX, height);
-		coloredPainter.fillRect(Color.ColorBlack, width, 0, borderX, height);
-		coloredPainter.fillRect(Color.ColorBlack, 0, -borderY, width, borderY);
-		coloredPainter.fillRect(Color.ColorBlack, 0, height, width, borderY);
 		coloredPainter.end();
+		
+		Sys.graphics.renderToBackbuffer();
+		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+	
+		var scalex: Float;
+		var scaley: Float;
+		var scalew: Float;
+		var scaleh: Float;
+		if (renderTexture.width / renderTexture.height > Sys.pixelWidth / Sys.pixelHeight) {
+			var scale = Sys.pixelWidth / renderTexture.width;
+			scalew = renderTexture.width * scale;
+			scaleh = renderTexture.height * scale;
+			scalex = 0;
+			scaley = (Sys.pixelHeight - scaleh) * 0.5;				
+		}
+		else {
+			var scale = Sys.pixelHeight / renderTexture.height;
+			scalew = renderTexture.width * scale;
+			scaleh = renderTexture.height * scale;
+			scalex = (Sys.pixelWidth - scalew) * 0.5;
+			scaley = 0;
+		}
+		
+		if (Sys.graphics.renderTargetsInvertedY()) {
+			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
+		}
+		else {
+			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
+		}
+		imagePainter.end();
+		imagePainter.setProjection(Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
 	}
 }
