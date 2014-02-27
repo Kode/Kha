@@ -20,24 +20,30 @@ class Image implements kha.graphics.Texture {
 	private var format: TextureFormat;
 	private var depthStencil: Bool;
 	
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: Bool) {
+	private var data: BitmapData;
+	private var bytes: Bytes;
+	private var readable: Bool;
+	
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: Bool, readable: Bool) {
 		myWidth = width;
 		myHeight = height;
 		texWidth = upperPowerOfTwo(Std.int(myWidth));
 		texHeight = upperPowerOfTwo(Std.int(myHeight));
 		this.format = format;
 		this.depthStencil = depthStencil;
+		this.readable = readable;
 		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, renderTarget);
 	}
 	
-	public static function fromBitmap(image: DisplayObject): Image {
+	public static function fromBitmap(image: DisplayObject, readable: Bool): Image {
 		var bitmap = cast(image, Bitmap);
-		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32, false, false);
-		texture.tex.uploadFromBitmapData(bitmap.bitmapData, 0);
+		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32, false, false, readable);
+		texture.uploadBitmap(bitmap.bitmapData, readable);
 		return texture;
 	}
 	
-	public function uploadtBitmap(bitmap: BitmapData): Void {
+	public function uploadBitmap(bitmap: BitmapData, readable: Bool): Void {
+		if (readable) data = bitmap;
 		tex.uploadFromBitmapData(bitmap, 0);
 	}
 	
@@ -71,7 +77,9 @@ class Image implements kha.graphics.Texture {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
-		return true; // (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) != 0;
+		return true;
 	}
 	
 	public function getFlashTexture(): Texture {
@@ -92,8 +100,6 @@ class Image implements kha.graphics.Texture {
 		v++;
 		return v;
 	}
-	
-	private var bytes: Bytes;
 	
 	public function lock(level: Int = 0): Bytes {
 		switch (format) {
@@ -125,6 +131,6 @@ class Image implements kha.graphics.Texture {
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 		}
 		
-		bytes = null;
+		if (!readable) bytes = null;
 	}
 }

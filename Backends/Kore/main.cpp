@@ -130,8 +130,8 @@ int kore(int argc, char** argv) {
 		Json::Data json(string);
 		Json::Value& game = json["game"];
 		name = game["name"].string();
-		width = game["width"].number();
-		height = game["height"].number();
+		width = game["width"].number()/2;
+		height = game["height"].number()/2;
 		delete string;
 	}
 

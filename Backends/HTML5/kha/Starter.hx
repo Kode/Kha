@@ -145,10 +145,14 @@ class Starter {
 			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
-				painter.begin();
 				Configuration.screen().render(painter);
-				Sys.mouse.render(painter);
-				painter.end();
+				if (Sys.gl != null) {
+					// Clear alpha for IE11
+					Sys.gl.clearColor(1, 1, 1, 1);
+					Sys.gl.colorMask(false, false, false, true);
+					Sys.gl.clear(Sys.gl.COLOR_BUFFER_BIT);
+					Sys.gl.colorMask(true, true, true, true);
+				}
 			}
 		}
 		
@@ -315,14 +319,17 @@ class Starter {
 			game.buttonDown(Button.RIGHT);
 			event.preventDefault();
 		default:
-			if ( !event.shiftKey && !event.altKey ) {
+			if (!event.shiftKey && !event.altKey) {
 				var char = String.fromCharCode(lastPressedKey);
+				if (lastPressedKey >= 96 && lastPressedKey <= 105) { // num block seems to return special key codes
+					char = String.fromCharCode('0'.code - 96 + lastPressedKey);
+				}
 				if (lastPressedKey >= 'A'.code && lastPressedKey <= 'Z'.code) {
 					char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
 				}
 				pressedKeyToChar[lastPressedKey] = char;
 				//trace ('"$char" DOWN');
-				game.keyDown( Key.CHAR, char );
+				game.keyDown(Key.CHAR, char);
 				lastPressedKey = 0;
 			}
 		}

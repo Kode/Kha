@@ -126,6 +126,7 @@ class Kravur implements Font {
 		var ipw: Float = 1.0 / width;
 		var iph: Float = 1.0 / height;
 		var b = chars[char_index];
+		if (b == null) return null;
 		var round_x: Int = Math.round(xpos + b.xoff);
 		var round_y: Int = Math.round(ypos + b.yoff);
 

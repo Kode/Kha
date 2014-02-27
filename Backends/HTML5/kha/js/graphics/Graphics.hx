@@ -17,9 +17,14 @@ import kha.graphics.Usage;
 import kha.graphics.VertexStructure;
 import kha.graphics.VertexShader;
 import kha.js.Image;
+import kha.math.Matrix4;
+import kha.math.Vector2;
+import kha.math.Vector3;
+import kha.math.Vector4;
 import kha.Rectangle;
 
 class Graphics implements kha.graphics.Graphics {
+	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	
 	public function new(webgl: Bool) {
@@ -132,11 +137,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return new Image(width, height, format);
+		return new Image(width, height, format, false);
 	}
 	
 	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return new Image(width, height, format);
+		return new Image(width, height, format, true);
 	}
 	
 	public function maxTextureSize(): Int {
@@ -240,6 +245,10 @@ class Graphics implements kha.graphics.Graphics {
 		cast(program, Program).set();
 	}
 	
+	public function setBool(location: kha.graphics.ConstantLocation, value: Bool): Void {
+		Sys.gl.uniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
+	}
+	
 	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
 		Sys.gl.uniform1i(cast(location, ConstantLocation).value, value);
 	}
@@ -256,8 +265,28 @@ class Graphics implements kha.graphics.Graphics {
 		Sys.gl.uniform3f(cast(location, ConstantLocation).value, value1, value2, value3);
 	}
 	
-	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
-		Sys.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrix);
+	public function setFloat4(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+		Sys.gl.uniform4f(cast(location, ConstantLocation).value, value1, value2, value3, value4);
+	}
+	
+	public function setFloats(location: kha.graphics.ConstantLocation, values: Array<Float>): Void {
+		Sys.gl.uniform1fv(cast(location, ConstantLocation).value, values);
+	}
+	
+	public function setVector2(location: kha.graphics.ConstantLocation, value: Vector2): Void {
+		Sys.gl.uniform2f(cast(location, ConstantLocation).value, value.x, value.y);
+	}
+	
+	public function setVector3(location: kha.graphics.ConstantLocation, value: Vector3): Void {
+		Sys.gl.uniform3f(cast(location, ConstantLocation).value, value.x, value.y, value.z);
+	}
+	
+	public function setVector4(location: kha.graphics.ConstantLocation, value: Vector4): Void {
+		Sys.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
+	}
+	
+	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Matrix4): Void {
+		Sys.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrix.matrix);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
@@ -273,10 +302,14 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function renderToTexture(texture: Texture): Void {
-		
+		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, cast(texture, Image).frameBuffer);
 	}
 
 	public function renderToBackbuffer(): Void {
-		
+		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+	}
+	
+	public function renderTargetsInvertedY(): Bool {
+		return true;
 	}
 }

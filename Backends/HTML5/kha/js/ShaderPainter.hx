@@ -17,9 +17,5 @@ class ShaderPainter extends kha.ShaderPainter {
 	
 	override public function end(): Void {
 		super.end();
-		// Clear alpha for IE11
-		Sys.gl.clearColor(1, 1, 1, 1);
-		Sys.gl.colorMask(false, false, false, true);
-		Sys.gl.clear(Sys.gl.COLOR_BUFFER_BIT);
 	}
 }
