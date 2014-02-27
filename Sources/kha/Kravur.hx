@@ -97,9 +97,7 @@ class Kravur implements Font {
 		var w = width;
 		var h = height;
 		while (w > Sys.graphics.maxTextureSize() || h > Sys.graphics.maxTextureSize()) {
-			for (y in 0...h) for (x in 0...w) {
-				blob.readU8();
-			}
+			blob.seek(blob.position + h * w);
 			w = Std.int(w / 2);
 			h = Std.int(h / 2);
 		}

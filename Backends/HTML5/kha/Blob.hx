@@ -4,7 +4,6 @@ import haxe.io.Bytes;
 
 class Blob implements Resource {
 	public var bytes: Bytes;
-	private var position: Int;
 	private var buffer: Array<Int>;
 	private var myFirstLine: Bool = true;
 	
@@ -21,6 +20,12 @@ class Blob implements Resource {
 	public function reset() {
 		position = 0;
 	}
+	
+	public function seek(pos: Int): Void {
+		position = pos;
+	}
+	
+	public var position(default, null): Int;
 	
 	public function readU8(): Int {
 		var byte = bytes.get(position);
