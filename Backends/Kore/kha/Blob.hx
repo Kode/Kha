@@ -8,7 +8,8 @@ import haxe.io.Bytes;
 
 class Blob {
 	private var bytes: Bytes;
-	private var position: Int;
+	
+	public var position: Int;
 	
 	public function new(bytes: Bytes) {
 		this.bytes = bytes;
@@ -19,12 +20,16 @@ class Blob {
 		return bytes;
 	}
 	
-	public function length() {
+	public function length(): Int {
 		return bytes.length;
 	}
 	
-	public function reset() {
+	public function reset(): Void {
 		position = 0;
+	}
+	
+	public function seek(pos: Int): Void {
+		position = pos;
 	}
 	
 	@:functionCode('

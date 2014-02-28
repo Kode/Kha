@@ -11,6 +11,16 @@ class Blob implements Resource {
 		this.bytes = bytes.getData();
 	}
 	
+	public var position(get, null): Int;
+	
+	public function get_position(): Int {
+		return bytes.position;
+	}
+	
+	public function seek(pos: Int): Void {
+		bytes.position = pos;
+	}
+	
 	private function le(): Void {
 		bytes.endian = Endian.LITTLE_ENDIAN;
 	}
