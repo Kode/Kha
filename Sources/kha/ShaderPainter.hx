@@ -269,6 +269,10 @@ class ColoredShaderPainter {
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 	}
+
+	public function setProjection(projectionMatrix: Matrix4): Void {
+		this.projectionMatrix = projectionMatrix;
+	}
 	
 	private function initShaders(): Void {
 		var fragmentShader = Sys.graphics.createFragmentShader(Loader.the.getShader("painter-colored.frag"));
@@ -769,6 +773,10 @@ class ShaderPainter extends Painter {
 		Sys.graphics.renderToBackbuffer();
 		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 	
+		coloredPainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+		coloredPainter.fillRect(kha.Color.fromBytes(0, 0, 0), 0, 0, Sys.pixelWidth, Sys.pixelHeight);
+		coloredPainter.end();
+
 		var scalex: Float;
 		var scaley: Float;
 		var scalew: Float;
@@ -798,5 +806,6 @@ class ShaderPainter extends Painter {
 		}
 		imagePainter.end();
 		imagePainter.setProjection(Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
+		coloredPainter.setProjection(Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
 	}
 }
