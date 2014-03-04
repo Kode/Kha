@@ -71,7 +71,9 @@ class Image implements kha.graphics.Texture {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
-		return true; // (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		return true;
+		//return (image.bitmapData.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		
 	}
 	
 	public function getFlashTexture(): Texture {
