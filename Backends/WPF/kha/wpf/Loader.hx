@@ -35,24 +35,24 @@ class Loader extends kha.Loader {
 		return Json.parse(getBlob("project.kha").toString());
 	}
 	
-	override public function loadMusic(filename: String, done: kha.Music -> Void): Void {
+	override public function loadMusic(desc: Dynamic, done: kha.Music -> Void): Void {
 		done(new Music());
 	}
 
-	override public function loadSound(filename: String, done: kha.Sound -> Void): Void {
-		done(new Sound(path + filename + ".wav"));
+	override public function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
+		done(new Sound(path + desc.file + ".wav"));
 	}
 
-	override public function loadImage(filename: String, done: kha.Image -> Void): Void {
-		done(Image.fromFilename(path + filename));
+	override public function loadImage(desc: Dynamic, done: kha.Image -> Void): Void {
+		done(Image.fromFilename(path + desc.file));
 	}
 
-	override public function loadBlob(filename: String, done: kha.Blob -> Void): Void {
-		done(new Blob(Bytes.ofData(File.ReadAllBytes(path + filename))));
+	override public function loadBlob(desc: Dynamic, done: kha.Blob -> Void): Void {
+		done(new Blob(Bytes.ofData(File.ReadAllBytes(path + desc.file))));
 	}
 
-	override public function loadVideo(filename: String, done: kha.Video -> Void): Void {
-		done(new Video(path + filename + ".wmv"));
+	override public function loadVideo(desc: Dynamic, done: kha.Video -> Void): Void {
+		done(new Video(path + desc.file + ".wmv"));
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

@@ -21,6 +21,7 @@ class WPFStorageFile extends StorageFile {
 	
 	override public function read(): Blob {
 		if (file == null) return null;
+		if (!File.Exists(file.toString())) return null;
 		return new Blob(Bytes.ofData(File.ReadAllBytes(file.toString())));
 	}
 	
