@@ -7,7 +7,6 @@ import haxe.Json;
 import kha.Blob;
 import kha.FontStyle;
 import kha.Kravur;
-import kha.loader.Asset;
 import kha.Starter;
 import system.io.File;
 import system.windows.FrameworkElement;
@@ -27,7 +26,7 @@ class Loader extends kha.Loader {
 	}
 	
 	public override function loadProject(call: Void -> Void) {
-		enqueue(new kha.loader.Asset("project.kha", "project.kha", "blob"));
+		enqueue({file: "project.kha", name: "project.kha", type: "blob"});
 		loadFiles(call, false);
 	}
 	

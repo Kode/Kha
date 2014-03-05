@@ -8,7 +8,6 @@ import kha.FontStyle;
 import kha.Blob;
 import kha.Kravur;
 import kha.Starter;
-import kha.loader.Asset;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Lib;
