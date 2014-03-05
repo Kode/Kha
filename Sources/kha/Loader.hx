@@ -1,7 +1,6 @@
 package kha;
 
 import haxe.Json;
-import kha.loader.Asset;
 import kha.loader.Room;
 
 class Loader {
@@ -14,7 +13,7 @@ class Loader {
 	var loadcount: Int;
 	var numberOfFiles: Int;
 	
-	var assets: Map<String, Asset>;
+	var assets: Map<String, Dynamic>;
 	var rooms: Map<String, Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
 	public var autoCleanupAssets : Bool = true;
@@ -25,10 +24,10 @@ class Loader {
 		sounds = new Map<String, Sound>();
 		musics = new Map<String, Music>();
 		videos = new Map<String, Video>();
-		assets = new Map<String, Asset>();
+		assets = new Map<String, Dynamic>();
 		shaders = new Map<String, Blob>();
 		rooms = new Map<String, Room>();
-		enqueued = new Array<Asset>();
+		enqueued = new Array<Dynamic>();
 		loadcount = 100;
 		numberOfFiles = 100;
 		width = -1;
@@ -98,16 +97,16 @@ class Loader {
 		return videos.keys();
 	}
 	
-	var enqueued: Array<Asset>;
+	private var enqueued: Array<Dynamic>;
 	public var loadFinished: Void -> Void;
 	
-	public function enqueue(asset: Asset) {
-		if ( !Lambda.has(enqueued,asset) ) {
+	public function enqueue(asset: Dynamic) {
+		if (!Lambda.has(enqueued, asset)) {
 			enqueued.push(asset);
 		}
 	}
 	
-	public static function containsAsset(assetName: String, assetType: String, map: Array<Asset>): Bool {
+	public static function containsAsset(assetName: String, assetType: String, map: Array<Dynamic>): Bool {
 		for (asset in map) {
 			if (asset.type == assetType && asset.name == assetName) return true;
 		}
@@ -151,7 +150,7 @@ class Loader {
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
 
-		enqueued = new Array<Asset>();
+		enqueued = new Array<Dynamic>();
 	}
 	
 	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
@@ -242,7 +241,7 @@ class Loader {
 	}
 	
 	public function loadProject(call: Void -> Void) {
-		enqueue(new Asset("project.kha", "project.kha", "blob"));
+		enqueue({name: "project.kha", file: "project.kha", type: "blob"});
 		loadFiles(function() { loadShaders(call); }, false);
 	}
 	
@@ -286,8 +285,7 @@ class Loader {
 		height = project.game.height;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
-			var asset = new Asset(assets[i].name, assets[i].file, assets[i].type);
-			this.assets.set(assets[i].id, asset);
+			this.assets.set(assets[i].id, assets[i]);
 		}
 		
 		var rooms: Dynamic = project.rooms;

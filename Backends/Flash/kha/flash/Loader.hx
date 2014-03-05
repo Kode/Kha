@@ -5,7 +5,6 @@ import kha.Blob;
 import kha.FontStyle;
 import kha.Game;
 import kha.Kravur;
-import kha.loader.Asset;
 import kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
