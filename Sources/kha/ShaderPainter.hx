@@ -773,9 +773,9 @@ class ShaderPainter extends Painter {
 		Sys.graphics.renderToBackbuffer();
 		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 	
-		coloredPainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-		coloredPainter.fillRect(kha.Color.fromBytes(0, 0, 0), 0, 0, Sys.pixelWidth, Sys.pixelHeight);
-		coloredPainter.end();
+		//coloredPainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+		//coloredPainter.fillRect(kha.Color.fromBytes(0, 0, 0), 0, 0, Sys.pixelWidth, Sys.pixelHeight);
+		//coloredPainter.end();
 
 		var scalex: Float;
 		var scaley: Float;
