@@ -45,7 +45,7 @@ class Scheduler {
 	private static var frameTasks: Array<FrameTask>;
 	
 	private static var current: Float;
-	private static var startTime: Float;
+	private static var lastTime: Float;
 	
 	private static var frame_tasks_sorted: Bool;
 	private static var running: Bool;
@@ -74,7 +74,7 @@ class Scheduler {
 		halted_count = 0;
 		frame_tasks_sorted = true;
 		current = 0;
-		startTime = 0;
+		lastTime = 0;
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -91,7 +91,7 @@ class Scheduler {
 		onedifhz = 1.0 / hz;
 
 		running = true;
-		startTime = Sys.getTime();
+		lastTime = Sys.getTime();
 		for (i in 0...DIF_COUNT) difs[i] = 0;
 	}
 	
@@ -106,9 +106,9 @@ class Scheduler {
 	public static function executeFrame(): Void {
 		Sys.mouse.update();
 		
-		var stamp: Float = Sys.getTime() - startTime;
-		
-		var tdif: Float = stamp - current;
+		var now: Float = Sys.getTime();
+		var tdif: Float = now - lastTime;
+		lastTime = now;
 		var frameEnd: Float = current;
 
 		if (tdif < 0) {
@@ -118,11 +118,10 @@ class Scheduler {
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
 		if (halted_count > 0) {
-			startTime += stamp - current;
+			
 		}
 		else if (tdif > maxframetime) {
 			frameEnd += maxframetime;
-			startTime += tdif - maxframetime;
 		}
 		else {
 			if (vsync) {
@@ -155,7 +154,7 @@ class Scheduler {
 					
 					frameEnd += interpolated_tdif; // average the frame end estimation
 				#else
-					frameEnd = stamp; // No frame end estimation
+					frameEnd = tdif; // No frame end estimation
 				#end
 			}
 		}

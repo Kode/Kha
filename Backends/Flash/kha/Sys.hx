@@ -23,4 +23,15 @@ class Sys {
 	public static function get_mouse(): Mouse {
 		return theMouse;
 	}
+	
+	public static var pixelWidth(get, null): Int;
+	public static var pixelHeight(get, null): Int;
+	
+	public static function get_pixelWidth(): Int {
+		return flash.Lib.current.stage.stageWidth;
+	}
+	
+	public static function get_pixelHeight(): Int {
+		return flash.Lib.current.stage.stageHeight;
+	}
 }

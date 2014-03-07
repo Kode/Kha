@@ -165,7 +165,7 @@ class Loader {
 						if (!images.exists(enqueued[i].name)) {
 							var imageName = enqueued[i].name;
 							//trace ('image to load: "$imageName"');
-							loadImage(enqueued[i].file, function(image: Image) {
+							loadImage(enqueued[i], function(image: Image) {
 								if (!images.exists(imageName)) {
 									//trace ('loaded image "$imageName"');
 									images.set(imageName, image);
@@ -179,7 +179,7 @@ class Loader {
 						if (!musics.exists(enqueued[i].name)) {
 							var musicName = enqueued[i].name;
 							//trace ('music to load: "$musicName"');
-							loadMusic(enqueued[i].file, function(music: Music) {
+							loadMusic(enqueued[i], function(music: Music) {
 								if (!musics.exists(musicName)) {
 									//trace ('loaded music "$musicName"');
 									musics.set(musicName, music);
@@ -193,7 +193,7 @@ class Loader {
 						if (!sounds.exists(enqueued[i].name)) {
 							var soundName = enqueued[i].name;
 							//trace ('sound to load: "$soundName"');
-							loadSound(enqueued[i].file, function(sound: Sound) {
+							loadSound(enqueued[i], function(sound: Sound) {
 								if (!sounds.exists(soundName)) {
 									//trace ('loaded sound "$soundName"');
 									sounds.set(soundName, sound);
@@ -207,7 +207,7 @@ class Loader {
 						if (!videos.exists(enqueued[i].name)) {
 							var videoName = enqueued[i].name;
 							//trace ('video to load: "$videoName"');
-							loadVideo(enqueued[i].file, function(video: Video) {
+							loadVideo(enqueued[i], function(video: Video) {
 								if (!videos.exists(videoName)) {
 									//trace ('loaded video "$videoName"');
 									videos.set(videoName, video);
@@ -221,7 +221,7 @@ class Loader {
 						if (!blobs.exists(enqueued[i].name)) {
 							var blobName = enqueued[i].name;
 							//trace ('blob to load: "$blobName"');
-							loadBlob(enqueued[i].file, function(blob: Blob) {
+							loadBlob(enqueued[i], function(blob: Blob) {
 								if (!blobs.exists(blobName)) {
 									//trace ('loaded blob "$blobName"');
 									blobs.set(blobName, blob);
@@ -254,7 +254,7 @@ class Loader {
 			for (i in 0...shaders.length) {
 				var shader = shaders[i];
 				//trace ('shader to load: "${shader.name}"');
-				loadBlob(shader.file, function(blob: Blob) {
+				loadBlob(shader, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
 						//trace ('loaded shader "${shader.name}"');
 						this.shaders.set(shader.name, blob);
@@ -341,11 +341,11 @@ class Loader {
 		}
 	}
 	
-	public function loadImage(filename: String, done: Image -> Void) { }
-	public function loadBlob (filename: String, done: Blob  -> Void) { }
-	public function loadSound(filename: String, done: Sound -> Void) { }
-	public function loadMusic(filename: String, done: Music -> Void) { }
-	public function loadVideo(filename: String, done: Video -> Void) { }
+	public function loadImage(desc: Dynamic, done: Image -> Void) { }
+	public function loadBlob (desc: Dynamic, done: Blob  -> Void) { }
+	public function loadSound(desc: Dynamic, done: Sound -> Void) { }
+	public function loadMusic(desc: Dynamic, done: Music -> Void) { }
+	public function loadVideo(desc: Dynamic, done: Video -> Void) { }
 	
 	public function loadFont(name : String, style : FontStyle, size : Float) : Font { return null; }
 	

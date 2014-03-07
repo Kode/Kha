@@ -37,4 +37,14 @@ class Vector2 {
 	public function div(value: Float): Vector2 {
 		return mult(1 / value);
 	}
+	
+	public function dot(v: Vector2): Float {
+		return x * v.x + y * v.y;
+	}
+	
+	public function normalize(): Void {
+		var l = 1 / length;
+		x *= l;
+		y *= l;
+	}
 }

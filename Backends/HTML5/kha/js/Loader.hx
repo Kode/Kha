@@ -19,30 +19,31 @@ class Loader extends kha.Loader {
 		super();
 	}
 		
-	override function loadMusic(filename: String, done: kha.Music -> Void) {
-		new Music(filename, done);
+	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
+		new Music(desc.file, done);
 	}
 	
-	override function loadSound(filename: String, done: kha.Sound -> Void) {
-		if (Sys.audio != null) new WebAudioSound(filename, done);
-		else new Sound(filename, done);
+	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
+		if (Sys.audio != null) new WebAudioSound(desc.file, done);
+		else new Sound(desc.file, done);
 	}
 	
-	override function loadImage(filename: String, done: kha.Image -> Void) {
+	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
 		var img: ImageElement = cast Browser.document.createElement("img");
-		img.src = filename;
+		img.src = desc.file;
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		img.onload = function(event: Dynamic) {
-			done(kha.js.Image.fromImage(img));
+			done(kha.js.Image.fromImage(img, readable));
 		};
 	}
 
-	override function loadVideo(filename: String, done: kha.Video -> Void): Void {
-		var video = new Video(filename, done);
+	override function loadVideo(desc: Dynamic, done: kha.Video -> Void): Void {
+		var video = new Video(desc.file, done);
 	}
 	
-	override function loadBlob(filename: String, done: Blob -> Void) {
+	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", filename, true);
+		request.open("GET", desc.file, true);
 		request.responseType = "arraybuffer";
 		
 		request.onreadystatechange = function() {
@@ -74,7 +75,11 @@ class Loader extends kha.Loader {
 	}
 
 	override public function loadURL(url: String): Void {
-		Browser.window.open(url, "Kha");
+		// inDAgo hack
+		if (url.substr(0, 1) == '#')
+			Browser.location.hash = url.substr(1, url.length - 1);
+		else
+			Browser.window.open(url, "Kha");
 	}
 	
 	override public function setNormalCursor() {

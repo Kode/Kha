@@ -23,8 +23,8 @@ class Loader extends kha.Loader {
 		isQuitable = true;
 	}
 	
-	override function loadMusic(filename: String, done: kha.Music -> Void) {
-		var urlRequest = new URLRequest(filename + ".mp3");
+	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
+		var urlRequest = new URLRequest(desc.file + ".mp3");
 		var music = new flash.media.Sound();
 		music.addEventListener(Event.COMPLETE, function(e : Event) {
 			done(new Music(music));
@@ -32,17 +32,18 @@ class Loader extends kha.Loader {
 		music.load(urlRequest);
 	}
 	
-	override function loadImage(filename: String, done: Image -> Void) {
-		var urlRequest = new URLRequest(filename);
+	override function loadImage(desc: Dynamic, done: Image -> Void) {
+		var urlRequest = new URLRequest(desc.file);
 		var loader = new flash.display.Loader();
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e : Event) {
-			done(Image.fromBitmap(loader.content));
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e: Event) {
+			done(Image.fromBitmap(loader.content, readable));
 		});
 		loader.load(urlRequest);
 	}
 	
-	override function loadBlob(filename: String, done: Blob -> Void) {
-		var urlRequest = new URLRequest(filename);
+	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
+		var urlRequest = new URLRequest(desc.file);
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
@@ -51,11 +52,11 @@ class Loader extends kha.Loader {
 		urlLoader.load(urlRequest);
 	}
 
-	override function loadSound(filename: String, done: kha.Sound -> Void) {
-		var urlRequest = new URLRequest(filename + ".mp3");
+	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
+		var urlRequest = new URLRequest(desc.file + ".mp3");
 		var sound = new flash.media.Sound();
 		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
-			trace ("Couldn't load " + filename + ".mp3");
+			trace ("Couldn't load " + desc.file + ".mp3");
 			done(new Sound(sound));
 		});
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
@@ -64,8 +65,8 @@ class Loader extends kha.Loader {
 		sound.load(urlRequest);
 	}
 
-	override function loadVideo(filename: String, done: kha.Video -> Void) {
-		done(new Video(filename + ".mp4"));
+	override function loadVideo(desc: Dynamic, done: kha.Video -> Void) {
+		done(new Video(desc.file + ".mp4"));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

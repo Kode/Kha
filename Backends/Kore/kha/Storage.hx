@@ -2,6 +2,12 @@ package kha;
 
 import haxe.io.Bytes;
 
+@:headerCode('
+#include <Kore/pch.h>
+#include <Kore/IO/FileReader.h>
+#include <Kore/IO/FileWriter.h>
+')
+
 class KoreStorageFile extends StorageFile {
 	private var name: String;
 	
@@ -9,16 +15,33 @@ class KoreStorageFile extends StorageFile {
 		this.name = name;
 	}
 	
+	@:functionCode('
+		Kore::FileReader reader;
+		if (!reader.open(name, Kore::FileReader::Save)) return null();
+		::kha::Blob blob = createBlob(reader.size());
+		for (int i = 0; i < reader.size(); ++i) {
+			blob->bytes->b->Pointer()[i] = reader.readU8();
+		}
+		return blob;
+	')
 	override public function read(): Blob {
 		return null;
 	}
 	
+	@:functionCode('
+		Kore::FileWriter writer(name);
+		writer.write(data->bytes->b->Pointer(), data->length());
+	')
 	override public function write(data: Blob): Void {
 		
 	}
+	
+	private static function createBlob(size: Int): Blob {
+		return new Blob(Bytes.alloc(size));
+	}
 }
 
-class Storage {
+class Storage {	
 	public static function namedFile(name: String): StorageFile {
 		return new KoreStorageFile(name);
 	}

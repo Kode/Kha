@@ -25,4 +25,17 @@ class Sys {
 	public static function getTime(): Float {
 		return 0;
 	}
+	
+	public static var pixelWidth(get, null): Int;
+	public static var pixelHeight(get, null): Int;
+	
+	@:functionCode('return Kore::System::screenWidth();')
+	public static function get_pixelWidth(): Int {
+		return 0;
+	}
+	
+	@:functionCode('return Kore::System::screenHeight();')
+	public static function get_pixelHeight(): Int {
+		return 0;
+	}
 }

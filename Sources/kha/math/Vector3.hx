@@ -36,4 +36,22 @@ class Vector3 {
 	public function mult(value: Float): Vector3 {
 		return new Vector3(x * value, y * value, z * value);
 	}
+	
+	public function dot(v: Vector3): Float {
+		return x * v.x + y * v.y + z * v.z;
+	}
+	
+	public function cross(v: Vector3): Vector3 {
+		var _x = y * v.z - z * v.y;
+		var _y = z * v.x - x * v.z;
+		var _z = x * v.y - y * v.x;
+		return new Vector3(_x, _y, _z);
+	}
+	
+	public function normalize(): Void {
+		var l = 1 / length;
+		x *= l;
+		y *= l;
+		z *= l;
+	}
 }

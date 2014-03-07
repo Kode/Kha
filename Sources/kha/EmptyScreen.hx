@@ -8,12 +8,14 @@ class EmptyScreen extends Game {
 		myColor = color;
 	}
 	
-	override public function render(painter: Painter) {
+	override public function render(painter: Painter): Void {
+		startRender(painter);
 		painter.setColor(myColor);
 		painter.fillRect(0, 0, 10000, 10000);
+		endRender(painter);
 	}
 	
-	override public function update() {
+	override public function update(): Void {
 		
 	}
 }

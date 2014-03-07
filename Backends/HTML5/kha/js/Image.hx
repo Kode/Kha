@@ -12,15 +12,17 @@ class Image implements Texture {
 	public var image: ImageElement;
 	private var video: VideoElement;
 	
-	private static var context : Dynamic;
-	private var data : Dynamic;
+	private static var context: Dynamic;
+	private var data: Dynamic;
 	
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
+	private var renderTarget: Bool;
+	public var frameBuffer: Dynamic;
 	
 	public static function init() {
-		var canvas : Dynamic = Browser.document.createElement("canvas");
+		var canvas: Dynamic = Browser.document.createElement("canvas");
 		if (canvas != null) {
 			context = canvas.getContext("2d");
 			canvas.width = 2048;
@@ -28,23 +30,25 @@ class Image implements Texture {
 		}
 	}
 	
-	public function new(width: Int, height: Int, format: TextureFormat) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool) {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
+		this.renderTarget = renderTarget;
 		image = null;
 		video = null;
+		if (renderTarget) createTexture();
 	}
 	
-	public static function fromImage(image: ImageElement): Image {
-		var img = new Image(image.width, image.height, TextureFormat.RGBA32);
+	public static function fromImage(image: ImageElement, readable: Bool): Image {
+		var img = new Image(image.width, image.height, TextureFormat.RGBA32, false);
 		img.image = image;
 		img.createTexture();
 		return img;
 	}
 	
 	public static function fromVideo(video: Video): Image {
-		var img = new Image(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32);
+		var img = new Image(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
 		img.video = video.element;
 		img.createTexture();
 		return img;
@@ -53,11 +57,11 @@ class Image implements Texture {
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
-	public function get_width() : Int {
+	public function get_width(): Int {
 		return myWidth;
 	}
 	
-	public function get_height() : Int {
+	public function get_height(): Int {
 		return myHeight;
 	}
 	
@@ -118,7 +122,14 @@ class Image implements Texture {
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 		Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-		if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
+		if (renderTarget) {
+			frameBuffer = Sys.gl.createFramebuffer();
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, frameBuffer);
+			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, null);
+			Sys.gl.framebufferTexture2D(Sys.gl.FRAMEBUFFER, Sys.gl.COLOR_ATTACHMENT0, Sys.gl.TEXTURE_2D, texture, 0);
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+		}
+		else if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
 		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
@@ -154,10 +165,6 @@ class Image implements Texture {
 				var rgbaBytes = Bytes.alloc(width * height * 4);
 				for (y in 0...height) for (x in 0...width) {
 					var value = bytes.get(y * width + x);
-					if (value != 0) {
-						var a = 3;
-						++a;
-					}
 					rgbaBytes.set(y * width * 4 + x * 4 + 0, value);
 					rgbaBytes.set(y * width * 4 + x * 4 + 1, value);
 					rgbaBytes.set(y * width * 4 + x * 4 + 2, value);

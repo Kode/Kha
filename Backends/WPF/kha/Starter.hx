@@ -278,8 +278,8 @@ class Starter {
 	
 	public static function loadFinished() {
 		Loader.the.initProject();
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
+		Sys.pixelWidth = game.width = Loader.the.width;
+		Sys.pixelHeight = game.height = Loader.the.height;
 		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
 			mainWindow = new MainWindow();

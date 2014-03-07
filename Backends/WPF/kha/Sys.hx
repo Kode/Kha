@@ -23,4 +23,8 @@ class Sys {
 	public static function getTime(): Float {
 		return 0;
 	}
+	
+	public static var pixelWidth: Int = 640;
+	
+	public static var pixelHeight: Int = 480;
 }

@@ -31,6 +31,10 @@ import kha.graphics.TexDir;
 import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
 import kha.graphics.Usage;
+import kha.math.Matrix4;
+import kha.math.Vector2;
+import kha.math.Vector3;
+import kha.math.Vector4;
 import kha.Rectangle;
 
 class Graphics implements kha.graphics.Graphics {
@@ -215,11 +219,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return new Image(width, height, format, false, false);
+		return new Image(width, height, format, false, false, canRead);
 	}
 	
 	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return new Image(width, height, format, true, depthStencil);
+		return new Image(width, height, format, true, depthStencil, false);
 	}
 	
 	public function maxTextureSize(): Int {
@@ -244,6 +248,13 @@ class Graphics implements kha.graphics.Graphics {
 
 	public function createFragmentShader(source: Blob): kha.graphics.FragmentShader {
 		return new Shader(source.toString(), Context3DProgramType.FRAGMENT);
+	}
+	
+	public function setBool(location: kha.graphics.ConstantLocation, value: Bool): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value ? 1 : 0;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
 	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
@@ -277,13 +288,57 @@ class Graphics implements kha.graphics.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Array<Float>): Void {
+	public function setFloat4(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		vec[2] = value3;
+		vec[3] = value4;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+	
+	public function setVector2(location: kha.graphics.ConstantLocation, value: Vector2): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value.x;
+		vec[1] = value.y;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+	
+	public function setVector3(location: kha.graphics.ConstantLocation, value: Vector3): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value.x;
+		vec[1] = value.y;
+		vec[2] = value.z;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+	
+	public function setVector4(location: kha.graphics.ConstantLocation, value: Vector4): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value.x;
+		vec[1] = value.y;
+		vec[2] = value.z;
+		vec[3] = value.w;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+	
+	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Matrix4): Void {
 		var projection = new Matrix3D();
 		var vec = new Vector<Float>(16);
-		for (i in 0...16) vec[i] = matrix[i];
+		for (i in 0...16) vec[i] = matrix.matrix[i];
 		projection.copyRawDataFrom(vec);
 		var flashLocation = cast(location, ConstantLocation);
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
+	}
+	
+	public function setFloats(location: kha.graphics.ConstantLocation, values: Array<Float>): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(values.length);
+		for (i in 0...values.length) vec[i] = values[i];
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
 	public function renderToBackbuffer(): Void {
@@ -292,5 +347,9 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function renderToTexture(texture: Texture): Void {
 		context.setRenderToTexture(cast(texture, Image).getFlashTexture(), cast(texture, Image).hasDepthStencil());
+	}
+	
+	public function renderTargetsInvertedY(): Bool {
+		return false;
 	}
 }
