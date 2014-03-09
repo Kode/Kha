@@ -26,6 +26,7 @@ class Painter extends kha.Painter {
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
+		//canvas.globalCompositeOperation = "normal";
 	}
 	
 	public static function stringWidth(font : kha.Font, text : String) {
@@ -117,7 +118,9 @@ class Painter extends kha.Painter {
 	}
 	
 	override public function fillRect(x: Float, y: Float, width: Float, height: Float) {
+		canvas.globalAlpha = opacity * myColor.A;
 		canvas.fillRect(tx + x, ty + y, width, height);
+		canvas.globalAlpha = opacity;
 	}
 	
 	override public function drawString(text: String, x: Float, y: Float) {
