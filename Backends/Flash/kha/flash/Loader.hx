@@ -16,32 +16,69 @@ import flash.ui.Mouse;
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
 
+using StringTools;
+
 class Loader extends kha.Loader {
 	public function new(main: Starter) {
 		super();
+		#if KHA_EMBEDDED_ASSETS
+		Assets.visit();
+		#end
 		isQuitable = true;
 	}
 	
+	private static function adjustFilename(filename: String): String {
+		filename = filename.replace(".", "_");
+		filename = filename.replace("-", "_");
+		return filename;
+	}
+	
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
+		#if KHA_EMBEDDED_ASSETS
+		
+		var file: String = adjustFilename(desc.file + ".mp3");
+		done(new Music(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
+		
+		#else
+		
 		var urlRequest = new URLRequest(desc.file + ".mp3");
 		var music = new flash.media.Sound();
 		music.addEventListener(Event.COMPLETE, function(e : Event) {
 			done(new Music(music));
 		});
 		music.load(urlRequest);
+		
+		#end
 	}
 	
 	override function loadImage(desc: Dynamic, done: Image -> Void) {
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
+		
+		#if KHA_EMBEDDED_ASSETS
+		
+		var file: String = adjustFilename(desc.file);
+		done(Image.fromBitmapData(cast Type.createInstance(Type.resolveClass("Assets_" + file), [0, 0]), readable));
+
+		#else
+		
 		var urlRequest = new URLRequest(desc.file);
 		var loader = new flash.display.Loader();
-		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e: Event) {
 			done(Image.fromBitmap(loader.content, readable));
 		});
 		loader.load(urlRequest);
+		
+		#end
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
+		#if KHA_EMBEDDED_ASSETS
+		
+		var file: String = adjustFilename(desc.file);
+		done(new Blob(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
+		
+		#else
+		
 		var urlRequest = new URLRequest(desc.file);
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -49,9 +86,18 @@ class Loader extends kha.Loader {
 			done(new Blob(Bytes.ofData(urlLoader.data)));
 		});
 		urlLoader.load(urlRequest);
+		
+		#end
 	}
 
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
+		#if KHA_EMBEDDED_ASSETS
+		
+		var file: String = adjustFilename(desc.file + ".mp3");
+		done(new Sound(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
+		
+		#else
+		
 		var urlRequest = new URLRequest(desc.file + ".mp3");
 		var sound = new flash.media.Sound();
 		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
@@ -62,6 +108,8 @@ class Loader extends kha.Loader {
 			done(new Sound(sound));
 		});
 		sound.load(urlRequest);
+		
+		#end
 	}
 
 	override function loadVideo(desc: Dynamic, done: kha.Video -> Void) {

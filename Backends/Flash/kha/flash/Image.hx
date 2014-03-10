@@ -42,6 +42,12 @@ class Image implements kha.graphics.Texture {
 		return texture;
 	}
 	
+	public static function fromBitmapData(image: BitmapData, readable: Bool): Image {
+		var texture = new Image(Std.int(image.width), Std.int(image.height), TextureFormat.RGBA32, false, false, readable);
+		texture.uploadBitmap(image, readable);
+		return texture;
+	}
+	
 	public function uploadBitmap(bitmap: BitmapData, readable: Bool): Void {
 		if (readable) data = bitmap;
 		tex.uploadFromBitmapData(bitmap, 0);
