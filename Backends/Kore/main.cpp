@@ -22,23 +22,17 @@ namespace {
 	void keyDown(Kore::KeyEvent* event) {
 		switch (event->keycode()) {
 		case Kore::Key_Up:
-		case Kore::Key_W:
 			Starter_obj::pushUp();
 			break;
 		case Kore::Key_Down:
 			Starter_obj::pushDown();
 			break;
 		case Kore::Key_Left:
-		case Kore::Key_A:
 			Starter_obj::pushLeft();
 			break;
 		case Kore::Key_Right:
-		case Kore::Key_D:
 			Starter_obj::pushRight();
 			break;
-		/*case Kore::Key_A:
-			Starter_obj::pushButton1();
-			break;*/
 		case Kore::Key_Space:
 			Starter_obj::pushChar(' ');
 			break;
@@ -54,23 +48,17 @@ namespace {
 	void keyUp(Kore::KeyEvent* event) {
 		switch (event->keycode()) {
 		case Kore::Key_Up:
-		case Kore::Key_W:
 			Starter_obj::releaseUp();
 			break;
 		case Kore::Key_Down:
 			Starter_obj::releaseDown();
 			break;
 		case Kore::Key_Left:
-		case Kore::Key_A:
 			Starter_obj::releaseLeft();
 			break;
 		case Kore::Key_Right:
-		case Kore::Key_D:
 			Starter_obj::releaseRight();
 			break;
-		/*case Kore::Key_A:
-			Starter_obj::releaseButton1();
-			break;*/
 		case Kore::Key_Space:
 			Starter_obj::releaseChar(' ');
 			break;
