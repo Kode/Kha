@@ -140,6 +140,7 @@ class ImageShaderPainter {
 		Sys.graphics.setProgram(shaderProgram);
 		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
 		
+		Sys.graphics.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		Sys.graphics.setTexture(textureLocation, null);
@@ -402,6 +403,7 @@ class ColoredShaderPainter {
 		Sys.graphics.setProgram(shaderProgram);
 		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
 		
+		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		bufferIndex = 0;
@@ -579,6 +581,7 @@ class TextShaderPainter {
 		Sys.graphics.setProgram(shaderProgram);
 		Sys.graphics.setMatrix(projectionLocation, projectionMatrix);
 		
+		Sys.graphics.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		Sys.graphics.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		Sys.graphics.setTexture(textureLocation, null);

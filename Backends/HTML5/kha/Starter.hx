@@ -83,6 +83,7 @@ class Starter {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
 				//Sys.gl.scale(transform, transform);
+				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				Sys.init(true);
 				painter = new kha.js.ShaderPainter(game.width, game.height);
 			}
