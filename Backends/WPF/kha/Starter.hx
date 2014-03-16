@@ -97,7 +97,7 @@ class MainWindow extends system.windows.Window {
         canvas.Width = Game.the.width;
         canvas.Height = Game.the.height;
         AddChild(canvas);
-        
+
 		System.Windows.Data.Binding widthBinding = new System.Windows.Data.Binding {
 			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
 			Path = new System.Windows.PropertyPath("ActualWidth"),
@@ -218,11 +218,20 @@ class MainWindow extends system.windows.Window {
 	}
 
 	public static void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
-		Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
+			Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+			Starter.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		}
+		
 	}
 
 	public static void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
-		Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
+			Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+			Starter.rightMouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		}
 	}
 
 	public static void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
@@ -357,6 +366,20 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseUp(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
+	public static function rightMouseDown(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.rightMouseDown(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
+	public static function rightMouseUp(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.rightMouseUp(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
