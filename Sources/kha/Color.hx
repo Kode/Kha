@@ -1,6 +1,7 @@
 package kha;
 
-@:expose class Color {
+@:expose
+class Color {
 	public static var ColorBlack : Color = Color.fromBytes(0,0,0);
 	
 	/**

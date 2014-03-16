@@ -3,6 +3,7 @@ package kha;
 import haxe.Json;
 import kha.loader.Room;
 
+@:expose
 class Loader {
 	var blobs: Map<String, Blob>;
 	var images: Map<String, Image>;
