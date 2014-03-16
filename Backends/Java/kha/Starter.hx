@@ -236,21 +236,29 @@ import kha.Key;
 
 		@Override
 		public void mousePressed(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			game.mouseDown(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
 		public void mouseReleased(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			game.mouseUp(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
 		public void mouseDragged(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
 		public void mouseMoved(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			if (game != null) game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 		}
 	}
@@ -262,9 +270,13 @@ class Starter {
 	static var game: Game;
 	static var painter: kha.java.Painter;
 	
+	public static var mouseX: Int;
+	public static var mouseY: Int;
+	
 	public function new() {
 		instance = this;
 		kha.Loader.init(new kha.java.Loader());
+		Sys.init();
 		Scheduler.init();
 	}
 	
@@ -276,8 +288,8 @@ class Starter {
 	
 	public static function loadFinished(): Void {
 		Loader.the.initProject();
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
+		Sys.pixelWidth = game.width = Loader.the.width;
+		Sys.pixelHeight = game.height = Loader.the.height;
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
