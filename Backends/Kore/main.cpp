@@ -49,6 +49,7 @@ namespace {
 			Starter_obj::pushTab();
 			break;
 		case Kore::Key_Enter:
+		case Kore::Key_Return:
 			Starter_obj::pushEnter();
 			break;
 		case Kore::Key_Control:
@@ -97,6 +98,7 @@ namespace {
 			Starter_obj::releaseTab();
 			break;
 		case Kore::Key_Enter:
+		case Kore::Key_Return:
 			Starter_obj::releaseEnter();
 			break;
 		case Kore::Key_Control:
