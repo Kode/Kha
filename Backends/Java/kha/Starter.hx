@@ -286,7 +286,7 @@ class Starter {
 		Loader.the.loadProject(loadFinished);
 	}
 	
-	public static function loadFinished(): Void {
+	public function loadFinished(): Void {
 		Loader.the.initProject();
 		Sys.pixelWidth = game.width = Loader.the.width;
 		Sys.pixelHeight = game.height = Loader.the.height;

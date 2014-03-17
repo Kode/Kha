@@ -46,19 +46,23 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionCode('
-	graphics.setColor(new java.awt.Color((float)color.R, (float)color.G, (float)color.B, (float)color.A));
+		graphics.setColor(new java.awt.Color(color.get_Rb(), color.get_Gb(), color.get_Bb(), color.get_Ab()));
 	')
 	override public function setColor(color: Color) : Void {
 	}
 
 	@:functionCode('
 		java.awt.Stroke oldStroke = graphics.getStroke();
-		graphics.setStroke(new java.awt.BasicStroke((Float)strength));
+		graphics.setStroke(new java.awt.BasicStroke((float)strength));
 		graphics.drawRect(round(tx + x), round(ty + y), round(width), round(height));
 		graphics.setStroke(oldStroke);
 	')
-	override public function drawRect(x : Float, y : Float, width : Float, height : Float, strength: Float = 1.0) : Void {
+	private function drawRect2(x: Float, y: Float, width: Float, height: Float, strength: Float): Void {
 		
+	}
+	
+	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
+		drawRect2(x, y, width, height, strength);
 	}
 	
 	@:functionCode('

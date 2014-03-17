@@ -1,11 +1,26 @@
 package kha.java;
 
+import kha.graphics.TextureFormat;
+
 @:classCode('
 	public java.awt.image.BufferedImage image;
 ')
 class Image implements kha.Image {
 	public function new(filename: String) {
 		
+	}
+	
+	@:functionCode('
+		image.image = new java.awt.image.BufferedImage(width, height, format == 0 ? 10 : 6);
+	')
+	private static function create2(image: Image, width: Int, height: Int, format: Int): Void {
+		
+	}
+	
+	public static function create(width: Int, height: Int, format: TextureFormat): Image {
+		var img = new Image(null);
+		create2(img, width, height, format == TextureFormat.L8 ? 0 : 1);
+		return img;
 	}
 	
 	public var width(get, null): Int;

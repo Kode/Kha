@@ -9,7 +9,7 @@ class Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage): Image {
-		return null;//new Image(width, height, format); //FIXME: Correct this
+		return Image.create(width, height, format);
 	}
 
 	public function maxTextureSize(): Int {

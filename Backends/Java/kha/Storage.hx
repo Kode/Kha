@@ -19,9 +19,14 @@ class JavaStorageFile extends StorageFile {
 	}
 	
 	override public function read(): Blob {
-		if (file == null) return null;
-		if (File.getContent(file.toString()) == null) return null;
-		return new Blob(File.getBytes(file.toString()));
+		try {
+			if (file == null) return null;
+			if (File.getContent(file.toString()) == null) return null;
+			return new Blob(File.getBytes(file.toString()));
+		}
+		catch (e: Dynamic) {
+			return null;
+		}
 	}
 	
 	override public function write(data: Blob): Void {
