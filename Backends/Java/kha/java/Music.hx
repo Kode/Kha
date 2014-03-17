@@ -27,21 +27,21 @@ class Music extends kha.Music implements Runnable {
 			javax.sound.sampled.AudioFormat format = in.getFormat();
 			javax.sound.sampled.AudioFormat.Encoding formatEncoding = format.getEncoding();
 			if (! (formatEncoding.equals (javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED) ||
-				   formatEncoding.equals (javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED))) 
+				   formatEncoding.equals (javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED)))
 			   throw new javax.sound.sampled.UnsupportedAudioFileException (
 								  file.getName() + " is not PCM audio");
-		   //System.out.println ("got PCM format");        
-		   frameSize = format.getFrameSize(); 
+		   //System.out.println ("got PCM format");
+		   frameSize = format.getFrameSize();
 		   javax.sound.sampled.DataLine.Info info =
-			   new javax.sound.sampled.DataLine.Info (javax.sound.sampled.SourceDataLine.class, format); 
-		   //System.out.println ("got info"); 
-		   line = (javax.sound.sampled.SourceDataLine) javax.sound.sampled.AudioSystem.getLine (info); 
-		   //System.out.println ("got line");        
-		   line.open(); 
-		   //System.out.println ("opened line"); 
-		   playThread = new Thread (this); 
-		   playing = false; 
-		   notYetEOF = true;        
+			   new javax.sound.sampled.DataLine.Info (javax.sound.sampled.SourceDataLine.class, format);
+		   //System.out.println ("got info");
+		   line = (javax.sound.sampled.SourceDataLine) javax.sound.sampled.AudioSystem.getLine (info);
+		   //System.out.println ("got line");
+		   line.open();
+		   //System.out.println ("opened line");
+		   playThread = new Thread (this);
+		   playing = false;
+		   notYetEOF = true;
 		   playThread.start();
 		}
 		catch (Exception ex) {
@@ -60,11 +60,11 @@ class Music extends kha.Music implements Runnable {
 			for (;;) {
 				while (notYetEOF) {
 					if (playing) {
-					bytesRead = in.read (buffer, 
-								 readPoint, 
+					bytesRead = in.read (buffer,
+								 readPoint,
 								 buffer.length - readPoint);
-	                   if (bytesRead == -1) { 
-					notYetEOF = false; 
+	                   if (bytesRead == -1) {
+					notYetEOF = false;
 					break;
 					}
 					// how many frames did we get,
@@ -75,13 +75,13 @@ class Music extends kha.Music implements Runnable {
 					line.write (buffer, readPoint, bytesRead-leftover);
 					// save the leftover bytes
 					System.arraycopy (buffer, bytesRead,
-							  buffer, 0, 
-							  leftover); 
+							  buffer, 0,
+							  leftover);
 	                    readPoint = leftover;
-					} else { 
-					// if not playing                   
-					// Thread.yield(); 
-					try { Thread.sleep (10);} 
+					} else {
+					// if not playing
+					// Thread.yield();
+					try { Thread.sleep (10);}
 					catch (InterruptedException ie) {}
 					}
 				} // while notYetEOF
@@ -111,7 +111,7 @@ class Music extends kha.Music implements Runnable {
 			playThread.start();
 		line.start();
 	')
-	override public function play() : Void {
+	override public function play(loop: Bool = false) : Void { //FIXME: Add looping
 		
 	}
 	
