@@ -19,6 +19,8 @@ extern "C" void hxcpp_set_top_of_stack();
 namespace {
 	using kha::Starter_obj;
 
+	bool shift = false;
+	
 	void keyDown(Kore::KeyEvent* event) {
 		switch (event->keycode()) {
 		case Kore::Key_Up:
@@ -38,9 +40,31 @@ namespace {
 			break;
 		case Kore::Key_Shift:
 			Starter_obj::pushShift();
+			shift = true;
+			break;
+		case Kore::Key_Backspace:
+			Starter_obj::pushBackspace();
+			break;
+		case Kore::Key_Tab:
+			Starter_obj::pushTab();
+			break;
+		case Kore::Key_Enter:
+			Starter_obj::pushEnter();
+			break;
+		case Kore::Key_Control:
+			Starter_obj::pushControl();
+			break;
+		case Kore::Key_Alt:
+			Starter_obj::pushAlt();
+			break;
+		case Kore::Key_Escape:
+			Starter_obj::pushEscape();
+			break;
+		case Kore::Key_Delete:
+			Starter_obj::pushDelete();
 			break;
 		default:
-			Starter_obj::pushChar(event->tochar());
+			Starter_obj::pushChar(shift ? event->tochar() : event->tochar() + 'a' - 'A');
 			break;
 		}
 	}
@@ -64,9 +88,31 @@ namespace {
 			break;
 		case Kore::Key_Shift:
 			Starter_obj::releaseShift();
+			shift = false;
+			break;
+		case Kore::Key_Backspace:
+			Starter_obj::releaseBackspace();
+			break;
+		case Kore::Key_Tab:
+			Starter_obj::releaseTab();
+			break;
+		case Kore::Key_Enter:
+			Starter_obj::releaseEnter();
+			break;
+		case Kore::Key_Control:
+			Starter_obj::releaseControl();
+			break;
+		case Kore::Key_Alt:
+			Starter_obj::releaseAlt();
+			break;
+		case Kore::Key_Escape:
+			Starter_obj::releaseEscape();
+			break;
+		case Kore::Key_Delete:
+			Starter_obj::releaseDelete();
 			break;
 		default:
-			Starter_obj::releaseChar(event->tochar());
+			Starter_obj::releaseChar(shift ? event->tochar() : event->tochar() + 'a' - 'A');
 			break;
 		}
 	}
