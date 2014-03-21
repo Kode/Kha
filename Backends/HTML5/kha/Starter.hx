@@ -72,10 +72,6 @@ class Starter {
 		
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
-		var widthTransform: Float = canvas.width / Loader.the.width;
-		var heightTransform: Float = canvas.height / Loader.the.height;
-		var transform: Float = Math.min(widthTransform, heightTransform);
-		
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		
@@ -93,6 +89,9 @@ class Starter {
 		}
 		if (painter == null) {
 			Sys.init(false);
+			var widthTransform: Float = canvas.width / Loader.the.width;
+			var heightTransform: Float = canvas.height / Loader.the.height;
+			var transform: Float = Math.min(widthTransform, heightTransform);
 			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			canvas.getContext("2d").scale(transform, transform);
 		}
@@ -173,8 +172,8 @@ class Starter {
 		canvas.onmousedown = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) DOWN' );
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
 			mouseX = x;
 			mouseY = y;
 			if (event.button == 0) {
@@ -195,8 +194,8 @@ class Starter {
 		canvas.onmouseup = function(event: MouseEvent) {
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) UP' );
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
 			mouseX = x;
 			mouseY = y;
 			if (event.button == 0) {
@@ -215,8 +214,8 @@ class Starter {
 		//Lib.document.onmousemove = function(event : js.Event) {
 		canvas.onmousemove = function(event : MouseEvent) {
 			checkMouseShift(event);
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
 			mouseX = x;
 			mouseY = y;
 			game.mouseMove(x, y);
