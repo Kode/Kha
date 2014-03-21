@@ -31,6 +31,7 @@ class Graphics implements kha.graphics.Graphics {
 		if (webgl) {
 			Sys.gl.enable(Sys.gl.BLEND);
 			Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
+			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
 		}
 	}
 	
@@ -303,10 +304,12 @@ class Graphics implements kha.graphics.Graphics {
 	
 	public function renderToTexture(texture: Texture): Void {
 		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, cast(texture, Image).frameBuffer);
+		Sys.gl.viewport(0, 0, texture.width, texture.height);
 	}
 
 	public function renderToBackbuffer(): Void {
 		Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+		Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
