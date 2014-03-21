@@ -238,14 +238,22 @@ import kha.Key;
 		public void mousePressed(java.awt.event.MouseEvent arg0) {
 			mouseX = arg0.getX();
 			mouseY = arg0.getY();
-			game.mouseDown(arg0.getPoint().x, arg0.getPoint().y);
+			
+			if (javax.swing.SwingUtilities.isLeftMouseButton(arg0))
+				game.mouseDown(arg0.getX(), arg0.getY());
+			else if (javax.swing.SwingUtilities.isRightMouseButton(arg0))
+				game.rightMouseDown(arg0.getX(), arg0.getY());
 		}
 
 		@Override
 		public void mouseReleased(java.awt.event.MouseEvent arg0) {
 			mouseX = arg0.getX();
 			mouseY = arg0.getY();
-			game.mouseUp(arg0.getPoint().x, arg0.getPoint().y);
+			
+			if (javax.swing.SwingUtilities.isLeftMouseButton(arg0))
+				game.mouseUp(arg0.getX(), arg0.getY());
+			else if (javax.swing.SwingUtilities.isRightMouseButton(arg0))
+				game.rightMouseUp(arg0.getX(), arg0.getY());
 		}
 
 		@Override
