@@ -1,5 +1,6 @@
 package kha;
 
+@:expose
 class Animation {
 	private var indices: Array<Int>;
 	private var speeddiv: Int;

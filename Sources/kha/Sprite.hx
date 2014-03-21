@@ -1,5 +1,6 @@
 package kha;
 
+@:expose
 class Sprite {
 	private var image : Image;
 	private var animation : Animation;
