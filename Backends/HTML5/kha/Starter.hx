@@ -3,6 +3,7 @@ package kha;
 import js.Browser;
 import js.html.audio.DynamicsCompressorNode;
 import js.html.CanvasElement;
+import js.html.Document;
 import js.html.Event;
 import js.html.EventListener;
 import js.html.KeyboardEvent;
@@ -167,9 +168,31 @@ class Starter {
 		
 		// disable context menu
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
-		
+
+		function mouseUp(event: MouseEvent): Void {
+			Browser.document.removeEventListener('mouseup', mouseUp);
+			checkMouseShift(event);
+			//trace ( 'mouse (${event.button}) UP' );
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
+			mouseX = x;
+			mouseY = y;
+			if (event.button == 0) {
+				if (leftMouseCtrlDown) {
+					game.rightMouseUp(x, y);
+				}
+				else {
+					game.mouseUp(x, y);
+				}
+				leftMouseCtrlDown = false;
+			} else {
+				game.rightMouseUp(x, y);
+			}
+		}
+
 		//Lib.document.onmousedown = function(event : js.Event) {
 		canvas.onmousedown = function(event: MouseEvent) {
+			Browser.document.addEventListener('mouseup', mouseUp);
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) DOWN' );
 			var x = Std.int(event.pageX - canvas.offsetLeft);
@@ -187,27 +210,6 @@ class Starter {
 				}
 			} else {
 				game.rightMouseDown(x, y);
-			}
-		}
-		
-		//Lib.document.onmouseup = function(event : js.Event) {
-		canvas.onmouseup = function(event: MouseEvent) {
-			checkMouseShift(event);
-			//trace ( 'mouse (${event.button}) UP' );
-			var x = Std.int(event.pageX - canvas.offsetLeft);
-			var y = Std.int(event.pageY - canvas.offsetTop);
-			mouseX = x;
-			mouseY = y;
-			if (event.button == 0) {
-				if (leftMouseCtrlDown) {
-					game.rightMouseUp(x, y);
-				}
-				else {
-					game.mouseUp(x, y);
-				}
-				leftMouseCtrlDown = false;
-			} else {
-				game.rightMouseUp(x, y);
 			}
 		}
 		
