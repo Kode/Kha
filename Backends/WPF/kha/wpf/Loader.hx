@@ -35,11 +35,11 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadMusic(desc: Dynamic, done: kha.Music -> Void): Void {
-		done(new Music(path + desc.file + ".wav"));
+		done(new Music(path + desc.file + ".mp4"));
 	}
 
 	override public function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
-		done(new Sound(path + desc.file + ".wav"));
+		done(new Sound(path + desc.file + ".mp4"));
 	}
 
 	override public function loadImage(desc: Dynamic, done: kha.Image -> Void): Void {
