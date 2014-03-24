@@ -3,6 +3,8 @@ package kha;
 import kha.Game;
 import kha.Key;
 import kha.Loader;
+import kha.input.Sensor;
+import kha.input.SensorType;
 
 class Starter {
 	static var game: Game;
@@ -10,6 +12,7 @@ class Starter {
 	
 	public function new() {
 		haxe.Timer.stamp();
+		Sensor.get(SensorType.Accelerometer); // force compilation
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
