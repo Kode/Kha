@@ -24,16 +24,8 @@ class Music extends kha.Music{
 	}
 	
 	public override function play(loop: Bool = false): Void {
-		var player = new MediaElement();
-		player.LoadedBehavior = MediaState.Manual;
-		player.UnloadedBehavior = MediaState.Manual;
-		// MediaElement needs Absolute URI. Relative won't work
-		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
-		// TODO: perhaps files should be checked for validity? 
-
-		
-		player.Play();
-		soundChannel = new SoundChannel(player);
+		soundChannel = new SoundChannel(filename);
+		soundChannel.play();
 	}
 	
 	public override function pause() : Void { soundChannel.pause(); }
@@ -47,4 +39,6 @@ class Music extends kha.Music{
 	public override function getVolume() : Float { return soundChannel.getVolume(); } // [0, 1]
 
 	public override function setVolume(volume : Float) : Void { soundChannel.setVolume(volume); } // [0, 1]
+	
+	override public function isFinished() : Bool { return soundChannel.isFinished(); }
 }
