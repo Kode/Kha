@@ -1,5 +1,6 @@
 package kha.wpf;
 
+import kha.SoundChannel;
 import system.io.Path;
 import system.Uri;
 import system.UriKind;
@@ -9,13 +10,22 @@ import system.windows.controls.MediaState;
 class SoundChannel extends kha.SoundChannel {
 	private var player: MediaElement;
 	
-	public function new(player: MediaElement) {
+	private var hasFinished: Bool = false;
+	
+	public function new(filename : String) {
 		super();
-		this.player = player;
+		this.player = new MediaElement();
+		addEventHandlers();
+		player.LoadedBehavior = MediaState.Manual;
+		player.UnloadedBehavior = MediaState.Manual;
+		// MediaElement needs Absolute URI. Relative won't work
+		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
+		// TODO: perhaps files should be checked for validity? 
 	}
 	
 	public override function play(): Void {
 		super.play();
+		hasFinished = false;
 		player.Play();
 	}
 	
@@ -44,12 +54,27 @@ class SoundChannel extends kha.SoundChannel {
 		return 0;
 	}
 	
+	override public function isFinished():Bool 
+	{
+		return hasFinished || wasStopped;
+	}
+	
 	public override function getVolume(): Float {
 		return player.Volume;
 	}
 
 	public override function setVolume(volume: Float): Void {
 		player.Volume = volume;
+	}
+	
+	@:functionCode('
+		player.MediaEnded += OnMediaEnded;
+	')
+	function addEventHandlers() {
+	}
+	
+	function OnMediaEnded(obj : Dynamic, e : RoutedEventArgs) {
+		hasFinished = true;
 	}
 }
 
@@ -69,15 +94,8 @@ class Sound extends kha.Sound {
 	}
 	
 	public override function play(): kha.SoundChannel {
-		var player = new MediaElement();
-		player.LoadedBehavior = MediaState.Manual;
-		player.UnloadedBehavior = MediaState.Manual;
-		// MediaElement needs Absolute URI. Relative won't work
-		player.Source = new Uri( Path.GetFullPath( filename ), UriKind.Absolute);
-		// TODO: perhaps files should be checked for validity? 
-
-		
-		player.Play();
-		return new SoundChannel(player);
+		var soundChannel = new SoundChannel(filename);
+		soundChannel.play();
+		return soundChannel;
 	}
 }

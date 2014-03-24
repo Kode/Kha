@@ -98,6 +98,14 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionCode('
+		if (width < 0.0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0.0) {
+			y += height;
+			height = -height;
+		}
 		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), strength.value), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
@@ -105,6 +113,14 @@ class Painter extends kha.Painter {
 	}
 
 	@:functionCode('
+		if (width < 0.0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0.0) {
+			y += height;
+			height = -height;
+		}
 		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
