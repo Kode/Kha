@@ -4,6 +4,7 @@
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/KeyEvent.h>
 #include <Kore/Input/Mouse.h>
+#include <Kore/Input/Sensor.h>
 #include <Kore/Audio/Audio.h>
 #include <Kore/Audio/Mixer.h>
 #include <Kore/IO/FileReader.h>
@@ -12,12 +13,14 @@
 #include <stdio.h>
 #include <kha/Starter.h>
 #include <kha/Loader.h>
+#include <kha/input/Sensor.h>
 
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
 
 namespace {
 	using kha::Starter_obj;
+	using kha::input::Sensor_obj;
 
 	bool shift = false;
 	
@@ -139,6 +142,14 @@ namespace {
 		Starter_obj::rightMouseUp(event.x(), event.y());
 	}
 
+	void accelerometerChanged(float x, float y, float z) {
+		Sensor_obj::_changed(0, x, y, z);
+	}
+
+	void gyroscopeChanged(float x, float y, float z) {
+		Sensor_obj::_changed(1, x, y, z);
+	}
+
 	void update() {
 		Kore::Audio::update();
 		Kore::Graphics::begin();
@@ -193,6 +204,8 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->PressRight = rightMouseDown;
 	Kore::Mouse::the()->ReleaseRight = rightMouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
+	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
+	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
 	Kore::log(Kore::Info, "Starting application");
 	app->start();
