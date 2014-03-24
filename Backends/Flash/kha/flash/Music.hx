@@ -19,10 +19,10 @@ class Music extends kha.Music {
 	}
 	
 	override public function getCurrentPos(): Int {
-		return Std.int(channel.position * 1000);
+		return Std.int(channel.position * 10) * 10; // FIXME! there seems to be a timing issue.
 	}
 	
 	override public function getLength(): Int {
-		return Std.int(music.length * 1000);
+		return Std.int(music.length * 10) * 10; // FIXME! there seems to be a timing issue.
 	}
 }
