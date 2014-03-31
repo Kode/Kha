@@ -11,6 +11,8 @@ import kha.Sys;
 
 class VertexMesh extends Mesh {
 	public function new(model: String, texture: String = null) {
+		super();
+		
 		zmin = 1000;
 		zmax = -1000;
 		xmin = 1000;

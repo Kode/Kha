@@ -3,6 +3,10 @@ package kha.scene;
 import kha.math.Vector3;
 
 class Mesh {
+	public function new() {
+		
+	}
+	
 	public function render(anim: Int = -1) {
 		
 	}
