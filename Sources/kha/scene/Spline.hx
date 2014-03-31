@@ -51,12 +51,12 @@ class Spline {
 		return Q[0];
 	}
 
-	private static var stepLength: Float = 0.0001;
-	private static var splineLength: Float;
-	private static var lengthSteps: Array<Float>; //[10001];
-	private static var posSteps: Array<Vector3>; //[10001];
+	private var stepLength: Float = 0.0001;
+	private var splineLength: Float;
+	private var lengthSteps: Array<Float>; //[10001];
+	private var posSteps: Array<Vector3>; //[10001];
 
-	private static function calculateSplineLength(points: Array<Vector3>, func: Array<Vector3> -> Float -> Vector3): Float {
+	private function calculateSplineLength(points: Array<Vector3>, func: Array<Vector3> -> Float -> Vector3): Float {
 		var length: Float = 0;
 		lengthSteps[0] = 0;
 		var last = func(points, 0);
@@ -75,11 +75,11 @@ class Spline {
 		return length;
 	}
 
-	public static function constantSpeedSpline(t: Float): Vector3 {
+	public function constantSpeedSpline(t: Float): Vector3 {
 		return constantSpeedSplineDistance(t * splineLength);
 	}
 
-	public static function constantSpeedSplineDistance(aim: Float): Vector3 {
+	public function constantSpeedSplineDistance(aim: Float): Vector3 {
 		if (aim >= lengthSteps[10000]) return posSteps[10000];
 
 		var i: Int = 0;
@@ -100,7 +100,7 @@ class Spline {
 		return last.add(dif.mult(toAim / toNextLength));
 	}
 
-	public static function prepareSpline(points: Array<Vector3>, func: Array<Vector3> -> Float -> Vector3) {
+	public function new(points: Array<Vector3>, func: Array<Vector3> -> Float -> Vector3) {
 		splineLength = calculateSplineLength(points, func);
 	}
 }
