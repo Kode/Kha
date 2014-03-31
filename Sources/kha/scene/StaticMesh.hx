@@ -81,6 +81,8 @@ class StaticMesh extends Mesh {
 	}
 
 	public function new(filename: String, texFilename: String = null, normalmapFilename: String = null) {
+		super();
+		
 		if (texFilename == null) texFilename = filename;
 
 		zmin = 1000;
