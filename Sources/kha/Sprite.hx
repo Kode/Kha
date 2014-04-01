@@ -59,6 +59,7 @@ class Sprite {
 	
 	public function render(painter : Painter) : Void {
 		if (image != null) {
+			painter.setColor(Color.fromValue(0xffffffff));
 			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
 		}
 		#if debug
