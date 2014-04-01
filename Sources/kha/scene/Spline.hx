@@ -25,9 +25,9 @@ class Spline {
 	
 	public static function deBoor2(ctrlPoints: Array<Vector3>, x: Float, degree: Int): Vector3 {
 		var knots = new Array<Float>();
-		//knots.resize(ctrlPoints.size() + degree + 1);
-		for (i in 0...degree + 1) knots.push(0);
-		for (i in knots.length - degree - 2...ctrlPoints.length + degree + 1) knots.push(1.01);
+		knots[ctrlPoints.length + degree] = 0;
+		for (i in 0...degree + 1) knots[i] = 0;
+		for (i in knots.length - degree - 2...ctrlPoints.length + degree + 1) knots[i] = 1.01;
 		var count: Int = knots.length - (degree + 1) * 2 + 1;
 		for (i in degree + 1...knots.length - degree - 1) {
 			knots[i] = 1.0 * (i - degree) / count;
@@ -101,6 +101,8 @@ class Spline {
 	}
 
 	public function new(points: Array<Vector3>, func: Array<Vector3> -> Float -> Vector3) {
+		lengthSteps = new Array<Float>();
+		posSteps = new Array<Vector3>();
 		splineLength = calculateSplineLength(points, func);
 	}
 }
