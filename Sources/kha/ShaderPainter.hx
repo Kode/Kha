@@ -147,7 +147,7 @@ class ImageShaderPainter {
 		bufferIndex = 0;
 	}
 	
-	public function drawImage(img: kha.Image, x: Float, y: Float, opacity: Float): Void {
+	public function drawImage(img: kha.Image, x: Float, y: Float, opacity: Float, color: Color): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -156,14 +156,14 @@ class ImageShaderPainter {
 		var right: Float = x + img.width;
 		var bottom: Float = y + img.height;
 		
-		setRectColor(1, 1, 1, opacity);
+		setRectColor(color.R, color.G, color.B, opacity);
 		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
 		setRectVertices(left, top, right, bottom);
 		++bufferIndex;
 		lastTexture = tex;
 	}
 	
-	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation, opacity: Float): Void {
+	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation, opacity: Float, color: Color): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -173,7 +173,7 @@ class ImageShaderPainter {
 		var bottom: Float = dy + dh;
 		
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
-		setRectColor(1, 1, 1, opacity);
+		setRectColor(color.R, color.G, color.B, opacity);
 		
 		if (rotation != null) {
 			var lefttop = rotate(left, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
@@ -686,14 +686,14 @@ class ShaderPainter extends Painter {
 		coloredPainter.end();
 		textPainter.end();
 		
-		imagePainter.drawImage(img, tx + x, ty + y, opacity);
+		imagePainter.drawImage(img, tx + x, ty + y, opacity, this.color);
 	}
 	
 	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		coloredPainter.end();
 		textPainter.end();
 		
-		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation, opacity);
+		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation, opacity, this.color);
 	}
 	
 	public override function setColor(color: Color): Void {
@@ -801,11 +801,11 @@ class ShaderPainter extends Painter {
 		
 		if (Sys.graphics.renderTargetsInvertedY()) {
 			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
+			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.fromValue(0xffffffff));
 		}
 		else {
 			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1);
+			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.fromValue(0xffffffff));
 		}
 		imagePainter.end();
 		imagePainter.setProjection(Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
