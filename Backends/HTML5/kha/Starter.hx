@@ -321,13 +321,14 @@ class Starter {
 			game.buttonDown(Button.RIGHT);
 			event.preventDefault();
 		default:
-			if (!event.shiftKey && !event.altKey) {
+			if (!event.altKey) {
 				var char = String.fromCharCode(lastPressedKey);
 				if (lastPressedKey >= 96 && lastPressedKey <= 105) { // num block seems to return special key codes
 					char = String.fromCharCode('0'.code - 96 + lastPressedKey);
 				}
 				if (lastPressedKey >= 'A'.code && lastPressedKey <= 'Z'.code) {
-					char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
+					if (event.shiftKey) char = String.fromCharCode(lastPressedKey);
+					else char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
 				}
 				pressedKeyToChar[lastPressedKey] = char;
 				//trace ('"$char" DOWN');
