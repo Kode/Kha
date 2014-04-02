@@ -43,33 +43,34 @@ class Color {
 	/**
 		Contains a byte representing the red color component.
 	**/
-	public var Rb(get, never): Int;
+	public var Rb(get, set): Int;
 	
 	/**
 		Contains a byte representing the green color component.
 	**/
-	public var Gb(get, never): Int;
+	public var Gb(get, set): Int;
 	
 	/**
 		Contains a byte representing the blue color component.
 	**/
-	public var Bb(get, never): Int;
+	public var Bb(get, set): Int;
 	
 	/**
 		Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	**/
-	public var Ab(get, never): Int;
+	public var Ab(get, set): Int;
 	
-	public var R(get, null): Float;
-	public var G(get, null): Float;
-	public var B(get, null): Float;
-	public var A(get, null): Float;
+	public var R(get, set): Float;
+	public var G(get, set): Float;
+	public var B(get, set): Float;
+	public var A(get, set): Float;
 	
-	public var value(default, null): Int;
+	public var value(default, default): Int;
 	
 	private function new(value: Int) {
 		this.value = value;
 	}
+
 	
 	private function get_Rb(): Int {
 		return (value & 0x00ff0000) >>> 16;
@@ -86,6 +87,27 @@ class Color {
 	private function get_Ab(): Int {
 		return value >>> 24;
 	}
+
+	private function set_Rb(i: Int): Int {
+		value = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
+		return i;
+	}
+	
+	private function set_Gb(i: Int): Int {
+		value = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
+		return i;
+	}
+	
+	private function set_Bb(i: Int): Int {
+		value = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
+		return i;
+	}
+	
+	private function set_Ab(i: Int): Int {
+		value = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
+		return i;
+	}
+
 	
 	private function get_R(): Float {
 		return get_Rb() / 255;
@@ -101,5 +123,25 @@ class Color {
 	
 	private function get_A(): Float {
 		return get_Ab() / 255;
+	}
+
+	private function set_R(f: Float): Float {
+		value = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		return f;
+	}
+
+	private function set_G(f: Float): Float {
+		value = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
+		return f;
+	}
+
+	private function set_B(f: Float): Float {
+		value = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
+		return f;
+	}
+
+	private function set_A(f: Float): Float {
+		value = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		return f;
 	}
 }
