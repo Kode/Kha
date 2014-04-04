@@ -82,6 +82,7 @@ class Starter {
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, rightMouseDownHandler);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, rightMouseUpHandler);
+		stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
 		
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -203,6 +204,11 @@ class Starter {
 	function mouseMoveHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseMove(mouseX, mouseY);
+	}
+
+	function mouseWheelHandler(event: MouseEvent): Void {
+		setMousePosition(event);
+		game.mouseWheel(event.delta);
 	}
 	
 	private function resizeHandler(event: Event): Void {
