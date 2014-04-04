@@ -4,7 +4,7 @@ import kha.Game;
 import kha.Key;
 
 @:classCode('
-	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener {
+	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener, java.awt.event.MouseWheelListener {
 		private static final long serialVersionUID = 1L;
 		public Window instance;
 		private int WIDTH;
@@ -46,6 +46,7 @@ import kha.Key;
 			addKeyListener(this);
 			canvas.addMouseListener(this);
 			canvas.addMouseMotionListener(this);
+			canvas.addMouseWheelListener(this);
 		}
 
 		private void createVSyncedDoubleBuffer() {
@@ -268,6 +269,14 @@ import kha.Key;
 			mouseX = arg0.getX();
 			mouseY = arg0.getY();
 			if (game != null) game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
+		}
+		
+		@Override
+		public void mouseWheelMoved(java.awt.event.MouseWheelEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
+			
+			game.mouseWheel(-arg0.getWheelRotation()); //invert
 		}
 	}
 
