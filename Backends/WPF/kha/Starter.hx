@@ -88,6 +88,12 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		
 		Starter.OnMouseMove(e);
 	}
+	
+	protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
+        base.OnMouseWheel(e);
+
+        Starter.OnMouseWheel(e);
+    }
 ')
 class MainWindow extends system.windows.Window {
 	public var canvas : StoryPublishCanvas;
@@ -238,6 +244,10 @@ class MainWindow extends system.windows.Window {
 		Starter.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 	}
 	
+	public static void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
+        Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
+    }
+	
 	public static void OnClosed(System.EventArgs e) {
 		game.onClose();
 	}
@@ -387,6 +397,13 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseMove(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
+	public static function mouseWheel(x: Int, y: Int, delta: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.mouseWheel(delta);
 		frameworkElement.setMousePos(x, y);
 	}
 }
