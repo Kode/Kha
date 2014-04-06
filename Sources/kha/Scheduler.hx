@@ -65,6 +65,9 @@ class Scheduler {
 	
 	private static var difs: Array<Float>;
 	
+	private static var delta:Float = 0;
+	private static var dScale:Float = 1;
+	
 	public static function init(): Void {
 		difs = new Array<Float>();
 		difs[DIF_COUNT - 2] = 0;
@@ -107,11 +110,11 @@ class Scheduler {
 		Sys.mouse.update();
 		
 		var now: Float = Sys.getTime();
-		var tdif: Float = now - lastTime;
+		delta = now - lastTime;
 		lastTime = now;
 		var frameEnd: Float = current;
-
-		if (tdif < 0) {
+		 
+		if (delta < 0) {
 			return;
 		}
 		
@@ -120,41 +123,41 @@ class Scheduler {
 		if (halted_count > 0) {
 			
 		}
-		else if (tdif > maxframetime) {
+		else if (delta > maxframetime) {
 			frameEnd += maxframetime;
 		}
 		else {
 			if (vsync) {
 				var realdif = onedifhz;
-				while (realdif < tdif - onedifhz) {
+				while (realdif < delta - onedifhz) {
 					realdif += onedifhz;
 				}
 				
-				tdif = realdif;
+				delta = realdif;
 				for (i in 0...DIF_COUNT - 2) {
-					tdif += difs[i];
+					delta += difs[i];
 					difs[i] = difs[i + 1];
 				}
-				tdif += difs[DIF_COUNT - 2];
-				tdif /= DIF_COUNT;
+				delta += difs[DIF_COUNT - 2];
+				delta /= DIF_COUNT;
 				difs[DIF_COUNT - 2] = realdif;
 				
-				frameEnd += tdif;
+				frameEnd += delta;
 			}
 			else {
 				#if true
-					var interpolated_tdif = tdif;
+					var interpolated_delta = delta;
 					for (i in 0...DIF_COUNT-2) {
-						interpolated_tdif += difs[i];
+						interpolated_delta += difs[i];
 						difs[i] = difs[i+1];
 					}
-					interpolated_tdif += difs[DIF_COUNT-2];
-					interpolated_tdif /= DIF_COUNT;
-					difs[DIF_COUNT-2] = tdif;
+					interpolated_delta += difs[DIF_COUNT-2];
+					interpolated_delta /= DIF_COUNT;
+					difs[DIF_COUNT-2] = delta;
 					
-					frameEnd += interpolated_tdif; // average the frame end estimation
+					frameEnd += interpolated_delta; // average the frame end estimation
 				#else
-					frameEnd = tdif; // No frame end estimation
+					frameEnd = delta; // No frame end estimation
 				#end
 			}
 		}
@@ -313,4 +316,25 @@ class Scheduler {
 		frameTasks.sort(function(a: FrameTask, b: FrameTask): Int { return a.priority > b.priority ? 1 : ((a.priority < b.priority) ? -1 : 0); } );
 		frame_tasks_sorted = true;
 	}
+	
+	private static function get_deltaTime():Float 
+	{
+		return delta * dScale;
+	}
+	
+	/** Delta time between frames*/
+	static public var deltaTime(get_deltaTime, null):Float;
+	
+	private static function get_deltaScale():Float 
+	{
+		return dScale;
+	}
+	
+	private static function set_deltaScale(value:Float):Float 
+	{
+		return dScale = value;
+	}
+	
+	/** Multiplier for delta time*/
+	static public var deltaScale(get_deltaScale, set_deltaScale):Float;
 }
