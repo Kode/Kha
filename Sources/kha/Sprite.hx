@@ -2,24 +2,24 @@ package kha;
 
 @:expose
 class Sprite {
-	private var image : Image;
-	private var animation : Animation;
-	private var collider : Rectangle;
+	private var image: Image;
+	private var animation: Animation;
+	private var collider: Rectangle;
 	
-	public var x : Float;
-	public var y : Float;
-	public var width : Float;
-	public var height : Float;
-	public var speedx : Float;
-	public var speedy : Float;
-	public var accx : Float;
-	public var accy : Float;
-	public var maxspeedy : Float;
-	public var collides : Bool;
-	public var z : Int;
+	public var x: Float;
+	public var y: Float;
+	public var width: Float;
+	public var height: Float;
+	public var speedx: Float;
+	public var speedy: Float;
+	public var accx: Float;
+	public var accy: Float;
+	public var maxspeedy: Float;
+	public var collides: Bool;
+	public var z: Int;
 	public var removed: Bool = false;
 	public var rotation: Rotation = null;
-	var tempcollider : Rectangle;
+	var tempcollider: Rectangle;
 	
 	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {
 		this.image = image;
@@ -41,7 +41,7 @@ class Sprite {
 	}
 	
 	// change sprite x,y, width, height as collisionrect and add a image rect
-	public function collisionRect() : Rectangle {
+	public function collisionRect(): Rectangle {
 		tempcollider.x = x;
 		tempcollider.y = y;
 		tempcollider.width = collider.width;
@@ -49,17 +49,17 @@ class Sprite {
 		return tempcollider;
 	}
 	
-	public function setAnimation(animation : Animation) : Void {
+	public function setAnimation(animation: Animation): Void {
 		this.animation.take(animation);
 	}
 	
-	public function update() : Void {
+	public function update(): Void {
 		animation.next();
 	}
 	
-	public function render(painter : Painter) : Void {
+	public function render(painter: Painter): Void {
 		if (image != null) {
-			painter.setColor(Color.fromValue(0xffffffff));
+			painter.setColor(Color.White);
 			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
 		}
 		#if debug
@@ -70,19 +70,19 @@ class Sprite {
 		#end
 	}
 	
-	public function hitFrom(dir : Direction) : Void {
+	public function hitFrom(dir: Direction): Void {
 		
 	}
 	
-	public function hit(sprite : Sprite) : Void {
+	public function hit(sprite: Sprite): Void {
 		
 	}
 	
-	public function setImage(image : Image) : Void {
+	public function setImage(image: Image): Void {
 		this.image = image;
 	}
 	
-	public function outOfView() : Void {
+	public function outOfView(): Void {
 		
 	}
 }

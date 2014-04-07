@@ -2,7 +2,8 @@ package kha;
 
 @:expose
 class Color {
-	public static var ColorBlack : Color = Color.fromBytes(0,0,0);
+	public static var Black: Color = fromValue(0xff000000);
+	public static var White: Color = fromValue(0xffffffff);
 	
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.
