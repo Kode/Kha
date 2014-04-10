@@ -19,6 +19,8 @@ class Sprite {
 	public var z: Int;
 	public var removed: Bool = false;
 	public var rotation: Rotation = null;
+	var xscale: Float = 1;
+	var yscale: Float = 1;
 	var tempcollider: Rectangle;
 	
 	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {
@@ -60,11 +62,11 @@ class Sprite {
 	public function render(painter: Painter): Void {
 		if (image != null) {
 			painter.setColor(Color.White);
-			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
+			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width * xscale, height * yscale , rotation);
 		}
 		#if debug
 			painter.setColor(Color.fromBytes(255, 0, 0));
-			painter.drawRect(x - collider.x, y - collider.y, width, height);
+			painter.drawRect(x - collider.x, y - collider.y, width*xscale, height*yscale);
 			painter.setColor(Color.fromBytes(0, 255, 0));
 			painter.drawRect(tempcollider.x, tempcollider.y, tempcollider.width, tempcollider.height);
 		#end
@@ -85,4 +87,31 @@ class Sprite {
 	public function outOfView(): Void {
 		
 	}
+	
+	function get_scaleX():Float 
+	{
+		return xscale;
+	}
+	
+	function set_scaleX(value:Float):Float 
+	{
+		collider.width = width * value;
+		return xscale = value;
+	}
+	
+	public var scaleX(get, set):Float;
+	
+	function get_scaleY():Float 
+	{
+		return yscale;
+	}
+	
+	function set_scaleY(value:Float):Float 
+	{
+		collider.height  = height * value;
+		return yscale = value;
+	}
+	
+	public var scaleY(get, set):Float;
+	
 }
