@@ -622,7 +622,7 @@ class TextShaderPainter {
 		text = null;
 	}
 	
-	public function drawString(text: String, color: Color, x: Float, y: Float): Void {
+	public function drawString(text: String, color: Color, x: Float, y: Float, scaleX: Float, scaleY: Float, scaleCenterX: Float, scaleCenterY: Float): Void {
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -630,15 +630,34 @@ class TextShaderPainter {
 		var xpos = x;
 		var ypos = y;
 		startString(text);
-		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
-			if (q != null) {
-				if (bufferIndex + 1 >= bufferSize) drawBuffer();
-				setRectColors(color);
-				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
-				setRectVertices(q.x0, q.y0, q.x1, q.y1);
-				xpos += q.xadvance;
-				++bufferIndex;
+		if (scaleX == 1 && scaleY == 1) {
+			for (i in 0...stringLength()) {
+				var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
+				if (q != null) {
+					if (bufferIndex + 1 >= bufferSize) drawBuffer();
+					setRectColors(color);
+					setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
+					setRectVertices(q.x0, q.y0, q.x1, q.y1);
+					xpos += q.xadvance;
+					++bufferIndex;
+				}
+			}
+		}
+		else {
+			for (i in 0...stringLength()) {
+				var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
+				if (q != null) {
+					if (bufferIndex + 1 >= bufferSize) drawBuffer();
+					setRectColors(color);
+					setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
+					var x0 = q.x0 - scaleCenterX - x;
+					var x1 = q.x1 - scaleCenterX - x;
+					var y0 = q.y0 - scaleCenterY - y;
+					var y1 = q.y1 - scaleCenterY - y;
+					setRectVertices(x + scaleCenterX + x0 * scaleX, y + scaleCenterY + y0 * scaleY, x + scaleCenterX + x1 * scaleX, y + scaleCenterY + y1 * scaleY);
+					xpos += q.xadvance;
+					++bufferIndex;
+				}
 			}
 		}
 		endString();
@@ -722,11 +741,11 @@ class ShaderPainter extends Painter {
 		ty = y;
 	}
 
-	public override function drawString(text: String, x: Float, y: Float): Void {
+	public override function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0): Void {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, color, tx + x, ty + y);
+		textPainter.drawString(text, color, tx + x, ty + y, scaleX, scaleY, scaleCenterX, scaleCenterY);
 	}
 
 	public override function setFont(font: Font): Void {

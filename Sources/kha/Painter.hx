@@ -12,7 +12,7 @@ class Painter {
 		drawString(text.substr(offset, length), x, y);
 	}
 	
-	public function drawString(text: String, x: Float, y: Float): Void { }
+	public function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0): Void { }
 	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
 	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
 	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
