@@ -8,8 +8,6 @@ class Sprite {
 	
 	public var x: Float;
 	public var y: Float;
-	public var width: Float;
-	public var height: Float;
 	public var speedx: Float;
 	public var speedy: Float;
 	public var accx: Float;
@@ -19,14 +17,19 @@ class Sprite {
 	public var z: Int;
 	public var removed: Bool = false;
 	public var rotation: Rotation = null;
+	public var scaleX: Float = 1;
+	public var scaleY: Float = 1;
+	
+	var w: Float;
+	var h: Float;
 	var tempcollider: Rectangle;
 	
 	public function new(image: Image, width: Int = 0, height: Int = 0, z: Int = 1) {
 		this.image = image;
 		x = 0;
 		y = 0;
-		this.width = width;
-		this.height = height;
+		h = height;
+		w = width;
 		if (this.width  == 0 && image != null) this.width  = image.width;
 		if (this.height == 0 && image != null) this.height = image.height;
 		this.z = z;
@@ -38,14 +41,16 @@ class Sprite {
 		maxspeedy = 5.0;
 		collides = true;
 		tempcollider = new Rectangle(0, 0, 0, 0);
+		
+		
 	}
 	
 	// change sprite x,y, width, height as collisionrect and add a image rect
 	public function collisionRect(): Rectangle {
 		tempcollider.x = x;
 		tempcollider.y = y;
-		tempcollider.width = collider.width;
-		tempcollider.height = collider.height;
+		tempcollider.width  = collider.width*scaleX;
+		tempcollider.height = collider.height*scaleY;
 		return tempcollider;
 	}
 	
@@ -60,7 +65,7 @@ class Sprite {
 	public function render(painter: Painter): Void {
 		if (image != null) {
 			painter.setColor(Color.White);
-			painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, Math.round(x - collider.x), Math.round(y - collider.y), width, height, rotation);
+			painter.drawImage2(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x), Math.round(y - collider.y), width, height , rotation);
 		}
 		#if debug
 			painter.setColor(Color.fromBytes(255, 0, 0));
@@ -85,4 +90,25 @@ class Sprite {
 	public function outOfView(): Void {
 		
 	}
+	
+	function get_width(): Float {
+		return w*scaleX;
+	}
+	
+	function set_width(value:Float): Float {
+		return w = value;
+	}
+	
+	public var width(get, set):Float;
+	
+	function get_height(): Float {
+		return h*scaleY;
+	}
+	
+	function set_height(value:Float): Float {
+		return h = value;
+	}
+	
+	public var height(get, set):Float;
+	
 }
