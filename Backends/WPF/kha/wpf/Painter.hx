@@ -78,7 +78,7 @@ class Painter extends kha.Painter {
 			}
 		}
 	')
-	override public function drawString(text: String, x: Float, y: Float): Void {
+	override public function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0): Void {
 		
 	}
 

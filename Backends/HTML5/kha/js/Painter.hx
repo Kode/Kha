@@ -123,7 +123,7 @@ class Painter extends kha.Painter {
 		canvas.globalAlpha = opacity;
 	}
 	
-	override public function drawString(text: String, x: Float, y: Float) {
+	override public function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 		

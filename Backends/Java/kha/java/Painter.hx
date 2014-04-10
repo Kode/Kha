@@ -86,7 +86,7 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		graphics.drawString(text, round(tx + x), round(ty + y));
 	')
-	override public function drawString(text : String, x : Float, y : Float) : Void {
+	override public function drawString(text : String, x : Float, y : Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0) : Void {
 		
 	}
 	
