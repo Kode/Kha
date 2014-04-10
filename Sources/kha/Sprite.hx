@@ -47,8 +47,8 @@ class Sprite {
 	
 	// change sprite x,y, width, height as collisionrect and add a image rect
 	public function collisionRect(): Rectangle {
-		tempcollider.x = Math.round(x - collider.x);
-		tempcollider.y = Math.round(y - collider.y);
+		tempcollider.x = x;
+		tempcollider.y = y;
 		tempcollider.width  = collider.width*scaleX;
 		tempcollider.height = collider.height*scaleY;
 		return tempcollider;
