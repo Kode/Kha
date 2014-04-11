@@ -116,6 +116,7 @@ import kha.Key;
 		}
 
 		void update() {
+			Scheduler.executeFrame();
 			//System.gc();
 			game.update();
 		}
