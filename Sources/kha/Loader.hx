@@ -164,10 +164,14 @@ class Loader {
 					case "image":
 						if (!images.exists(enqueued[i].name)) {
 							var imageName = enqueued[i].name;
-							//trace ('image to load: "$imageName"');
+						#if debug_loader
+							trace ('image to load: "$imageName"');
+						#end
 							loadImage(enqueued[i], function(image: Image) {
 								if (!images.exists(imageName)) {
-									//trace ('loaded image "$imageName"');
+								#if debug_loader
+									trace ('loaded image "$imageName"');
+								#end
 									images.set(imageName, image);
 									--numberOfFiles;
 									checkComplete();
@@ -178,10 +182,14 @@ class Loader {
 					case "music":
 						if (!musics.exists(enqueued[i].name)) {
 							var musicName = enqueued[i].name;
-							//trace ('music to load: "$musicName"');
+						#if debug_loader
+							trace ('music to load: "$musicName"');
+						#end
 							loadMusic(enqueued[i], function(music: Music) {
 								if (!musics.exists(musicName)) {
-									//trace ('loaded music "$musicName"');
+								#if debug_loader
+									trace ('loaded music "$musicName"');
+								#end
 									musics.set(musicName, music);
 									--numberOfFiles;
 									checkComplete();
@@ -192,10 +200,14 @@ class Loader {
 					case "sound":
 						if (!sounds.exists(enqueued[i].name)) {
 							var soundName = enqueued[i].name;
-							//trace ('sound to load: "$soundName"');
+						#if debug_loader
+							trace ('sound to load: "$soundName"');
+						#end
 							loadSound(enqueued[i], function(sound: Sound) {
 								if (!sounds.exists(soundName)) {
-									//trace ('loaded sound "$soundName"');
+								#if debug_loader
+									trace ('loaded sound "$soundName"');
+								#end
 									sounds.set(soundName, sound);
 									--numberOfFiles;
 									checkComplete();
@@ -206,10 +218,14 @@ class Loader {
 					case "video":
 						if (!videos.exists(enqueued[i].name)) {
 							var videoName = enqueued[i].name;
-							//trace ('video to load: "$videoName"');
+						#if debug_loader
+							trace ('video to load: "$videoName"');
+						#end
 							loadVideo(enqueued[i], function(video: Video) {
 								if (!videos.exists(videoName)) {
-									//trace ('loaded video "$videoName"');
+								#if debug_loader
+									trace ('loaded video "$videoName"');
+								#end
 									videos.set(videoName, video);
 									--numberOfFiles;
 									checkComplete();
@@ -220,10 +236,14 @@ class Loader {
 					case "blob":
 						if (!blobs.exists(enqueued[i].name)) {
 							var blobName = enqueued[i].name;
-							//trace ('blob to load: "$blobName"');
+						#if debug_loader
+							trace ('blob to load: "$blobName"');
+						#end
 							loadBlob(enqueued[i], function(blob: Blob) {
 								if (!blobs.exists(blobName)) {
-									//trace ('loaded blob "$blobName"');
+								#if debug_loader
+									trace ('loaded blob "$blobName"');
+								#end
 									blobs.set(blobName, blob);
 									--numberOfFiles;
 									checkComplete();
@@ -319,10 +339,14 @@ class Loader {
 	}
 	
 	function checkComplete() {
-		//trace ( "Files Left: " + numberOfFiles );
 		if (numberOfFiles <= 0) {
 			if (loadFinished != null) loadFinished();
 		}
+	#if debug_loader
+		else {
+			trace ( "Files to load: " + numberOfFiles );
+		}
+	#end
 	}
 	
 	function loadDummyFile(): Void {
