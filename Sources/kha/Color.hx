@@ -1,7 +1,7 @@
 package kha;
 
 @:expose
-class Color {
+abstract Color(Int) {
 	public static var Black: Color = fromValue(0xff000000);
 	public static var White: Color = fromValue(0xffffffff);
 	
@@ -29,14 +29,15 @@ class Color {
 	/**
 		Creates a new Color object from #AARRGGBB string.
 	**/
-	public static function fromString(value : String) {
-		if ( (value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
+	public static function fromString(value: String) {
+		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
 			var colorValue = Std.parseInt("0x" + value.substr(1));
 			if (value.length == 7) {
 				colorValue += 0xFF000000;
 			}
-			return fromValue( colorValue );
-		} else {
+			return fromValue(colorValue);
+		}
+		else {
 			throw "Invalid Color string: '" + value + "'";
 		}
 	}
@@ -66,83 +67,90 @@ class Color {
 	public var B(get, set): Float;
 	public var A(get, set): Float;
 	
-	public var value(default, default): Int;
-	
 	private function new(value: Int) {
-		this.value = value;
+		this = value;
+	}
+	
+	public var value(get, set): Int;
+	
+	private inline function get_value(): Int {
+		return this;
+	}
+	
+	private inline function set_value(value: Int): Int {
+		this = value;
+		return this;
 	}
 
-	
 	private function get_Rb(): Int {
-		return (value & 0x00ff0000) >>> 16;
+		return (this & 0x00ff0000) >>> 16;
 	}
 	
 	private function get_Gb(): Int {
-		return (value & 0x0000ff00) >>> 8;
+		return (this & 0x0000ff00) >>> 8;
 	}
 	
 	private function get_Bb(): Int {
-		return value & 0x000000ff;
+		return this & 0x000000ff;
 	}
 	
 	private function get_Ab(): Int {
-		return value >>> 24;
+		return this >>> 24;
 	}
 
-	private function set_Rb(i: Int): Int {
-		value = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
+	private inline function set_Rb(i: Int): Int {
+		this = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
 		return i;
 	}
 	
-	private function set_Gb(i: Int): Int {
-		value = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
+	private inline function set_Gb(i: Int): Int {
+		this = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
 		return i;
 	}
 	
-	private function set_Bb(i: Int): Int {
-		value = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
+	private inline function set_Bb(i: Int): Int {
+		this = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
 		return i;
 	}
 	
-	private function set_Ab(i: Int): Int {
-		value = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
+	private inline function set_Ab(i: Int): Int {
+		this = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
 		return i;
 	}
 
-	
-	private function get_R(): Float {
+	private inline function get_R(): Float {
 		return get_Rb() / 255;
 	}
 	
-	private function get_G(): Float {
+	private inline function get_G(): Float {
 		return get_Gb() / 255;
 	}
 	
-	private function get_B(): Float {
+	private inline function get_B(): Float {
 		return get_Bb() / 255;
 	}
 	
-	private function get_A(): Float {
+	private inline function get_A(): Float {
 		return get_Ab() / 255;
 	}
 
-	private function set_R(f: Float): Float {
-		value = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+	private inline function set_R(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private function set_G(f: Float): Float {
-		value = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
+	private inline function set_G(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private function set_B(f: Float): Float {
-		value = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
+	private inline function set_B(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
 		return f;
 	}
 
-	private function set_A(f: Float): Float {
-		value = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+	private inline function set_A(f: Float): Float {
+		this = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 }
