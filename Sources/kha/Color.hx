@@ -3,6 +3,10 @@ package kha;
 class Color {
 	public static var ColorBlack : Color = Color.fromBytes(0,0,0);
 	
+	public static var White: Color = Color.fromFloats(1.0, 1.0, 1.0);
+	
+	public static var Black: Color = Color.fromFloats(0.0, 0.0, 0.0);
+	
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.
 	**/
