@@ -13,6 +13,8 @@ import java.lang.Runnable;
 	boolean notYetEOF;
 ')
 class Music extends kha.Music implements Runnable {
+	private var loop: Bool = false;
+	
 	public function new(filename: String) {
 		super();
 		init(filename);
@@ -26,23 +28,19 @@ class Music extends kha.Music implements Runnable {
 			in = javax.sound.sampled.AudioSystem.getAudioInputStream (f);
 			javax.sound.sampled.AudioFormat format = in.getFormat();
 			javax.sound.sampled.AudioFormat.Encoding formatEncoding = format.getEncoding();
-			if (! (formatEncoding.equals (javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED) ||
-				   formatEncoding.equals (javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED))) 
-			   throw new javax.sound.sampled.UnsupportedAudioFileException (
-								  file.getName() + " is not PCM audio");
-		   //System.out.println ("got PCM format");        
-		   frameSize = format.getFrameSize(); 
-		   javax.sound.sampled.DataLine.Info info =
-			   new javax.sound.sampled.DataLine.Info (javax.sound.sampled.SourceDataLine.class, format); 
-		   //System.out.println ("got info"); 
-		   line = (javax.sound.sampled.SourceDataLine) javax.sound.sampled.AudioSystem.getLine (info); 
-		   //System.out.println ("got line");        
-		   line.open(); 
-		   //System.out.println ("opened line"); 
-		   playThread = new Thread (this); 
-		   playing = false; 
-		   notYetEOF = true;        
-		   playThread.start();
+			if (!(formatEncoding.equals(javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED) || formatEncoding.equals(javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED)))
+			   throw new javax.sound.sampled.UnsupportedAudioFileException(file.getName() + " is not PCM audio");
+		   //System.out.println ("got PCM format");
+		   frameSize = format.getFrameSize();
+		   javax.sound.sampled.DataLine.Info info = new javax.sound.sampled.DataLine.Info(javax.sound.sampled.SourceDataLine.class, format);
+		   //System.out.println ("got info");
+		   line = (javax.sound.sampled.SourceDataLine)javax.sound.sampled.AudioSystem.getLine(info);
+		   //System.out.println ("got line");
+		   line.open();
+		   //System.out.println ("opened line");
+		   playThread = new Thread(this);
+		   playing = false;
+		   notYetEOF = true;
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -57,47 +55,48 @@ class Music extends kha.Music implements Runnable {
 		int bytesRead = 0;
 
 		try {
-			for (;;) {
+			while (playing) {
 				while (notYetEOF) {
 					if (playing) {
-					bytesRead = in.read (buffer, 
-								 readPoint, 
-								 buffer.length - readPoint);
-	                   if (bytesRead == -1) { 
-					notYetEOF = false; 
-					break;
-					}
-					// how many frames did we get,
-					// and how many are left over?
-					//int frames = bytesRead / frameSize;
-					int leftover = bytesRead % frameSize;
-					// send to line
-					line.write (buffer, readPoint, bytesRead-leftover);
-					// save the leftover bytes
-					System.arraycopy (buffer, bytesRead,
-							  buffer, 0, 
-							  leftover); 
+						bytesRead = in.read(buffer, readPoint, buffer.length - readPoint);
+						if (bytesRead == -1) {
+							notYetEOF = false;
+							break;
+						}
+						// how many frames did we get,
+						// and how many are left over?
+						//int frames = bytesRead / frameSize;
+						int leftover = bytesRead % frameSize;
+						// send to line
+						line.write(buffer, readPoint, bytesRead-leftover);
+						// save the leftover bytes
+						System.arraycopy(buffer, bytesRead, buffer, 0, leftover);
 	                    readPoint = leftover;
-					} else { 
-					// if not playing                   
-					// Thread.yield(); 
-					try { Thread.sleep (10);} 
-					catch (InterruptedException ie) {}
 					}
-				} // while notYetEOF
+					else {
+						// if not playing
+						// Thread.yield();
+						try { Thread.sleep (10);}
+						catch (InterruptedException ie) {}
+					}
+				}
 				//System.out.println ("reached eof");
 				try {
-					in = javax.sound.sampled.AudioSystem.getAudioInputStream (file);
-				} catch (javax.sound.sampled.UnsupportedAudioFileException e) {
+					in = javax.sound.sampled.AudioSystem.getAudioInputStream(file);
+				}
+				catch (javax.sound.sampled.UnsupportedAudioFileException e) {
 					e.printStackTrace();
 				}
-				notYetEOF = true;
+				if (loop) notYetEOF = true;
+				else playing = false;
 			}
-			//line.drain();
-			//line.stop();
-		} catch (java.io.IOException ioe) {
+			line.drain();
+			line.stop();
+		}
+		catch (java.io.IOException ioe) {
 			ioe.printStackTrace();
-		} finally {
+		}
+		finally {
 			// line.close();
 		}
 	')
@@ -106,20 +105,25 @@ class Music extends kha.Music implements Runnable {
 	}
 	
 	@:functionCode('
+		this.loop = loop;
 		playing = true;
 		if (!playThread.isAlive())
 			playThread.start();
 		line.start();
 	')
-	override public function play() : Void {
+	private function play2(loop: Bool): Void {
 		
+	}
+	
+	override public function play(loop: Bool = false): Void {
+		play2(loop);
 	}
 	
 	@:functionCode('
 		playing = false;
 		line.stop();
 	')
-	override public function stop() : Void {
+	override public function stop(): Void {
 		
 	}
 }

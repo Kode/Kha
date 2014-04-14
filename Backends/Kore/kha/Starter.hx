@@ -3,6 +3,8 @@ package kha;
 import kha.Game;
 import kha.Key;
 import kha.Loader;
+import kha.input.Sensor;
+import kha.input.SensorType;
 
 class Starter {
 	static var game: Game;
@@ -10,6 +12,7 @@ class Starter {
 	
 	public function new() {
 		haxe.Timer.stamp();
+		Sensor.get(SensorType.Accelerometer); // force compilation
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -93,6 +96,62 @@ class Starter {
 	
 	public static function releaseShift(): Void {
 		game.keyUp(Key.SHIFT, null);
+	}
+	
+	public static function pushBackspace(): Void {
+		game.keyDown(Key.BACKSPACE, null);
+	}
+	
+	public static function releaseBackspace(): Void {
+		game.keyUp(Key.BACKSPACE, null);
+	}
+	
+	public static function pushTab(): Void {
+		game.keyDown(Key.TAB, null);
+	}
+	
+	public static function releaseTab(): Void {
+		game.keyUp(Key.TAB, null);
+	}
+
+	public static function pushEnter(): Void {
+		game.keyDown(Key.ENTER, null);
+	}
+	
+	public static function releaseEnter(): Void {
+		game.keyUp(Key.ENTER, null);
+	}
+	
+	public static function pushControl(): Void {
+		game.keyDown(Key.CTRL, null);
+	}
+	
+	public static function releaseControl(): Void {
+		game.keyUp(Key.CTRL, null);
+	}
+	
+	public static function pushAlt(): Void {
+		game.keyDown(Key.ALT, null);
+	}
+	
+	public static function releaseAlt(): Void {
+		game.keyUp(Key.ALT, null);
+	}
+	
+	public static function pushEscape(): Void {
+		game.keyDown(Key.ESC, null);
+	}
+	
+	public static function releaseEscape(): Void {
+		game.keyUp(Key.ESC, null);
+	}
+	
+	public static function pushDelete(): Void {
+		game.keyDown(Key.DEL, null);
+	}
+	
+	public static function releaseDelete(): Void {
+		game.keyUp(Key.DEL, null);
 	}
 	
 	public static var mouseX: Int;

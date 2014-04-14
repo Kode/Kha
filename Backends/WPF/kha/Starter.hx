@@ -88,6 +88,12 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		
 		Starter.OnMouseMove(e);
 	}
+	
+	protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
+        base.OnMouseWheel(e);
+
+        Starter.OnMouseWheel(e);
+    }
 ')
 class MainWindow extends system.windows.Window {
 	public var canvas : StoryPublishCanvas;
@@ -97,7 +103,7 @@ class MainWindow extends system.windows.Window {
         canvas.Width = Game.the.width;
         canvas.Height = Game.the.height;
         AddChild(canvas);
-        
+
 		System.Windows.Data.Binding widthBinding = new System.Windows.Data.Binding {
 			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
 			Path = new System.Windows.PropertyPath("ActualWidth"),
@@ -218,16 +224,29 @@ class MainWindow extends system.windows.Window {
 	}
 
 	public static void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
-		Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
+			Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+			Starter.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		}
+		
 	}
 
 	public static void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
-		Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
+			Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+			Starter.rightMouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		}
 	}
 
 	public static void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
 		Starter.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 	}
+	
+	public static void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
+        Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
+    }
 	
 	public static void OnClosed(System.EventArgs e) {
 		game.onClose();
@@ -360,10 +379,31 @@ class Starter {
 		frameworkElement.setMousePos(x, y);
 	}
 	
+	public static function rightMouseDown(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.rightMouseDown(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
+	public static function rightMouseUp(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.rightMouseUp(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
 	public static function mouseMove(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.mouseMove(x, y);
+		frameworkElement.setMousePos(x, y);
+	}
+	
+	public static function mouseWheel(x: Int, y: Int, delta: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.mouseWheel(delta);
 		frameworkElement.setMousePos(x, y);
 	}
 }

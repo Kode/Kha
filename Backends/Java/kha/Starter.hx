@@ -4,7 +4,7 @@ import kha.Game;
 import kha.Key;
 
 @:classCode('
-	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener {
+	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener, java.awt.event.MouseWheelListener {
 		private static final long serialVersionUID = 1L;
 		public Window instance;
 		private int WIDTH;
@@ -46,6 +46,7 @@ import kha.Key;
 			addKeyListener(this);
 			canvas.addMouseListener(this);
 			canvas.addMouseMotionListener(this);
+			canvas.addMouseWheelListener(this);
 		}
 
 		private void createVSyncedDoubleBuffer() {
@@ -115,6 +116,7 @@ import kha.Key;
 		}
 
 		void update() {
+			Scheduler.executeFrame();
 			//System.gc();
 			game.update();
 		}
@@ -236,22 +238,46 @@ import kha.Key;
 
 		@Override
 		public void mousePressed(java.awt.event.MouseEvent arg0) {
-			game.mouseDown(arg0.getPoint().x, arg0.getPoint().y);
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
+			
+			if (javax.swing.SwingUtilities.isLeftMouseButton(arg0))
+				game.mouseDown(arg0.getX(), arg0.getY());
+			else if (javax.swing.SwingUtilities.isRightMouseButton(arg0))
+				game.rightMouseDown(arg0.getX(), arg0.getY());
 		}
 
 		@Override
 		public void mouseReleased(java.awt.event.MouseEvent arg0) {
-			game.mouseUp(arg0.getPoint().x, arg0.getPoint().y);
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
+			
+			if (javax.swing.SwingUtilities.isLeftMouseButton(arg0))
+				game.mouseUp(arg0.getX(), arg0.getY());
+			else if (javax.swing.SwingUtilities.isRightMouseButton(arg0))
+				game.rightMouseUp(arg0.getX(), arg0.getY());
 		}
 
 		@Override
 		public void mouseDragged(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
 		}
 
 		@Override
 		public void mouseMoved(java.awt.event.MouseEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
 			if (game != null) game.mouseMove(arg0.getPoint().x, arg0.getPoint().y);
+		}
+		
+		@Override
+		public void mouseWheelMoved(java.awt.event.MouseWheelEvent arg0) {
+			mouseX = arg0.getX();
+			mouseY = arg0.getY();
+			
+			game.mouseWheel(-arg0.getWheelRotation()); //invert
 		}
 	}
 
@@ -262,9 +288,13 @@ class Starter {
 	static var game: Game;
 	static var painter: kha.java.Painter;
 	
+	public static var mouseX: Int;
+	public static var mouseY: Int;
+	
 	public function new() {
 		instance = this;
 		kha.Loader.init(new kha.java.Loader());
+		Sys.init();
 		Scheduler.init();
 	}
 	
@@ -274,10 +304,10 @@ class Starter {
 		Loader.the.loadProject(loadFinished);
 	}
 	
-	public static function loadFinished(): Void {
+	public function loadFinished(): Void {
 		Loader.the.initProject();
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
+		Sys.pixelWidth = game.width = Loader.the.width;
+		Sys.pixelHeight = game.height = Loader.the.height;
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();

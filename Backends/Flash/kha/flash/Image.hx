@@ -37,8 +37,12 @@ class Image implements kha.graphics.Texture {
 	
 	public static function fromBitmap(image: DisplayObject, readable: Bool): Image {
 		var bitmap = cast(image, Bitmap);
-		var texture = new Image(Std.int(bitmap.width), Std.int(bitmap.height), TextureFormat.RGBA32, false, false, readable);
-		texture.uploadBitmap(bitmap.bitmapData, readable);
+		return fromBitmapData(bitmap.bitmapData, readable);
+	}
+	
+	public static function fromBitmapData(image: BitmapData, readable: Bool): Image {
+		var texture = new Image(Std.int(image.width), Std.int(image.height), TextureFormat.RGBA32, false, false, readable);
+		texture.uploadBitmap(image, readable);
 		return texture;
 	}
 	
@@ -77,8 +81,8 @@ class Image implements kha.graphics.Texture {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
-		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) != 0;
-		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) != 0;
+		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) == 0;
+		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) == 0;
 		return true;
 	}
 	

@@ -1,9 +1,9 @@
 package kha;
 
 import haxe.Json;
-import kha.loader.Asset;
 import kha.loader.Room;
 
+@:expose
 class Loader {
 	var blobs: Map<String, Blob>;
 	var images: Map<String, Image>;
@@ -14,7 +14,7 @@ class Loader {
 	var loadcount: Int;
 	var numberOfFiles: Int;
 	
-	var assets: Map<String, Asset>;
+	var assets: Map<String, Dynamic>;
 	var rooms: Map<String, Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
 	public var autoCleanupAssets : Bool = true;
@@ -25,10 +25,10 @@ class Loader {
 		sounds = new Map<String, Sound>();
 		musics = new Map<String, Music>();
 		videos = new Map<String, Video>();
-		assets = new Map<String, Asset>();
+		assets = new Map<String, Dynamic>();
 		shaders = new Map<String, Blob>();
 		rooms = new Map<String, Room>();
-		enqueued = new Array<Asset>();
+		enqueued = new Array<Dynamic>();
 		loadcount = 100;
 		numberOfFiles = 100;
 		width = -1;
@@ -98,16 +98,16 @@ class Loader {
 		return videos.keys();
 	}
 	
-	var enqueued: Array<Asset>;
+	private var enqueued: Array<Dynamic>;
 	public var loadFinished: Void -> Void;
 	
-	public function enqueue(asset: Asset) {
-		if ( !Lambda.has(enqueued,asset) ) {
+	public function enqueue(asset: Dynamic) {
+		if (!Lambda.has(enqueued, asset)) {
 			enqueued.push(asset);
 		}
 	}
 	
-	public static function containsAsset(assetName: String, assetType: String, map: Array<Asset>): Bool {
+	public static function containsAsset(assetName: String, assetType: String, map: Array<Dynamic>): Bool {
 		for (asset in map) {
 			if (asset.type == assetType && asset.name == assetName) return true;
 		}
@@ -151,7 +151,7 @@ class Loader {
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
 
-		enqueued = new Array<Asset>();
+		enqueued = new Array<Dynamic>();
 	}
 	
 	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
@@ -164,10 +164,14 @@ class Loader {
 					case "image":
 						if (!images.exists(enqueued[i].name)) {
 							var imageName = enqueued[i].name;
-							//trace ('image to load: "$imageName"');
+						#if debug_loader
+							trace ('image to load: "$imageName"');
+						#end
 							loadImage(enqueued[i], function(image: Image) {
 								if (!images.exists(imageName)) {
-									//trace ('loaded image "$imageName"');
+								#if debug_loader
+									trace ('loaded image "$imageName"');
+								#end
 									images.set(imageName, image);
 									--numberOfFiles;
 									checkComplete();
@@ -178,10 +182,14 @@ class Loader {
 					case "music":
 						if (!musics.exists(enqueued[i].name)) {
 							var musicName = enqueued[i].name;
-							//trace ('music to load: "$musicName"');
+						#if debug_loader
+							trace ('music to load: "$musicName"');
+						#end
 							loadMusic(enqueued[i], function(music: Music) {
 								if (!musics.exists(musicName)) {
-									//trace ('loaded music "$musicName"');
+								#if debug_loader
+									trace ('loaded music "$musicName"');
+								#end
 									musics.set(musicName, music);
 									--numberOfFiles;
 									checkComplete();
@@ -192,10 +200,14 @@ class Loader {
 					case "sound":
 						if (!sounds.exists(enqueued[i].name)) {
 							var soundName = enqueued[i].name;
-							//trace ('sound to load: "$soundName"');
+						#if debug_loader
+							trace ('sound to load: "$soundName"');
+						#end
 							loadSound(enqueued[i], function(sound: Sound) {
 								if (!sounds.exists(soundName)) {
-									//trace ('loaded sound "$soundName"');
+								#if debug_loader
+									trace ('loaded sound "$soundName"');
+								#end
 									sounds.set(soundName, sound);
 									--numberOfFiles;
 									checkComplete();
@@ -206,10 +218,14 @@ class Loader {
 					case "video":
 						if (!videos.exists(enqueued[i].name)) {
 							var videoName = enqueued[i].name;
-							//trace ('video to load: "$videoName"');
+						#if debug_loader
+							trace ('video to load: "$videoName"');
+						#end
 							loadVideo(enqueued[i], function(video: Video) {
 								if (!videos.exists(videoName)) {
-									//trace ('loaded video "$videoName"');
+								#if debug_loader
+									trace ('loaded video "$videoName"');
+								#end
 									videos.set(videoName, video);
 									--numberOfFiles;
 									checkComplete();
@@ -220,10 +236,14 @@ class Loader {
 					case "blob":
 						if (!blobs.exists(enqueued[i].name)) {
 							var blobName = enqueued[i].name;
-							//trace ('blob to load: "$blobName"');
+						#if debug_loader
+							trace ('blob to load: "$blobName"');
+						#end
 							loadBlob(enqueued[i], function(blob: Blob) {
 								if (!blobs.exists(blobName)) {
-									//trace ('loaded blob "$blobName"');
+								#if debug_loader
+									trace ('loaded blob "$blobName"');
+								#end
 									blobs.set(blobName, blob);
 									--numberOfFiles;
 									checkComplete();
@@ -242,7 +262,7 @@ class Loader {
 	}
 	
 	public function loadProject(call: Void -> Void) {
-		enqueue(new Asset("project.kha", "project.kha", "blob"));
+		enqueue({name: "project.kha", file: "project.kha", type: "blob"});
 		loadFiles(function() { loadShaders(call); }, false);
 	}
 	
@@ -286,8 +306,7 @@ class Loader {
 		height = project.game.height;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
-			var asset = new Asset(assets[i].name, assets[i].file, assets[i].type);
-			this.assets.set(assets[i].id, asset);
+			this.assets.set(assets[i].id, assets[i]);
 		}
 		
 		var rooms: Dynamic = project.rooms;
@@ -320,10 +339,14 @@ class Loader {
 	}
 	
 	function checkComplete() {
-		//trace ( "Files Left: " + numberOfFiles );
 		if (numberOfFiles <= 0) {
 			if (loadFinished != null) loadFinished();
 		}
+	#if debug_loader
+		else {
+			trace ( "Files to load: " + numberOfFiles );
+		}
+	#end
 	}
 	
 	function loadDummyFile(): Void {

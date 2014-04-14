@@ -6,27 +6,32 @@ import haxe.Serializer;
 import haxe.Unserializer;
 import kha.Blob;
 import kha.StorageFile;
-import system.io.Directory;
-import system.io.File;
+import sys.io.File;
 
 using StringTools;
 
-class WPFStorageFile extends StorageFile {
+class JavaStorageFile extends StorageFile {
 	private var file: Path;
 	
 	public function new(filename: String) {
 		this.file = new Path(filename);
-		if (file.dir != null) Directory.CreateDirectory(file.dir);
+		//if (file.dir != null) Directory.CreateDirectory(file.dir);
 	}
 	
 	override public function read(): Blob {
-		if (file == null) return null;
-		if (!File.Exists(file.toString())) return null;
-		return new Blob(Bytes.ofData(File.ReadAllBytes(file.toString())));
+		try {
+			if (file == null) return null;
+			if (File.getContent(file.toString()) == null) return null;
+			return new Blob(File.getBytes(file.toString()));
+		}
+		catch (e: Dynamic) {
+			return null;
+		}
 	}
 	
 	override public function write(data: Blob): Void {
-		File.WriteAllBytes(file.toString(), data.toBytes().getData());
+		var file = File.write(file.toString(), true);
+		file.writeBytes(data.toBytes(), 0, data.toBytes().length);
 	}
 }
 
@@ -39,7 +44,7 @@ class Storage {
 		name = name.replace("?", "(Q)");
 		name = name.replace("*", "(+)");
 		name = name.replace("\"", "''");
-		return new WPFStorageFile(name);
+		return new JavaStorageFile(name);
 	}
 
 	public static function defaultFile(): StorageFile {

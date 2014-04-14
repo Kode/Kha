@@ -2,8 +2,8 @@ package kha.java;
 
 import haxe.io.Bytes;
 import java.io.InputStream;
+import kha.Blob;
 import kha.FontStyle;
-import kha.loader.Asset;
 
 class Loader extends kha.Loader {
 	@:functionCode('
@@ -33,17 +33,17 @@ class Loader extends kha.Loader {
 		return "";
 	}
 
-	override function loadMusic(filename: String, done: kha.Music -> Void): Void {
-		done(new Music(filename + ".wav"));
+	override function loadMusic(desc: Dynamic, done: kha.Music -> Void): Void {
+		done(new Music(desc.file + ".wav"));
 	}
 
-	override function loadSound(filename: String, done: kha.Sound -> Void): Void {
-		done(new Sound(filename + ".wav"));
+	override function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
+		done(new Sound(desc.file + ".wav"));
 	}
 
-	override function loadImage(filename: String, done: Image -> Void): Void {
-		var image = new kha.java.Image(filename);
-		loadRealImage(filename, image);
+	override function loadImage(desc: Dynamic, done: Image -> Void): Void {
+		var image = new kha.java.Image(desc.file);
+		loadRealImage(desc.file, image);
 		done(image);
 	}
 	
@@ -58,6 +58,10 @@ class Loader extends kha.Loader {
 		
 	}
 
+	override function loadBlob(desc: Dynamic, done: Blob -> Void): Void {
+		loadRealBlob(desc.file, done);
+	}
+	
 	@:functionCode('
 		java.util.List<Byte> bytes = new java.util.ArrayList<Byte>();
 		try {
@@ -74,11 +78,11 @@ class Loader extends kha.Loader {
 		for (int i = 0; i < bytes.size(); ++i) realbytes[i] = bytes.get(i);
 		done.__hx_invoke1_o(0.0, new kha.Blob(new haxe.io.Bytes(bytes.size(), realbytes)));
 	')
-	override function loadBlob(filename: String, done: Blob -> Void): Void {
+	function loadRealBlob(filename: String, done: Blob -> Void) {
 		
 	}
 
-	override public function loadFont(name: String, style: FontStyle, size: Int): kha.Font {
+	override public function loadFont(desc: Dynamic, style: FontStyle, size: Float): kha.Font {
 		return new Font(name, style, size);
 	}
 }

@@ -3,7 +3,6 @@ package kha.cpp;
 import kha.Blob;
 import haxe.io.Bytes;
 import kha.Kravur;
-import kha.loader.Asset;
 import sys.io.File;
 
 @:headerCode('

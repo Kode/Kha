@@ -12,14 +12,40 @@ import kha.FontStyle;
 	}
 ')
 class Font implements kha.Font {
-	public function new(name : String, style : FontStyle, size : Int) {
+	
+	public var myName: String;
+	public var myStyle: FontStyle;
+	public var mySize: Float;
+	
+	public function new(name : String, style : FontStyle, size : Float) {
 		init(name, style, size);
 	}
 	
+	public var name(get, null): String;
+	
+	public function get_name(): String {
+		return myName;
+	}
+	
+	public var style(get, null): FontStyle;
+	
+	public function get_style(): FontStyle {
+		return myStyle;
+	}
+	
+	public var size(get, null): Float;
+	
+	public function get_size(): Float {
+		return mySize;
+	}
+	
 	@:functionCode('
-		font = new java.awt.Font(name, 0, size);
+		font = new java.awt.Font(name, 0, (int)size);
+		myName = name;
+		myStyle = style;
+		mySize = size;
 	')
-	function init(name : String, style : FontStyle, size : Int) {
+	function init(name : String, style : FontStyle, size : Float) {
 		
 	}
 	

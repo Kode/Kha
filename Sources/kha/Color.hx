@@ -1,7 +1,9 @@
 package kha;
 
-class Color {
-	public static var ColorBlack : Color = Color.fromBytes(0,0,0);
+@:expose
+abstract Color(Int) {
+	public static var Black: Color = fromValue(0xff000000);
+	public static var White: Color = fromValue(0xffffffff);
 	
 	public static var White: Color = Color.fromFloats(1.0, 1.0, 1.0);
 	
@@ -31,14 +33,15 @@ class Color {
 	/**
 		Creates a new Color object from #AARRGGBB string.
 	**/
-	public static function fromString(value : String) {
-		if ( (value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
+	public static function fromString(value: String) {
+		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
 			var colorValue = Std.parseInt("0x" + value.substr(1));
 			if (value.length == 7) {
 				colorValue += 0xFF000000;
 			}
-			return fromValue( colorValue );
-		} else {
+			return fromValue(colorValue);
+		}
+		else {
 			throw "Invalid Color string: '" + value + "'";
 		}
 	}
@@ -46,63 +49,112 @@ class Color {
 	/**
 		Contains a byte representing the red color component.
 	**/
-	public var Rb(get, never): Int;
+	public var Rb(get, set): Int;
 	
 	/**
 		Contains a byte representing the green color component.
 	**/
-	public var Gb(get, never): Int;
+	public var Gb(get, set): Int;
 	
 	/**
 		Contains a byte representing the blue color component.
 	**/
-	public var Bb(get, never): Int;
+	public var Bb(get, set): Int;
 	
 	/**
 		Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	**/
-	public var Ab(get, never): Int;
+	public var Ab(get, set): Int;
 	
-	public var R(get, null): Float;
-	public var G(get, null): Float;
-	public var B(get, null): Float;
-	public var A(get, null): Float;
-	
-	public var value(default, null): Int;
+	public var R(get, set): Float;
+	public var G(get, set): Float;
+	public var B(get, set): Float;
+	public var A(get, set): Float;
 	
 	private function new(value: Int) {
-		this.value = value;
+		this = value;
 	}
 	
+	public var value(get, set): Int;
+	
+	private inline function get_value(): Int {
+		return this;
+	}
+	
+	private inline function set_value(value: Int): Int {
+		this = value;
+		return this;
+	}
+
 	private function get_Rb(): Int {
-		return (value & 0x00ff0000) >>> 16;
+		return (this & 0x00ff0000) >>> 16;
 	}
 	
 	private function get_Gb(): Int {
-		return (value & 0x0000ff00) >>> 8;
+		return (this & 0x0000ff00) >>> 8;
 	}
 	
 	private function get_Bb(): Int {
-		return value & 0x000000ff;
+		return this & 0x000000ff;
 	}
 	
 	private function get_Ab(): Int {
-		return value >>> 24;
+		return this >>> 24;
+	}
+
+	private inline function set_Rb(i: Int): Int {
+		this = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
+		return i;
 	}
 	
-	private function get_R(): Float {
+	private inline function set_Gb(i: Int): Int {
+		this = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
+		return i;
+	}
+	
+	private inline function set_Bb(i: Int): Int {
+		this = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
+		return i;
+	}
+	
+	private inline function set_Ab(i: Int): Int {
+		this = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
+		return i;
+	}
+
+	private inline function get_R(): Float {
 		return get_Rb() / 255;
 	}
 	
-	private function get_G(): Float {
+	private inline function get_G(): Float {
 		return get_Gb() / 255;
 	}
 	
-	private function get_B(): Float {
+	private inline function get_B(): Float {
 		return get_Bb() / 255;
 	}
 	
-	private function get_A(): Float {
+	private inline function get_A(): Float {
 		return get_Ab() / 255;
+	}
+
+	private inline function set_R(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		return f;
+	}
+
+	private inline function set_G(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
+		return f;
+	}
+
+	private inline function set_B(f: Float): Float {
+		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
+		return f;
+	}
+
+	private inline function set_A(f: Float): Float {
+		this = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		return f;
 	}
 }

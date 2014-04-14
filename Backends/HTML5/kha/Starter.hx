@@ -3,6 +3,7 @@ package kha;
 import js.Browser;
 import js.html.audio.DynamicsCompressorNode;
 import js.html.CanvasElement;
+import js.html.Document;
 import js.html.Event;
 import js.html.EventListener;
 import js.html.KeyboardEvent;
@@ -72,10 +73,6 @@ class Starter {
 		
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
-		var widthTransform: Float = canvas.width / Loader.the.width;
-		var heightTransform: Float = canvas.height / Loader.the.height;
-		var transform: Float = Math.min(widthTransform, heightTransform);
-		
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		
@@ -83,6 +80,7 @@ class Starter {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
 				//Sys.gl.scale(transform, transform);
+				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				Sys.init(true);
 				painter = new kha.js.ShaderPainter(game.width, game.height);
 			}
@@ -92,6 +90,9 @@ class Starter {
 		}
 		if (painter == null) {
 			Sys.init(false);
+			var widthTransform: Float = canvas.width / Loader.the.width;
+			var heightTransform: Float = canvas.height / Loader.the.height;
+			var transform: Float = Math.min(widthTransform, heightTransform);
 			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			canvas.getContext("2d").scale(transform, transform);
 		}
@@ -167,13 +168,35 @@ class Starter {
 		
 		// disable context menu
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
-		
+
+		function mouseUp(event: MouseEvent): Void {
+			Browser.document.removeEventListener('mouseup', mouseUp);
+			checkMouseShift(event);
+			//trace ( 'mouse (${event.button}) UP' );
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
+			mouseX = x;
+			mouseY = y;
+			if (event.button == 0) {
+				if (leftMouseCtrlDown) {
+					game.rightMouseUp(x, y);
+				}
+				else {
+					game.mouseUp(x, y);
+				}
+				leftMouseCtrlDown = false;
+			} else {
+				game.rightMouseUp(x, y);
+			}
+		}
+
 		//Lib.document.onmousedown = function(event : js.Event) {
 		canvas.onmousedown = function(event: MouseEvent) {
+			Browser.document.addEventListener('mouseup', mouseUp);
 			checkMouseShift(event);
 			//trace ( 'mouse (${event.button}) DOWN' );
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
 			mouseX = x;
 			mouseY = y;
 			if (event.button == 0) {
@@ -190,32 +213,11 @@ class Starter {
 			}
 		}
 		
-		//Lib.document.onmouseup = function(event : js.Event) {
-		canvas.onmouseup = function(event: MouseEvent) {
-			checkMouseShift(event);
-			//trace ( 'mouse (${event.button}) UP' );
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
-			mouseX = x;
-			mouseY = y;
-			if (event.button == 0) {
-				if (leftMouseCtrlDown) {
-					game.rightMouseUp(x, y);
-				}
-				else {
-					game.mouseUp(x, y);
-				}
-				leftMouseCtrlDown = false;
-			} else {
-				game.rightMouseUp(x, y);
-			}
-		}
-		
 		//Lib.document.onmousemove = function(event : js.Event) {
 		canvas.onmousemove = function(event : MouseEvent) {
 			checkMouseShift(event);
-			var x = Std.int((event.pageX - canvas.offsetLeft) / transform);
-			var y = Std.int((event.pageY - canvas.offsetTop) / transform);
+			var x = Std.int(event.pageX - canvas.offsetLeft);
+			var y = Std.int(event.pageY - canvas.offsetTop);
 			mouseX = x;
 			mouseY = y;
 			game.mouseMove(x, y);
@@ -319,13 +321,14 @@ class Starter {
 			game.buttonDown(Button.RIGHT);
 			event.preventDefault();
 		default:
-			if (!event.shiftKey && !event.altKey) {
+			if (!event.altKey) {
 				var char = String.fromCharCode(lastPressedKey);
 				if (lastPressedKey >= 96 && lastPressedKey <= 105) { // num block seems to return special key codes
 					char = String.fromCharCode('0'.code - 96 + lastPressedKey);
 				}
 				if (lastPressedKey >= 'A'.code && lastPressedKey <= 'Z'.code) {
-					char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
+					if (event.shiftKey) char = String.fromCharCode(lastPressedKey);
+					else char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
 				}
 				pressedKeyToChar[lastPressedKey] = char;
 				//trace ('"$char" DOWN');
