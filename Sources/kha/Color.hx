@@ -8,7 +8,7 @@ abstract Color(Int) {
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.
 	**/
-	public static function fromValue(value: Int): Color {
+	public static inline function fromValue(value: Int): Color {
 		return new Color(value);
 	}
 	
