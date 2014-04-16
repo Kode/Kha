@@ -7,7 +7,7 @@ import kha.Image;
 **/
 class NineZoneImage
 {
-	var image: Image;
+	public var image(default, null): Image;
 	
 	var x_sections: Array<Int> = new Array();
 	var x_scalings: Array<Float> = new Array();
@@ -17,10 +17,10 @@ class NineZoneImage
 	public var min_width(default, null) : Int;
 	public var min_height(default, null) : Int;
 	
-	public var padding_left: Int;
-	public var padding_top: Int;
-	public var padding_right: Int;
-	public var padding_bottom: Int;
+	public var padding_left: Int = 0;
+	public var padding_top: Int = 0;
+	public var padding_right: Int = 0;
+	public var padding_bottom: Int = 0;
 	
 	/**
 		NineZoneImages can be constructed in 3 different modes:
