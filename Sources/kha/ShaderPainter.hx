@@ -3,8 +3,11 @@ package kha;
 import kha.graphics.BlendingOperation;
 import kha.graphics.ConstantLocation;
 import kha.graphics.IndexBuffer;
+import kha.graphics.MipMapFilter;
 import kha.graphics.Program;
 import kha.graphics.Texture;
+import kha.graphics.TextureAddressing;
+import kha.graphics.TextureFilter;
 import kha.graphics.TextureFormat;
 import kha.graphics.TextureUnit;
 import kha.graphics.Usage;
@@ -133,6 +136,7 @@ class ImageShaderPainter {
 
 	private function drawBuffer(): Void {
 		Sys.graphics.setTexture(textureLocation, lastTexture);
+		Sys.graphics.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, TextureFilter.PointFilter, TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		
 		rectVertexBuffer.unlock();
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
