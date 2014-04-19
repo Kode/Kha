@@ -1,4 +1,5 @@
 package kha;
+
 import kha.math.Vector2;
 
 class Tilemap {
@@ -24,6 +25,7 @@ class Tilemap {
 	}
 	
 	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int) {
+		painter.setColor(Color.White);
 		if (repeat) {
 			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH) - 1;
 			var xend: Int = Std.int((xleft + width) / tileset.TILE_WIDTH + 1);
