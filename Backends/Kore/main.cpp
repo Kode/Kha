@@ -14,6 +14,8 @@
 #include <kha/Starter.h>
 #include <kha/Loader.h>
 #include <kha/input/Sensor.h>
+#include <kha/Sys.h>
+#include <kha/ScreenRotation.h>
 
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
@@ -208,6 +210,9 @@ int kore(int argc, char** argv) {
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
 	Kore::log(Kore::Info, "Starting application");
+#ifdef SYS_IOS
+	::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation270;
+#endif
 	app->start();
 	Kore::log(Kore::Info, "Application stopped");
 
