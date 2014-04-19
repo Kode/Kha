@@ -7,6 +7,7 @@ class Sys {
 	public static var needs3d: Bool = false;
 	public static var gl: Dynamic;
 	public static var audio: Dynamic;
+	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	private static var theMouse: Mouse;
 	private static var w: Int;
 	private static var h: Int;

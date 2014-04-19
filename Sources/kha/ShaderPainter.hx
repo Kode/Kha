@@ -803,28 +803,92 @@ class ShaderPainter extends Painter {
 		var scaley: Float;
 		var scalew: Float;
 		var scaleh: Float;
-		if (renderTexture.width / renderTexture.height > Sys.pixelWidth / Sys.pixelHeight) {
-			var scale = Sys.pixelWidth / renderTexture.width;
-			scalew = renderTexture.width * scale;
-			scaleh = renderTexture.height * scale;
-			scalex = 0;
-			scaley = (Sys.pixelHeight - scaleh) * 0.5;				
+		if (Sys.screenRotation == ScreenRotation.RotationNone || Sys.screenRotation == ScreenRotation.Rotation180) {
+			if (renderTexture.width / renderTexture.height > Sys.pixelWidth / Sys.pixelHeight) {
+				var scale = Sys.pixelWidth / renderTexture.width;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = 0;
+				scaley = (Sys.pixelHeight - scaleh) * 0.5;
+			}
+			else {
+				var scale = Sys.pixelHeight / renderTexture.height;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = (Sys.pixelWidth - scalew) * 0.5;
+				scaley = 0;
+			}
 		}
-		else {
-			var scale = Sys.pixelHeight / renderTexture.height;
-			scalew = renderTexture.width * scale;
-			scaleh = renderTexture.height * scale;
-			scalex = (Sys.pixelWidth - scalew) * 0.5;
-			scaley = 0;
+		else if (Sys.screenRotation == ScreenRotation.Rotation90) {
+			if (renderTexture.width / renderTexture.height > Sys.pixelHeight / Sys.pixelWidth) {
+				var scale = Sys.pixelHeight / renderTexture.width;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = (Sys.pixelWidth - scaleh) * 0.5 + scaleh;
+				scaley = 0;
+			}
+			else {
+				var scale = Sys.pixelWidth / renderTexture.height;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = 0 + scaleh;
+				scaley = (Sys.pixelHeight - scalew) * 0.5;
+			}
+		}
+		else { // ScreenRotation.Rotation270
+			if (renderTexture.width / renderTexture.height > Sys.pixelHeight / Sys.pixelWidth) {
+				var scale = Sys.pixelHeight / renderTexture.width;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = (Sys.pixelWidth - scaleh) * 0.5;
+				scaley = 0 + scalew;
+			}
+			else {
+				var scale = Sys.pixelWidth / renderTexture.height;
+				scalew = renderTexture.width * scale;
+				scaleh = renderTexture.height * scale;
+				scalex = 0;
+				scaley = (Sys.pixelHeight - scalew) * 0.5 + scalew;
+			}
 		}
 		
-		if (Sys.graphics.renderTargetsInvertedY()) {
-			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.fromValue(0xffffffff));
-		}
-		else {
-			imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.fromValue(0xffffffff));
+		switch (Sys.screenRotation) {
+		case RotationNone:
+			if (Sys.graphics.renderTargetsInvertedY()) {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
+			}
+			else {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
+			}
+		case Rotation90:
+			if (Sys.graphics.renderTargetsInvertedY()) {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
+			}
+			else {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
+			}
+		case Rotation180:
+			if (Sys.graphics.renderTargetsInvertedY()) {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
+			}
+			else {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
+			}
+		case Rotation270:
+			if (Sys.graphics.renderTargetsInvertedY()) {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
+			}
+			else {
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
+			}
 		}
 		imagePainter.end();
 		imagePainter.setProjection(Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000));
