@@ -30,6 +30,7 @@ class Loader extends kha.Loader {
 	private static function adjustFilename(filename: String): String {
 		filename = filename.replace(".", "_");
 		filename = filename.replace("-", "_");
+		filename = filename.replace("/", "_");
 		return filename;
 	}
 	
