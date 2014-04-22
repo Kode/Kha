@@ -83,9 +83,11 @@ class Loader extends kha.Loader {
 	
 	override public function setNormalCursor() {
 		Mouse.SystemCursor = "default";
+		Mouse.UpdateSystemCursor();
 	}
 
 	override public function setHandCursor() {
 		Mouse.SystemCursor = "pointer";
+		Mouse.UpdateSystemCursor();
 	}
 }
