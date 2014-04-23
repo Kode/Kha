@@ -1,34 +1,33 @@
 package kha.psm;
 
 import haxe.io.Bytes;
-import kha.loader.Asset;
 
 class Loader extends kha.Loader {
-	override function loadMusic(filename: String, done: kha.Music -> Void): Void {
-		done(new Music(filename));
+	override function loadMusic(desc: Dynamic, done: kha.Music -> Void): Void {
+		done(new Music(desc.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadSound(filename: String, done: kha.Sound -> Void): Void {
-		done(new Sound(filename));
+	override function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
+		done(new Sound(desc.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
-	override function loadImage(filename: String, done: kha.Image -> Void): Void {
-		done(new Image(filename));
+	override function loadImage(desc: Dynamic, done: kha.Image -> Void): Void {
+		done(new Image(desc.file));
 		--numberOfFiles;
 		checkComplete();
 	}
 
 	@:functionBody('
-		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + asset.file);
-		blobs.set(asset.name, new Blob(new haxe.io.Bytes(bytes.Length, bytes)));
+		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + desc.file);
+		blobs.set(desc.name, new Blob(new haxe.io.Bytes(bytes.Length, bytes)));
 		--numberOfFiles;
 		checkComplete();
 	')
-	override function loadBlob(filename: String, done: kha.Blob -> Void): Void {
+	override function loadBlob(desc: Dynamic, done: kha.Blob -> Void): Void {
 		
 	}
 

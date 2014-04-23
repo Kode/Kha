@@ -8,6 +8,9 @@ class Starter {
 	static var up: Bool;
 	static var down: Bool;
 	
+	public static var mouseX: Int = 0;
+	public static var mouseY: Int = 0;
+	
 	public function new() {
 		painter = new kha.psm.Painter();
 		kha.Loader.init(new kha.psm.Loader());
