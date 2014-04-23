@@ -5,7 +5,7 @@ class Music extends kha.Music {
 		super();
 	}
 	
-	override public function play(): Void {
+	override public function play(loop: Bool = false): Void {
 		
 	}
 	

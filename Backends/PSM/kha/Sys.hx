@@ -8,20 +8,38 @@ class Sys {
 	
 	public static var graphics: Graphics;
 	
+	public static var mouse(default, null): kha.Mouse;
+	
+	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
+	
 	public static function init(): Void {
+		mouse = new Mouse();
 		graphics = new Graphics();
 		//watch = new Stopwatch();
 		//watch.Start();
 	}
 	
-	public static function getFrequency(): Int {
-		return 1000;
-	}
-	
 	//@:functionCode('
 	//	return (int) watch.ElapsedMilliseconds;
 	//')
-	public static function getTimestamp(): Int {
+	public static function getTime(): Float {
+		return 0;
+	}
+	
+	public static var pixelWidth(get, null): Int;
+	public static var pixelHeight(get, null): Int;
+	
+	@:functionCode('
+		return gfx.Screen.Width;
+	')
+	public static function get_pixelWidth(): Int {
+		return 0;
+	}
+	
+	@:functionCode('
+		return gfx.Screen.Height;
+	')
+	public static function get_pixelHeight(): Int {
 		return 0;
 	}
 }
