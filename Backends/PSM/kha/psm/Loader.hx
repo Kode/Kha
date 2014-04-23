@@ -21,14 +21,18 @@ class Loader extends kha.Loader {
 		checkComplete();
 	}
 
-	@:functionBody('
-		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + desc.file);
-		blobs.set(desc.name, new Blob(new haxe.io.Bytes(bytes.Length, bytes)));
-		--numberOfFiles;
-		checkComplete();
+	@:functionCode('
+		byte[] bytes = System.IO.File.ReadAllBytes("/Application/resources/" + filename);
+		return new Blob(new haxe.io.Bytes(bytes.Length, bytes));
 	')
+	private function loadBlob2(filename: String): Blob {
+		return null;
+	}
+
 	override function loadBlob(desc: Dynamic, done: kha.Blob -> Void): Void {
-		
+		done(loadBlob2(desc.file));
+		--numberOfFiles;
+		checkComplete();	
 	}
 
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

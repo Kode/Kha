@@ -30,14 +30,14 @@ class Sys {
 	public static var pixelHeight(get, null): Int;
 	
 	@:functionCode('
-		return gfx.Screen.Width;
+		return kha.psm.Painter.graphics.Screen.Width;
 	')
 	public static function get_pixelWidth(): Int {
 		return 0;
 	}
 	
 	@:functionCode('
-		return gfx.Screen.Height;
+		return kha.psm.Painter.graphics.Screen.Height;
 	')
 	public static function get_pixelHeight(): Int {
 		return 0;

@@ -43,7 +43,7 @@ class Starter {
 		}
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		Sce.PlayStation.Core.Input.GamePadData gamePadData = Sce.PlayStation.Core.Input.GamePad.GetData(0);
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Left) != 0) {
 			if (!left) {
@@ -98,7 +98,7 @@ class Starter {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		Sce.PlayStation.Core.Environment.SystemEvents.CheckEvents();
 	')
 	static function checkEvents(): Void {
