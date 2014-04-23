@@ -9,7 +9,7 @@ class Configuration {
 	}
 	
 	public static function setScreen(screen: Game) {
-		Scheduler.removeTimeTask(id);
+		if (id >= 0) Scheduler.removeTimeTask(id);
 		theScreen = screen;
 		id = Scheduler.addTimeTask(update, 0, 1 / 60);
 	}

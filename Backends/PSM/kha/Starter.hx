@@ -14,6 +14,7 @@ class Starter {
 	public function new() {
 		painter = new kha.psm.Painter();
 		kha.Loader.init(new kha.psm.Loader());
+		Scheduler.init();
 		left = false;
 		right = false;
 		up = false;
