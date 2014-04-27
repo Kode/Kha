@@ -81,7 +81,7 @@ class Image implements Texture {
 			if (context == null) return true;
 			else createImageData();
 		}
-		return (data.data[y * image.width * 4 + x * 4 + 3] == 0);
+		return (data.data[y * image.width * 4 + x * 4 + 3] != 0);
 	}
 	
 	function createImageData() {
