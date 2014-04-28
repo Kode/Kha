@@ -7,7 +7,7 @@ import kha.Image;
 **/
 class NineZoneImage
 {
-	var image: Image;
+	public var image: Image;
 	
 	var x_sections: Array<Int> = new Array();
 	var x_scalings: Array<Float> = new Array();
