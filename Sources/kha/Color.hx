@@ -5,12 +5,10 @@ abstract Color(Int) {
 	public static var Black: Color = fromValue(0xff000000);
 	public static var White: Color = fromValue(0xffffffff);
 	
-
-	
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.
 	**/
-	public static function fromValue(value: Int): Color {
+	public static inline function fromValue(value: Int): Color {
 		return new Color(value);
 	}
 	

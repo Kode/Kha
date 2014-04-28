@@ -7,7 +7,7 @@ import kha.Image;
 **/
 class NineZoneImage
 {
-	public var image: Image;
+	public var image(default, null): Image;
 	
 	var x_sections: Array<Int> = new Array();
 	var x_scalings: Array<Float> = new Array();
@@ -17,10 +17,10 @@ class NineZoneImage
 	public var min_width(default, null) : Int;
 	public var min_height(default, null) : Int;
 	
-	public var padding_left: Int;
-	public var padding_top: Int;
-	public var padding_right: Int;
-	public var padding_bottom: Int;
+	public var padding_left: Int = 0;
+	public var padding_top: Int = 0;
+	public var padding_right: Int = 0;
+	public var padding_bottom: Int = 0;
 	
 	/**
 		NineZoneImages can be constructed in 3 different modes:
@@ -72,11 +72,11 @@ class NineZoneImage
 			// x - Axis
 			min_width = 0;
 			var x_streched : Int = 0;
-			var firstXIsScaled = !image.isOpaque(1, 0);
+			var firstXIsScaled = image.isOpaque(1, 0);
 			x_sections.push(1);
 			var currentIsScaled = firstXIsScaled;
 			for (x in 2...(image.width-1)) {
-				if (image.isOpaque(x, 0) == currentIsScaled) {
+				if (image.isOpaque(x, 0) != currentIsScaled) {
 					if (currentIsScaled) {
 						x_streched += x - x_sections[x_sections.length - 1];
 					} else {
@@ -113,11 +113,11 @@ class NineZoneImage
 			// y - Axis
 			min_height = 0;
 			var y_streched : Int = 0;
-			var firstYIsScaled = !image.isOpaque(0, 1);
+			var firstYIsScaled = image.isOpaque(0, 1);
 			y_sections.push(1);
 			var currentIsScaled = firstYIsScaled;
 			for (y in 2...(image.height-1)) {
-				if (image.isOpaque(0, y) == currentIsScaled) {
+				if (image.isOpaque(0, y) != currentIsScaled) {
 					if (currentIsScaled) {
 						y_streched += y - y_sections[y_sections.length - 1];
 					} else {
@@ -156,10 +156,10 @@ class NineZoneImage
 				var foundPadding = false;
 				var y = image.height - 1;
 				for (x in 1...(image.width-1)) {
-					if (!image.isOpaque(x, y)) {
+					if (image.isOpaque(x, y)) {
 						padding_left = x - 1;
 						for (x in 2...image.width) {
-							if (!image.isOpaque(image.width - x, y)) {
+							if (image.isOpaque(image.width - x, y)) {
 								padding_right = x-2;
 								foundPadding = image.width - x - 1 > padding_left;
 								break;
@@ -196,10 +196,10 @@ class NineZoneImage
 				var foundPadding = false;
 				var x = image.width - 1;
 				for (y in 1...(image.height-1)) {
-					if (!image.isOpaque(x, y)) {
+					if (image.isOpaque(x, y)) {
 						padding_top = y - 1;
 						for (y in 2...image.height) {
-							if (!image.isOpaque(x, image.height-y)) {
+							if (image.isOpaque(x, image.height-y)) {
 								padding_bottom = y-2;
 								foundPadding = image.height - y - 1 > padding_top;
 								break;

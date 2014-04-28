@@ -8,6 +8,7 @@ class Sys {
 	public static var needs3d: Bool = false;
 	public static var graphics: Graphics;
 	private static var theMouse: Mouse;
+	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
 	public static function init(context: Context3D): Void {
 		graphics = new kha.flash.graphics.Graphics(context);
@@ -28,10 +29,10 @@ class Sys {
 	public static var pixelHeight(get, null): Int;
 	
 	public static function get_pixelWidth(): Int {
-		return flash.Lib.current.stage.stageWidth;
+		return Lib.current.stage.stageWidth;
 	}
 	
 	public static function get_pixelHeight(): Int {
-		return flash.Lib.current.stage.stageHeight;
+		return Lib.current.stage.stageHeight;
 	}
 }

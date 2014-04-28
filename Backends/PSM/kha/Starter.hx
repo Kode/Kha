@@ -8,9 +8,13 @@ class Starter {
 	static var up: Bool;
 	static var down: Bool;
 	
+	public static var mouseX: Int = 0;
+	public static var mouseY: Int = 0;
+	
 	public function new() {
 		painter = new kha.psm.Painter();
 		kha.Loader.init(new kha.psm.Loader());
+		Scheduler.init();
 		left = false;
 		right = false;
 		up = false;
@@ -40,7 +44,7 @@ class Starter {
 		}
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		Sce.PlayStation.Core.Input.GamePadData gamePadData = Sce.PlayStation.Core.Input.GamePad.GetData(0);
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Left) != 0) {
 			if (!left) {
@@ -95,7 +99,7 @@ class Starter {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		Sce.PlayStation.Core.Environment.SystemEvents.CheckEvents();
 	')
 	static function checkEvents(): Void {

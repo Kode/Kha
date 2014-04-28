@@ -1,6 +1,6 @@
 package kha.psm;
 
-@:classContents('
+@:classCode('
 	public Sce.PlayStation.Core.Graphics.Texture2D texture;
 ')
 class Image implements kha.Image {
@@ -8,7 +8,7 @@ class Image implements kha.Image {
 		loadTexture(filename);
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		texture = new Sce.PlayStation.Core.Graphics.Texture2D("/Application/resources/" + filename, false);
 	')
 	function loadTexture(filename: String) {
@@ -17,7 +17,7 @@ class Image implements kha.Image {
 	
 	public var width(get, null): Int;
 	
-	@:functionBody('
+	@:functionCode('
 		return texture.Width;
 	')
 	public function get_width(): Int {
@@ -26,7 +26,7 @@ class Image implements kha.Image {
 	
 	public var height(get, null): Int;
 	
-	@:functionBody('
+	@:functionCode('
 		return texture.Height;
 	')
 	public function get_height(): Int {

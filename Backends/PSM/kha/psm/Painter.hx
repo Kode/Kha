@@ -3,8 +3,8 @@ package kha.psm;
 import kha.Image;
 import kha.Rotation;
 
-@:classContents('
-	private Sce.PlayStation.Core.Graphics.GraphicsContext graphics;
+@:classCode('
+	public static Sce.PlayStation.Core.Graphics.GraphicsContext graphics;
 	private Sce.PlayStation.Core.Graphics.ShaderProgram shaderProgram;
 	private Sce.PlayStation.Core.Graphics.VertexBuffer vertexBuffer;
 	private float[] vertices;
@@ -21,7 +21,7 @@ class Painter extends kha.Painter {
 		initGraphics();
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		graphics = new Sce.PlayStation.Core.Graphics.GraphicsContext();
 		shaderProgram = new Sce.PlayStation.Core.Graphics.ShaderProgram("/Application/shaders/Texture.cgx");
 		shaderProgram.SetUniformBinding(0, "WorldViewProj");
@@ -76,7 +76,7 @@ class Painter extends kha.Painter {
 		
 	}
 
-	@:functionBody('
+	@:functionCode('
 		graphics.SetClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		graphics.Clear();
 	')
@@ -84,7 +84,7 @@ class Painter extends kha.Painter {
 		
 	}
 	
-	@:functionBody('
+	@:functionCode('
 		graphics.SwapBuffers();
 	')
 	override public function end(): Void {
@@ -100,8 +100,8 @@ class Painter extends kha.Painter {
 		drawImage2(img, 0, 0, img.width, img.height, x, y, img.width, img.height);
 	}
 	
-	@:functionBody('
-		Sce.PlayStation.Core.Graphics.Texture2D texture = ((kha.pss.Image)image).texture;
+	@:functionCode('
+		Sce.PlayStation.Core.Graphics.Texture2D texture = ((kha.psm.Image)image).texture;
 		int Width = texture.Width;
 		int Height = texture.Height;
 			

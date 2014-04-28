@@ -43,7 +43,6 @@ class Video extends kha.Video {
 	override public function play(loop: Bool = false) : Void {
 		try {
 			element.loop = loop;
-			element.currentTime = 0;
 			element.play();
 		} catch ( e : Dynamic ) {
 			trace ( e );

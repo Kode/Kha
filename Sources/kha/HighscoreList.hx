@@ -40,6 +40,7 @@ class HighscoreList {
 	}
 	
 	public function load(file: StorageFile): Void {
+		if (file == null) return;
 		var loaded: Array<Dynamic> = file.readObject();
 		scores = [];
 		if (loaded != null) {
