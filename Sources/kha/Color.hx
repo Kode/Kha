@@ -5,9 +5,7 @@ abstract Color(Int) {
 	public static var Black: Color = fromValue(0xff000000);
 	public static var White: Color = fromValue(0xffffffff);
 	
-	public static var White: Color = Color.fromFloats(1.0, 1.0, 1.0);
-	
-	public static var Black: Color = Color.fromFloats(0.0, 0.0, 0.0);
+
 	
 	/**
 		Creates a new Color object from a packed 32 bit ARGB value.

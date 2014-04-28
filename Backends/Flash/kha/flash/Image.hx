@@ -81,8 +81,8 @@ class Image implements kha.graphics.Texture {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
-		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) == 0;
-		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) == 0;
+		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) != 0;
 		return true;
 	}
 	
