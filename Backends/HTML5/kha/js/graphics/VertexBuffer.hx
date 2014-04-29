@@ -7,6 +7,7 @@ import kha.graphics.VertexData;
 class VertexBuffer implements kha.graphics.VertexBuffer {
 	private var buffer: Dynamic;
 	private var data: Array<Float>;
+	private var array: Float32Array;
 	private var mySize: Int;
 	private var myStride: Int;
 	private var sizes: Array<Int>;
@@ -67,6 +68,7 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 			}
 			++index;
 		}
+		array = new Float32Array(data);
 	}
 	
 	public function lock(?start: Int, ?count: Int): Array<Float> {
@@ -74,8 +76,9 @@ class VertexBuffer implements kha.graphics.VertexBuffer {
 	}
 	
 	public function unlock(): Void {
+		array.set(data, 0);
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, new Float32Array(data), usage == Usage.DynamicUsage ? Sys.gl.DYNAMIC_DRAW : Sys.gl.STATIC_DRAW);
+		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, array, usage == Usage.DynamicUsage ? Sys.gl.DYNAMIC_DRAW : Sys.gl.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
