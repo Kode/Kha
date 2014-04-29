@@ -27,6 +27,7 @@ class Image implements Texture {
 			context = canvas.getContext("2d");
 			canvas.width = 2048;
 			canvas.height = 2048;
+			context.globalCompositeOperation = "copy";
 		}
 	}
 	
