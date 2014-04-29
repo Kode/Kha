@@ -30,6 +30,7 @@ class ImageShaderPainter {
     private var rectVertices: Array<Float>;
 	private var indexBuffer: IndexBuffer;
 	private var lastTexture: Texture;
+	private var bilinear: Bool = false;
 
 	public function new(projectionMatrix: Matrix4) {
 		this.projectionMatrix = projectionMatrix;
@@ -136,7 +137,7 @@ class ImageShaderPainter {
 
 	private function drawBuffer(): Void {
 		Sys.graphics.setTexture(textureLocation, lastTexture);
-		Sys.graphics.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, TextureFilter.PointFilter, TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
+		Sys.graphics.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		
 		rectVertexBuffer.unlock();
 		Sys.graphics.setVertexBuffer(rectVertexBuffer);
@@ -149,6 +150,11 @@ class ImageShaderPainter {
 
 		Sys.graphics.setTexture(textureLocation, null);
 		bufferIndex = 0;
+	}
+	
+	public function setBilinearFilter(bilinear: Bool): Void {
+		this.bilinear = bilinear;
+		end();
 	}
 	
 	public function drawImage(img: kha.Image, x: Float, y: Float, opacity: Float, color: Color): Void {
@@ -783,6 +789,10 @@ class ShaderPainter extends Painter {
 		textPainter.end();
 		
 		coloredPainter.fillTriangle(color, tx + x1, ty + y1, tx + x2, ty + y2, tx + x3, ty + y3);
+	}
+	
+	public function setBilinearFiltering(bilinear: Bool): Void {
+		imagePainter.setBilinearFilter(bilinear);
 	}
 	
 	public override function begin(): Void {
