@@ -81,22 +81,27 @@ class Loader {
 	public function getAvailableBlobs(): Iterator<String> {
 		return blobs.keys();
 	}
+	public inline function isBlobAvailable(name: String) { return blobs.exists(name); }
 	
 	public function getAvailableImages(): Iterator<String> {
 		return images.keys();
 	}
+	public inline function isImageAvailable(name: String) { return images.exists(name); }
 	
 	public function getAvailableMusic(): Iterator<String> {
 		return musics.keys();
 	}
+	public inline function isMusicAvailable(name: String) { return musics.exists(name); }
 	
 	public function getAvailableSounds(): Iterator<String> {
 		return sounds.keys();
 	}
+	public inline function isSoundAvailable(name: String) { return sounds.exists(name); }
 	
 	public function getAvailableVideos(): Iterator<String> {
 		return videos.keys();
 	}
+	public inline function isVideoAvailable(name: String) { return videos.exists(name); }
 	
 	private var enqueued: Array<Dynamic>;
 	public var loadFinished: Void -> Void;
