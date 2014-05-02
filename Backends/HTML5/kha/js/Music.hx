@@ -33,11 +33,8 @@ class Music extends kha.Music {
 		element.addEventListener("canplay", canPlayThroughListener, false);
 		
 		element.src = filename + extensions[0];
+		element.preload = "auto";
 		element.load();
-		if (untyped __js__("!('mozChannels' in this.element)")) {
-			element.muted = true;
-			element.play(); //force preload
-		}
 	}
 	
 	override public function play(loop: Bool = false): Void {
@@ -113,11 +110,6 @@ class Music extends kha.Music {
 	private function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
-		if (untyped __js__("!('mozChannels' in this.element)")) {
-			element.pause();
-			element.currentTime = 0;
-			element.muted = false;
-		}
 		done(this);
 		loading.remove(this);
 	}
