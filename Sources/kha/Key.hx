@@ -10,4 +10,8 @@ enum Key {
 	CHAR;
 	ESC;
 	DEL;
+	UP;
+	DOWN;
+	LEFT;
+	RIGHT;
 }

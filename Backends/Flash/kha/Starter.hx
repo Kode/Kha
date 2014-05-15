@@ -4,6 +4,7 @@ import flash.display.StageScaleMode;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.flash.utils.PerspectiveMatrix3D;
 import kha.Game;
+import kha.input.Keyboard;
 import kha.Key;
 import kha.Loader;
 import flash.display.Stage;
@@ -25,11 +26,12 @@ import flash.display.Sprite;
 import flash.Vector;
 
 class Starter {
-	var game: Game;
-	var painter: kha.flash.ShaderPainter;
-	var pressedKeys: Array<Bool>;
-	var stage: Stage;
-	var stage3D: Stage3D;
+	private var game: Game;
+	private var painter: kha.flash.ShaderPainter;
+	private var pressedKeys: Array<Bool>;
+	private var stage: Stage;
+	private var stage3D: Stage3D;
+	private var keyboard: Keyboard;
 	public static var context: Context3D;
 	
 	public function new() {
@@ -63,6 +65,7 @@ class Starter {
 	function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(game.width, game.height, 0, false);
+		keyboard = new Keyboard();
 		Sys.init(context);
 		#if debug
 		context.enableErrorChecking = true;
@@ -100,37 +103,53 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyDown(Key.BACKSPACE, "");
+			keyboard._sendDownEvent(Key.BACKSPACE, "");
 		case 9:
 			game.keyDown(Key.TAB, "");
+			keyboard._sendDownEvent(Key.TAB, "");
 		case 13:
 			game.keyDown(Key.ENTER, "");
+			keyboard._sendDownEvent(Key.ENTER, "");
 		case 16:
 			game.keyDown(Key.SHIFT, "");
+			keyboard._sendDownEvent(Key.SHIFT, "");
 		case 17:
 			game.keyDown(Key.CTRL, "");
+			keyboard._sendDownEvent(Key.CTRL, "");
 		case 18:
 			game.keyDown(Key.ALT, "");
+			keyboard._sendDownEvent(Key.ALT, "");
 		case 27:
 			game.keyDown(Key.ESC, "");
+			keyboard._sendDownEvent(Key.ESC, "");
 		case 46:
 			game.keyDown(Key.DEL, "");
+			keyboard._sendDownEvent(Key.DEL, "");
 		case 38:
 			game.buttonDown(Button.UP);
+			keyboard._sendDownEvent(Key.UP, "");
 		case 40:
 			game.buttonDown(Button.DOWN);
+			keyboard._sendDownEvent(Key.DOWN, "");
 		case 37:
 			game.buttonDown(Button.LEFT);
+			keyboard._sendDownEvent(Key.LEFT, "");
 		case 39:
 			game.buttonDown(Button.RIGHT);
+			keyboard._sendDownEvent(Key.RIGHT, "");
 		case 65:
 			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
 			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonDown(Button.BUTTON_2); // This is also an 's'
 			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
-			if (event.charCode != 0)
+			if (event.charCode != 0) {
 				game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
+				keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			}
 		}
 	}
 
@@ -139,37 +158,53 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyUp(Key.BACKSPACE, "");
+			keyboard._sendUpEvent(Key.BACKSPACE, "");
 		case 9:
 			game.keyUp(Key.TAB, "");
+			keyboard._sendUpEvent(Key.TAB, "");
 		case 13:
 			game.keyUp(Key.ENTER, "");
+			keyboard._sendUpEvent(Key.ENTER, "");
 		case 16:
 			game.keyUp(Key.SHIFT, "");
+			keyboard._sendUpEvent(Key.SHIFT, "");
 		case 17:
 			game.keyUp(Key.CTRL, "");
+			keyboard._sendUpEvent(Key.CTRL, "");
 		case 18:
 			game.keyUp(Key.ALT, "");
+			keyboard._sendUpEvent(Key.ALT, "");
 		case 27:
 			game.keyUp(Key.ESC, "");
+			keyboard._sendUpEvent(Key.ESC, "");
 		case 46:
 			game.keyUp(Key.DEL, "");
+			keyboard._sendUpEvent(Key.DEL, "");
 		case 38:
 			game.buttonUp(Button.UP);
+			keyboard._sendUpEvent(Key.UP, "");
 		case 40:
 			game.buttonUp(Button.DOWN);
+			keyboard._sendUpEvent(Key.DOWN, "");
 		case 37:
 			game.buttonUp(Button.LEFT);
+			keyboard._sendUpEvent(Key.LEFT, "");
 		case 39:
 			game.buttonUp(Button.RIGHT);
+			keyboard._sendUpEvent(Key.RIGHT, "");
 		case 65:
 			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
 			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonUp(Button.BUTTON_2); // This is also an 's'
 			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
-			if (event.charCode != 0)
+			if (event.charCode != 0) {
 				game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
+				keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			}
 		}
 	}
 	
