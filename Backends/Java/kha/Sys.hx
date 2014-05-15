@@ -9,6 +9,8 @@ class Sys {
 	
 	private static var startTime : Float;
 	
+	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
+	
 	public static function init(): Void {
 		mouse = new Mouse();
 		graphics = new Graphics();

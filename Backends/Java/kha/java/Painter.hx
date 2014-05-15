@@ -46,7 +46,7 @@ class Painter extends kha.Painter {
 	}
 	
 	@:functionCode('
-		graphics.setColor(new java.awt.Color(color.get_Rb(), color.get_Gb(), color.get_Bb(), color.get_Ab()));
+		graphics.setColor(new java.awt.Color(color));
 	')
 	override public function setColor(color: Color) : Void {
 	}
