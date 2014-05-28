@@ -8,18 +8,14 @@ class Sys {
 	public static var gl: Dynamic;
 	public static var audio: Dynamic;
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
-	private static var theMouse: Mouse;
-	private static var w: Int;
-	private static var h: Int;
-	
 	public static var graphics(default, null): Graphics;
+	private static var theMouse: Mouse;
+	private static var canvas: Dynamic;
 	
 	public static function init(webgl: Bool): Void {
+		canvas = Browser.document.getElementById("khanvas");
 		graphics = new kha.js.graphics.Graphics(webgl);
 		theMouse = new kha.js.Mouse();
-		var canvas: Dynamic = Browser.document.getElementById("khanvas");
-		w = canvas.width;
-		h = canvas.height;
 	}
 	
 	public static function getTime(): Float {
@@ -36,10 +32,10 @@ class Sys {
 	public static var pixelHeight(get, null): Int;
 	
 	public static function get_pixelWidth(): Int {
-		return w;
+		return canvas.width;
 	}
 	
 	public static function get_pixelHeight(): Int {
-		return h;
+		return canvas.height;
 	}
 }

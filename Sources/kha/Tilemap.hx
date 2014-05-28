@@ -2,6 +2,7 @@ package kha;
 
 import kha.math.Vector2;
 
+@:expose
 class Tilemap {
 	var tileset: Tileset;
 	var map: Array<Array<Int>>;
@@ -24,7 +25,7 @@ class Tilemap {
 		return r < 0 ? r + b : r;
 	}
 	
-	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int) {
+	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int): Void {
 		painter.setColor(Color.White);
 		if (repeat) {
 			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH) - 1;
@@ -52,7 +53,7 @@ class Tilemap {
 		return tileset.tile(map[xtile][ytile]).collides;
 	}
 	
-	public function collides(sprite: Sprite) {
+	public function collides(sprite: Sprite): Bool {
 		var rect = sprite.collisionRect();
 		if (rect.x <= 0 || rect.y <= 0 || rect.x + rect.width >= getWidth() * tileset.TILE_WIDTH || rect.y + rect.height >= getHeight() * tileset.TILE_HEIGHT) return true;
 		var delta = 0.001;
@@ -73,11 +74,11 @@ class Tilemap {
 		return false;
 	}
 	
-	function collidesupdown(x1 : Int, x2 : Int, y : Int, rect : Rectangle) : Bool {
+	function collidesupdown(x1: Int, x2: Int, y: Int, rect: Rectangle): Bool {
 		if (y < 0 || y / tileset.TILE_HEIGHT >= levelHeight) return false;
-		var xtilestart : Int = Std.int(x1 / tileset.TILE_WIDTH);
-		var xtileend : Int = Std.int(x2 / tileset.TILE_WIDTH);
-		var ytile : Int = Std.int(y / tileset.TILE_HEIGHT);
+		var xtilestart: Int = Std.int(x1 / tileset.TILE_WIDTH);
+		var xtileend: Int = Std.int(x2 / tileset.TILE_WIDTH);
+		var ytile: Int = Std.int(y / tileset.TILE_HEIGHT);
 		for (xtile in xtilestart...xtileend + 1) {
 			collisionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
 			collisionRectCache.y = rect.y - ytile * tileset.TILE_HEIGHT;
@@ -88,11 +89,11 @@ class Tilemap {
 		return false;
 	}
 	
-	function collidesrightleft(x : Int, y1 : Int, y2 : Int, rect : Rectangle) {
+	function collidesrightleft(x: Int, y1: Int, y2: Int, rect: Rectangle): Bool {
 		if (x < 0 || x / tileset.TILE_WIDTH >= levelWidth) return true;
-		var ytilestart : Int = Std.int(y1 / tileset.TILE_HEIGHT);
-		var ytileend : Int = Std.int(y2 / tileset.TILE_HEIGHT);
-		var xtile : Int = Std.int(x / tileset.TILE_WIDTH);
+		var ytilestart: Int = Std.int(y1 / tileset.TILE_HEIGHT);
+		var ytileend: Int = Std.int(y2 / tileset.TILE_HEIGHT);
+		var xtile: Int = Std.int(x / tileset.TILE_WIDTH);
 		for (ytile in ytilestart...ytileend + 1) {
 			if (ytile < 0 || ytile >= levelHeight) continue;
 			collisionRectCache.x = rect.x - xtile * tileset.TILE_WIDTH;
@@ -113,13 +114,13 @@ class Tilemap {
 		return tileset.tile(value).collides;
 	}*/
 	
-	private static function round(value : Float) : Int {
+	private static function round(value: Float): Int {
 		return Math.round(value);
 	}
 	
-	public function collideright(sprite : Sprite) : Bool {
-		var rect : Rectangle = sprite.collisionRect();
-		var collided : Bool = false;
+	public function collideright(sprite: Sprite): Bool {
+		var rect: Rectangle = sprite.collisionRect();
+		var collided: Bool = false;
 		while (collidesrightleft(Std.int(rect.x + rect.width), round(rect.y + 1), round(rect.y + rect.height - 1), rect)) {
 			--sprite.x; // = Math.floor((rect.x + rect.width) / tileset.TILE_WIDTH) * tileset.TILE_WIDTH - rect.width;
 			collided = true;
@@ -128,9 +129,9 @@ class Tilemap {
 		return collided;
 	}
 	
-	public function collideleft(sprite : Sprite) : Bool {
-		var rect : Rectangle = sprite.collisionRect();
-		var collided : Bool = false;
+	public function collideleft(sprite: Sprite): Bool {
+		var rect: Rectangle = sprite.collisionRect();
+		var collided: Bool = false;
 		while (collidesrightleft(Std.int(rect.x), round(rect.y + 1), round(rect.y + rect.height - 1), rect)) {
 			++sprite.x; // = (Math.floor(rect.x / tileset.TILE_WIDTH) + 1) * tileset.TILE_WIDTH;
 			collided = true;
@@ -139,9 +140,9 @@ class Tilemap {
 		return collided;
 	}
 	
-	public function collidedown(sprite : Sprite) : Bool {
-		var rect : Rectangle = sprite.collisionRect();
-		var collided : Bool = false;
+	public function collidedown(sprite: Sprite): Bool {
+		var rect: Rectangle = sprite.collisionRect();
+		var collided: Bool = false;
 		while (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), Std.int(rect.y + rect.height), rect)) {
 			--sprite.y; // = Math.floor((rect.y + rect.height) / tileset.TILE_HEIGHT) * tileset.TILE_HEIGHT - rect.height;
 			collided = true;
@@ -150,9 +151,9 @@ class Tilemap {
 		return collided;
 	}
 	
-	public function collideup(sprite : Sprite) : Bool {
-		var rect : Rectangle = sprite.collisionRect();
-		var collided : Bool = false;
+	public function collideup(sprite: Sprite): Bool {
+		var rect: Rectangle = sprite.collisionRect();
+		var collided: Bool = false;
 		while (collidesupdown(round(rect.x + 1), round(rect.x + rect.width - 1), Std.int(rect.y), rect)) {
 			++sprite.y; // = ((Math.floor(rect.y / tileset.TILE_HEIGHT) + 1) * tileset.TILE_HEIGHT);
 			collided = true;
@@ -161,15 +162,15 @@ class Tilemap {
 		return collided;
 	}
 	
-	public function getWidth() : Int {
+	public function getWidth(): Int {
 		return levelWidth;
 	}
 	
-	public function getHeight() : Int {
+	public function getHeight(): Int {
 		return levelHeight;
 	}
 	
-	public function getTileset() : Tileset {
+	public function getTileset(): Tileset {
 		return tileset;
 	}
 }
