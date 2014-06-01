@@ -2,6 +2,7 @@ package kha.input;
 
 import kha.Key;
 
+@:expose
 class Keyboard {
 	private static var instance: Keyboard;
 	private var downListeners: Array<Key->String->Void>;
