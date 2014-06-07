@@ -156,6 +156,8 @@ class Game {
 	public function mouseUp       (x: Int, y: Int): Void { }
 	public function rightMouseDown(x: Int, y: Int): Void { }
 	public function rightMouseUp  (x: Int, y: Int): Void { }
+	public function middleMouseDown(x: Int, y: Int): Void { }
+	public function middleMouseUp  (x: Int, y: Int): Void { }
 	public function mouseMove     (x: Int, y: Int): Void { }
 	public function mouseWheel    (delta: Int):     Void { }
 	

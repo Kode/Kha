@@ -181,6 +181,18 @@ class Starter {
 		game.rightMouseUp(x, y);
 	}
 	
+	public static function middleMouseDown(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.middleMouseDown(x, y);
+	}
+
+	public static function middleMouseUp(x: Int, y: Int): Void {
+		mouseX = x;
+		mouseY = y;
+		game.middleMouseUp(x, y);
+	}
+	
 	public static function mouseMove(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;

@@ -144,6 +144,14 @@ namespace {
 		Starter_obj::rightMouseUp(event.x(), event.y());
 	}
 
+	void middleMouseDown(Kore::MouseEvent event) {
+		Starter_obj::middleMouseDown(event.x(), event.y());
+	}
+
+	void middleMouseUp(Kore::MouseEvent event) {
+		Starter_obj::middleMouseUp(event.x(), event.y());
+	}
+
 	void accelerometerChanged(float x, float y, float z) {
 		Sensor_obj::_changed(0, x, y, z);
 	}
@@ -205,6 +213,8 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->ReleaseLeft = mouseUp;
 	Kore::Mouse::the()->PressRight = rightMouseDown;
 	Kore::Mouse::the()->ReleaseRight = rightMouseUp;
+	Kore::Mouse::the()->PressMiddle = middleMouseDown;
+	Kore::Mouse::the()->ReleaseMiddle = middleMouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
