@@ -29,7 +29,8 @@ class KoreStorageFile extends StorageFile {
 	}
 	
 	@:functionCode('
-		Kore::FileWriter writer(name);
+		Kore::FileWriter writer;
+		if (!writer.open(name)) return null();
 		writer.write(data->bytes->b->Pointer(), data->length());
 	')
 	override public function write(data: Blob): Void {
