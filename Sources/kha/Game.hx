@@ -59,11 +59,21 @@ class Game {
 	}
 	
 	public function painterScale(): Float {
-		if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
-			return Sys.pixelWidth / width;
+		if (Sys.screenRotation == ScreenRotation.RotationNone || Sys.screenRotation == ScreenRotation.Rotation180) {
+			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
+				return Sys.pixelWidth / width;
+			}
+			else {
+				return Sys.pixelHeight / height;
+			}
 		}
 		else {
-			return Sys.pixelHeight / height;
+			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
+				return Sys.pixelHeight / width;
+			}
+			else {
+				return Sys.pixelWidth / height;
+			}
 		}
 	}
 	

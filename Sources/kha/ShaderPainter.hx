@@ -896,7 +896,7 @@ class ShaderPainter extends Painter {
 			}
 		case Rotation270:
 			if (Sys.graphics.renderTargetsInvertedY()) {
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+				imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
 				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
 			}
 			else {
