@@ -17,28 +17,10 @@ class NineZoneImage
 	public var min_width(default, null) : Int;
 	public var min_height(default, null) : Int;
 	
-	public var padding_left(get, null): Int = 0;
-	public var padding_top(get, null): Int = 0;
-	public var padding_right(get, null): Int = 0;
-	public var padding_bottom(get, null): Int = 0;
-	
-	function get_padding_left() {
-		return Math.round(padding_left * scale_factor);
-	}
-	
-	function get_padding_right() {
-		return Math.round(padding_right * scale_factor);
-	}
-	
-	function get_padding_top() {
-		return Math.round(padding_top * scale_factor);
-	}
-	
-	function get_padding_bottom() {
-		return Math.round(padding_bottom * scale_factor);
-	}
-	
-	public var scale_factor(default, default) : Float = 1;
+	public var padding_left: Int = 0;
+	public var padding_top: Int = 0;
+	public var padding_right: Int = 0;
+	public var padding_bottom: Int = 0;
 	
 	/**
 		NineZoneImages can be constructed in 3 different modes:
@@ -126,6 +108,7 @@ class NineZoneImage
 				}
 				currentIsScaled = !currentIsScaled;
 			}
+			x_sections[0] = 2;
 		}
 		{ 
 			// y - Axis
@@ -167,6 +150,7 @@ class NineZoneImage
 				}
 				currentIsScaled = !currentIsScaled;
 			}
+			y_sections[0] = 2;
 		}
 		{
 			{
@@ -253,8 +237,8 @@ class NineZoneImage
 	}
 	
 	public function render(painter: kha.Painter, x: Float, y: Float, width: Float, height: Float): Void {
-		var x_stretch = (width - (image.width - 2 * x_sections[0]));
-		var y_stretch =  (height - (image.height - 2 * y_sections[0]));
+		var x_stretch = width - (image.width - 2 * y_sections[0]);
+		var y_stretch = height - (image.height - 2 * y_sections[0]);
 		
 		var sx = x_sections[0];
 		var sx_off = sx;
@@ -264,16 +248,15 @@ class NineZoneImage
 			var next_sx = x_sections[xi];
 			var sw = next_sx - sx;
 			dw += sw;
-			dw *= scale_factor;
 			
 			var sy = y_sections[0];
 			var dh = y_scalings[0] * y_stretch;
+			var sy_off = sy;
 			var dy = y;
 			for (yi in 1...y_sections.length) {
 				var next_sy = y_sections[yi];
 				var sh = next_sy - sy;
 				dh += sh;
-				dh *= scale_factor;
 				painter.drawImage2(image, sx, sy, sw, sh, dx, dy, dw, dh);
 				
 				sy = next_sy;
