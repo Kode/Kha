@@ -129,7 +129,7 @@ class Game {
 		case ScreenRotation.Rotation180:
 			return Std.int((Sys.pixelWidth - x - painterTargetRect().x) / painterScale());
 		case ScreenRotation.Rotation270:
-			return Std.int((Sys.pixelHeight - y - painterTargetRect().y) / painterScale());
+			return Std.int((Sys.pixelHeight - y - (Sys.pixelHeight - painterTargetRect().y)) / painterScale());
 		}
 	}
 	
