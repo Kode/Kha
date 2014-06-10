@@ -694,8 +694,8 @@ class ShaderPainter extends Painter {
 	public function new(width: Int, height: Int) {
 		super();
 		color = Color.White;
-		setScreenSize(width, height);
 		renderTexture = null;
+		setScreenSize(width, height);
 	}
 	
 	private function setScreenSize(width: Int, height: Int) {
