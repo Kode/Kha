@@ -63,7 +63,7 @@ class Starter {
 		stage3D.requestContext3D("auto" /*"software"*/); //, Context3DProfile.BASELINE_EXTENDED);
 	}
 	
-	function onReady(_): Void {
+	private function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(game.width, game.height, 0, false);
 		keyboard = new Keyboard();
@@ -87,19 +87,21 @@ class Starter {
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, rightMouseDownHandler);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, rightMouseUpHandler);
+		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, middleMouseDownHandler);
+		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, middleMouseUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
 		
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
 	
-	function update(_): Void {
+	private function update(_): Void {
 		Scheduler.executeFrame();
 		context.clear(0, 0, 0, 0);
 		Configuration.screen().render(painter);
 		context.present();
 	}
 	
-	function keyDownHandler(event: KeyboardEvent): Void {
+	private function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
@@ -155,7 +157,7 @@ class Starter {
 		}
 	}
 
-	function keyUpHandler(event: KeyboardEvent): Void {
+	private function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
 		case 8:
@@ -218,37 +220,49 @@ class Starter {
 		mouseY = Std.int(event.stageY);
 	}
 	
-	function mouseDownHandler(event: MouseEvent): Void {
+	private function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseDown(mouseX, mouseY);
 		mouse.sendDownEvent(0, mouseX, mouseY);
 	}
 	
-	function mouseUpHandler(event: MouseEvent): Void {
+	private function mouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseUp(mouseX, mouseY);
 		mouse.sendUpEvent(0, mouseX, mouseY);
 	}
 	
-	function rightMouseDownHandler(event: MouseEvent): Void {
+	private function rightMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.rightMouseDown(mouseX, mouseY);
 		mouse.sendDownEvent(1, mouseX, mouseY);
 	}
 	
-	function rightMouseUpHandler(event: MouseEvent): Void {
+	private function rightMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.rightMouseUp(mouseX, mouseY);
 		mouse.sendUpEvent(1, mouseX, mouseY);
 	}
 	
-	function mouseMoveHandler(event: MouseEvent): Void {
+	private function middleMouseDownHandler(event: MouseEvent): Void {
+		setMousePosition(event);
+		game.middleMouseDown(mouseX, mouseY);
+		mouse.sendDownEvent(2, mouseX, mouseY);
+	}
+	
+	private function middleMouseUpHandler(event: MouseEvent): Void {
+		setMousePosition(event);
+		game.middleMouseUp(mouseX, mouseY);
+		mouse.sendUpEvent(2, mouseX, mouseY);
+	}
+	
+	private function mouseMoveHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseMove(mouseX, mouseY);
 		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 
-	function mouseWheelHandler(event: MouseEvent): Void {
+	private function mouseWheelHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseWheel(event.delta);
 		mouse.sendWheelEvent(event.delta);
