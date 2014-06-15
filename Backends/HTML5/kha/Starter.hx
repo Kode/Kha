@@ -27,6 +27,7 @@ class Starter {
 	static var buttonspressed : Array<Bool>;
 	static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard;
+	private static var mouse: kha.input.Mouse;
 	
 	@:allow(kha.Scheduler) static var mouseX : Int;
 	@:allow(kha.Scheduler) static var mouseY : Int;
@@ -35,6 +36,7 @@ class Starter {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
 		keyboard = new Keyboard();
+		mouse = new kha.input.Mouse();
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		lastPressedKey = null;
@@ -183,13 +185,17 @@ class Starter {
 			if (event.button == 0) {
 				if (leftMouseCtrlDown) {
 					game.rightMouseUp(x, y);
+					mouse.sendUpEvent(1, x, y);
 				}
 				else {
 					game.mouseUp(x, y);
+					mouse.sendUpEvent(0, x, y);
 				}
 				leftMouseCtrlDown = false;
-			} else {
+			}
+			else {
 				game.rightMouseUp(x, y);
+				mouse.sendUpEvent(1, x, y);
 			}
 		}
 
@@ -206,13 +212,17 @@ class Starter {
 				if (event.ctrlKey) {
 					leftMouseCtrlDown = true;
 					game.rightMouseDown(x, y);
+					mouse.sendDownEvent(1, x, y);
 				}
 				else {
 					leftMouseCtrlDown = false;
 					game.mouseDown(x, y);
+					mouse.sendDownEvent(0, x, y);
 				}
-			} else {
+			}
+			else {
 				game.rightMouseDown(x, y);
+				mouse.sendDownEvent(1, x, y);
 			}
 		}
 		
@@ -224,6 +234,7 @@ class Starter {
 			mouseX = x;
 			mouseY = y;
 			game.mouseMove(x, y);
+			mouse.sendMoveEvent(x, y);
 		}
 
 		//Lib.document.onkeydown = function(event : js.Event) {
@@ -284,57 +295,57 @@ class Starter {
 		switch (lastPressedKey) {
 		case 8:
 			game.keyDown(Key.BACKSPACE, "");
-			keyboard._sendDownEvent(Key.BACKSPACE, "");
+			keyboard.sendDownEvent(Key.BACKSPACE, "");
 			event.preventDefault();
 		case 9:
 			game.keyDown(Key.TAB, "");
-			keyboard._sendDownEvent(Key.TAB, "");
+			keyboard.sendDownEvent(Key.TAB, "");
 			event.preventDefault();
 		case 13:
 			game.keyDown(Key.ENTER, "");
-			keyboard._sendDownEvent(Key.ENTER, "");
+			keyboard.sendDownEvent(Key.ENTER, "");
 			event.preventDefault();
 		case 16:
 			game.keyDown(Key.SHIFT, "");
-			keyboard._sendDownEvent(Key.SHIFT, "");
+			keyboard.sendDownEvent(Key.SHIFT, "");
 			//trace ("SHIFT DOWN (keyDown)");
 			event.preventDefault();
 		case 17:
 			game.keyDown(Key.CTRL, "");
-			keyboard._sendDownEvent(Key.CTRL, "");
+			keyboard.sendDownEvent(Key.CTRL, "");
 			event.preventDefault();
 		case 18:
 			game.keyDown(Key.ALT, "");
-			keyboard._sendDownEvent(Key.ALT, "");
+			keyboard.sendDownEvent(Key.ALT, "");
 			event.preventDefault();
 		case 27:
 			game.keyDown(Key.ESC, "");
-			keyboard._sendDownEvent(Key.ESC, "");
+			keyboard.sendDownEvent(Key.ESC, "");
 			event.preventDefault();
 		case 32:
 			game.keyDown(Key.CHAR, " ");
-			keyboard._sendDownEvent(Key.CHAR, " ");
+			keyboard.sendDownEvent(Key.CHAR, " ");
 			lastPressedKey = 0;
 			event.preventDefault(); // don't scroll down in IE
 		case 46:
 			game.keyDown(Key.DEL, "");
-			keyboard._sendDownEvent(Key.DEL, "");
+			keyboard.sendDownEvent(Key.DEL, "");
 			event.preventDefault();
 		case 38:
 			game.buttonDown(Button.UP);
-			keyboard._sendDownEvent(Key.UP, "");
+			keyboard.sendDownEvent(Key.UP, "");
 			event.preventDefault();
 		case 40:
 			game.buttonDown(Button.DOWN);
-			keyboard._sendDownEvent(Key.DOWN, "");
+			keyboard.sendDownEvent(Key.DOWN, "");
 			event.preventDefault();
 		case 37:
 			game.buttonDown(Button.LEFT);
-			keyboard._sendDownEvent(Key.LEFT, "");
+			keyboard.sendDownEvent(Key.LEFT, "");
 			event.preventDefault();
 		case 39:
 			game.buttonDown(Button.RIGHT);
-			keyboard._sendDownEvent(Key.RIGHT, "");
+			keyboard.sendDownEvent(Key.RIGHT, "");
 			event.preventDefault();
 		default:
 			if (!event.altKey) {
@@ -349,7 +360,7 @@ class Starter {
 				pressedKeyToChar[lastPressedKey] = char;
 				//trace ('"$char" DOWN');
 				game.keyDown(Key.CHAR, char);
-				keyboard._sendDownEvent(Key.CHAR, char);
+				keyboard.sendDownEvent(Key.CHAR, char);
 				lastPressedKey = 0;
 			}
 		}
@@ -374,7 +385,7 @@ class Starter {
 			checkKeyShift(event);
 			
 			game.keyDown(Key.CHAR, char);
-			keyboard._sendDownEvent(Key.CHAR, char);
+			keyboard.sendDownEvent(Key.CHAR, char);
 			//trace ('"$char" DOWN');
 			pressedKeyToChar[lastPressedKey] = char;
 			
@@ -383,7 +394,7 @@ class Starter {
 		else if (event.char != null) { // IE
 			if (event.char != "") { // Gecko (planned)
 				game.keyDown(Key.CHAR, event.char);
-				keyboard._sendDownEvent(Key.CHAR, event.char);
+				keyboard.sendDownEvent(Key.CHAR, event.char);
 				//trace ('"${event.char}" DOWN');
 				pressedKeyToChar[lastPressedKey] = event.char;
 			}
@@ -405,49 +416,49 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyUp(Key.BACKSPACE, "");
-			keyboard._sendUpEvent(Key.BACKSPACE, "");
+			keyboard.sendUpEvent(Key.BACKSPACE, "");
 		case 9:
 			game.keyUp(Key.TAB, "");
-			keyboard._sendUpEvent(Key.TAB, "");
+			keyboard.sendUpEvent(Key.TAB, "");
 		case 13:
 			game.keyUp(Key.ENTER, "");
-			keyboard._sendUpEvent(Key.ENTER, "");
+			keyboard.sendUpEvent(Key.ENTER, "");
 		case 16:
 			game.keyUp(Key.SHIFT, "");
-			keyboard._sendUpEvent(Key.SHIFT, "");
+			keyboard.sendUpEvent(Key.SHIFT, "");
 			//trace ("SHIFT UP (keyUp)");
 		case 17:
 			game.keyUp(Key.CTRL, "");
-			keyboard._sendUpEvent(Key.CTRL, "");
+			keyboard.sendUpEvent(Key.CTRL, "");
 		case 18:
 			game.keyUp(Key.ALT, "");
-			keyboard._sendUpEvent(Key.ALT, "");
+			keyboard.sendUpEvent(Key.ALT, "");
 		case 27:
 			game.keyUp(Key.ESC, "");
-			keyboard._sendUpEvent(Key.ESC, "");
+			keyboard.sendUpEvent(Key.ESC, "");
 		case 32:
 			game.keyUp(Key.CHAR, " ");
-			keyboard._sendUpEvent(Key.CHAR, " ");
+			keyboard.sendUpEvent(Key.CHAR, " ");
 		case 46:
 			game.keyUp(Key.DEL, "");
-			keyboard._sendUpEvent(Key.DEL, "");
+			keyboard.sendUpEvent(Key.DEL, "");
 		case 38:
 			game.buttonUp(Button.UP);
-			keyboard._sendUpEvent(Key.UP, "");
+			keyboard.sendUpEvent(Key.UP, "");
 		case 40:
 			game.buttonUp(Button.DOWN);
-			keyboard._sendUpEvent(Key.DOWN, "");
+			keyboard.sendUpEvent(Key.DOWN, "");
 		case 37:
 			game.buttonUp(Button.LEFT);
-			keyboard._sendUpEvent(Key.LEFT, "");
+			keyboard.sendUpEvent(Key.LEFT, "");
 		case 39:
 			game.buttonUp(Button.RIGHT);
-			keyboard._sendUpEvent(Key.RIGHT, "");
+			keyboard.sendUpEvent(Key.RIGHT, "");
 		}
 		
 		if (pressedKeyToChar[event.keyCode] != null) {
 			game.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
-			keyboard._sendUpEvent(Key.CHAR, pressedKeyToChar[event.keyCode]);
+			keyboard.sendUpEvent(Key.CHAR, pressedKeyToChar[event.keyCode]);
 			//trace ('"${pressedKeyToChar[event.keyCode]}" UP');
 			pressedKeyToChar[event.keyCode] = null;
 		}

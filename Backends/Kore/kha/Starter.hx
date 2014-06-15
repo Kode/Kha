@@ -1,18 +1,23 @@
 package kha;
 
 import kha.Game;
+import kha.input.Keyboard;
 import kha.Key;
 import kha.Loader;
 import kha.input.Sensor;
 import kha.input.SensorType;
 
 class Starter {
-	static var game: Game;
-	static var painter: ShaderPainter;
+	private static var game: Game;
+	private static var painter: ShaderPainter;
+	private static var keyboard: Keyboard;
+	private static var mouse: kha.input.Mouse;
 	
 	public function new() {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
+		keyboard = new Keyboard();
+		mouse = new kha.input.Mouse();
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -84,74 +89,92 @@ class Starter {
 	
 	public static function pushChar(charCode: Int): Void {
 		game.keyDown(Key.CHAR, String.fromCharCode(charCode));
+		keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	public static function releaseChar(charCode: Int): Void {
 		game.keyUp(Key.CHAR, String.fromCharCode(charCode));
+		keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	public static function pushShift(): Void {
 		game.keyDown(Key.SHIFT, null);
+		keyboard.sendDownEvent(Key.SHIFT, null);
 	}
 	
 	public static function releaseShift(): Void {
 		game.keyUp(Key.SHIFT, null);
+		keyboard.sendUpEvent(Key.SHIFT, null);
 	}
 	
 	public static function pushBackspace(): Void {
 		game.keyDown(Key.BACKSPACE, null);
+		keyboard.sendDownEvent(Key.BACKSPACE, null);
 	}
 	
 	public static function releaseBackspace(): Void {
 		game.keyUp(Key.BACKSPACE, null);
+		keyboard.sendUpEvent(Key.BACKSPACE, null);
 	}
 	
 	public static function pushTab(): Void {
 		game.keyDown(Key.TAB, null);
+		keyboard.sendDownEvent(Key.TAB, null);
 	}
 	
 	public static function releaseTab(): Void {
 		game.keyUp(Key.TAB, null);
+		keyboard.sendUpEvent(Key.TAB, null);
 	}
 
 	public static function pushEnter(): Void {
 		game.keyDown(Key.ENTER, null);
+		keyboard.sendDownEvent(Key.ENTER, null);
 	}
 	
 	public static function releaseEnter(): Void {
 		game.keyUp(Key.ENTER, null);
+		keyboard.sendUpEvent(Key.ENTER, null);
 	}
 	
 	public static function pushControl(): Void {
 		game.keyDown(Key.CTRL, null);
+		keyboard.sendDownEvent(Key.CTRL, null);
 	}
 	
 	public static function releaseControl(): Void {
 		game.keyUp(Key.CTRL, null);
+		keyboard.sendUpEvent(Key.CTRL, null);
 	}
 	
 	public static function pushAlt(): Void {
 		game.keyDown(Key.ALT, null);
+		keyboard.sendDownEvent(Key.ALT, null);
 	}
 	
 	public static function releaseAlt(): Void {
 		game.keyUp(Key.ALT, null);
+		keyboard.sendUpEvent(Key.ALT, null);
 	}
 	
 	public static function pushEscape(): Void {
 		game.keyDown(Key.ESC, null);
+		keyboard.sendDownEvent(Key.ESC, null);
 	}
 	
 	public static function releaseEscape(): Void {
 		game.keyUp(Key.ESC, null);
+		keyboard.sendUpEvent(Key.ESC, null);
 	}
 	
 	public static function pushDelete(): Void {
 		game.keyDown(Key.DEL, null);
+		keyboard.sendDownEvent(Key.DEL, null);
 	}
 	
 	public static function releaseDelete(): Void {
 		game.keyUp(Key.DEL, null);
+		keyboard.sendUpEvent(Key.DEL, null);
 	}
 	
 	public static var mouseX: Int;
@@ -161,41 +184,48 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseDown(x, y);
+		mouse.sendDownEvent(0, x, y);
 	}
 
 	public static function mouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.mouseUp(x, y);
+		mouse.sendUpEvent(0, x, y);
 	}
 	
 	public static function rightMouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.rightMouseDown(x, y);
+		mouse.sendDownEvent(1, x, y);
 	}
 
 	public static function rightMouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.rightMouseUp(x, y);
+		mouse.sendUpEvent(1, x, y);
 	}
 	
 	public static function middleMouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.middleMouseDown(x, y);
+		mouse.sendDownEvent(2, x, y);
 	}
 
 	public static function middleMouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.middleMouseUp(x, y);
+		mouse.sendDownEvent(2, x, y);
 	}
 	
 	public static function mouseMove(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.mouseMove(x, y);
+		mouse.sendMoveEvent(x, y);
 	}
 }

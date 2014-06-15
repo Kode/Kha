@@ -32,6 +32,7 @@ class Starter {
 	private var stage: Stage;
 	private var stage3D: Stage3D;
 	private var keyboard: Keyboard;
+	private var mouse: kha.input.Mouse;
 	public static var context: Context3D;
 	
 	public function new() {
@@ -66,6 +67,7 @@ class Starter {
 		context = stage3D.context3D;
 		context.configureBackBuffer(game.width, game.height, 0, false);
 		keyboard = new Keyboard();
+		mouse = new kha.input.Mouse();
 		Sys.init(context);
 		#if debug
 		context.enableErrorChecking = true;
@@ -103,52 +105,52 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyDown(Key.BACKSPACE, "");
-			keyboard._sendDownEvent(Key.BACKSPACE, "");
+			keyboard.sendDownEvent(Key.BACKSPACE, "");
 		case 9:
 			game.keyDown(Key.TAB, "");
-			keyboard._sendDownEvent(Key.TAB, "");
+			keyboard.sendDownEvent(Key.TAB, "");
 		case 13:
 			game.keyDown(Key.ENTER, "");
-			keyboard._sendDownEvent(Key.ENTER, "");
+			keyboard.sendDownEvent(Key.ENTER, "");
 		case 16:
 			game.keyDown(Key.SHIFT, "");
-			keyboard._sendDownEvent(Key.SHIFT, "");
+			keyboard.sendDownEvent(Key.SHIFT, "");
 		case 17:
 			game.keyDown(Key.CTRL, "");
-			keyboard._sendDownEvent(Key.CTRL, "");
+			keyboard.sendDownEvent(Key.CTRL, "");
 		case 18:
 			game.keyDown(Key.ALT, "");
-			keyboard._sendDownEvent(Key.ALT, "");
+			keyboard.sendDownEvent(Key.ALT, "");
 		case 27:
 			game.keyDown(Key.ESC, "");
-			keyboard._sendDownEvent(Key.ESC, "");
+			keyboard.sendDownEvent(Key.ESC, "");
 		case 46:
 			game.keyDown(Key.DEL, "");
-			keyboard._sendDownEvent(Key.DEL, "");
+			keyboard.sendDownEvent(Key.DEL, "");
 		case 38:
 			game.buttonDown(Button.UP);
-			keyboard._sendDownEvent(Key.UP, "");
+			keyboard.sendDownEvent(Key.UP, "");
 		case 40:
 			game.buttonDown(Button.DOWN);
-			keyboard._sendDownEvent(Key.DOWN, "");
+			keyboard.sendDownEvent(Key.DOWN, "");
 		case 37:
 			game.buttonDown(Button.LEFT);
-			keyboard._sendDownEvent(Key.LEFT, "");
+			keyboard.sendDownEvent(Key.LEFT, "");
 		case 39:
 			game.buttonDown(Button.RIGHT);
-			keyboard._sendDownEvent(Key.RIGHT, "");
+			keyboard.sendDownEvent(Key.RIGHT, "");
 		case 65:
 			game.buttonDown(Button.BUTTON_1); // This is also an 'a'
 			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
-			keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonDown(Button.BUTTON_2); // This is also an 's'
 			game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
-			keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
 			if (event.charCode != 0) {
 				game.keyDown(Key.CHAR, String.fromCharCode(event.charCode));
-				keyboard._sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+				keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
 			}
 		}
 	}
@@ -158,52 +160,52 @@ class Starter {
 		switch (event.keyCode) {
 		case 8:
 			game.keyUp(Key.BACKSPACE, "");
-			keyboard._sendUpEvent(Key.BACKSPACE, "");
+			keyboard.sendUpEvent(Key.BACKSPACE, "");
 		case 9:
 			game.keyUp(Key.TAB, "");
-			keyboard._sendUpEvent(Key.TAB, "");
+			keyboard.sendUpEvent(Key.TAB, "");
 		case 13:
 			game.keyUp(Key.ENTER, "");
-			keyboard._sendUpEvent(Key.ENTER, "");
+			keyboard.sendUpEvent(Key.ENTER, "");
 		case 16:
 			game.keyUp(Key.SHIFT, "");
-			keyboard._sendUpEvent(Key.SHIFT, "");
+			keyboard.sendUpEvent(Key.SHIFT, "");
 		case 17:
 			game.keyUp(Key.CTRL, "");
-			keyboard._sendUpEvent(Key.CTRL, "");
+			keyboard.sendUpEvent(Key.CTRL, "");
 		case 18:
 			game.keyUp(Key.ALT, "");
-			keyboard._sendUpEvent(Key.ALT, "");
+			keyboard.sendUpEvent(Key.ALT, "");
 		case 27:
 			game.keyUp(Key.ESC, "");
-			keyboard._sendUpEvent(Key.ESC, "");
+			keyboard.sendUpEvent(Key.ESC, "");
 		case 46:
 			game.keyUp(Key.DEL, "");
-			keyboard._sendUpEvent(Key.DEL, "");
+			keyboard.sendUpEvent(Key.DEL, "");
 		case 38:
 			game.buttonUp(Button.UP);
-			keyboard._sendUpEvent(Key.UP, "");
+			keyboard.sendUpEvent(Key.UP, "");
 		case 40:
 			game.buttonUp(Button.DOWN);
-			keyboard._sendUpEvent(Key.DOWN, "");
+			keyboard.sendUpEvent(Key.DOWN, "");
 		case 37:
 			game.buttonUp(Button.LEFT);
-			keyboard._sendUpEvent(Key.LEFT, "");
+			keyboard.sendUpEvent(Key.LEFT, "");
 		case 39:
 			game.buttonUp(Button.RIGHT);
-			keyboard._sendUpEvent(Key.RIGHT, "");
+			keyboard.sendUpEvent(Key.RIGHT, "");
 		case 65:
 			game.buttonUp(Button.BUTTON_1); // This is also an 'a'
 			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
-			keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		case 83:
 			game.buttonUp(Button.BUTTON_2); // This is also an 's'
 			game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
-			keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
 		default:
 			if (event.charCode != 0) {
 				game.keyUp(Key.CHAR, String.fromCharCode(event.charCode));
-				keyboard._sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+				keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
 			}
 		}
 	}
@@ -219,31 +221,37 @@ class Starter {
 	function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseDown(mouseX, mouseY);
+		mouse.sendDownEvent(0, mouseX, mouseY);
 	}
 	
 	function mouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseUp(mouseX, mouseY);
+		mouse.sendUpEvent(0, mouseX, mouseY);
 	}
 	
 	function rightMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.rightMouseDown(mouseX, mouseY);
+		mouse.sendDownEvent(1, mouseX, mouseY);
 	}
 	
 	function rightMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.rightMouseUp(mouseX, mouseY);
+		mouse.sendUpEvent(1, mouseX, mouseY);
 	}
 	
 	function mouseMoveHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseMove(mouseX, mouseY);
+		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 
 	function mouseWheelHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		game.mouseWheel(event.delta);
+		mouse.sendWheelEvent(event.delta);
 	}
 	
 	private function resizeHandler(event: Event): Void {
