@@ -9,6 +9,7 @@ import js.html.EventListener;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import kha.Game;
+import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.Key;
 import kha.Loader;
@@ -16,27 +17,40 @@ import js.Lib;
 import js.Browser;
 import js.html.DOMWindow;
 
-
+class GamepadStates {
+	public var axes: Array<Float>;
+	public var buttons: Array<Float>;
+	
+	public function new() {
+		axes = new Array<Float>();
+		buttons = new Array<Float>();
+	}
+}
 
 class Starter {
-	static var game : Game;
-	static var painter : Painter;
-	static var pressedKeys : Array<Bool>;
-	static var lastPressedKey : Int;
-	static var pressedKeyToChar : Array<String>;
-	static var buttonspressed : Array<Bool>;
-	static var leftMouseCtrlDown: Bool = false;
+	private static var game: Game;
+	private static var painter: Painter;
+	private static var pressedKeys: Array<Bool>;
+	private static var lastPressedKey: Int;
+	private static var pressedKeyToChar: Array<String>;
+	private static var buttonspressed: Array<Bool>;
+	private static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var gamepad: Gamepad;
+	private static var gamepadStates: Array<GamepadStates>;
 	
-	@:allow(kha.Scheduler) static var mouseX : Int;
-	@:allow(kha.Scheduler) static var mouseY : Int;
+	@:allow(kha.Scheduler) static var mouseX: Int;
+	@:allow(kha.Scheduler) static var mouseY: Int;
 	
 	public function new() {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
+		gamepad = new Gamepad();
+		gamepadStates = new Array<GamepadStates>();
+		gamepadStates.push(new GamepadStates());
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		lastPressedKey = null;
@@ -52,7 +66,7 @@ class Starter {
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 	
-	function checkGamepadButton(pad : Dynamic, num : Int, button : kha.Button) {
+	private function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
 				game.buttonUp(button);
@@ -63,6 +77,25 @@ class Starter {
 			if (pad.buttons[num] > 0.5) {
 				game.buttonDown(button);
 				buttonspressed[num] = true;
+			}
+		}
+	}
+	
+	private function checkGamepad(pad: Dynamic) {
+		for (i in 0...pad.axes.length) {
+			if (pad.axes[i] != null) {
+				if (gamepadStates[0].axes[i] != pad.axes[i]) {
+					gamepadStates[0].axes[i] = pad.axes[i];
+					gamepad.sendAxisEvent(i, pad.axes[i]);
+				}
+			}
+		}
+		for (i in 0...pad.buttons.length) {
+			if (pad.buttons[i] != null) {
+				if (gamepadStates[0].buttons[i] != pad.buttons[i].value) {
+					gamepadStates[0].buttons[i] = pad.buttons[i].value;
+					gamepad.sendButtonEvent(i, pad.buttons[i].value);
+				}
 			}
 		}
 	}
@@ -131,9 +164,8 @@ class Starter {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 			
-			var gamepads : Dynamic = untyped __js__("navigator.gamepads");
-			if (gamepads == null) gamepads = untyped __js__("navigator.webkitGamepads");
-			if (gamepads == null) gamepads = untyped __js__("navigator.mozGamepads");
+			var gamepads: Dynamic = untyped __js__("navigator.getGamepads && navigator.getGamepads()");
+			if (gamepads == null) gamepads = untyped __js__("navigator.webkitGetGamepads && navigator.webkitGetGamepads()");
 			if (gamepads != null) {
 				for (i in 0...gamepads.length) {
 					var pad = gamepads[i];
@@ -144,7 +176,11 @@ class Starter {
 						checkGamepadButton(pad, 13, Button.DOWN);
 						checkGamepadButton(pad, 14, Button.LEFT);
 						checkGamepadButton(pad, 15, Button.RIGHT);
-					}
+						
+						if (pad.index == 0) {
+							checkGamepad(pad);
+						}
+					}					
 				}
 			}
 			
