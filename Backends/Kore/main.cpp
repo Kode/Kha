@@ -1,6 +1,7 @@
 #include <Kore/pch.h>
 #include <Kore/Application.h>
 #include <Kore/Graphics/Graphics.h>
+#include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/KeyEvent.h>
 #include <Kore/Input/Mouse.h>
@@ -160,6 +161,14 @@ namespace {
 		Sensor_obj::_changed(1, x, y, z);
 	}
 
+	void gamepadAxis(int axis, float value) {
+		Starter_obj::gamepadAxis(axis, value);
+	}
+
+	void gamepadButton(int button, float value) {
+		Starter_obj::gamepadButton(button, value);
+	}
+
 	void update() {
 		Kore::Audio::update();
 		Kore::Graphics::begin();
@@ -216,6 +225,8 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->PressMiddle = middleMouseDown;
 	Kore::Mouse::the()->ReleaseMiddle = middleMouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
+	Kore::Gamepad::get(0)->Axis = gamepadAxis;
+	Kore::Gamepad::get(0)->Button = gamepadButton;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
