@@ -1,6 +1,7 @@
 package kha;
 
 import kha.Game;
+import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.Key;
 import kha.Loader;
@@ -12,12 +13,14 @@ class Starter {
 	private static var painter: ShaderPainter;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var gamepad: Gamepad;
 	
 	public function new() {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
+		gamepad = new Gamepad();
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -227,5 +230,13 @@ class Starter {
 		mouseY = y;
 		game.mouseMove(x, y);
 		mouse.sendMoveEvent(x, y);
+	}
+	
+	public static function gamepadAxis(axis: Int, value: Float): Void {
+		gamepad.sendAxisEvent(axis, value);
+	}
+	
+	public static function gamepadButton(button: Int, value: Float): Void {
+		gamepad.sendButtonEvent(button, value);
 	}
 }
