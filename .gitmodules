@@ -18,3 +18,7 @@
 	path = KoreVideo
 	url = ../KoreVideo
 	branch = master
+[submodule "Tools/khamake"]
+	path = Tools/khamake
+	url = ../khamake
+	branch = master
