@@ -14,6 +14,7 @@ import kha.graphics.Usage;
 import kha.graphics.VertexBuffer;
 import kha.graphics.VertexData;
 import kha.graphics.VertexStructure;
+import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 
@@ -173,7 +174,7 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation, opacity: Float, color: Color): Void {
+	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, ox: Float = 0, oy: Float = 0, angle:Float, opacity: Float, color: Color): Void {
 		var tex = cast(img, Texture);
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -185,11 +186,11 @@ class ImageShaderPainter {
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, opacity);
 		
-		if (rotation != null) {
-			var lefttop = rotate(left, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
-			var rightbottom = rotate(right, bottom, left + rotation.center.x, top + rotation.center.y, rotation.angle);
-			var righttop = rotate(right, top, left + rotation.center.x, top + rotation.center.y, rotation.angle);
-			var leftbottom = rotate(left, bottom, left + rotation.center.x, top + rotation.center.y, rotation.angle);
+		if (angle != 0.0) {
+			var lefttop = rotate(left, top, left + ox, top + oy, angle);
+			var rightbottom = rotate(right, bottom, left + ox, top + oy,angle);
+			var righttop = rotate(right, top, left + ox, top + oy, angle);
+			var leftbottom = rotate(left, bottom, left + ox, top + oy, angle);
 			
 			var baseIndex: Int = bufferIndex * vertexSize * 4;
 			rectVertices[baseIndex +  0] = leftbottom.x;
@@ -718,11 +719,11 @@ class ShaderPainter extends Painter {
 		imagePainter.drawImage(img, tx + x, ty + y, opacity, this.color);
 	}
 	
-	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
+	public override function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0): Void {
 		coloredPainter.end();
 		textPainter.end();
 		
-		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh, rotation, opacity, this.color);
+		imagePainter.drawImage2(img, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh,ox,oy, angle, opacity, this.color);
 	}
 	
 	public override function setColor(color: Color): Void {
@@ -870,38 +871,38 @@ class ShaderPainter extends Painter {
 		case RotationNone:
 			if (Sys.graphics.renderTargetsInvertedY()) {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, 0,0,0, 1, Color.White);
 			}
 			else {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh,0,0,0, 1, Color.White);
 			}
 		case Rotation90:
 			if (Sys.graphics.renderTargetsInvertedY()) {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, 0,0, (Math.PI / 2), 1, Color.White);
 			}
 			else {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh,0,0,(Math.PI / 2), 1, Color.White);
 			}
 		case Rotation180:
 			if (Sys.graphics.renderTargetsInvertedY()) {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh,(scalew / 2),(scaleh / 2), Math.PI, 1, Color.White);
 			}
 			else {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, (scalew / 2), (scaleh / 2), Math.PI, 1, Color.White);
 			}
 		case Rotation270:
 			if (Sys.graphics.renderTargetsInvertedY()) {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, 0, 0, (Math.PI * 3 / 2), 1, Color.White);
 			}
 			else {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
+				imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, 0, 0, (Math.PI * 3 / 2), 1, Color.White);
 			}
 		}
 		imagePainter.end();

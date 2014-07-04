@@ -16,7 +16,9 @@ class Sprite {
 	public var collides: Bool;
 	public var z: Int;
 	public var removed: Bool = false;
-	public var rotation: Rotation = null;
+	public var angle: Float = 0.0;
+	public var originX: Float = 0.0;
+	public var originY: Float = 0.0;
 	public var scaleX: Float = 1;
 	public var scaleY: Float = 1;
 	
@@ -63,7 +65,7 @@ class Sprite {
 	public function render(painter: Painter): Void {
 		if (image != null) {
 			painter.setColor(Color.White);
-			painter.drawImage2(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x * scaleX), Math.round(y - collider.y * scaleY), width, height, rotation);
+			painter.drawImage2(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x * scaleX), Math.round(y - collider.y * scaleY), width, height,angle,originX,originY);
 		}
 		#if debug
 			painter.setColor(Color.fromBytes(255, 0, 0));

@@ -2,7 +2,7 @@ package kha;
 
 class Painter {
 	public function drawImage(img: Image, x: Float, y: Float): Void { }
-	public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void { }
+	public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0): Void { }
 	public function setColor(color: Color): Void { }
 	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
 	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }

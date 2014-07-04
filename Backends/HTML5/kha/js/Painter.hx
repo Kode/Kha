@@ -56,15 +56,15 @@ class Painter extends kha.Painter {
 		canvas.globalAlpha = 1;
 	}
 	
-	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null) {
+	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0) {
 		canvas.globalAlpha = opacity;
 		try {
-			if (rotation != null) {
+			if (angle != 0.0) {
 				canvas.save();
-				canvas.translate( tx + dx + rotation.center.x, ty + dy + rotation.center.y );
-				canvas.rotate(rotation.angle);
-				var x = -rotation.center.x;
-				var y = -rotation.center.y;
+				canvas.translate( tx + dx + ox, ty + dy + oy );
+				canvas.rotate(angle);
+				var x = -ox;
+				var y = -oy;
 				if (dw < 0) {
 					canvas.scale( -1, 1);
 					x -= dw;
