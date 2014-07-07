@@ -168,13 +168,39 @@ namespace {
 	void gamepadButton(int button, float value) {
 		Starter_obj::gamepadButton(button, value);
 	}
+	
+	bool visible = true;
 
 	void update() {
 		Kore::Audio::update();
-		Kore::Graphics::begin();
-		Starter_obj::frame();
-		Kore::Graphics::end();
-		Kore::Graphics::swapBuffers();
+		if (visible) {
+			Kore::Graphics::begin();
+			Starter_obj::frame();
+			Kore::Graphics::end();
+			Kore::Graphics::swapBuffers();
+		}
+	}
+	
+	void foreground() {
+		visible = true;
+		Starter_obj::foreground();
+	}
+	
+	void resume() {
+		Starter_obj::resume();
+	}
+
+	void pause() {
+		Starter_obj::pause();
+	}
+	
+	void background() {
+		visible = false;
+		Starter_obj::background();
+	}
+	
+	void shutdown() {
+		Starter_obj::shutdown();
 	}
 }
 
@@ -205,6 +231,11 @@ int kore(int argc, char** argv) {
 	Kore::Mixer::init();
 	Kore::Audio::init();
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+	app->foregroundCallback = foreground;
+	app->resumeCallback = resume;
+	app->pauseCallback = pause;
+	app->backgroundCallback = background;
+	app->shutdownCallback = shutdown;
 	app->setCallback(update);
 	
 	Kore::log(Kore::Info, "Initializing Haxe libraries");

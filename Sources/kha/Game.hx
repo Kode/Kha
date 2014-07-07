@@ -171,5 +171,11 @@ class Game {
 	public function mouseMove     (x: Int, y: Int): Void { }
 	public function mouseWheel    (delta: Int):     Void { }
 	
-	public function onClose(): Void { }
+	public function onForeground(): Void { }
+	public function onResume(): Void { }
+	public function onPause(): Void { }
+	public function onBackground(): Void { }
+	public function onShutdown(): Void { }
+
+	public function onClose(): Void { } // check me out
 }

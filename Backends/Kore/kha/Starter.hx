@@ -239,4 +239,24 @@ class Starter {
 	public static function gamepadButton(button: Int, value: Float): Void {
 		gamepad.sendButtonEvent(button, value);
 	}
+
+	public static function foreground(): Void {
+		game.onForeground();
+	}
+
+	public static function resume(): Void {
+		game.onResume();
+	}
+
+	public static function pause(): Void {
+		game.onPause();
+	}
+
+	public static function background(): Void {
+		game.onBackground();
+	}
+
+	public static function shutdown(): Void {
+		game.onShutdown();
+	}
 }
