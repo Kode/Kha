@@ -125,32 +125,16 @@ namespace {
 		}
 	}
 
-	void mouseDown(Kore::MouseEvent event) {
-		Starter_obj::mouseDown(event.x(), event.y());
+	void mouseDown(int button, int x, int y) {
+		Starter_obj::mouseDown(button, x, y);
 	}
 
-	void mouseUp(Kore::MouseEvent event) {
-		Starter_obj::mouseUp(event.x(), event.y());
+	void mouseUp(int button, int x, int y) {
+		Starter_obj::mouseUp(button, x, y);
 	}
 
-	void mouseMove(Kore::MouseEvent event) {
-		Starter_obj::mouseMove(event.x(), event.y());
-	}
-
-	void rightMouseDown(Kore::MouseEvent event) {
-		Starter_obj::rightMouseDown(event.x(), event.y());
-	}
-
-	void rightMouseUp(Kore::MouseEvent event) {
-		Starter_obj::rightMouseUp(event.x(), event.y());
-	}
-
-	void middleMouseDown(Kore::MouseEvent event) {
-		Starter_obj::middleMouseDown(event.x(), event.y());
-	}
-
-	void middleMouseUp(Kore::MouseEvent event) {
-		Starter_obj::middleMouseUp(event.x(), event.y());
+	void mouseMove(int x, int y) {
+		Starter_obj::mouseMove(x, y);
 	}
 
 	void accelerometerChanged(float x, float y, float z) {
@@ -249,12 +233,8 @@ int kore(int argc, char** argv) {
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
-	Kore::Mouse::the()->PressLeft = mouseDown;
-	Kore::Mouse::the()->ReleaseLeft = mouseUp;
-	Kore::Mouse::the()->PressRight = rightMouseDown;
-	Kore::Mouse::the()->ReleaseRight = rightMouseUp;
-	Kore::Mouse::the()->PressMiddle = middleMouseDown;
-	Kore::Mouse::the()->ReleaseMiddle = middleMouseUp;
+	Kore::Mouse::the()->Press = mouseDown;
+	Kore::Mouse::the()->Release = mouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
 	Kore::Gamepad::get(0)->Axis = gamepadAxis;
 	Kore::Gamepad::get(0)->Button = gamepadButton;

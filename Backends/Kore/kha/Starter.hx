@@ -183,46 +183,18 @@ class Starter {
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
-	public static function mouseDown(x: Int, y: Int): Void {
+	public static function mouseDown(button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.mouseDown(x, y);
-		mouse.sendDownEvent(0, x, y);
+		mouse.sendDownEvent(button, x, y);
 	}
 
-	public static function mouseUp(x: Int, y: Int): Void {
+	public static function mouseUp(button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		game.mouseUp(x, y);
-		mouse.sendUpEvent(0, x, y);
-	}
-	
-	public static function rightMouseDown(x: Int, y: Int): Void {
-		mouseX = x;
-		mouseY = y;
-		game.rightMouseDown(x, y);
-		mouse.sendDownEvent(1, x, y);
-	}
-
-	public static function rightMouseUp(x: Int, y: Int): Void {
-		mouseX = x;
-		mouseY = y;
-		game.rightMouseUp(x, y);
-		mouse.sendUpEvent(1, x, y);
-	}
-	
-	public static function middleMouseDown(x: Int, y: Int): Void {
-		mouseX = x;
-		mouseY = y;
-		game.middleMouseDown(x, y);
-		mouse.sendDownEvent(2, x, y);
-	}
-
-	public static function middleMouseUp(x: Int, y: Int): Void {
-		mouseX = x;
-		mouseY = y;
-		game.middleMouseUp(x, y);
-		mouse.sendDownEvent(2, x, y);
+		mouse.sendUpEvent(button, x, y);
 	}
 	
 	public static function mouseMove(x: Int, y: Int): Void {

@@ -156,12 +156,15 @@ class Game {
 		}
 	}
 	
+	// deprecated - please use kha.input.Gamepade
 	public function buttonDown(button: Button): Void { }
 	public function buttonUp  (button: Button): Void { }
 	
+	// deprecated - please use kha.input.Keyboard
 	public function keyDown(key: Key, char: String): Void { }
 	public function keyUp  (key: Key, char: String): Void { }
 	
+	// deprecated - please use kha.input.Mouse and kha.input.Surface
 	public function mouseDown     (x: Int, y: Int): Void { }
 	public function mouseUp       (x: Int, y: Int): Void { }
 	public function rightMouseDown(x: Int, y: Int): Void { }
