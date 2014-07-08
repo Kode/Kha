@@ -3,6 +3,7 @@ package kha;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.Surface;
 import kha.Key;
 import kha.Loader;
 import kha.input.Sensor;
@@ -14,6 +15,7 @@ class Starter {
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
+	private static var surface: Surface;
 	
 	public function new() {
 		haxe.Timer.stamp();
@@ -21,6 +23,7 @@ class Starter {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
+		surface = new Surface();
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -210,6 +213,18 @@ class Starter {
 	
 	public static function gamepadButton(button: Int, value: Float): Void {
 		gamepad.sendButtonEvent(button, value);
+	}
+	
+	public static function touchStart(index: Int, x: Int, y: Int): Void {
+		surface.sendTouchStartEvent(index, x, y);
+	}
+	
+	public static function touchEnd(index: Int, x: Int, y: Int): Void {
+		surface.sendTouchEndEvent(index, x, y);
+	}
+	
+	public static function touchMove(index: Int, x: Int, y: Int): Void {
+		surface.sendMoveEvent(index, x, y);
 	}
 
 	public static function foreground(): Void {

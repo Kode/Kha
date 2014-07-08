@@ -2,7 +2,7 @@ package kha.input;
 
 @:allow(kha.Starter)
 @:expose
-class Mouse {	
+class Mouse {
 	public static function get(num: Int = 0): Mouse {
 		if (num != 0) return null;
 		return instance;
