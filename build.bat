@@ -4,7 +4,7 @@ cd ..\
 
 echo ___________________________________
 echo Hake builder
-echo type q to quite.
+echo type q to quit.
 echo ___________________________________
 ::Target input.
 :platform_input
