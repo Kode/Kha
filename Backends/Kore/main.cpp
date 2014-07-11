@@ -206,6 +206,7 @@ int kore(int argc, char** argv) {
 
 	int width;
 	int height;
+	bool fullscreen = false;
 	std::string name;
 	
 	{
@@ -221,10 +222,11 @@ int kore(int argc, char** argv) {
 		name = game["name"].string();
 		width = game["width"].number();
 		height = game["height"].number();
+		if (game.has("fullscreen")) fullscreen = game["fullscreen"].boolean();
 		delete string;
 	}
 
-	Kore::Application* app = new Kore::Application(argc, argv, width, height, false, name.c_str());
+	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name.c_str());
 	Kore::Mixer::init();
 	Kore::Audio::init();
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
