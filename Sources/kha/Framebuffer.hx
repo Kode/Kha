@@ -1,5 +1,6 @@
 package kha;
 
+@:allow(kha.Starter)
 class Framebuffer {
 	public function new() {
 		

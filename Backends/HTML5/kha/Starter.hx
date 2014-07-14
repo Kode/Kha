@@ -11,6 +11,7 @@ import js.html.MouseEvent;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.js.CanvasGraphics;
 import kha.Key;
 import kha.Loader;
 import js.Lib;
@@ -30,6 +31,7 @@ class GamepadStates {
 class Starter {
 	private static var game: Game;
 	private static var painter: Painter;
+	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var lastPressedKey: Int;
 	private static var pressedKeyToChar: Array<String>;
@@ -132,6 +134,8 @@ class Starter {
 			var heightTransform: Float = canvas.height / Loader.the.height;
 			var transform: Float = Math.min(widthTransform, heightTransform);
 			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
+			frame = new Framebuffer();
+			frame.g2 = new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			canvas.getContext("2d").scale(transform, transform);
 		}
 		
@@ -187,7 +191,7 @@ class Starter {
 			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
-				Configuration.screen().render(painter);
+				Configuration.screen().render(frame);
 				if (Sys.gl != null) {
 					// Clear alpha for IE11
 					Sys.gl.clearColor(1, 1, 1, 1);
