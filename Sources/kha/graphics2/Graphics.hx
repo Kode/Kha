@@ -1,6 +1,7 @@
 package kha.graphics2;
 
 import kha.Color;
+import kha.Font;
 import kha.Image;
 import kha.math.Matrix3;
 
@@ -28,6 +29,22 @@ class Graphics {
 	
 	public var color(get, set): Color;
 	public var font(get, set): Font;
+	
+	public function get_color(): Color {
+		return Color.Black;
+	}
+	
+	public function set_color(color: Color): Color {
+		return Color.Black;
+	}
+	
+	public function get_font(): Font {
+		return null;
+	}
+	
+	public function set_font(font: Font): Font {
+		return null;
+	}
 	
 	public var transformation(get, set): Matrix3; // works on the top of the transformation stack
 	

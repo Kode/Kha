@@ -5,5 +5,5 @@ class Framebuffer {
 		
 	}
 	
-	public var g2(get, null);
+	public var g2(default, null): kha.graphics2.Graphics;
 }
