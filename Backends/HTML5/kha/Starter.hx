@@ -116,7 +116,7 @@ class Starter {
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		
-		try {
+		/*try {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
 				//Sys.gl.scale(transform, transform);
@@ -127,13 +127,19 @@ class Starter {
 		}
 		catch (e: Dynamic) {
 			trace(e);
-		}
+		}*/
 		if (painter == null) {
 			Sys.init(false);
 			var widthTransform: Float = canvas.width / Loader.the.width;
 			var heightTransform: Float = canvas.height / Loader.the.height;
 			var transform: Float = Math.min(widthTransform, heightTransform);
 			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
+		}
+		
+		{
+			var widthTransform: Float = canvas.width / Loader.the.width;
+			var heightTransform: Float = canvas.height / Loader.the.height;
+			var transform: Float = Math.min(widthTransform, heightTransform);
 			frame = new Framebuffer();
 			frame.g2 = new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			canvas.getContext("2d").scale(transform, transform);
