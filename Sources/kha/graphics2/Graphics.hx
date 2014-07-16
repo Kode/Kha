@@ -9,6 +9,10 @@ class Graphics {
 	public function begin(): Void { }
 	public function end(): Void { }
 	
+	//blending
+	//scaling
+	//draw/fillPolygon
+	
 	public function clear(): Void { }
 	public function drawImage(img: Image, x: Float, y: Float): Void {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
@@ -49,6 +53,7 @@ class Graphics {
 	public var transformation(get, set): Matrix3; // works on the top of the transformation stack
 	
 	public function pushTransformation(transformation: Matrix3): Void {
+		setTransformation(transformation);
 		transformations.push(transformation);
 	}
 	
@@ -61,12 +66,14 @@ class Graphics {
 	}
 	
 	public function set_transformation(transformation: Matrix3): Matrix3 {
+		setTransformation(transformation);
 		return transformations[transformations.length - 1] = transformation;
 	}
 	
 	public var opacity(get, set): Float; // works on the top of the opacity stack
 	
 	public function pushOpacity(opacity: Float): Void {
+		setOpacity(opacity);
 		opacities.push(opacity);
 	}
 	
@@ -79,6 +86,7 @@ class Graphics {
 	}
 	
 	public function set_opacity(opacity: Float): Float {
+		setOpacity(opacity);
 		return opacities[opacities.length - 1] = opacity;
 	}
 	
@@ -95,5 +103,13 @@ class Graphics {
 		transformations.push(Matrix3.identity());
 		opacities = new Array<Float>();
 		opacities.push(1);
+	}
+	
+	private function setTransformation(transformation: Matrix3): Void {
+		
+	}
+	
+	private function setOpacity(opacity: Float): Void {
+		
 	}
 }

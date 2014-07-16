@@ -5,13 +5,12 @@ import kha.Color;
 import kha.FontStyle;
 import kha.graphics2.Graphics;
 import kha.Kravur;
+import kha.math.Matrix3;
 import kha.Rotation;
 
 class CanvasGraphics extends Graphics {
 	var canvas: Dynamic;
 	var webfont: kha.js.Font;
-	var tx: Float;
-	var ty: Float;
 	var width: Int;
 	var height: Int;
 	private var myColor: Color;
@@ -22,8 +21,6 @@ class CanvasGraphics extends Graphics {
 		this.canvas = canvas;
 		this.width = width;
 		this.height = height;
-		tx = 0;
-		ty = 0;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
@@ -53,51 +50,34 @@ class CanvasGraphics extends Graphics {
 	
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
 		canvas.globalAlpha = opacity;
-		canvas.drawImage(cast(img, Image).image, tx + x, ty + y);
+		canvas.drawImage(cast(img, Image).image, x, y);
 		canvas.globalAlpha = 1;
 	}
 	
 	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) {
 		canvas.globalAlpha = opacity;
 		try {
-			/*if (rotation != null) {
+			if (dw < 0 || dh < 0) {
 				canvas.save();
-				canvas.translate( tx + dx + rotation.center.x, ty + dy + rotation.center.y );
-				canvas.rotate(rotation.angle);
-				var x = -rotation.center.x;
-				var y = -rotation.center.y;
+				canvas.translate(dx, dy);
+				var x = 0.0;
+				var y = 0.0;
 				if (dw < 0) {
-					canvas.scale( -1, 1);
-					x -= dw;
+					canvas.scale(-1, 1);
+					x = -dw;
 				}
 				if (dh < 0) {
-					canvas.scale( 1, -1);
-					y -= dh;
+					canvas.scale(1, -1);
+					y = -dh;
 				}
 				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, x, y, dw, dh);
 				canvas.restore();
-			} else {*/
-				if (dw < 0 || dh < 0) {
-					canvas.save();
-					canvas.translate( tx + dx, ty + dy );
-					var x = 0.0;
-					var y = 0.0;
-					if (dw < 0) {
-						canvas.scale( -1, 1);
-						x = -dw;
-					}
-					if (dh < 0) {
-						canvas.scale( 1, -1);
-						y = -dh;
-					}
-					canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, x, y, dw, dh);
-					canvas.restore();
-				} else {
-					canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, tx + dx, ty + dy, dw, dh);
-				}
-			//}
+			}
+			else {
+				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, dx, dy, dw, dh);
+			}
 		}
-		catch (ex : Dynamic) {
+		catch (ex: Dynamic) {
 			
 		}
 		canvas.globalAlpha = 1;
@@ -118,14 +98,14 @@ class CanvasGraphics extends Graphics {
 		canvas.beginPath();
 		var oldStrength = canvas.lineWidth;
 		canvas.lineWidth = Math.round(strength);
-		canvas.rect(tx + x, ty + y, width, height);
+		canvas.rect(x, y, width, height);
 		canvas.stroke();
 		canvas.lineWidth = oldStrength;
 	}
 	
 	override public function fillRect(x: Float, y: Float, width: Float, height: Float) {
 		canvas.globalAlpha = opacity * myColor.A;
-		canvas.fillRect(tx + x, ty + y, width, height);
+		canvas.fillRect(x, y, width, height);
 		canvas.globalAlpha = opacity;
 	}
 	
@@ -136,8 +116,8 @@ class CanvasGraphics extends Graphics {
 		var image = webfont.getImage(myColor);
 		if (image.width > 0) {
 			// the image created in getImage() is not imediately useable
-			var xpos = tx + x;
-			var ypos = ty + y;
+			var xpos = x;
+			var ypos = y;
 			for (i in 0...text.length) {
 				var q = webfont.kravur.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
 				if (q != null) {
@@ -163,8 +143,8 @@ class CanvasGraphics extends Graphics {
 		canvas.beginPath();
 		var oldWith = canvas.lineWidth;
 		canvas.lineWidth = Math.round(strength);
-		canvas.moveTo(tx + x1, ty + y1);
-		canvas.lineTo(tx + x2, ty + y2);
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
 		canvas.moveTo(0, 0);
 		canvas.stroke();
 		canvas.lineWidth = oldWith;
@@ -179,5 +159,10 @@ class CanvasGraphics extends Graphics {
 	
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		canvas.drawImage(cast(video, Video).element, x, y, width, height);
+	}
+	
+	override public function setTransformation(transformation: Matrix3): Void {
+		canvas.setTransform(transformation[0], transformation[3], transformation[1],
+			transformation[4], transformation[2], transformation[5]);
 	}
 }
