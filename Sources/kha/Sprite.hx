@@ -1,6 +1,7 @@
 package kha;
 
 import kha.graphics2.Graphics;
+import kha.math.Matrix3;
 
 @:expose
 class Sprite {
@@ -65,7 +66,9 @@ class Sprite {
 	public function render(g: Graphics): Void {
 		if (image != null) {
 			g.color = Color.White;
+			g.pushTransformation(Matrix3.rotation(0.1) * g.transformation);
 			g.drawScaledSubImage(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x * scaleX), Math.round(y - collider.y * scaleY), width, height);// , rotation);
+			g.popTransformation();
 		}
 		#if debug
 			g.color = Color.fromBytes(255, 0, 0);
