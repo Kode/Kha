@@ -1,5 +1,7 @@
 package kha;
 
+import kha.graphics2.Graphics;
+
 @:expose
 class Sprite {
 	private var image: Image;
@@ -60,16 +62,16 @@ class Sprite {
 		animation.next();
 	}
 	
-	public function render(painter: Painter): Void {
+	public function render(g: Graphics): Void {
 		if (image != null) {
-			painter.setColor(Color.White);
-			painter.drawImage2(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x * scaleX), Math.round(y - collider.y * scaleY), width, height, rotation);
+			g.color = Color.White;
+			g.drawScaledSubImage(image, Std.int(animation.get() * w) % image.width, Math.floor(animation.get() * w / image.width) * h, w, h, Math.round(x - collider.x * scaleX), Math.round(y - collider.y * scaleY), width, height);// , rotation);
 		}
 		#if debug
-			painter.setColor(Color.fromBytes(255, 0, 0));
-			painter.drawRect(x - collider.x * scaleX, y - collider.y * scaleY, width, height);
-			painter.setColor(Color.fromBytes(0, 255, 0));
-			painter.drawRect(tempcollider.x, tempcollider.y, tempcollider.width, tempcollider.height);
+			g.color = Color.fromBytes(255, 0, 0);
+			g.drawRect(x - collider.x * scaleX, y - collider.y * scaleY, width, height);
+			g.color = Color.fromBytes(0, 255, 0);
+			g.drawRect(tempcollider.x, tempcollider.y, tempcollider.width, tempcollider.height);
 		#end
 	}
 	

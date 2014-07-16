@@ -1,5 +1,6 @@
 package kha;
 
+import kha.graphics2.Graphics;
 import kha.math.Vector2;
 
 @:expose
@@ -25,15 +26,15 @@ class Tilemap {
 		return r < 0 ? r + b : r;
 	}
 	
-	public function render(painter: Painter, xleft: Int, ytop: Int, width: Int, height: Int): Void {
-		painter.setColor(Color.White);
+	public function render(g: Graphics, xleft: Int, ytop: Int, width: Int, height: Int): Void {
+		g.color = Color.White;
 		if (repeat) {
 			var xstart: Int = Std.int(xleft / tileset.TILE_WIDTH) - 1;
 			var xend: Int = Std.int((xleft + width) / tileset.TILE_WIDTH + 1);
 			var ystart: Int = Std.int(ytop / tileset.TILE_HEIGHT) - 1;
 			var yend: Int = Std.int((ytop + height) / tileset.TILE_HEIGHT + 2);
 			for (x in xstart...xend) for (y in ystart...yend) {
-				tileset.render(painter, map[mod(x, levelWidth)][mod(y, levelHeight)], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+				tileset.render(g, map[mod(x, levelWidth)][mod(y, levelHeight)], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
 			}			
 		}
 		else {
@@ -42,7 +43,7 @@ class Tilemap {
 			var ystart: Int = Std.int(Math.max(ytop / tileset.TILE_HEIGHT - 1, 0));
 			var yend: Int = Std.int(Math.min((ytop + height) / tileset.TILE_HEIGHT + 2, levelHeight));
 			for (x in xstart...xend) for (y in ystart...yend) {
-				tileset.render(painter, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
+				tileset.render(g, map[x][y], x * tileset.TILE_WIDTH, y * tileset.TILE_HEIGHT);
 			}
 		}
 	}

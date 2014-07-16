@@ -1,6 +1,8 @@
 package kha;
 
 import haxe.ds.ArraySort;
+import kha.graphics2.Graphics;
+import kha.math.Matrix3;
 import kha.math.Vector2;
 
 class Scene {
@@ -241,17 +243,19 @@ class Scene {
 		cleanSprites();
 	}
 
-	public function render(painter: Painter) {
-		painter.translate(0, 0);
-		painter.setColor(backgroundColor);
-		painter.clear();
+	public function render(g: Graphics) {
+		g.transformation = Matrix3.identity();
+		g.color = backgroundColor;
+		g.clear();
 		
 		for (i in 0...backgrounds.length) {
-			painter.translate(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
-			backgrounds[i].render(painter, Std.int(screenOffsetX * backgroundSpeeds[i]), Std.int(screenOffsetY * backgroundSpeeds[i]), Game.the.width, Game.the.height);
+			g.transformation = Matrix3.translation(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
+			//painter.translate(Math.round(-screenOffsetX * backgroundSpeeds[i]), Math.round(-screenOffsetY * backgroundSpeeds[i]));
+			backgrounds[i].render(g, Std.int(screenOffsetX * backgroundSpeeds[i]), Std.int(screenOffsetY * backgroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 		
-		painter.translate(-screenOffsetX, -screenOffsetY);
+		g.transformation = Matrix3.translation(-screenOffsetX, -screenOffsetY);
+		//painter.translate(-screenOffsetX, -screenOffsetY);
 		
 		sort(sprites);
 		
@@ -263,14 +267,15 @@ class Scene {
 			}
 			while (i < sprites.length) {
 				if (sprites[i].x > screenOffsetX + Game.the.width) break;
-				if (i < sprites.length && sprites[i].z == z) sprites[i].render(painter);
+				if (i < sprites.length && sprites[i].z == z) sprites[i].render(g);
 				++i;
 			}
 		}
 		
 		for (i in 0...foregrounds.length) {
-			painter.translate(Math.round(-screenOffsetX * foregroundSpeeds[i]), Math.round(-screenOffsetY * foregroundSpeeds[i]));
-			foregrounds[i].render(painter, Std.int(screenOffsetX * foregroundSpeeds[i]), Std.int(screenOffsetY * foregroundSpeeds[i]), Game.the.width, Game.the.height);
+			g.transformation = Matrix3.translation(Math.round(-screenOffsetX * foregroundSpeeds[i]), Math.round(-screenOffsetY * foregroundSpeeds[i]));
+			//painter.translate(Math.round(-screenOffsetX * foregroundSpeeds[i]), Math.round(-screenOffsetY * foregroundSpeeds[i]));
+			foregrounds[i].render(g, Std.int(screenOffsetX * foregroundSpeeds[i]), Std.int(screenOffsetY * foregroundSpeeds[i]), Game.the.width, Game.the.height);
 		}
 	}
 	
