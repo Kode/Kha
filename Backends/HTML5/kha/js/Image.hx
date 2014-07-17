@@ -9,7 +9,7 @@ import kha.graphics.Texture;
 import kha.graphics.TextureFormat;
 
 class Image implements Texture {
-	public var image: ImageElement;
+	public var image: Dynamic;
 	private var video: VideoElement;
 	
 	private static var context: Dynamic;
@@ -20,6 +20,8 @@ class Image implements Texture {
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
+	
+	private var g2canvas: CanvasGraphics = null;
 	
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -55,25 +57,41 @@ class Image implements Texture {
 		return img;
 	}
 	
-	public var width(get, null): Int;
-	public var height(get, null): Int;
+	public var g2(get, null): kha.graphics2.Graphics;
 	
-	public function get_width(): Int {
+	private function get_g2(): kha.graphics2.Graphics {
+		if (g2canvas == null) {
+			var canvas: Dynamic = Browser.document.createElement("canvas");
+			image = canvas;
+			var context = canvas.getContext("2d");
+			canvas.width = width;
+			canvas.height = height;
+			g2canvas = new CanvasGraphics(context, width, height);
+		}
+		return g2canvas;
+	}
+	
+	public var width(get, null): Int;
+	
+	private function get_width(): Int {
 		return myWidth;
 	}
 	
-	public function get_height(): Int {
+	public var height(get, null): Int;
+	
+	private function get_height(): Int {
 		return myHeight;
 	}
 	
 	public var realWidth(get, null): Int;
-	public var realHeight(get, null): Int;
 	
-	public function get_realWidth(): Int {
+	private function get_realWidth(): Int {
 		return myWidth;
 	}
 	
-	public function get_realHeight(): Int {
+	public var realHeight(get, null): Int;
+	
+	private function get_realHeight(): Int {
 		return myHeight;
 	}
 	
@@ -82,7 +100,7 @@ class Image implements Texture {
 			if (context == null) return true;
 			else createImageData();
 		}
-		return (data.data[y * image.width * 4 + x * 4 + 3] != 0);
+		return (data.data[y * Std.int(image.width) * 4 + x * 4 + 3] != 0);
 	}
 	
 	function createImageData() {
@@ -91,10 +109,6 @@ class Image implements Texture {
 		context.fillRect(0, 0, image.width, image.height);
 		context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
 		data = context.getImageData(0, 0, image.width, image.height);
-	}
-	
-	public function unload(): Void {
-		
 	}
 		
 	private var texture: Dynamic;
@@ -176,5 +190,9 @@ class Image implements Texture {
 			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 			bytes = null;
 		}
+	}
+	
+	public function unload(): Void {
+		
 	}
 }

@@ -140,8 +140,7 @@ class Starter {
 			var widthTransform: Float = canvas.width / Loader.the.width;
 			var heightTransform: Float = canvas.height / Loader.the.height;
 			var transform: Float = Math.min(widthTransform, heightTransform);
-			frame = new Framebuffer();
-			frame.g2 = new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
+			frame = new Framebuffer(new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)));
 			canvas.getContext("2d").scale(transform, transform);
 		}
 		

@@ -50,7 +50,7 @@ class Game {
 	
 	public function render(frame: Framebuffer): Void {
 		startRender(frame);
-		//scene.render(frame);
+		scene.render(frame.g2);
 		endRender(frame);
 	}
 	

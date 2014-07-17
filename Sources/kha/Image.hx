@@ -1,10 +1,6 @@
 package kha;
 
-import kha.graphics.Texture;
-
-interface Image extends Resource {
-	var width(get, null): Int;
-	var height(get, null): Int;
+interface Image extends Canvas extends Resource {
 	function isOpaque(x: Int, y: Int): Bool;
 	function unload(): Void;
 }
