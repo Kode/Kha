@@ -9,26 +9,44 @@ class Image implements Canvas implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
-		return new CanvasImage(width, height, format, false);
+		if (Sys.gl == null) return new CanvasImage(width, height, format, false);
+		else return new WebGLImage(width, height, format, false);
 	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
-		return new CanvasImage(width, height, format, true);
+		if (Sys.gl == null) return new CanvasImage(width, height, format, true);
+		else return new WebGLImage(width, height, format, true);
 	}
 	
 	public static function fromImage(image: ImageElement, readable: Bool): Image {
-		var img = new CanvasImage(image.width, image.height, TextureFormat.RGBA32, false);
-		img.image = image;
-		img.createTexture();
-		return img;
+		if (Sys.gl == null) {
+			var img = new CanvasImage(image.width, image.height, TextureFormat.RGBA32, false);
+			img.image = image;
+			img.createTexture();
+			return img;
+		}
+		else {
+			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false);
+			img.image = image;
+			img.createTexture();
+			return img;
+		}
 	}
 	
 	public static function fromVideo(video: kha.js.Video): Image {
-		var img = new CanvasImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
-		img.video = video.element;
-		img.createTexture();
-		return img;
+		if (Sys.gl == null) {
+			var img = new CanvasImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
+			img.video = video.element;
+			img.createTexture();
+			return img;
+		}
+		else {
+			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
+			img.video = video.element;
+			img.createTexture();
+			return img;
+		}
 	}
 	
 	public static var maxSize(get, null): Int;

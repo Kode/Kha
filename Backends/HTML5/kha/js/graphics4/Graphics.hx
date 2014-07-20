@@ -17,17 +17,21 @@ import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
+import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
+	private var renderTarget: WebGLImage;
 	
-	public function new(webgl: Bool) {
+	public function new(webgl: Bool, renderTarget: WebGLImage = null) {
+		this.renderTarget = renderTarget;
 		if (webgl) {
 			Sys.gl.enable(Sys.gl.BLEND);
 			Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
@@ -37,6 +41,17 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
 		
+	}
+	
+	public function begin(): Void {
+		if (renderTarget == null) {
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
+		}
+		else {
+			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, renderTarget.frameBuffer);
+			Sys.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
+		}
 	}
 	
 	public function vsynced(): Bool {
@@ -281,16 +296,6 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setScissor(rect: Rectangle): Void {
 		
 	}
-	
-	//public function renderToTexture(texture: Texture): Void {
-	//	Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, cast(texture, Image).frameBuffer);
-	//	Sys.gl.viewport(0, 0, texture.width, texture.height);
-	//}
-
-	//public function renderToBackbuffer(): Void {
-	//	Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
-	//	Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
-	//}
 	
 	public function renderTargetsInvertedY(): Bool {
 		return true;

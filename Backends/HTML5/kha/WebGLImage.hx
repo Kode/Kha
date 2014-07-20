@@ -5,12 +5,14 @@ import js.Browser;
 import js.html.ImageElement;
 import js.html.Uint8Array;
 import js.html.VideoElement;
+import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;
 import kha.js.CanvasGraphics;
+import kha.js.graphics4.Graphics;
 
-class WebGLImage {
+class WebGLImage extends Image {
 	public var image: Dynamic;
-	private var video: VideoElement;
+	public var video: VideoElement;
 	
 	private static var context: Dynamic;
 	private var data: Dynamic;
@@ -21,7 +23,8 @@ class WebGLImage {
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
 	
-	private var g2canvas: CanvasGraphics = null;
+	private var graphics2: kha.graphics2.Graphics;
+	private var graphics4: kha.graphics4.Graphics;
 	
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -42,52 +45,38 @@ class WebGLImage {
 		video = null;
 		if (renderTarget) createTexture();
 	}
-		
-	public var g2(get, null): kha.graphics2.Graphics;
 	
-	private function get_g2(): kha.graphics2.Graphics {
-		if (g2canvas == null) {
-			var canvas: Dynamic = Browser.document.createElement("canvas");
-			image = canvas;
-			var context = canvas.getContext("2d");
-			canvas.width = width;
-			canvas.height = height;
-			g2canvas = new CanvasGraphics(context, width, height);
+	override private function get_g2(): kha.graphics2.Graphics {
+		if (graphics2 == null) {
+			graphics2 = new Graphics2(g4, width, height);
 		}
-		return g2canvas;
+		return graphics2;
+	}
+		
+	override private function get_g4(): kha.graphics4.Graphics {
+		if (graphics4 == null) {
+			graphics4 = new Graphics(true, this);
+		}
+		return graphics4;
 	}
 	
-	public var g4(get, null): kha.graphics4.Graphics;
-	
-	private function get_g4(): kha.graphics4.Graphics {
-		return null;
-	}
-	
-	public var width(get, null): Int;
-	
-	private function get_width(): Int {
+	override private function get_width(): Int {
 		return myWidth;
 	}
 	
-	public var height(get, null): Int;
-	
-	private function get_height(): Int {
+	override private function get_height(): Int {
 		return myHeight;
 	}
 	
-	public var realWidth(get, null): Int;
-	
-	private function get_realWidth(): Int {
+	override private function get_realWidth(): Int {
 		return myWidth;
 	}
 	
-	public var realHeight(get, null): Int;
-	
-	private function get_realHeight(): Int {
+	override private function get_realHeight(): Int {
 		return myHeight;
 	}
 	
-	public function isOpaque(x: Int, y: Int): Bool {
+	override public function isOpaque(x: Int, y: Int): Bool {
 		if (data == null) {
 			if (context == null) return true;
 			else createImageData();
@@ -148,12 +137,12 @@ class WebGLImage {
 	
 	public var bytes: Bytes;
 	
-	public function lock(level: Int = 0): Bytes {
+	override public function lock(level: Int = 0): Bytes {
 		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
 		return bytes;
 	}
 	
-	public function unlock(): Void {
+	override public function unlock(): Void {
 		if (Sys.gl != null) {
 			texture = Sys.gl.createTexture();
 			//texture.image = image;
@@ -184,7 +173,7 @@ class WebGLImage {
 		}
 	}
 	
-	public function unload(): Void {
+	override public function unload(): Void {
 		
 	}
 }

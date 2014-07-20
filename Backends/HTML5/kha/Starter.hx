@@ -118,41 +118,28 @@ class Starter {
 		
 		var gl: Bool = false;
 		
-		/*try {
+		try {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
-				//Sys.gl.scale(transform, transform);
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-				Sys.init(true);
-				//painter = new kha.js.ShaderPainter(game.width, game.height);
 				gl = true;
 			}
 		}
 		catch (e: Dynamic) {
 			trace(e);
-		}*/
-		
-		/*if (gl) {
-			Sys.init(false);
-			var widthTransform: Float = canvas.width / Loader.the.width;
-			var heightTransform: Float = canvas.height / Loader.the.height;
-			var transform: Float = Math.min(widthTransform, heightTransform);
-			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
-		}*/
-		
-		{
-			Sys.init(false);
-			var widthTransform: Float = canvas.width / Loader.the.width;
-			var heightTransform: Float = canvas.height / Loader.the.height;
-			var transform: Float = Math.min(widthTransform, heightTransform);
-			var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
-			frame = new Framebuffer(
-				gl
-				? new kha.graphics4.Graphics2(g4, Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform))
-				: new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)),
-				g4);
-			canvas.getContext("2d").scale(transform, transform);
 		}
+		
+		Sys.init(gl);
+		var widthTransform: Float = canvas.width / Loader.the.width;
+		var heightTransform: Float = canvas.height / Loader.the.height;
+		var transform: Float = Math.min(widthTransform, heightTransform);
+		var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
+		frame = new Framebuffer(
+			gl
+			? new kha.graphics4.Graphics2(g4, Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform))
+			: new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)),
+			g4);
+		//canvas.getContext("2d").scale(transform, transform);
 		
 		try {
 			Sys.audio = null;
