@@ -1,5 +1,7 @@
 package kha.graphics4;
 
-interface VertexShader {
-	
+import kha.Blob;
+
+extern class VertexShader {
+	public function new(source: Blob);
 }

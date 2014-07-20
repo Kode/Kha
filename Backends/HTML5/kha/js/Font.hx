@@ -67,7 +67,7 @@ class Font implements kha.Font {
 			ctx.fillRect(0, 0, kravur.width, kravur.height);
 		
 			var imageData = ctx.getImageData(0, 0, kravur.width, kravur.height);
-			var bytes = cast(kravur.getTexture(), Image).bytes;
+			var bytes = cast(kravur.getTexture(), CanvasImage).bytes;
 			for (i in 0...bytes.length) {
 				imageData.data[i * 4 + 0] = color.Rb;
 				imageData.data[i * 4 + 1] = color.Gb;

@@ -50,7 +50,7 @@ class CanvasGraphics extends Graphics {
 	
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
 		canvas.globalAlpha = opacity;
-		canvas.drawImage(cast(img, Image).image, x, y);
+		canvas.drawImage(cast(img, CanvasImage).image, x, y);
 		canvas.globalAlpha = 1;
 	}
 	
@@ -70,11 +70,11 @@ class CanvasGraphics extends Graphics {
 					canvas.scale(1, -1);
 					y = -dh;
 				}
-				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, x, y, dw, dh);
+				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, x, y, dw, dh);
 				canvas.restore();
 			}
 			else {
-				canvas.drawImage(cast(image, Image).image, sx, sy, sw, sh, dx, dy, dw, dh);
+				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, dx, dy, dw, dh);
 			}
 		}
 		catch (ex: Dynamic) {

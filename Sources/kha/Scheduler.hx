@@ -88,8 +88,8 @@ class Scheduler {
 	}
 	
 	public static function start(): Void {
-		vsync = Sys.graphics.vsynced();
-		var hz = Sys.graphics.refreshRate();
+		vsync = Sys.vsynced();
+		var hz = Sys.refreshRate();
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
 

@@ -1,5 +1,7 @@
 package kha.graphics4;
 
-interface FragmentShader {
-	
+import kha.Blob;
+
+extern class FragmentShader {
+	public function new(source: Blob);
 }
