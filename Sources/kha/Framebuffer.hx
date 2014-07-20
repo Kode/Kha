@@ -7,6 +7,7 @@ class Framebuffer implements Canvas {
 	
 	public function new(g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics) {
 		this.graphics2 = g2;
+		this.graphics4 = g4;
 	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;

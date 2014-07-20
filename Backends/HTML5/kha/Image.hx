@@ -52,13 +52,13 @@ class Image implements Canvas implements Resource {
 	public static var maxSize(get, null): Int;
 	
 	public static function get_maxSize(): Int {
-		return 1024 * 8;
+		return Sys.gl == null ? 1024 * 8 : Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
 	}
 	
 	public static var nonPow2Supported(get, null): Bool;
 	
 	public static function get_nonPow2Supported(): Bool {
-		return true;
+		return Sys.gl != null;
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool { return false; }

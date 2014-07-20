@@ -1,7 +1,9 @@
 package kha;
 
 import kha.graphics2.Graphics;
+import kha.graphics4.Graphics2;
 import kha.math.Matrix3;
+import kha.math.Matrix4;
 
 class Scaler {
 	public static function scale(source: Image, destination: Canvas, rotation: ScreenRotation): Void {
@@ -60,50 +62,76 @@ class Scaler {
 		
 		switch (rotation) {
 		case RotationNone:
-			//if (Sys.graphics.renderTargetsInvertedY()) {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
-			//}
-			//else {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, null, 1, Color.White);
-			//}
-			destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			if (Std.is(destination.g2, Graphics2)) {
+				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
+				if (destination.g4.renderTargetsInvertedY()) {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				else {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				imagePainter.end();
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
+			}
+			else destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
 		case Rotation90:
-			//if (Sys.graphics.renderTargetsInvertedY()) {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
-			//}
-			//else {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI / 2), 1, Color.White);
-			//}
 			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation(-scalex, -scaley);
-			destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			if (Std.is(destination.g2, Graphics2)) {
+				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
+				if (destination.g4.renderTargetsInvertedY()) {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				else {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				imagePainter.end();
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
+			}
+			else {
+				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			}
 			destination.g2.transformation = Matrix3.identity();
 		case Rotation180:
-			//if (Sys.graphics.renderTargetsInvertedY()) {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
-			//}
-			//else {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(scalew / 2, scaleh / 2), Math.PI), 1, Color.White);
-			//}
 			destination.g2.transformation = Matrix3.translation(scalex + scalew / 2, scaley + scaleh / 2) * Matrix3.rotation(Math.PI) * Matrix3.translation(-scalex - scalew / 2, -scaley - scaleh / 2);
-			destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			if (Std.is(destination.g2, Graphics2)) {
+				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
+				if (destination.g4.renderTargetsInvertedY()) {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				else {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				imagePainter.end();
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
+			}
+			else {
+				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			}
 			destination.g2.transformation = Matrix3.identity();
 		case Rotation270:
-			//if (Sys.graphics.renderTargetsInvertedY()) {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, renderTexture.realHeight - renderTexture.height, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
-			//}
-			//else {
-			//	imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-			//	imagePainter.drawImage2(renderTexture, 0, 0, renderTexture.width, renderTexture.height, scalex, scaley, scalew, scaleh, new Rotation(new Vector2(0, 0), Math.PI * 3 / 2), 1, Color.White);
-			//}
 			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI * 3 / 2) * Matrix3.translation(-scalex, -scaley);
-			destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			if (Std.is(destination.g2, Graphics2)) {
+				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
+				if (destination.g4.renderTargetsInvertedY()) {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				else {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				imagePainter.end();
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
+			}
+			else {
+				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+			}
 			destination.g2.transformation = Matrix3.identity();
 		}
 	}

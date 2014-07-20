@@ -12,6 +12,9 @@ import kha.Rectangle;
 interface Graphics {
 	function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void;
 	
+	function begin(): Void;
+	function end(): Void;
+	
 	function vsynced(): Bool;
 	function refreshRate(): Int;
 	

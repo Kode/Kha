@@ -607,31 +607,32 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private var myColor: Color;
 	private var myFont: Font;
 	private var projectionMatrix: Matrix4;
-	private var imagePainter: ImageShaderPainter;
+	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
-	private var width: Float;
-	private var height: Float;
-	private var renderTexture: Image;
-	
 	private var g: Graphics;
 	
 	public function new(g4: Graphics, width: Int, height: Int) {
 		super();
 		color = Color.White;
-		renderTexture = null;
 		g = g4;
 		setScreenSize(width, height);
 	}
 	
+	private static function upperPowerOfTwo(v: Int): Int {
+		v--;
+		v |= v >>> 1;
+		v |= v >>> 2;
+		v |= v >>> 4;
+		v |= v >>> 8;
+		v |= v >>> 16;
+		v++;
+		return v;
+	}
+	
 	private function setScreenSize(width: Int, height: Int) {
-		if (renderTexture == null || renderTexture.width != width || renderTexture.height != height) {
-			renderTexture = Image.createRenderTarget(width, height);
-		}
-		this.width = renderTexture.realWidth;
-		this.height = renderTexture.realHeight;
 		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = Matrix4.orthogonalProjection(0, renderTexture.realWidth, renderTexture.realHeight, 0, 0.1, 1000);
+		projectionMatrix = Matrix4.orthogonalProjection(0, Image.nonPow2Supported ? width : upperPowerOfTwo(width), Image.nonPow2Supported ? height : upperPowerOfTwo(height), 0, 0.1, 1000);
 		imagePainter = new ImageShaderPainter(g, projectionMatrix);
 		coloredPainter = new ColoredShaderPainter(g, projectionMatrix);
 		textPainter = new TextShaderPainter(g, projectionMatrix);
@@ -740,25 +741,31 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override private function setProgram(program: Program): Void {
-		end();
+		endDrawing();
 		imagePainter.program = program;
 		coloredPainter.program = program;
 		textPainter.program = program;
 	}
 	
 	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		end();
+		endDrawing();
 		g.setBlendingMode(source, destination);
 	}
 	
 	public override function begin(): Void {
+		g.begin();
 		g.clear(kha.Color.fromBytes(0, 0, 0, 0));
 		//translate(0, 0);
 	}
 	
-	public override function end(): Void {
+	private function endDrawing(): Void {
 		imagePainter.end();
 		textPainter.end();
 		coloredPainter.end();
+	}
+	
+	public override function end(): Void {
+		endDrawing();
+		g.end();
 	}
 }
