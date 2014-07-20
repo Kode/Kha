@@ -103,16 +103,26 @@ abstract Matrix3(Array<Float>) {
 		}
 		return m;
 	}
-
-	/*public function multvec(value: Vector4): Vector4 {
-		var product = new Vector4();
-		for (y in 0...height) {
-			var f: Float = 0;
-			for (i in 0...width) f += get(i, y) * value.get(i);
-			product.set(y, f);
-		}
+	
+	public inline function multvec(value: Vector2): Vector2 {
+		var product = new Vector2();
+		var f: Float = 0;
+		f += this[index(0, 2)] * value.x;
+		f += this[index(1, 2)] * value.y;
+		f += this[index(2, 2)] * 1;
+		var w = f;
+		f = 0;
+		f += this[index(0, 0)] * value.x;
+		f += this[index(1, 0)] * value.y;
+		f += this[index(2, 0)] * 1;
+		product.x = f / w;
+		f = 0;
+		f += this[index(0, 1)] * value.x;
+		f += this[index(1, 1)] * value.y;
+		f += this[index(2, 1)] * 1;
+		product.y = f / w;
 		return product;
-	}*/
+	}
 
 	/*public function determinant(): Float {
 		return get(0, 0) * (
