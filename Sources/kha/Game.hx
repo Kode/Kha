@@ -156,7 +156,7 @@ class Game {
 		}
 	}
 	
-	// deprecated - please use kha.input.Gamepade
+	// deprecated - please use kha.input.Gamepad
 	public function buttonDown(button: Button): Void { }
 	public function buttonUp  (button: Button): Void { }
 	

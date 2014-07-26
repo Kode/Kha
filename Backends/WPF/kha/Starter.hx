@@ -1,6 +1,7 @@
 package kha;
 
 import kha.Game;
+import kha.input.Keyboard;
 import kha.Key;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
@@ -142,45 +143,54 @@ class MainWindow extends system.windows.Window {
 			if (e.Text != "") {
 				char[] chararray = e.Text.ToCharArray();
 				int c = System.Convert.ToInt32((char)chararray[0]);
-				if (c > 32)
+				if (c > 32) {
 					game.keyDown(Key.CHAR, e.Text);
+					keyboard.sendDownEvent(Key.CHAR, e.Text);
+				}
 			}
 		}
 	}
 	
 	public static void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
-		if (pressedKeys.Contains(e.Key))
-			return;
+		if (pressedKeys.Contains(e.Key)) return;
 		pressedKeys.Add(e.Key);
 
-		switch (e.Key)
-		{
+		switch (e.Key) {
 			case System.Windows.Input.Key.Back:
-				game.keyDown(Key.BACKSPACE, "");
+				game.keyDown(Key.BACKSPACE, null);
+				keyboard.sendDownEvent(Key.BACKSPACE, null);
 				break;
 			case System.Windows.Input.Key.Enter:
 				game.keyDown(Key.ENTER, "");
+				keyboard.sendDownEvent(Key.ENTER, null);
 				break;
 			case System.Windows.Input.Key.Escape:
 				game.keyDown(Key.ESC, "");
+				keyboard.sendDownEvent(Key.ESC, null);
 				break;
 			case System.Windows.Input.Key.Delete:
 				game.keyDown(Key.DEL, "");
+				keyboard.sendDownEvent(Key.DEL, null);
 				break;
 			case System.Windows.Input.Key.Up:
 				game.buttonDown(Button.UP);
+				game.keyDown(Key.UP, null);
+				keyboard.sendDownEvent(Key.UP, null);
 				break;
 			case System.Windows.Input.Key.Down:
 				game.buttonDown(Button.DOWN);
+				game.keyDown(Key.DOWN, null);
+				keyboard.sendDownEvent(Key.DOWN, null);
 				break;
 			case System.Windows.Input.Key.Left:
 				game.buttonDown(Button.LEFT);
+				game.keyDown(Key.LEFT, null);
+				keyboard.sendDownEvent(Key.LEFT, null);
 				break;
 			case System.Windows.Input.Key.Right:
 				game.buttonDown(Button.RIGHT);
-				break;
-			case System.Windows.Input.Key.A:
-				game.buttonDown(Button.BUTTON_1);
+				game.keyDown(Key.RIGHT, null);
+				keyboard.sendDownEvent(Key.RIGHT, null);
 				break;
 		}
 	}
@@ -194,31 +204,40 @@ class MainWindow extends system.windows.Window {
 
 		switch (e.Key) {
 			case System.Windows.Input.Key.Back:
-				game.keyUp(Key.BACKSPACE, "");
+				game.keyUp(Key.BACKSPACE, null);
+				keyboard.sendUpEvent(Key.BACKSPACE, null);
 				break;
 			case System.Windows.Input.Key.Enter:
-				game.keyUp(Key.ENTER, "");
+				game.keyUp(Key.ENTER, null);
+				keyboard.sendUpEvent(Key.ENTER, null);
 				break;
 			case System.Windows.Input.Key.Escape:
-				game.keyUp(Key.ESC, "");
+				game.keyUp(Key.ESC, null);
+				keyboard.sendUpEvent(Key.ESC, null);
 				break;
 			case System.Windows.Input.Key.Delete:
-				game.keyUp(Key.DEL, "");
+				game.keyUp(Key.DEL, null);
+				keyboard.sendUpEvent(Key.DEL, null);
 				break;
 			case System.Windows.Input.Key.Up:
 				game.buttonUp(Button.UP);
+				game.keyUp(Key.UP, null);
+				keyboard.sendUpEvent(Key.UP, null);
 				break;
 			case System.Windows.Input.Key.Down:
 				game.buttonUp(Button.DOWN);
+				game.keyUp(Key.DOWN, null);
+				keyboard.sendUpEvent(Key.DOWN, null);
 				break;
 			case System.Windows.Input.Key.Left:
 				game.buttonUp(Button.LEFT);
+				game.keyUp(Key.LEFT, null);
+				keyboard.sendUpEvent(Key.LEFT, null);
 				break;
 			case System.Windows.Input.Key.Right:
 				game.buttonUp(Button.RIGHT);
-				break;
-			case System.Windows.Input.Key.A:
-				game.buttonUp(Button.BUTTON_1);
+				game.keyUp(Key.RIGHT, null);
+				keyboard.sendUpEvent(Key.RIGHT, null);
 				break;
 		}
 	}
@@ -226,7 +245,8 @@ class MainWindow extends system.windows.Window {
 	public static void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
 		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
 			Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
-		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+		}
+		else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
 			Starter.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
 		
@@ -235,7 +255,8 @@ class MainWindow extends system.windows.Window {
 	public static void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
 		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
 			Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
-		} else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+		}
+		else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
 			Starter.rightMouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
 	}
@@ -253,15 +274,19 @@ class MainWindow extends system.windows.Window {
 	}
 ')
 class Starter {
-	static var mainWindow : MainWindow;
-	static var openWindow : Bool = true;
-	static var autostartGame : Bool = true;
-	static var showMousePos : Bool = false;
-	static var painter : kha.wpf.Painter;
-	public static var game : Game;
-	public static var frameworkElement : StoryPublishCanvas;
+	private static var mainWindow: MainWindow;
+	private static var openWindow: Bool = true;
+	private static var autostartGame: Bool = true;
+	private static var showMousePos: Bool = false;
+	private static var painter: kha.wpf.Painter;
+	private static var keyboard: Keyboard;
+	private static var mouse: kha.input.Mouse;
+	public static var game: Game;
+	public static var frameworkElement: StoryPublishCanvas;
 	
 	public function new() {
+		keyboard = new Keyboard();
+		mouse = new kha.input.Mouse();
 		kha.Loader.init(new kha.wpf.Loader());
 		Sys.init();
 		Scheduler.init();
@@ -322,46 +347,6 @@ class Starter {
 		
 	}
 	
-	public static function pushUp() : Void {
-		game.buttonDown(Button.UP);
-	}
-	
-	public static function pushDown() : Void {
-		game.buttonDown(Button.DOWN);
-	}
-
-	public static function pushLeft() : Void {
-		game.buttonDown(Button.LEFT);
-	}
-
-	public static function pushRight() : Void {
-		game.buttonDown(Button.RIGHT);
-	}
-	
-	public static function pushButton1() : Void {
-		game.buttonDown(Button.BUTTON_1);
-	}
-
-	public static function releaseUp() : Void {
-		game.buttonUp(Button.UP);
-	}
-
-	public static function releaseDown() : Void {
-		game.buttonUp(Button.DOWN);
-	}
-
-	public static function releaseLeft() : Void {
-		game.buttonUp(Button.LEFT);
-	}
-	
-	public static function releaseRight() : Void {
-		game.buttonUp(Button.RIGHT);
-	}
-	
-	public static function releaseButton1() : Void {
-		game.buttonUp(Button.BUTTON_1);
-	}
-	
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
@@ -369,6 +354,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseDown(x, y);
+		mouse.sendDownEvent(0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 
@@ -376,6 +362,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseUp(x, y);
+		mouse.sendUpEvent(0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -383,6 +370,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.rightMouseDown(x, y);
+		mouse.sendDownEvent(1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -390,6 +378,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.rightMouseUp(x, y);
+		mouse.sendUpEvent(1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -397,6 +386,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseMove(x, y);
+		mouse.sendMoveEvent(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -404,6 +394,7 @@ class Starter {
 		mouseX = x;
 		mouseY = y;
 		game.mouseWheel(delta);
+		mouse.sendWheelEvent(delta);
 		frameworkElement.setMousePos(x, y);
 	}
 }
