@@ -41,7 +41,7 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		graphics.drawImage(((kha.java.Image)image).image, round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
 	')
-	override public function drawImage2(image : Image, sx : Float, sy : Float, sw : Float, sh : Float, dx : Float, dy : Float, dw : Float, dh : Float, rotation : Rotation = null) : Void {
+	override public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0) : Void {
 		//FIXME: Rotate image
 	}
 	
