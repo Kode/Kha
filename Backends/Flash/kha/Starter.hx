@@ -28,6 +28,7 @@ import flash.Vector;
 class Starter {
 	private var game: Game;
 	private var painter: kha.flash.ShaderPainter;
+	private var frame: Framebuffer;
 	private var pressedKeys: Array<Bool>;
 	private var stage: Stage;
 	private var stage3D: Stage3D;
@@ -78,6 +79,7 @@ class Starter {
 		game.loadFinished();
 		
 		painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
+		frame = new Framebuffer();
 		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -97,7 +99,7 @@ class Starter {
 	private function update(_): Void {
 		Scheduler.executeFrame();
 		context.clear(0, 0, 0, 0);
-		Configuration.screen().render(painter);
+		Configuration.screen().render(frame);
 		context.present();
 	}
 	

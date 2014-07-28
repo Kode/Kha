@@ -1,5 +1,7 @@
 package kha;
 
+import kha.graphics2.Graphics;
+
 class Tileset {
 	public var TILE_WIDTH : Int;
 	public var TILE_HEIGHT : Int;
@@ -24,12 +26,12 @@ class Tileset {
 		else this.tiles = tiles;
 	}
 	
-	public function render(painter: Painter, tile: Int, x: Int, y: Int): Void {
+	public function render(g: Graphics, tile: Int, x: Int, y: Int): Void {
 		if (tile < 0) return;
 		var index = tiles[tile].imageIndex;
 		var ytile : Int = Std.int(index / xmax);
 		var xtile : Int = index - ytile * xmax;
-		painter.drawImage2(image, xtile * TILE_WIDTH, ytile * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x, y, TILE_WIDTH, TILE_HEIGHT);
+		g.drawScaledSubImage(image, xtile * TILE_WIDTH, ytile * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x, y, TILE_WIDTH, TILE_HEIGHT);
 	}
 	
 	public function tile(index: Int): Tile {

@@ -32,7 +32,7 @@ class Loader extends kha.Loader {
 		img.src = desc.file;
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		img.onload = function(event: Dynamic) {
-			done(kha.js.Image.fromImage(img, readable));
+			done(Image.fromImage(img, readable));
 		};
 	}
 

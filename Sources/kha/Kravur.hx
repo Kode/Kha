@@ -1,8 +1,7 @@
 package kha;
 
-import kha.graphics.Texture;
-import kha.graphics.TextureFormat;
-import kha.graphics.Usage;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 
 class BakedChar {
 	public function new() { }
@@ -42,7 +41,7 @@ class Kravur implements Font {
 	private var mySize: Float;
 	
 	private var chars: Array<BakedChar>;
-	private var texture: Texture;
+	private var texture: Image;
 	public var width: Int;
 	public var height: Int;
 	private var baseline: Float;
@@ -96,12 +95,12 @@ class Kravur implements Font {
 		height = blob.readS32LE();
 		var w = width;
 		var h = height;
-		while (w > Sys.graphics.maxTextureSize() || h > Sys.graphics.maxTextureSize()) {
+		while (w > Image.maxSize || h > Image.maxSize) {
 			blob.seek(blob.position + h * w);
 			w = Std.int(w / 2);
 			h = Std.int(h / 2);
 		}
-		texture = Sys.graphics.createTexture(w, h, TextureFormat.L8, Usage.StaticUsage);
+		texture = Image.create(w, h, TextureFormat.L8);
 		var bytes = texture.lock();
 		var pos: Int = 0;
 		for (y in 0...h) for (x in 0...w) {
@@ -117,7 +116,7 @@ class Kravur implements Font {
 		blob.reset();
 	}
 	
-	public function getTexture(): Texture {
+	public function getTexture(): Image {
 		return texture;
 	}
 	

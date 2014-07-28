@@ -1,7 +1,7 @@
 package kha.math;
 
 class Vector2 {
-	public function new(x: Float = 0, y: Float = 0): Void {
+	public inline function new(x: Float = 0, y: Float = 0): Void {
 		this.x = x;
 		this.y = y;
 	}

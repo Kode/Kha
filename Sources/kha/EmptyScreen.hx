@@ -1,18 +1,18 @@
 package kha;
 
 class EmptyScreen extends Game {
-	private var myColor: Color;
+	private var color: Color;
 
 	public function new(color: Color) {
 		super("Nothing", false);
-		myColor = color;
+		this.color = color;
 	}
 	
-	override public function render(painter: Painter): Void {
-		startRender(painter);
-		painter.setColor(myColor);
-		painter.fillRect(0, 0, 10000, 10000);
-		endRender(painter);
+	override public function render(frame: Framebuffer): Void {
+		startRender(frame);
+		frame.g2.color = color;
+		frame.g2.fillRect(0, 0, 10000, 10000);
+		endRender(frame);
 	}
 	
 	override public function update(): Void {

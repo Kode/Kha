@@ -11,6 +11,7 @@ import js.html.MouseEvent;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.js.CanvasGraphics;
 import kha.Key;
 import kha.Loader;
 import js.Lib;
@@ -30,6 +31,7 @@ class GamepadStates {
 class Starter {
 	private static var game: Game;
 	private static var painter: Painter;
+	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var lastPressedKey: Int;
 	private static var pressedKeyToChar: Array<String>;
@@ -58,7 +60,7 @@ class Starter {
 		for (i in 0...256) pressedKeys.push(null);
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
-		kha.js.Image.init();
+		CanvasImage.init();
 		Loader.init(new kha.js.Loader());
 		Scheduler.init();
 		
@@ -114,26 +116,30 @@ class Starter {
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		
+		var gl: Bool = false;
+		
 		try {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
 			if (Sys.gl != null) {
-				//Sys.gl.scale(transform, transform);
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-				Sys.init(true);
-				painter = new kha.js.ShaderPainter(game.width, game.height);
+				gl = true;
 			}
 		}
 		catch (e: Dynamic) {
 			trace(e);
 		}
-		if (painter == null) {
-			Sys.init(false);
-			var widthTransform: Float = canvas.width / Loader.the.width;
-			var heightTransform: Float = canvas.height / Loader.the.height;
-			var transform: Float = Math.min(widthTransform, heightTransform);
-			painter = new kha.js.Painter(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
-			canvas.getContext("2d").scale(transform, transform);
-		}
+		
+		Sys.init(gl);
+		var widthTransform: Float = canvas.width / Loader.the.width;
+		var heightTransform: Float = canvas.height / Loader.the.height;
+		var transform: Float = Math.min(widthTransform, heightTransform);
+		var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
+		frame = new Framebuffer(
+			gl
+			? new kha.graphics4.Graphics2(g4, Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform))
+			: new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)),
+			g4);
+		//canvas.getContext("2d").scale(transform, transform);
 		
 		try {
 			Sys.audio = null;
@@ -187,7 +193,7 @@ class Starter {
 			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
-				Configuration.screen().render(painter);
+				Configuration.screen().render(frame);
 				if (Sys.gl != null) {
 					// Clear alpha for IE11
 					Sys.gl.clearColor(1, 1, 1, 1);
