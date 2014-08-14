@@ -39,19 +39,19 @@ class Game {
 		scene.update();
 	}
 	
-	private function startRender(painter: Painter): Void {
-		painter.begin();
+	private function startRender(frame: Framebuffer): Void {
+		frame.g2.begin();
 	}
 	
-	private function endRender(painter: Painter): Void {
-		Sys.mouse.render(painter);
-		painter.end();
+	private function endRender(frame: Framebuffer): Void {
+		//Sys.mouse.render(painter);
+		frame.g2.end();
 	}
 	
-	public function render(painter: Painter): Void {
-		startRender(painter);
-		scene.render(painter);
-		endRender(painter);
+	public function render(frame: Framebuffer): Void {
+		startRender(frame);
+		scene.render(frame.g2);
+		endRender(frame);
 	}
 	
 	public function getHighscores(): HighscoreList {
@@ -156,7 +156,7 @@ class Game {
 		}
 	}
 	
-	// deprecated - please use kha.input.Gamepade
+	// deprecated - please use kha.input.Gamepad
 	public function buttonDown(button: Button): Void { }
 	public function buttonUp  (button: Button): Void { }
 	

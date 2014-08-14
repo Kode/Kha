@@ -164,11 +164,11 @@ class Graphics implements kha.graphics.Graphics {
 	}
 	
 	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return Image.create(width, height, format, canRead, false);
+		return Image.create(width, height, format, canRead, false, false);
 	}
 	
 	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return Image.create(width, height, format, false, true);
+		return Image.create(width, height, format, false, true, depthStencil);
 	}
 	
 	public function maxTextureSize(): Int {

@@ -2,9 +2,10 @@ package kha.flash;
 
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
-import kha.graphics.TextureFormat;
+import kha.graphics4.Graphics2;
+import kha.graphics4.TextureFormat;
 
-class ShaderPainter extends kha.ShaderPainter {
+class ShaderPainter extends Graphics2 {
 	private var videoBitmap: BitmapData;
 	private var videoImage: Image;
 	

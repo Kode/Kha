@@ -1,5 +1,6 @@
 package kha.gui;
 
+import kha.graphics2.Graphics;
 import kha.Image;
 
 /**
@@ -236,7 +237,7 @@ class NineZoneImage
 		}
 	}
 	
-	public function render(painter: kha.Painter, x: Float, y: Float, width: Float, height: Float): Void {
+	public function render(g : Graphics, x : Float, y : Float, width : Float, height : Float) : Void {
 		var x_stretch = width - (image.width - 2 * y_sections[0]);
 		var y_stretch = height - (image.height - 2 * y_sections[0]);
 		
@@ -257,7 +258,7 @@ class NineZoneImage
 				var next_sy = y_sections[yi];
 				var sh = next_sy - sy;
 				dh += sh;
-				painter.drawImage2(image, sx, sy, sw, sh, dx, dy, dw, dh);
+				g.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 				
 				sy = next_sy;
 				dy += dh;

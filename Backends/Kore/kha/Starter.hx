@@ -3,6 +3,7 @@ package kha;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.Surface;
 import kha.Key;
 import kha.Loader;
 import kha.input.Sensor;
@@ -14,6 +15,7 @@ class Starter {
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
+	private static var surface: Surface;
 	
 	public function new() {
 		haxe.Timer.stamp();
@@ -21,6 +23,7 @@ class Starter {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
+		surface = new Surface();
 		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
@@ -52,18 +55,26 @@ class Starter {
 	
 	public static function pushUp(): Void {
 		game.buttonDown(Button.UP);
+		game.keyDown(Key.UP, null);
+		keyboard.sendDownEvent(Key.UP, null);
 	}
 	
 	public static function pushDown(): Void {
 		game.buttonDown(Button.DOWN);
+		game.keyDown(Key.DOWN, null);
+		keyboard.sendDownEvent(Key.DOWN, null);
 	}
 
 	public static function pushLeft(): Void {
 		game.buttonDown(Button.LEFT);
+		game.keyDown(Key.LEFT, null);
+		keyboard.sendDownEvent(Key.LEFT, null);
 	}
 
 	public static function pushRight(): Void {
 		game.buttonDown(Button.RIGHT);
+		game.keyDown(Key.RIGHT, null);
+		keyboard.sendDownEvent(Key.RIGHT, null);
 	}
 	
 	public static function pushButton1(): Void {
@@ -72,18 +83,26 @@ class Starter {
 
 	public static function releaseUp(): Void {
 		game.buttonUp(Button.UP);
+		game.keyUp(Key.UP, null);
+		keyboard.sendUpEvent(Key.UP, null);
 	}
 
 	public static function releaseDown(): Void {
 		game.buttonUp(Button.DOWN);
+		game.keyUp(Key.DOWN, null);
+		keyboard.sendUpEvent(Key.DOWN, null);
 	}
 
 	public static function releaseLeft(): Void {
 		game.buttonUp(Button.LEFT);
+		game.keyUp(Key.LEFT, null);
+		keyboard.sendUpEvent(Key.LEFT, null);
 	}
 	
 	public static function releaseRight(): Void {
 		game.buttonUp(Button.RIGHT);
+		game.keyUp(Key.RIGHT, null);
+		keyboard.sendUpEvent(Key.RIGHT, null);
 	}
 	
 	public static function releaseButton1(): Void {
@@ -210,6 +229,18 @@ class Starter {
 	
 	public static function gamepadButton(button: Int, value: Float): Void {
 		gamepad.sendButtonEvent(button, value);
+	}
+	
+	public static function touchStart(index: Int, x: Int, y: Int): Void {
+		surface.sendTouchStartEvent(index, x, y);
+	}
+	
+	public static function touchEnd(index: Int, x: Int, y: Int): Void {
+		surface.sendTouchEndEvent(index, x, y);
+	}
+	
+	public static function touchMove(index: Int, x: Int, y: Int): Void {
+		surface.sendMoveEvent(index, x, y);
 	}
 
 	public static function foreground(): Void {

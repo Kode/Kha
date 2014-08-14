@@ -19,16 +19,16 @@ class Image implements Texture {
 		this.readable = readable;
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthBuffer: Bool): Image {
 		var image = new Image(readable);
 		image.format = format;
-		if (renderTarget) image.initRenderTarget(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		if (renderTarget) image.initRenderTarget(width, height, format == TextureFormat.RGBA32 ? 0 : 1, depthBuffer);
 		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
 	}
 	
-	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, false, false, Kore::Target32Bit); texture = nullptr;')
-	private function initRenderTarget(width: Int, height: Int, format: Int): Void {
+	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBuffer, false, Kore::Target32Bit); texture = nullptr;')
+	private function initRenderTarget(width: Int, height: Int, format: Int, depthBuffer: Bool): Void {
 		
 	}
 	

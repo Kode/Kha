@@ -2,7 +2,7 @@ package kha.flash;
 
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
-import kha.graphics.TextureFormat;
+import kha.graphics4.TextureFormat;
 import kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -11,7 +11,7 @@ import flash.display3D.Context3DTextureFormat;
 import flash.display3D.textures.Texture;
 import flash.geom.Matrix;
 
-class Image implements kha.graphics.Texture {
+class Image implements Canvas implements Resource {
 	private var tex: Texture;
 	private var myWidth: Int;
 	private var myHeight: Int;

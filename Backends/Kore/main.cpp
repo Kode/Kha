@@ -6,6 +6,7 @@
 #include <Kore/Input/KeyEvent.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Sensor.h>
+#include <Kore/Input/Surface.h>
 #include <Kore/Audio/Audio.h>
 #include <Kore/Audio/Mixer.h>
 #include <Kore/IO/FileReader.h>
@@ -152,6 +153,18 @@ namespace {
 	void gamepadButton(int button, float value) {
 		Starter_obj::gamepadButton(button, value);
 	}
+
+	void touchStart(int index, int x, int y) {
+		Starter_obj::touchStart(index, x, y);
+	}
+
+	void touchEnd(int index, int x, int y) {
+		Starter_obj::touchEnd(index, x, y);
+	}
+
+	void touchMove(int index, int x, int y) {
+		Starter_obj::touchMove(index, x, y);
+	}
 	
 	bool visible = true;
 
@@ -210,6 +223,7 @@ int kore(int argc, char** argv) {
 
 	int width;
 	int height;
+	bool fullscreen = false;
 	std::string name;
 	
 	{
@@ -225,10 +239,11 @@ int kore(int argc, char** argv) {
 		name = game["name"].string();
 		width = game["width"].number();
 		height = game["height"].number();
+		if (game.has("fullscreen")) fullscreen = game["fullscreen"].boolean();
 		delete string;
 	}
 
-	Kore::Application* app = new Kore::Application(argc, argv, width, height, false, name.c_str());
+	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name.c_str());
 	Kore::Mixer::init();
 	Kore::Audio::init();
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
@@ -256,6 +271,9 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->Move = mouseMove;
 	Kore::Gamepad::get(0)->Axis = gamepadAxis;
 	Kore::Gamepad::get(0)->Button = gamepadButton;
+	Kore::Surface::the()->TouchStart = touchStart;
+	Kore::Surface::the()->TouchEnd = touchEnd;
+	Kore::Surface::the()->Move = touchMove;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 

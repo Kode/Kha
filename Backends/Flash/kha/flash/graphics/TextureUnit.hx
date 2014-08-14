@@ -1,6 +1,6 @@
 package kha.flash.graphics;
 
-class TextureUnit implements kha.graphics.TextureUnit {
+class TextureUnit implements kha.graphics4.TextureUnit {
 	public var unit: Int;
 	
 	public function new() {

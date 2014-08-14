@@ -4,7 +4,7 @@ cd ..\
 
 echo ___________________________________
 echo Hake builder
-echo type q to quite.
+echo type q to quit.
 echo ___________________________________
 ::Target input.
 :platform_input
@@ -33,6 +33,7 @@ IF %target%==xna 		set TRUE=1
 IF %target%==java 		set TRUE=1
 IF %target%==psm 		set TRUE=1
 IF %target%==dalvik		set TRUE=1
+IF %target%==tizen		set TRUE=1
 
 ::If the input is valid call Hake
 ::If True is not defined ( no valid target ) jump back to the start

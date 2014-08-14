@@ -3,10 +3,10 @@ package kha.flash.graphics;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
-import kha.graphics.Usage;
-import kha.graphics.VertexData;
+import kha.graphics4.Usage;
+import kha.graphics4.VertexData;
 
-class VertexBuffer implements kha.graphics.VertexBuffer {
+class VertexBuffer implements kha.graphics4.VertexBuffer {
 	public var vertexBuffer: VertexBuffer3D;
 	private var vertices: Vector<Float>;
 	private var lockedVertices: Array<Float>;

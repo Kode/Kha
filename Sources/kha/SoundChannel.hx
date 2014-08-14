@@ -19,6 +19,10 @@ class SoundChannel {
 
 	public function setVolume(volume: Float): Void { } // [0, 1]
 	
+	public function setPan(pan: Float): Void { } // [-1, 1]
+	
+	public function getPan(): Float { return 0; } // [-1, 1]
+	
 	public function isFinished(): Bool {
 		return getCurrentPos() >= getLength() || wasStopped;
 	}

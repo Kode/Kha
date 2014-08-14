@@ -128,26 +128,26 @@ namespace {
 
 	True* parseTrue(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'r') ++position; else throw std::runtime_error("Could not parse 'true'");
-		if (text[position] == 'u') ++position; else throw std::runtime_error("Could not parse 'true'");
-		if (text[position] == 'e') ++position; else throw std::runtime_error("Could not parse 'true'");
+		if (text[position] == 'r') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
+		if (text[position] == 'u') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
+		if (text[position] == 'e') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
 		return new True;
 	}
 
 	False* parseFalse(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'a') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 's') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 'e') ++position; else throw std::runtime_error("Could not parse 'false'");
+		if (text[position] == 'a') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 's') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 'e') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
 		return new False;
 	}
 
 	Null* parseNull(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'u') ++position; else throw std::runtime_error("Could not parse 'null'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
+		if (text[position] == 'u') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
 		return new Null;
 	}
 
@@ -205,7 +205,7 @@ namespace {
 				++position;
 				myCurrent = new Colon;
 			}
-			else throw std::runtime_error("Parse error");
+			else throw std::runtime_error("JSON Parse error; please validate your file");
 		}
 
 		Token* current() {
@@ -250,7 +250,7 @@ namespace {
 		else if (stream.current()->isNull()) {
 			return parseNull(stream);
 		}
-		else throw std::runtime_error("Unexpected token");
+		else throw std::runtime_error("JSON Error: Unexpected token");
 	}
 
 	Json::String* parseString(TokenStream& stream) {
@@ -323,63 +323,3 @@ Data::Data(std::string text) {
 	TokenStream stream(text);
 	myValue = parseValue(stream);
 }
-/*
-void Json::Object::serialize(std::ofstream& stream, int indent, bool newline) {
-	if (newline) {
-		stream << "\n";
-		tabs(stream, indent);
-	}
-	stream << "{\n";
-	bool firstloop = true;
-	for (auto value : myValues) {
-		if (!firstloop) stream << ",\n";
-		firstloop = false;
-		tabs(stream, indent + 1); stream << "\"" << value.first << "\": ";
-		value.second->serialize(stream, indent + 1, true);
-	}
-	stream << "\n";
-	tabs(stream, indent); stream << "}";
-}
-
-void Json::Number::serialize(std::ofstream& stream, int indent, bool newline) {
-	stream << myValue;
-}
-
-void Json::String::serialize(std::ofstream& stream, int indent, bool newline) {
-	stream << "\"" << myValue << "\"";
-}
-
-void Json::True::serialize(std::ofstream& stream, int indent, bool newline) {
-	stream << "true";
-}
-
-void Json::False::serialize(std::ofstream& stream, int indent, bool newline) {
-	stream << "false";
-}
-
-void Json::Null::serialize(std::ofstream& stream, int indent, bool newline) {
-	stream << "null";
-}
-
-void Json::Array::serialize(std::ofstream& stream, int indent, bool newline) {
-	if (newline) {
-		stream << "\n";
-		tabs(stream, indent);
-	}
-	stream << "[\n";
-	int count = myValues.size() - 1;
-	bool firstloop = true;
-	for (auto value : myValues) {
-		if (!firstloop) stream << ",\n";
-		firstloop = false;
-		tabs(stream, indent + 1); value->serialize(stream, indent + 1, false);
-	}
-	stream << "\n";
-	tabs(stream, indent); stream << "]";
-}
-*/
-//void Data::save(kake::Path path) {
-//	std::ofstream file(path.toString());
-//	myValue->serialize(file, 0, false);
-//	file << "\n";
-//}
