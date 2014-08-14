@@ -186,6 +186,23 @@ namespace {
 	void shutdown() {
 		Starter_obj::shutdown();
 	}
+	
+	void orientation(Kore::Orientation orientation) {
+		switch (orientation) {
+			case Kore::OrientationLandscapeLeft:
+				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation270;
+				break;
+			case Kore::OrientationLandscapeRight:
+				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation90;
+				break;
+			case Kore::OrientationPortrait:
+				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::RotationNone;
+				break;
+			case Kore::OrientationPortraitUpsideDown:
+				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation180;
+				break;
+		}
+	}
 }
 
 int kore(int argc, char** argv) {
@@ -215,6 +232,7 @@ int kore(int argc, char** argv) {
 	Kore::Mixer::init();
 	Kore::Audio::init();
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+	app->orientationCallback = orientation;
 	app->foregroundCallback = foreground;
 	app->resumeCallback = resume;
 	app->pauseCallback = pause;
