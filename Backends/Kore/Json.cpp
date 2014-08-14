@@ -128,26 +128,26 @@ namespace {
 
 	True* parseTrue(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'r') ++position; else throw std::runtime_error("Could not parse 'true'");
-		if (text[position] == 'u') ++position; else throw std::runtime_error("Could not parse 'true'");
-		if (text[position] == 'e') ++position; else throw std::runtime_error("Could not parse 'true'");
+		if (text[position] == 'r') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
+		if (text[position] == 'u') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
+		if (text[position] == 'e') ++position; else throw std::runtime_error("JSON: Could not parse 'true'");
 		return new True;
 	}
 
 	False* parseFalse(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'a') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 's') ++position; else throw std::runtime_error("Could not parse 'false'");
-		if (text[position] == 'e') ++position; else throw std::runtime_error("Could not parse 'false'");
+		if (text[position] == 'a') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 's') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
+		if (text[position] == 'e') ++position; else throw std::runtime_error("JSON: Could not parse 'false'");
 		return new False;
 	}
 
 	Null* parseNull(std::string text, size_t& position) {
 		++position;
-		if (text[position] == 'u') ++position; else throw std::runtime_error("Could not parse 'null'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
-		if (text[position] == 'l') ++position; else throw std::runtime_error("Could not parse 'null'");
+		if (text[position] == 'u') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
+		if (text[position] == 'l') ++position; else throw std::runtime_error("JSON: Could not parse 'null'");
 		return new Null;
 	}
 
@@ -205,7 +205,7 @@ namespace {
 				++position;
 				myCurrent = new Colon;
 			}
-			else throw std::runtime_error("Parse error");
+			else throw std::runtime_error("JSON Parse error; please validate your file");
 		}
 
 		Token* current() {
@@ -250,7 +250,7 @@ namespace {
 		else if (stream.current()->isNull()) {
 			return parseNull(stream);
 		}
-		else throw std::runtime_error("Unexpected token");
+		else throw std::runtime_error("JSON Error: Unexpected token");
 	}
 
 	Json::String* parseString(TokenStream& stream) {

@@ -1,4 +1,5 @@
 package kha.flash;
+import flash.media.SoundTransform;
 
 class SoundChannel extends kha.SoundChannel {
 	private var channel: flash.media.SoundChannel;
@@ -34,6 +35,19 @@ class SoundChannel extends kha.SoundChannel {
 		if (channel == null) return 0;
 		else return Std.int(channel.position);
 	}
+	
+	override public function setVolume(volume:Float):Void {
+		channel.soundTransform = new SoundTransform(volume,channel.soundTransform.pan); 
+	}
+	
+	override public function setPan(pan: Float): Void {
+		channel.soundTransform = new SoundTransform(channel.soundTransform.volume,pan); 
+	}
+	
+	override public function getPan(): Float {
+		return channel.soundTransform.pan;
+	}
+	
 }
 
 class Sound extends kha.Sound {
