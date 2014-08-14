@@ -4,7 +4,7 @@ import flash.display3D.IndexBuffer3D;
 import flash.Vector;
 import kha.graphics.Usage;
 
-class IndexBuffer implements kha.graphics.IndexBuffer {
+class IndexBuffer implements kha.graphics4.IndexBuffer {
 	public var indexBuffer: IndexBuffer3D;
 	private var indices: Vector<UInt>;
 	private var lockedIndices: Array<Int>;

@@ -2,7 +2,7 @@ package kha;
 
 import flash.display3D.Context3D;
 import flash.Lib;
-import kha.graphics.Graphics;
+import kha.graphics4.Graphics;
 
 class Sys {
 	public static var needs3d: Bool = false;

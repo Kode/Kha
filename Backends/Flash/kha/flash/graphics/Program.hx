@@ -3,13 +3,13 @@ package kha.flash.graphics;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Program3D;
 import kha.flash.utils.AGALMiniAssembler;
-import kha.graphics.FragmentShader;
-import kha.graphics.VertexShader;
-import kha.graphics.VertexStructure;
+import kha.graphics4.FragmentShader;
+import kha.graphics4.VertexShader;
+import kha.graphics4.VertexStructure;
 
 using StringTools;
 
-class Program implements kha.graphics.Program {
+class Program extends kha.graphics4.Program {
 	private var program: Program3D;
 	private var fragmentShader: Shader;
 	private var vertexShader: Shader;
@@ -36,7 +36,7 @@ class Program implements kha.graphics.Program {
 		program.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
 	}
 	
-	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
+	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		var type: Context3DProgramType;
 		var value: Int;
 		if (Reflect.hasField(vertexShader.names, name)) {
@@ -50,7 +50,7 @@ class Program implements kha.graphics.Program {
 		return new ConstantLocation(value, type);
 	}
 	
-	public function getTextureUnit(name: String): kha.graphics.TextureUnit {
+	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new TextureUnit();
 		if (Reflect.hasField(vertexShader.names, name)) {
 			unit.unit = Reflect.field(vertexShader.names, name).substr(2);
