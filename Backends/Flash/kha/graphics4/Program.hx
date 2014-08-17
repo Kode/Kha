@@ -1,4 +1,4 @@
-package kha.flash.graphics;
+package kha.graphics4;
 
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Program3D;
@@ -9,21 +9,21 @@ import kha.graphics4.VertexStructure;
 
 using StringTools;
 
-class Program extends kha.graphics4.Program {
+class Program {
 	private var program: Program3D;
-	private var fragmentShader: Shader;
-	private var vertexShader: Shader;
+	private var fragmentShader: FragmentShader;
+	private var vertexShader: VertexShader;
 	
 	public function new() {
-		program = Graphics.context.createProgram();
+		program = kha.flash.graphics4.Graphics.context.createProgram();
 	}
 
 	public function setVertexShader(shader: VertexShader): Void {
-		vertexShader = cast(shader, Shader);
+		vertexShader = shader;
 	}
 
 	public function setFragmentShader(shader: FragmentShader): Void {
-		fragmentShader = cast(shader, Shader);
+		fragmentShader = shader;
 	}
 	
 	public function link(structure: VertexStructure): Void {
@@ -47,11 +47,11 @@ class Program extends kha.graphics4.Program {
 			type = Context3DProgramType.FRAGMENT;
 			value = Reflect.field(fragmentShader.names, name).substr(2);
 		}
-		return new ConstantLocation(value, type);
+		return new kha.flash.graphics4.ConstantLocation(value, type);
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		var unit = new TextureUnit();
+		var unit = new kha.flash.graphics4.TextureUnit();
 		if (Reflect.hasField(vertexShader.names, name)) {
 			unit.unit = Reflect.field(vertexShader.names, name).substr(2);
 		}
@@ -62,18 +62,18 @@ class Program extends kha.graphics4.Program {
 	}
 	
 	public function set(): Void {
-		Graphics.context.setProgram(program);
+		kha.flash.graphics4.Graphics.context.setProgram(program);
 		
 		var vec = new flash.Vector<Float>(4);
 		vec[0] = vertexShader.constants.vc0[0];
 		vec[1] = vertexShader.constants.vc0[1];
 		vec[2] = vertexShader.constants.vc0[2];
 		vec[3] = vertexShader.constants.vc0[3];
-		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vec);
+		kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vec);
 		vec[0] = fragmentShader.constants.fc0[0];
 		vec[1] = fragmentShader.constants.fc0[1];
 		vec[2] = fragmentShader.constants.fc0[2];
 		vec[3] = fragmentShader.constants.fc0[3];
-		Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec);
+		kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec);
 	}
 }

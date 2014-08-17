@@ -1,4 +1,4 @@
-package kha.flash.graphics;
+package kha.flash.graphics4;
 
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
@@ -18,11 +18,12 @@ import flash.geom.Matrix3D;
 import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
-import kha.flash.Image;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
+import kha.graphics4.FragmentShader;
+import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
@@ -30,6 +31,7 @@ import kha.graphics4.TexDir;
 import kha.graphics4.TextureFilter;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.graphics4.VertexShader;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -193,28 +195,28 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 
-	public function createVertexBuffer(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
-		return new VertexBuffer(vertexCount, structure, usage);
-	}
+	//public function createVertexBuffer(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
+	//	return new VertexBuffer(vertexCount, structure, usage);
+	//}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set();
+		vertexBuffer.set();
 	}
 	
-	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
-		return new IndexBuffer(indexCount, usage);
-	}
+	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
+	//	return new IndexBuffer(indexCount, usage);
+	//}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		cast(indexBuffer, IndexBuffer).set();
+		indexBuffer.set();
 	}
 	
-	public function createProgram(): kha.graphics4.Program {
-		return new Program();
-	}
+	//public function createProgram(): kha.graphics4.Program {
+	//	return new Program();
+	//}
 	
 	public function setProgram(program: kha.graphics4.Program): Void {
-		cast(program, Program).set();
+		program.set();
 	}
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
@@ -242,11 +244,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function createVertexShader(source: Blob): kha.graphics4.VertexShader {
-		return new Shader(source.toString(), Context3DProgramType.VERTEX);
+		return new VertexShader(source);
 	}
 
 	public function createFragmentShader(source: Blob): kha.graphics4.FragmentShader {
-		return new Shader(source.toString(), Context3DProgramType.FRAGMENT);
+		return new FragmentShader(source);
 	}
 	
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
@@ -350,5 +352,13 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function renderTargetsInvertedY(): Bool {
 		return false;
+	}
+	
+	public function begin(): Void {
+		
+	}
+	
+	public function end(): Void {
+		
 	}
 }

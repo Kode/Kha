@@ -1,17 +1,17 @@
-package kha.flash.graphics;
+package kha.graphics4;
 
 import flash.display3D.IndexBuffer3D;
 import flash.Vector;
-import kha.graphics.Usage;
+import kha.graphics4.Usage;
 
-class IndexBuffer implements kha.graphics4.IndexBuffer {
+class IndexBuffer {
 	public var indexBuffer: IndexBuffer3D;
 	private var indices: Vector<UInt>;
 	private var lockedIndices: Array<Int>;
 	public static var current: IndexBuffer;
 	
 	public function new(indexCount: Int, usage: Usage) {
-		indexBuffer = Graphics.context.createIndexBuffer(indexCount);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
+		indexBuffer = kha.flash.graphics4.Graphics.context.createIndexBuffer(indexCount);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		indices = new Vector<UInt>(indexCount);
 		lockedIndices = new Array<Int>();
 		lockedIndices[indexCount - 1] = 0;

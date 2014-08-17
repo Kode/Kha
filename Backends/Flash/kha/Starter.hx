@@ -27,7 +27,7 @@ import flash.Vector;
 
 class Starter {
 	private var game: Game;
-	private var painter: kha.flash.ShaderPainter;
+	//private var painter: kha.flash.ShaderPainter;
 	private var frame: Framebuffer;
 	private var pressedKeys: Array<Bool>;
 	private var stage: Stage;
@@ -78,8 +78,9 @@ class Starter {
 		Scheduler.start();
 		game.loadFinished();
 		
-		painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
-		frame = new Framebuffer();
+		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
+		var g4 = new kha.flash.graphics4.Graphics(context);
+		frame = new Framebuffer(new kha.flash.graphics4.Graphics2(g4, game.width, game.height), g4);
 		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -271,7 +272,7 @@ class Starter {
 	}
 	
 	private function resizeHandler(event: Event): Void {
-		if (painter != null) {
+		if (frame != null) {
 			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, false);
 		}
 	}

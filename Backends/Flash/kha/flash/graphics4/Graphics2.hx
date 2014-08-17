@@ -1,16 +1,17 @@
-package kha.flash;
+package kha.flash.graphics4;
 
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
+import kha.graphics4.Graphics;
 import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;
 
-class ShaderPainter extends Graphics2 {
+class Graphics2 extends kha.graphics4.Graphics2 {
 	private var videoBitmap: BitmapData;
 	private var videoImage: Image;
 	
-	public function new(width: Int, height: Int) {
-		super(width, height);
+	public function new(g4: Graphics, width: Int, height: Int) {
+		super(g4, width, height);
 		videoBitmap = new BitmapData(width, height, true, 0xffffff);
 		videoImage = new Image(width, height, TextureFormat.RGBA32, false, false, false);
 	}
@@ -50,6 +51,6 @@ class ShaderPainter extends Graphics2 {
 		videoBitmap.fillRect(new Rectangle(0, 0, width, height), 0xffffff);
 		videoBitmap.draw(stageVideo);
 		videoImage.uploadBitmap(videoBitmap, false);
-		drawImage2(videoImage, 0, 0, width, height, x, y, width, height);
+		drawScaledSubImage(videoImage, 0, 0, width, height, x, y, width, height);
 	}
 }

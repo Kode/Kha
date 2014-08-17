@@ -1,8 +1,9 @@
-package kha.flash;
+package kha;
 
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 import kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -23,6 +24,14 @@ class Image implements Canvas implements Resource {
 	private var data: BitmapData;
 	private var bytes: Bytes;
 	private var readable: Bool;
+	
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+		return null;
+	}
+	
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+		return null;
+	}
 	
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: Bool, readable: Bool) {
 		myWidth = width;
@@ -49,6 +58,23 @@ class Image implements Canvas implements Resource {
 	public function uploadBitmap(bitmap: BitmapData, readable: Bool): Void {
 		if (readable) data = bitmap;
 		tex.uploadFromBitmapData(bitmap, 0);
+	}
+	
+	public var g2(get, null): kha.graphics2.Graphics;
+	private function get_g2(): kha.graphics2.Graphics { return null; }
+	public var g4(get, null): kha.graphics4.Graphics;
+	private function get_g4(): kha.graphics4.Graphics { return null; }
+	
+	public static var maxSize(get, null): Int;
+	
+	public static function get_maxSize(): Int {
+		return 2048;
+	}
+	
+	public static var nonPow2Supported(get, null): Bool;
+	
+	public static function get_nonPow2Supported(): Bool {
+		return false;
 	}
 	
 	public var width(get, null): Int;

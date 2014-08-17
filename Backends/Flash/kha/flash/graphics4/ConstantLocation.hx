@@ -1,4 +1,4 @@
-package kha.flash.graphics;
+package kha.flash.graphics4;
 
 import flash.display3D.Context3DProgramType;
 

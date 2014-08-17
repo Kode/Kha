@@ -11,7 +11,7 @@ class Sys {
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
 	public static function init(context: Context3D): Void {
-		graphics = new kha.flash.graphics.Graphics(context);
+		graphics = new kha.flash.graphics4.Graphics(context);
 		theMouse = new kha.flash.Mouse();
 	}
 	
@@ -34,5 +34,13 @@ class Sys {
 	
 	public static function get_pixelHeight(): Int {
 		return Lib.current.stage.stageHeight;
+	}
+	
+	public static function vsynced(): Bool {
+		return true;
+	}
+	
+	public static function refreshRate(): Int {
+		return 60;
 	}
 }

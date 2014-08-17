@@ -1,4 +1,4 @@
-package kha.flash.graphics;
+package kha.graphics4;
 
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
@@ -6,15 +6,15 @@ import flash.Vector;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexData;
 
-class VertexBuffer implements kha.graphics4.VertexBuffer {
+class VertexBuffer {
 	public var vertexBuffer: VertexBuffer3D;
 	private var vertices: Vector<Float>;
 	private var lockedVertices: Array<Float>;
 	private var vertexCount: Int;
 	private var myStride: Int;
-	private var myStructure: kha.graphics.VertexStructure;
+	private var myStructure: kha.graphics4.VertexStructure;
 	
-	public function new(vertexCount: Int, structure: kha.graphics.VertexStructure, usage: Usage) {
+	public function new(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage) {
 		this.vertexCount = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
@@ -30,7 +30,7 @@ class VertexBuffer implements kha.graphics4.VertexBuffer {
 			}
 		}
 		myStructure = structure;
-		vertexBuffer = Graphics.context.createVertexBuffer(vertexCount, myStride);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
+		vertexBuffer = kha.flash.graphics4.Graphics.context.createVertexBuffer(vertexCount, myStride);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		vertices = new Vector<Float>(myStride * vertexCount);
 		lockedVertices = new Array<Float>();
 		lockedVertices[myStride * vertexCount - 1] = 0;
@@ -61,20 +61,20 @@ class VertexBuffer implements kha.graphics4.VertexBuffer {
 		for (element in myStructure.elements) {
 			switch (element.data) {
 			case VertexData.Float1:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
 				offset += 1;
 			case VertexData.Float2:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
 				offset += 2;
 			case VertexData.Float3:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_3);
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_3);
 				offset += 3;
 			case VertexData.Float4:
-				Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
 				offset += 4;
 			}
 			++index;
 		}
-		for (i in index...8) Graphics.context.setVertexBufferAt(i, null);
+		for (i in index...8) kha.flash.graphics4.Graphics.context.setVertexBufferAt(i, null);
 	}
 }
