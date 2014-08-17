@@ -1,4 +1,4 @@
-package kha.cpp.graphics;
+package kha.graphics4;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -6,11 +6,11 @@ package kha.cpp.graphics;
 ')
 
 @:headerClassCode("Kore::IndexBuffer* buffer;")
-class IndexBuffer implements kha.graphics.IndexBuffer{
+class IndexBuffer {
 	private var data: Array<Int>;
 	private var myCount: Int;
 	
-	public function new(indexCount: Int) {
+	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
 		data = new Array<Int>();
 		data[myCount - 1] = 0;

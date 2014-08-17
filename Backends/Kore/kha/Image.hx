@@ -1,9 +1,9 @@
-package kha.cpp;
+package kha;
 
 import haxe.io.Bytes;
-import kha.cpp.graphics.TextureUnit;
-import kha.graphics.Texture;
-import kha.graphics.TextureFormat;
+import kha.cpp.graphics4.TextureUnit;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -11,15 +11,23 @@ import kha.graphics.TextureFormat;
 ')
 
 @:headerClassCode("Kore::Texture* texture; Kore::RenderTarget* renderTarget;")
-class Image implements Texture {
+class Image implements Canvas implements Resource {
 	private var format: TextureFormat;
 	private var readable: Bool;
+	
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+		return null;
+	}
+	
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+		return null;
+	}
 	
 	private function new(readable: Bool) {
 		this.readable = readable;
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthBuffer: Bool): Image {
+	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthBuffer: Bool): Image {
 		var image = new Image(readable);
 		image.format = format;
 		if (renderTarget) image.initRenderTarget(width, height, format == TextureFormat.RGBA32 ? 0 : 1, depthBuffer);
@@ -47,6 +55,23 @@ class Image implements Texture {
 	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 		
+	}
+	
+	public var g2(get, null): kha.graphics2.Graphics;
+	private function get_g2(): kha.graphics2.Graphics { return null; }
+	public var g4(get, null): kha.graphics4.Graphics;
+	private function get_g4(): kha.graphics4.Graphics { return null; }
+	
+	public static var maxSize(get, null): Int;
+	
+	public static function get_maxSize(): Int {
+		return 4096;
+	}
+	
+	public static var nonPow2Supported(get, null): Bool;
+	
+	public static function get_nonPow2Supported(): Bool {
+		return false;
 	}
 	
 	public var width(get, null): Int;

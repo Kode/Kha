@@ -1,4 +1,4 @@
-package kha.cpp.graphics;
+package kha.cpp.graphics4;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -6,7 +6,7 @@ package kha.cpp.graphics;
 ')
 
 @:headerClassCode("Kore::ConstantLocation location;")
-class ConstantLocation implements kha.graphics.ConstantLocation {
+class ConstantLocation implements kha.graphics4.ConstantLocation {
 	public function new() {
 		
 	}

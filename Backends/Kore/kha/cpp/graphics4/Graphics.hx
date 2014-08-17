@@ -1,23 +1,21 @@
-package kha.cpp.graphics;
+package kha.cpp.graphics4;
 
 import kha.Blob;
 import kha.Color;
-import kha.cpp.Image;
-import kha.graphics.CubeMap;
-import kha.graphics.CullMode;
-import kha.graphics.FragmentShader;
-import kha.graphics.BlendingOperation;
-import kha.graphics.CompareMode;
-import kha.graphics.MipMapFilter;
-import kha.graphics.StencilAction;
-import kha.graphics.TexDir;
-import kha.graphics.Texture;
-import kha.graphics.TextureAddressing;
-import kha.graphics.TextureFilter;
-import kha.graphics.TextureFormat;
-import kha.graphics.Usage;
-import kha.graphics.VertexShader;
-import kha.graphics.VertexStructure;
+import kha.graphics4.CubeMap;
+import kha.graphics4.CullMode;
+import kha.graphics4.FragmentShader;
+import kha.graphics4.BlendingOperation;
+import kha.graphics4.CompareMode;
+import kha.graphics4.MipMapFilter;
+import kha.graphics4.StencilAction;
+import kha.graphics4.TexDir;
+import kha.graphics4.TextureAddressing;
+import kha.graphics4.TextureFilter;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
+import kha.graphics4.VertexShader;
+import kha.graphics4.VertexStructure;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -29,7 +27,7 @@ import kha.Rectangle;
 #include <Kore/Graphics/Graphics.h>
 ')
 
-class Graphics implements kha.graphics.Graphics {
+class Graphics implements kha.graphics4.Graphics {
 	public function new() {
 		
 	}
@@ -147,29 +145,29 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics.VertexBuffer {
-		return new VertexBuffer(vertexCount, structure);
+	//public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
+	//	return new VertexBuffer(vertexCount, structure);
+	//}
+	
+	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
+		vertexBuffer.set();
 	}
 	
-	public function setVertexBuffer(vertexBuffer: kha.graphics.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set();
+	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
+	//	return new IndexBuffer(indexCount);
+	//}
+	
+	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
+		indexBuffer.set();
 	}
 	
-	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
-		return new IndexBuffer(indexCount);
-	}
+	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
+	//	return Image.create(width, height, format, canRead, false, false);
+	//}
 	
-	public function setIndexBuffer(indexBuffer: kha.graphics.IndexBuffer): Void {
-		cast(indexBuffer, IndexBuffer).set();
-	}
-	
-	public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
-		return Image.create(width, height, format, canRead, false, false);
-	}
-	
-	public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
-		return Image.create(width, height, format, false, true, depthStencil);
-	}
+	//public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
+	//	return Image.create(width, height, format, false, true, depthStencil);
+	//}
 	
 	public function maxTextureSize(): Int {
 		return 4096;
@@ -196,9 +194,9 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function renderToTexture(texture: Texture): Void {
-		renderToTexture2(cast texture);
-	}
+	//public function renderToTexture(texture: Texture): Void {
+	//	renderToTexture2(cast texture);
+	//}
 	
 	@:functionCode('Kore::Graphics::restoreRenderTarget();')
 	public function renderToBackbuffer(): Void {
@@ -260,7 +258,7 @@ class Graphics implements kha.graphics.Graphics {
 		}
 	}
 	
-	public function setTextureParameters(texunit: kha.graphics.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		setTextureWrapNative(cast texunit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
 		setTextureFiltersNative(cast texunit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
 	}
@@ -276,28 +274,28 @@ class Graphics implements kha.graphics.Graphics {
 		setCullModeNative(mode != None);
 	}
 	
-	public function setTexture(unit: kha.graphics.TextureUnit, texture: kha.Image): Void {
+	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
-		cast(texture, Image).set(cast unit);
+		texture.set(cast unit);
 	}
 	
-	public function createVertexShader(source: Blob): VertexShader {
-		return new Shader(source, ShaderType.VertexShader);
+	//public function createVertexShader(source: Blob): VertexShader {
+	//	return new Shader(source, ShaderType.VertexShader);
+	//}
+	
+	//public function createFragmentShader(source: Blob): FragmentShader {
+	//	return new Shader(source, ShaderType.FragmentShader);
+	//}
+	
+	//public function createProgram(): kha.graphics4.Program {
+	//	return new Program();
+	//}
+	
+	public function setProgram(program: kha.graphics4.Program): Void {
+		program.set();
 	}
 	
-	public function createFragmentShader(source: Blob): FragmentShader {
-		return new Shader(source, ShaderType.FragmentShader);
-	}
-	
-	public function createProgram(): kha.graphics.Program {
-		return new Program();
-	}
-	
-	public function setProgram(program: kha.graphics.Program): Void {
-		cast(program, Program).set();
-	}
-	
-	public function setBool(location: kha.graphics.ConstantLocation, value: Bool): Void {
+	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		setBoolPrivate(cast location, value);
 	}
 	
@@ -308,7 +306,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setInt(location: kha.graphics.ConstantLocation, value: Int): Void {
+	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
 		setIntPrivate(cast location, value);
 	}
 	
@@ -319,7 +317,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 
-	public function setFloat(location: kha.graphics.ConstantLocation, value: Float): Void {
+	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
 		setFloatPrivate(cast location, value);
 	}
 	
@@ -330,7 +328,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setFloat2(location: kha.graphics.ConstantLocation, value1: Float, value2: Float): Void {
+	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
 		setFloat2Private(cast location, value1, value2);
 	}
 	
@@ -341,7 +339,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setFloat3(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
 		setFloat3Private(cast location, value1, value2, value3);
 	}
 	
@@ -352,7 +350,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setFloat4(location: kha.graphics.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
 		setFloat4Private(cast location, value1, value2, value3, value4);
 	}
 	
@@ -363,7 +361,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setVector2(location: kha.graphics.ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: kha.graphics4.ConstantLocation, value: Vector2): Void {
 		setVector2Private(cast location, value.x, value.y);
 	}
 	
@@ -374,7 +372,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setVector3(location: kha.graphics.ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: kha.graphics4.ConstantLocation, value: Vector3): Void {
 		setVector3Private(cast location, value.x, value.y, value.z);
 	}
 	
@@ -385,7 +383,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setVector4(location: kha.graphics.ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: kha.graphics4.ConstantLocation, value: Vector4): Void {
 		setVector4Private(cast location, value.x, value.y, value.z, value.w);
 	}
 	
@@ -396,7 +394,7 @@ class Graphics implements kha.graphics.Graphics {
 		
 	}
 	
-	public function setFloats(location: kha.graphics.ConstantLocation, values: Array<Float>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
 		setFloatsPrivate(cast location, values);
 	}
 	
@@ -419,7 +417,7 @@ class Graphics implements kha.graphics.Graphics {
 		::kha::cpp::graphics::ConstantLocation_obj* loc = dynamic_cast< ::kha::cpp::graphics::ConstantLocation_obj*>(location->__GetRealObject());
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
-	public function setMatrix(location: kha.graphics.ConstantLocation, matrix: Matrix4): Void {
+	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
 		
 	}
 	
@@ -439,6 +437,14 @@ class Graphics implements kha.graphics.Graphics {
 		Kore::Graphics::drawIndexedVertices(start, count);
 	')
 	public function drawSomeIndexedVertices(start: Int, count: Int): Void {
+		
+	}
+	
+	public function begin(): Void {
+		
+	}
+	
+	public function end(): Void {
 		
 	}
 }

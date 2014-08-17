@@ -1,10 +1,10 @@
-package kha.cpp.graphics;
+package kha.graphics4;
 
-import kha.graphics.FragmentShader;
-import kha.graphics.VertexData;
-import kha.graphics.VertexElement;
-import kha.graphics.VertexShader;
-import kha.graphics.VertexStructure;
+import kha.graphics4.FragmentShader;
+import kha.graphics4.VertexData;
+import kha.graphics4.VertexElement;
+import kha.graphics4.VertexShader;
+import kha.graphics4.VertexStructure;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -12,7 +12,7 @@ import kha.graphics.VertexStructure;
 ')
 
 @:headerClassCode("Kore::Program* program;")
-class Program implements kha.graphics.Program {
+class Program {
 	public function new() {
 		init();
 	}
@@ -25,24 +25,24 @@ class Program implements kha.graphics.Program {
 	}
 	
 	public function setVertexShader(shader: VertexShader): Void {
-		setVertexShaderImpl(cast(shader, Shader));
+		setVertexShaderImpl(shader);
 	}
 	
 	@:functionCode('
 		program->setVertexShader(shader->shader);
 	')
-	private function setVertexShaderImpl(shader: Shader): Void {
+	private function setVertexShaderImpl(shader: VertexShader): Void {
 		
 	}
 	
 	public function setFragmentShader(shader: FragmentShader): Void {
-		setFragmentShaderImpl(cast(shader, Shader));
+		setFragmentShaderImpl(shader);
 	}
 	
 	@:functionCode('
 		program->setFragmentShader(shader->shader);
 	')
-	private function setFragmentShaderImpl(shader: Shader): Void {
+	private function setFragmentShaderImpl(shader: FragmentShader): Void {
 		
 	}
 	
@@ -72,8 +72,8 @@ class Program implements kha.graphics.Program {
 		
 	}
 	
-	public function getConstantLocation(name: String): kha.graphics.ConstantLocation {
-		var location = new ConstantLocation();
+	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
+		var location = new kha.cpp.graphics4.ConstantLocation();
 		initConstantLocation(location, name);
 		return location;
 	}
@@ -85,8 +85,8 @@ class Program implements kha.graphics.Program {
 		
 	}
 	
-	public function getTextureUnit(name: String): kha.graphics.TextureUnit {
-		var unit = new TextureUnit();
+	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
+		var unit = new kha.cpp.graphics4.TextureUnit();
 		initTextureUnit(unit, name);
 		return unit;
 	}

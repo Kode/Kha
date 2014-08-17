@@ -1,7 +1,5 @@
 package kha;
 
-import kha.cpp.graphics.Graphics;
-
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/System.h>
@@ -10,7 +8,7 @@ import kha.cpp.graphics.Graphics;
 class Sys {
 	public static var needs3d: Bool = false;
 	
-	public static var graphics(default, null): kha.graphics.Graphics;
+	//public static var graphics(default, null): kha.graphics.Graphics;
 
 	public static var mouse(default, null): kha.Mouse;
 	
@@ -18,7 +16,7 @@ class Sys {
 	
 	public static function init(): Void {
 		mouse = new kha.cpp.Mouse();
-		graphics = new Graphics();
+		//graphics = new Graphics();
 	}
 	
 	@:functionCode('
@@ -39,5 +37,13 @@ class Sys {
 	@:functionCode('return Kore::System::screenHeight();')
 	public static function get_pixelHeight(): Int {
 		return 0;
+	}
+	
+	public static function vsynced(): Bool {
+		return true;
+	}
+	
+	public static function refreshRate(): Int {
+		return 60;
 	}
 }

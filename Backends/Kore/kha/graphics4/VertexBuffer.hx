@@ -1,8 +1,8 @@
-package kha.cpp.graphics;
+package kha.graphics4;
 
-import kha.graphics.VertexData;
-import kha.graphics.VertexElement;
-import kha.graphics.VertexStructure;
+import kha.graphics4.VertexData;
+import kha.graphics4.VertexElement;
+import kha.graphics4.VertexStructure;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -10,10 +10,10 @@ import kha.graphics.VertexStructure;
 ')
 
 @:headerClassCode("Kore::VertexBuffer* buffer;")
-class VertexBuffer implements kha.graphics.VertexBuffer {
+class VertexBuffer {
 	private var data: Array<Float>;
 	
-	public function new(vertexCount: Int, structure: VertexStructure) {
+	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		init(vertexCount, structure);
 		data = new Array<Float>();
 		data[Std.int(stride() / 4) * count() - 1] = 0;

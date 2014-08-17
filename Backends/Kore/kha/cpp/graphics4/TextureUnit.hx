@@ -1,4 +1,4 @@
-package kha.cpp.graphics;
+package kha.cpp.graphics4;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -6,7 +6,7 @@ package kha.cpp.graphics;
 ')
 
 @:headerClassCode("Kore::TextureUnit unit;")
-class TextureUnit implements kha.graphics.TextureUnit {
+class TextureUnit implements kha.graphics4.TextureUnit {
 	public function new() {
 		
 	}

@@ -25,7 +25,7 @@ class Loader extends kha.Loader {
 	
 	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		done(kha.cpp.Image.fromFile(desc.file, readable));
+		done(kha.Image.fromFile(desc.file, readable));
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {

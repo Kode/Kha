@@ -1,6 +1,7 @@
 package kha;
 
 import kha.Game;
+import kha.graphics4.Graphics2;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Surface;
@@ -11,7 +12,7 @@ import kha.input.SensorType;
 
 class Starter {
 	private static var game: Game;
-	private static var painter: ShaderPainter;
+	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
@@ -24,7 +25,6 @@ class Starter {
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
 		surface = new Surface();
-		painter = null;
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
 		Scheduler.init();
@@ -44,13 +44,14 @@ class Starter {
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		game.loadFinished();
-		painter = new ShaderPainter(game.width, game.height);
+		var g4 = new kha.cpp.graphics4.Graphics();
+		framebuffer = new Framebuffer(new Graphics2(g4, game.width, game.height), g4);
 	}
 
 	public static function frame() {
-		if (painter == null) return;
+		if (framebuffer == null) return;
 		Scheduler.executeFrame();
-		game.render(painter);
+		game.render(framebuffer);
 	}
 	
 	public static function pushUp(): Void {
