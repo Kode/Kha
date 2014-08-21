@@ -29,7 +29,7 @@ class Image implements Canvas implements Resource {
 	private var graphics4: kha.graphics4.Graphics;
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
-		return null;
+		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, false);
 	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
