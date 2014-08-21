@@ -666,16 +666,16 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		
-		var p1 = transformation.multvec(new Vector2(x, y));
-		var p2 = transformation.multvec(new Vector2(x + width, y + strength));
+		var p1 = transformation.multvec(new Vector2(x - strength / 2, y - strength / 2));
+		var p2 = transformation.multvec(new Vector2(x + width + strength / 2, y + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y);
-		p2 = transformation.multvec(new Vector2(x + strength, y + height));
+		p2 = transformation.multvec(new Vector2(x + strength / 2, y + height + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y);
-		p1 = transformation.multvec(new Vector2(x, y + height));
-		p2 = transformation.multvec(new Vector2(x + width, y - strength));
+		p1 = transformation.multvec(new Vector2(x - strength / 2, y + height + strength / 2));
+		p2 = transformation.multvec(new Vector2(x + width + strength / 2, y + height - strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y);
-		p1 = transformation.multvec(new Vector2(x + width, y));
-		p2 = transformation.multvec(new Vector2(x - strength, y + height));
+		p1 = transformation.multvec(new Vector2(x + width + strength / 2, y - strength / 2));
+		p2 = transformation.multvec(new Vector2(x + width - strength / 2, y + height + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y);
 	}
 	
