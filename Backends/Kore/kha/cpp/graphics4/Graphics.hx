@@ -16,6 +16,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
+import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -28,8 +29,10 @@ import kha.Rectangle;
 ')
 
 class Graphics implements kha.graphics4.Graphics {
-	public function new() {
-		
+	private var target: Image;
+	
+	public function new(target: Image = null) {
+		this.target = target;
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
@@ -189,20 +192,6 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	@:functionCode('Kore::Graphics::setRenderTarget(texture->renderTarget, 0);')
-	public function renderToTexture2(texture: Image): Void {
-		
-	}
-	
-	//public function renderToTexture(texture: Texture): Void {
-	//	renderToTexture2(cast texture);
-	//}
-	
-	@:functionCode('Kore::Graphics::restoreRenderTarget();')
-	public function renderToBackbuffer(): Void {
-		
-	}
-	
 	@:functionCode('return Kore::Graphics::renderTargetsInvertedY();')
 	public function renderTargetsInvertedY(): Bool {
 		return false;
@@ -302,7 +291,7 @@ class Graphics implements kha.graphics4.Graphics {
 	@:functionCode('
 		Kore::Graphics::setBool(location->location, value);
 	')
-	private function setBoolPrivate(location: ConstantLocation, value: Bool): Void {
+	private function setBoolPrivate(location: kha.cpp.graphics4.ConstantLocation, value: Bool): Void {
 		
 	}
 	
@@ -414,7 +403,7 @@ class Graphics implements kha.graphics4.Graphics {
 				value.Set(x, y, matrix->matrix[y * 4 + x]);
 			}
 		}
-		::kha::cpp::graphics::ConstantLocation_obj* loc = dynamic_cast< ::kha::cpp::graphics::ConstantLocation_obj*>(location->__GetRealObject());
+		::kha::cpp::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::cpp::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
@@ -440,8 +429,19 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function begin(): Void {
+	@:functionCode('Kore::Graphics::setRenderTarget(target->renderTarget, 0);')
+	private function renderToTexture(): Void {
 		
+	}
+	
+	@:functionCode('Kore::Graphics::restoreRenderTarget();')
+	private function renderToBackbuffer(): Void {
+		
+	}
+	
+	public function begin(): Void {
+		if (target == null) renderToBackbuffer();
+		else renderToTexture();
 	}
 	
 	public function end(): Void {

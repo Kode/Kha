@@ -81,7 +81,7 @@ class Program {
 	@:functionCode('
 		location->location = program->getConstantLocation(name.c_str());
 	')
-	private function initConstantLocation(location: ConstantLocation, name: String): Void {
+	private function initConstantLocation(location: kha.cpp.graphics4.ConstantLocation, name: String): Void {
 		
 	}
 	
@@ -94,7 +94,7 @@ class Program {
 	@:functionCode('
 		unit->unit = program->getTextureUnit(name.c_str());
 	')
-	private function initTextureUnit(unit: TextureUnit, name: String): Void {
+	private function initTextureUnit(unit: kha.cpp.graphics4.TextureUnit, name: String): Void {
 		
 	}
 		
