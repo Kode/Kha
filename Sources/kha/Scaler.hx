@@ -66,11 +66,11 @@ class Scaler {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
@@ -82,11 +82,11 @@ class Scaler {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
@@ -101,11 +101,11 @@ class Scaler {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
@@ -120,11 +120,11 @@ class Scaler {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImage2(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));

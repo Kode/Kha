@@ -53,12 +53,11 @@ abstract Matrix3(Array<Float>) {
 	}
 
 	public static function rotation(alpha: Float): Matrix3 {
-		var m = identity();
-		m[index(0, 0)] = Math.cos(alpha);
-		m[index(1, 0)] = -Math.sin(alpha);
-		m[index(0, 1)] = Math.sin(alpha);
-		m[index(1, 1)] = Math.cos(alpha);
-		return m;
+		return new Matrix3([
+			Math.cos(alpha), -Math.sin(alpha), 0,
+			Math.sin(alpha), Math.cos(alpha), 0,
+			0, 0, 1
+		]);
 	}
 	
 	@:op(A + B)
