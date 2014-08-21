@@ -25,12 +25,15 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes;
 	private var readable: Bool;
 	
+	private var graphics2: kha.graphics2.Graphics;
+	private var graphics4: kha.graphics4.Graphics;
+	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		return null;
 	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
-		return null;
+		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true, depthStencil, false);
 	}
 	
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: Bool, readable: Bool) {
@@ -61,9 +64,22 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
-	private function get_g2(): kha.graphics2.Graphics { return null; }
+	
+	private function get_g2(): kha.graphics2.Graphics {
+		if (graphics2 == null) {
+			graphics2 = new kha.graphics4.Graphics2(g4, width, height);
+		}
+		return graphics2;
+	}
+	
 	public var g4(get, null): kha.graphics4.Graphics;
-	private function get_g4(): kha.graphics4.Graphics { return null; }
+	
+	private function get_g4(): kha.graphics4.Graphics {
+		if (graphics4 == null) {
+			graphics4 = new kha.flash.graphics4.Graphics(this);
+		}
+		return graphics4;
+	}
 	
 	public static var maxSize(get, null): Int;
 	

@@ -69,18 +69,21 @@ class Starter {
 		context.configureBackBuffer(game.width, game.height, 0, false);
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
-		Sys.init(context);
+		Sys.init();
 		#if debug
 		context.enableErrorChecking = true;
 		#end
+		
+		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
+		kha.flash.graphics4.Graphics.initContext(context);
+		var g4 = new kha.flash.graphics4.Graphics();
+		frame = new Framebuffer(new kha.flash.graphics4.Graphics2(g4, game.width, game.height), g4);
+		
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		game.loadFinished();
 		
-		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
-		var g4 = new kha.flash.graphics4.Graphics(context);
-		frame = new Framebuffer(new kha.flash.graphics4.Graphics2(g4, game.width, game.height), g4);
 		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);

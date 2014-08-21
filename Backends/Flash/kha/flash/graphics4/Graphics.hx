@@ -40,10 +40,15 @@ import kha.Rectangle;
 
 class Graphics implements kha.graphics4.Graphics {
 	public static var context: Context3D;
+	private var target: Image;
 
-	public function new(context: Context3D) {
+	public static function initContext(context: Context3D): Void {
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 		Graphics.context = context;
+	}
+	
+	public function new(target: Image = null) {
+		this.target = target;
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
@@ -355,7 +360,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function begin(): Void {
-		
+		if (target == null) context.setRenderToBackBuffer();
+		else context.setRenderToTexture(target.getFlashTexture(), target.hasDepthStencil());
 	}
 	
 	public function end(): Void {

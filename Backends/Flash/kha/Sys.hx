@@ -6,12 +6,10 @@ import kha.graphics4.Graphics;
 
 class Sys {
 	public static var needs3d: Bool = false;
-	public static var graphics: Graphics;
 	private static var theMouse: Mouse;
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
-	public static function init(context: Context3D): Void {
-		graphics = new kha.flash.graphics4.Graphics(context);
+	public static function init(): Void {
 		theMouse = new kha.flash.Mouse();
 	}
 	
