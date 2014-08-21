@@ -30,7 +30,6 @@ class GamepadStates {
 
 class Starter {
 	private static var game: Game;
-	private static var painter: Painter;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var lastPressedKey: Int;
