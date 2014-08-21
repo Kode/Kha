@@ -60,11 +60,11 @@ class Mouse {
 		}
 	}
 	
-	public function render(painter: Painter): Void {
-		if (cursorIndex >= 0 && !hidden) cursors[cursorIndex].render(painter, x, y);
+	public function render(g: kha.graphics2.Graphics): Void {
+		if (cursorIndex >= 0 && !hidden) cursors[cursorIndex].render(g, x, y);
 	}
 	
 	public function update(): Void {
-		if (cursorIndex >= 0) cursors[cursorIndex].update(x,y);
+		if (cursorIndex >= 0) cursors[cursorIndex].update(x, y);
 	}
 }

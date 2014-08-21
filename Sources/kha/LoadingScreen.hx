@@ -1,7 +1,5 @@
 package kha;
 
-import kha.Painter;
-
 class LoadingScreen extends Game {
 	public function new() {
 		super("Loading", false);
