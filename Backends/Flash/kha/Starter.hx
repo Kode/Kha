@@ -275,7 +275,7 @@ class Starter {
 	}
 	
 	private function resizeHandler(event: Event): Void {
-		if (frame != null) {
+		if (frame != null && stage.stageWidth >= 32 && stage.stageHeight >= 32) {
 			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, false);
 		}
 	}
