@@ -86,6 +86,7 @@ class Image implements Canvas implements Resource {
 	
 	public static var nonPow2Supported(get, null): Bool;
 	
+	@:functionCode('return Kore::Graphics::nonPow2TexturesSupported();')
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
