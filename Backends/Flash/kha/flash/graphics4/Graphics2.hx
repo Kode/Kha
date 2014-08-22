@@ -2,6 +2,7 @@ package kha.flash.graphics4;
 
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
+import kha.Canvas;
 import kha.graphics4.Graphics;
 import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;
@@ -10,10 +11,10 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 	private var videoBitmap: BitmapData;
 	private var videoImage: Image;
 	
-	public function new(g4: Graphics, width: Int, height: Int) {
-		super(g4, width, height);
-		videoBitmap = new BitmapData(width, height, true, 0xffffff);
-		videoImage = new Image(width, height, TextureFormat.RGBA32, false, false, false);
+	public function new(canvas: Canvas) {
+		super(canvas);
+		videoBitmap = new BitmapData(canvas.width, canvas.height, true, 0xffffff);
+		videoImage = new Image(canvas.width, canvas.height, TextureFormat.RGBA32, false, false, false);
 	}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {

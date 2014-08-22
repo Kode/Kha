@@ -132,12 +132,14 @@ class Starter {
 		var widthTransform: Float = canvas.width / Loader.the.width;
 		var heightTransform: Float = canvas.height / Loader.the.height;
 		var transform: Float = Math.min(widthTransform, heightTransform);
-		var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
-		frame = new Framebuffer(
-			gl
-			? new kha.graphics4.Graphics2(g4, Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform))
-			: new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)),
-			g4);
+		if (gl) {
+			var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
+			frame = new Framebuffer(null, g4);
+			frame.init(new kha.graphics4.Graphics2(frame), g4);
+		}
+		else {
+			frame = new Framebuffer(new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)), null);
+		}
 		//canvas.getContext("2d").scale(transform, transform);
 		
 		try {

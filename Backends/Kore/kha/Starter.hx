@@ -45,7 +45,8 @@ class Starter {
 		Scheduler.start();
 		game.loadFinished();
 		var g4 = new kha.cpp.graphics4.Graphics();
-		framebuffer = new Framebuffer(new Graphics2(g4, game.width, game.height), g4);
+		framebuffer = new Framebuffer(null, g4);
+		framebuffer.init(new Graphics2(framebuffer), g4);
 	}
 
 	public static function frame() {

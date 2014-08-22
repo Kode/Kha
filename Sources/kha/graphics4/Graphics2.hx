@@ -37,9 +37,8 @@ class ImageShaderPainter {
 	private var g: Graphics;
 	public var program: Program = null;
 	
-	public function new(g4: Graphics, projectionMatrix: Matrix4) {
+	public function new(g4: Graphics) {
 		this.g = g4;
-		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		initShaders();
 		initBuffers();
@@ -240,9 +239,8 @@ class ColoredShaderPainter {
 	private var g: Graphics;
 	public var program: Program = null;
 	
-	public function new(g4: Graphics, projectionMatrix: Matrix4) {
+	public function new(g4: Graphics) {
 		this.g = g4;
-		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		triangleBufferIndex = 0;
 		initShaders();
@@ -457,14 +455,17 @@ class TextShaderPainter {
 	private var g: Graphics;
 	public var program: Program = null;
 	
-	public function new(g4: Graphics, projectionMatrix: Matrix4) {
+	public function new(g4: Graphics) {
 		this.g = g4;
-		this.projectionMatrix = projectionMatrix;
 		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getTextureUnit("tex");
+	}
+	
+	public function setProjection(projectionMatrix: Matrix4): Void {
+		this.projectionMatrix = projectionMatrix;
 	}
 	
 	private function initShaders(): Void {
@@ -650,13 +651,18 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
+	private var canvas: Canvas;
 	private var g: Graphics;
-	
-	public function new(g4: Graphics, width: Int, height: Int) {
+
+	public function new(canvas: Canvas) {
 		super();
 		color = Color.White;
-		g = g4;
-		setScreenSize(width, height);
+		this.canvas = canvas;
+		g = canvas.g4;
+		imagePainter = new ImageShaderPainter(g);
+		coloredPainter = new ColoredShaderPainter(g);
+		textPainter = new TextShaderPainter(g);
+		setProjection();
 	}
 	
 	private static function upperPowerOfTwo(v: Int): Int {
@@ -670,12 +676,12 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return v;
 	}
 	
-	private function setScreenSize(width: Int, height: Int) {
-		//projectionMatrix = ortho( 0, width, height, 0, 0.1, 1000);
-		projectionMatrix = Matrix4.orthogonalProjection(0, Image.nonPow2Supported ? width : upperPowerOfTwo(width), Image.nonPow2Supported ? height : upperPowerOfTwo(height), 0, 0.1, 1000);
-		imagePainter = new ImageShaderPainter(g, projectionMatrix);
-		coloredPainter = new ColoredShaderPainter(g, projectionMatrix);
-		textPainter = new TextShaderPainter(g, projectionMatrix);
+	private function setProjection(): Void {
+		if (Std.is(canvas, Framebuffer)) projectionMatrix = Matrix4.orthogonalProjection(0, canvas.width, canvas.height, 0, 0.1, 1000);
+		else projectionMatrix = Matrix4.orthogonalProjection(0, Image.nonPow2Supported ? canvas.width : upperPowerOfTwo(canvas.width), Image.nonPow2Supported ? canvas.height : upperPowerOfTwo(canvas.height), 0, 0.1, 1000);
+		imagePainter.setProjection(projectionMatrix);
+		coloredPainter.setProjection(projectionMatrix);
+		textPainter.setProjection(projectionMatrix);
 	}
 	
 	public override function drawImage(img: kha.Image, x: Float, y: Float): Void {
@@ -811,7 +817,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function begin(): Void {
 		g.begin();
 		g.clear(kha.Color.fromBytes(0, 0, 0, 0));
-		//translate(0, 0);
+		setProjection();
 	}
 	
 	private function endDrawing(): Void {
