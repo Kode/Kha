@@ -35,7 +35,8 @@ class ImageShaderPainter {
 	private var lastTexture: Image;
 	private var bilinear: Bool = false;
 	private var g: Graphics;
-	public var program: Program = null;
+	private var myProgram: Program = null;
+	public var program(get, set): Program;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -44,6 +45,22 @@ class ImageShaderPainter {
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getTextureUnit("tex");
+	}
+	
+	private function get_program(): Program {
+		return myProgram;
+	}
+	
+	private function set_program(prog: Program): Program {
+		if (prog == null) {
+			projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
+			textureLocation = shaderProgram.getTextureUnit("tex");
+		}
+		else {
+			projectionLocation = prog.getConstantLocation("projectionMatrix");
+			textureLocation = prog.getTextureUnit("tex");
+		}
+		return myProgram = prog;
 	}
 	
 	public function setProjection(projectionMatrix: Matrix4): Void {
@@ -237,7 +254,8 @@ class ColoredShaderPainter {
 	private var triangleIndexBuffer: IndexBuffer;
 	
 	private var g: Graphics;
-	public var program: Program = null;
+	private var myProgram: Program = null;
+	public var program(get, set): Program;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -247,7 +265,21 @@ class ColoredShaderPainter {
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 	}
-
+	
+	private function get_program(): Program {
+		return myProgram;
+	}
+	
+	private function set_program(prog: Program): Program {
+		if (prog == null) {
+			projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
+		}
+		else {
+			projectionLocation = prog.getConstantLocation("projectionMatrix");
+		}
+		return myProgram = prog;
+	}
+	
 	public function setProjection(projectionMatrix: Matrix4): Void {
 		this.projectionMatrix = projectionMatrix;
 	}
@@ -453,7 +485,8 @@ class TextShaderPainter {
 	private var font: Kravur;
 	private var lastTexture: Image;
 	private var g: Graphics;
-	public var program: Program = null;
+	private var myProgram: Program = null;
+	public var program(get, set): Program;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -462,6 +495,22 @@ class TextShaderPainter {
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
 		textureLocation = shaderProgram.getTextureUnit("tex");
+	}
+	
+	private function get_program(): Program {
+		return myProgram;
+	}
+	
+	private function set_program(prog: Program): Program {
+		if (prog == null) {
+			projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
+			textureLocation = shaderProgram.getTextureUnit("tex");
+		}
+		else {
+			projectionLocation = prog.getConstantLocation("projectionMatrix");
+			textureLocation = prog.getTextureUnit("tex");
+		}
+		return myProgram = prog;
 	}
 	
 	public function setProjection(projectionMatrix: Matrix4): Void {
