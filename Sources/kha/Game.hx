@@ -17,8 +17,8 @@ class Game {
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList();
 		scene = Scene.the;
-		width = Loader.the.width;
-		height = Loader.the.height;
+		width = Std.int(Loader.the.width / 2);
+		height = Std.int(Loader.the.height / 2);
 	}
 	
 	public function setInstance(): Void {

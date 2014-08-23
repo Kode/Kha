@@ -2,6 +2,7 @@ package kha;
 
 import kha.graphics2.Graphics;
 import kha.math.Vector2;
+import kha.math.Vector2i;
 
 @:expose
 class Tilemap {
@@ -19,6 +20,20 @@ class Tilemap {
 		levelHeight = map[0].length;
 		collisionRectCache = new Rectangle(0, 0, 32, 32);
 		this.repeat = repeat;
+	}
+	
+	public function index(xpos: Float, ypos: Float): Vector2i {
+		var xtile: Int = Std.int(xpos / tileset.TILE_WIDTH);
+		var ytile: Int = Std.int(ypos / tileset.TILE_HEIGHT);
+		return new Vector2i(xtile, ytile);
+	}
+	
+	public function get(x: Int, y: Int): Int {
+		return map[x][y];
+	}
+	
+	public function set(x: Int, y: Int, value: Int) {
+		map[x][y] = value;
 	}
 	
 	private static function mod(a: Int, b: Int): Int {
