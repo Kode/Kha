@@ -856,6 +856,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.program = program;
 		coloredPainter.program = program;
 		textPainter.program = program;
+		g.setProgram(program);
 	}
 	
 	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
