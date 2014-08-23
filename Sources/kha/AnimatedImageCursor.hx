@@ -1,4 +1,5 @@
 package kha;
+import kha.graphics2.Graphics;
 
 class AnimatedImageCursor implements Cursor {
 	private var image: Image;
@@ -37,8 +38,8 @@ class AnimatedImageCursor implements Cursor {
 		this.animation.take(animation);
 	}
 	
-	public function render(painter: Painter, x: Int, y: Int): Void {
-		painter.drawImage2(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, x - clickX, y - clickY, width, height);
+	public function render(g: Graphics, x: Int, y: Int): Void {
+		g.drawScaledSubImage(image, Std.int(animation.get() * width) % image.width, Math.floor(animation.get() * width / image.width) * height, width, height, x - clickX, y - clickY, width, height);
 	}
 	
 	public function update(x : Int, y : Int): Void {
