@@ -402,5 +402,15 @@ class CollisionLayer {
 				}
 			}
 		}
+		found = true;
+		while (found) {
+			found = false;
+			for (sprite in others) {
+				if (sprite.removed) {
+					others.remove(sprite);
+					found = true;
+				}
+			}
+		}
 	}
 }
