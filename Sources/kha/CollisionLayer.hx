@@ -224,7 +224,7 @@ class CollisionLayer {
 	}
 	
 	private function moveSprite(sprite: Sprite): Void {
-		if (sprite.collides && map.collides(sprite)) {
+		if (sprite.collides && sprite.speedy >= 0 && map.collides(sprite)) {
 			sprite.y = Math.ffloor(sprite.y);
 			while (map.collides(sprite) && sprite.y > - sprite.height) {
 				sprite.y -= 1;
