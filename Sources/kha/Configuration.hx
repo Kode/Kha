@@ -9,9 +9,9 @@ class Configuration {
 	}
 	
 	public static function setScreen(screen: Game) {
-		if (id >= 0) Scheduler.removeTimeTask(id);
 		theScreen = screen;
-		id = Scheduler.addTimeTask(update, 0, 1 / 60);
+		//if (id >= 0) Scheduler.removeTimeTask(id);
+		if (id < 0) id = Scheduler.addTimeTask(update, 0, 1 / 60);
 	}
 	
 	private static function update(): Void {
