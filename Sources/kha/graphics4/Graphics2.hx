@@ -162,13 +162,12 @@ class ImageShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
-		g.setTexture(textureLocation, lastTexture);
-		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
-		
 		rectVertexBuffer.unlock();
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setProgram(program == null ? shaderProgram : program);
+		g.setTexture(textureLocation, lastTexture);
+		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
 		g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
@@ -428,7 +427,7 @@ class ColoredShaderPainter {
 		triangleVertexBuffer.unlock();
 		g.setVertexBuffer(triangleVertexBuffer);
 		g.setIndexBuffer(triangleIndexBuffer);
-		g.setProgram(shaderProgram);
+		g.setProgram(program == null ? shaderProgram : program);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
@@ -612,12 +611,11 @@ class TextShaderPainter {
 	}
 	
 	private function drawBuffer(): Void {
-		g.setTexture(textureLocation, lastTexture);
-		
 		rectVertexBuffer.unlock();
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setProgram(program == null ? shaderProgram : program);
+		g.setTexture(textureLocation, lastTexture);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
 		g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
@@ -856,7 +854,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.program = program;
 		coloredPainter.program = program;
 		textPainter.program = program;
-		g.setProgram(program);
+		if (program != null) g.setProgram(program);
 	}
 	
 	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
