@@ -178,11 +178,12 @@ class Scene {
 		return camx;
 	}
 	
-	public var camyHack: Int = 0;
+	//public var camyHack: Int = 0;
+	
 	function set_camy(newcamy: Int): Int {
 		camy = newcamy;
 		if (collisionLayer != null) {
-			screenOffsetY = Std.int(Math.min(Math.max(0, camy - Game.the.height / 2), collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT + camyHack - Game.the.height));
+			screenOffsetY = Std.int(Math.min(Math.max(0, camy - Game.the.height / 2), collisionLayer.getMap().getHeight() * collisionLayer.getMap().getTileset().TILE_HEIGHT /*+ camyHack*/ - Game.the.height));
 			if (getHeight() < Game.the.height) screenOffsetY = 0;
 		}
 		else screenOffsetY = camy;

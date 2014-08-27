@@ -224,12 +224,12 @@ class CollisionLayer {
 	}
 	
 	private function moveSprite(sprite: Sprite): Void {
-		if (sprite.collides && sprite.speedy >= 0 && map.collides(sprite) && !Std.is(sprite, Gas)) {
+		/*if (sprite.collides && sprite.speedy >= 0 && map.collides(sprite) && !Std.is(sprite, Gas)) {
 			sprite.y = Math.ffloor(sprite.y);
 			while (map.collides(sprite) && sprite.y > - sprite.height) {
 				sprite.y -= 1;
 			}
-		}
+		}*/
 		sprite.speedx += sprite.accx;
 		sprite.speedy += sprite.accy;
 		if (sprite.speedy > sprite.maxspeedy) sprite.speedy = sprite.maxspeedy;
