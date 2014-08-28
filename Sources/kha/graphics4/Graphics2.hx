@@ -170,7 +170,6 @@ class ImageShaderPainter {
 		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
-		g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		g.setTexture(textureLocation, null);
@@ -415,7 +414,6 @@ class ColoredShaderPainter {
 		g.setProgram(program == null ? shaderProgram : program);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
-		g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		bufferIndex = 0;
@@ -618,7 +616,6 @@ class TextShaderPainter {
 		g.setTexture(textureLocation, lastTexture);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		
-		g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		g.setTexture(textureLocation, null);
@@ -865,6 +862,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function begin(): Void {
 		g.begin();
 		g.clear(kha.Color.fromBytes(0, 0, 0, 0));
+		g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		setProjection();
 	}
 	
