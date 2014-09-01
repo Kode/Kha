@@ -1,7 +1,11 @@
 package kha;
 
 import kha.graphics2.Graphics;
+#if !cs
+#if !java
 import kha.graphics4.Graphics2;
+#end
+#end
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 
@@ -62,22 +66,8 @@ class Scaler {
 		
 		switch (rotation) {
 		case RotationNone:
-			if (Std.is(destination.g2, Graphics2)) {
-				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
-				if (destination.g4.renderTargetsInvertedY()) {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
-				}
-				else {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
-				}
-				imagePainter.end();
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
-			}
-			else destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-		case Rotation90:
-			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation(-scalex, -scaley);
+		#if !cs
+		#if !java
 			if (Std.is(destination.g2, Graphics2)) {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
@@ -92,11 +82,45 @@ class Scaler {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
 			}
 			else {
+		#end
+		#end
 				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+		#if !cs
+		#if !java
 			}
+		#end
+		#end
+		case Rotation90:
+			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation(-scalex, -scaley);
+		#if !cs
+		#if !java
+			if (Std.is(destination.g2, Graphics2)) {
+				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
+				if (destination.g4.renderTargetsInvertedY()) {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
+					imagePainter.drawImageScale(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				else {
+					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
+					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+				}
+				imagePainter.end();
+				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
+			}
+			else {
+		#end
+		#end
+				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+		#if !cs
+		#if !java
+			}
+		#end
+		#end
 			destination.g2.transformation = Matrix3.identity();
 		case Rotation180:
 			destination.g2.transformation = Matrix3.translation(scalex + scalew / 2, scaley + scaleh / 2) * Matrix3.rotation(Math.PI) * Matrix3.translation(-scalex - scalew / 2, -scaley - scaleh / 2);
+		#if !cs
+		#if !java
 			if (Std.is(destination.g2, Graphics2)) {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
@@ -111,11 +135,19 @@ class Scaler {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
 			}
 			else {
+		#end
+		#end
 				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+		#if !cs
+		#if !java
 			}
+		#end
+		#end
 			destination.g2.transformation = Matrix3.identity();
 		case Rotation270:
-			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI * 3 / 2) * Matrix3.translation(-scalex, -scaley);
+			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI * 3 / 2) * Matrix3.translation( -scalex, -scaley);
+		#if !cs
+		#if !java
 			if (Std.is(destination.g2, Graphics2)) {
 				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
 				if (destination.g4.renderTargetsInvertedY()) {
@@ -130,8 +162,14 @@ class Scaler {
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
 			}
 			else {
+		#end
+		#end
 				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
+		#if !cs
+		#if !java
 			}
+		#end
+		#end
 			destination.g2.transformation = Matrix3.identity();
 		}
 	}

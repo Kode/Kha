@@ -64,16 +64,16 @@ class Painter extends kha.graphics2.Graphics {
 	
 	
 	@:functionCode('
-		var img = (Image)font.getTexture();
+		var img = (Image)myFont.getTexture();
 		var xpos = tx + x;
 		var ypos = ty + y;
 		for (int i = 0; i < text.Length; ++i) {
-			var q = font.getBakedQuad(text[i] - 32, xpos, ypos);
+			var q = myFont.getBakedQuad(text[i] - 32, xpos, ypos);
 			if (q != null) {
 				var brush = new System.Windows.Media.ImageBrush(img.image);
 				brush.Viewbox = new System.Windows.Rect(q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0);
 				context.PushOpacityMask(brush);
-				context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), null, new System.Windows.Rect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0));
+				context.DrawRectangle(new System.Windows.Media.SolidColorBrush(myColor), null, new System.Windows.Rect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0));
 				context.Pop();
 				xpos += q.xadvance;
 			}
@@ -116,7 +116,7 @@ class Painter extends kha.graphics2.Graphics {
 			y += height;
 			height = -height;
 		}
-		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), strength.value), new System.Windows.Rect(tx + x, ty + y, width, height));
+		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(myColor), strength.value), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
 		
@@ -131,14 +131,14 @@ class Painter extends kha.graphics2.Graphics {
 			y += height;
 			height = -height;
 		}
-		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(color), new System.Windows.Media.Pen(), new System.Windows.Rect(tx + x, ty + y, width, height));
+		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(myColor), new System.Windows.Media.Pen(), new System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
 		
 	}
 	
 	@:functionCode('
-		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(color), 1), new System.Windows.Point(tx + x1, ty + y1), new System.Windows.Point(tx + x2, ty + y2));
+		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(myColor), 1), new System.Windows.Point(tx + x1, ty + y1), new System.Windows.Point(tx + x2, ty + y2));
 	')
 	override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 		

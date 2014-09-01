@@ -12,15 +12,15 @@ import system.windows.FrameworkElement;
 
 		if (kha.Starter.painter != null && kha.Starter.game != null && Configuration.screen() != null) {
 			Starter.painter.context = drawingContext;
-			Starter.painter.begin();
-			Configuration.screen().render(Starter.painter);
-			if (drawMousePos) {
-				Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
-				Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
-				Starter.painter.setColor(unchecked((int)0xFF000000));
-				Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10, default(global::haxe.lang.Null<double>));
-			}
-			Starter.painter.end();
+			//Starter.painter.begin();
+			Configuration.screen().render(Starter.framebuffer);
+			//if (drawMousePos) {
+			//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
+			//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
+			//	Starter.painter.setColor(unchecked((int)0xFF000000));
+			//	Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10, default(global::haxe.lang.Null<double>));
+			//}
+			//Starter.painter.end();
 		}
 	}
 ')
@@ -279,6 +279,7 @@ class Starter {
 	private static var autostartGame: Bool = true;
 	private static var showMousePos: Bool = false;
 	private static var painter: kha.wpf.Painter;
+	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	public static var game: Game;
@@ -332,6 +333,7 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter();
+		framebuffer = new Framebuffer(painter, null);
 		Scheduler.start();
 		if (autostartGame)
 			game.loadFinished();
