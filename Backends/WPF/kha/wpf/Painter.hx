@@ -7,9 +7,13 @@ import kha.Kravur;
 import kha.Rotation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
+import system.windows.media.DrawingVisual;
+import system.windows.media.imaging.BitmapSource;
 
 class Painter extends kha.graphics2.Graphics {
 	public var context: DrawingContext;
+	public var visual: DrawingVisual;
+	public var image: BitmapSource;
 	private var myColor: Color;
 	private var myKhaColor: kha.Color;
 	private var myFont: Kravur;
@@ -19,6 +23,20 @@ class Painter extends kha.graphics2.Graphics {
 	public function new() {
 		super();
 		//font = new Font("Arial", new FontStyle(false, false, false), 20);
+	}
+	
+	override public function begin(): Void {
+		if (visual != null) context = visual.RenderOpen();
+	}
+	
+	@:functionCode('
+		if (visual != null) {
+			context.Close();
+			((System.Windows.Media.Imaging.RenderTargetBitmap)image).Render(visual);
+		}
+	')
+	override public function end(): Void {
+		
 	}
 	
 	override public function translate(x: Float, y: Float): Void {

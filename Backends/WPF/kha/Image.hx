@@ -3,19 +3,25 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.wpf.Painter;
+import system.windows.media.DrawingVisual;
 import system.windows.media.imaging.BitmapSource;
 
 class Image implements Canvas implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
-	
+	private var painter: Painter;
 	public var image: BitmapSource;
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
 	}
 	
+	@:functionCode('
+		System.Windows.Media.Imaging.RenderTargetBitmap image = new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+		return fromImage(image, image.PixelWidth, image.PixelHeight);
+	')
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		return null;
 	}
@@ -41,7 +47,16 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
-	private function get_g2(): kha.graphics2.Graphics { return null; }
+	
+	private function get_g2(): kha.graphics2.Graphics {
+		if (painter == null) {
+			painter = new Painter();
+			painter.image = image;
+			painter.visual = new DrawingVisual();
+		}
+		return painter;
+	}
+	
 	public var g4(get, null): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics { return null; }
 	
