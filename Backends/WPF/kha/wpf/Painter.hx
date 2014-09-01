@@ -4,11 +4,13 @@ import kha.Animation;
 import kha.FontStyle;
 import kha.Image;
 import kha.Kravur;
+import kha.math.Matrix3;
 import kha.Rotation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 import system.windows.media.DrawingVisual;
 import system.windows.media.imaging.BitmapSource;
+import system.windows.media.MatrixTransform;
 
 class Painter extends kha.graphics2.Graphics {
 	public var context: DrawingContext;
@@ -22,6 +24,8 @@ class Painter extends kha.graphics2.Graphics {
 
 	public function new() {
 		super();
+		tx = 0;
+		ty = 0;
 		//font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 	
@@ -39,9 +43,14 @@ class Painter extends kha.graphics2.Graphics {
 		
 	}
 	
-	override public function translate(x: Float, y: Float): Void {
-		tx = x;
-		ty = y;
+	override public function setTransformation(transformation: Matrix3): Void {
+		try {
+			context.Pop();
+		}
+		catch (e: Dynamic) {
+			
+		}
+		context.PushTransform(new MatrixTransform(transformation[0], transformation[3], transformation[1], transformation[4], transformation[2], transformation[5]));
 	}
 	
 	@:functionCode('
