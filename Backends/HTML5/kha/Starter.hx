@@ -135,7 +135,7 @@ class Starter {
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
 			frame = new Framebuffer(null, g4);
-			frame.init(new kha.graphics4.Graphics2(frame), g4);
+			frame.init(new kha.js.graphics4.Graphics2(frame), g4);
 		}
 		else {
 			frame = new Framebuffer(new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform)), null);
