@@ -181,7 +181,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	private function getBlendFactor(op: BlendingOperation): Context3DBlendFactor {
 		switch (op) {
-			case BlendZero:
+			case BlendZero, Undefined:
 				return Context3DBlendFactor.ZERO;
 			case BlendOne:
 				return Context3DBlendFactor.ONE;

@@ -38,6 +38,9 @@ class ImageShaderPainter {
 	private var myProgram: Program = null;
 	public var program(get, set): Program;
 	
+	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
+	
 	public function new(g4: Graphics) {
 		this.g = g4;
 		bufferIndex = 0;
@@ -169,6 +172,12 @@ class ImageShaderPainter {
 		g.setTexture(textureLocation, lastTexture);
 		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		g.setMatrix(projectionLocation, projectionMatrix);
+		if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
+			g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
+		}
+		else {
+			g.setBlendingMode(sourceBlend, destinationBlend);
+		}
 		
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -254,6 +263,9 @@ class ColoredShaderPainter {
 	private var g: Graphics;
 	private var myProgram: Program = null;
 	public var program(get, set): Program;
+	
+	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -413,6 +425,12 @@ class ColoredShaderPainter {
 		g.setIndexBuffer(indexBuffer);
 		g.setProgram(program == null ? shaderProgram : program);
 		g.setMatrix(projectionLocation, projectionMatrix);
+		if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
+			g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		}
+		else {
+			g.setBlendingMode(sourceBlend, destinationBlend);
+		}
 		
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -427,6 +445,12 @@ class ColoredShaderPainter {
 		g.setIndexBuffer(triangleIndexBuffer);
 		g.setProgram(program == null ? shaderProgram : program);
 		g.setMatrix(projectionLocation, projectionMatrix);
+		if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
+			g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		}
+		else {
+			g.setBlendingMode(sourceBlend, destinationBlend);
+		}
 		
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
@@ -484,6 +508,9 @@ class TextShaderPainter {
 	private var g: Graphics;
 	private var myProgram: Program = null;
 	public var program(get, set): Program;
+	
+	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -615,6 +642,12 @@ class TextShaderPainter {
 		g.setProgram(program == null ? shaderProgram : program);
 		g.setTexture(textureLocation, lastTexture);
 		g.setMatrix(projectionLocation, projectionMatrix);
+		if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
+			g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		}
+		else {
+			g.setBlendingMode(sourceBlend, destinationBlend);
+		}
 		
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -856,13 +889,17 @@ class Graphics2 extends kha.graphics2.Graphics {
 	
 	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
 		endDrawing();
-		g.setBlendingMode(source, destination);
+		imagePainter.sourceBlend = source;
+		imagePainter.destinationBlend = destination;
+		coloredPainter.sourceBlend = source;
+		coloredPainter.destinationBlend = destination;
+		textPainter.sourceBlend = source;
+		textPainter.destinationBlend = destination;
 	}
 	
 	public override function begin(): Void {
 		g.begin();
 		g.clear(kha.Color.fromBytes(0, 0, 0, 0));
-		g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		setProjection();
 	}
 	

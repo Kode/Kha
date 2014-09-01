@@ -114,7 +114,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	private function getBlendFunc(op: BlendingOperation): Int {
 		switch (op) {
-		case BlendZero:
+		case BlendZero, Undefined:
 			return Sys.gl.ZERO;
 		case BlendOne:
 			return Sys.gl.ONE;

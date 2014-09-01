@@ -109,7 +109,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	private function getBlendingMode(op: BlendingOperation): Int {
 		switch (op) {
-		case BlendOne:
+		case BlendOne, Undefined:
 			return 0;
 		case BlendZero:
 			return 1;
