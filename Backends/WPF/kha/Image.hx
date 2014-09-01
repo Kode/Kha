@@ -1,16 +1,24 @@
-package kha.wpf;
+package kha;
 
 import haxe.io.Bytes;
-import kha.graphics.Texture;
-import kha.graphics.TextureFormat;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 import system.windows.media.imaging.BitmapSource;
 
-class Image implements Texture {
+class Image implements Canvas implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
 	
 	public var image: BitmapSource;
+	
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+		return null;
+	}
+	
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+		return null;
+	}
 	
 	public function new(width: Int, height: Int, format: TextureFormat) {
 		myWidth = width;
@@ -31,6 +39,11 @@ class Image implements Texture {
 		img.image = image;
 		return img;
 	}
+	
+	public var g2(get, null): kha.graphics2.Graphics;
+	private function get_g2(): kha.graphics2.Graphics { return null; }
+	public var g4(get, null): kha.graphics4.Graphics;
+	private function get_g4(): kha.graphics4.Graphics { return null; }
 	
 	public var width(get, null): Int;
 	
@@ -72,13 +85,13 @@ class Image implements Texture {
 		image = null;
 	}
 	
-	public function getTexture(): Texture {
-		return null;
-	}
+	//public function getTexture(): Texture {
+	//	return null;
+	//}
 
-	public function setTexture(texture: Texture): Void {
-		
-	}
+	//public function setTexture(texture: Texture): Void {
+	//	
+	//}
 	
 	public var bytes: Bytes;
 	
@@ -103,5 +116,17 @@ class Image implements Texture {
 	')
 	public function unlock(): Void {
 		
+	}
+	
+	public static var maxSize(get, null): Int;
+	
+	public static function get_maxSize(): Int {
+		return 4096;
+	}
+	
+	public static var nonPow2Supported(get, null): Bool;
+	
+	public static function get_nonPow2Supported(): Bool {
+		return true;
 	}
 }

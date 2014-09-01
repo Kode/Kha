@@ -26,6 +26,14 @@ class Sys {
 		return 0;
 	}
 	
+	public static function vsynced(): Bool {
+		return true;
+	}
+	
+	public static function refreshRate(): Int {
+		return 60;
+	}
+	
 	public static var pixelWidth: Int = 640;
 	
 	public static var pixelHeight: Int = 480;

@@ -144,7 +144,11 @@ class Graphics {
 		transformations.push(Matrix3.identity());
 		opacities = new Array<Float>();
 		opacities.push(1);
+		#if !cs
+		#if !java
 		prog = null;
+		#end
+		#end
 	}
 	
 	private function setTransformation(transformation: Matrix3): Void {

@@ -8,10 +8,11 @@ import kha.Rotation;
 import system.windows.media.Color;
 import system.windows.media.DrawingContext;
 
-class Painter extends kha.Painter {
+class Painter extends kha.graphics2.Graphics {
 	public var context: DrawingContext;
-	private var color: Color;
-	private var font: Kravur;
+	private var myColor: Color;
+	private var myKhaColor: kha.Color;
+	private var myFont: Kravur;
 	private var tx: Float;
 	private var ty: Float;
 
@@ -41,7 +42,7 @@ class Painter extends kha.Painter {
 		brush.Viewbox = new System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
 		context.DrawRectangle(brush, null, new System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
-	override public function drawImage2(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0): Void {
+	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		
 	}
 
@@ -78,20 +79,29 @@ class Painter extends kha.Painter {
 			}
 		}
 	')
-	override public function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0): Void {
+	override public function drawString(text: String, x: Float, y: Float): Void {
 		
 	}
-
-	override public function setFont(font: kha.Font): Void {
-		this.font = cast(font, Kravur);
+	
+	override public function get_color(): kha.Color {
+		return myKhaColor;
 	}
-
-	override public function setColor(color: kha.Color) : Void {
+	
+	override public function set_color(color: kha.Color): kha.Color {
 		setColorInternal(color.Ab, color.Rb, color.Gb, color.Bb);
+		return myKhaColor = color;
+	}
+	
+	override public function get_font(): kha.Font {
+		return myFont;
+	}
+	
+	override public function set_font(font: kha.Font): kha.Font {
+		return this.myFont = cast(font, Kravur);
 	}
 	
 	@:functionCode('
-		color = System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
+		myColor = System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
 	')
 	private function setColorInternal(a : Int, r : Int, g : Int, b : Int) : Void {
 		
