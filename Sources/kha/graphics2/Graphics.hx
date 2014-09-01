@@ -58,7 +58,9 @@ class Graphics {
 	}
 	
 	public function popTransformation(): Matrix3 {
-		return transformations.pop();
+		var ret = transformations.pop();
+		setTransformation(get_transformation());
+		return ret;
 	}
 	
 	public function get_transformation(): Matrix3 {
@@ -102,7 +104,9 @@ class Graphics {
 	}
 	
 	public function popOpacity(): Float {
-		return opacities.pop();
+		var ret = opacities.pop();
+		setOpacity(get_opacity());
+		return ret;
 	}
 	
 	public function get_opacity(): Float {
