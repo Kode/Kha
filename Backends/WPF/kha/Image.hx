@@ -50,7 +50,7 @@ class Image implements Canvas implements Resource {
 	
 	private function get_g2(): kha.graphics2.Graphics {
 		if (painter == null) {
-			painter = new Painter();
+			painter = new Painter(width, height);
 			painter.image = image;
 			painter.visual = new DrawingVisual();
 		}

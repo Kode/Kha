@@ -1,6 +1,7 @@
 package kha.graphics4;
 
 import kha.Canvas;
+import kha.Color;
 import kha.Font;
 import kha.Image;
 import kha.graphics4.BlendingOperation;
@@ -897,10 +898,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.destinationBlend = destination;
 	}
 	
-	public override function begin(): Void {
+	public override function begin(clear: Bool = true): Void {
 		g.begin();
-		g.clear(kha.Color.fromBytes(0, 0, 0, 0));
+		if (clear) this.clear();
 		setProjection();
+	}
+	
+	override public function clear(): Void {
+		g.clear(Color.Black);
 	}
 	
 	private function endDrawing(): Void {

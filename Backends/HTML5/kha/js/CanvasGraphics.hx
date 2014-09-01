@@ -35,7 +35,11 @@ class CanvasGraphics extends Graphics {
 		}
 	}
 	
-	override public function begin(): Void {
+	override public function begin(clear: Bool = true): Void {
+		if (clear) this.clear();
+	}
+	
+	override public function clear(): Void {
 		canvas.clearRect(0, 0, width, height);
 	}
 	

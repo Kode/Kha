@@ -10,8 +10,8 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 		drawScaledSubImage(v.texture, 0, 0, v.texture.width, v.texture.height, x, y, width, height);
 	}
 	
-	override public function begin(): Void {
+	override public function begin(clear: Bool = true): Void {
 		Sys.gl.colorMask(true, true, true, true);
-		super.begin();
+		super.begin(clear);
 	}
 }

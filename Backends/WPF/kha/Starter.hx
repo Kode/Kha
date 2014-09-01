@@ -332,7 +332,7 @@ class Starter {
 		}
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
-		painter = new kha.wpf.Painter();
+		painter = new kha.wpf.Painter(Sys.pixelWidth, Sys.pixelHeight);
 		framebuffer = new Framebuffer(painter, null);
 		Scheduler.start();
 		if (autostartGame)

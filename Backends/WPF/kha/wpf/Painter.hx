@@ -21,16 +21,28 @@ class Painter extends kha.graphics2.Graphics {
 	private var myFont: Kravur;
 	private var tx: Float;
 	private var ty: Float;
+	private var width: Int;
+	private var height: Int;
 
-	public function new() {
+	public function new(width: Int, height: Int) {
 		super();
+		this.width = width;
+		this.height = height;
 		tx = 0;
 		ty = 0;
 		//font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 	
-	override public function begin(): Void {
+	override public function begin(clear: Bool = true): Void {
 		if (visual != null) context = visual.RenderOpen();
+		if (clear) this.clear();
+	}
+	
+	override public function clear(): Void {
+		var prevColor = myKhaColor;
+		color = kha.Color.Black;
+		fillRect(0, 0, width, height);
+		color = prevColor;
 	}
 	
 	@:functionCode('

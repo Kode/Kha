@@ -7,7 +7,7 @@ import kha.Image;
 import kha.math.Matrix3;
 
 class Graphics {
-	public function begin(): Void { }
+	public function begin(clear: Bool = true): Void { }
 	public function end(): Void { }
 	
 	//scale-filtering
