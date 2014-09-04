@@ -70,7 +70,7 @@ class Scheduler {
 	
 	public static function init(): Void {
 		difs = new Array<Float>();
-		difs[DIF_COUNT - 2] = 0;
+		for (i in 0...DIF_COUNT-1) difs[i] = 0;
 		
 		running = false;
 		stopped = false;
@@ -85,6 +85,7 @@ class Scheduler {
 		
 		timeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
+		Configuration.schedulerInizialized();
 	}
 	
 	public static function start(): Void {
@@ -95,7 +96,7 @@ class Scheduler {
 
 		running = true;
 		lastTime = Sys.getTime();
-		for (i in 0...DIF_COUNT) difs[i] = 0;
+		for (i in 0...DIF_COUNT-1) difs[i] = 0;
 	}
 	
 	public static function stop(): Void {
