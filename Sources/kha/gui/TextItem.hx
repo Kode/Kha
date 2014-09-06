@@ -1,8 +1,8 @@
 package kha.gui;
 
 import kha.Color;
+import kha.graphics2.Graphics;
 import kha.Image;
-import kha.Painter;
 
 class TextItem extends Item {
 	public function new(text: String = "") {
@@ -51,11 +51,11 @@ class TextItem extends Item {
 		return 50;
 	}
 	
-	override public function render(painter: Painter): Void {
+	override public function render(g: Graphics): Void {
 		//mylinks.clear();
 		//if (fonts.find(pair<Text, int>(myfont, mysize)) == fonts.end()) fonts[pair<Text, int>(myfont, mysize)] = new Font(myfont, mysize);
 		//fonts[pair<Text, int>(myfont, mysize)]->render(painter, mytext, 0, 0, color, static_cast<real>(mywidth)); //&mylinks, &items);
-		painter.drawString(text, 0, 0);
+		g.drawString(text, 0, 0);
 	}
 
 	public var text(get, set): String;

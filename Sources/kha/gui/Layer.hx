@@ -1,5 +1,6 @@
 package kha.gui;
-import kha.Painter;
+
+import kha.graphics2.Graphics;
 
 class Layer {
 	public static var xtrans: Float = 0;
@@ -57,18 +58,18 @@ class Layer {
 		}
 	}
 	
-	private function renderItem(painter: Painter, item: Item, tx: Float, ty: Float): Void {
-		item.render(painter);
-		painter.translate(tx + item.x, ty + item.y);
+	private function renderItem(g: Graphics, item: Item, tx: Float, ty: Float): Void {
+		item.render(g);
+		g.pushTranslation(tx + item.x, ty + item.y);
 		for (child in item.children) {
-			renderItem(painter, child, tx + item.x, ty + item.y);
+			renderItem(g, child, tx + item.x, ty + item.y);
 		}
-		painter.translate(tx, ty);
+		g.popTransformation();
 	}
 	
-	public function render(painter: Painter): Void {
+	public function render(g: Graphics): Void {
 		for (object in objects) {
-			renderItem(painter, object, 0, 0);
+			renderItem(g, object, 0, 0);
 		}
 	}
 }
