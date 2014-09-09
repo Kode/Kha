@@ -1,5 +1,7 @@
 package kha;
 
+import kha.graphics2.Graphics;
+
 class ImageCursor implements Cursor {
 	private var image: Image;
 	var _clickX : Int;
@@ -29,8 +31,8 @@ class ImageCursor implements Cursor {
 		this._clickY = clickY;
 	}
 	
-	public function render(painter: Painter, x: Int, y: Int): Void {
-		painter.drawImage(image, x - clickX, y - clickY);
+	public function render(g: Graphics, x: Int, y: Int): Void {
+		g.drawImage(image, x - clickX, y - clickY);
 	}
 	
 	public function update(x : Int, y : Int): Void {
