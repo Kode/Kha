@@ -44,7 +44,7 @@ class Game {
 	}
 	
 	private function endRender(frame: Framebuffer): Void {
-		//Sys.mouse.render(painter);
+		//Sys.mouse.render(frame.g2);
 		frame.g2.end();
 	}
 	

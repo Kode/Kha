@@ -1,6 +1,5 @@
 package kha.gui;
-
-import kha.Painter;
+import kha.graphics2.Graphics;
 
 class Item {
 	public function new() {
@@ -93,7 +92,7 @@ class Item {
 		
 	}
 	
-	public function render(painter: Painter): Void {
+	public function render(g: Graphics): Void {
 		
 	}
 	
