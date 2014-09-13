@@ -905,7 +905,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override public function clear(): Void {
-		g.clear(Color.Black);
+		g.clear(myColor);
 	}
 	
 	private function endDrawing(): Void {
