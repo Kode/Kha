@@ -35,12 +35,16 @@ class CanvasGraphics extends Graphics {
 		}
 	}
 	
-	override public function begin(clear: Bool = true): Void {
-		if (clear) this.clear();
+	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
+		if (clear) this.clear(clearColor);
 	}
 	
-	override public function clear(): Void {
-		canvas.clearRect(0, 0, width, height);
+	override public function clear(color: Color = null): Void {
+		if (color == null) color = Color.Black;
+		canvas.strokeStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
+		canvas.fillStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
+		canvas.fillRect(0, 0, width, height);
+		this.color = myColor;
 	}
 	
 	override public function end(): Void {
