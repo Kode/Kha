@@ -18,7 +18,9 @@ class Loader {
 	var rooms: Map<String, Room>;
 	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
 	public var autoCleanupAssets : Bool = true;
-
+	
+	public var basePath : String = ".";
+	
 	public function new() {
 		blobs = new Map<String, Blob>();
 		images = new Map<String, Image>();
@@ -267,7 +269,7 @@ class Loader {
 	}
 	
 	public function loadProject(call: Void -> Void) {
-		enqueue({name: "project.kha", file: "project.kha", type: "blob"});
+		enqueue({name: "project.kha", file: basePath + "/project.kha", type: "blob"});
 		loadFiles(function() { loadShaders(call); }, false);
 	}
 	
@@ -311,6 +313,7 @@ class Loader {
 		height = project.game.height;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
+			assets[i].file = basePath + "/" + assets[i].file;
 			this.assets.set(assets[i].id, assets[i]);
 		}
 		
@@ -345,6 +348,9 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
+		#if debug_loader
+			trace ( "loadFinished!" );
+		#end
 			if (loadFinished != null) loadFinished();
 		}
 	#if debug_loader

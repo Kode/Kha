@@ -4,17 +4,23 @@ class Configuration {
 	static var theScreen: Game;
 	static var id: Int = -1;
 	
-	public static function screen(): Game {
+	public static inline function screen(): Game {
 		return theScreen;
+	}
+	
+	@:allow(kha.Scheduler) 
+	private static function schedulerInizialized() {
+		id = -1;
 	}
 	
 	public static function setScreen(screen: Game) {
 		theScreen = screen;
-		//if (id >= 0) Scheduler.removeTimeTask(id);
-		if (id < 0) id = Scheduler.addTimeTask(update, 0, 1 / 60);
+		if (id < 0) {
+			id = Scheduler.addTimeTask(update, 0, 1 / 60);
+		}
 	}
 	
-	private static function update(): Void {
+	private static function update() {
 		theScreen.update();
 	}
 }
