@@ -111,9 +111,10 @@ class Scaler {
 		case ScreenRotation.RotationNone:
 			return Std.int((y - targetRect(source, destination, rotation).y) / scaleFactor(source, destination, rotation));
 		case ScreenRotation.Rotation90:
-			return Std.int((Sys.pixelWidth - x - targetRect(source, destination, rotation).x) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect(source, destination, rotation).x - x) / scaleFactor(source, destination, rotation));
+			//return 100;
 		case ScreenRotation.Rotation180:
-			return Std.int((y - targetRect(source, destination, rotation).y) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect(source, destination, rotation).y + targetRect(source, destination, rotation).height - y) / scaleFactor(source, destination, rotation));
 		case ScreenRotation.Rotation270:
 			return Std.int((x - targetRect(source, destination, rotation).x) / scaleFactor(source, destination, rotation));
 		}
