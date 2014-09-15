@@ -64,6 +64,9 @@ class Scaler {
 			}
 		}
 		
+		destination.g2.color = Color.White;
+		destination.g2.opacity = 1;
+		
 		switch (rotation) {
 		case RotationNone:
 		#if !cs
@@ -91,7 +94,7 @@ class Scaler {
 		#end
 		#end
 		case Rotation90:
-			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation(-scalex, -scaley);
+			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation( -scalex, -scaley);
 		#if !cs
 		#if !java
 			if (Std.is(destination.g2, Graphics2)) {
@@ -102,7 +105,7 @@ class Scaler {
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
@@ -118,7 +121,7 @@ class Scaler {
 		#end
 			destination.g2.transformation = Matrix3.identity();
 		case Rotation180:
-			destination.g2.transformation = Matrix3.translation(scalex + scalew / 2, scaley + scaleh / 2) * Matrix3.rotation(Math.PI) * Matrix3.translation(-scalex - scalew / 2, -scaley - scaleh / 2);
+			destination.g2.transformation = Matrix3.translation(scalex + scalew / 2, scaley + scaleh / 2) * Matrix3.rotation(Math.PI) * Matrix3.translation( -scalex - scalew / 2, -scaley - scaleh / 2);
 		#if !cs
 		#if !java
 			if (Std.is(destination.g2, Graphics2)) {
@@ -129,7 +132,7 @@ class Scaler {
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
@@ -156,7 +159,7 @@ class Scaler {
 				}
 				else {
 					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					imagePainter.drawImageScale(source, 0, 0, source.width, source.height, scalex, scaley, scalex + scalew, scaley + scaleh, 1, Color.White);
+					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
 				}
 				imagePainter.end();
 				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
