@@ -1,4 +1,5 @@
 package kha.java;
+
 import kha.Color;
 import kha.Font;
 import kha.Image;
@@ -11,9 +12,11 @@ import kha.Rotation;
 		return (int)Math.round(value);
 	}
 ')
-class Painter extends kha.Painter {
-	var tx : Float;
-	var ty : Float;
+class Painter extends kha.graphics2.Graphics {
+	var tx: Float = 0;
+	var ty: Float = 0;
+	private var myColor: Color;
+	private var myFont: Font;
 	
 	public function new() {
 		super();
@@ -22,35 +25,40 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		graphics.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 	')
-	function setRenderHint() : Void {
+	function setRenderHint(): Void {
 		
 	}
 	
-	override public function translate(x : Float, y : Float) : Void {
-		this.tx = x;
-		this.ty = y;
-	}
-	
 	@:functionCode('
-		graphics.drawImage(((kha.java.Image)img).image, round(tx + x), round(ty + y), null);
+		graphics.drawImage(img.image, round(tx + x), round(ty + y), null);
 	')
 	override public function drawImage(img : Image, x : Float, y : Float) : Void {
 		
 	}
 	
 	@:functionCode('
-		graphics.drawImage(((kha.java.Image)image).image, round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
+		graphics.drawImage(image.image, round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
 	')
-	override public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0) : Void {
-		//FIXME: Rotate image
+	override public function drawScaledSubImage(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) : Void {
+		
+	}
+	
+	override public function get_color(): kha.Color {
+		return myColor;
 	}
 	
 	@:functionCode('
 		graphics.setColor(new java.awt.Color(color));
 	')
-	override public function setColor(color: Color) : Void {
+	private function setColorInternal(color: kha.Color): Void {
+		
 	}
-
+	
+	override public function set_color(color: kha.Color): kha.Color {
+		setColorInternal(color);
+		return myColor = color;
+	}
+	
 	@:functionCode('
 		java.awt.Stroke oldStroke = graphics.getStroke();
 		graphics.setStroke(new java.awt.BasicStroke((float)strength));
@@ -75,18 +83,23 @@ class Painter extends kha.Painter {
 	@:functionCode('
 		graphics.setFont(((kha.java.Font)font).font);
 	')
-	override public function setFont(font : Font) : Void {
+	private function setFontInternal(font: Font): Void {
 		
 	}
 	
-	override public function drawChars(text : String, offset : Int, length : Int, x : Float, y : Float) : Void {
-		drawString(text.substr(offset, length), x, y);
+	override public function get_font(): kha.Font {
+		return myFont;
+	}
+	
+	override public function set_font(font: kha.Font): kha.Font {
+		setFontInternal(font);
+		return myFont = font;
 	}
 	
 	@:functionCode('
 		graphics.drawString(text, round(tx + x), round(ty + y));
 	')
-	override public function drawString(text : String, x : Float, y : Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0) : Void {
+	override public function drawString(text: String, x: Float, y: Float): Void {
 		
 	}
 	
@@ -96,7 +109,7 @@ class Painter extends kha.Painter {
 		graphics.drawLine(round(tx + x1), round(ty + y1), round(tx + x2), round(ty + y2));
 		graphics.setStroke(oldStroke);
 	')
-	override public function drawLine(x1 : Float, y1 : Float, x2 : Float, y2 : Float, strength: Float = 1.0) : Void {
+	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 	
 	}
 	
@@ -105,7 +118,7 @@ class Painter extends kha.Painter {
 		int[] yPoints = new int[]{round(ty + y1), round(ty + y2), round(ty + y3)};
 		graphics.fillPolygon(xPoints, yPoints, 3);
 	')
-	override public function fillTriangle(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : Float, y3 : Float) : Void {
+	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
 		
 	}
 }

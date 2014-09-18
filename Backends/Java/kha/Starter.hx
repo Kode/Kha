@@ -1,6 +1,7 @@
 package kha;
 
 import kha.Game;
+import kha.java.Painter;
 import kha.Key;
 
 @:classCode('
@@ -15,9 +16,11 @@ import kha.Key;
 		public kha.Game game;
 		private boolean[] keyreleased;
 		private boolean reset = false;
+		private kha.Framebuffer framebuffer;
 
 		public Window() {
 			instance = this;
+			framebuffer = new kha.Framebuffer(new kha.java.Painter(), null);
 			keyreleased = new boolean[256];
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 		}
@@ -126,10 +129,10 @@ import kha.Key;
 			java.awt.Graphics2D g = null;
 			try {
 				g = (java.awt.Graphics2D)bf.getDrawGraphics();
-				kha.java.Painter painter = new kha.java.Painter();
+				kha.java.Painter painter = (kha.java.Painter)framebuffer.g2;				
 				painter.graphics = g;
 				painter.setRenderHint();
-				game.render(painter);
+				game.render(framebuffer);
 			}
 			finally {
 				g.dispose();

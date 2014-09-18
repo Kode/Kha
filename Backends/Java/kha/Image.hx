@@ -1,11 +1,12 @@
-package kha.java;
+package kha;
 
-import kha.graphics.TextureFormat;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 
 @:classCode('
 	public java.awt.image.BufferedImage image;
 ')
-class Image implements kha.Image {
+class Image implements Canvas implements Resource {
 	public function new(filename: String) {
 		
 	}
@@ -17,11 +18,26 @@ class Image implements kha.Image {
 		
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		var img = new Image(null);
 		create2(img, width, height, format == TextureFormat.L8 ? 0 : 1);
 		return img;
 	}
+	
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+		var img = new Image(null);
+		create2(img, width, height, format == TextureFormat.L8 ? 0 : 1);
+		return img;
+	}
+	
+	public var g2(get, null): kha.graphics2.Graphics;
+	
+	private function get_g2(): kha.graphics2.Graphics {
+		return null;
+	}
+	
+	public var g4(get, null): kha.graphics4.Graphics;
+	private function get_g4(): kha.graphics4.Graphics { return null; }
 	
 	public var width(get, null): Int;
 	public var height(get, null): Int;
