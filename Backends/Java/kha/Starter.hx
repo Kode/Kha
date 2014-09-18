@@ -129,7 +129,7 @@ import kha.Key;
 			java.awt.Graphics2D g = null;
 			try {
 				g = (java.awt.Graphics2D)bf.getDrawGraphics();
-				kha.java.Painter painter = (kha.java.Painter)framebuffer.g2;				
+				kha.java.Painter painter = (kha.java.Painter)framebuffer.get_g2();				
 				painter.graphics = g;
 				painter.setRenderHint();
 				game.render(framebuffer);

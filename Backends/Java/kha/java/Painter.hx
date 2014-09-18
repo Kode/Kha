@@ -3,6 +3,7 @@ package kha.java;
 import kha.Color;
 import kha.Font;
 import kha.Image;
+import kha.math.Matrix3;
 import kha.Rotation;
 
 @:classCode('
@@ -32,14 +33,14 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		graphics.drawImage(img.image, round(tx + x), round(ty + y), null);
 	')
-	override public function drawImage(img : Image, x : Float, y : Float) : Void {
+	override public function drawImage(img: Image, x: Float, y: Float): Void {
 		
 	}
 	
 	@:functionCode('
 		graphics.drawImage(image.image, round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
 	')
-	override public function drawScaledSubImage(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) : Void {
+	override public function drawScaledSubImage(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		
 	}
 	
@@ -76,7 +77,7 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		graphics.fillRect(round(tx + x), round(ty + y), round(width), round(height));
 	')
-	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
+	override public function fillRect(x: Float, y: Float, width: Float, height: Float) : Void {
 
 	}
 	
@@ -119,6 +120,15 @@ class Painter extends kha.graphics2.Graphics {
 		graphics.fillPolygon(xPoints, yPoints, 3);
 	')
 	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+		
+	}
+	
+	@:functionCode('
+		graphics.setTransform(new java.awt.geom.AffineTransform(
+			((Number)transformation.__get(0)).floatValue(), ((Number)transformation.__get(3)).floatValue(), ((Number)transformation.__get(1)).floatValue(),
+			((Number)transformation.__get(4)).floatValue(), ((Number)transformation.__get(2)).floatValue(), ((Number)transformation.__get(5)).floatValue()));
+	')
+	override function setTransformation(transformation: Matrix3): Void {
 		
 	}
 }

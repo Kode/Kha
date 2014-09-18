@@ -2,11 +2,14 @@ package kha;
 
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.java.Painter;
 
 @:classCode('
 	public java.awt.image.BufferedImage image;
 ')
 class Image implements Canvas implements Resource {
+	private var painter: Painter;
+	
 	public function new(filename: String) {
 		
 	}
@@ -32,8 +35,19 @@ class Image implements Canvas implements Resource {
 	
 	public var g2(get, null): kha.graphics2.Graphics;
 	
+	@:functionCode('
+		painter.graphics = image.createGraphics();
+	')
+	private function initPainter(painter: Painter): Void {
+		
+	}
+	
 	private function get_g2(): kha.graphics2.Graphics {
-		return null;
+		if (painter == null) {
+			painter = new Painter();
+			initPainter(painter);
+		}
+		return painter;
 	}
 	
 	public var g4(get, null): kha.graphics4.Graphics;
