@@ -1,5 +1,7 @@
 package kha;
 
+import kha.graphics4.TextureFormat;
+
 class Game {
 	private var scene: Scene;
 	private var name: String;
@@ -58,102 +60,23 @@ class Game {
 		return highscores;
 	}
 	
-	public function painterScale(): Float {
-		if (Sys.screenRotation == ScreenRotation.RotationNone || Sys.screenRotation == ScreenRotation.Rotation180) {
-			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
-				return Sys.pixelWidth / width;
-			}
-			else {
-				return Sys.pixelHeight / height;
-			}
-		}
-		else {
-			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
-				return Sys.pixelHeight / width;
-			}
-			else {
-				return Sys.pixelWidth / height;
-			}
-		}
-	}
-	
-	public function painterTargetRect(): Rectangle {
-		var rect = new Rectangle(0, 0, 1, 1);
-		if (Sys.screenRotation == ScreenRotation.RotationNone || Sys.screenRotation == ScreenRotation.Rotation180) {
-			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
-				var scale = Sys.pixelWidth / width;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = 0;
-				rect.y = (Sys.pixelHeight - rect.height) * 0.5;
-			}
-			else {
-				var scale = Sys.pixelHeight / height;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = (Sys.pixelWidth - rect.width) * 0.5;
-				rect.y = 0;
-			}
-		}
-		else if (Sys.screenRotation == ScreenRotation.Rotation90) {
-			if (width / height > Sys.pixelWidth / Sys.pixelHeight) {
-				var scale = Sys.pixelHeight / width;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = (Sys.pixelWidth - rect.height) * 0.5 + rect.height;
-				rect.y = 0;
-			}
-			else {
-				var scale = Sys.pixelWidth / height;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = 0 + rect.height;
-				rect.y = (Sys.pixelHeight - rect.width) * 0.5;
-			}
-		}
-		else { // ScreenRotation.Rotation270
-			if (width / height > Sys.pixelHeight / Sys.pixelWidth) {
-				var scale = Sys.pixelHeight / width;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = (Sys.pixelWidth - rect.height) * 0.5;
-				rect.y = 0 + rect.width;
-			}
-			else {
-				var scale = Sys.pixelWidth / height;
-				rect.width = width * scale;
-				rect.height = height * scale;
-				rect.x = 0;
-				rect.y = (Sys.pixelHeight - rect.width) * 0.5 + rect.width;
-			}
-		}
-		return rect;
-	}
+	private var deprecatedImage: Image = null;
 
-	public function painterTransformMouseX(x: Int, y: Int): Int {
-		switch (Sys.screenRotation) {
-		case ScreenRotation.RotationNone:
-			return Std.int((x - painterTargetRect().x) / painterScale());
-		case ScreenRotation.Rotation90:
-			return Std.int((y - painterTargetRect().y) / painterScale());
-		case ScreenRotation.Rotation180:
-			return Std.int((Sys.pixelWidth - x - painterTargetRect().x) / painterScale());
-		case ScreenRotation.Rotation270:
-			return Std.int((Sys.pixelHeight - y - (Sys.pixelHeight - painterTargetRect().y)) / painterScale());
-		}
+	private function initDeprecatedImage(): Void {
+		if (deprecatedImage != null) return;
+		deprecatedImage = Image.create(width, height, TextureFormat.L8);
 	}
 	
+	// deprecated - please use kha.Scaler.transformX
+	public function painterTransformMouseX(x: Int, y: Int): Int {
+		initDeprecatedImage();
+		return Scaler.transformX(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
+	}
+	
+	// deprecated - please use kha.Scaler.transformY
 	public function painterTransformMouseY(x: Int, y: Int): Int {
-		switch (Sys.screenRotation) {
-		case ScreenRotation.RotationNone:
-			return Std.int((y - painterTargetRect().y) / painterScale());
-		case ScreenRotation.Rotation90:
-			return Std.int((Sys.pixelWidth - x - painterTargetRect().x) / painterScale());
-		case ScreenRotation.Rotation180:
-			return Std.int((y - painterTargetRect().y) / painterScale());
-		case ScreenRotation.Rotation270:
-			return Std.int((x - painterTargetRect().x) / painterScale());
-		}
+		initDeprecatedImage();
+		return Scaler.transformY(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	// deprecated - please use kha.input.Gamepad

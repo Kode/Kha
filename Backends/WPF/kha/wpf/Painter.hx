@@ -33,16 +33,16 @@ class Painter extends kha.graphics2.Graphics {
 		//font = new Font("Arial", new FontStyle(false, false, false), 20);
 	}
 	
-	override public function begin(clear: Bool = true): Void {
+	override public function begin(clear: Bool = true, clearColor: kha.Color = null): Void {
 		if (visual != null) context = visual.RenderOpen();
-		if (clear) this.clear();
+		if (clear) this.clear(clearColor);
 	}
 	
-	override public function clear(): Void {
+	override public function clear(color: kha.Color = null): Void {
 		var prevColor = myKhaColor;
-		color = kha.Color.Black;
+		this.color = color == null ? Color.Black : color;
 		fillRect(0, 0, width, height);
-		color = prevColor;
+		this.color = prevColor;
 	}
 	
 	@:functionCode('

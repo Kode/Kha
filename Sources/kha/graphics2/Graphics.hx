@@ -7,13 +7,13 @@ import kha.Image;
 import kha.math.Matrix3;
 
 class Graphics {
-	public function begin(clear: Bool = true): Void { }
+	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
 	public function end(): Void { }
 	
 	//scale-filtering
 	//draw/fillPolygon
 	
-	public function clear(): Void { }
+	public function clear(color: Color = null): Void { }
 	public function drawImage(img: Image, x: Float, y: Float): Void {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
 	}

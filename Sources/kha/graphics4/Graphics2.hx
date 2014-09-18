@@ -898,14 +898,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.destinationBlend = destination;
 	}
 	
-	public override function begin(clear: Bool = true): Void {
+	public override function begin(clear: Bool = true, clearColor: Color = null): Void {
 		g.begin();
-		if (clear) this.clear();
+		if (clear) this.clear(clearColor);
 		setProjection();
 	}
 	
-	override public function clear(): Void {
-		g.clear(Color.Black);
+	override public function clear(color: Color = null): Void {
+		g.clear(color == null ? Color.Black : color);
 	}
 	
 	private function endDrawing(): Void {
