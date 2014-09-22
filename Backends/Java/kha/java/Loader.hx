@@ -42,7 +42,7 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadImage(desc: Dynamic, done: Image -> Void): Void {
-		var image = new kha.java.Image(desc.file);
+		var image = new kha.Image(desc.file);
 		loadRealImage(desc.file, image);
 		done(image);
 	}
