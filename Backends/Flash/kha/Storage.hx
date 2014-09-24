@@ -29,7 +29,8 @@ class Storage {
 		name = name.replace("~", "-");
 		name = name.replace("%", "-");
 		name = name.replace("&", "-");
-		name = name.replace("\\", "/");
+		name = name.replace("\\", ".");
+		name = name.replace("/", ".");
 		name = name.replace(";", ".");
 		name = name.replace(":", ".");
 		name = name.replace("\"", "*");
