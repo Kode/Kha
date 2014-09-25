@@ -85,7 +85,7 @@ class Scheduler {
 		
 		timeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
-		Configuration.schedulerInizialized();
+		Configuration.schedulerInitialized();
 	}
 	
 	public static function start(): Void {

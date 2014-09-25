@@ -9,7 +9,7 @@ class Configuration {
 	}
 	
 	@:allow(kha.Scheduler) 
-	private static function schedulerInizialized() {
+	private static function schedulerInitialized() {
 		id = -1;
 	}
 	
