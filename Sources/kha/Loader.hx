@@ -313,7 +313,7 @@ class Loader {
 		height = project.game.height;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
-			assets[i].file = basePath + "/" + assets[i].file;
+			if (basePath != '.') assets[i].file = basePath + "/" + assets[i].file;
 			this.assets.set(assets[i].id, assets[i]);
 		}
 		
