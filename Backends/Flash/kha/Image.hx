@@ -67,7 +67,7 @@ class Image implements Canvas implements Resource {
 	
 	private function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
-			graphics2 = new kha.graphics4.Graphics2(this);
+			graphics2 = new kha.flash.graphics4.Graphics2(this);
 		}
 		return graphics2;
 	}
