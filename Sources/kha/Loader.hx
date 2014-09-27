@@ -274,16 +274,24 @@ class Loader {
 	}
 	
 	private function loadShaders(call: Void -> Void): Void {
+		for (shader in shaders) {
+			shader.unload();
+		}
+		shaders = new Map();
 		var project = parseProject();
 		if (project.shaders != null && project.shaders.length > 0) {
 			var shaders: Dynamic = project.shaders;
 			var shaderCount: Int = shaders.length;
 			for (i in 0...shaders.length) {
 				var shader = shaders[i];
-				//trace ('shader to load: "${shader.name}"');
+				#if debug_loader
+					trace ('shader to load: "${shader.name}"');
+				#end
 				loadBlob(shader, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
-						//trace ('loaded shader "${shader.name}"');
+						#if debug_loader
+							trace ('loaded shader "${shader.name}"');
+						#end
 						this.shaders.set(shader.name, blob);
 						--shaderCount;
 						if (shaderCount == 0) call();
