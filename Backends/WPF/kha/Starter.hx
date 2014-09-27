@@ -91,39 +91,24 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	}
 	
 	protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
-        base.OnMouseWheel(e);
+		base.OnMouseWheel(e);
 
-        Starter.OnMouseWheel(e);
-    }
+		Starter.OnMouseWheel(e);
+	}
 ')
 class MainWindow extends system.windows.Window {
 	public var canvas : StoryPublishCanvas;
 	
 	@:functionCode('
 		canvas = new StoryPublishCanvas();
-        canvas.Width = Game.the.width;
-        canvas.Height = Game.the.height;
-        AddChild(canvas);
-
-		System.Windows.Data.Binding widthBinding = new System.Windows.Data.Binding {
-			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
-			Path = new System.Windows.PropertyPath("ActualWidth"),
-		};
-		canvas.SetBinding(System.Windows.Controls.Canvas.WidthProperty, widthBinding);
-		
-		System.Windows.Data.Binding heightBinding = new System.Windows.Data.Binding {
-			RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(System.Windows.Controls.UserControl), 1),
-			Path = new System.Windows.PropertyPath("ActualHeight"),
-		};
-
-		canvas.SetBinding(System.Windows.Controls.Canvas.HeightProperty, heightBinding);
+		AddChild(canvas);
 		
 		Width = kha.Game.the.width + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
-        Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
 		// Go fullscreen
 		//WindowStyle = System.Windows.WindowStyle.None;
-        //WindowState = System.Windows.WindowState.Maximized;
+		//WindowState = System.Windows.WindowState.Maximized;
 		
 		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
@@ -266,8 +251,8 @@ class MainWindow extends system.windows.Window {
 	}
 	
 	public static void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
-        Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
-    }
+		Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
+	}
 	
 	public static void OnClosed(System.EventArgs e) {
 		Game.the.onClose();
@@ -339,7 +324,9 @@ class Starter {
 			gameToStart.loadFinished();
 		if (openWindow) {
 			startWindow();
-		Starter.frameworkElement.drawMousePos = Starter.showMousePos;
+		} else if (frameworkElement != null) {
+			frameworkElement.drawMousePos = Starter.showMousePos;
+		}
 	}
 
 	@:functionCode('
