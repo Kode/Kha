@@ -216,87 +216,83 @@ class Starter {
 		
 		// disable context menu
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
-
-		function mouseUp(event: MouseEvent): Void {
-			Browser.document.removeEventListener('mouseup', mouseUp);
-			checkMouseShift(event);
-			//trace ( 'mouse (${event.button}) UP' );
-			var x = Std.int(event.pageX - canvas.offsetLeft);
-			var y = Std.int(event.pageY - canvas.offsetTop);
-			mouseX = x;
-			mouseY = y;
-			if (event.button == 0) {
-				if (leftMouseCtrlDown) {
-					game.rightMouseUp(x, y);
-					mouse.sendUpEvent(1, x, y);
-				}
-				else {
-					game.mouseUp(x, y);
-					mouse.sendUpEvent(0, x, y);
-				}
-				leftMouseCtrlDown = false;
-			}
-			else {
-				game.rightMouseUp(x, y);
-				mouse.sendUpEvent(1, x, y);
-			}
-		}
-
-		//Lib.document.onmousedown = function(event : js.Event) {
-		canvas.onmousedown = function(event: MouseEvent) {
-			Browser.document.addEventListener('mouseup', mouseUp);
-			checkMouseShift(event);
-			//trace ( 'mouse (${event.button}) DOWN' );
-			var x = Std.int(event.pageX - canvas.offsetLeft);
-			var y = Std.int(event.pageY - canvas.offsetTop);
-			mouseX = x;
-			mouseY = y;
-			if (event.button == 0) {
-				if (event.ctrlKey) {
-					leftMouseCtrlDown = true;
-					game.rightMouseDown(x, y);
-					mouse.sendDownEvent(1, x, y);
-				}
-				else {
-					leftMouseCtrlDown = false;
-					game.mouseDown(x, y);
-					mouse.sendDownEvent(0, x, y);
-				}
-			}
-			else {
-				game.rightMouseDown(x, y);
-				mouse.sendDownEvent(1, x, y);
-			}
-		}
 		
-		//Lib.document.onmousemove = function(event : js.Event) {
-		canvas.onmousemove = function(event : MouseEvent) {
-			checkMouseShift(event);
-			var x = Std.int(event.pageX - canvas.offsetLeft);
-			var y = Std.int(event.pageY - canvas.offsetTop);
-			mouseX = x;
-			mouseY = y;
-			game.mouseMove(x, y);
-			mouse.sendMoveEvent(x, y);
-		}
-
-		//Lib.document.onkeydown = function(event : js.Event) {
+		canvas.onmousedown = mouseDown;
+		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
-		
-		//Lib.document.onkeypress = keyPress;
 		canvas.onkeypress = keyPress;
-		
-		//Lib.document.onkeyup = keyUp;
 		canvas.onkeyup = keyUp;
 		
-		Browser.window.onunload = function(event: Dynamic) {
-			game.onClose();
-		}
+		Browser.window.addEventListener("onunload", unload);
 
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		
 		game.loadFinished();
+	}
+	
+	static function unload(_): Void {
+		game.onClose();
+	}
+	
+	static inline function setMouseXY(event: MouseEvent): Void {
+		var rect = Sys.khanvas.getBoundingClientRect();
+		var borderWidth = Sys.khanvas.clientLeft;
+		var borderHeight = Sys.khanvas.clientTop;
+		mouseX = Std.int((event.clientX - rect.left - borderWidth) * Sys.khanvas.width/(rect.width-2*borderWidth));
+		mouseY = Std.int((event.clientY - rect.top - borderHeight) * Sys.khanvas.height/(rect.height-2*borderHeight));
+	}
+	
+	static function mouseDown(event: MouseEvent): Void {
+		Browser.document.addEventListener('mouseup', mouseUp);
+		checkMouseShift(event);
+		setMouseXY(event);
+		//trace ( 'mouse (${event.button}) DOWN' );
+		if (event.button == 0) {
+			if (event.ctrlKey) {
+				leftMouseCtrlDown = true;
+				game.rightMouseDown(mouseX, mouseY);
+				mouse.sendDownEvent(1, mouseX, mouseY);
+			}
+			else {
+				leftMouseCtrlDown = false;
+				game.mouseDown(mouseX, mouseY);
+				mouse.sendDownEvent(0, mouseX, mouseY);
+			}
+		}
+		else {
+			game.rightMouseDown(mouseX, mouseY);
+			mouse.sendDownEvent(1, mouseX, mouseY);
+		}
+	}
+	
+	static function mouseUp(event: MouseEvent): Void {
+		Browser.document.removeEventListener('mouseup', mouseUp);
+		checkMouseShift(event);
+		//trace ( 'mouse (${event.button}) UP' );
+		setMouseXY(event);
+		if (event.button == 0) {
+			if (leftMouseCtrlDown) {
+				game.rightMouseUp(mouseX, mouseY);
+				mouse.sendUpEvent(1, mouseX, mouseY);
+			}
+			else {
+				game.mouseUp(mouseX, mouseY);
+				mouse.sendUpEvent(0, mouseX, mouseY);
+			}
+			leftMouseCtrlDown = false;
+		}
+		else {
+			game.rightMouseUp(mouseX, mouseY);
+			mouse.sendUpEvent(1, mouseX, mouseY);
+		}
+	}
+	
+	static function mouseMove(event : MouseEvent) {
+		checkMouseShift(event);
+		setMouseXY(event);
+		game.mouseMove(mouseX, mouseY);
+		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 	
 	static function checkMouseShift(event: MouseEvent) {
