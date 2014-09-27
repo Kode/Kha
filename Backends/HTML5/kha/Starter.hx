@@ -29,7 +29,7 @@ class GamepadStates {
 }
 
 class Starter {
-	private static var game: Game;
+	private var gameToStart: Game;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var lastPressedKey: Int;
@@ -70,13 +70,13 @@ class Starter {
 	static function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
-				game.buttonUp(button);
+				Game.the.buttonUp(button);
 				buttonspressed[num] = false;
 			}
 		}
 		else {
 			if (pad.buttons[num] > 0.5) {
-				game.buttonDown(button);
+				Game.the.buttonDown(button);
 				buttonspressed[num] = true;
 			}
 		}
@@ -102,8 +102,9 @@ class Starter {
 	}
 	
 	public function start(game: Game): Void {
-		Starter.game = game;
+		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
+		Configuration.screen().setInstance();
 		Loader.the.loadProject(loadFinished);
 	}
 	
@@ -112,8 +113,8 @@ class Starter {
 		
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
+		gameToStart.width = Loader.the.width;
+		gameToStart.height = Loader.the.height;
 		
 		var gl: Bool = false;
 		
@@ -225,14 +226,14 @@ class Starter {
 		
 		Browser.window.addEventListener("onunload", unload);
 
-		Configuration.setScreen(game);
+		Configuration.setScreen(gameToStart);
 		Configuration.screen().setInstance();
 		
-		game.loadFinished();
+		gameToStart.loadFinished();
 	}
 	
 	static function unload(_): Void {
-		game.onClose();
+		Game.the.onClose();
 	}
 	
 	static inline function setMouseXY(event: MouseEvent): Void {
@@ -251,17 +252,17 @@ class Starter {
 		if (event.button == 0) {
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
-				game.rightMouseDown(mouseX, mouseY);
+				Game.the.rightMouseDown(mouseX, mouseY);
 				mouse.sendDownEvent(1, mouseX, mouseY);
 			}
 			else {
 				leftMouseCtrlDown = false;
-				game.mouseDown(mouseX, mouseY);
+				Game.the.mouseDown(mouseX, mouseY);
 				mouse.sendDownEvent(0, mouseX, mouseY);
 			}
 		}
 		else {
-			game.rightMouseDown(mouseX, mouseY);
+			Game.the.rightMouseDown(mouseX, mouseY);
 			mouse.sendDownEvent(1, mouseX, mouseY);
 		}
 	}
@@ -273,17 +274,17 @@ class Starter {
 		setMouseXY(event);
 		if (event.button == 0) {
 			if (leftMouseCtrlDown) {
-				game.rightMouseUp(mouseX, mouseY);
+				Game.the.rightMouseUp(mouseX, mouseY);
 				mouse.sendUpEvent(1, mouseX, mouseY);
 			}
 			else {
-				game.mouseUp(mouseX, mouseY);
+				Game.the.mouseUp(mouseX, mouseY);
 				mouse.sendUpEvent(0, mouseX, mouseY);
 			}
 			leftMouseCtrlDown = false;
 		}
 		else {
-			game.rightMouseUp(mouseX, mouseY);
+			Game.the.rightMouseUp(mouseX, mouseY);
 			mouse.sendUpEvent(1, mouseX, mouseY);
 		}
 	}
@@ -291,7 +292,7 @@ class Starter {
 	static function mouseMove(event : MouseEvent) {
 		checkMouseShift(event);
 		setMouseXY(event);
-		game.mouseMove(mouseX, mouseY);
+		Game.the.mouseMove(mouseX, mouseY);
 		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 	
@@ -299,11 +300,11 @@ class Starter {
 		if (event.shiftKey && !pressedKeys[16]) {
 			//trace ("SHIFT DOWN (mouse event)");
 			pressedKeys[16] = true;
-			game.keyDown(Key.SHIFT, "");
+			Game.the.keyDown(Key.SHIFT, "");
 		} else if (pressedKeys[16] && !event.shiftKey) {
 			//trace ("SHIFT UP (mouse event)");
 			pressedKeys[16] = false;
-			game.keyUp(Key.SHIFT, "");
+			Game.the.keyUp(Key.SHIFT, "");
 		}
 	}
 	
@@ -311,11 +312,11 @@ class Starter {
 		if (event.shiftKey && !pressedKeys[16]) {
 			//trace ("SHIFT DOWN (key event)");
 			pressedKeys[16] = true;
-			game.keyDown(Key.SHIFT, "");
+			Game.the.keyDown(Key.SHIFT, "");
 		} else if (pressedKeys[16] && event.keyCode != 16 && !event.shiftKey) {
 			//trace ("SHIFT UP (key event)");
 			pressedKeys[16] = false;
-			game.keyUp(Key.SHIFT, "");
+			Game.the.keyUp(Key.SHIFT, "");
 		}
 	}
 	
@@ -333,57 +334,57 @@ class Starter {
 		pressedKeys[event.keyCode] = true;
 		switch (lastPressedKey) {
 		case 8:
-			game.keyDown(Key.BACKSPACE, "");
+			Game.the.keyDown(Key.BACKSPACE, "");
 			keyboard.sendDownEvent(Key.BACKSPACE, "");
 			event.preventDefault();
 		case 9:
-			game.keyDown(Key.TAB, "");
+			Game.the.keyDown(Key.TAB, "");
 			keyboard.sendDownEvent(Key.TAB, "");
 			event.preventDefault();
 		case 13:
-			game.keyDown(Key.ENTER, "");
+			Game.the.keyDown(Key.ENTER, "");
 			keyboard.sendDownEvent(Key.ENTER, "");
 			event.preventDefault();
 		case 16:
-			game.keyDown(Key.SHIFT, "");
+			Game.the.keyDown(Key.SHIFT, "");
 			keyboard.sendDownEvent(Key.SHIFT, "");
 			//trace ("SHIFT DOWN (keyDown)");
 			event.preventDefault();
 		case 17:
-			game.keyDown(Key.CTRL, "");
+			Game.the.keyDown(Key.CTRL, "");
 			keyboard.sendDownEvent(Key.CTRL, "");
 			event.preventDefault();
 		case 18:
-			game.keyDown(Key.ALT, "");
+			Game.the.keyDown(Key.ALT, "");
 			keyboard.sendDownEvent(Key.ALT, "");
 			event.preventDefault();
 		case 27:
-			game.keyDown(Key.ESC, "");
+			Game.the.keyDown(Key.ESC, "");
 			keyboard.sendDownEvent(Key.ESC, "");
 			event.preventDefault();
 		case 32:
-			game.keyDown(Key.CHAR, " ");
+			Game.the.keyDown(Key.CHAR, " ");
 			keyboard.sendDownEvent(Key.CHAR, " ");
 			lastPressedKey = 0;
 			event.preventDefault(); // don't scroll down in IE
 		case 46:
-			game.keyDown(Key.DEL, "");
+			Game.the.keyDown(Key.DEL, "");
 			keyboard.sendDownEvent(Key.DEL, "");
 			event.preventDefault();
 		case 38:
-			game.buttonDown(Button.UP);
+			Game.the.buttonDown(Button.UP);
 			keyboard.sendDownEvent(Key.UP, "");
 			event.preventDefault();
 		case 40:
-			game.buttonDown(Button.DOWN);
+			Game.the.buttonDown(Button.DOWN);
 			keyboard.sendDownEvent(Key.DOWN, "");
 			event.preventDefault();
 		case 37:
-			game.buttonDown(Button.LEFT);
+			Game.the.buttonDown(Button.LEFT);
 			keyboard.sendDownEvent(Key.LEFT, "");
 			event.preventDefault();
 		case 39:
-			game.buttonDown(Button.RIGHT);
+			Game.the.buttonDown(Button.RIGHT);
 			keyboard.sendDownEvent(Key.RIGHT, "");
 			event.preventDefault();
 		default:
@@ -398,7 +399,7 @@ class Starter {
 				}
 				pressedKeyToChar[lastPressedKey] = char;
 				//trace ('"$char" DOWN');
-				game.keyDown(Key.CHAR, char);
+				Game.the.keyDown(Key.CHAR, char);
 				keyboard.sendDownEvent(Key.CHAR, char);
 				lastPressedKey = 0;
 			}
@@ -423,7 +424,7 @@ class Starter {
 			
 			checkKeyShift(event);
 			
-			game.keyDown(Key.CHAR, char);
+			Game.the.keyDown(Key.CHAR, char);
 			keyboard.sendDownEvent(Key.CHAR, char);
 			//trace ('"$char" DOWN');
 			pressedKeyToChar[lastPressedKey] = char;
@@ -432,7 +433,7 @@ class Starter {
 		// DOM3
 		else if (event.char != null) { // IE
 			if (event.char != "") { // Gecko (planned)
-				game.keyDown(Key.CHAR, event.char);
+				Game.the.keyDown(Key.CHAR, event.char);
 				keyboard.sendDownEvent(Key.CHAR, event.char);
 				//trace ('"${event.char}" DOWN');
 				pressedKeyToChar[lastPressedKey] = event.char;
@@ -454,49 +455,49 @@ class Starter {
 		
 		switch (event.keyCode) {
 		case 8:
-			game.keyUp(Key.BACKSPACE, "");
+			Game.the.keyUp(Key.BACKSPACE, "");
 			keyboard.sendUpEvent(Key.BACKSPACE, "");
 		case 9:
-			game.keyUp(Key.TAB, "");
+			Game.the.keyUp(Key.TAB, "");
 			keyboard.sendUpEvent(Key.TAB, "");
 		case 13:
-			game.keyUp(Key.ENTER, "");
+			Game.the.keyUp(Key.ENTER, "");
 			keyboard.sendUpEvent(Key.ENTER, "");
 		case 16:
-			game.keyUp(Key.SHIFT, "");
+			Game.the.keyUp(Key.SHIFT, "");
 			keyboard.sendUpEvent(Key.SHIFT, "");
 			//trace ("SHIFT UP (keyUp)");
 		case 17:
-			game.keyUp(Key.CTRL, "");
+			Game.the.keyUp(Key.CTRL, "");
 			keyboard.sendUpEvent(Key.CTRL, "");
 		case 18:
-			game.keyUp(Key.ALT, "");
+			Game.the.keyUp(Key.ALT, "");
 			keyboard.sendUpEvent(Key.ALT, "");
 		case 27:
-			game.keyUp(Key.ESC, "");
+			Game.the.keyUp(Key.ESC, "");
 			keyboard.sendUpEvent(Key.ESC, "");
 		case 32:
-			game.keyUp(Key.CHAR, " ");
+			Game.the.keyUp(Key.CHAR, " ");
 			keyboard.sendUpEvent(Key.CHAR, " ");
 		case 46:
-			game.keyUp(Key.DEL, "");
+			Game.the.keyUp(Key.DEL, "");
 			keyboard.sendUpEvent(Key.DEL, "");
 		case 38:
-			game.buttonUp(Button.UP);
+			Game.the.buttonUp(Button.UP);
 			keyboard.sendUpEvent(Key.UP, "");
 		case 40:
-			game.buttonUp(Button.DOWN);
+			Game.the.buttonUp(Button.DOWN);
 			keyboard.sendUpEvent(Key.DOWN, "");
 		case 37:
-			game.buttonUp(Button.LEFT);
+			Game.the.buttonUp(Button.LEFT);
 			keyboard.sendUpEvent(Key.LEFT, "");
 		case 39:
-			game.buttonUp(Button.RIGHT);
+			Game.the.buttonUp(Button.RIGHT);
 			keyboard.sendUpEvent(Key.RIGHT, "");
 		}
 		
 		if (pressedKeyToChar[event.keyCode] != null) {
-			game.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
+			Game.the.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
 			keyboard.sendUpEvent(Key.CHAR, pressedKeyToChar[event.keyCode]);
 			//trace ('"${pressedKeyToChar[event.keyCode]}" UP');
 			pressedKeyToChar[event.keyCode] = null;

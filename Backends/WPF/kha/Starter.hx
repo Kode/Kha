@@ -10,7 +10,7 @@ import system.windows.FrameworkElement;
 	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
 		base.OnRender(drawingContext);
 
-		if (kha.Starter.painter != null && kha.Starter.game != null && Configuration.screen() != null) {
+		if (kha.Starter.painter != null && Configuration.screen() != null) {
 			Starter.painter.context = drawingContext;
 			//Starter.painter.begin();
 			Configuration.screen().render(Starter.framebuffer);
@@ -39,8 +39,8 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth/Starter.game.width;
-		double heightTransform = canvas.ActualHeight/Starter.game.height;
+		double widthTransform = canvas.ActualWidth/Game.the.width;
+		double heightTransform = canvas.ActualHeight/Game.the.height;
 		double transform = System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
 		Scheduler.executeFrame(); // Main loop
@@ -69,7 +69,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	protected override void OnClosed(System.EventArgs e) {
 		base.OnClosed(e);
 		
-		Starter.game.onClose();
+		Game.the.onClose();
 	}
 
 	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
@@ -144,7 +144,7 @@ class MainWindow extends system.windows.Window {
 				char[] chararray = e.Text.ToCharArray();
 				int c = System.Convert.ToInt32((char)chararray[0]);
 				if (c > 32) {
-					game.keyDown(Key.CHAR, e.Text);
+					Game.the.keyDown(Key.CHAR, e.Text);
 					keyboard.sendDownEvent(Key.CHAR, e.Text);
 				}
 			}
@@ -157,46 +157,46 @@ class MainWindow extends system.windows.Window {
 
 		switch (e.Key) {
 			case System.Windows.Input.Key.Back:
-				game.keyDown(Key.BACKSPACE, null);
+				Game.the.keyDown(Key.BACKSPACE, null);
 				keyboard.sendDownEvent(Key.BACKSPACE, null);
 				break;
 			case System.Windows.Input.Key.Enter:
-				game.keyDown(Key.ENTER, "");
+				Game.the.keyDown(Key.ENTER, "");
 				keyboard.sendDownEvent(Key.ENTER, null);
 				break;
 			case System.Windows.Input.Key.Escape:
-				game.keyDown(Key.ESC, "");
+				Game.the.keyDown(Key.ESC, "");
 				keyboard.sendDownEvent(Key.ESC, null);
 				break;
 			case System.Windows.Input.Key.Delete:
-				game.keyDown(Key.DEL, "");
+				Game.the.keyDown(Key.DEL, "");
 				keyboard.sendDownEvent(Key.DEL, null);
 				break;
 			case System.Windows.Input.Key.Up:
-				game.buttonDown(Button.UP);
-				game.keyDown(Key.UP, null);
+				Game.the.buttonDown(Button.UP);
+				Game.the.keyDown(Key.UP, null);
 				keyboard.sendDownEvent(Key.UP, null);
 				break;
 			case System.Windows.Input.Key.Down:
-				game.buttonDown(Button.DOWN);
-				game.keyDown(Key.DOWN, null);
+				Game.the.buttonDown(Button.DOWN);
+				Game.the.keyDown(Key.DOWN, null);
 				keyboard.sendDownEvent(Key.DOWN, null);
 				break;
 			case System.Windows.Input.Key.Left:
-				game.buttonDown(Button.LEFT);
-				game.keyDown(Key.LEFT, null);
+				Game.the.buttonDown(Button.LEFT);
+				Game.the.keyDown(Key.LEFT, null);
 				keyboard.sendDownEvent(Key.LEFT, null);
 				break;
 			case System.Windows.Input.Key.Right:
-				game.buttonDown(Button.RIGHT);
-				game.keyDown(Key.RIGHT, null);
+				Game.the.buttonDown(Button.RIGHT);
+				Game.the.keyDown(Key.RIGHT, null);
 				keyboard.sendDownEvent(Key.RIGHT, null);
 				break;
 		}
 	}
 	
 	public static void OnKeyDown(Key key, string c) {
-		game.keyDown(key, c);
+		Game.the.keyDown(key, c);
 	}
 
 	public static void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
@@ -204,39 +204,39 @@ class MainWindow extends system.windows.Window {
 
 		switch (e.Key) {
 			case System.Windows.Input.Key.Back:
-				game.keyUp(Key.BACKSPACE, null);
+				Game.the.keyUp(Key.BACKSPACE, null);
 				keyboard.sendUpEvent(Key.BACKSPACE, null);
 				break;
 			case System.Windows.Input.Key.Enter:
-				game.keyUp(Key.ENTER, null);
+				Game.the.keyUp(Key.ENTER, null);
 				keyboard.sendUpEvent(Key.ENTER, null);
 				break;
 			case System.Windows.Input.Key.Escape:
-				game.keyUp(Key.ESC, null);
+				Game.the.keyUp(Key.ESC, null);
 				keyboard.sendUpEvent(Key.ESC, null);
 				break;
 			case System.Windows.Input.Key.Delete:
-				game.keyUp(Key.DEL, null);
+				Game.the.keyUp(Key.DEL, null);
 				keyboard.sendUpEvent(Key.DEL, null);
 				break;
 			case System.Windows.Input.Key.Up:
-				game.buttonUp(Button.UP);
-				game.keyUp(Key.UP, null);
+				Game.the.buttonUp(Button.UP);
+				Game.the.keyUp(Key.UP, null);
 				keyboard.sendUpEvent(Key.UP, null);
 				break;
 			case System.Windows.Input.Key.Down:
-				game.buttonUp(Button.DOWN);
-				game.keyUp(Key.DOWN, null);
+				Game.the.buttonUp(Button.DOWN);
+				Game.the.keyUp(Key.DOWN, null);
 				keyboard.sendUpEvent(Key.DOWN, null);
 				break;
 			case System.Windows.Input.Key.Left:
-				game.buttonUp(Button.LEFT);
-				game.keyUp(Key.LEFT, null);
+				Game.the.buttonUp(Button.LEFT);
+				Game.the.keyUp(Key.LEFT, null);
 				keyboard.sendUpEvent(Key.LEFT, null);
 				break;
 			case System.Windows.Input.Key.Right:
-				game.buttonUp(Button.RIGHT);
-				game.keyUp(Key.RIGHT, null);
+				Game.the.buttonUp(Button.RIGHT);
+				Game.the.keyUp(Key.RIGHT, null);
 				keyboard.sendUpEvent(Key.RIGHT, null);
 				break;
 		}
@@ -270,7 +270,7 @@ class MainWindow extends system.windows.Window {
     }
 	
 	public static void OnClosed(System.EventArgs e) {
-		game.onClose();
+		Game.the.onClose();
 	}
 ')
 class Starter {
@@ -282,7 +282,7 @@ class Starter {
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
-	public static var game: Game;
+	private var gameToStart: Game;
 	public static var frameworkElement: StoryPublishCanvas;
 	
 	public function new() {
@@ -303,7 +303,7 @@ class Starter {
 	
 	public function start(game: Game) {
 		try {
-			Starter.game = game;
+			gameToStart = game;
 			Loader.the.loadProject(loadFinished);
 		}
 		catch (unknown: Dynamic) {
@@ -321,23 +321,23 @@ class Starter {
 		
 	}
 	
-	public static function loadFinished() {
+	public function loadFinished() {
 		Loader.the.initProject();
-		Sys.pixelWidth = game.width = Loader.the.width;
-		Sys.pixelHeight = game.height = Loader.the.height;
+		Sys.pixelWidth = gameToStart.width = Loader.the.width;
+		Sys.pixelHeight = gameToStart.height = Loader.the.height;
 		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
 			mainWindow = new MainWindow();
 			Starter.frameworkElement = mainWindow.canvas;
 		}
-		Configuration.setScreen(game);
+		Configuration.setScreen(gameToStart);
 		Configuration.screen().setInstance();
 		painter = new kha.wpf.Painter(Sys.pixelWidth, Sys.pixelHeight);
 		framebuffer = new Framebuffer(painter, null);
 		Scheduler.start();
 		if (autostartGame)
-			game.loadFinished();
-		if (openWindow)
+			gameToStart.loadFinished();
+		if (openWindow) {
 			startWindow();
 		Starter.frameworkElement.drawMousePos = Starter.showMousePos;
 	}
@@ -355,7 +355,7 @@ class Starter {
 	public static function mouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseDown(x, y);
+		Game.the.mouseDown(x, y);
 		mouse.sendDownEvent(0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
@@ -363,7 +363,7 @@ class Starter {
 	public static function mouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseUp(x, y);
+		Game.the.mouseUp(x, y);
 		mouse.sendUpEvent(0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
@@ -371,7 +371,7 @@ class Starter {
 	public static function rightMouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.rightMouseDown(x, y);
+		Game.the.rightMouseDown(x, y);
 		mouse.sendDownEvent(1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
@@ -379,7 +379,7 @@ class Starter {
 	public static function rightMouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.rightMouseUp(x, y);
+		Game.the.rightMouseUp(x, y);
 		mouse.sendUpEvent(1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
@@ -387,7 +387,7 @@ class Starter {
 	public static function mouseMove(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseMove(x, y);
+		Game.the.mouseMove(x, y);
 		mouse.sendMoveEvent(x, y);
 		frameworkElement.setMousePos(x, y);
 	}
@@ -395,7 +395,7 @@ class Starter {
 	public static function mouseWheel(x: Int, y: Int, delta: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseWheel(delta);
+		Game.the.mouseWheel(delta);
 		mouse.sendWheelEvent(delta);
 		frameworkElement.setMousePos(x, y);
 	}
