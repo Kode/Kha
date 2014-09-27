@@ -128,7 +128,7 @@ class Starter {
 			trace(e);
 		}
 		
-		Sys.init(gl);
+		Sys.init(canvas);
 		var widthTransform: Float = canvas.width / Loader.the.width;
 		var heightTransform: Float = canvas.height / Loader.the.height;
 		var transform: Float = Math.min(widthTransform, heightTransform);

@@ -1,19 +1,18 @@
 package kha;
 
 import js.Browser;
+import js.html.CanvasElement;
 
 class Sys {
-	public static var needs3d: Bool = false;
 	public static var gl: Dynamic;
 	public static var audio: Dynamic;
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	//public static var graphics(default, null): Graphics;
 	private static var theMouse: Mouse;
-	private static var canvas: Dynamic;
+	public static var khanvas: CanvasElement;
 	
-	public static function init(webgl: Bool): Void {
-		canvas = Browser.document.getElementById("khanvas");
-		//graphics = null;// new kha.js.graphics.Graphics(webgl);
+	public static function init(canvas: CanvasElement): Void {
+		khanvas = canvas;
 		theMouse = new kha.js.Mouse();
 	}
 	
@@ -31,11 +30,11 @@ class Sys {
 	public static var pixelHeight(get, null): Int;
 	
 	public static function get_pixelWidth(): Int {
-		return canvas.width;
+		return khanvas.width;
 	}
 	
 	public static function get_pixelHeight(): Int {
-		return canvas.height;
+		return khanvas.height;
 	}
 	
 	public static function vsynced(): Bool {
