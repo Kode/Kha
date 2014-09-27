@@ -67,7 +67,7 @@ class Starter {
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 	
-	private function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
+	static function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
 				game.buttonUp(button);
@@ -82,7 +82,7 @@ class Starter {
 		}
 	}
 	
-	private function checkGamepad(pad: Dynamic) {
+	static function checkGamepad(pad: Dynamic) {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
 				if (gamepadStates[0].axes[i] != pad.axes[i]) {
