@@ -50,7 +50,6 @@ class Starter {
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Configuration.screen().setInstance();
 		Loader.the.loadProject(loadFinished);
 		
 		// TODO: Move?
@@ -81,7 +80,6 @@ class Starter {
 		frame.init(new kha.flash.graphics4.Graphics2(frame), g4);
 		
 		Configuration.setScreen(gameToStart);
-		Configuration.screen().setInstance();
 		Scheduler.start();
 		gameToStart.loadFinished();
 		

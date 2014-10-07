@@ -104,7 +104,6 @@ class Starter {
 	public function start(game: Game): Void {
 		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Configuration.screen().setInstance();
 		Loader.the.loadProject(loadFinished);
 	}
 	
@@ -227,7 +226,6 @@ class Starter {
 		Browser.window.addEventListener("onunload", unload);
 
 		Configuration.setScreen(gameToStart);
-		Configuration.screen().setInstance();
 		
 		gameToStart.loadFinished();
 	}

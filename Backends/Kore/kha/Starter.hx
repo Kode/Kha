@@ -33,7 +33,6 @@ class Starter {
 	public function start(game: Game) {
 		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Configuration.screen().setInstance();
 		Loader.the.loadProject(loadFinished);
 	}
 	
