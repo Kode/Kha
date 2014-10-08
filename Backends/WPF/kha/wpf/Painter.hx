@@ -35,6 +35,8 @@ class Painter extends kha.graphics2.Graphics {
 	
 	override public function begin(clear: Bool = true, clearColor: kha.Color = null): Void {
 		if (visual != null) context = visual.RenderOpen();
+		var transformation = this.transformation; // fix bad haxe=>c# optimization
+		context.PushTransform(new MatrixTransform(transformation[0], transformation[3], transformation[1], transformation[4], transformation[2], transformation[5]));
 		if (clear) this.clear(clearColor);
 	}
 	
@@ -56,12 +58,8 @@ class Painter extends kha.graphics2.Graphics {
 	}
 	
 	override public function setTransformation(transformation: Matrix3): Void {
-		try {
-			context.Pop();
-		}
-		catch (e: Dynamic) {
-			
-		}
+		context.Pop();
+		var transformation = this.transformation; // fix bad haxe=>c# optimization
 		context.PushTransform(new MatrixTransform(transformation[0], transformation[3], transformation[1], transformation[4], transformation[2], transformation[5]));
 	}
 	

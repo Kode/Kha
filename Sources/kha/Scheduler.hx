@@ -48,7 +48,6 @@ class Scheduler {
 	private static var lastTime: Float;
 	
 	private static var frame_tasks_sorted: Bool;
-	private static var running: Bool;
 	private static var stopped: Bool;
 	private static var vsync: Bool;
 
@@ -72,8 +71,7 @@ class Scheduler {
 		difs = new Array<Float>();
 		for (i in 0...DIF_COUNT-1) difs[i] = 0;
 		
-		running = false;
-		stopped = false;
+		stopped = true;
 		halted_count = 0;
 		frame_tasks_sorted = true;
 		current = 0;
@@ -85,7 +83,7 @@ class Scheduler {
 		
 		timeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
-		Configuration.schedulerInizialized();
+		Configuration.schedulerInitialized();
 	}
 	
 	public static function start(): Void {
@@ -94,13 +92,13 @@ class Scheduler {
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
 
-		running = true;
+		stopped = false;
 		lastTime = Sys.getTime();
 		for (i in 0...DIF_COUNT-1) difs[i] = 0;
 	}
 	
 	public static function stop(): Void {
-		running = false;
+		stopped = true;
 	}
 	
 	public static function isStopped(): Bool {
@@ -115,7 +113,7 @@ class Scheduler {
 		lastTime = now;
 		var frameEnd: Float = current;
 		 
-		if (delta < 0) {
+		if (delta < 0 || stopped) {
 			return;
 		}
 		
@@ -129,6 +127,9 @@ class Scheduler {
 		}
 		else {
 			if (vsync) {
+				// TODO: fix it!
+				// this commulates delta errors with Scheduler.time()
+				// running quite different (faster) than Sys.time()
 				var realdif = onedifhz;
 				while (realdif < delta - onedifhz) {
 					realdif += onedifhz;
@@ -158,7 +159,7 @@ class Scheduler {
 					
 					frameEnd += interpolated_delta; // average the frame end estimation
 				#else
-					frameEnd = delta; // No frame end estimation
+					frameEnd += delta; // No frame end estimation
 				#end
 			}
 		}

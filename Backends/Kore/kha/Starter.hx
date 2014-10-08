@@ -11,7 +11,7 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 
 class Starter {
-	private static var game: Game;
+	private var gameToStart: Game;
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
@@ -31,19 +31,20 @@ class Starter {
 	}
 	
 	public function start(game: Game) {
-		Starter.game = game;
+		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
+		Configuration.screen().setInstance();
 		Loader.the.loadProject(loadFinished);
 	}
 	
-	public static function loadFinished() {
+	public function loadFinished() {
 		Loader.the.initProject();
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
-		Configuration.setScreen(game);
+		gameToStart.width = Loader.the.width;
+		gameToStart.height = Loader.the.height;
+		Configuration.setScreen(gameToStart);
 		Configuration.screen().setInstance();
 		Scheduler.start();
-		game.loadFinished();
+		gameToStart.loadFinished();
 		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
 		framebuffer.init(new Graphics2(framebuffer), g4);
@@ -52,152 +53,152 @@ class Starter {
 	public static function frame() {
 		if (framebuffer == null) return;
 		Scheduler.executeFrame();
-		game.render(framebuffer);
+		Game.the.render(framebuffer);
 	}
 	
 	public static function pushUp(): Void {
-		game.buttonDown(Button.UP);
-		game.keyDown(Key.UP, null);
+		Game.the.buttonDown(Button.UP);
+		Game.the.keyDown(Key.UP, null);
 		keyboard.sendDownEvent(Key.UP, null);
 	}
 	
 	public static function pushDown(): Void {
-		game.buttonDown(Button.DOWN);
-		game.keyDown(Key.DOWN, null);
+		Game.the.buttonDown(Button.DOWN);
+		Game.the.keyDown(Key.DOWN, null);
 		keyboard.sendDownEvent(Key.DOWN, null);
 	}
 
 	public static function pushLeft(): Void {
-		game.buttonDown(Button.LEFT);
-		game.keyDown(Key.LEFT, null);
+		Game.the.buttonDown(Button.LEFT);
+		Game.the.keyDown(Key.LEFT, null);
 		keyboard.sendDownEvent(Key.LEFT, null);
 	}
 
 	public static function pushRight(): Void {
-		game.buttonDown(Button.RIGHT);
-		game.keyDown(Key.RIGHT, null);
+		Game.the.buttonDown(Button.RIGHT);
+		Game.the.keyDown(Key.RIGHT, null);
 		keyboard.sendDownEvent(Key.RIGHT, null);
 	}
 	
 	public static function pushButton1(): Void {
-		game.buttonDown(Button.BUTTON_1);
+		Game.the.buttonDown(Button.BUTTON_1);
 	}
 
 	public static function releaseUp(): Void {
-		game.buttonUp(Button.UP);
-		game.keyUp(Key.UP, null);
+		Game.the.buttonUp(Button.UP);
+		Game.the.keyUp(Key.UP, null);
 		keyboard.sendUpEvent(Key.UP, null);
 	}
 
 	public static function releaseDown(): Void {
-		game.buttonUp(Button.DOWN);
-		game.keyUp(Key.DOWN, null);
+		Game.the.buttonUp(Button.DOWN);
+		Game.the.keyUp(Key.DOWN, null);
 		keyboard.sendUpEvent(Key.DOWN, null);
 	}
 
 	public static function releaseLeft(): Void {
-		game.buttonUp(Button.LEFT);
-		game.keyUp(Key.LEFT, null);
+		Game.the.buttonUp(Button.LEFT);
+		Game.the.keyUp(Key.LEFT, null);
 		keyboard.sendUpEvent(Key.LEFT, null);
 	}
 	
 	public static function releaseRight(): Void {
-		game.buttonUp(Button.RIGHT);
-		game.keyUp(Key.RIGHT, null);
+		Game.the.buttonUp(Button.RIGHT);
+		Game.the.keyUp(Key.RIGHT, null);
 		keyboard.sendUpEvent(Key.RIGHT, null);
 	}
 	
 	public static function releaseButton1(): Void {
-		game.buttonUp(Button.BUTTON_1);
+		Game.the.buttonUp(Button.BUTTON_1);
 	}
 	
 	public static function pushChar(charCode: Int): Void {
-		game.keyDown(Key.CHAR, String.fromCharCode(charCode));
+		Game.the.keyDown(Key.CHAR, String.fromCharCode(charCode));
 		keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	public static function releaseChar(charCode: Int): Void {
-		game.keyUp(Key.CHAR, String.fromCharCode(charCode));
+		Game.the.keyUp(Key.CHAR, String.fromCharCode(charCode));
 		keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	public static function pushShift(): Void {
-		game.keyDown(Key.SHIFT, null);
+		Game.the.keyDown(Key.SHIFT, null);
 		keyboard.sendDownEvent(Key.SHIFT, null);
 	}
 	
 	public static function releaseShift(): Void {
-		game.keyUp(Key.SHIFT, null);
+		Game.the.keyUp(Key.SHIFT, null);
 		keyboard.sendUpEvent(Key.SHIFT, null);
 	}
 	
 	public static function pushBackspace(): Void {
-		game.keyDown(Key.BACKSPACE, null);
+		Game.the.keyDown(Key.BACKSPACE, null);
 		keyboard.sendDownEvent(Key.BACKSPACE, null);
 	}
 	
 	public static function releaseBackspace(): Void {
-		game.keyUp(Key.BACKSPACE, null);
+		Game.the.keyUp(Key.BACKSPACE, null);
 		keyboard.sendUpEvent(Key.BACKSPACE, null);
 	}
 	
 	public static function pushTab(): Void {
-		game.keyDown(Key.TAB, null);
+		Game.the.keyDown(Key.TAB, null);
 		keyboard.sendDownEvent(Key.TAB, null);
 	}
 	
 	public static function releaseTab(): Void {
-		game.keyUp(Key.TAB, null);
+		Game.the.keyUp(Key.TAB, null);
 		keyboard.sendUpEvent(Key.TAB, null);
 	}
 
 	public static function pushEnter(): Void {
-		game.keyDown(Key.ENTER, null);
+		Game.the.keyDown(Key.ENTER, null);
 		keyboard.sendDownEvent(Key.ENTER, null);
 	}
 	
 	public static function releaseEnter(): Void {
-		game.keyUp(Key.ENTER, null);
+		Game.the.keyUp(Key.ENTER, null);
 		keyboard.sendUpEvent(Key.ENTER, null);
 	}
 	
 	public static function pushControl(): Void {
-		game.keyDown(Key.CTRL, null);
+		Game.the.keyDown(Key.CTRL, null);
 		keyboard.sendDownEvent(Key.CTRL, null);
 	}
 	
 	public static function releaseControl(): Void {
-		game.keyUp(Key.CTRL, null);
+		Game.the.keyUp(Key.CTRL, null);
 		keyboard.sendUpEvent(Key.CTRL, null);
 	}
 	
 	public static function pushAlt(): Void {
-		game.keyDown(Key.ALT, null);
+		Game.the.keyDown(Key.ALT, null);
 		keyboard.sendDownEvent(Key.ALT, null);
 	}
 	
 	public static function releaseAlt(): Void {
-		game.keyUp(Key.ALT, null);
+		Game.the.keyUp(Key.ALT, null);
 		keyboard.sendUpEvent(Key.ALT, null);
 	}
 	
 	public static function pushEscape(): Void {
-		game.keyDown(Key.ESC, null);
+		Game.the.keyDown(Key.ESC, null);
 		keyboard.sendDownEvent(Key.ESC, null);
 	}
 	
 	public static function releaseEscape(): Void {
-		game.keyUp(Key.ESC, null);
+		Game.the.keyUp(Key.ESC, null);
 		keyboard.sendUpEvent(Key.ESC, null);
 	}
 	
 	public static function pushDelete(): Void {
-		game.keyDown(Key.DEL, null);
+		Game.the.keyDown(Key.DEL, null);
 		keyboard.sendDownEvent(Key.DEL, null);
 	}
 	
 	public static function releaseDelete(): Void {
-		game.keyUp(Key.DEL, null);
+		Game.the.keyUp(Key.DEL, null);
 		keyboard.sendUpEvent(Key.DEL, null);
 	}
 	
@@ -207,21 +208,21 @@ class Starter {
 	public static function mouseDown(button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseDown(x, y);
+		Game.the.mouseDown(x, y);
 		mouse.sendDownEvent(button, x, y);
 	}
 
 	public static function mouseUp(button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseUp(x, y);
+		Game.the.mouseUp(x, y);
 		mouse.sendUpEvent(button, x, y);
 	}
 	
 	public static function mouseMove(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		game.mouseMove(x, y);
+		Game.the.mouseMove(x, y);
 		mouse.sendMoveEvent(x, y);
 	}
 	
@@ -246,22 +247,22 @@ class Starter {
 	}
 
 	public static function foreground(): Void {
-		game.onForeground();
+		Game.the.onForeground();
 	}
 
 	public static function resume(): Void {
-		game.onResume();
+		Game.the.onResume();
 	}
 
 	public static function pause(): Void {
-		game.onPause();
+		Game.the.onPause();
 	}
 
 	public static function background(): Void {
-		game.onBackground();
+		Game.the.onBackground();
 	}
 
 	public static function shutdown(): Void {
-		game.onShutdown();
+		Game.the.onShutdown();
 	}
 }
