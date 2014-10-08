@@ -15,6 +15,7 @@ class Configuration {
 	
 	public static function setScreen(screen: Game) {
 		theScreen = screen;
+		theScreen.setInstance();
 		if (id < 0) {
 			id = Scheduler.addTimeTask(update, 0, 1 / 60);
 		}
