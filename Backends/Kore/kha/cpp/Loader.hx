@@ -49,4 +49,9 @@ class Loader extends kha.Loader {
 	override public function hideKeyboard(): Void {
 
 	}
+
+	@:functionCode('Kore::System::loadURL(url);')
+	override public function loadURL(url : String): Void {
+
+	}
 }
