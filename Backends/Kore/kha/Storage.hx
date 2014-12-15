@@ -2,6 +2,8 @@ package kha;
 
 import haxe.io.Bytes;
 
+using StringTools;
+
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/IO/FileReader.h>
@@ -44,6 +46,8 @@ class KoreStorageFile extends StorageFile {
 
 class Storage {	
 	public static function namedFile(name: String): StorageFile {
+		name = name.replace("\\", ".");
+		name = name.replace("/", ".");
 		return new KoreStorageFile(name);
 	}
 
