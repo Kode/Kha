@@ -117,8 +117,9 @@ class Starter {
 		
 		var gl: Bool = false;
 		
+		
 		try {
-			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false });
+			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false, preserveDrawingBuffer: true });
 			if (Sys.gl != null) {
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				gl = true;
