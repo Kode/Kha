@@ -16,14 +16,6 @@ class TimeTask {
 	public function new() {
 		
 	}
-	
-	public function elapsed(): Float {
-		return Scheduler.time() - last;
-	}
-	
-	public function remaining(): Float {
-		return next - Scheduler.time();
-	}
 }
 
 class FrameTask {
@@ -269,7 +261,7 @@ class Scheduler {
 		return addTimeTaskToGroup(0, task, start, period, duration);
 	}
 
-	public static function getTimeTask(id: Int): TimeTask {
+	private static function getTimeTask(id: Int): TimeTask {
 		for (timeTask in timeTasks) {
 			if (timeTask.id == id) {
 				return timeTask;

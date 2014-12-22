@@ -17,6 +17,13 @@ class Image implements Canvas implements Resource {
 	
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
+
+	public static function createFromVideo(video: Video): Image {
+		var image = new Image(false);
+		image.format = TextureFormat.RGBA32;
+		image.initVideo(cast(video, kha.cpp.Video));
+		return image;
+	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, false);
@@ -47,6 +54,11 @@ class Image implements Canvas implements Resource {
 	private function init(width: Int, height: Int, format: Int): Void {
 		
 	}
+
+	@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
+	private function initVideo(video: kha.cpp.Video): Void {
+
+	}
 	
 	public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
@@ -64,7 +76,7 @@ class Image implements Canvas implements Resource {
 	
 	private function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
-			graphics2 = new kha.graphics4.Graphics2(this);
+			graphics2 = new kha.cpp.graphics4.Graphics2(this);
 		}
 		return graphics2;
 	}

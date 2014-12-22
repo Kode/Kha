@@ -71,4 +71,18 @@ class Video extends kha.Video {
 	override public function isFinished(): Bool {
 		return false;
 	}
+
+	@:functionCode('
+	#ifdef KOREVIDEO
+	return video->width();
+	#endif
+	')
+	override public function width() : Int { return 100; }
+
+	@:functionCode('
+	#ifdef KOREVIDEO
+	return video->height();
+	#endif
+	')
+	override public function height() : Int { return 100; }
 }
