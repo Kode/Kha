@@ -96,22 +96,22 @@ class Image implements Canvas implements Resource {
 	public var width(get, null): Int;
 	public var height(get, null): Int;
 	
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return Std.int(myWidth);
 	}
 	
-	public function get_height(): Int {
+	private function get_height(): Int {
 		return Std.int(myHeight);
 	}
 	
 	public var realWidth(get, null): Int;
 	public var realHeight(get, null): Int;
 	
-	public function get_realWidth(): Int {
+	private function get_realWidth(): Int {
 		return texWidth;
 	}
 	
-	public function get_realHeight(): Int {
+	private function get_realHeight(): Int {
 		return texHeight;
 	}
 	
