@@ -269,7 +269,7 @@ class Loader {
 	}
 	
 	public function loadProject(call: Void -> Void) {
-		enqueue({name: "project.kha", file: basePath + "/project.kha", type: "blob"});
+		enqueue({name: "project.kha", file: basePath == "." ? "project.kha" : basePath + "/project.kha", type: "blob"});
 		loadFiles(function() { loadShaders(call); }, false);
 	}
 	
