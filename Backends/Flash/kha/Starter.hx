@@ -60,7 +60,7 @@ class Starter {
 		Loader.the.initProject();
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
-		stage3D.requestContext3D("auto" /*"software"*/); //, Context3DProfile.BASELINE_EXTENDED);
+		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */); //, Context3DProfile.BASELINE_EXTENDED);
 	}
 	
 	private function onReady(_): Void {
