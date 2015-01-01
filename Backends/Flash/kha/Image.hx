@@ -44,7 +44,7 @@ class Image implements Canvas implements Resource {
 		this.format = format;
 		this.depthStencil = depthStencil;
 		this.readable = readable;
-		tex = Starter.context.createTexture(texWidth, texHeight, Context3DTextureFormat.BGRA, renderTarget);
+		tex = Starter.context.createTexture(texWidth, texHeight, format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
 	}
 	
 	public static function fromBitmap(image: DisplayObject, readable: Bool): Image {
@@ -153,6 +153,8 @@ class Image implements Canvas implements Resource {
 				bytes = Bytes.alloc(texWidth * texHeight * 4);
 			case L8:
 				bytes = Bytes.alloc(texWidth * texHeight);
+			case RGBA128:
+				bytes = Bytes.alloc(texWidth * texHeight * 16);
 		}
 		return bytes;
 	}
@@ -165,14 +167,23 @@ class Image implements Canvas implements Resource {
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
 				for (y in 0...texHeight) for (x in 0...texWidth) {
 					var value = bytes.get(y * texWidth + x);
-					if (value != 0) {
-						var a = 3;
-						++a;
-					}
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, value);
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, value);
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, value);
 					rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, 255);
+				}
+				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
+			case RGBA128:
+				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 8);
+				for (y in 0...texHeight) for (x in 0...texWidth) {
+					var value1 = bytes.getDouble(y * texWidth * 16 + x * 16 +  0);
+					var value2 = bytes.getDouble(y * texWidth * 16 + x * 16 +  4);
+					var value3 = bytes.getDouble(y * texWidth * 16 + x * 16 +  8);
+					var value4 = bytes.getDouble(y * texWidth * 16 + x * 16 + 12);
+					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 0, value1);
+					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 2, value2);
+					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 4, value3);
+					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 6, value4);
 				}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 		}
