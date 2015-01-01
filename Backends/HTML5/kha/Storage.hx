@@ -2,6 +2,7 @@ package kha;
 
 import haxe.io.Bytes;
 import haxe.io.BytesData;
+import js.html.ArrayBuffer;
 import kha.Storage.WebStorage;
 
 typedef WebStorage = 
@@ -68,9 +69,10 @@ class LocalStorageFile extends StorageFile {
 	 * @return {Array}         Resulting byte array from yEnc string.
 	 */
 	private static function decode(source: String): Bytes {
-		var output = [];
+		var output = new js.html.Uint8Array(new ArrayBuffer(), 0, source.length);
 		var ck = false;
 		var c;
+		var index = 0;
 		for (i in 0...source.length) {
 			c = source.charCodeAt(i);
 			// ignore newlines
@@ -85,12 +87,12 @@ class LocalStorageFile extends StorageFile {
 				c = c - 64;
 			}
 			if (c < 42 && c > 0) {
-				output.push(c + 214);
-			} else {
-				output.push(c - 42);
+				output[index++] = c + 214;
+			}
+			else {
+				output[index++] = c - 42;
 			}
 		}
-
 		return Bytes.ofData(output);
 	}
 }
