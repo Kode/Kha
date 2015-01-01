@@ -122,6 +122,7 @@ class Starter {
 			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false, preserveDrawingBuffer: true });
 			if (Sys.gl != null) {
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+				Sys.gl.getExtension("gl.OES_texture_float");
 				gl = true;
 			}
 		}

@@ -104,7 +104,7 @@ class WebGLImage extends Image {
 		return v;
 	}
 	
-	public function createTexture() {
+	public function createTexture(): Void {
 		if (Sys.gl == null) return;
 		texture = Sys.gl.createTexture();
 		//texture.image = image;
@@ -118,12 +118,12 @@ class WebGLImage extends Image {
 		if (renderTarget) {
 			frameBuffer = Sys.gl.createFramebuffer();
 			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, frameBuffer);
-			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, null);
+			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, realWidth, realHeight, 0, Sys.gl.RGBA, format == TextureFormat.RGBA128 ? Sys.gl.FLOAT : Sys.gl.UNSIGNED_BYTE, null);
 			Sys.gl.framebufferTexture2D(Sys.gl.FRAMEBUFFER, Sys.gl.COLOR_ATTACHMENT0, Sys.gl.TEXTURE_2D, texture, 0);
 			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
 		}
 		else if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
-		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, image);
+		else Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, format == TextureFormat.RGBA128 ? Sys.gl.FLOAT : Sys.gl.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 	}
@@ -137,7 +137,7 @@ class WebGLImage extends Image {
 	public var bytes: Bytes;
 	
 	override public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
 		return bytes;
 	}
 	
@@ -152,18 +152,26 @@ class WebGLImage extends Image {
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
 			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
-			Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 			
-			if (Sys.gl.getError() == 1282) {
-				var rgbaBytes = Bytes.alloc(width * height * 4);
-				for (y in 0...height) for (x in 0...width) {
-					var value = bytes.get(y * width + x);
-					rgbaBytes.set(y * width * 4 + x * 4 + 0, value);
-					rgbaBytes.set(y * width * 4 + x * 4 + 1, value);
-					rgbaBytes.set(y * width * 4 + x * 4 + 2, value);
-					rgbaBytes.set(y * width * 4 + x * 4 + 3, 255);
+			switch (format) {
+			case L8:
+				Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.LUMINANCE, width, height, 0, Sys.gl.LUMINANCE, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+				
+				if (Sys.gl.getError() == 1282) { // no LUMINANCE support in IE11
+					var rgbaBytes = Bytes.alloc(width * height * 4);
+					for (y in 0...height) for (x in 0...width) {
+						var value = bytes.get(y * width + x);
+						rgbaBytes.set(y * width * 4 + x * 4 + 0, value);
+						rgbaBytes.set(y * width * 4 + x * 4 + 1, value);
+						rgbaBytes.set(y * width * 4 + x * 4 + 2, value);
+						rgbaBytes.set(y * width * 4 + x * 4 + 3, 255);
+					}
+					Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, width, height, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
 				}
-				Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, width, height, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
+			case RGBA32:
+				Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, width, height, 0, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+			case RGBA128:
+				Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, width, height, 0, Sys.gl.RGBA, Sys.gl.FLOAT, new Uint8Array(bytes.getData()));
 			}
 			
 			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
