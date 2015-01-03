@@ -6,6 +6,7 @@ import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
 import kha.FontStyle;
 import kha.Blob;
+import kha.Image;
 import kha.Kravur;
 import kha.Starter;
 import haxe.io.Bytes;
@@ -14,26 +15,56 @@ import js.Lib;
 import js.html.XMLHttpRequest;
 
 class Loader extends kha.Loader {
-	private var files: Map<String, Dynamic>;
+	private var loadingBlobs: Map<String, Blob->Void>;
+	private var loadingImages: Map<String, Image->Void>;
+	private var loadingSounds: Map<String, Sound->Void>;
+	private var loadingMusics: Map<String, Music->Void>;
 	
 	public function new() {
 		super();
+		loadingBlobs = new Map();
+		loadingImages = new Map();
+		loadingSounds = new Map();
+		loadingMusics = new Map();
 	}
 	
-	public function loaded(filename: String): Void {
-		files[filename](null);
+	public function loadedBlob(value: Dynamic): Void {
+		var blob = new Blob(Bytes.ofData(value.data));
+		loadingBlobs[value.file](blob);
+		loadingBlobs.remove(value.file);
+	}
+	
+	public function loadedImage(value: Dynamic): Void {
+		var image = new Image(value.id, value.width, value.height, value.realWidth, value.realHeight);
+		loadingImages[value.file](image);
+		loadingImages.remove(value.file);
+	}
+	
+	public function loadedSound(value: Dynamic): Void {
+		var sound = new Sound();
+		loadingSounds[value.file](sound);
+		loadingSounds.remove(value.file);
+	}
+	
+	public function loadedMusic(value: Dynamic): Void {
+		var music = new Music();
+		loadingMusics[value.file](music);
+		loadingMusics.remove(value.file);
 	}
 		
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		new Music(desc.file, done);
+		loadingMusics[desc.file] = done;
+		Worker.postMessage( { command: 'loadMusic', file: desc.file, name: desc.name } );
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
-		Worker.postMessage( { command: 'loadSound', file: desc.file } );
+		loadingSounds[desc.file] = done;
+		Worker.postMessage( { command: 'loadSound', file: desc.file, name: desc.name } );
 	}
 	
 	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
-		Worker.postMessage( { command: 'loadImage', file: desc.file } );
+		loadingImages[desc.file] = done;
+		Worker.postMessage( { command: 'loadImage', file: desc.file, name: desc.name } );
 	}
 
 	override function loadVideo(desc: Dynamic, done: kha.Video -> Void): Void {
@@ -41,7 +72,8 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
-		Worker.postMessage( { command: 'loadBlob', file: desc.file } );
+		loadingBlobs[desc.file] = done;
+		Worker.postMessage( { command: 'loadBlob', file: desc.file, name: desc.name } );
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

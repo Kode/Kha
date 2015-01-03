@@ -5,14 +5,13 @@ import js.html.CanvasElement;
 
 class Sys {
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
-	private static var theMouse: Mouse;
+	private static var theMouse: Mouse = null;
 	private static var width: Int;
 	private static var height: Int;
 	
 	public static function init(width: Int, height: Int): Void {
 		Sys.width = width;
 		Sys.height = height;
-		theMouse = new kha.js.Mouse();
 	}
 	
 	public static function getTime(): Float {
@@ -22,6 +21,7 @@ class Sys {
 	public static var mouse(get, null): Mouse;
 	
 	public static function get_mouse(): Mouse {
+		if (theMouse == null) theMouse = new kha.js.Mouse();
 		return theMouse;
 	}
 	

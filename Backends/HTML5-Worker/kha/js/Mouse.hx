@@ -6,7 +6,7 @@ import kha.Cursor;
 import kha.Image;
 
 class Mouse extends kha.Mouse {
-	public static var SystemCursor : String = "default";
+	public static var SystemCursor: String = "default";
 	
 	public static function UpdateSystemCursor() {
 		
@@ -16,10 +16,15 @@ class Mouse extends kha.Mouse {
 		super();
 	}
 	
-	override private function hideSystemCursor():Void {
+	override private function hideSystemCursor(): Void {
 		
 	}
-	override private function showSystemCursor():Void {
+	
+	override private function showSystemCursor(): Void {
+		
+	}
+	
+	override public function update(): Void {
 		
 	}
 }

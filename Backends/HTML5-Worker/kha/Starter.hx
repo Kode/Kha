@@ -3,12 +3,13 @@ package kha;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.js.WorkerGraphics;
 import kha.Key;
 import kha.Loader;
 
 class Starter {
 	private var gameToStart: Game;
-	private static var frame: Framebuffer;
+	private static var frame: Framebuffer = null;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
@@ -17,6 +18,7 @@ class Starter {
 	public static var mouseY: Int;
 
 	public function new() {
+		Worker.handleMessages(messageHandler);
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
@@ -38,12 +40,29 @@ class Starter {
 		gameToStart.height = Loader.the.height;
 			
 		Sys.init(gameToStart.width, gameToStart.height);
-		frame = new Framebuffer(null, null);
+		frame = new Framebuffer(new WorkerGraphics(gameToStart.width, gameToStart.height), null);
 		Scheduler.start();
-		//Scheduler.executeFrame();
 		
 		Configuration.setScreen(gameToStart);
 		
 		gameToStart.loadFinished();
+	}
+	
+	private function messageHandler(value: Dynamic): Void {
+		switch (value.data.command) {
+		case 'loadedBlob':
+			cast(Loader.the, kha.js.Loader).loadedBlob(value.data);
+		case 'loadedImage':
+			cast(Loader.the, kha.js.Loader).loadedImage(value.data);
+		case 'loadedSound':
+			cast(Loader.the, kha.js.Loader).loadedSound(value.data);
+		case 'loadedMusic':
+			cast(Loader.the, kha.js.Loader).loadedMusic(value.data);
+		case 'frame':
+			if (frame != null) {
+				Scheduler.executeFrame();
+				Configuration.screen().render(frame);
+			}
+		}
 	}
 }
