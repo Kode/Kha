@@ -63,6 +63,10 @@ class Starter {
 				Scheduler.executeFrame();
 				Configuration.screen().render(frame);
 			}
+		case 'keyDown':
+			Configuration.screen().keyDown(Key.createByIndex(value.data.key), value.data.char);
+		case 'keyUp':
+			Configuration.screen().keyUp(Key.createByIndex(value.data.key), value.data.char);
 		}
 	}
 }

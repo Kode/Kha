@@ -85,6 +85,9 @@ class WorkerGraphics extends Graphics {
 	}
 	
 	override public function setTransformation(transformation: Matrix3): Void {
-		
+		Worker.postMessage( { command: 'setTransformation',
+		_0: transformation[0], _1: transformation[1], _2: transformation[2],
+		_3: transformation[3], _4: transformation[4], _5: transformation[5],
+		_6: transformation[6], _7: transformation[7], _8: transformation[8] } );
 	}
 }
