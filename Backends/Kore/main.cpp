@@ -214,6 +214,8 @@ namespace {
 			case Kore::OrientationPortraitUpsideDown:
 				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation180;
 				break;
+			case Kore::OrientationUnknown:
+				break;
 		}
 	}
 }
