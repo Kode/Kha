@@ -253,14 +253,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		Kore::Graphics::setRenderState(Kore::BackfaceCulling, value);
+		Kore::Graphics::setRenderState(Kore::Culling, value);
 	')
-	private function setCullModeNative(value: Bool): Void {
+	private function setCullModeNative(value: Int): Void {
 		
 	}
 	
 	public function setCullMode(mode: CullMode): Void {
-		setCullModeNative(mode != None);
+		setCullModeNative(mode.getIndex());
 	}
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
