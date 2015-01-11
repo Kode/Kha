@@ -253,7 +253,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		Kore::Graphics::setRenderState(Kore::Culling, value);
+		Kore::Graphics::setRenderState(Kore::BackfaceCulling, value);
 	')
 	private function setCullModeNative(value: Int): Void {
 		
