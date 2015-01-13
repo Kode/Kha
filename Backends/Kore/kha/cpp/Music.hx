@@ -17,6 +17,11 @@ class Music extends kha.Music {
 	function loadMusic(filename: String) {
 		
 	}
+
+	@:functionCode("delete stream; stream = nullptr;")
+	override public function unload(): Void {
+		
+	}
 	
 	@:functionCode('
 		stream->reset();

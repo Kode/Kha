@@ -23,7 +23,7 @@ class Sound extends kha.Sound {
 		return null;
 	}
 	
-	@:functionCode("delete sound;")
+	@:functionCode("delete sound; sound = nullptr;")
 	override public function unload(): Void {
 
 	}
