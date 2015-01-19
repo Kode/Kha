@@ -18,7 +18,7 @@ class Music extends kha.Music {
 		
 	}
 
-	@:functionCode("delete stream; stream = nullptr;")
+	@:functionCode("Kore::Mixer::stop(stream); delete stream; stream = nullptr;")
 	override public function unload(): Void {
 		
 	}
