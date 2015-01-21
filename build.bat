@@ -1,9 +1,9 @@
 @echo off
-::Go up a folder, so Hake is called from the right directory
+::Go up a folder, so khamake is called from the right directory
 cd ..\
 
 echo ___________________________________
-echo Hake builder
+echo khamake builder
 echo type q to quit.
 echo ___________________________________
 ::Target input.
@@ -38,7 +38,7 @@ IF %target%==tizen		set TRUE=1
 ::If the input is valid call Hake
 ::If True is not defined ( no valid target ) jump back to the start
 IF defined TRUE (
-   start /b /wait %opt% Kha\Tools\hake\hake %target% %options%
+   start /b /wait %opt% node Kha\make %target% %options%
 ) else (
    echo Unsupported platform...
    goto platform_input
