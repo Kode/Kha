@@ -112,10 +112,10 @@ class Scheduler {
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
 		if (halted_count > 0) {
-			
+			delta = 0;
 		}
 		else if (delta > maxframetime) {
-			frameEnd += maxframetime;
+			delta = maxframetime;
 		}
 		else {
 			if (vsync) {
@@ -135,8 +135,6 @@ class Scheduler {
 				delta += difs[DIF_COUNT - 2];
 				delta /= DIF_COUNT;
 				difs[DIF_COUNT - 2] = realdif;
-				
-				frameEnd += delta;
 			}
 			else {
 				#if true
@@ -149,12 +147,13 @@ class Scheduler {
 					interpolated_delta /= DIF_COUNT;
 					difs[DIF_COUNT-2] = delta;
 					
-					frameEnd += interpolated_delta; // average the frame end estimation
-				#else
-					frameEnd += delta; // No frame end estimation
+					delta =interpolated_delta; // average the frame end estimation
 				#end
 			}
 		}
+		
+		delta = dScale * delta;
+		frameEnd += delta;
 		
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
@@ -313,7 +312,7 @@ class Scheduler {
 	
 	private static function get_deltaTime():Float 
 	{
-		return delta * dScale;
+		return delta;
 	}
 	
 	/** Delta time between frames*/
