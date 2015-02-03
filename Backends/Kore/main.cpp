@@ -3,7 +3,6 @@
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
-#include <Kore/Input/KeyEvent.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Sensor.h>
 #include <Kore/Input/Surface.h>
@@ -28,8 +27,8 @@ namespace {
 
 	bool shift = false;
 	
-	void keyDown(Kore::KeyEvent* event) {
-		switch (event->keycode()) {
+	void keyDown(Kore::KeyCode code, wchar_t character) {
+		switch (code) {
 		case Kore::Key_Up:
 			Starter_obj::pushUp();
 			break;
@@ -72,13 +71,13 @@ namespace {
 			Starter_obj::pushDelete();
 			break;
 		default:
-			Starter_obj::pushChar(shift ? event->tochar() : event->tochar() + 'a' - 'A');
+			Starter_obj::pushChar(character);
 			break;
 		}
 	}
 
-	void keyUp(Kore::KeyEvent* event) {
-		switch (event->keycode()) {
+	void keyUp(Kore::KeyCode code, wchar_t character) {
+		switch (code) {
 		case Kore::Key_Up:
 			Starter_obj::releaseUp();
 			break;
@@ -121,7 +120,7 @@ namespace {
 			Starter_obj::releaseDelete();
 			break;
 		default:
-			Starter_obj::releaseChar(shift ? event->tochar() : event->tochar() + 'a' - 'A');
+			Starter_obj::releaseChar(character);
 			break;
 		}
 	}
