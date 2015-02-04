@@ -2,7 +2,6 @@ package kha;
 
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import js.html.ArrayBuffer;
 import kha.Storage.WebStorage;
 
 typedef WebStorage = 
@@ -46,7 +45,7 @@ class LocalStorageFile extends StorageFile {
 	 * @param  {Array}  source Byte array to convert to yEnc.
 	 * @return {string}        Resulting yEnc string from byte array.
 	 */
-	private static function encode(source: BytesData) {
+	private static function encode(source: BytesData): String {
 		var reserved = [0, 10, 13, 61];
 		var output = '';
 		var converted, ele;
@@ -92,11 +91,11 @@ class LocalStorageFile extends StorageFile {
 				output.push(c - 42);
 			}
 		}
-		var array = new js.html.Uint8Array(new ArrayBuffer(), 0, output.length);
+		var bytes = Bytes.alloc(output.length);
 		for (i in 0...output.length) {
-			array[i] = output[i];
+			bytes.set(i, output[i]);
 		}
-		return Bytes.ofData(array);
+		return bytes;
 	}
 }
 
