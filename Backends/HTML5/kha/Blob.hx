@@ -170,7 +170,7 @@ class Blob implements Resource {
 		var bufferindex: Int = 0;
 		var c = readUtf8Char();
 		if (c < 0) return "";
-		while (c != '\n'.charCodeAt(0) && bufferindex < 2000) {
+		while (c != '\n'.code && bufferindex < 2000) {
 			buffer[bufferindex] = c;
 			++bufferindex;
 			c = readUtf8Char();

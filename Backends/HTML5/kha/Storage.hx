@@ -1,9 +1,12 @@
 package kha;
 
 import haxe.io.Bytes;
+import haxe.io.BytesBuffer;
 import haxe.io.BytesData;
 import js.html.ArrayBuffer;
 import kha.Storage.WebStorage;
+
+using StringTools;
 
 typedef WebStorage = 
 {
@@ -34,13 +37,6 @@ class LocalStorageFile extends StorageFile {
 		storage.setItem(name, encode(data.bytes.getData()));
 	}
 	
-	private static function indexOf(data: Array<Int>, value: Int): Int {
-		for (i in 0...data.length) {
-			if (data[i] == value) return i;
-		}
-		return -1;
-	}
-	
 	/**
 	 * Encodes byte array to yEnc string (from SASStore).
 	 * @param  {Array}  source Byte array to convert to yEnc.
@@ -53,11 +49,11 @@ class LocalStorageFile extends StorageFile {
 		for (i in 0...source.length) {
 			ele = source[i];
 			converted = (ele + 42) % 256;
-			if (indexOf(reserved, converted) < 0) {
+			if (!Lambda.has(reserved, converted)) {
 				output += String.fromCharCode(converted);
 			} else {
 				converted = (converted + 64) % 256;
-				output += "="+ String.fromCharCode(converted);
+				output += "=" + String.fromCharCode(converted);
 			}
 		}
 		return output;
@@ -69,11 +65,11 @@ class LocalStorageFile extends StorageFile {
 	 * @return {Array}         Resulting byte array from yEnc string.
 	 */
 	private static function decode(source: String): Bytes {
-		var output = [];
+		var output = new BytesBuffer();
 		var ck = false;
 		var c;
 		for (i in 0...source.length) {
-			c = source.charCodeAt(i);
+			c = source.fastCodeAt(i);
 			// ignore newlines
 			if (c == 13 || c == 10) { continue; }
 			// if we're an "=" and we haven't been flagged, set flag
@@ -86,17 +82,13 @@ class LocalStorageFile extends StorageFile {
 				c = c - 64;
 			}
 			if (c < 42 && c > 0) {
-				output.push(c + 214);
+				output.addByte(c + 214);
 			}
 			else {
-				output.push(c - 42);
+				output.addByte(c - 42);
 			}
 		}
-		var array = new js.html.Uint8Array(new ArrayBuffer(), 0, output.length);
-		for (i in 0...output.length) {
-			array[i] = output[i];
-		}
-		return Bytes.ofData(array);
+		return output.getBytes();
 	}
 }
 
