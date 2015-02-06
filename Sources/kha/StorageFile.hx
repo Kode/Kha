@@ -13,18 +13,12 @@ class StorageFile {
 	public function maxSize(): Int { return -1; }
 	
 	public function writeString(data: String): Void {
-		var bytes = Bytes.alloc(data.length);
-		for (i in 0...data.length) {
-			bytes.set(i, data.charCodeAt(i)); //TODO: utf8 encoding
-		}
+		var bytes = Bytes.ofString(data);
 		write(new Blob(bytes));
 	}
 	
 	public function appendString(data: String): Void {
-		var bytes = Bytes.alloc(data.length);
-		for (i in 0...data.length) {
-			bytes.set(i, data.charCodeAt(i)); //TODO: utf8 encoding
-		}
+		var bytes = Bytes.ofString(data);
 		append(new Blob(bytes));
 	}
 	
