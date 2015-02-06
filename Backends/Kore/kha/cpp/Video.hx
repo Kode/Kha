@@ -15,7 +15,7 @@ package kha.cpp;
 class Video extends kha.Video {
 	public function new(filename: String) {
 		super();
-		init(filename + ".theora");
+		init(filename + ".ogv");
 	}
 	
 	@:functionCode('
