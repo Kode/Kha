@@ -3,7 +3,6 @@ package kha;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import haxe.io.BytesData;
-import js.html.ArrayBuffer;
 import kha.Storage.WebStorage;
 
 using StringTools;
@@ -42,7 +41,7 @@ class LocalStorageFile extends StorageFile {
 	 * @param  {Array}  source Byte array to convert to yEnc.
 	 * @return {string}        Resulting yEnc string from byte array.
 	 */
-	private static function encode(source: BytesData) {
+	private static function encode(source: BytesData): String {
 		var reserved = [0, 10, 13, 61];
 		var output = '';
 		var converted, ele;
