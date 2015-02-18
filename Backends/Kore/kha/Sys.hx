@@ -46,4 +46,9 @@ class Sys {
 	public static function refreshRate(): Int {
 		return 60;
 	}
+
+	@:functionCode('return ::String(Kore::System::systemId());')
+	public static function systemId(): String {
+		return '';
+	}
 }
