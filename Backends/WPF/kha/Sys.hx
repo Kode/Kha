@@ -37,4 +37,8 @@ class Sys {
 	public static var pixelWidth: Int = 640;
 	
 	public static var pixelHeight: Int = 480;
+	
+	public static function systemId(): String {
+		return "WPF";
+	}
 }
