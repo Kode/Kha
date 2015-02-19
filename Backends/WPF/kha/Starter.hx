@@ -69,7 +69,9 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	protected override void OnClosed(System.EventArgs e) {
 		base.OnClosed(e);
 		
-		Game.the.onClose();
+		Game.the.onPause();
+		Game.the.onBackground();
+		Game.the.onShutdown();
 	}
 
 	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
@@ -252,10 +254,6 @@ class MainWindow extends system.windows.Window {
 	
 	public static void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
 		Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
-	}
-	
-	public static void OnClosed(System.EventArgs e) {
-		Game.the.onClose();
 	}
 ')
 class Starter {

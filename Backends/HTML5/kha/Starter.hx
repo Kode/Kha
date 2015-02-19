@@ -225,7 +225,7 @@ class Starter {
 		canvas.onkeypress = keyPress;
 		canvas.onkeyup = keyUp;
 		
-		Browser.window.addEventListener("onunload", unload);
+		Browser.window.addEventListener("unload", unload);
 
 		Configuration.setScreen(gameToStart);
 		
@@ -233,7 +233,9 @@ class Starter {
 	}
 	
 	static function unload(_): Void {
-		Game.the.onClose();
+		Game.the.onPause();
+		Game.the.onBackground();
+		Game.the.onShutdown();
 	}
 	
 	static inline function setMouseXY(event: MouseEvent): Void {
@@ -502,13 +504,5 @@ class Starter {
 			//trace ('"${pressedKeyToChar[event.keyCode]}" UP');
 			pressedKeyToChar[event.keyCode] = null;
 		}
-	}
-	
-	// TODO: Check if this function would have to do something else
-	// TODO: Implement on all platforms
-	public static function quit() {
-		// TODO: This will only work if the window has been opened by javascript in the first place.
-		var window: DOMWindow = Browser.window;
-		window.close();		
 	}
 }

@@ -146,8 +146,9 @@ class Loader extends kha.Loader {
 	}
 
 	override public function quit(): Void {
-		Game.the.onClose();
+		Game.the.onPause();
+		Game.the.onBackground();
+		Game.the.onShutdown();
 		flash.Lib.fscommand("quit");
-		//flash.system.FSCommand()._fscommand("quit","");
 	}
 }

@@ -102,6 +102,4 @@ class Game {
 	public function onPause(): Void { }
 	public function onBackground(): Void { }
 	public function onShutdown(): Void { }
-
-	public function onClose(): Void { } // check me out
 }

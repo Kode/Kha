@@ -90,4 +90,11 @@ class Loader extends kha.Loader {
 		Mouse.SystemCursor = "pointer";
 		Mouse.UpdateSystemCursor();
 	}
+	
+	override public function quit():Void 
+	{
+		// TODO: This will only work if the window has been opened by javascript in the first place.
+		var window: js.html.DOMWindow = Browser.window;
+		window.close();
+	}
 }
