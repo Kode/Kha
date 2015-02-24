@@ -15,7 +15,7 @@ package kha.cpp;
 class Video extends kha.Video {
 	public function new(filename: String) {
 		super();
-		init(filename + ".ogv");
+		init(filename + ".mp4");
 	}
 	
 	@:functionCode('
@@ -43,6 +43,15 @@ class Video extends kha.Video {
 	')
 	override public function pause(): Void {
 		
+	}
+
+	@:functionCode('
+	#ifdef KOREVIDEO
+	video->stop();
+	#endif
+	')
+	override public function stop(): Void {
+
 	}
 	
 	@:functionCode('
@@ -77,12 +86,22 @@ class Video extends kha.Video {
 	return video->width();
 	#endif
 	')
-	override public function width() : Int { return 100; }
+	override public function width(): Int { return 100; }
 
 	@:functionCode('
 	#ifdef KOREVIDEO
 	return video->height();
 	#endif
 	')
-	override public function height() : Int { return 100; }
+	override public function height(): Int { return 100; }
+
+	@:functionCode('
+	#ifdef KOREVIDEO
+	delete video;
+	video = nullptr;
+	#endif
+	')
+	override public function unload(): Void {
+
+	}
 }
