@@ -9,281 +9,150 @@ import kha.graphics4.Graphics2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 
-class Scaler {
-	private static function scaleFactor(source: Image, destination: Canvas, rotation: kha.ScreenRotation): Float {
-		if (rotation == ScreenRotation.RotationNone || rotation == ScreenRotation.Rotation180) {
-			if (source.width / source.height > destination.width / destination.height) {
-				return destination.width / source.width;
-			}
-			else {
-				return destination.height / source.height;
-			}
-		}
-		else if (rotation == ScreenRotation.Rotation90) {
-			if (source.width / source.height > destination.height / destination.width) {
-				return destination.height / source.width;
-			}
-			else {
-				return destination.width / source.height;
-			}
-		}
-		else { // ScreenRotation.Rotation270
-			if (source.width / source.height > destination.height / destination.width) {
-				return destination.height / source.width;
-			}
-			else {
-				return destination.width / source.height;
-			}
-		}
-	}
+class TargetRectangle {
+	public var x: Float;
+	public var y: Float;
+	public var width: Float;
+	public var height: Float;
+	public var scaleFactor: Float;
+	public var rotation: ScreenRotation;
 	
-	private static function targetRect(source: Image, destination: Canvas, rotation: ScreenRotation): Rectangle {
+	public function new(x: Float, y: Float, w: Float, h: Float, s: Float, r: ScreenRotation) {
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+		this.scaleFactor = s;
+		this.rotation = r;
+	}
+}
+
+class Scaler {
+	
+	public static function targetRect(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): TargetRectangle {
 		var scalex: Float;
 		var scaley: Float;
 		var scalew: Float;
 		var scaleh: Float;
-		if (rotation == ScreenRotation.RotationNone || rotation == ScreenRotation.Rotation180) {
-			if (source.width / source.height > destination.width / destination.height) {
-				var scale = destination.width / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+		var scale: Float;
+		switch (rotation) {
+		case ScreenRotation.RotationNone:
+			if (width / height > destination.width / destination.height) {
+				scale = destination.width / width;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = 0;
 				scaley = (destination.height - scaleh) * 0.5;
 			}
 			else {
-				var scale = destination.height / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+				scale = destination.height / height;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = (destination.width - scalew) * 0.5;
 				scaley = 0;
 			}
-		}
-		else if (rotation == ScreenRotation.Rotation90) {
-			if (source.width / source.height > destination.height / destination.width) {
-				var scale = destination.height / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+		case ScreenRotation.Rotation90:
+			if (width / height > destination.height / destination.width) {
+				scale = destination.height / width;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = (destination.width - scaleh) * 0.5 + scaleh;
 				scaley = 0;
 			}
 			else {
-				var scale = destination.width / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+				scale = destination.width / height;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = 0 + scaleh;
 				scaley = (destination.height - scalew) * 0.5;
 			}
-		}
-		else { // ScreenRotation.Rotation270
-			if (source.width / source.height > destination.height / destination.width) {
-				var scale = destination.height / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+		case ScreenRotation.Rotation180:
+			if (width / height > destination.width / destination.height) {
+				scale = destination.width / width;
+				scalew = width * scale;
+				scaleh = height * scale;
+				scalex = 0 + scalew;
+				scaley = (destination.height - scaleh) * 0.5 + scaleh;
+			}
+			else {
+				scale = destination.height / height;
+				scalew = width * scale;
+				scaleh = height * scale;
+				scalex = (destination.width - scalew) * 0.5 + scalew;
+				scaley = 0 + scaleh;
+			}
+		case ScreenRotation.Rotation270:
+			if (width / height > destination.height / destination.width) {
+				scale = destination.height / width;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = (destination.width - scaleh) * 0.5;
 				scaley = 0 + scalew;
 			}
 			else {
-				var scale = destination.width / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
+				scale = destination.width / height;
+				scalew = width * scale;
+				scaleh = height * scale;
 				scalex = 0;
 				scaley = (destination.height - scalew) * 0.5 + scalew;
 			}
 		}
-		return new Rectangle(scalex, scaley, scalew, scaleh);
+		return new TargetRectangle(scalex, scaley, scalew, scaleh, scale, rotation);
 	}
 	
-	public static function transformX(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
-		switch (rotation) {
+	public static function transformX(x: Int, y: Int, targetRect: TargetRectangle): Int {
+		switch (targetRect.rotation) {
 		case ScreenRotation.RotationNone:
-			return Std.int((x - targetRect(source, destination, rotation).x) / scaleFactor(source, destination, rotation));
+			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation90:
-			return Std.int((y - targetRect(source, destination, rotation).y) / scaleFactor(source, destination, rotation));
+			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation180:
-			return Std.int((Sys.pixelWidth - x - targetRect(source, destination, rotation).x) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation270:
-			return Std.int((Sys.pixelHeight - y - (Sys.pixelHeight - targetRect(source, destination, rotation).y)) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
 		}
 	}
 	
-	public static function transformY(x: Int, y: Int, source: Image, destination: Canvas, rotation: kha.ScreenRotation): Int {
-		switch (Sys.screenRotation) {
+	public static function transformY(x: Int, y: Int, targetRect: TargetRectangle): Int {
+		switch (targetRect.rotation) {
 		case ScreenRotation.RotationNone:
-			return Std.int((y - targetRect(source, destination, rotation).y) / scaleFactor(source, destination, rotation));
+			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation90:
-			return Std.int((targetRect(source, destination, rotation).x - x) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
 			//return 100;
 		case ScreenRotation.Rotation180:
-			return Std.int((targetRect(source, destination, rotation).y + targetRect(source, destination, rotation).height - y) / scaleFactor(source, destination, rotation));
+			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation270:
-			return Std.int((x - targetRect(source, destination, rotation).x) / scaleFactor(source, destination, rotation));
+			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
 		}
 	}
 	
 	public static function scale(source: Image, destination: Canvas, rotation: ScreenRotation): Void {
-		var scalex: Float;
-		var scaley: Float;
-		var scalew: Float;
-		var scaleh: Float;
-		if (rotation == ScreenRotation.RotationNone || rotation == ScreenRotation.Rotation180) {
-			if (source.width / source.height > destination.width / destination.height) {
-				var scale = destination.width / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = 0;
-				scaley = (destination.height - scaleh) * 0.5;
-			}
-			else {
-				var scale = destination.height / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = (destination.width - scalew) * 0.5;
-				scaley = 0;
-			}
-		}
-		else if (rotation == ScreenRotation.Rotation90) {
-			if (source.width / source.height > destination.height / destination.width) {
-				var scale = destination.height / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = (destination.width - scaleh) * 0.5 + scaleh;
-				scaley = 0;
-			}
-			else {
-				var scale = destination.width / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = 0 + scaleh;
-				scaley = (destination.height - scalew) * 0.5;
-			}
-		}
-		else { // ScreenRotation.Rotation270
-			if (source.width / source.height > destination.height / destination.width) {
-				var scale = destination.height / source.width;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = (destination.width - scaleh) * 0.5;
-				scaley = 0 + scalew;
-			}
-			else {
-				var scale = destination.width / source.height;
-				scalew = source.width * scale;
-				scaleh = source.height * scale;
-				scalex = 0;
-				scaley = (destination.height - scalew) * 0.5 + scalew;
-			}
-		}
+		var g = destination.g2;
+		g.transformation = getScaledTransformation(source.width, source.height, destination, rotation);
+		g.color = Color.White;
+		g.opacity = 1;
+		g.drawImage(source, 0, 0);
+	}
+	
+	public static function getScaledTransformation(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation) : Matrix3 {
+		var rect = targetRect(width, height, destination, rotation);
 		
-		destination.g2.color = Color.White;
-		destination.g2.opacity = 1;
+		var sf = rect.scaleFactor;
+		var transformation = new Matrix3([sf,  0, rect.x,
+										   0, sf, rect.y,
+										   0,  0, 1      ]);
 		
 		switch (rotation) {
 		case RotationNone:
-		#if !cs
-		#if !java
-			if (Std.is(destination.g2, Graphics2)) {
-				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
-				if (destination.g4.renderTargetsInvertedY()) {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					destination.g2.drawScaledSubImage(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalew, scaleh);
-				}
-				else {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-				}
-				imagePainter.end();
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
-			}
-			else {
-		#end
-		#end
-				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-		#if !cs
-		#if !java
-			}
-		#end
-		#end
 		case Rotation90:
-			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI / 2) * Matrix3.translation( -scalex, -scaley);
-		#if !cs
-		#if !java
-			if (Std.is(destination.g2, Graphics2)) {
-				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
-				if (destination.g4.renderTargetsInvertedY()) {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledSubImage(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalew, scaleh);
-				}
-				else {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-				}
-				imagePainter.end();
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
-			}
-			else {
-		#end
-		#end
-				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-		#if !cs
-		#if !java
-			}
-		#end
-		#end
-			destination.g2.transformation = Matrix3.identity();
+			transformation = transformation * Matrix3.rotation(Math.PI / 2);
 		case Rotation180:
-			destination.g2.transformation = Matrix3.translation(scalex + scalew / 2, scaley + scaleh / 2) * Matrix3.rotation(Math.PI) * Matrix3.translation( -scalex - scalew / 2, -scaley - scaleh / 2);
-		#if !cs
-		#if !java
-			if (Std.is(destination.g2, Graphics2)) {
-				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
-				if (destination.g4.renderTargetsInvertedY()) {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, 0, Sys.pixelHeight, 0.1, 1000));
-					destination.g2.drawScaledSubImage(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalew, scaleh);
-				}
-				else {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-				}
-				imagePainter.end();
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
-			}
-			else {
-		#end
-		#end
-				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-		#if !cs
-		#if !java
-			}
-		#end
-		#end
-			destination.g2.transformation = Matrix3.identity();
+			transformation = transformation * Matrix3.rotation(Math.PI);
 		case Rotation270:
-			destination.g2.transformation = Matrix3.translation(scalex, scaley) * Matrix3.rotation(Math.PI * 3 / 2) * Matrix3.translation( -scalex, -scaley);
-		#if !cs
-		#if !java
-			if (Std.is(destination.g2, Graphics2)) {
-				var imagePainter = cast(destination.g2, Graphics2).imagePainter;
-				if (destination.g4.renderTargetsInvertedY()) {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(Sys.pixelWidth, 0, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledSubImage(source, 0, source.realHeight - source.height, source.width, source.height, scalex, scaley, scalew, scaleh);
-				}
-				else {
-					imagePainter.setProjection(Matrix4.orthogonalProjection(0, Sys.pixelWidth, Sys.pixelHeight, 0, 0.1, 1000));
-					destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-				}
-				imagePainter.end();
-				imagePainter.setProjection(Matrix4.orthogonalProjection(0, source.realWidth, source.realHeight, 0, 0.1, 1000));
-			}
-			else {
-		#end
-		#end
-				destination.g2.drawScaledImage(source, scalex, scaley, scalew, scaleh);
-		#if !cs
-		#if !java
-			}
-		#end
-		#end
-			destination.g2.transformation = Matrix3.identity();
+			transformation = transformation * Matrix3.rotation(Math.PI * 3 / 2);
 		}
+		
+		return transformation;
 	}
 }

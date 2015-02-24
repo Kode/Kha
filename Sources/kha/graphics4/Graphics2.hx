@@ -755,8 +755,21 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	private function setProjection(): Void {
-		if (Std.is(canvas, Framebuffer)) projectionMatrix = Matrix4.orthogonalProjection(0, canvas.width, canvas.height, 0, 0.1, 1000);
-		else projectionMatrix = Matrix4.orthogonalProjection(0, Image.nonPow2Supported ? canvas.width : upperPowerOfTwo(canvas.width), Image.nonPow2Supported ? canvas.height : upperPowerOfTwo(canvas.height), 0, 0.1, 1000);
+		var width = canvas.width;
+		var height = canvas.height;
+		if (Std.is(canvas, Framebuffer)) {
+			projectionMatrix = Matrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
+		} else {
+			if (!Image.nonPow2Supported) {
+				width = upperPowerOfTwo(width);
+				height = upperPowerOfTwo(height);
+			}
+			if (g.renderTargetsInvertedY()) {
+				projectionMatrix = Matrix4.orthogonalProjection(0, width, 0, height, 0.1, 1000);
+			} else {
+				projectionMatrix = Matrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
+			}
+		}
 		imagePainter.setProjection(projectionMatrix);
 		coloredPainter.setProjection(projectionMatrix);
 		textPainter.setProjection(projectionMatrix);
