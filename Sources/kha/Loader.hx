@@ -158,12 +158,14 @@ class Loader {
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
 
-		enqueued = new Array<Dynamic>();
+		if (!autoCleanupAssets) enqueued = new Array<Dynamic>();
 	}
 	
 	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
 		loadFinished = call;
 		loadStarted(enqueued.length);
+		
+		if (autoCleanup) cleanup();
 		
 		if (enqueued.length > 0) {
 			for (i in 0...enqueued.length) {
@@ -264,8 +266,6 @@ class Loader {
 		else {
 			checkComplete();
 		}
-		
-		if (autoCleanup) cleanup();
 	}
 	
 	public function loadProject(call: Void -> Void) {
@@ -359,6 +359,7 @@ class Loader {
 		#if debug_loader
 			trace ( "loadFinished!" );
 		#end
+			if (autoCleanupAssets) enqueued = new Array<Dynamic>();
 			if (loadFinished != null) loadFinished();
 		}
 	#if debug_loader
