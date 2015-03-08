@@ -119,7 +119,7 @@ class Starter {
 		
 		
 		try {
-			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false, preserveDrawingBuffer: true });
+			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (Sys.gl != null) {
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				Sys.gl.getExtension("OES_texture_float");
