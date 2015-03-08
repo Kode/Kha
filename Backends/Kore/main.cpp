@@ -10,7 +10,7 @@
 #include <Kore/Audio/Mixer.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
-#include "Json.h"
+#include "jsmn.h"
 #include <stdio.h>
 #include <kha/Starter.h>
 #include <kha/Loader.h>
@@ -222,10 +222,11 @@ namespace {
 int kore(int argc, char** argv) {
 	Kore::log(Kore::Info, "Starting Kore");
 
-	int width;
-	int height;
+	int width = 256;
+	int height = 256;
 	bool fullscreen = false;
-	std::string name;
+	char name[256];
+	name[0] = 0;
 	
 	{
 		Kore::log(Kore::Info, "Reading project.kha");
@@ -235,16 +236,67 @@ int kore(int argc, char** argv) {
 		char* data = (char*)file.readAll();
 		for (int i = 0; i < filesize; ++i) string[i] = data[i];
 		string[filesize] = 0;
-		Json::Data json(string);
-		Json::Value& game = json["game"];
-		name = game["name"].string();
-		width = game["width"].number();
-		height = game["height"].number();
-		if (game.has("fullscreen")) fullscreen = game["fullscreen"].boolean();
+
+		jsmn_parser parser;
+		jsmn_init(&parser);
+		int size = jsmn_parse(&parser, string, filesize, nullptr, 0);
+		jsmntok_t* tokens = new jsmntok_t[size];
+		jsmn_init(&parser);
+		size = jsmn_parse(&parser, string, filesize, tokens, size);
+
+		for (int i = 0; i < size; ++i) {
+			if (tokens[i].type == JSMN_STRING && strncmp("game", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+				++i;
+				int gamesize = tokens[i].size * 2;
+				++i;
+				int gamestart = i;
+				for (; i < gamestart + gamesize; ++i) {
+					if (tokens[i].type == JSMN_STRING && strncmp("name", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+						++i;
+						int ni = 0;
+						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
+							name[ni] = string[i2];
+							++ni;
+						}
+						name[ni] = 0;
+					}
+					else if (tokens[i].type == JSMN_STRING && strncmp("width", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+						++i;
+						char number[25];
+						int ni = 0;
+						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
+							number[ni] = string[i2];
+							++ni;
+						}
+						number[ni] = 0;
+						width = atoi(number);
+					}
+					else if (tokens[i].type == JSMN_STRING && strncmp("height", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+						++i;
+						char number[25];
+						int ni = 0;
+						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
+							number[ni] = string[i2];
+							++ni;
+						}
+						number[ni] = 0;
+						height = atoi(number);
+					}
+					else if (tokens[i].type == JSMN_STRING && strncmp("fullscreen", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+						++i;
+						fullscreen = strncmp("true", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0;
+					}
+				}
+
+				break;
+			}
+		}
+		
+		delete[] tokens;
 		delete string;
 	}
 
-	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name.c_str());
+	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name);
 	Kore::Mixer::init();
 	Kore::Audio::init();
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
