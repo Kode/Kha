@@ -12,6 +12,7 @@
 #include <Kore/Log.h>
 #include "jsmn.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <kha/Starter.h>
 #include <kha/Loader.h>
 #include <kha/input/Sensor.h>
