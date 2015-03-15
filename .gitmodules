@@ -1,6 +1,6 @@
 [submodule "Backends/kxcpp"]
 	path = Backends/kxcpp
-	url = http://github.com/KTXSoftware//kxcpp
+	url = http://github.com/KTXSoftware/kxcpp
 	branch = master
 [submodule "Tools/haxe"]
 	path = Tools/haxe
