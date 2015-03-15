@@ -1,0 +1,20 @@
+[submodule "Backends/kxcpp"]
+	path = Backends/kxcpp
+	url = http://github.com/KTXSoftware//kxcpp
+	branch = master
+[submodule "Tools/haxe"]
+	path = Tools/haxe
+	url = http://github.com/KTXSoftware/haxe
+	branch = master
+[submodule "Kore"]
+	path = Kore
+	url = ../Kore
+	branch = master
+[submodule "KoreVideo"]
+	path = KoreVideo
+	url = http://github.com/KTXSoftware/KoreVideo
+	branch = master
+[submodule "Tools/khamake"]
+	path = Tools/khamake
+	url = http://github.com/KTXSoftware/khamake
+	branch = master
