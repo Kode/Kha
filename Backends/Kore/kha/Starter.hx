@@ -9,6 +9,7 @@ import kha.Key;
 import kha.Loader;
 import kha.input.Sensor;
 import kha.input.SensorType;
+import kha.vr.VrInterface;
 
 class Starter {
 	private var gameToStart: Game;
@@ -17,6 +18,8 @@ class Starter {
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
+	
+	
 	
 	public function new() {
 		haxe.Timer.stamp();
@@ -28,6 +31,7 @@ class Starter {
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
 		Scheduler.init();
+		kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
 	}
 	
 	public function start(game: Game) {
@@ -44,13 +48,15 @@ class Starter {
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		gameToStart.loadFinished();
-		var g4 = new kha.cpp.graphics4.Graphics();
+		/* var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
-		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);
+		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);*/
+		
+		
 	}
 
 	public static function frame() {
-		if (framebuffer == null) return;
+		//if (framebuffer == null) return;
 		Scheduler.executeFrame();
 		Game.the.render(framebuffer);
 	}

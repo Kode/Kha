@@ -19,6 +19,8 @@
 #include <kha/Sys.h>
 #include <kha/ScreenRotation.h>
 
+#include <Kore/Vr/VrInterface.h>
+
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
 
@@ -171,10 +173,11 @@ namespace {
 	void update() {
 		Kore::Audio::update();
 		if (visible) {
-			Kore::Graphics::begin();
+			//Kore::Graphics::begin();
 			Starter_obj::frame();
-			Kore::Graphics::end();
-			Kore::Graphics::swapBuffers();
+			//Kore::Graphics::end();
+			//Kore::Graphics::swapBuffers();
+			// TODO: FM: We need to render differently for VR (nor swapping)
 		}
 	}
 	
@@ -330,6 +333,10 @@ int kore(int argc, char** argv) {
 	Kore::Surface::the()->Move = touchMove;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
+
+	// Enter VR mode
+	Kore::VrInterface::Initialize();
+
 
 	Kore::log(Kore::Info, "Starting application");
 #ifdef SYS_IOS

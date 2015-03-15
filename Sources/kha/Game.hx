@@ -51,9 +51,9 @@ class Game {
 	}
 	
 	public function render(frame: Framebuffer): Void {
-		startRender(frame);
+		//startRender(frame);
 		scene.render(frame.g2);
-		endRender(frame);
+		// endRender(frame);
 	}
 	
 	public function getHighscores(): HighscoreList {
