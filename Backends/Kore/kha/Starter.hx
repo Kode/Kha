@@ -11,6 +11,14 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.vr.VrInterface;
 
+#if ANDROID 
+	import kha.cpp.vr.VrInterface;
+#else 
+	import kha.vr.VrInterfaceEmulated;
+#end
+
+
+
 class Starter {
 	private var gameToStart: Game;
 	private static var framebuffer: Framebuffer;
@@ -31,7 +39,6 @@ class Starter {
 		Sys.init();
 		Loader.init(new kha.cpp.Loader());
 		Scheduler.init();
-		kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
 	}
 	
 	public function start(game: Game) {
@@ -47,16 +54,30 @@ class Starter {
 		Configuration.setScreen(gameToStart);
 		Configuration.screen().setInstance();
 		Scheduler.start();
+		
+		#if ANDROID
+            kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
+        #else
+			kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
+		#end
+		
 		gameToStart.loadFinished();
-		/* var g4 = new kha.cpp.graphics4.Graphics();
+		
+		#if !ANDROID
+		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
-		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);*/
+		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);
+		#end
 		
 		
 	}
 
 	public static function frame() {
-		//if (framebuffer == null) return;
+		#if !ANDROID
+		if (framebuffer == null) return;
+		var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
+		vrInterface.framebuffer = framebuffer;
+		#end
 		Scheduler.executeFrame();
 		Game.the.render(framebuffer);
 	}

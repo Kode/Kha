@@ -43,12 +43,12 @@ class ImageShaderPainter {
 	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
 	
 	public function new(g4: Graphics) {
-		this.g = g4;
+		/*this.g = g4;
 		bufferIndex = 0;
 		initShaders();
 		initBuffers();
 		projectionLocation = shaderProgram.getConstantLocation("projectionMatrix");
-		textureLocation = shaderProgram.getTextureUnit("tex");
+		textureLocation = shaderProgram.getTextureUnit("tex");*/
 	}
 	
 	private function get_program(): Program {

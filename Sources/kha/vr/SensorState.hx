@@ -16,4 +16,8 @@ class SensorState {
     // Sensor status described by ovrStatusBits.
     public var Status: Int;
 	
+	public function new() {
+		
+	}
+	
 }

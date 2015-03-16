@@ -1,5 +1,7 @@
 package kha.graphics4;
 
+
+
 import kha.Blob;
 import kha.Color;
 import kha.Image;
@@ -54,4 +56,6 @@ interface Graphics {
 	function setMatrix(location: ConstantLocation, value: Matrix4): Void;
 	
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
+	
+	function flush(): Void;
 }

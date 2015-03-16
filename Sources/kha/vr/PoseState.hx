@@ -12,4 +12,8 @@ class PoseState {
     public var AngularAcceleration: Vector3;
     public var LinearAcceleration: Vector3;
     public var TimeInSeconds: Float;			// Absolute time of this state sample.
+	
+	public function new() {
+		
+	}
 }

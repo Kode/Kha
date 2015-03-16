@@ -16,5 +16,5 @@
 	branch = master
 [submodule "Tools/khamake"]
 	path = Tools/khamake
-	url = http://github.com/KTXSoftware/khamake
+	url = http://github.com/SpookyFM/khamake
 	branch = master

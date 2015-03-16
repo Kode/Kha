@@ -159,10 +159,11 @@ class Graphics implements kha.graphics4.Graphics {
 	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 	//	return new IndexBuffer(indexCount);
 	//}
-	
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		indexBuffer.set();
 	}
+	
+	
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 	//	return Image.create(width, height, format, canRead, false, false);
@@ -445,6 +446,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
+		
+	}
+	
+	@:functionCode('Kore::Graphics::flush();')
+	public function flush(): Void {
 		
 	}
 }

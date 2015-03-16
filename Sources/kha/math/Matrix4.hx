@@ -93,13 +93,30 @@ class Matrix4 {
 	}
 	
 	public static function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
-		var f = Math.cos(2 / fovY);
+		/*var f = Math.cos(2 / fovY);
 		return new Matrix4([
 			-f / aspect, 0, 0,                       0,
 			0,           f, 0,                       0,
 			0,           0, (zf + zn) / (zn - zf),   -1,
 			0,           0, 2 * zf * zn / (zn - zf), 0
-		]);
+		]); */
+		
+		
+		var result: Matrix4 = Matrix4.empty();
+		
+		
+        var tanHalfFov: Float = Math.tan(fovY * 0.5);
+
+        result.set(0, 0, 1 / (aspect * tanHalfFov));
+		result.set(1, 1, 1 / tanHalfFov);
+		result.set(2, 2, zf / (zn - zf));
+		result.set(3, 2, -1);
+		result.set(2, 3, (zf * zn) / (zn - zf));
+		result.set(3, 3, 0);
+        
+        		
+		return result;
+		
 	}
 	
 	public static function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
@@ -109,14 +126,57 @@ class Matrix4 {
 		xaxis.normalize();
 		var yaxis = xaxis.cross(zaxis);
 
+		/* var view = new Matrix4([
+			xaxis.x, yaxis.x, -zaxis.x, 0,
+			xaxis.y, yaxis.y, -zaxis.y, 0,
+			xaxis.z, yaxis.z, -zaxis.z, 0,
+			-xaxis.dot(eye),       -yaxis.dot(eye),       -zaxis.dot(eye),        1
+		]); */
+		
+		/*
 		var view = new Matrix4([
 			xaxis.x, yaxis.y, -zaxis.z, 0,
-			xaxis.x, yaxis.y, -zaxis.z, 0,
+			xaxis.x, yaxis.y, -zaxis.z, 0, 
 			xaxis.x, yaxis.y, -zaxis.z, 0,
 			0,       0,       0,        1
-		]);
+		]); 
 
-		return view.multmat(translation(-eye.x, -eye.y, -eye.z));
+		
+		
+		return view.multmat(translation(-eye.x, -eye.y, -eye.z)); */
+		
+		
+		var result: Matrix4 = Matrix4.identity();
+	
+		var f: Vector3 = at.sub(eye);
+		f.normalize();
+		
+		var u: Vector3 = up;
+		u.normalize();
+		
+		var s: Vector3 = f.cross(u);
+		s.normalize();
+		
+		u = s.cross(f);
+		
+		
+		
+
+		
+		result.set(0, 0, s.x);
+		result.set(1, 0, s.y);
+		result.set(2, 0, s.z);
+		result.set(0, 1, u.x);
+		result.set(1, 1, u.y);
+		result.set(2, 1, u.z);
+		result.set(0, 2, -f.x);
+		result.set(1, 2, -f.y);
+		result.set(2, 2, -f.z);
+		result.set(3, 0, -s.dot(eye));
+		result.set(3, 1, -u.dot(eye));
+		result.set(3, 2,  f.dot(eye));
+		return result;
+		
 	}
 	
 	public function add(value: Matrix4): Matrix4 {

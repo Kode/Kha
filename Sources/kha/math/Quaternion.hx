@@ -219,8 +219,8 @@ class Quaternion
 	
 	
 	public static inline var AXIS_X: Int = 0;
-	public static inline var AXIS_Y: Int = 0;
-	public static inline var AXIS_Z: Int = 0;
+	public static inline var AXIS_Y: Int = 1;
+	public static inline var AXIS_Z: Int = 2;
 	
 	
 	public function getEulerAngles(A1: Int, A2: Int, A3: Int, S: Int = 1, D:Int = 1): Vector3 {

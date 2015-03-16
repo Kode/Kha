@@ -51,9 +51,13 @@ class Game {
 	}
 	
 	public function render(frame: Framebuffer): Void {
-		//startRender(frame);
+		#if !ANDROID
+		startRender(frame);
+		#end
 		scene.render(frame.g2);
-		// endRender(frame);
+		#if !ANDROID
+		endRender(frame);
+		#end
 	}
 	
 	public function getHighscores(): HighscoreList {
