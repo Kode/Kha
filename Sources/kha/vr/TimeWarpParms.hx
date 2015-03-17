@@ -19,6 +19,9 @@ class TimeWarpParms {
 	
 		public var LeftImage: TimeWarpImage;
 		public var RightImage: TimeWarpImage;
+		
+		public var LeftOverlay: TimeWarpImage;
+		public var RightOverlay: TimeWarpImage;
 
 	//static const int	MAX_WARP_EYES = 2;
 	// static const int	MAX_WARP_IMAGES = 2;	// 0 = world, 1 = overlay screen
