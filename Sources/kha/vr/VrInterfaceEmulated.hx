@@ -43,7 +43,9 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	private var pitchDelta: Float = 0.0;
 	private var yawDelta: Float = 0.0;
 	
-	private static inline var speed: Float = 2.0;
+	private static inline var keyboardSpeed: Float = 2.0;
+	
+	private static inline var mouseSpeed: Float = 0.1;
 	
 	private static inline var minPitchDegrees: Float = -80;
 	private static inline var maxPitchDegrees: Float = 80;
@@ -84,16 +86,16 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	private function keyDownEvent(key: Key, char: String): Void {
 		switch(key) {
 			case Key.LEFT:
-				yawDelta = speed;
+				yawDelta = keyboardSpeed;
 				
 			case Key.RIGHT:
-				yawDelta = -speed;
+				yawDelta = -keyboardSpeed;
 				
 			case Key.UP:
-				pitchDelta = speed;
+				pitchDelta = keyboardSpeed;
 				
 			case Key.DOWN:
-				pitchDelta = -speed;
+				pitchDelta = -keyboardSpeed;
 				
 			default:
 				
@@ -121,6 +123,45 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 				
 		}
 	}
+	
+	private var oldMouseX: Int = 0;
+	private var oldMouseY: Int = 0;
+	
+	private function mouseMoveEvent(x: Int, y: Int) {
+		if (!mouseButtonDown) return;
+		
+		var mouseDeltaX: Int = x - oldMouseX;
+		var mouseDeltaY: Int = y - oldMouseY;
+		oldMouseX = x;
+		oldMouseY = y;
+		
+		
+		yawDegrees += mouseDeltaX * mouseSpeed;
+		pitchDegrees += mouseDeltaY * mouseSpeed;
+		
+		if (pitchDegrees < minPitchDegrees)
+			pitchDegrees = minPitchDegrees;
+		if (pitchDegrees > maxPitchDegrees)
+			pitchDegrees = maxPitchDegrees;
+	}
+	
+	var mouseButtonDown: Bool = false;
+	
+	private function mouseButtonDownEvent(button: Int, x: Int, y: Int) {
+		if (button == 0) {
+			mouseButtonDown = true;
+			oldMouseX = x;
+			oldMouseY = y;
+		}
+	}
+	
+	private function mouseButtonUpEvent(button: Int, x: Int, y: Int) {
+		if (button == 0) {
+			mouseButtonDown = false;
+		}
+	}
+	
+	
 	
 	// Returns the current sensor state
 	// Returns the predicted sensor state at the specified time
@@ -219,6 +260,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 		Gamepad.get(0).notify(axisEvent, buttonEvent);
 		Keyboard.get(0).notify(keyDownEvent, keyUpEvent);
+		Mouse.get(0).notify(mouseButtonDownEvent, mouseButtonUpEvent, mouseMoveEvent, null);
 		
 		
 		var structure: VertexStructure = new VertexStructure();
