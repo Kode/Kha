@@ -1,5 +1,7 @@
 package kha.vr;
 
+
+import kha.Button;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
 import kha.Framebuffer;
@@ -12,6 +14,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
+import kha.input.Keyboard;
 import kha.math.Matrix4;
 import kha.math.Quaternion;
 import kha.math.Vector4;
@@ -22,6 +25,9 @@ import kha.vr.PoseState;
 import kha.vr.SensorState;
 import kha.vr.TimeWarpParms;
 
+import kha.input.Gamepad;
+import kha.input.Mouse;
+
 
 class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
@@ -29,8 +35,92 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
 	private var orientation: Quaternion;
 	
-	private var f: Float = 0.0;
+	// private var f: Float = 0.0;
 	
+	private var pitchDegrees: Float = 0.0;
+	private var yawDegrees: Float = 0.0;
+	
+	private var pitchDelta: Float = 0.0;
+	private var yawDelta: Float = 0.0;
+	
+	private static inline var speed: Float = 2.0;
+	
+	private static inline var minPitchDegrees: Float = -80;
+	private static inline var maxPitchDegrees: Float = 80;
+	
+	private function degreesToRadians(degrees: Float): Float {
+		return degrees * Math.PI / 180.0;
+	}
+	
+	
+	private function updateOrientation(): Void {
+		// Update from keyboard input
+		yawDegrees += yawDelta;
+		pitchDegrees += pitchDelta;
+		
+		if (pitchDegrees < minPitchDegrees)
+			pitchDegrees = minPitchDegrees;
+		if (pitchDegrees > maxPitchDegrees)
+			pitchDegrees = maxPitchDegrees;
+		
+		
+		// Compute from pitch and yaw
+		
+		var pitchQuat = Quaternion.fromAxisAngle(new Vector3(1, 0, 0), degreesToRadians(pitchDegrees));
+		
+		var yawQuat = Quaternion.fromAxisAngle(new Vector3(0, 1, 0), degreesToRadians(yawDegrees));
+		orientation = yawQuat.mult(pitchQuat);
+		
+	}
+	
+	private function buttonEvent(button: Int, value: Float): Void {
+		
+	}
+	
+	private function axisEvent(axis: Int, value: Float): Void {
+		
+	}
+	
+	private function keyDownEvent(key: Key, char: String): Void {
+		switch(key) {
+			case Key.LEFT:
+				yawDelta = speed;
+				
+			case Key.RIGHT:
+				yawDelta = -speed;
+				
+			case Key.UP:
+				pitchDelta = speed;
+				
+			case Key.DOWN:
+				pitchDelta = -speed;
+				
+			default:
+				
+				
+		}
+		
+	}
+	
+	private function keyUpEvent(key: Key, char: String): Void {
+		switch(key) {
+			case Key.LEFT:
+				yawDelta = 0.0;
+				
+			case Key.RIGHT:
+				yawDelta = 0.0;
+				
+			case Key.UP:
+				pitchDelta = 0.0;
+				
+			case Key.DOWN:
+				pitchDelta = 0.0;
+				
+			default:
+				
+				
+		}
+	}
 	
 	// Returns the current sensor state
 	// Returns the predicted sensor state at the specified time
@@ -41,9 +131,8 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
 	// Returns the predicted sensor state at the specified time
 	public override function GetPredictedSensorState(time: Float): SensorState {
-		orientation = Quaternion.fromAxisAngle(new Vector3(0, 0, 1), f);
-		
-		f += 0.1;
+		// TODO: Would be better if the interface was called independently each frame - we don't know how often this function is called.
+		updateOrientation();
 		
 		var result: SensorState = new SensorState();
 		// TODO: Check values
@@ -128,9 +217,14 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	public function new() {
 		super();
 		
+		Gamepad.get(0).notify(axisEvent, buttonEvent);
+		Keyboard.get(0).notify(keyDownEvent, keyUpEvent);
+		
+		
 		var structure: VertexStructure = new VertexStructure();
 		
 		orientation = new Quaternion();
+		updateOrientation();
 		
 		
 		
