@@ -227,47 +227,54 @@ class Quaternion
 		
 		var result: Vector3 = new Vector3();
         
-		var singularityRadius: Float = 0.000000000001;
-
-        
-
-		var ww: Float = w * w;
-		var Q11: Float = get(A1) * get(A1);
-		var Q22: Float = get(A2) * get(A2);
-		var Q33: Float = get(A3) * get(A3);
 		
+		var Q: Array<Float> = new Array<Float>();
+		Q[0] = x;
+		Q[1] = y;
+		Q[2] = z;
+		
+        var ww: Float = w * w;
+        
+		var Q11: Float = Q[A1]*Q[A1];
+        var Q22: Float = Q[A2]*Q[A2];
+        var Q33: Float = Q[A3]*Q[A3];
+
         var psign: Float = -1;
 		
-        
+		var SingularityRadius: Float = 0.0000001;
+		var PiOver2: Float = Math.PI / 2.0;
+		
         // Determine whether even permutation
         if (((A1 + 1) % 3 == A2) && ((A2 + 1) % 3 == A3))
             psign = 1;
         
-        var s2: Float = psign * 2 * (psign * w * get(A2)) + get(A1) * get(A3);
+        var s2: Float = psign * 2.0 * (psign*w*Q[A2] + Q[A1]*Q[A3]);
 
-        if (s2 < -1 + singularityRadius)
+		
+        if (s2 < -1 + SingularityRadius)
         { // South pole singularity
             result.x = 0;
-			result.y = -S * D * Math.PI / 2;
-			result.z = S*D*Math.atan2(2*(psign*get(A1)*get(A2)+ w*get(A3)),
+            result.y = -S*D*PiOver2;
+            result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]),
 		                   ww + Q22 - Q11 - Q33 );
         }
-        else if (s2 > 1 - singularityRadius)
+        else if (s2 > 1 - SingularityRadius)
         {  // North pole singularity
             result.x = 0;
-			result.y = S * D * Math.PI / 2;
-            result.z = S*D*Math.atan2(2*(psign*get(A1)*get(A2) + w*get(A3)),
+            result.y = S*D*PiOver2;
+            result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]),
 		                   ww + Q22 - Q11 - Q33);
         }
         else
         {
-            result.x = -S*D*Math.atan2(-2*(w*get(A1) - psign*get(A2)*get(A3)),
+            result.x = -S*D*Math.atan2(-2*(w*Q[A1] - psign*Q[A2]*Q[A3]),
 		                    ww + Q33 - Q11 - Q22);
             result.y = S*D*Math.asin(s2);
-            result.z = S*D*Math.atan2(2*(w*get(A3) - psign*get(A2)*get(A3)),
+            result.z = S*D*Math.atan2(2*(w*Q[A3] - psign*Q[A1]*Q[A2]),
 		                   ww + Q11 - Q22 - Q33);
         }      
-        return result;
+		
+		return result;
     }
 	
 }
