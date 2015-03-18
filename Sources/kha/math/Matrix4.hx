@@ -1,4 +1,5 @@
 package kha.math;
+import haxe.ds.Vector;
 
 class Matrix4 {
 	private static inline var width: Int = 4;
@@ -260,7 +261,140 @@ class Matrix4 {
 	}
 
 	public function inverse(): Matrix4 {
-		if (determinant() == 0) throw "No Inverse";
+		var inv: Vector<Float> = new Vector<Float>(16);
+		var det: Float;
+		
+		
+
+		inv[0] = matrix[5]  * matrix[10] * matrix[15] - 
+				 matrix[5]  * matrix[11] * matrix[14] - 
+				 matrix[9]  * matrix[6]  * matrix[15] + 
+				 matrix[9]  * matrix[7]  * matrix[14] +
+				 matrix[13] * matrix[6]  * matrix[11] - 
+				 matrix[13] * matrix[7]  * matrix[10];
+
+		inv[4] = -matrix[4]  * matrix[10] * matrix[15] + 
+				  matrix[4]  * matrix[11] * matrix[14] + 
+				  matrix[8]  * matrix[6]  * matrix[15] - 
+				  matrix[8]  * matrix[7]  * matrix[14] - 
+				  matrix[12] * matrix[6]  * matrix[11] + 
+				  matrix[12] * matrix[7]  * matrix[10];
+
+		inv[8] = matrix[4]  * matrix[9] * matrix[15] - 
+				 matrix[4]  * matrix[11] * matrix[13] - 
+				 matrix[8]  * matrix[5] * matrix[15] + 
+				 matrix[8]  * matrix[7] * matrix[13] + 
+				 matrix[12] * matrix[5] * matrix[11] - 
+				 matrix[12] * matrix[7] * matrix[9];
+
+		inv[12] = -matrix[4]  * matrix[9] * matrix[14] + 
+				   matrix[4]  * matrix[10] * matrix[13] +
+				   matrix[8]  * matrix[5] * matrix[14] - 
+				   matrix[8]  * matrix[6] * matrix[13] - 
+				   matrix[12] * matrix[5] * matrix[10] + 
+				   matrix[12] * matrix[6] * matrix[9];
+
+		inv[1] = -matrix[1]  * matrix[10] * matrix[15] + 
+				  matrix[1]  * matrix[11] * matrix[14] + 
+				  matrix[9]  * matrix[2] * matrix[15] - 
+				  matrix[9]  * matrix[3] * matrix[14] - 
+				  matrix[13] * matrix[2] * matrix[11] + 
+				  matrix[13] * matrix[3] * matrix[10];
+
+		inv[5] = matrix[0]  * matrix[10] * matrix[15] - 
+				 matrix[0]  * matrix[11] * matrix[14] - 
+				 matrix[8]  * matrix[2] * matrix[15] + 
+				 matrix[8]  * matrix[3] * matrix[14] + 
+				 matrix[12] * matrix[2] * matrix[11] - 
+				 matrix[12] * matrix[3] * matrix[10];
+
+		inv[9] = -matrix[0]  * matrix[9] * matrix[15] + 
+				  matrix[0]  * matrix[11] * matrix[13] + 
+				  matrix[8]  * matrix[1] * matrix[15] - 
+				  matrix[8]  * matrix[3] * matrix[13] - 
+				  matrix[12] * matrix[1] * matrix[11] + 
+				  matrix[12] * matrix[3] * matrix[9];
+
+		inv[13] = matrix[0]  * matrix[9] * matrix[14] - 
+				  matrix[0]  * matrix[10] * matrix[13] - 
+				  matrix[8]  * matrix[1] * matrix[14] + 
+				  matrix[8]  * matrix[2] * matrix[13] + 
+				  matrix[12] * matrix[1] * matrix[10] - 
+				  matrix[12] * matrix[2] * matrix[9];
+
+		inv[2] = matrix[1]  * matrix[6] * matrix[15] - 
+				 matrix[1]  * matrix[7] * matrix[14] - 
+				 matrix[5]  * matrix[2] * matrix[15] + 
+				 matrix[5]  * matrix[3] * matrix[14] + 
+				 matrix[13] * matrix[2] * matrix[7] - 
+				 matrix[13] * matrix[3] * matrix[6];
+
+		inv[6] = -matrix[0]  * matrix[6] * matrix[15] + 
+				  matrix[0]  * matrix[7] * matrix[14] + 
+				  matrix[4]  * matrix[2] * matrix[15] - 
+				  matrix[4]  * matrix[3] * matrix[14] - 
+				  matrix[12] * matrix[2] * matrix[7] + 
+				  matrix[12] * matrix[3] * matrix[6];
+
+		inv[10] = matrix[0]  * matrix[5] * matrix[15] - 
+				  matrix[0]  * matrix[7] * matrix[13] - 
+				  matrix[4]  * matrix[1] * matrix[15] + 
+				  matrix[4]  * matrix[3] * matrix[13] + 
+				  matrix[12] * matrix[1] * matrix[7] - 
+				  matrix[12] * matrix[3] * matrix[5];
+
+		inv[14] = -matrix[0]  * matrix[5] * matrix[14] + 
+				   matrix[0]  * matrix[6] * matrix[13] + 
+				   matrix[4]  * matrix[1] * matrix[14] - 
+				   matrix[4]  * matrix[2] * matrix[13] - 
+				   matrix[12] * matrix[1] * matrix[6] + 
+				   matrix[12] * matrix[2] * matrix[5];
+
+		inv[3] = -matrix[1] * matrix[6] * matrix[11] + 
+				  matrix[1] * matrix[7] * matrix[10] + 
+				  matrix[5] * matrix[2] * matrix[11] - 
+				  matrix[5] * matrix[3] * matrix[10] - 
+				  matrix[9] * matrix[2] * matrix[7] + 
+				  matrix[9] * matrix[3] * matrix[6];
+
+		inv[7] = matrix[0] * matrix[6] * matrix[11] - 
+				 matrix[0] * matrix[7] * matrix[10] - 
+				 matrix[4] * matrix[2] * matrix[11] + 
+				 matrix[4] * matrix[3] * matrix[10] + 
+				 matrix[8] * matrix[2] * matrix[7] - 
+				 matrix[8] * matrix[3] * matrix[6];
+
+		inv[11] = -matrix[0] * matrix[5] * matrix[11] + 
+				   matrix[0] * matrix[7] * matrix[9] + 
+				   matrix[4] * matrix[1] * matrix[11] - 
+				   matrix[4] * matrix[3] * matrix[9] - 
+				   matrix[8] * matrix[1] * matrix[7] + 
+				   matrix[8] * matrix[3] * matrix[5];
+
+		inv[15] = matrix[0] * matrix[5] * matrix[10] - 
+				  matrix[0] * matrix[6] * matrix[9] - 
+				  matrix[4] * matrix[1] * matrix[10] + 
+				  matrix[4] * matrix[2] * matrix[9] + 
+				  matrix[8] * matrix[1] * matrix[6] - 
+				  matrix[8] * matrix[2] * matrix[5];
+
+		det = matrix[0] * inv[0] + matrix[1] * inv[4] + matrix[2] * inv[8] + matrix[3] * inv[12];
+
+		if (det == 0)
+			throw "No Inverse";
+
+		det = 1.0 / det;
+
+		var result: Matrix4 = Matrix4.empty();
+		for (i in 0...16) {
+			result.matrix[i] = inv[i] * det;
+		}
+		
+		return result;
+		
+		
+		
+		/*if (determinant() == 0) throw "No Inverse";
 		var q: Float;
 		var inv = identity();
 
@@ -290,8 +424,8 @@ class Matrix4 {
 					}
 				}
 			}
-		}
-		for (i in 0...width) for (j in 0...width) if (get(j, i) != ((i == j) ? 1 : 0)) throw "Matrix inversion error";
-		return inv;
+		} */
+		// for (i in 0...width) for (j in 0...width) if (get(j, i) != ((i == j) ? 1 : 0)) throw "Matrix inversion error";
+		// return inv;
 	}
 }
