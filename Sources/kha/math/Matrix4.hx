@@ -20,9 +20,9 @@ class Matrix4 {
 
 	public static function translation(x: Float, y: Float, z: Float): Matrix4 {
 		var m = identity();
-		m.set(3, 0, x);
-		m.set(3, 1, y);
-		m.set(3, 2, z);
+		m.set(0, 3, x);
+		m.set(1, 3, y);
+		m.set(2, 3, z);
 		return m;
 	}
 	
