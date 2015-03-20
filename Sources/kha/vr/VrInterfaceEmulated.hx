@@ -225,11 +225,11 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		g.drawIndexedVertices();
 		
 		// Check for an overlay image
-		if (parms.LeftImage.Image != null) {
+		/* if (parms.LeftImage.Image != null) {
 			g.setTexture(texture, parms.RightOverlay.Image);
 			g.drawIndexedVertices();
 		}
-		
+		*/
 		g.end();
 		
 		
