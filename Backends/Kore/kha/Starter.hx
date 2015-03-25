@@ -11,8 +11,13 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.vr.VrInterface;
 
+
 #if ANDROID 
-	import kha.cpp.vr.VrInterface;
+	#if VR_CARDBOARD
+		import kha.cpp.vr.CardboardVrInterface;
+	#else 
+		import kha.cpp.vr.VrInterface;
+	#end
 #else 
 	import kha.vr.VrInterfaceEmulated;
 #end
@@ -55,15 +60,21 @@ class Starter {
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		
+		
+		
 		#if ANDROID
-            kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
+			#if VR_GEAR_VR
+				kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
+			#else
+				kha.vr.VrInterface.instance = new CardboardVrInterface();
+			#end
         #else
 			kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
 		#end
 		
 		gameToStart.loadFinished();
 		
-		#if !ANDROID
+		#if !VR_GEAR_VR
 		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
 		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);
@@ -74,9 +85,14 @@ class Starter {
 
 	public static function frame() {
 		#if !ANDROID
-		if (framebuffer == null) return;
-		var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
-		vrInterface.framebuffer = framebuffer;
+			if (framebuffer == null) return;
+			var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
+			vrInterface.framebuffer = framebuffer;
+		#else 
+			#if VR_CARDBOARD
+				var vrInterface: CardboardVrInterface = cast(VrInterface.instance, CardboardVrInterface);
+				vrInterface.framebuffer = framebuffer;
+			#end
 		#end
 		Scheduler.executeFrame();
 		Game.the.render(framebuffer);

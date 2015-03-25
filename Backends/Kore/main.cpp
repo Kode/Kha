@@ -19,9 +19,9 @@
 #include <kha/Sys.h>
 #include <kha/ScreenRotation.h>
 
-#ifdef SYS_ANDROID
+#ifdef ANDROID
 	#include <Kore/Vr/VrInterface.h>
-#endif 
+#endif
 
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
@@ -175,14 +175,27 @@ namespace {
 	void update() {
 		Kore::Audio::update();
 		if (visible) {
-			#ifdef SYS_WINDOWS
+			//#ifdef SYS_WINDOWS
 			Kore::Graphics::begin();
+
+			// Google Cardboard: Update the Distortion mesh
+			#ifdef VR_CARDBOARD
+			//	Kore::VrInterface::DistortionBefore();
 			#endif
+
+			//#endif
 			Starter_obj::frame();
-			#ifdef SYS_WINDOWS
+			//#ifdef SYS_WINDOWS
 			Kore::Graphics::end();
-			Kore::Graphics::swapBuffers();
+
+			// Google Cardboard: Call the DistortionMesh Renderer
+			#ifdef VR_CARDBOARD
+			//	Kore::VrInterface::DistortionAfter();
 			#endif
+
+
+			Kore::Graphics::swapBuffers();
+			//#endif
 			
 		}
 	}
@@ -342,7 +355,7 @@ int kore(int argc, char** argv) {
 
 #ifdef SYS_ANDROID
 	// Enter VR mode
-	Kore::VrInterface::Initialize();
+	// Kore::VrInterface::Initialize();
 #endif
 
 	Kore::log(Kore::Info, "Starting application");
