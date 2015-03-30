@@ -7,22 +7,23 @@ import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
 @:classCode('
-	protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
-		base.OnRender(drawingContext);
-
-		if (kha.Starter.painter != null && Configuration.screen() != null) {
-			Starter.painter.context = drawingContext;
-			//Starter.painter.begin();
-			Configuration.screen().render(Starter.framebuffer);
-			//if (drawMousePos) {
-			//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
-			//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
-			//	Starter.painter.setColor(unchecked((int)0xFF000000));
-			//	Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10, default(global::haxe.lang.Null<double>));
-			//}
-			//Starter.painter.end();
+		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
+			base.OnRender(drawingContext);
+			
+			if (kha.Starter.painter != null && Configuration.screen() != null) {
+				Starter.painter.context = drawingContext;
+				//Starter.painter.begin();
+				Configuration.screen().render(Starter.framebuffer);
+				//if (drawMousePos) {
+				//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
+				//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
+				//	Starter.painter.setColor(unchecked((int)0xFF000000));
+				//	Starter.painter.drawRect(mousePosX - 5, mousePosY - 5, 10, 10, default(global::haxe.lang.Null<double>));
+				//}
+				//Starter.painter.end();
+			}
+			System.GC.Collect();
 		}
-	}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
 	var mousePosX : Int;
@@ -285,16 +286,20 @@ class Starter {
 	}
 	
 	public function start(game: Game) {
+		#if !debug
 		try {
+		#end
 			gameToStart = game;
 			Loader.the.loadProject(loadFinished);
+		#if !debug
 		}
 		catch (unknown: Dynamic) {
 			if (openWindow)
 				displayErrorMessage("Unknown exception : " + Std.string(unknown));
 			else
-				throw unknown;
+				cs.Lib.rethrow(unknown);
 		}
+		#end
 	}
 	
 	@:functionCode('
