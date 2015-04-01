@@ -38,11 +38,7 @@ class Graphics implements kha.graphics4.Graphics {
 			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
 		}
 	}
-	
-	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
-		
-	}
-	
+
 	public function begin(): Void {
 		if (renderTarget == null) {
 			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
