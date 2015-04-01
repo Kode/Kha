@@ -62,18 +62,20 @@ class Kravur implements Font {
 		
 		var kravur = fontCache.get(key);
 		if (kravur == null) {
-			kravur = new Kravur(key);
-			kravur.myName = name;
-			kravur.myStyle = style;
-			kravur.mySize = size;
-			
-			fontCache.set(key, kravur);
+			var blob = Loader.the.getBlob(key);
+			if (blob != null) {
+				kravur = new Kravur(blob);
+				kravur.myName = name;
+				kravur.myStyle = style;
+				kravur.mySize = size;
+				
+				fontCache.set(key, kravur);
+			}
 		}
 		return kravur;
 	}
 	
-	private function new(name: String) {
-		var blob = Loader.the.getBlob(name);
+	private function new(blob: Blob) {
 		var size = blob.readS32LE();
 		var ascent = blob.readS32LE();
 		var descent = blob.readS32LE();
