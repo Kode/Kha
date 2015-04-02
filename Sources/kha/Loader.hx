@@ -41,6 +41,7 @@ class Loader {
 	public var width(default, null): Int;
 	public var height(default, null): Int;
 	public var name(default, null): String;
+	public var antiAliasingSamples(default, null): Int;
 	
 	public static function init(loader: Loader) {
 		the = loader;
@@ -285,12 +286,12 @@ class Loader {
 			for (i in 0...shaders.length) {
 				var shader = shaders[i];
 				#if debug_loader
-					trace ('shader to load: "${shader.name}"');
+					trace('shader to load: "${shader.name}"');
 				#end
 				loadBlob(shader, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
 						#if debug_loader
-							trace ('loaded shader "${shader.name}"');
+							trace('loaded shader "${shader.name}"');
 						#end
 						this.shaders.set(shader.name, blob);
 						--shaderCount;
@@ -319,6 +320,7 @@ class Loader {
 		name = project.game.name;
 		width = project.game.width;
 		height = project.game.height;
+		antiAliasingSamples = Reflect.hasField(project.game, "antiAliasingSamples") ? project.game.antiAliasingSamples : 1;
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
 			if (basePath != '.') assets[i].file = basePath + "/" + assets[i].file;
