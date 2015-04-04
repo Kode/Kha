@@ -865,10 +865,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function drawString(text: String, x: Float, y: Float): Void {
-		imagePainter.end();
+		/*imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, color, x, y, transformation);
+		textPainter.drawString(text, color, x, y, transformation);*/
 	}
 
 	override public function get_font(): Font {

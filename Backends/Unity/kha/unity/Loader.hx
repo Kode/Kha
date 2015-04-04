@@ -1,5 +1,8 @@
 package kha.unity;
 
+import haxe.io.Bytes;
+import kha.Blob;
+
 class Loader extends kha.Loader {
 	public function new() {
 		super();
@@ -9,8 +12,19 @@ class Loader extends kha.Loader {
 		done(Image.fromFilename(desc.file));
 	}
 	
-	override public function loadBlob (desc: Dynamic, done: Blob  -> Void) { }
-	override public function loadSound(desc: Dynamic, done: Sound -> Void) { }
-	override public function loadMusic(desc: Dynamic, done: Music -> Void) { }
-	override public function loadVideo(desc: Dynamic, done: Video -> Void) { }
+	override public function loadBlob (desc: Dynamic, done: Blob  -> Void) {
+		done(new Blob(Bytes.ofData(UnityBackend.loadBlob(desc.file))));
+	}
+	
+	override public function loadSound(desc: Dynamic, done: Sound -> Void) {
+		done(new Sound());
+	}
+	
+	override public function loadMusic(desc: Dynamic, done: Music -> Void) {
+		done(new Music());
+	}
+
+	override public function loadVideo(desc: Dynamic, done: Video -> Void) {
+		done(new Video());
+	}
 }

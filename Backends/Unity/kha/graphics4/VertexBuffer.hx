@@ -3,7 +3,7 @@ package kha.graphics4;
 import unityEngine.Mesh;
 
 class VertexBuffer {
-	private var mesh: Mesh;
+	public var mesh: Mesh;
 	private var vertices: Array<Float>;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {

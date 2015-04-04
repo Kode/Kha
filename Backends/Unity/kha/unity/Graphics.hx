@@ -19,8 +19,12 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
+import unityEngine.Matrix4x4;
 
 class Graphics implements kha.graphics4.Graphics {
+	private var vertexBuffer: VertexBuffer;
+	private var indexBuffer: IndexBuffer;
+	
 	public function new() {
 		
 	}
@@ -66,11 +70,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
-		
+		this.vertexBuffer = vertexBuffer;
 	}
 	
 	public function setIndexBuffer(indexBuffer: IndexBuffer): Void {
-		
+		this.indexBuffer = indexBuffer;
 	}
 	
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
@@ -138,6 +142,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		
+		unityEngine.Graphics.DrawMeshNow(vertexBuffer.mesh, Matrix4x4.identity);
 	}
 }

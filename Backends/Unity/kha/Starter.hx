@@ -14,9 +14,6 @@ class Starter {
 	public static var mouseY: Int = 0;
 	
 	public function new() {
-		var g4 =  new kha.unity.Graphics();
-		frame = new Framebuffer(null, g4);
-		frame.init(new Graphics2(frame), g4);
 		kha.Loader.init(new kha.unity.Loader());
 		Scheduler.init();
 		left = false;
@@ -27,6 +24,9 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
+		var g4 = new kha.unity.Graphics();
+		frame = new Framebuffer(null, g4);
+		frame.init(new Graphics2(frame), g4);
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
@@ -43,8 +43,10 @@ class Starter {
 	public static function update(): Void {
 		checkEvents();
 		checkGamepad();
-		game.update();
-		game.render(frame);
+		if (game != null) {
+			game.update();
+			game.render(frame);
+		}
 	}
 	
 	/*@:functionCode('
