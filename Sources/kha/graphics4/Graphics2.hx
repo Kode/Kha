@@ -662,30 +662,38 @@ class TextShaderPainter {
 	
 	private var text: String;
 	
+	#if cpp
 	@:functionCode('
 		wtext = text.__WCStr();
 	')
+	#end
 	private function startString(text: String): Void {
 		this.text = text;
 	}
 	
+	#if cpp
 	@:functionCode('
 		return wtext[position];
 	')
+	#end
 	private function charCodeAt(position: Int): Int {
 		return text.charCodeAt(position);
 	}
 	
+	#if cpp
 	@:functionCode('
 		return wcslen(wtext);
 	')
+	#end
 	private function stringLength(): Int {
 		return text.length;
 	}
 	
+	#if cpp
 	@:functionCode('
 		wtext = 0;
 	')
+	#end
 	private function endString(): Void {
 		text = null;
 	}

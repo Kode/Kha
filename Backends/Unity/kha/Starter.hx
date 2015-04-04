@@ -1,19 +1,23 @@
 package kha;
 
+import kha.graphics4.Graphics2;
+
 class Starter {
 	static public var game: Game;
-	//static public var painter: kha.psm.Painter;
 	static var left: Bool;
 	static var right: Bool;
 	static var up: Bool;
 	static var down: Bool;
+	private static var frame: Framebuffer;
 	
 	public static var mouseX: Int = 0;
 	public static var mouseY: Int = 0;
 	
 	public function new() {
-		//painter = new kha.psm.Painter();
-		//kha.Loader.init(new kha.psm.Loader());
+		var g4 =  new kha.unity.Graphics();
+		frame = new Framebuffer(null, g4);
+		frame.init(new Graphics2(frame), g4);
+		kha.Loader.init(new kha.unity.Loader());
 		Scheduler.init();
 		left = false;
 		right = false;
@@ -34,18 +38,13 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
-		while (true) {
-			checkEvents();
-			checkGamepad();
-			game.update();
-			//painter.begin();
-			//game.render(painter);
-			//painter.end();
-		}
 	}
 	
 	public static function update(): Void {
-		
+		checkEvents();
+		checkGamepad();
+		game.update();
+		game.render(frame);
 	}
 	
 	/*@:functionCode('

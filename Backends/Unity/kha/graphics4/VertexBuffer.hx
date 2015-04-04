@@ -1,12 +1,18 @@
 package kha.graphics4;
 
+import unityEngine.Mesh;
+
 class VertexBuffer {
+	private var mesh: Mesh;
+	private var vertices: Array<Float>;
+	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
-		
+		mesh = new Mesh();
+		vertices = new Array<Float>();
 	}
 
 	public function lock(?start: Int, ?count: Int): Array<Float> {
-		return null;
+		return vertices;
 	}
 
 	public function unlock(): Void {

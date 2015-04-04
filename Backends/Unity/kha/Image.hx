@@ -3,11 +3,13 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import unityEngine.Texture2D;
 
 class Image implements Canvas implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
+	private var texture: Texture2D;
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
@@ -21,16 +23,14 @@ class Image implements Canvas implements Resource {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
+		texture = new Texture2D(width, height);
 	}
 	
 	public static function fromFilename(filename: String): Image {
-		return null;
-	}
-	
-	public static function fromImage(image: Dynamic, width: Int, height: Int): Image {
-		var img = new Image(width, height, TextureFormat.RGBA32);
-		//img.image = image;
-		return img;
+		var tex = UnityBackend.loadImage(filename);
+		var image = new Image(tex.width, tex.height, TextureFormat.RGBA32);
+		image.texture = tex;
+		return image;
 	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
