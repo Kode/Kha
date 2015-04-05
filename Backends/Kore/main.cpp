@@ -176,8 +176,10 @@ namespace {
 		Kore::Audio::update();
 		if (visible) {
 			//#ifdef SYS_WINDOWS
+			#ifndef VR_RIFT
 			Kore::Graphics::begin();
-
+			#endif
+			
 			// Google Cardboard: Update the Distortion mesh
 			#ifdef VR_CARDBOARD
 			//	Kore::VrInterface::DistortionBefore();
@@ -186,7 +188,9 @@ namespace {
 			//#endif
 			Starter_obj::frame();
 			//#ifdef SYS_WINDOWS
+			#ifndef VR_RIFT
 			Kore::Graphics::end();
+			#endif
 
 			// Google Cardboard: Call the DistortionMesh Renderer
 			#ifdef VR_CARDBOARD
@@ -194,7 +198,9 @@ namespace {
 			#endif
 
 
+			#ifndef VR_RIFT
 			Kore::Graphics::swapBuffers();
+			#endif
 			//#endif
 			
 		}
@@ -322,7 +328,9 @@ int kore(int argc, char** argv) {
 	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name);
 	Kore::Mixer::init();
 	Kore::Audio::init();
+#ifndef VR_RIFT
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+#endif
 	app->orientationCallback = orientation;
 	app->foregroundCallback = foreground;
 	app->resumeCallback = resume;

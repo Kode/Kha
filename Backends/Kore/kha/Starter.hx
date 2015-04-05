@@ -1,5 +1,6 @@
 package kha;
 
+import kha.cpp.vr.VrInterfaceRift;
 import kha.Game;
 import kha.graphics4.Graphics2;
 import kha.input.Gamepad;
@@ -69,15 +70,21 @@ class Starter {
 				kha.vr.VrInterface.instance = new CardboardVrInterface();
 			#end
         #else
-			kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
+			#if VR_RIFT
+				kha.vr.VrInterface.instance = new VrInterfaceRift();
+			#else
+				kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
+			#end
 		#end
 		
 		gameToStart.loadFinished();
 		
 		#if !VR_GEAR_VR
+		#if !VR_RIFT
 		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
 		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);
+		#end
 		#end
 		
 		
@@ -85,9 +92,11 @@ class Starter {
 
 	public static function frame() {
 		#if !ANDROID
+		#if !VR_RIFT
 			if (framebuffer == null) return;
 			var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
 			vrInterface.framebuffer = framebuffer;
+		#end
 		#else 
 			#if VR_CARDBOARD
 				var vrInterface: CardboardVrInterface = cast(VrInterface.instance, CardboardVrInterface);
