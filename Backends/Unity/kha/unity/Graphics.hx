@@ -142,6 +142,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
+		vertexBuffer.mesh.triangles = indexBuffer.nativeIndices;
 		unityEngine.Graphics.DrawMeshNow(vertexBuffer.mesh, Matrix4x4.identity);
 	}
 }
