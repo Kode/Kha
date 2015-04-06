@@ -27,7 +27,7 @@ class ImageShaderPainter {
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
 	private var textureLocation: TextureUnit;
-	private static var bufferSize: Int = 100;
+	private static var bufferSize: Int = 50;
 	private static var vertexSize: Int = 9;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;

@@ -24,15 +24,15 @@ class Starter {
 	
 	public function start(game: Game) {
 		Starter.game = game;
-		var g4 = new kha.unity.Graphics();
-		frame = new Framebuffer(null, g4);
-		frame.init(new Graphics2(frame), g4);
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
 	
 	public static function loadFinished(): Void {
 		Loader.the.initProject();
+		var g4 = new kha.unity.Graphics();
+		frame = new Framebuffer(null, g4);
+		frame.init(new Graphics2(frame), g4);
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		Configuration.setScreen(game);

@@ -9,7 +9,7 @@ class Image implements Canvas implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
-	private var texture: Texture2D;
+	public var texture: Texture2D;
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
@@ -30,6 +30,9 @@ class Image implements Canvas implements Resource {
 		var tex = UnityBackend.loadImage(filename);
 		var image = new Image(tex.width, tex.height, TextureFormat.RGBA32);
 		image.texture = tex;
+		var size = UnityBackend.getImageSize(tex);
+		image.myWidth = size.x;
+		image.myHeight = size.y;
 		return image;
 	}
 	
