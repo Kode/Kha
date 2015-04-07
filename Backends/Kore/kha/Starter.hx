@@ -19,7 +19,7 @@ class Starter {
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
 	
-	public function new(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1) {
+	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
