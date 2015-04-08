@@ -50,7 +50,7 @@ class EntityBuilder {
 			default:
 			}
 		}
-		
+		/*
 		fields.push({
 			name: "_send",
 			doc: null,
@@ -86,7 +86,7 @@ class EntityBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-		
+		*/
 		var newField = {
 			name: "_id",
 			doc: null,

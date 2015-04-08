@@ -13,13 +13,13 @@ class StorageFile {
 	public function maxSize(): Int { return -1; }
 	
 	public function writeString(data: String): Void {
-		var bytes = Bytes.ofString(data);
-		write(new Blob(bytes));
+		//var bytes = Bytes.ofString(data);
+		//write(new Blob(bytes));
 	}
 	
 	public function appendString(data: String): Void {
-		var bytes = Bytes.ofString(data);
-		append(new Blob(bytes));
+		//var bytes = Bytes.ofString(data);
+		//append(new Blob(bytes));
 	}
 	
 	public function readString(): String {

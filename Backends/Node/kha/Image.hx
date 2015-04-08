@@ -3,31 +3,28 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.js.EmptyGraphics2;
+import kha.js.EmptyGraphics4;
 
 class Image implements Canvas implements Resource {
-	public var id: Int;
 	private var w: Int;
 	private var h: Int;
-	private var rw: Int;
-	private var rh: Int;
+	private var graphics2: EmptyGraphics2;
+	private var graphics4: EmptyGraphics4;
 	
-	public function new(id: Int, width: Int, height: Int, realWidth: Int, realHeight: Int) {
-		this.id = id;
+	public function new(width: Int, height: Int) {
 		w = width;
 		h = height;
-		rw = realWidth;
-		rh = realHeight;
+		graphics2 = new EmptyGraphics2(w, h);
+		graphics4 = new EmptyGraphics4(w, h);
 	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
-		if (format == null) format = TextureFormat.RGBA32;
-		if (usage == null) usage = Usage.StaticUsage;
-		return null;
+		return new Image(width, height);
 	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
-		if (format == null) format = TextureFormat.RGBA32;
-		return null;
+		return new Image(width, height);
 	}
 	
 	public static var maxSize(get, null): Int;
@@ -51,11 +48,11 @@ class Image implements Canvas implements Resource {
 	public var height(get, null): Int;
 	private function get_height(): Int { return h; }
 	public var realWidth(get, null): Int;
-	private function get_realWidth(): Int { return rw; }
+	private function get_realWidth(): Int { return w; }
 	public var realHeight(get, null): Int;
-	private function get_realHeight(): Int { return rh; }
+	private function get_realHeight(): Int { return h; }
 	public var g2(get, null): kha.graphics2.Graphics;
-	private function get_g2(): kha.graphics2.Graphics { return null; }
+	private function get_g2(): kha.graphics2.Graphics { return graphics2; }
 	public var g4(get, null): kha.graphics4.Graphics;
-	private function get_g4(): kha.graphics4.Graphics { return null; }
+	private function get_g4(): kha.graphics4.Graphics { return graphics4; }
 }

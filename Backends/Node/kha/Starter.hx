@@ -1,9 +1,11 @@
 package kha;
 
+import js.Node;
 import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
-import kha.js.WorkerGraphics;
+import kha.js.EmptyGraphics2;
+import kha.js.EmptyGraphics4;
 import kha.Key;
 import kha.Loader;
 
@@ -39,11 +41,15 @@ class Starter {
 		gameToStart.height = Loader.the.height;
 			
 		Sys.init(gameToStart.width, gameToStart.height);
-		frame = new Framebuffer(new WorkerGraphics(gameToStart.width, gameToStart.height), null);
+		frame = new Framebuffer(new EmptyGraphics2(gameToStart.width, gameToStart.height), new EmptyGraphics4(gameToStart.width, gameToStart.height));
 		Scheduler.start();
 		
 		Configuration.setScreen(gameToStart);
 		
 		gameToStart.loadFinished();
+		
+		Node.setInterval(function () {
+			Scheduler.executeFrame();
+		}, 30);
 	}
 }
