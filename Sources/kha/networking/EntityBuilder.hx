@@ -8,6 +8,15 @@ class EntityBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
+		var isBaseEntity = false;
+		for (i in Context.getLocalClass().get().interfaces) {
+			var intf = i.t.get();
+			if (intf.module == "kha.networking.Entity") {
+				isBaseEntity = true;
+				break;
+			}
+		}
+		
 		var receive = macro {
 			
 		};
@@ -51,71 +60,73 @@ class EntityBuilder {
 			}
 		}
 		
-		fields.push({
-			name: "_send",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FFun({
-				ret: null,
-				params: null,
-				expr: send,
-				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
-					{
-					value: null,
-					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-					opt: null,
-					name: "bytes"}]
-			}),
-			pos: Context.currentPos()
-		});
-		
-		fields.push({
-			name: "_receive",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FFun({
-				ret: null,
-				params: null,
-				expr: receive,
-				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
-					{
-					value: null,
-					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-					opt: null,
-					name: "bytes"}]
-			}),
-			pos: Context.currentPos()
-		});
-		
-		var newField = {
-			name: "_id",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FVar(macro: Int, macro 0),
-			pos: Context.currentPos()
-		};
-		fields.push(newField);
-		
-		var sizeField = {
-			name: "_size",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FVar(macro: Int, macro $v { index }),
-			pos: Context.currentPos()
-		};
-		fields.push(sizeField);
+		if (isBaseEntity) {
+			fields.push({
+				name: "_send",
+				doc: null,
+				meta: [],
+				access: [APublic],
+				kind: FFun({
+					ret: null,
+					params: null,
+					expr: send,
+					args: [{
+						value: null,
+						type: Context.toComplexType(Context.getType("Int")),
+						opt: null,
+						name: "offset" },
+						{
+						value: null,
+						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+						opt: null,
+						name: "bytes"}]
+				}),
+				pos: Context.currentPos()
+			});
+			
+			fields.push({
+				name: "_receive",
+				doc: null,
+				meta: [],
+				access: [APublic],
+				kind: FFun({
+					ret: null,
+					params: null,
+					expr: receive,
+					args: [{
+						value: null,
+						type: Context.toComplexType(Context.getType("Int")),
+						opt: null,
+						name: "offset" },
+						{
+						value: null,
+						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+						opt: null,
+						name: "bytes"}]
+				}),
+				pos: Context.currentPos()
+			});
+			
+			var newField = {
+				name: "_id",
+				doc: null,
+				meta: [],
+				access: [APublic],
+				kind: FVar(macro: Int, macro 0),
+				pos: Context.currentPos()
+			};
+			fields.push(newField);
+			
+			var sizeField = {
+				name: "_size",
+				doc: null,
+				meta: [],
+				access: [APublic],
+				kind: FVar(macro: Int, macro $v { index }),
+				pos: Context.currentPos()
+			};
+			fields.push(sizeField);
+		}		
 		
 		return fields;
 	}

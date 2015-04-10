@@ -2,9 +2,10 @@ package kha;
 
 import kha.graphics2.Graphics;
 import kha.math.Matrix3;
+import kha.networking.Entity;
 
 @:expose
-class Sprite {
+class Sprite implements Entity {
 	private var image: Image;
 	private var animation: Animation;
 	private var collider: Rectangle;
@@ -115,4 +116,12 @@ class Sprite {
 	}
 	
 	public var height(get, set): Float;
+	
+	public function id(): Int {
+		return _id;
+	}
+	
+	public function size(): Int {
+		return _size;
+	}
 }

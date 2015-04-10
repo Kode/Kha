@@ -61,6 +61,9 @@ class Session {
 		wss.on("connection", function (socket: Dynamic) {
 			Node.console.log("Client connected.");
 			sockets.push(socket);
+			socket.onclose = function () {
+				sockets.remove(socket);
+			};
 		});
 		#else
 		var socket = new WebSocket("ws://localhost:6789");
