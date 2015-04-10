@@ -1,19 +1,12 @@
 package kha.networking;
 
-/*class Entity {
-	public var id: Int;
-	
-	public function new() {
-		id = 0;
-	}
-	
-	public function simulate(tdif: Float): Void {
-		
-	}
-}*/
+import haxe.io.Bytes;
 
 @:autoBuild(kha.networking.EntityBuilder.build())
 interface Entity {
 	public function id(): Int;
-	public function simulate(tdif: Float): Void;
+	public function size(): Int;
+	//public function simulate(tdif: Float): Void;
+	public function _send(offset: Int, bytes: Bytes): Void;
+	public function _receive(offset: Int, bytes: Bytes): Void;
 }

@@ -42,10 +42,10 @@ class LocalStorageFile extends StorageFile {
 	 * @return {string}        Resulting yEnc string from byte array.
 	 */
 	private static function encode(source: BytesData): String {
-		var reserved = [0, 10, 13, 61];
+		/*var reserved = [0, 10, 13, 61];
 		var output = '';
 		var converted, ele;
-		for (i in 0...source.length) {
+		for (i in 0...source.byteLength) {
 			ele = source[i];
 			converted = (ele + 42) % 256;
 			if (!Lambda.has(reserved, converted)) {
@@ -55,7 +55,8 @@ class LocalStorageFile extends StorageFile {
 				output += "=" + String.fromCharCode(converted);
 			}
 		}
-		return output;
+		return output;*/
+		return "";
 	}
 
 	/**

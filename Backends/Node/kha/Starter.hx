@@ -8,6 +8,7 @@ import kha.js.EmptyGraphics2;
 import kha.js.EmptyGraphics4;
 import kha.Key;
 import kha.Loader;
+import kha.networking.Session;
 
 class Starter {
 	private var gameToStart: Game;
@@ -50,6 +51,7 @@ class Starter {
 		
 		Node.setInterval(function () {
 			Scheduler.executeFrame();
+			Session.the().update();
 		}, 30);
 	}
 }

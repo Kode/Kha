@@ -27,21 +27,21 @@ class EntityBuilder {
 					case "Int":
 						send = macro {
 							$send;
-							bytes.set($v { index }, this.$fieldname);
+							bytes.setInt32(offset + $v { index }, this.$fieldname);
 						};
 						receive = macro {
 							$receive;
-							this.$fieldname = bytes.get($v { index } );
+							this.$fieldname = bytes.getInt32(offset + $v { index } );
 						};
 						index += 4;
 					case "Float":
 						send = macro {
 							$send;
-							bytes.setDouble($v { index }, this.$fieldname);
+							bytes.setDouble(offset + $v { index }, this.$fieldname);
 						};
 						receive = macro {
 							$receive;
-							this.$fieldname = bytes.getDouble($v { index } );
+							this.$fieldname = bytes.getDouble(offset + $v { index } );
 						};
 						index += 8;
 					}
@@ -50,7 +50,7 @@ class EntityBuilder {
 			default:
 			}
 		}
-		/*
+		
 		fields.push({
 			name: "_send",
 			doc: null,
@@ -60,7 +60,12 @@ class EntityBuilder {
 				ret: null,
 				params: null,
 				expr: send,
-				args: [ {
+				args: [{
+					value: null,
+					type: Context.toComplexType(Context.getType("Int")),
+					opt: null,
+					name: "offset" },
+					{
 					value: null,
 					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
 					opt: null,
@@ -78,7 +83,12 @@ class EntityBuilder {
 				ret: null,
 				params: null,
 				expr: receive,
-				args: [ {
+				args: [{
+					value: null,
+					type: Context.toComplexType(Context.getType("Int")),
+					opt: null,
+					name: "offset" },
+					{
 					value: null,
 					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
 					opt: null,
@@ -86,7 +96,7 @@ class EntityBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-		*/
+		
 		var newField = {
 			name: "_id",
 			doc: null,
@@ -96,6 +106,17 @@ class EntityBuilder {
 			pos: Context.currentPos()
 		};
 		fields.push(newField);
+		
+		var sizeField = {
+			name: "_size",
+			doc: null,
+			meta: [],
+			access: [APublic],
+			kind: FVar(macro: Int, macro $v { index }),
+			pos: Context.currentPos()
+		};
+		fields.push(sizeField);
+		
 		return fields;
 	}
 }

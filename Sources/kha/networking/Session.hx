@@ -1,52 +1,83 @@
 package kha.networking;
 
-import haxe.rtti.Meta;
+import haxe.io.Bytes;
+#if node
+import js.npm.SocketIo;
+import js.node.Http;
+import js.Node;
+#end
+import js.Browser;
+import js.html.BinaryType;
+import js.html.WebSocket;
 
 class Session {
+	private static var instance: Session;
 	private var clients: Array<Client> = new Array();
 	private var entities: Map<Int, Entity> = new Map();
+	#if node
+	private var wss: Dynamic;
+	private var sockets: Array<Dynamic> = new Array();
+	#end
 	
 	public function new() {
-		
+		instance = this;
+	}
+	
+	public static function the(): Session {
+		return instance;
 	}
 	
 	public function addEntity(entity: Entity): Void {
 		entities.set(entity.id(), entity);
 	}
 	
-	public function sendState(): Void {
+	public function sendState(): Bytes {
+		var size = 0;
 		for (entity in entities) {
-			
-			var fields = Meta.getFields(Example);
-			var a = 3;
-			++a;
+			size += entity.size();
 		}
-		/*var state = [];
+		
+		var offset = 0;
+		var bytes = Bytes.alloc(size);
 		for (entity in entities) {
-			var fields = Meta.getFields(entity);
-			for (field in fields) {
-				if (field.replicated) {
-					
-				}
-			}
-			state.push({
-				id: entity.id,
-				position: entity.x,
-				last_processed_input: this.last_processed_input[i]
-			});
+			entity._send(offset, bytes);
+			offset += entity.size();
 		}
-		for (client in clients) {
-			client.send(lag, state);
-		}*/
+		return bytes;
 	}
 	
-	public function receiveState(state: Array<Dynamic>): Void {
-		/*for (data in state) {
-			var entity = entities[data.id];
-			var fields = Meta.getFields(data);
-			for (field in fields) {
-				
-			}
-		}*/
+	public function receiveState(bytes: Bytes): Void {
+		var offset = 0;
+		for (entity in entities) {
+			entity._receive(offset, bytes);
+			offset += entity.size();
+		}
+	}
+	
+	public function start(): Void {
+		#if node
+		var WebSocketServer = Node.require("ws").Server;
+		wss = untyped __js__("new WebSocketServer({ port: 6789 })");
+		wss.on("connection", function (socket: Dynamic) {
+			Node.console.log("Client connected.");
+			sockets.push(socket);
+		});
+		#else
+		var socket = new WebSocket("ws://localhost:6789");
+		socket.binaryType = BinaryType.ARRAYBUFFER;
+		socket.onmessage = function (message) {
+			var bytes = Bytes.ofData(message.data);
+			receiveState(bytes);
+		};
+		#end
+	}
+	
+	public function update(): Void {
+		#if node
+		for (socket in sockets) {
+			var bytes = sendState();
+			socket.send(bytes.getData());
+		}
+		#end
 	}
 }
