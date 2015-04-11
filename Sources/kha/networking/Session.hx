@@ -12,11 +12,10 @@ import js.html.WebSocket;
 
 class Session {
 	private static var instance: Session;
-	private var clients: Array<Client> = new Array();
 	private var entities: Map<Int, Entity> = new Map();
 	#if node
-	private var wss: Dynamic;
-	private var sockets: Array<Dynamic> = new Array();
+	private var server: Server;
+	private var clients: Array<Client> = new Array();
 	#end
 	
 	public function new() {
@@ -56,14 +55,13 @@ class Session {
 	
 	public function start(): Void {
 		#if node
-		var WebSocketServer = Node.require("ws").Server;
-		wss = untyped __js__("new WebSocketServer({ port: 6789 })");
-		wss.on("connection", function (socket: Dynamic) {
+		server = new Server(6789);
+		server.onConnection(function (client: Client) {
 			Node.console.log("Client connected.");
-			sockets.push(socket);
-			socket.onclose = function () {
-				sockets.remove(socket);
-			};
+			clients.push(client);
+			client.onClose(function () {
+				clients.remove(client);
+			});
 		});
 		#else
 		var network = new Network("localhost", 6789);
@@ -73,9 +71,8 @@ class Session {
 	
 	public function update(): Void {
 		#if node
-		for (socket in sockets) {
-			var bytes = sendState();
-			socket.send(bytes.getData());
+		for (client in clients) {
+			client.send(sendState());
 		}
 		#end
 	}
