@@ -729,6 +729,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
+	private var videoProgram: Program;
 	private var canvas: Canvas;
 	private var g: Graphics;
 
@@ -741,6 +742,20 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
 		setProjection();
+		
+		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-video.frag"));
+		var vertexShader = new VertexShader(Loader.the.getShader("painter-video.vert"));
+	
+		videoProgram = new Program();
+		videoProgram.setFragmentShader(fragmentShader);
+		videoProgram.setVertexShader(vertexShader);
+
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
+		
+		videoProgram.link(structure);
 	}
 	
 	private static function upperPowerOfTwo(v: Int): Int {
@@ -930,5 +945,15 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function end(): Void {
 		endDrawing();
 		g.end();
+	}
+	
+	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+		
+	}
+	
+	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+		setProgram(videoProgram);
+		drawVideoInternal(video, x, y, width, height);
+		setProgram(null);
 	}
 }

@@ -74,13 +74,13 @@ class Game {
 	// deprecated - please use kha.Scaler.transformX
 	public function painterTransformMouseX(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformX(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformX(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	// deprecated - please use kha.Scaler.transformY
 	public function painterTransformMouseY(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformY(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformY(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	// deprecated - please use kha.input.Gamepad

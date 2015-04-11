@@ -254,6 +254,7 @@ int kore(int argc, char** argv) {
 	int width = 256;
 	int height = 256;
 	bool fullscreen = false;
+	int antialiasing = 1;
 	char name[256];
 	name[0] = 0;
 	
@@ -310,6 +311,17 @@ int kore(int argc, char** argv) {
 						}
 						number[ni] = 0;
 						height = atoi(number);
+					}
+					else if (tokens[i].type == JSMN_STRING && strncmp("antiAliasingSamples", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
+						++i;
+						char number[25];
+						int ni = 0;
+						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
+							number[ni] = string[i2];
+							++ni;
+						}
+						number[ni] = 0;
+						antialiasing = atoi(number);
 					}
 					else if (tokens[i].type == JSMN_STRING && strncmp("fullscreen", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
 						++i;

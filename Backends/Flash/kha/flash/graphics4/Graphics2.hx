@@ -17,7 +17,7 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 		videoImage = new Image(canvas.width, canvas.height, TextureFormat.RGBA32, false, false, false);
 	}
 
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+	override public function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		/*flushBuffers();
 		
 		var stageVideo = new flash.media.Video(Std.int(width), Std.int(height));

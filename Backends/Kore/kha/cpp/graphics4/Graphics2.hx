@@ -10,7 +10,7 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 		super(canvas);
 	}
 
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+	override public function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		color = Color.Blue;
 		fillRect(x, y, width, height);
 		color = Color.White;

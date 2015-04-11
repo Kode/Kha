@@ -7,7 +7,7 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 		super(canvas);
 	}
 	
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+	override public function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		var v = cast(video, Video);
 		drawScaledSubImage(v.texture, 0, 0, v.texture.width, v.texture.height, x, y, width, height);
 	}
