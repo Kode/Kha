@@ -66,12 +66,8 @@ class Session {
 			};
 		});
 		#else
-		var socket = new WebSocket("ws://localhost:6789");
-		socket.binaryType = BinaryType.ARRAYBUFFER;
-		socket.onmessage = function (message) {
-			var bytes = Bytes.ofData(message.data);
-			receiveState(bytes);
-		};
+		var network = new Network("localhost", 6789);
+		network.listen(receiveState);
 		#end
 	}
 	
