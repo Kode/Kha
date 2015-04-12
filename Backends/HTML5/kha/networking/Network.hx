@@ -8,7 +8,7 @@ class Network {
 	private var socket: WebSocket;
 	
 	public function new(url: String, port: Int) {
-		var socket = new WebSocket("ws://" + url + ":" + port);
+		socket = new WebSocket("ws://" + url + ":" + port);
 		socket.binaryType = BinaryType.ARRAYBUFFER;
 	}
 	

@@ -2,7 +2,6 @@ package kha.networking;
 
 import haxe.io.Bytes;
 #if node
-import js.npm.SocketIo;
 import js.node.Http;
 import js.Node;
 #end
@@ -72,7 +71,7 @@ class Session {
 	public function update(): Void {
 		#if node
 		for (client in clients) {
-			client.send(sendState());
+			client.send(sendState(), false);
 		}
 		#end
 	}
