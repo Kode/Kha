@@ -10,7 +10,7 @@ class ControllerBuilder {
 		for (field in fields) {
 			switch (field.kind) {
 			case FFun(f):
-				var expr = macro {
+				var expr = macro @:mergeBlock {
 					var bytes = haxe.io.Bytes.alloc(100);
 				};
 				var index: Int = 0;
@@ -22,14 +22,14 @@ class ControllerBuilder {
 								var argname = arg.name;
 								expr = macro {
 									$expr;
-									//bytes.setInt32($v { index }, $v { argname });
+									bytes.setInt32($v { index }, $i { argname });
 								};
 								index += 4;
 							case "String":
 								var argname = arg.name;
 								expr = macro {
 									$expr;
-									//bytes.set($v { index }, $v { argname }.charCodeAt(0));
+									bytes.set($v { index }, $i { argname }.charCodeAt(0));
 								};
 								index += 1;
 							}
