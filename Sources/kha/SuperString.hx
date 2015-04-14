@@ -79,6 +79,31 @@ abstract SuperString(String) {
 	public function substr(pos: Int, ?len: Int): SuperString {
 		return new SuperString(Utf8.sub(this, pos, len == null ? length - pos : len));
 	}
+
+	public function substring(start: Int, end: Int): SuperString {
+		return new SuperString(Utf8.sub(this, start, end - start));
+	}
+
+	public function split(splitter: String): Array<SuperString> {
+		var array = new Array<SuperString>();
+		var splitted = this.split(splitter);
+		for (s in splitted) {
+			array.push(new SuperString(s));
+		}
+		return array;
+	}
+
+	public function indexOf(str: String, ?startIndex: Int): Int {
+		var index: Int = -1;
+		var i: Int = startIndex == null ? 0 : startIndex;
+		Utf8.iter(this, function (char: Int) {
+			if (index < 0 && str.charCodeAt(0) == char) {
+				index = i;
+			}
+			++i;
+		});
+		return index;
+	}
 	
 	public function toString(): String {
 		return this;
