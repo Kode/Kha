@@ -1,0 +1,11 @@
+{
+	"name": "kha",
+	"url" : "https://github.com/KTXSoftware/Kha",
+	"license": "MIT",
+	"tags": ["cross", "game"],
+	"description": "Ultra portable game/media-app framework",
+	"version": "0.9.0",
+	"releasenote": "Test release for Windows.",
+	"contributors": ["RobDangerous"],
+	"dependencies": { }
+}
