@@ -6,3 +6,11 @@
 	path = Tools/khamake
 	url = ../khamake
 	branch = master
+[submodule "Backends/Kore/khacpp"]
+	path = Backends/Kore/khacpp
+	url = ../khacpp
+	branch = master
+[submodule "Tools/haxe"]
+	path = Tools/haxe
+	url = ../haxe_bin
+	branch = master
