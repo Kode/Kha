@@ -78,7 +78,7 @@ class WebAudioSound extends kha.Sound {
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
-			Lib.alert("loadSound failed");
+			Browser.alert("loadSound failed");
 		};
 		request.onload = function() {
 			var arrayBuffer = request.response;
@@ -88,7 +88,7 @@ class WebAudioSound extends kha.Sound {
 				done(this);
 			},
 			function() {
-				Lib.alert("loadSound failed");
+				Browser.alert("loadSound failed");
 			}
 			);
 		};

@@ -72,7 +72,7 @@ class EnvironmentVariables extends kha.EnvironmentVariables
 	}
 	
 	override public function getVariable(name: String): String {
-		var parser: URLParser = new URLParser(Browser.location.toString());
+		var parser: URLParser = new URLParser(Browser.location.href);
 		
 		var query: String = parser.query;
 		
