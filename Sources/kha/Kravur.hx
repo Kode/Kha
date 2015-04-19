@@ -187,7 +187,7 @@ class Kravur implements Font {
 		for (c in 0...str.length) {
 			width += getCharWidth(str.charCodeAt(c));
 		}
-		trace("width: " + width);
+		//trace("width: " + width);
 		if (width > 10 && width < 100) {
 			var a = 3;
 			++a;
