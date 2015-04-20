@@ -14,3 +14,7 @@
 	path = Tools/haxe
 	url = ../haxe_bin
 	branch = master
+[submodule "Tools/oggenc"]
+	path = Tools/oggenc
+	url = ../oggenc_bin
+	branch = master
