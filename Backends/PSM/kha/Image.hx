@@ -1,13 +1,13 @@
 package kha;
 
+import haxe.io.Bytes;
 import kha.graphics2.Graphics;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import sce.playstation.core.graphics.Texture2D;
 
-@:classCode('
-	public Sce.PlayStation.Core.Graphics.Texture2D texture;
-')
 class Image {
+	public var texture: Texture2D;
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 	
@@ -22,32 +22,31 @@ class Image {
 	}
 	
 	public function new(filename: String) {
-		loadTexture(filename);
+		texture = new Texture2D("/Application/resources/" + filename, false);
 	}
-	
-	@:functionCode('
-		texture = new Sce.PlayStation.Core.Graphics.Texture2D("/Application/resources/" + filename, false);
-	')
-	function loadTexture(filename: String) {
 		
-	}
-	
 	public var width(get, null): Int;
 	
-	@:functionCode('
-		return texture.Width;
-	')
 	public function get_width(): Int {
-		return 0;
+		return texture.Width;
 	}
 	
 	public var height(get, null): Int;
 	
-	@:functionCode('
-		return texture.Height;
-	')
 	public function get_height(): Int {
-		return 0;
+		return texture.Height;
+	}
+	
+	public var realWidth(get, null): Int;
+	
+	public function get_realWidth(): Int {
+		return texture.Width;
+	}
+	
+	public var realHeight(get, null): Int;
+	
+	public function get_realHeight(): Int {
+		return texture.Height;
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool {
@@ -55,6 +54,14 @@ class Image {
 	}
 	
 	public function unload(): Void {
+		
+	}
+	
+	public function lock(level: Int = 0): Bytes {
+		return null;
+	}
+	
+	public function unlock(): Void {
 		
 	}
 	
@@ -74,5 +81,17 @@ class Image {
 			//graphics4 = new kha.flash.graphics4.Graphics(this);
 		}
 		return graphics4;
+	}
+	
+	public static var maxSize(get, null): Int;
+	
+	public static function get_maxSize(): Int {
+		return 2048;
+	}
+	
+	public static var nonPow2Supported(get, null): Bool;
+	
+	public static function get_nonPow2Supported(): Bool {
+		return true;
 	}
 }

@@ -8,26 +8,31 @@ import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
+import kha.graphics4.Program;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureFilter;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import sce.playstation.core.graphics.DrawMode;
+import sce.playstation.core.graphics.GraphicsContext;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var target: Image;
+	private var context: GraphicsContext;
+	private var indexBuffer: IndexBuffer;
+	private var vertexBuffer: VertexBuffer;
+	private var program: Program;
 
-	//public static function initContext(context: Context3D): Void { }
-	
-	public function new(target: Image = null) {
-		this.target = target;
+	public function new() {
+		context = new GraphicsContext();
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
@@ -75,15 +80,16 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		vertexBuffer.set();
+		this.vertexBuffer = vertexBuffer;
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		indexBuffer.set();
+		this.indexBuffer = indexBuffer;
 	}
 	
 	public function setProgram(program: kha.graphics4.Program): Void {
-		program.set();
+		this.program = program;
+		context.SetShaderProgram(program.program);
 	}
 	
 	public function maxTextureSize(): Int {
@@ -95,11 +101,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		
+		context.SetTexture(0, texture.texture);
 	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		
+		vertexBuffer.buffer.SetIndices(indexBuffer.buffer);
+		context.SetVertexBuffer(0, vertexBuffer.buffer);
+		context.DrawArrays(DrawMode.Triangles, start, count);
 	}
 	
 	public function createVertexShader(source: Blob): kha.graphics4.VertexShader {
@@ -146,8 +154,21 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	@:functionCode('
+		var m = new Sce.PlayStation.Core.Matrix4(
+			(float)matrix.get(0, 0), (float)matrix.get(1, 0), (float)matrix.get(2, 0), (float)matrix.get(3, 0),
+			(float)matrix.get(0, 1), (float)matrix.get(1, 1), (float)matrix.get(2, 1), (float)matrix.get(3, 1),
+			(float)matrix.get(0, 2), (float)matrix.get(1, 2), (float)matrix.get(2, 2), (float)matrix.get(3, 2),
+			(float)matrix.get(0, 3), (float)matrix.get(1, 3), (float)matrix.get(2, 3), (float)matrix.get(3, 3)
+			);
+		program.program.SetUniformValue(location.location, ref m);
+	')
+	private function setMatrix2(location: kha.psm.graphics4.ConstantLocation, matrix: Matrix4): Void {
 		
+	}
+	
+	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+		setMatrix2(cast location, matrix);
 	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
@@ -163,6 +184,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		
+		context.SwapBuffers();
 	}
 }
