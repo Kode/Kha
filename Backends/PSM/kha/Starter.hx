@@ -2,7 +2,7 @@ package kha;
 
 class Starter {
 	static public var game: Game;
-	static public var painter: kha.psm.Painter;
+	//static public var painter: kha.psm.Painter;
 	static var left: Bool;
 	static var right: Bool;
 	static var up: Bool;
@@ -12,7 +12,7 @@ class Starter {
 	public static var mouseY: Int = 0;
 	
 	public function new() {
-		painter = new kha.psm.Painter();
+		//painter = new kha.psm.Painter();
 		kha.Loader.init(new kha.psm.Loader());
 		Scheduler.init();
 		left = false;
@@ -38,9 +38,9 @@ class Starter {
 			checkEvents();
 			checkGamepad();
 			game.update();
-			painter.begin();
-			game.render(painter);
-			painter.end();
+			//painter.begin();
+			//game.render(painter);
+			//painter.end();
 		}
 	}
 	

@@ -3,15 +3,15 @@ package kha.psm;
 import kha.Image;
 import kha.Rotation;
 
-@:classCode('
+/*@:classCode('
 	public static Sce.PlayStation.Core.Graphics.GraphicsContext graphics;
 	private Sce.PlayStation.Core.Graphics.ShaderProgram shaderProgram;
 	private Sce.PlayStation.Core.Graphics.VertexBuffer vertexBuffer;
 	private float[] vertices;
 	private float[] texcoords;
-')
-class Painter extends kha.Painter {
-	var tx: Float;
+')*/
+class Painter { //extends kha.Painter {
+	/*var tx: Float;
 	var ty: Float;
 	
 	public function new() {
@@ -142,5 +142,5 @@ class Painter extends kha.Painter {
 	')
 	override public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, rotation: Rotation = null): Void {
 		
-	}
+	}*/
 }
