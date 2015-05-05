@@ -79,31 +79,31 @@ class Game {
 		return Scaler.transformY(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
-	@:deprecated("kha.Game.buttonDown(button) is deprecated, use kha.input.Gamepad instead.")
+	//@:deprecated("kha.Game.buttonDown(button) is deprecated, use kha.input.Gamepad instead.")
 	public function buttonDown(button: Button): Void { }
-	@:deprecated("kha.Game.buttonUp(button) is deprecated, use kha.input.Gamepad instead.")
+	//@:deprecated("kha.Game.buttonUp(button) is deprecated, use kha.input.Gamepad instead.")
 	public function buttonUp  (button: Button): Void { }
 	
-	@:deprecated("kha.Game.keyDown(key, char) is deprecated, use kha.input.Keyboard instead.")
+	//@:deprecated("kha.Game.keyDown(key, char) is deprecated, use kha.input.Keyboard instead.")
 	public function keyDown(key: Key, char: String): Void { }
-	@:deprecated("kha.Game.keyUp(key, char) is deprecated, use kha.input.Keyboard instead.")
+	//@:deprecated("kha.Game.keyUp(key, char) is deprecated, use kha.input.Keyboard instead.")
 	public function keyUp  (key: Key, char: String): Void { }
 	
-	@:deprecated("kha.Game.mouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.mouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function mouseDown(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.mouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.mouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function mouseUp(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.rightMouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.rightMouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function rightMouseDown(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.rightMouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.rightMouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function rightMouseUp(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.middleMouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.middleMouseDown(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function middleMouseDown(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.middleMouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.middleMouseUp(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function middleMouseUp(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.mouseMove(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.mouseMove(x, y) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function mouseMove(x: Int, y: Int): Void { }
-	@:deprecated("kha.Game.mouseWheel(delta) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
+	//@:deprecated("kha.Game.mouseWheel(delta) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function mouseWheel(delta: Int):     Void { }
 	
 	public function onForeground(): Void { }
