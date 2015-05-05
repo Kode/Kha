@@ -62,18 +62,20 @@ class Kravur implements Font {
 		
 		var kravur = fontCache.get(key);
 		if (kravur == null) {
-			kravur = new Kravur(key);
-			kravur.myName = name;
-			kravur.myStyle = style;
-			kravur.mySize = size;
-			
-			fontCache.set(key, kravur);
+			var blob = Loader.the.getBlob(key);
+			if (blob != null) {
+				kravur = new Kravur(blob);
+				kravur.myName = name;
+				kravur.myStyle = style;
+				kravur.mySize = size;
+				
+				fontCache.set(key, kravur);
+			}
 		}
 		return kravur;
 	}
 	
-	private function new(name: String) {
-		var blob = Loader.the.getBlob(name);
+	private function new(blob: Blob) {
 		var size = blob.readS32LE();
 		var ascent = blob.readS32LE();
 		var descent = blob.readS32LE();
@@ -179,28 +181,20 @@ class Kravur implements Font {
 		return stringWidth(ch.substr(offset, length));
 	}
 	
-	#if cpp
-	@:functionCode('
-		const wchar_t * w = str.__WCStr();
-		float width = 0;
-		for (int c = 0; w[c] != 0; ++c) {
-			width += this->getCharWidth(w[c]);
-		}
-		return width;
-	')
-	public function stringWidth(str: String): Float {
-		return 0;
-	}
-	#else
-	public function stringWidth(str: String): Float {
+	public function stringWidth(string: String): Float {
+		var str = new SuperString(string);
 		var width: Float = 0;
 		for (c in 0...str.length) {
 			width += getCharWidth(str.charCodeAt(c));
 		}
+		//trace("width: " + width);
+		if (width > 10 && width < 100) {
+			var a = 3;
+			++a;
+		}
 		return width;
 	}
-	#end
-
+	
 	public function getBaselinePosition(): Float {
 		return baseline;
 	}

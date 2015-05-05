@@ -492,7 +492,9 @@ class ColoredShaderPainter {
 	}
 }
 
+#if cpp
 @:headerClassCode("const wchar_t* wtext;")
+#end
 class TextShaderPainter {
 	private var projectionMatrix: Matrix4;
 	private var shaderProgram: Program;
@@ -662,30 +664,38 @@ class TextShaderPainter {
 	
 	private var text: String;
 	
+	#if cpp
 	@:functionCode('
 		wtext = text.__WCStr();
 	')
+	#end
 	private function startString(text: String): Void {
 		this.text = text;
 	}
 	
+	#if cpp
 	@:functionCode('
 		return wtext[position];
 	')
+	#end
 	private function charCodeAt(position: Int): Int {
 		return text.charCodeAt(position);
 	}
 	
+	#if cpp
 	@:functionCode('
 		return wcslen(wtext);
 	')
+	#end
 	private function stringLength(): Int {
 		return text.length;
 	}
 	
+	#if cpp
 	@:functionCode('
 		wtext = 0;
 	')
+	#end
 	private function endString(): Void {
 		text = null;
 	}
@@ -729,6 +739,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
+	private var videoProgram: Program;
 	private var canvas: Canvas;
 	private var g: Graphics;
 
@@ -741,6 +752,20 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
 		setProjection();
+		
+		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-video.frag"));
+		var vertexShader = new VertexShader(Loader.the.getShader("painter-video.vert"));
+	
+		videoProgram = new Program();
+		videoProgram.setFragmentShader(fragmentShader);
+		videoProgram.setVertexShader(vertexShader);
+
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
+		
+		videoProgram.link(structure);
 	}
 	
 	private static function upperPowerOfTwo(v: Int): Int {
@@ -930,5 +955,15 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function end(): Void {
 		endDrawing();
 		g.end();
+	}
+	
+	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+		
+	}
+	
+	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+		setProgram(videoProgram);
+		drawVideoInternal(video, x, y, width, height);
+		setProgram(null);
 	}
 }

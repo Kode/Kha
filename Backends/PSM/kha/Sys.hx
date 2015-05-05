@@ -1,6 +1,6 @@
 package kha;
 
-import kha.psm.Graphics;
+import kha.psm.graphics4.Graphics;
 import system.diagnostics.Stopwatch;
 
 class Sys {
@@ -29,17 +29,25 @@ class Sys {
 	public static var pixelWidth(get, null): Int;
 	public static var pixelHeight(get, null): Int;
 	
-	@:functionCode('
-		return kha.psm.Painter.graphics.Screen.Width;
-	')
+	//@:functionCode('
+	//	return kha.psm.Painter.graphics.Screen.Width;
+	//')
 	public static function get_pixelWidth(): Int {
 		return 0;
 	}
 	
-	@:functionCode('
-		return kha.psm.Painter.graphics.Screen.Height;
-	')
+	//@:functionCode('
+	//	return kha.psm.Painter.graphics.Screen.Height;
+	//')
 	public static function get_pixelHeight(): Int {
 		return 0;
+	}
+	
+	public static function vsynced(): Bool {
+		return true;
+	}
+	
+	public static function refreshRate(): Int {
+		return 60;
 	}
 }

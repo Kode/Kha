@@ -2,6 +2,7 @@ package kha;
 
 import kha.Game;
 import kha.graphics4.Graphics2;
+import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Surface;
@@ -18,7 +19,7 @@ class Starter {
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
 	
-	public function new() {
+	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();

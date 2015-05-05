@@ -1,8 +1,11 @@
 package kha;
 
+import kha.graphics4.Graphics2;
+import kha.psm.graphics4.Graphics;
+
 class Starter {
 	static public var game: Game;
-	static public var painter: kha.psm.Painter;
+	private static var framebuffer: Framebuffer;
 	static var left: Bool;
 	static var right: Bool;
 	static var up: Bool;
@@ -12,7 +15,10 @@ class Starter {
 	public static var mouseY: Int = 0;
 	
 	public function new() {
-		painter = new kha.psm.Painter();
+		var graphics = new Graphics();
+		framebuffer = new Framebuffer(null, graphics);
+		var g2 = new Graphics2(framebuffer);
+		framebuffer.init(g2, graphics);
 		kha.Loader.init(new kha.psm.Loader());
 		Scheduler.init();
 		left = false;
@@ -38,9 +44,7 @@ class Starter {
 			checkEvents();
 			checkGamepad();
 			game.update();
-			painter.begin();
-			game.render(painter);
-			painter.end();
+			game.render(framebuffer);
 		}
 	}
 	

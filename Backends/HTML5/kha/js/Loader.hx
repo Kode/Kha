@@ -60,10 +60,10 @@ class Loader extends kha.Loader {
 					bytes = Bytes.alloc(data.length);
 					for (i in 0...data.length) bytes.set(i, data[i]);
 				}
-				else Lib.alert("loadBlob failed");
+				else Browser.alert("loadBlob failed");
 				done(new Blob(bytes));
 			}
-			else Lib.alert("loadBlob failed");
+			else Browser.alert("loadBlob failed");
 		};
 		request.send(null);
 	}

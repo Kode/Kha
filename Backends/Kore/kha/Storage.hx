@@ -35,8 +35,14 @@ class KoreStorageFile extends StorageFile {
 		if (!writer.open(name)) return null();
 		writer.write(data->bytes->b->Pointer(), data->length());
 	')
+	private function writeInternal(data: Blob): Void {
+
+	}
+
 	override public function write(data: Blob): Void {
-		
+		if (data != null) {
+			writeInternal(data);
+		}
 	}
 	
 	private static function createBlob(size: Int): Blob {

@@ -46,4 +46,10 @@ class Music extends kha.Music {
 	override public function getLength(): Int {
 		return 0;
 	}
+	
+	@:functionCode('return stream->volume();')
+	override public function getVolume(): Float { return 1; }
+
+	@:functionCode('stream->setVolume(volume);')
+	override public function setVolume(volume: Float): Void { }
 }

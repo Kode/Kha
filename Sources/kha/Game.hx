@@ -70,13 +70,13 @@ class Game {
 	@:deprecated("kha.Game.painterTransformMouseX(x, y) is deprecated, use kha.Scaler.transformX instead.")
 	public function painterTransformMouseX(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformX(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformX(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	@:deprecated("kha.Game.painterTransformMouseY(x, y) is deprecated, use kha.Scaler.transformY instead.")
 	public function painterTransformMouseY(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformY(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformY(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	@:deprecated("kha.Game.buttonDown(button) is deprecated, use kha.input.Gamepad instead.")

@@ -10,8 +10,6 @@ import kha.math.Vector4;
 import kha.Rectangle;
 
 interface Graphics {
-	function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void;
-	
 	function begin(): Void;
 	function end(): Void;
 	

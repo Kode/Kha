@@ -9,6 +9,7 @@ import js.html.EventListener;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import kha.Game;
+import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.js.CanvasGraphics;
@@ -44,9 +45,8 @@ class Starter {
 	@:allow(kha.Scheduler) static var mouseX: Int;
 	@:allow(kha.Scheduler) static var mouseY: Int;
 	
-	public function new() {
+	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
@@ -117,9 +117,8 @@ class Starter {
 		
 		var gl: Bool = false;
 		
-		
 		try {
-			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: Loader.the.antiAliasingSamples > 1 } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (Sys.gl != null) {
 				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				Sys.gl.getExtension("OES_texture_float");
