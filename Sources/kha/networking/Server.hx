@@ -9,6 +9,7 @@ import js.support.Error;
 class Server {
 	private var webSocket: Dynamic;
 	private var udpSocket: DgramSocket;
+	private var lastId: Int = -1;
 	
 	public function new(port: Int) {
 		var WebSocketServer = Node.require("ws").Server;
@@ -20,12 +21,14 @@ class Server {
 	
 	public function onConnection(connection: Client->Void): Void {
 		webSocket.on("connection", function (socket: Dynamic) {
-			connection(new WebSocketClient(socket));
+			++lastId;
+			connection(new WebSocketClient(lastId, socket));
 		});
 		
 		udpSocket.on('message', function(message: Buffer, info) {
 			if (compare(message, "JOIN")) {
-				connection(new UdpClient(udpSocket, info.address, info.port));
+				++lastId;
+				connection(new UdpClient(lastId, udpSocket, info.address, info.port));
 			}
 			//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
 		});

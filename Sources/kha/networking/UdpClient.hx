@@ -6,11 +6,13 @@ import js.node.Dgram.DgramSocket;
 import js.support.Error;
 
 class UdpClient implements Client {
+	private var myId: Int;
 	private var socket: DgramSocket;
 	private var address: String;
 	private var port: Int;
 	
-	public function new(socket: DgramSocket, address: String, port: Int) {
+	public function new(id: Int, socket: DgramSocket, address: String, port: Int) {
+		myId = id;
 		this.socket = socket;
 		this.address = address;
 		this.port = port;
@@ -28,5 +30,17 @@ class UdpClient implements Client {
 	
 	public function onClose(close: Void->Void): Void {
 		
+	}
+	
+	public var controllers(get, null): Array<Controller>;
+	
+	public function get_controllers(): Array<Controller> {
+		return null;
+	}
+	
+	public var id(get, null): Int;
+	
+	public function get_id(): Int {
+		return myId;
 	}
 }

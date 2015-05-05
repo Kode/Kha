@@ -6,4 +6,5 @@ interface Client {
 	function send(bytes: Bytes, mandatory: Bool): Void;
 	function onClose(close: Void->Void): Void;
 	var controllers(get, null): Array<Controller>;
+	var id(get, null): Int;
 }

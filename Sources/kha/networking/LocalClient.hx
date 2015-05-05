@@ -2,26 +2,21 @@ package kha.networking;
 
 import haxe.io.Bytes;
 
-class WebSocketClient implements Client {
+class LocalClient implements Client {
 	private var myId: Int;
-	private var socket: Dynamic;
 	
-	public function new(id: Int, socket: Dynamic) {
+	public function new(id: Int) {
 		myId = id;
-		this.socket = socket;
 	}
 	
 	public function send(bytes: Bytes, mandatory: Bool): Void {
-		socket.send(bytes.getData());
-		//socket.send(bytes.getData(), {binary: true});
+		
 	}
 	
 	public function onClose(close: Void->Void): Void {
-		socket.onclose = function () {
-			close();
-		};
+		
 	}
-	
+
 	public var controllers(get, null): Array<Controller>;
 	
 	public function get_controllers(): Array<Controller> {
