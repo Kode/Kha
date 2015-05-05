@@ -53,6 +53,16 @@ class EntityBuilder {
 							this.$fieldname = bytes.getDouble(offset + $v { index } );
 						};
 						index += 8;
+					case "Bool":
+						send = macro {
+							$send;
+							bytes.set(offset + $v { index }, this.$fieldname ? 1 : 0);
+						};
+						receive = macro {
+							$receive;
+							this.$fieldname = bytes.get(offset + $v { index } ) == 1 ? true : false;
+						};
+						index += 1;
 					}
 				default:
 				}
