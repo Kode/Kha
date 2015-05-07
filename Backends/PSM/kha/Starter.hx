@@ -15,16 +15,17 @@ class Starter {
 	public static var mouseY: Int = 0;
 	
 	public function new() {
-		var graphics = new Graphics();
-		framebuffer = new Framebuffer(null, graphics);
-		var g2 = new Graphics2(framebuffer);
-		framebuffer.init(g2, graphics);
-		kha.Loader.init(new kha.psm.Loader());
-		Scheduler.init();
 		left = false;
 		right = false;
 		up = false;
 		down = false;
+		
+		//keyboard = new Keyboard();
+		//mouse = new kha.input.Mouse();
+		//gamepad = new Gamepad();
+		
+		Loader.init(new kha.psm.Loader());
+		Scheduler.init();
 	}
 	
 	public function start(game: Game) {
@@ -33,17 +34,25 @@ class Starter {
 		Loader.the.loadProject(loadFinished);
 	}
 	
-	public static function loadFinished(): Void {
+	public function loadFinished(): Void {
 		Loader.the.initProject();
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
+		Sys.init();
+		
+		var graphics = new Graphics();
+		framebuffer = new Framebuffer(null, graphics);
+		var g2 = new Graphics2(framebuffer);
+		framebuffer.init(g2, graphics);
+		
+		Scheduler.start();
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
 		while (true) {
 			checkEvents();
 			checkGamepad();
-			game.update();
+			Scheduler.executeFrame();
 			game.render(framebuffer);
 		}
 	}
