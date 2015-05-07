@@ -16,6 +16,13 @@ class WebSocketClient implements Client {
 		//socket.send(bytes.getData(), {binary: true});
 	}
 	
+	public function receive(receiver: Bytes->Void): Void {
+		socket.on('message', function (message) {
+			js.Node.console.log(message);
+			receiver(Bytes.ofData(message));
+		});
+	}
+	
 	public function onClose(close: Void->Void): Void {
 		socket.onclose = function () {
 			close();

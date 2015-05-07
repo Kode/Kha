@@ -28,6 +28,10 @@ class UdpClient implements Client {
 		});
 	}
 	
+	public function receive(receiver: Bytes->Void): Void {
+		
+	}
+	
 	public function onClose(close: Void->Void): Void {
 		
 	}

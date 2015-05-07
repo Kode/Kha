@@ -11,14 +11,6 @@ class Example implements Entity {
 		test = 3;
 	}
 	
-	public function id(): Int {
-		return _id;
-	}
-	
-	public function size(): Int {
-		return _size;
-	}
-	
 	public function simulate(tdif: Float): Void {
 		
 	}

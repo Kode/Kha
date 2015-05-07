@@ -33,6 +33,9 @@ class Keyboard implements Controller {
 	
 	@input
 	private function sendDownEvent(key: Key, char: String): Void {
+		#if node
+		js.Node.console.log("Down: " + key + " from " + kha.networking.Session.the().me.id);
+		#end
 		for (listener in downListeners) {
 			listener(key, char);
 		}
@@ -40,6 +43,9 @@ class Keyboard implements Controller {
 	
 	@input
 	private function sendUpEvent(key: Key, char: String): Void {
+		#if node
+		js.Node.console.log("Up: " + key + " from " + kha.networking.Session.the().me.id);
+		#end
 		for (listener in upListeners) {
 			listener(key, char);
 		}

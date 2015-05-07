@@ -10,11 +10,17 @@ class Sprite implements Entity {
 	private var animation: Animation;
 	private var collider: Rectangle;
 	
+	@replicated
 	public var x: Float;
+	@replicated
 	public var y: Float;
+	@replicated
 	public var speedx: Float;
+	@replicated
 	public var speedy: Float;
+	@replicated
 	public var accx: Float;
+	@replicated
 	public var accy: Float;
 	public var maxspeedy: Float;
 	public var collides: Bool;
@@ -116,12 +122,4 @@ class Sprite implements Entity {
 	}
 	
 	public var height(get, set): Float;
-	
-	public function id(): Int {
-		return _id;
-	}
-	
-	public function size(): Int {
-		return _size;
-	}
 }

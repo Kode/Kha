@@ -27,6 +27,15 @@ class EntityBuilder {
 		
 		var index: Int = 0;
 		for (field in fields) {
+			var replicated = false;
+			for (meta in field.meta) {
+				if (meta.name == "replicated") {
+					replicated = true;
+					break;
+				}
+			}
+			if (!replicated) continue;
+			
 			switch (field.kind) {
 			case FVar(t, e):
 				var fieldname = field.name;
@@ -71,72 +80,100 @@ class EntityBuilder {
 		}
 		
 		if (isBaseEntity) {
-			fields.push({
-				name: "_send",
-				doc: null,
-				meta: [],
-				access: [APublic],
-				kind: FFun({
-					ret: null,
-					params: null,
-					expr: send,
-					args: [{
-						value: null,
-						type: Context.toComplexType(Context.getType("Int")),
-						opt: null,
-						name: "offset" },
-						{
-						value: null,
-						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-						opt: null,
-						name: "bytes"}]
-				}),
-				pos: Context.currentPos()
-			});
+		fields.push({
+			name: "_send",
+			doc: null,
+			meta: [],
+			access: isBaseEntity ? [APublic] : [APublic, AOverride],
+			kind: FFun({
+				ret: null,
+				params: null,
+				expr: send,
+				args: [{
+					value: null,
+					type: Context.toComplexType(Context.getType("Int")),
+					opt: null,
+					name: "offset" },
+					{
+					value: null,
+					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+					opt: null,
+					name: "bytes"}]
+			}),
+			pos: Context.currentPos()
+		});
+		
+		fields.push({
+			name: "_receive",
+			doc: null,
+			meta: [],
+			access: isBaseEntity ? [APublic] : [APublic, AOverride],
+			kind: FFun({
+				ret: null,
+				params: null,
+				expr: receive,
+				args: [{
+					value: null,
+					type: Context.toComplexType(Context.getType("Int")),
+					opt: null,
+					name: "offset" },
+					{
+					value: null,
+					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+					opt: null,
+					name: "bytes"}]
+			}),
+			pos: Context.currentPos()
+		});
+		}
+		
+		fields.push({
+			name: "_id",
+			doc: null,
+			meta: [],
+			access: isBaseEntity ? [APublic] : [APublic, AOverride],
+			kind: FFun({
+				ret: Context.toComplexType(Context.getType("Int")),
+				params: null,
+				expr: macro { return __id; },
+				args: []
+			}),
+			pos: Context.currentPos()
+		});
+		
+		fields.push({
+			name: "_size",
+			doc: null,
+			meta: [],
+			access: isBaseEntity ? [APublic] : [APublic, AOverride],
+			kind: FFun({
+				ret: Context.toComplexType(Context.getType("Int")),
+				params: null,
+				expr: macro { return __size; },
+				args: []
+			}),
+			pos: Context.currentPos()
+		});
 			
+		if (isBaseEntity) {
 			fields.push({
-				name: "_receive",
-				doc: null,
-				meta: [],
-				access: [APublic],
-				kind: FFun({
-					ret: null,
-					params: null,
-					expr: receive,
-					args: [{
-						value: null,
-						type: Context.toComplexType(Context.getType("Int")),
-						opt: null,
-						name: "offset" },
-						{
-						value: null,
-						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-						opt: null,
-						name: "bytes"}]
-				}),
-				pos: Context.currentPos()
-			});
-			
-			var newField = {
-				name: "_id",
+				name: "__id",
 				doc: null,
 				meta: [],
 				access: [APublic],
 				kind: FVar(macro: Int, macro 0),
 				pos: Context.currentPos()
-			};
-			fields.push(newField);
+			});
 			
-			var sizeField = {
-				name: "_size",
+			fields.push({
+				name: "__size",
 				doc: null,
 				meta: [],
-				access: [APublic],
+				access: [APrivate],
 				kind: FVar(macro: Int, macro $v { index }),
 				pos: Context.currentPos()
-			};
-			fields.push(sizeField);
-		}		
+			});
+		}
 		
 		return fields;
 	}

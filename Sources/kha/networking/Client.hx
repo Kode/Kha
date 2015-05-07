@@ -3,8 +3,8 @@ package kha.networking;
 import haxe.io.Bytes;
 
 interface Client {
-	function send(bytes: Bytes, mandatory: Bool): Void;
-	function onClose(close: Void->Void): Void;
-	var controllers(get, null): Array<Controller>;
 	var id(get, null): Int;
+	function send(bytes: Bytes, mandatory: Bool): Void;
+	function receive(receiver: Bytes->Void): Void;
+	function onClose(close: Void->Void): Void;
 }
