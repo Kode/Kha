@@ -6,15 +6,12 @@ import system.diagnostics.Stopwatch;
 class Sys {
 	private static var watch: Stopwatch;
 	
-	public static var graphics: Graphics;
-	
 	public static var mouse(default, null): kha.Mouse;
 	
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
 	public static function init(): Void {
 		mouse = new Mouse();
-		graphics = new Graphics();
 		watch = new Stopwatch();
 		watch.Start();
 	}
@@ -33,14 +30,14 @@ class Sys {
 	//	return kha.psm.Painter.graphics.Screen.Width;
 	//')
 	public static function get_pixelWidth(): Int {
-		return 0;
+		return 960;
 	}
 	
 	//@:functionCode('
 	//	return kha.psm.Painter.graphics.Screen.Height;
 	//')
 	public static function get_pixelHeight(): Int {
-		return 0;
+		return 544;
 	}
 	
 	public static function vsynced(): Bool {

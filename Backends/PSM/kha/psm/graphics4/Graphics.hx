@@ -101,11 +101,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		context.SetTexture(0, texture.texture);
+		if (texture != null) {
+			context.SetTexture(0, texture.texture);
+		}
 	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		vertexBuffer.buffer.SetIndices(indexBuffer.buffer);
+		vertexBuffer.setIndices(indexBuffer);
 		context.SetVertexBuffer(0, vertexBuffer.buffer);
 		context.DrawArrays(DrawMode.Triangles, start, count);
 	}

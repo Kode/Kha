@@ -7,6 +7,7 @@ import sce.playstation.core.graphics.VertexFormat;
 
 class VertexBuffer {
 	public var buffer: sce.playstation.core.graphics.VertexBuffer;
+	private var indexCount: Int = -1;
 	private var myStride: Int;
 	private var myStructure: kha.graphics4.VertexStructure;
 	private var vertexCount: Int;
@@ -17,25 +18,18 @@ class VertexBuffer {
 		this.vertexCount = vertexCount;
 		this.myStructure = structure;
 		myStride = 0;
-		var format = new NativeArray<VertexFormat>(structure.elements.length);
-		var index = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
 			case VertexData.Float1:
 				myStride += 1;
-				format[index] = VertexFormat.Float;
 			case VertexData.Float2:
 				myStride += 2;
-				format[index] = VertexFormat.Float2;
 			case VertexData.Float3:
 				myStride += 3;
-				format[index] = VertexFormat.Float3;
 			case VertexData.Float4:
 				myStride += 4;
-				format[index] = VertexFormat.Float4;
 			}
 		}
-		buffer = new sce.playstation.core.graphics.VertexBuffer(vertexCount, format);// (4, 6, Sce.PlayStation.Core.Graphics.VertexFormat.Float3, Sce.PlayStation.Core.Graphics.VertexFormat.Float2, Sce.PlayStation.Core.Graphics.VertexFormat.Float4);
 		vertices = new NativeArray<Single>(stride() * count());
 		lockedVertices = new Array<Float>();
 		lockedVertices[stride() * count() - 1] = 0;
@@ -49,25 +43,25 @@ class VertexBuffer {
 		for (i in 0...stride() * count()) {
 			vertices[i] = lockedVertices[i];
 		}
-		var offset = 0;
+		/*var offset = 0;
 		var index = 0;
 		for (element in myStructure.elements) {
 			switch (element.data) {
 			case VertexData.Float1:
-				buffer.SetVertices(index, vertices, offset, stride());
+				buffer.SetVertices(index, vertices, offset * 4, stride() * 4);
 				offset += 1;
 			case VertexData.Float2:
-				buffer.SetVertices(index, vertices, offset, stride());
+				buffer.SetVertices(index, vertices, offset * 4, stride() * 4);
 				offset += 2;
 			case VertexData.Float3:
-				buffer.SetVertices(index, vertices, offset, stride());
+				buffer.SetVertices(index, vertices, offset * 4, stride() * 4);
 				offset += 3;
 			case VertexData.Float4:
-				buffer.SetVertices(index, vertices, offset, stride());
+				buffer.SetVertices(index, vertices, offset * 4, stride() * 4);
 				offset += 4;
 			}
 			++index;
-		}
+		}*/
 	}
 	
 	public function stride(): Int {
@@ -76,5 +70,33 @@ class VertexBuffer {
 	
 	public function count(): Int {
 		return vertexCount;
+	}
+	
+	private function createVertexBuffer(): Void {
+		var format = new NativeArray<VertexFormat>(myStructure.elements.length);
+		var index = 0;
+		for (element in myStructure.elements) {
+			switch (element.data) {
+			case VertexData.Float1:
+				format[index] = VertexFormat.Float;
+			case VertexData.Float2:
+				format[index] = VertexFormat.Float2;
+			case VertexData.Float3:
+				format[index] = VertexFormat.Float3;
+			case VertexData.Float4:
+				format[index] = VertexFormat.Float4;
+			}
+			++index;
+		}
+		buffer = new sce.playstation.core.graphics.VertexBuffer(vertexCount, indexCount, format);
+	}
+	
+	public function setIndices(indexBuffer: IndexBuffer): Void {
+		if (indexCount != indexBuffer.count()) {
+			indexCount = indexBuffer.count();
+			createVertexBuffer();
+		}
+		buffer.SetIndices(indexBuffer.buffer);
+		buffer.SetVertices(vertices);
 	}
 }
