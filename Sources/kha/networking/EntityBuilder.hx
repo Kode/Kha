@@ -25,6 +25,16 @@ class EntityBuilder {
 			
 		};
 		
+		if (!isBaseEntity) {
+			receive = macro {
+				offset += super._receive(offset, bytes);
+			};
+			
+			send = macro {
+				offset += super._send(offset, bytes);
+			};
+		}
+		
 		var index: Int = 0;
 		for (field in fields) {
 			var replicated = false;
@@ -79,14 +89,23 @@ class EntityBuilder {
 			}
 		}
 		
-		if (isBaseEntity) {
+		send = macro {
+			$send;
+			return $v { index };
+		};
+		
+		receive = macro {
+			$receive;
+			return $v { index };
+		};
+		
 		fields.push({
 			name: "_send",
 			doc: null,
 			meta: [],
 			access: isBaseEntity ? [APublic] : [APublic, AOverride],
 			kind: FFun({
-				ret: null,
+				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
 				expr: send,
 				args: [{
@@ -109,7 +128,7 @@ class EntityBuilder {
 			meta: [],
 			access: isBaseEntity ? [APublic] : [APublic, AOverride],
 			kind: FFun({
-				ret: null,
+				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
 				expr: receive,
 				args: [{
@@ -125,7 +144,6 @@ class EntityBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-		}
 		
 		fields.push({
 			name: "_id",
@@ -141,6 +159,16 @@ class EntityBuilder {
 			pos: Context.currentPos()
 		});
 		
+		var size = macro {
+			return $v { index };
+		};
+		
+		if (!isBaseEntity) {
+			size = macro {
+				return super._size() + $v { index };
+			};
+		}
+		
 		fields.push({
 			name: "_size",
 			doc: null,
@@ -149,7 +177,7 @@ class EntityBuilder {
 			kind: FFun({
 				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
-				expr: macro { return __size; },
+				expr: size,
 				args: []
 			}),
 			pos: Context.currentPos()
@@ -162,15 +190,6 @@ class EntityBuilder {
 				meta: [],
 				access: [APublic],
 				kind: FVar(macro: Int, macro 0),
-				pos: Context.currentPos()
-			});
-			
-			fields.push({
-				name: "__size",
-				doc: null,
-				meta: [],
-				access: [APrivate],
-				kind: FVar(macro: Int, macro $v { index }),
 				pos: Context.currentPos()
 			});
 		}
