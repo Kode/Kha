@@ -22,9 +22,13 @@ class Sprite implements Entity {
 	public var accx: Float;
 	@replicated
 	public var accy: Float;
+	@replicated
 	public var maxspeedy: Float;
+	@replicated
 	public var collides: Bool;
+	@replicated
 	public var z: Int;
+	@replicated
 	public var removed: Bool = false;
 	public var angle: Float = 0.0;
 	public var originX: Float = 0.0;
