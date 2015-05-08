@@ -58,7 +58,7 @@ class Scheduler {
 	private static var delta:Float = 0;
 	private static var dScale:Float = 1;
 	
-	private static var startTime: Float;
+	private static var startTime: Float = 0;
 	
 	public static function init(): Void {
 		difs = new Array<Float>();
@@ -67,8 +67,8 @@ class Scheduler {
 		stopped = true;
 		halted_count = 0;
 		frame_tasks_sorted = true;
-		current = 0;
-		lastTime = 0;
+		current = realTime();
+		lastTime = realTime();
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -224,7 +224,7 @@ class Scheduler {
 		return Sys.getTime() - startTime;
 	}
 	
-	private static function resetTime(): Void {
+	public static function resetTime(): Void {
 		var now = Sys.getTime();
 		var dif = now - startTime;
 		startTime = now;
@@ -232,6 +232,9 @@ class Scheduler {
 			timeTask.start -= dif;
 			timeTask.next -= dif;
 		}
+		for (i in 0...DIF_COUNT-1) difs[i] = 0;
+		current = 0;
+		lastTime = 0;
 	}
 	
 	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
