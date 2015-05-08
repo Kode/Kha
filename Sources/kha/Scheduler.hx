@@ -6,7 +6,6 @@ class TimeTask {
 	public var start: Float;
 	public var period: Float;
 	public var duration: Float;
-	public var last: Float;
 	public var next: Float;
 	
 	public var id: Int;
@@ -59,6 +58,8 @@ class Scheduler {
 	private static var delta:Float = 0;
 	private static var dScale:Float = 1;
 	
+	private static var startTime: Float;
+	
 	public static function init(): Void {
 		difs = new Array<Float>();
 		for (i in 0...DIF_COUNT-1) difs[i] = 0;
@@ -85,7 +86,8 @@ class Scheduler {
 		onedifhz = 1.0 / hz;
 
 		stopped = false;
-		lastTime = Sys.getTime();
+		resetTime();
+		lastTime = realTime();
 		for (i in 0...DIF_COUNT-1) difs[i] = 0;
 	}
 	
@@ -97,10 +99,25 @@ class Scheduler {
 		return stopped;
 	}
 	
+	public static function back(time: Float): Void {
+		lastTime = time;
+		for (timeTask in timeTasks) {
+			if (timeTask.start >= time) {
+				timeTask.next = timeTask.start;
+			}
+			else {
+				timeTask.next = timeTask.start;
+				while (timeTask.next < time) { // TODO: Implement without looping
+					timeTask.next += timeTask.period;
+				}
+			}
+		}
+	}
+	
 	public static function executeFrame(): Void {
 		Sys.mouse.update();
 		
-		var now: Float = Sys.getTime();
+		var now: Float = realTime();
 		delta = now - lastTime;
 		lastTime = now;
 		var frameEnd: Float = current;
@@ -158,7 +175,6 @@ class Scheduler {
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
 			current = t.next;
-			t.last = t.next;
 			t.next += t.period;
 			timeTasks.remove(t);
 			
@@ -204,6 +220,20 @@ class Scheduler {
 		return current;
 	}
 	
+	private static function realTime(): Float {
+		return Sys.getTime() - startTime;
+	}
+	
+	private static function resetTime(): Void {
+		var now = Sys.getTime();
+		var dif = now - startTime;
+		startTime = now;
+		for (timeTask in timeTasks) {
+			timeTask.start -= dif;
+			timeTask.next -= dif;
+		}
+	}
+	
 	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
 		frameTasks.push(new FrameTask(task, priority, ++currentFrameTaskId));
 		frame_tasks_sorted = false;
@@ -243,7 +273,6 @@ class Scheduler {
 		if (duration != 0) t.duration = t.start + duration; //-1 ?
 
 		t.next = t.start;
-		t.last = current;
 		insertSorted(timeTasks, t);
 		return t.id;
 	}
