@@ -22,7 +22,7 @@ class ControllerBuilder {
 				
 				switch (field.kind) {
 				case FFun(f):
-					var size = 9;
+					var size = 17;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):
@@ -46,9 +46,10 @@ class ControllerBuilder {
 						var bytes = haxe.io.Bytes.alloc($v { size } );
 						bytes.set(0, kha.networking.Session.CONTROLLER_UPDATES);
 						bytes.setInt32(1, _id());
-						bytes.setInt32(5, $v { funcindex } );
+						bytes.setDouble(5, Scheduler.realTime());
+						bytes.setInt32(13, $v { funcindex } );
 					};
-					var index: Int = 9;
+					var index: Int = 17;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):
@@ -107,7 +108,7 @@ class ControllerBuilder {
 		#end
 		
 		var receive = macro @:mergeBlock {
-			var funcindex = bytes.getInt32(offset);
+			var funcindex = bytes.getInt32(offset + 0);
 		};
 		{
 			var funcindex = 0;
@@ -124,7 +125,7 @@ class ControllerBuilder {
 				switch (field.kind) {
 				case FFun(f):
 					var expr = macro { };
-					var index: Int = 9;
+					var index: Int = 4;
 					var varindex: Int = 0;
 					for (arg in f.args) {
 						switch (arg.type) {
@@ -135,7 +136,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Int = bytes.getInt32($v { index } );
+									var $varname: Int = bytes.getInt32(offset + $v { index } );
 								};
 								index += 4;
 							case "String":
@@ -143,7 +144,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: String = String.fromCharCode(bytes.get($v { index } ));
+									var $varname: String = String.fromCharCode(bytes.get(offset + $v { index } ));
 								};
 								index += 1;
 							case "Float":
@@ -151,7 +152,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Float = bytes.getDouble($v { index } );
+									var $varname: Float = bytes.getDouble(offset + $v { index } );
 								};
 								index += 8;
 							case "Bool":
@@ -159,7 +160,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Bool = bytes.get($v { index } ) != 0;
+									var $varname: Bool = bytes.get(offset + $v { index } ) != 0;
 								};
 								index += 1;
 							case "Key":
@@ -167,8 +168,9 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: kha.Key = kha.Key.createByIndex(bytes.get($v { index } ));
+									var $varname: kha.Key = kha.Key.createByIndex(bytes.get(offset + $v { index } ));
 								};
+								index += 1;
 							}
 						default:
 						}

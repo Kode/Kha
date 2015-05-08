@@ -220,7 +220,7 @@ class Scheduler {
 		return current;
 	}
 	
-	private static function realTime(): Float {
+	public static function realTime(): Float {
 		return Sys.getTime() - startTime;
 	}
 	

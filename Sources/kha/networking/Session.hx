@@ -95,7 +95,8 @@ class Session {
 		switch (bytes.get(0)) {
 		case CONTROLLER_UPDATES:
 			var id = bytes.getInt32(1);
-			controllers[id]._receive(5, bytes);
+			var time = bytes.getDouble(5);
+			Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
 		}
 		#else
 		switch (bytes.get(0)) {
