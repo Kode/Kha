@@ -65,8 +65,10 @@ class Session {
 		}
 		var offset = 0;
 		var bytes = Bytes.alloc(size + 1);
-		bytes.set(0, ENTITY_UPDATES);
+		bytes.set(offset, ENTITY_UPDATES);
 		offset += 1;
+		bytes.set(offset, Scheduler.time());
+		offset += 8;
 		for (entity in entities) {
 			entity._send(offset, bytes);
 			offset += entity._size();
@@ -105,11 +107,13 @@ class Session {
 			localClient = new LocalClient(index);
 			startCallback();
 		case ENTITY_UPDATES:
-			var offset = 1;
+			var time = bytes.getDouble(1);
+			var offset = 9;
 			for (entity in entities) {
 				entity._receive(offset, bytes);
 				offset += entity._size();
 			}
+			Scheduler.back(time);
 		}
 		#end
 	}
