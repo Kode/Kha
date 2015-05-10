@@ -20,9 +20,11 @@ class VrInterfaceRift extends VrInterface
 {
 
 	// Returns the current sensor state
+	#if VR_RIFT	
 	@:functionCode('
 		return Kore::VrInterface::GetSensorState();
 	')
+	#end
 	public override function GetSensorState(): SensorState {
 		return null;
 	}
@@ -43,9 +45,11 @@ class VrInterfaceRift extends VrInterface
 	}
 	
 	// Sends the set of images to the warp swap thread
+	#if VR_RIFT	
 	@:functionCode('
 		Kore::VrInterface::WarpSwap(parms.mPtr);
 	')
+	#end
 	public override function WarpSwap(parms: TimeWarpParms): Void {
 		return null;
 	}
