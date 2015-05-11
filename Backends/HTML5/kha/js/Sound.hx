@@ -106,7 +106,7 @@ class Sound extends kha.Sound {
 		}
 		
 		trace("Error loading " + extractName(element.src) + concatExtensions());
-		Lib.alert("loadSound failed");
+		Browser.alert("loadSound failed");
 	
 		finishAsset();
 	}

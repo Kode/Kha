@@ -4,7 +4,7 @@
 precision mediump float;
 #endif
 
-uniform sampler2D tex;
+uniform samplerVideo tex;
 varying vec2 texCoord;
 varying vec4 color;
 

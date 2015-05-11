@@ -379,9 +379,6 @@ int kore(int argc, char** argv) {
 #endif
 
 	Kore::log(Kore::Info, "Starting application");
-#ifdef SYS_IOS
-	::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation270;
-#endif
 	app->start();
 	Kore::log(Kore::Info, "Application stopped");
 

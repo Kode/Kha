@@ -45,8 +45,8 @@ class LocalStorageFile extends StorageFile {
 		var reserved = [0, 10, 13, 61];
 		var output = '';
 		var converted, ele;
-		for (i in 0...source.length) {
-			ele = source[i];
+		for (i in 0...source.byteLength) {
+			ele = untyped __js__("source[i]");
 			converted = (ele + 42) % 256;
 			if (!Lambda.has(reserved, converted)) {
 				output += String.fromCharCode(converted);
