@@ -38,9 +38,9 @@ import kha.Loader;
 
 #end 
 
+#if VR_CARDBOARD
 
-
-class CardboardVrInterface extends kha.vr.VrInterface {
+class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 	
 	// We draw directly to the screen
 	public var framebuffer: Framebuffer;
@@ -223,3 +223,4 @@ class CardboardVrInterface extends kha.vr.VrInterface {
 	
 }
 
+#end
