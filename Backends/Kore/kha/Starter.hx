@@ -89,7 +89,7 @@ class Starter {
 		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
 	
-		framebuffer.init(new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		
 		#end
 		#end
 		
