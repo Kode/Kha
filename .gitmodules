@@ -1,6 +1,6 @@
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = https://github.com/KTXSoftware/haxe_bin
+	url = https://github.com/KTXSoftware/haxe
 	branch = master
 [submodule "Kore"]
 	path = Kore
