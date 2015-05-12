@@ -82,6 +82,7 @@ class Starter {
 		
 		trace("Calling gameToStart.loadFinished()");
 		gameToStart.loadFinished();
+
 		
 		#if !VR_GEAR_VR
 		#if !VR_RIFT

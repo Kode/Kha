@@ -1,6 +1,6 @@
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = https://github.com/KTXSoftware/haxe
+	url = https//github.com/KTXSoftware/haxe
 	branch = master
 [submodule "Kore"]
 	path = Kore
@@ -14,7 +14,6 @@
 	path = Backends/Kore/khacpp
 	url = https://github.com/KTXSoftware/khacpp
 	branch = master
-
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
 	url = https://github.com/KTXSoftware/oggenc_bin
