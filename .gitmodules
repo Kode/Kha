@@ -1,11 +1,6 @@
-
-[submodule "Backends/kxcpp"]
-	path = Backends/kxcpp
-	url = http://github.com/KTXSoftware/kxcpp
-	branch = master
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = http://github.com/KTXSoftware/haxe_bin
+	url = https://github.com/KTXSoftware/haxe_bin
 	branch = master
 [submodule "Kore"]
 	path = Kore
@@ -13,14 +8,14 @@
 	branch = master
 [submodule "Tools/khamake"]
 	path = Tools/khamake
-	url = http://github.com/SpookyFM/khamake
+	url = https://github.com/SpookyFM/khamake
 	branch = master
 [submodule "Backends/Kore/khacpp"]
 	path = Backends/Kore/khacpp
-	url = http://github.com/KTXSoftware/khacpp
+	url = https://github.com/KTXSoftware/khacpp
 	branch = master
 
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
-	url = http://github.com/KTXSoftware/oggenc_bin
+	url = https://github.com/KTXSoftware/oggenc_bin
 	branch = master
