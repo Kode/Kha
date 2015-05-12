@@ -1,4 +1,4 @@
-package kha.cpp.graphics4;
+package kha.kore.graphics4;
 
 @:headerCode('
 #include <Kore/pch.h>

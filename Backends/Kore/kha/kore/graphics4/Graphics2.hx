@@ -1,4 +1,4 @@
-package kha.cpp.graphics4;
+package kha.kore.graphics4;
 
 import kha.Canvas;
 import kha.graphics4.Graphics;

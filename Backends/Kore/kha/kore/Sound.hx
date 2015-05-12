@@ -1,4 +1,4 @@
-package kha.cpp;
+package kha.kore;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -19,12 +19,12 @@ class Sound extends kha.Sound {
 	}
 	
 	@:functionCode('channel->sound = sound; Kore::Mixer::play(sound);')
-	private function playInternal(channel: kha.cpp.SoundChannel): Void {
+	private function playInternal(channel: kha.kore.SoundChannel): Void {
 		
 	}
 	
 	override public function play(): kha.SoundChannel {
-		var channel = new kha.cpp.SoundChannel();
+		var channel = new kha.kore.SoundChannel();
 		playInternal(channel);
 		return channel;
 	}

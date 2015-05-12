@@ -42,7 +42,7 @@ class Starter {
 		gamepad = new Gamepad();
 		surface = new Surface();
 		Sys.init();
-		Loader.init(new kha.cpp.Loader());
+		Loader.init(new kha.kore.Loader());
 		Scheduler.init();
 	}
 	
@@ -87,7 +87,8 @@ class Starter {
 		#if !VR_RIFT
 		var g4 = new kha.cpp.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
-		framebuffer.init(new kha.cpp.graphics4.Graphics2(framebuffer), g4);
+	
+		framebuffer.init(new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		#end
 		#end
 		
