@@ -42,19 +42,23 @@ class Game {
 	}
 	
 	private function startRender(frame: Framebuffer): Void {
-		frame.g2.begin();
+		#if !VR_GEAR_VR
+			frame.g2.begin();
+		#end
 	}
 	
 	private function endRender(frame: Framebuffer): Void {
 		//Sys.mouse.render(frame.g2);
-		frame.g2.end();
+		#if !VR_GEAR_VR
+			frame.g2.end();
+		#end
 	}
 	
 	public function render(frame: Framebuffer): Void {
 		#if !ANDROID
 		startRender(frame);
 		#end
-		scene.render(frame.g2);
+		// scene.render(frame.g2);
 		#if !ANDROID
 		endRender(frame);
 		#end

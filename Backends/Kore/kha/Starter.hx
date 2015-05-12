@@ -53,6 +53,7 @@ class Starter {
 	}
 	
 	public function loadFinished() {
+		trace("Starter.hx: Load finished");
 		Loader.the.initProject();
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
@@ -65,17 +66,21 @@ class Starter {
 		#if ANDROID
 			#if VR_GEAR_VR
 				kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
-			#else
+			#end
+			#if !VR_GEAR_VR
 				kha.vr.VrInterface.instance = new CardboardVrInterface();
 			#end
-        #else
+		#end
+        #if !ANDROID
 			#if VR_RIFT
 				kha.vr.VrInterface.instance = new VrInterfaceRift();
-			#else
+			#end
+			#if !VR_RIFT
 				kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
 			#end
 		#end
 		
+		trace("Calling gameToStart.loadFinished()");
 		gameToStart.loadFinished();
 		
 		#if !VR_GEAR_VR

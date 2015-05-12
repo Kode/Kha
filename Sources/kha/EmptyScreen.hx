@@ -9,10 +9,12 @@ class EmptyScreen extends Game {
 	}
 	
 	override public function render(frame: Framebuffer): Void {
+		#if !VR_GEAR_VR 
 		startRender(frame);
 		frame.g2.color = color;
 		frame.g2.fillRect(0, 0, 10000, 10000);
 		endRender(frame);
+		#end
 	}
 	
 	override public function update(): Void {

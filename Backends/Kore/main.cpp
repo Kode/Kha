@@ -175,8 +175,8 @@ namespace {
 	void update() {
 		Kore::Audio::update();
 		if (visible) {
-			//#ifdef SYS_WINDOWS
-			#ifndef VR_RIFT
+			
+			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
 			Kore::Graphics::begin();
 			#endif
 			
@@ -187,10 +187,10 @@ namespace {
 
 			//#endif
 			Starter_obj::frame();
-			//#ifdef SYS_WINDOWS
-			#ifndef VR_RIFT
-			Kore::Graphics::end();
+			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
+				Kore::Graphics::end();
 			#endif
+			
 
 			// Google Cardboard: Call the DistortionMesh Renderer
 			#ifdef VR_CARDBOARD
@@ -198,10 +198,10 @@ namespace {
 			#endif
 
 
-			#ifndef VR_RIFT
+			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
 			Kore::Graphics::swapBuffers();
 			#endif
-			//#endif
+			
 			
 		}
 	}
@@ -373,9 +373,9 @@ int kore(int argc, char** argv) {
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
-#ifdef SYS_ANDROID
+#ifdef VR_GEAR_VR
 	// Enter VR mode
-	// Kore::VrInterface::Initialize();
+	Kore::VrInterface::Initialize();
 #endif
 
 	Kore::log(Kore::Info, "Starting application");
