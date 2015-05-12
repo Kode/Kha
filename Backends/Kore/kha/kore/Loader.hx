@@ -1,4 +1,4 @@
-package kha.cpp;
+package kha.kore;
 
 import kha.Blob;
 import haxe.io.Bytes;

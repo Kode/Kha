@@ -15,7 +15,7 @@ class Sys {
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
 	public static function init(): Void {
-		mouse = new kha.cpp.Mouse();
+		mouse = new kha.kore.Mouse();
 		//graphics = new Graphics();
 	}
 	

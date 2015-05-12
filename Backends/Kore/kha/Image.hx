@@ -1,7 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
-import kha.cpp.graphics4.TextureUnit;
+import kha.kore.graphics4.TextureUnit;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
@@ -21,7 +21,7 @@ class Image implements Canvas implements Resource {
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
 		image.format = TextureFormat.RGBA32;
-		image.initVideo(cast(video, kha.cpp.Video));
+		image.initVideo(cast(video, kha.kore.Video));
 		return image;
 	}
 	
@@ -56,7 +56,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
-	private function initVideo(video: kha.cpp.Video): Void {
+	private function initVideo(video: kha.kore.Video): Void {
 
 	}
 	
@@ -76,7 +76,7 @@ class Image implements Canvas implements Resource {
 	
 	private function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
-			graphics2 = new kha.cpp.graphics4.Graphics2(this);
+			graphics2 = new kha.kore.graphics4.Graphics2(this);
 		}
 		return graphics2;
 	}
@@ -85,7 +85,7 @@ class Image implements Canvas implements Resource {
 	
 	private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
-			graphics4 = new kha.cpp.graphics4.Graphics(this);
+			graphics4 = new kha.kore.graphics4.Graphics(this);
 		}
 		return graphics4;
 	}

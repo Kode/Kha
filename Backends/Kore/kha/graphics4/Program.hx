@@ -73,7 +73,7 @@ class Program {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		var location = new kha.cpp.graphics4.ConstantLocation();
+		var location = new kha.kore.graphics4.ConstantLocation();
 		initConstantLocation(location, name);
 		return location;
 	}
@@ -81,12 +81,12 @@ class Program {
 	@:functionCode('
 		location->location = program->getConstantLocation(name.c_str());
 	')
-	private function initConstantLocation(location: kha.cpp.graphics4.ConstantLocation, name: String): Void {
+	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
 		
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		var unit = new kha.cpp.graphics4.TextureUnit();
+		var unit = new kha.kore.graphics4.TextureUnit();
 		initTextureUnit(unit, name);
 		return unit;
 	}
@@ -94,7 +94,7 @@ class Program {
 	@:functionCode('
 		unit->unit = program->getTextureUnit(name.c_str());
 	')
-	private function initTextureUnit(unit: kha.cpp.graphics4.TextureUnit, name: String): Void {
+	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
 		
 	}
 		

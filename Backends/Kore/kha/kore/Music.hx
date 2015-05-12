@@ -1,4 +1,4 @@
-package kha.cpp;
+package kha.kore;
 
 @:headerCode('
 #include <Kore/pch.h>
