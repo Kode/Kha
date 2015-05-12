@@ -3,8 +3,6 @@ package kha;
 import haxe.Json;
 import kha.loader.Room;
 
-
-
 @:expose
 class Loader {
 	var blobs: Map<String, Blob>;
@@ -176,14 +174,14 @@ class Loader {
 					case "image":
 						if (!images.exists(enqueued[i].name)) {
 							var imageName = enqueued[i].name;
-						//#if debug_loader
+						#if debug_loader
 							trace ('image to load: "$imageName"');
-						//#end
+						#end
 							loadImage(enqueued[i], function(image: Image) {
 								if (!images.exists(imageName)) {
-								//#if debug_loader
+								#if debug_loader
 									trace ('loaded image "$imageName"');
-								//#end
+								#end
 									images.set(imageName, image);
 									--numberOfFiles;
 									checkComplete();
@@ -194,14 +192,14 @@ class Loader {
 					case "music":
 						if (!musics.exists(enqueued[i].name)) {
 							var musicName = enqueued[i].name;
-						//#if debug_loader
+						#if debug_loader
 							trace ('music to load: "$musicName"');
-						//#end
+						#end
 							loadMusic(enqueued[i], function(music: Music) {
 								if (!musics.exists(musicName)) {
-								//#if debug_loader
+								#if debug_loader
 									trace ('loaded music "$musicName"');
-								//#end
+								#end
 									musics.set(musicName, music);
 									--numberOfFiles;
 									checkComplete();
@@ -212,14 +210,14 @@ class Loader {
 					case "sound":
 						if (!sounds.exists(enqueued[i].name)) {
 							var soundName = enqueued[i].name;
-						//#if debug_loader
+						#if debug_loader
 							trace ('sound to load: "$soundName"');
-						//#end
+						#end
 							loadSound(enqueued[i], function(sound: Sound) {
 								if (!sounds.exists(soundName)) {
-								//#if debug_loader
+								#if debug_loader
 									trace ('loaded sound "$soundName"');
-								//#end
+								#end
 									sounds.set(soundName, sound);
 									--numberOfFiles;
 									checkComplete();
@@ -230,14 +228,14 @@ class Loader {
 					case "video":
 						if (!videos.exists(enqueued[i].name)) {
 							var videoName = enqueued[i].name;
-						//#if debug_loader
+						#if debug_loader
 							trace ('video to load: "$videoName"');
-						//#end
+						#end
 							loadVideo(enqueued[i], function(video: Video) {
 								if (!videos.exists(videoName)) {
-								//#if debug_loader
+								#if debug_loader
 									trace ('loaded video "$videoName"');
-								//#end
+								#end
 									videos.set(videoName, video);
 									--numberOfFiles;
 									checkComplete();
@@ -248,14 +246,14 @@ class Loader {
 					case "blob":
 						if (!blobs.exists(enqueued[i].name)) {
 							var blobName = enqueued[i].name;
-						//#if debug_loader
+						#if debug_loader
 							trace ('blob to load: "$blobName"');
-						//#end
+						#end
 							loadBlob(enqueued[i], function(blob: Blob) {
 								if (!blobs.exists(blobName)) {
-								//#if debug_loader
+								#if debug_loader
 									trace ('loaded blob "$blobName"');
-								//#end
+								#end
 									blobs.set(blobName, blob);
 									--numberOfFiles;
 									checkComplete();
@@ -287,14 +285,14 @@ class Loader {
 			var shaderCount: Int = shaders.length;
 			for (i in 0...shaders.length) {
 				var shader = shaders[i];
-				//#if debug_loader
+				#if debug_loader
 					trace('shader to load: "${shader.name}"');
-				//#end
+				#end
 				loadBlob(shader, function(blob: Blob) {
 					if (!this.shaders.exists(shader.name)) { //Chrome tends to call finished loading callbacks multiple times
-						//#if debug_loader
+						#if debug_loader
 							trace('loaded shader "${shader.name}"');
-						//#end
+						#end
 						this.shaders.set(shader.name, blob);
 						--shaderCount;
 						if (shaderCount == 0) call();
@@ -360,17 +358,17 @@ class Loader {
 	
 	function checkComplete() {
 		if (numberOfFiles <= 0) {
-		//#if debug_loader
+		#if debug_loader
 			trace ( "loadFinished!" );
-		//#end
+		#end
 			if (autoCleanupAssets) enqueued = new Array<Dynamic>();
 			if (loadFinished != null) loadFinished();
 		}
-	//#if debug_loader
+	#if debug_loader
 		else {
 			trace ( "Files to load: " + numberOfFiles );
 		}
-	//#end
+	#end
 	}
 	
 	function loadDummyFile(): Void {
