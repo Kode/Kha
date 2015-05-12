@@ -1,5 +1,3 @@
-[submodule "Kore"]
-	path = Kore
 	url = ../Kore
 	branch = master
 [submodule "Tools/khamake"]
@@ -12,7 +10,7 @@
 	branch = master
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = http://github.com/KTXSoftware//haxe_bin
+	url = http://github.com/KTXSoftware/haxe_bin
 	branch = master
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
