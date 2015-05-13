@@ -1,4 +1,4 @@
-package kha.cpp.vr;
+package kha.kore.vr;
 
 import kha.vr.SensorState;
 import kha.vr.TimeWarpParms;

@@ -1,4 +1,4 @@
-package kha.cpp.vr;
+package kha.kore.vr;
 
 import kha.math.Quaternion;
 import kha.math.Vector3;

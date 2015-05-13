@@ -1,6 +1,6 @@
 package kha;
 
-import kha.cpp.vr.VrInterfaceRift;
+
 import kha.Game;
 import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;
@@ -16,12 +16,19 @@ import kha.vr.VrInterface;
 
 #if ANDROID 
 	#if VR_CARDBOARD
-		import kha.cpp.vr.CardboardVrInterface;
-	#else 
-		import kha.cpp.vr.VrInterface;
+		import kha.kore.vr.CardboardVrInterface;
 	#end
-#else 
-	import kha.vr.VrInterfaceEmulated;
+	#if !VR_CARDBOARD
+		import kha.kore.vr.VrInterface;
+	#end
+#end
+#if !ANDROID
+	#if VR_RIFT
+		import kha.kore.vr.VrInterfaceRift;
+	#end
+	#if !VR_RIFT
+		import kha.vr.VrInterfaceEmulated;
+	#end
 #end
 
 
@@ -65,7 +72,7 @@ class Starter {
 		
 		#if ANDROID
 			#if VR_GEAR_VR
-				kha.vr.VrInterface.instance = new kha.cpp.vr.VrInterface();
+				kha.vr.VrInterface.instance = new kha.kore.vr.VrInterface();
 			#end
 			#if !VR_GEAR_VR
 				kha.vr.VrInterface.instance = new CardboardVrInterface();
@@ -86,7 +93,7 @@ class Starter {
 		
 		#if !VR_GEAR_VR
 		#if !VR_RIFT
-		var g4 = new kha.cpp.graphics4.Graphics();
+		var g4 = new kha.kore.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, g4);
 	
 		
