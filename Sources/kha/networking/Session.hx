@@ -137,7 +137,7 @@ class Session {
 				clients.remove(client);
 			});
 			
-			if (clients.length >= minPlayers) {
+			if (clients.length >= players) {
 				Node.console.log("Starting game.");
 				var index = 0;
 				for (c in clients) {
