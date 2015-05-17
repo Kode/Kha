@@ -1,4 +1,4 @@
-package kha.cpp.graphics4;
+package kha.kore.graphics4;
 
 import kha.Blob;
 import kha.Color;
@@ -287,7 +287,7 @@ class Graphics implements kha.graphics4.Graphics {
 	@:functionCode('
 		Kore::Graphics::setBool(location->location, value);
 	')
-	private function setBoolPrivate(location: kha.cpp.graphics4.ConstantLocation, value: Bool): Void {
+	private function setBoolPrivate(location: kha.kore.graphics4.ConstantLocation, value: Bool): Void {
 		
 	}
 	
@@ -399,7 +399,7 @@ class Graphics implements kha.graphics4.Graphics {
 				value.Set(x, y, matrix->matrix[y * 4 + x]);
 			}
 		}
-		::kha::cpp::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::cpp::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
+		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {

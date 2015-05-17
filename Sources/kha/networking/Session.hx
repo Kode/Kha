@@ -17,8 +17,7 @@ class Session {
 	private static var instance: Session;
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
-	private var minPlayers: Int;
-	private var maxPlayers: Int;
+	private var players: Int;
 	private var startCallback: Void->Void;
 	#if node
 	private var server: Server;
@@ -39,10 +38,9 @@ class Session {
 		#end
 	}
 	
-	public function new(minPlayers: Int, maxPlayers: Int) {
+	public function new(players: Int) {
 		instance = this;
-		this.minPlayers = minPlayers;
-		this.maxPlayers = maxPlayers;
+		this.players = players;
 	}
 	
 	public static function the(): Session {

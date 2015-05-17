@@ -1,4 +1,4 @@
-package kha.cpp.graphics;
+package kha.kore.graphics;
 
 enum ShaderType {
 	FragmentShader;
