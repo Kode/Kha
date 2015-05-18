@@ -2,6 +2,7 @@ package kha;
 
 import js.Browser;
 import js.html.CanvasElement;
+import js.Node;
 
 class Sys {
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
@@ -15,7 +16,8 @@ class Sys {
 	}
 	
 	public static function getTime(): Float {
-		return untyped __js__("Date.now()") / 1000;
+		var time = Node.process.hrtime();
+		return time[0] + time[1] / 1000000;
 	}
 	
 	public static var mouse(get, null): Mouse;

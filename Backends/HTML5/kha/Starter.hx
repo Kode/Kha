@@ -61,6 +61,7 @@ class Starter {
 		for (i in 0...10) buttonspressed.push(false);
 		CanvasImage.init();
 		Loader.init(new kha.js.Loader());
+		Sys.initPerformanceTimer();
 		Scheduler.init();
 		
 		// TODO: Move?
