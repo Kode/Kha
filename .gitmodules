@@ -18,3 +18,7 @@
 	path = Tools/oggenc
 	url = ../oggenc_bin
 	branch = master
+[submodule "Tools/kravur"]
+	path = Tools/kravur
+	url = ../kravur_bin
+	branch = master
