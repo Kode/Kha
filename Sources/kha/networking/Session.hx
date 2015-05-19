@@ -9,6 +9,16 @@ import js.Browser;
 import js.html.BinaryType;
 import js.html.WebSocket;
 
+class State {
+	public var time: Float;
+	public var data: Bytes;
+	
+	public function new(time: Float, data: Bytes) {
+		this.time = time;
+		this.data = data;
+	}
+}
+
 class Session {
 	public static inline var START = 0;
 	public static inline var ENTITY_UPDATES = 1;
@@ -23,6 +33,8 @@ class Session {
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
 	private var current: Client;
+	private var lastStates: Array<State> = new Array();
+	private static inline var stateCount = 5;
 	#else
 	private var localClient: Client;
 	public var network: Network;
@@ -71,6 +83,12 @@ class Session {
 			entity._send(offset, bytes);
 			offset += entity._size();
 		}
+		
+		lastStates.push(new State(Scheduler.time(), bytes));
+		if (lastStates.length > stateCount) {
+			lastStates.splice(0, 1);
+		}
+		
 		return bytes;
 		#else
 		/*var size = 0;
@@ -97,6 +115,21 @@ class Session {
 			var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
 			Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
+			if (time < Scheduler.time()) {
+				var i = lastStates.length - 1;
+				while (i >= 0) {
+					if (lastStates[i].time < time) {
+						var offset = 9;
+						for (entity in entities) {
+							entity._receive(offset, lastStates[i].data);
+							offset += entity._size();
+						}
+						Scheduler.back(time);
+						break;
+					}
+					--i;
+				}
+			}
 		}
 		#else
 		switch (bytes.get(0)) {
