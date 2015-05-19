@@ -52,6 +52,7 @@ class Starter {
 		Node.setInterval(function () {
 			Scheduler.executeFrame();
 			Session.the().update();
+			Node.console.log("" + Scheduler.time());
 		}, 100);
 	}
 }

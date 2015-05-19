@@ -17,7 +17,7 @@ class Sys {
 	
 	public static function getTime(): Float {
 		var time = Node.process.hrtime();
-		return time[0] + time[1] / 1000000;
+		return cast(time[0], Float) + cast(time[1], Float) / 1000000000;
 	}
 	
 	public static var mouse(get, null): Mouse;
@@ -39,7 +39,7 @@ class Sys {
 	}
 	
 	public static function vsynced(): Bool {
-		return true;
+		return false;
 	}
 	
 	public static function refreshRate(): Int {
