@@ -315,6 +315,13 @@ class Loader {
 		loadFiles(call, autoCleanupAssets);
 	}
 	
+	
+	public function unloadedImage(name: String) {
+		removeImage(images, name);
+	}
+	
+	
+	
 	public function initProject() {
 		var project = parseProject();
 		name = project.game.name;
