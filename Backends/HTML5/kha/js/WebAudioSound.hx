@@ -89,10 +89,15 @@ class WebAudioSound extends kha.Sound {
 			function(buf) {
 				buffer = buf;
 				
-				var channelData = buffer.getChannelData(0);
-				data = new Vector<Float>(Std.int(channelData.byteLength / 4));
-				for (i in 0...data.length) {
-					data[i] = channelData[i];
+				var channelData1 = buffer.getChannelData(0);
+				var channelData2 = channelData1;
+				if (buffer.numberOfChannels > 1) {
+					channelData2 = buffer.getChannelData(1);
+				}
+				data = new Vector<Float>(Std.int(channelData1.byteLength / 2));
+				for (i in 0...Std.int(data.length / 2)) {
+					data[i * 2 + 0] = channelData1[i];
+					data[i * 2 + 1] = channelData2[i];
 				}
 				
 				done(this);

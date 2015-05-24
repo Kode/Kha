@@ -16,5 +16,7 @@ class Buffer {
 		this.data = new Vector<Float>(size);
 		this.channels = channels;
 		this.samplesPerSecond = samplesPerSecond;
+		readLocation = 0;
+		writeLocation = 0;
 	}
 }

@@ -17,24 +17,23 @@ class Audio1 {
 	}
 	
 	private static function _mix(samples: Int, buffer: Buffer): Void {
-		for (i in 0...samples) {
+		for (i1 in 0...samples) {
 			var value: Float = 0;
 			
-			for (i in 0...channelCount) {
-				if (soundChannels[i] != null) {
-					//value += *(s16*)&channels[i].sound->data[channels[i].position] / 32767.0f * channels[i].sound->volume();
-					value += soundChannels[i].nextSample() * soundChannels[i].volume;
+			for (i2 in 0...channelCount) {
+				if (soundChannels[i2] != null) {
+					var channel = soundChannels[i2];
+					value += channel.nextSample() * channel.volume;
 					value = Math.max(Math.min(value, 1.0), -1.0);
-					//channels[i].position += 2;
-					if (soundChannels[i].ended()) soundChannels[i] = null;
+					if (channel.ended()) soundChannels[i2] = null;
 				}
 			}
-			for (i in 0...channelCount) {
-				if (musicChannels[i] != null) {
-					//value += streams[i].stream->nextSample() * streams[i].stream->volume();
-					value += musicChannels[i].nextSample() * musicChannels[i].volume;
+			for (i2 in 0...channelCount) {
+				if (musicChannels[i2] != null) {
+					var channel = musicChannels[i2];
+					value += channel.nextSample() * channel.volume;
 					value = Math.max(Math.min(value, 1.0), -1.0);
-					if (musicChannels[i].ended()) musicChannels[i] = null;
+					if (channel.ended()) musicChannels[i2] = null;
 				}
 			}
 			
