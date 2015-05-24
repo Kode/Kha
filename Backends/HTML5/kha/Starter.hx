@@ -115,6 +115,9 @@ class Starter {
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
 		
+		kha.audio2.Audio._init();
+		kha.audio2.Audio1._init();
+		
 		var gl: Bool = false;
 		
 		try {
