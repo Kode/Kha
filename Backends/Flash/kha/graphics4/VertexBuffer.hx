@@ -3,13 +3,14 @@ package kha.graphics4;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
+import haxe.io.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	public var vertexBuffer: VertexBuffer3D;
 	private var vertices: Vector<Float>;
-	private var lockedVertices: Array<Float>;
+	private var lockedVertices: Float32Array;
 	private var vertexCount: Int;
 	private var myStride: Int;
 	private var myStructure: kha.graphics4.VertexStructure;
@@ -32,11 +33,10 @@ class VertexBuffer {
 		myStructure = structure;
 		vertexBuffer = kha.flash.graphics4.Graphics.context.createVertexBuffer(vertexCount, myStride);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		vertices = new Vector<Float>(myStride * vertexCount);
-		lockedVertices = new Array<Float>();
-		lockedVertices[myStride * vertexCount - 1] = 0;
+		lockedVertices = new Float32Array(myStride * vertexCount);
 	}
 	
-	public function lock(?start: Int, ?count: Int): Array<Float> {
+	public function lock(?start: Int, ?count: Int): Float32Array {
 		return lockedVertices;
 	}
 	
