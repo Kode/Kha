@@ -283,6 +283,19 @@ class Macros {
 						#if debug
 						Printer.check(shader);
 						#end
+						
+						sys.FileSystem.createDirectory("Shaders");
+						var index = 0;
+						for (fun in shader.funs) {
+							if (fun.kind == Vertex) {
+								sys.io.File.saveContent("Shaders/" + name + ".vert.glsl", GlslOut.toGlsl(shader, index));
+							}
+							else if (fun.kind == Fragment) {
+								sys.io.File.saveContent("Shaders/" + name + ".frag.glsl", GlslOut.toGlsl(shader, index));
+							}
+							++index;
+						}
+						
 						var str = Serializer.run(shader);
 						f.kind = FVar(null, { expr : EConst(CString(str)), pos : pos } );
 						f.meta.push({

@@ -359,14 +359,14 @@ class GlslOut {
 		return n;
 	}
 
-	public function run( s : ShaderData ) {
+	public function run( s : ShaderData, index : Int = 0 ) {
 		locals = [];
 		decls = [];
 		buf = new StringBuf();
 		exprValues = [];
 		decls.push("precision mediump float;");
 
-		if( s.funs.length != 1 ) throw "assert";
+		//if( s.funs.length != 1 ) throw "assert";
 		var f = s.funs[0];
 		isVertex = f.kind == Vertex;
 
@@ -429,8 +429,8 @@ class GlslOut {
 		return decls.join("\n");
 	}
 
-	public static function toGlsl( s : ShaderData ) {
-		return new GlslOut().run(s);
+	public static function toGlsl( s : ShaderData, index : Int = 0 ) {
+		return new GlslOut().run(s, index);
 	}
 
 }
