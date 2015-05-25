@@ -5,5 +5,5 @@ import kha.Sound;
 
 extern class Audio {
 	public static function playSound(sound: Sound): SoundChannel;
-	public static function playMusic(music: Music): MusicChannel;
+	public static function playMusic(music: Music, loop: Bool = false): MusicChannel;
 }
