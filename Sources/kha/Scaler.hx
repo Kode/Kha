@@ -138,17 +138,17 @@ class Scaler {
 	public static function getScaledTransformation(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): Matrix3 {
 		var rect = targetRect(width, height, destination, rotation);
 		var sf = rect.scaleFactor;
-		var transformation = new Matrix3([sf,  0, rect.x,
+		var transformation = new Matrix3(sf,  0, rect.x,
 										   0, sf, rect.y,
-										   0,  0, 1]);
+										   0,  0, 1);
 		switch (rotation) {
 		case RotationNone:
 		case Rotation90:
-			transformation = transformation * Matrix3.rotation(Math.PI / 2);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI / 2));
 		case Rotation180:
-			transformation = transformation * Matrix3.rotation(Math.PI);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI));
 		case Rotation270:
-			transformation = transformation * Matrix3.rotation(Math.PI * 3 / 2);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI * 3 / 2));
 		}
 		return transformation;
 	}

@@ -73,7 +73,7 @@ class Graphics {
 	}
 	
 	private inline function translation(tx: Float, ty: Float): Matrix3 {
-		return Matrix3.translation(tx, ty) * transformation;
+		return Matrix3.translation(tx, ty).multmat(transformation);
 	}
 	
 	public function translate(tx: Float, ty: Float): Void {
@@ -85,7 +85,7 @@ class Graphics {
 	}
 	
 	private inline function rotation(angle: Float, centerx: Float, centery: Float): Matrix3 {
-		return Matrix3.translation(centerx, centery) * Matrix3.rotation(angle) * Matrix3.translation(-centerx, -centery) * transformation;
+		return Matrix3.translation(centerx, centery).multmat(Matrix3.rotation(angle)).multmat(Matrix3.translation(-centerx, -centery)).multmat(transformation);
 	}
 	
 	public function rotate(angle: Float, centerx: Float, centery: Float): Void {
