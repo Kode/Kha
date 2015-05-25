@@ -3,7 +3,6 @@ package kha;
 import kha.graphics4.TextureFormat;
 
 class Game {
-	private var scene: Scene;
 	private var name: String;
 	
 	public static var FPS: Int = 60;
@@ -18,7 +17,6 @@ class Game {
 		setInstance();
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList();
-		scene = Scene.the;
 		width = Std.int(Loader.the.width);
 		height = Std.int(Loader.the.height);
 	}
@@ -38,7 +36,7 @@ class Game {
 	public function init(): Void { }
 	
 	public function update(): Void {
-		scene.update();
+		
 	}
 	
 	private function startRender(frame: Framebuffer): Void {
@@ -52,7 +50,7 @@ class Game {
 	
 	public function render(frame: Framebuffer): Void {
 		startRender(frame);
-		scene.render(frame.g2);
+		
 		endRender(frame);
 	}
 	
