@@ -22,6 +22,7 @@ class WebGLImage extends Image {
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
 	
+	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 	
@@ -43,6 +44,13 @@ class WebGLImage extends Image {
 		image = null;
 		video = null;
 		if (renderTarget) createTexture();
+	}
+	
+	override private function get_g1(): kha.graphics1.Graphics {
+		if (graphics1 == null) {
+			graphics1 = new kha.graphics2.Graphics1(this);
+		}
+		return graphics1;
 	}
 	
 	override private function get_g2(): kha.graphics2.Graphics {

@@ -26,6 +26,12 @@ class ScreenCanvas implements Canvas {
 		return Sys.pixelHeight;
 	}
 	
+	public var g1(get, null): kha.graphics1.Graphics;
+	
+	private function get_g1(): kha.graphics1.Graphics {
+		return null;
+	}
+	
 	public var g2(get, null): kha.graphics2.Graphics;
 	
 	private function get_g2(): kha.graphics2.Graphics {
