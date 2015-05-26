@@ -1,5 +1,6 @@
 package kha.js.graphics4;
 
+import haxe.ds.Vector;
 import kha.Blob;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
@@ -281,8 +282,14 @@ class Graphics implements kha.graphics4.Graphics {
 		Sys.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 	
-	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
-		Sys.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrix.matrix);
+	private var matrixCache = new Vector<Float>(16);
+	
+	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
+		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
+		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
+		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
+		Sys.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrixCache.toData());
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

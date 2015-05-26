@@ -394,15 +394,14 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	@:functionCode('
 		Kore::mat4 value;
-		for (int y = 0; y < 4; ++y) {
-			for (int x = 0; x < 4; ++x) {
-				value.Set(x, y, matrix->matrix[y * 4 + x]);
-			}
-		}
+		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20); value.Set(0, 3, matrix->_30);
+		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21); value.Set(1, 3, matrix->_31);
+		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22); value.Set(2, 3, matrix->_32);
+		value.Set(3, 0, matrix->_03); value.Set(3, 1, matrix->_13); value.Set(3, 2, matrix->_23); value.Set(3, 3, matrix->_33);
 		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
-	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
 		
 	}
 	
