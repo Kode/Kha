@@ -4,19 +4,24 @@ import haxe.io.Bytes;
 
 class Blob implements Resource {
 	private var bytes: Bytes;
-	private var position: Int;
+	
+	public var position: Int;
 	
 	public function new(bytes: Bytes) {
 		this.bytes = bytes;
 		position = 0;
 	}
 	
-	public function length() {
+	public function length(): Int {
 		return bytes.length;
 	}
 	
-	public function reset() {
+	public function reset(): Void {
 		position = 0;
+	}
+	
+	public function seek(pos: Int): Void {
+		position = pos;
 	}
 	
 	public function readU8(): Int {
@@ -117,7 +122,8 @@ class Blob implements Resource {
 	}
 	
 	public function toString(): String {
-		return bytes.toString();
+		if (bytes.get(0) == 239 && bytes.get(1) == 187 && bytes.get(2) == 191) return bytes.sub(3, bytes.length - 3).toString();
+		else return bytes.toString();
 	}
 	
 	public function toBytes(): Bytes {

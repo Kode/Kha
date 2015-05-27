@@ -334,7 +334,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
 		var projection = new Matrix3D();
 		var vec = new Vector<Float>(16);
-		for (i in 0...16) vec[i] = matrix.matrix[i];
+		vec[ 0] = matrix._00; vec[ 1] = matrix._01; vec[ 2] = matrix._02; vec[ 3] = matrix._03;
+		vec[ 4] = matrix._10; vec[ 5] = matrix._11; vec[ 6] = matrix._12; vec[ 7] = matrix._13;
+		vec[ 8] = matrix._20; vec[ 9] = matrix._21; vec[10] = matrix._22; vec[11] = matrix._23;
+		vec[12] = matrix._30; vec[13] = matrix._31; vec[14] = matrix._32; vec[15] = matrix._33;
 		projection.copyRawDataFrom(vec);
 		var flashLocation = cast(location, ConstantLocation);
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);

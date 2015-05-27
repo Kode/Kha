@@ -3,7 +3,6 @@ package kha;
 import kha.graphics4.TextureFormat;
 
 class Game {
-	private var scene: Scene;
 	private var name: String;
 	
 	public static var FPS: Int = 60;
@@ -18,7 +17,6 @@ class Game {
 		setInstance();
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList();
-		scene = Scene.the;
 		width = Std.int(Loader.the.width);
 		height = Std.int(Loader.the.height);
 	}
@@ -38,7 +36,7 @@ class Game {
 	public function init(): Void { }
 	
 	public function update(): Void {
-		scene.update();
+		
 	}
 	
 	private function startRender(frame: Framebuffer): Void {
@@ -52,7 +50,7 @@ class Game {
 	
 	public function render(frame: Framebuffer): Void {
 		startRender(frame);
-		scene.render(frame.g2);
+		
 		endRender(frame);
 	}
 	
@@ -70,13 +68,13 @@ class Game {
 	// deprecated - please use kha.Scaler.transformX
 	public function painterTransformMouseX(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformX(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformX(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	// deprecated - please use kha.Scaler.transformY
 	public function painterTransformMouseY(x: Int, y: Int): Int {
 		initDeprecatedImage();
-		return Scaler.transformY(x, y, Scaler.targetRect(deprecatedImage.width,deprecatedImage.height,ScreenCanvas.the, kha.Sys.screenRotation));
+		return Scaler.transformY(x, y, deprecatedImage, ScreenCanvas.the, kha.Sys.screenRotation);
 	}
 	
 	// deprecated - please use kha.input.Gamepad

@@ -1,12 +1,10 @@
 package kha;
 
-import kha.psm.Graphics;
+import kha.psm.graphics4.Graphics;
 import system.diagnostics.Stopwatch;
 
 class Sys {
 	private static var watch: Stopwatch;
-	
-	public static var graphics: Graphics;
 	
 	public static var mouse(default, null): kha.Mouse;
 	
@@ -14,7 +12,6 @@ class Sys {
 	
 	public static function init(): Void {
 		mouse = new Mouse();
-		graphics = new Graphics();
 		watch = new Stopwatch();
 		watch.Start();
 	}
@@ -29,17 +26,25 @@ class Sys {
 	public static var pixelWidth(get, null): Int;
 	public static var pixelHeight(get, null): Int;
 	
-	@:functionCode('
-		return kha.psm.Painter.graphics.Screen.Width;
-	')
+	//@:functionCode('
+	//	return kha.psm.Painter.graphics.Screen.Width;
+	//')
 	public static function get_pixelWidth(): Int {
-		return 0;
+		return 960;
 	}
 	
-	@:functionCode('
-		return kha.psm.Painter.graphics.Screen.Height;
-	')
+	//@:functionCode('
+	//	return kha.psm.Painter.graphics.Screen.Height;
+	//')
 	public static function get_pixelHeight(): Int {
-		return 0;
+		return 544;
+	}
+	
+	public static function vsynced(): Bool {
+		return true;
+	}
+	
+	public static function refreshRate(): Int {
+		return 60;
 	}
 }

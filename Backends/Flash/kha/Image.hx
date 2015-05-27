@@ -25,6 +25,7 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes;
 	private var readable: Bool;
 	
+	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 	
@@ -61,6 +62,15 @@ class Image implements Canvas implements Resource {
 	public function uploadBitmap(bitmap: BitmapData, readable: Bool): Void {
 		if (readable) data = bitmap;
 		tex.uploadFromBitmapData(bitmap, 0);
+	}
+	
+	public var g1(get, null): kha.graphics1.Graphics;
+	
+	private function get_g1(): kha.graphics1.Graphics {
+		if (graphics1 == null) {
+			graphics1 = new kha.graphics2.Graphics1(this);
+		}
+		return graphics1;
 	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;

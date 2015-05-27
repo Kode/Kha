@@ -170,7 +170,7 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function setTransformation(transformation: Matrix3): Void {
-		canvas.setTransform(transformation[0], transformation[3], transformation[1],
-			transformation[4], transformation[2], transformation[5]);
+		canvas.setTransform(transformation._00, transformation._01, transformation._10,
+			transformation._11, transformation._20, transformation._12);
 	}
 }

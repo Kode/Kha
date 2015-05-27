@@ -19,7 +19,8 @@ class Loader extends kha.Loader {
 	}
 		
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		new Music(desc.file, done);
+		if (Sys.audio != null) new WebAudioMusic(desc.file, done);
+		else new Music(desc.file, done);
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
@@ -60,10 +61,10 @@ class Loader extends kha.Loader {
 					bytes = Bytes.alloc(data.length);
 					for (i in 0...data.length) bytes.set(i, data[i]);
 				}
-				else Lib.alert("loadBlob failed");
+				else Browser.alert("loadBlob failed");
 				done(new Blob(bytes));
 			}
-			else Lib.alert("loadBlob failed");
+			else Browser.alert("loadBlob failed");
 		};
 		request.send(null);
 	}

@@ -28,7 +28,6 @@ class TargetRectangle {
 }
 
 class Scaler {
-	
 	public static function targetRect(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): TargetRectangle {
 		var scalex: Float;
 		var scaley: Float;
@@ -100,7 +99,8 @@ class Scaler {
 		return new TargetRectangle(scalex, scaley, scalew, scaleh, scale, rotation);
 	}
 	
-	public static function transformX(x: Int, y: Int, targetRect: TargetRectangle): Int {
+	public static function transformX(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
+		var targetRect = targetRect(source.width, source.height, destination, rotation);
 		switch (targetRect.rotation) {
 		case ScreenRotation.RotationNone:
 			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
@@ -113,13 +113,13 @@ class Scaler {
 		}
 	}
 	
-	public static function transformY(x: Int, y: Int, targetRect: TargetRectangle): Int {
+	public static function transformY(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
+		var targetRect = targetRect(source.width, source.height, destination, rotation);
 		switch (targetRect.rotation) {
 		case ScreenRotation.RotationNone:
 			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation90:
 			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
-			//return 100;
 		case ScreenRotation.Rotation180:
 			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
 		case ScreenRotation.Rotation270:
@@ -135,24 +135,21 @@ class Scaler {
 		g.drawImage(source, 0, 0);
 	}
 	
-	public static function getScaledTransformation(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation) : Matrix3 {
+	public static function getScaledTransformation(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): Matrix3 {
 		var rect = targetRect(width, height, destination, rotation);
-		
 		var sf = rect.scaleFactor;
-		var transformation = new Matrix3([sf,  0, rect.x,
+		var transformation = new Matrix3(sf,  0, rect.x,
 										   0, sf, rect.y,
-										   0,  0, 1      ]);
-		
+										   0,  0, 1);
 		switch (rotation) {
 		case RotationNone:
 		case Rotation90:
-			transformation = transformation * Matrix3.rotation(Math.PI / 2);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI / 2));
 		case Rotation180:
-			transformation = transformation * Matrix3.rotation(Math.PI);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI));
 		case Rotation270:
-			transformation = transformation * Matrix3.rotation(Math.PI * 3 / 2);
+			transformation = transformation.multmat(Matrix3.rotation(Math.PI * 3 / 2));
 		}
-		
 		return transformation;
 	}
 }
