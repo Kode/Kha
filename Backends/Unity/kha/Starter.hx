@@ -30,7 +30,7 @@ class Starter {
 	
 	public static function loadFinished(): Void {
 		Loader.the.initProject();
-		var g4 = new kha.unity.Graphics();
+		var g4 = new kha.unity.Graphics(null);
 		frame = new Framebuffer(null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);
 		game.width = Loader.the.width;

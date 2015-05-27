@@ -15,23 +15,31 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
+import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import unityEngine.Matrix4x4;
+import unityEngine.RenderTexture;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var vertexBuffer: VertexBuffer;
 	private var indexBuffer: IndexBuffer;
 	private var program: Program;
+	private var target: Image;
 	
-	public function new() {
-		
+	public function new(target: Image) {
+		this.target = target;
 	}
 	
 	public function begin(): Void {
-		
+		if (target == null) {
+			RenderTexture.active = null;
+		}
+		else {
+			RenderTexture.active = cast target.texture;
+		}
 	}
 	
 	public function end(): Void {
@@ -92,7 +100,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
-		return false;
+		return true;
 	}
 	
 	public function setProgram(program: Program): Void {
