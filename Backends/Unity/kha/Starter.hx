@@ -1,13 +1,10 @@
 package kha;
 
 import kha.graphics4.Graphics2;
+import kha.input.Keyboard;
 
 class Starter {
 	static public var game: Game;
-	static var left: Bool;
-	static var right: Bool;
-	static var up: Bool;
-	static var down: Bool;
 	private static var frame: Framebuffer;
 	
 	public static var mouseX: Int = 0;
@@ -16,10 +13,7 @@ class Starter {
 	public function new() {
 		kha.Loader.init(new kha.unity.Loader());
 		Scheduler.init();
-		left = false;
-		right = false;
-		up = false;
-		down = false;
+		Keyboard.instance = new Keyboard();
 	}
 	
 	public function start(game: Game) {
@@ -38,6 +32,46 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
+	}
+	
+	public static function leftDown(): Void {
+		Game.the.buttonDown(Button.LEFT);
+		Keyboard.get().sendDownEvent(Key.LEFT, '');
+	}
+	
+	public static function rightDown(): Void {
+		Game.the.buttonDown(Button.RIGHT);
+		Keyboard.get().sendDownEvent(Key.RIGHT, '');
+	}
+	
+	public static function upDown(): Void {
+		Game.the.buttonDown(Button.UP);
+		Keyboard.get().sendDownEvent(Key.UP, '');
+	}
+	
+	public static function downDown(): Void {
+		Game.the.buttonDown(Button.DOWN);
+		Keyboard.get().sendDownEvent(Key.DOWN, '');
+	}
+	
+	public static function leftUp(): Void {
+		Game.the.buttonUp(Button.LEFT);
+		Keyboard.get().sendUpEvent(Key.LEFT, '');
+	}
+	
+	public static function rightUp(): Void {
+		Game.the.buttonUp(Button.RIGHT);
+		Keyboard.get().sendUpEvent(Key.RIGHT, '');
+	}
+	
+	public static function upUp(): Void {
+		Game.the.buttonUp(Button.UP);
+		Keyboard.get().sendUpEvent(Key.UP, '');
+	}
+	
+	public static function downUp(): Void {
+		Game.the.buttonUp(Button.DOWN);
+		Keyboard.get().sendUpEvent(Key.DOWN, '');
 	}
 	
 	public static function update(): Void {
