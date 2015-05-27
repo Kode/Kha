@@ -39,7 +39,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			RenderTexture.active = cast target.texture;
-			setViewport(target.width, target.height);
+			//setViewport(target.width, target.height);
 		}
 	}
 	

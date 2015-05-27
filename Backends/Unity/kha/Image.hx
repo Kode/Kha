@@ -40,7 +40,7 @@ class Image implements Canvas implements Resource {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
-		if (renderTexture) texture = new RenderTexture(width, height, 0);
+		if (renderTexture) texture = new RenderTexture(upperPowerOfTwo(width), upperPowerOfTwo(height), 0);
 		else texture = new Texture2D(width, height);
 	}
 	
@@ -130,6 +130,6 @@ class Image implements Canvas implements Resource {
 	public static var nonPow2Supported(get, null): Bool;
 	
 	public static function get_nonPow2Supported(): Bool {
-		return true;
+		return false;
 	}
 }
