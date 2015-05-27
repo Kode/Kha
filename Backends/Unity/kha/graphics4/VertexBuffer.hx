@@ -1,6 +1,7 @@
 package kha.graphics4;
 
 import cs.NativeArray;
+import haxe.io.Float32Array;
 import unityEngine.Mesh;
 import unityEngine.Vector2;
 import unityEngine.Vector3;
@@ -8,7 +9,7 @@ import unityEngine.Vector4;
 
 class VertexBuffer {
 	public var mesh: Mesh;
-	private var array: Array<Float>;
+	private var array: Float32Array;
 	private var structure: VertexStructure;
 	private var vertexCount: Int;
 	private var myStride: Int;
@@ -23,7 +24,6 @@ class VertexBuffer {
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		mesh = new Mesh();
-		array = new Array<Float>();
 		this.vertexCount = vertexCount;
 		this.structure = structure;
 		
@@ -48,9 +48,10 @@ class VertexBuffer {
 				myStride += 4;
 			}
 		}
+		array = new Float32Array(vertexCount * myStride);
 	}
 
-	public function lock(?start: Int, ?count: Int): Array<Float> {
+	public function lock(?start: Int, ?count: Int): Float32Array {
 		return array;
 	}
 

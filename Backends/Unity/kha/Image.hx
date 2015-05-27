@@ -36,6 +36,12 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 	
+	public var g1(get, null): kha.graphics1.Graphics;
+	
+	private function get_g1(): kha.graphics1.Graphics {
+		return null;
+	}
+	
 	public var g2(get, null): kha.graphics2.Graphics;
 	
 	private function get_g2(): kha.graphics2.Graphics {
@@ -43,7 +49,10 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public var g4(get, null): kha.graphics4.Graphics;
-	private function get_g4(): kha.graphics4.Graphics { return null; }
+	
+	private function get_g4(): kha.graphics4.Graphics {
+		return null;
+	}
 	
 	public var width(get, null): Int;
 	

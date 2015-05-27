@@ -31,8 +31,8 @@ class Starter {
 	public static function loadFinished(): Void {
 		Loader.the.initProject();
 		var g4 = new kha.unity.Graphics();
-		frame = new Framebuffer(null, g4);
-		frame.init(new Graphics2(frame), g4);
+		frame = new Framebuffer(null, null, g4);
+		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		Configuration.setScreen(game);
