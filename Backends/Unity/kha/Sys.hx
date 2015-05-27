@@ -29,11 +29,11 @@ class Sys {
 	public static var pixelHeight(get, null): Int;
 	
 	public static function get_pixelWidth(): Int {
-		return 640;
+		return unityEngine.Screen.width;
 	}
 	
 	public static function get_pixelHeight(): Int {
-		return 480;
+		return unityEngine.Screen.height;
 	}
 	
 	public static function vsynced(): Bool {

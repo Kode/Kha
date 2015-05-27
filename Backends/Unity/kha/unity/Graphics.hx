@@ -39,11 +39,17 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			RenderTexture.active = cast target.texture;
+			setViewport(target.width, target.height);
 		}
 	}
 	
-	public function end(): Void {
+	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(0, 0, w, h));')
+	private function setViewport(w: Int, h: Int): Void {
 		
+	}
+	
+	public function end(): Void {
+		RenderTexture.active = null;
 	}
 	
 	public function vsynced(): Bool {
@@ -105,6 +111,15 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setProgram(program: Program): Void {
 		this.program = program;
+		var w = Sys.pixelWidth;
+		var h = Sys.pixelHeight;
+		if (target != null) {
+			w = target.width;
+			h = target.height;
+		}
+		var x = 1.0 / w;
+		var y = 1.0 / h;
+		program.fragmentShader.material.SetVector("dx_ViewAdjust", new unityEngine.Vector4(x, y, x, y));
 	}
 	
 	public function setBool(location: ConstantLocation, value: Bool): Void {

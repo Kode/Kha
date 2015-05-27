@@ -25,6 +25,17 @@ class Image implements Canvas implements Resource {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true);
 	}
 	
+	private static function upperPowerOfTwo(v: Int): Int {
+		v--;
+		v |= v >>> 1;
+		v |= v >>> 2;
+		v |= v >>> 4;
+		v |= v >>> 8;
+		v |= v >>> 16;
+		v++;
+		return v;
+	}
+	
 	public function new(width: Int, height: Int, format: TextureFormat, renderTexture: Bool) {
 		myWidth = width;
 		myHeight = height;
@@ -33,13 +44,10 @@ class Image implements Canvas implements Resource {
 		else texture = new Texture2D(width, height);
 	}
 	
-	public static function fromFilename(filename: String): Image {
+	public static function fromFilename(filename: String, width: Int, height: Int): Image {
 		var tex = UnityBackend.loadImage(filename);
-		var image = new Image(tex.width, tex.height, TextureFormat.RGBA32, false);
+		var image = new Image(width, height, TextureFormat.RGBA32, false);
 		image.texture = tex;
-		var size = UnityBackend.getImageSize(tex);
-		image.myWidth = size.x;
-		image.myHeight = size.y;
 		return image;
 	}
 	
@@ -85,13 +93,13 @@ class Image implements Canvas implements Resource {
 	public var realWidth(get, null): Int;
 	
 	public function get_realWidth(): Int {
-		return width;
+		return texture.width;
 	}
 	
 	public var realHeight(get, null): Int;
 	
 	public function get_realHeight(): Int {
-		return height;
+		return texture.height;
 	}
 	
 	public function isOpaque(x: Int, y: Int) : Bool {
