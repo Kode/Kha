@@ -182,10 +182,22 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		vertexBuffer.mesh.triangles = indexBuffer.nativeIndices;
+		if (count < 0) {
+			vertexBuffer.mesh.triangles = indexBuffer.nativeIndices;
+		}
+		else {
+			for (i in 0...count) {
+				indexBuffer.nativeCutIndices[i] = indexBuffer.nativeIndices[i];
+			}
+			for (i in count...indexBuffer.nativeCutIndices.length) {
+				indexBuffer.nativeCutIndices[i] = 0;
+			}
+			vertexBuffer.mesh.triangles = indexBuffer.nativeCutIndices;
+		}
 		for (i in 0...program.fragmentShader.material.passCount) {
-			program.fragmentShader.material.SetPass(i);
-			unityEngine.Graphics.DrawMeshNow(vertexBuffer.mesh, Matrix4x4.identity);
+			if (program.fragmentShader.material.SetPass(i)) {
+				unityEngine.Graphics.DrawMeshNow(vertexBuffer.mesh, Matrix4x4.identity);
+			}
 		}
 	}
 }

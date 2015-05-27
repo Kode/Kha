@@ -13,4 +13,7 @@ extern class Mesh {
 	public var uv2: NativeArray<Vector2>;
 	public var uv3: NativeArray<Vector2>;
 	public var uv4: NativeArray<Vector2>;
+	public function MarkDynamic(): Void;
+	public function UploadMeshData(markNoLogerReadable: Bool): Void;
+	public function Clear(keepVertexLayout: Bool): Void;
 }

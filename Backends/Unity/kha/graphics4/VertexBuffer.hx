@@ -24,6 +24,7 @@ class VertexBuffer {
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		mesh = new Mesh();
+		mesh.MarkDynamic();
 		this.vertexCount = vertexCount;
 		this.structure = structure;
 		
@@ -55,7 +56,8 @@ class VertexBuffer {
 		return array;
 	}
 
-	public function unlock(): Void {		
+	public function unlock(): Void {
+		//mesh.Clear(true);
 		var offset: Int = 0;
 		var uvindex: Int = 0;
 		var threeindex: Int = 0;
@@ -134,6 +136,7 @@ class VertexBuffer {
 				offset += 4;
 			}
 		}
+		//mesh.UploadMeshData(true);
 	}
 
 	public function count(): Int {

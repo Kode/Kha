@@ -4,6 +4,7 @@ import cs.NativeArray;
 
 class IndexBuffer {
 	public var nativeIndices: NativeArray<Int>;
+	public var nativeCutIndices: NativeArray<Int>;
 	private var indices: Array<Int>;
 	private var indexCount: Int;
 	
@@ -11,6 +12,7 @@ class IndexBuffer {
 		this.indexCount = indexCount;
 		indices = new Array<Int>();
 		nativeIndices = new NativeArray<Int>(indexCount);
+		nativeCutIndices = new NativeArray<Int>(indexCount);
 	}
 
 	public function lock(): Array<Int> {
