@@ -151,10 +151,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setMatrix(location: ConstantLocation, value: Matrix4): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		var m = unityEngine.Matrix4x4.zero;
-		m.SetRow(0, new unityEngine.Vector4(value._00, value._10, value._20, value._30));
-		m.SetRow(0, new unityEngine.Vector4(value._01, value._11, value._21, value._31));
-		m.SetRow(0, new unityEngine.Vector4(value._02, value._12, value._22, value._32));
-		m.SetRow(0, new unityEngine.Vector4(value._03, value._13, value._23, value._33));
+		m.SetRow(0, new unityEngine.Vector4(value._00, value._01, value._02, value._03));
+		m.SetRow(1, new unityEngine.Vector4(value._10, value._11, value._12, value._13));
+		m.SetRow(2, new unityEngine.Vector4(value._20, value._21, value._22, value._23));
+		m.SetRow(3, new unityEngine.Vector4(value._30, value._31, value._32, value._33));
 		program.fragmentShader.material.SetMatrix("_" + loc.name, m);
 	}
 	
