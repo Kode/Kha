@@ -8,6 +8,6 @@ class FragmentShader {
 	public var material: Material;
 	
 	public function new(source: Blob) {
-		material = new Material(Shader.Find("Custom/painter-image.frag"));
+		material = new Material(Shader.Find("Custom/painter-image.vert.painter-image.frag"));
 	}
 }

@@ -94,7 +94,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
 		if (texture == null) return;
-		program.fragmentShader.material.SetTexture("_" + cast(unit, kha.unity.TextureUnit).name, texture.texture);
+		program.fragmentShader.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
 	
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
@@ -178,7 +178,7 @@ class Graphics implements kha.graphics4.Graphics {
 		m.SetRow(1, new unityEngine.Vector4(value._10, value._11, value._12, value._13));
 		m.SetRow(2, new unityEngine.Vector4(value._20, value._21, value._22, value._23));
 		m.SetRow(3, new unityEngine.Vector4(value._30, value._31, value._32, value._33));
-		program.fragmentShader.material.SetMatrix("_" + loc.name, m);
+		program.fragmentShader.material.SetMatrix(loc.name, m);
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

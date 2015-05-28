@@ -9,7 +9,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadImage(desc: Dynamic, done: Image -> Void) { 
-		done(Image.fromFilename(desc.file, desc.width, desc.height));
+		done(Image.fromFilename(desc.file, desc.original_width, desc.original_height));
 	}
 	
 	override public function loadBlob (desc: Dynamic, done: Blob  -> Void) {

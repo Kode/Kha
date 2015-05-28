@@ -13,7 +13,8 @@ class Starter {
 	public function new() {
 		kha.Loader.init(new kha.unity.Loader());
 		Scheduler.init();
-		Keyboard.instance = new Keyboard();
+		new Keyboard();
+		new kha.input.Mouse();
 		Scheduler.init();
 	}
 	
