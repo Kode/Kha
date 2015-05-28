@@ -12,10 +12,12 @@ class Graphics1 implements kha.graphics1.Graphics {
 	
 	public function new(canvas: Canvas) {
 		this.canvas = canvas;
-		texture = Image.create(canvas.width, canvas.height);
 	}
 	
 	public function begin(): Void {
+		if (texture == null) {
+			texture = Image.createRenderTarget(canvas.width, canvas.height);
+		}
 		pixels = texture.lock();
 	}
 	
