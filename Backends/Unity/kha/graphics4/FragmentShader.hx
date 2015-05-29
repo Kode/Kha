@@ -1,13 +1,11 @@
 package kha.graphics4;
 
 import kha.Blob;
-import unityEngine.Material;
-import unityEngine.Shader;
 
 class FragmentShader {
-	public var material: Material;
+	public var name: String;
 	
 	public function new(source: Blob) {
-		material = new Material(Shader.Find("Custom/painter-image.vert.painter-image.frag"));
+		name = source.toString();
 	}
 }

@@ -1,8 +1,12 @@
 package kha.graphics4;
 
+import unityEngine.Material;
+import unityEngine.Shader;
+
 class Program {
 	private var vertexShader: VertexShader;
 	public var fragmentShader: FragmentShader;
+	public var material: Material;
 	
 	public function new() {
 		
@@ -17,7 +21,7 @@ class Program {
 	}
 
 	public function link(structure: VertexStructure): Void {
-		
+		material = new Material(Shader.Find("Custom/" + vertexShader.name + "." + fragmentShader.name));
 	}
 	
 	public function getConstantLocation(name: String): ConstantLocation {
