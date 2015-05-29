@@ -20,8 +20,8 @@ class Starter {
 		up = false;
 		down = false;
 		
-		//keyboard = new Keyboard();
-		//mouse = new kha.input.Mouse();
+		new kha.input.Keyboard();
+		new kha.input.Mouse();
 		//gamepad = new Gamepad();
 		
 		Loader.init(new kha.psm.Loader());

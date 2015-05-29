@@ -103,7 +103,7 @@ class Matrix4 {
 			);
 		}
 	
-	public static inline function orthogonalProjection(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Matrix4 {
+	public static function orthogonalProjection(left: Float, right: Float, bottom: Float, top: Float, zn: Float, zf: Float): Matrix4 {
 		var tx: Float = -(right + left) / (right - left);
 		var ty: Float = -(top + bottom) / (top - bottom);
 		var tz: Float = -(zf + zn) / (zf - zn);
@@ -115,7 +115,7 @@ class Matrix4 {
 		);
 	}
 	
-	public static inline function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
+	public static function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
 		var uh = Math.cos(fovY / 2) / Math.sin(fovY / 2);
 		var uw = uh / aspect;
 		return new Matrix4(
@@ -126,7 +126,7 @@ class Matrix4 {
 		);
 	}
 	
-	public static inline function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
+	public static function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
 		var zaxis = at.sub(eye);
 		zaxis.normalize();
 		var xaxis = up.cross(zaxis);
