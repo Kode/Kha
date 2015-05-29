@@ -63,48 +63,56 @@ class Starter {
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Left) != 0) {
 			if (!left) {
 				game.buttonDown(Button.LEFT);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendDownEvent(kha.Key.LEFT, "");
 				left = true;
 			}
 		}
 		else {
 			if (left) {
 				game.buttonUp(Button.LEFT);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendUpEvent(kha.Key.LEFT, "");
 				left = false;
 			}
 		}
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Right) != 0) {
 			if (!right) {
 				game.buttonDown(Button.RIGHT);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendDownEvent(kha.Key.RIGHT, "");
 				right = true;
 			}
 		}
 		else {
 			if (right) {
 				game.buttonUp(Button.RIGHT);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendUpEvent(kha.Key.RIGHT, "");
 				right = false;
 			}
 		}
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Up) != 0) {
 			if (!up) {
 				game.buttonDown(Button.UP);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendDownEvent(kha.Key.UP, "");
 				up = true;
 			}
 		}
 		else {
 			if (up) {
 				game.buttonUp(Button.UP);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendUpEvent(kha.Key.UP, "");
 				up = false;
 			}
 		}
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Down) != 0) {
 			if (!down) {
 				game.buttonDown(Button.DOWN);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendDownEvent(kha.Key.DOWN, "");
 				down = true;
 			}
 		}
 		else {
 			if (down) {
 				game.buttonUp(Button.DOWN);
+				kha.input.Keyboard.get(new haxe.lang.Null<int>(0, true)).sendUpEvent(kha.Key.DOWN, "");
 				down = false;
 			}
 		}
