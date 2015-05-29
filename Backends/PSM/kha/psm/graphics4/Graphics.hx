@@ -22,7 +22,10 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import sce.playstation.core.graphics.BlendFuncFactor;
+import sce.playstation.core.graphics.BlendFuncMode;
 import sce.playstation.core.graphics.DrawMode;
+import sce.playstation.core.graphics.EnableMode;
 import sce.playstation.core.graphics.GraphicsContext;
 
 class Graphics implements kha.graphics4.Graphics {
@@ -76,7 +79,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
+		context.Enable(EnableMode.Blend, true);
+		context.SetBlendFunc(BlendFuncMode.Add, BlendFuncFactor.SrcAlpha, BlendFuncFactor.OneMinusSrcAlpha);
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
