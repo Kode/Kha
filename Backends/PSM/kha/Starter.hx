@@ -41,9 +41,10 @@ class Starter {
 		Sys.init();
 		
 		var graphics = new Graphics();
-		framebuffer = new Framebuffer(null, graphics);
+		framebuffer = new Framebuffer(null, null, graphics);
+		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
-		framebuffer.init(g2, graphics);
+		framebuffer.init(g1, g2, graphics);
 		
 		Scheduler.start();
 		Configuration.setScreen(game);
