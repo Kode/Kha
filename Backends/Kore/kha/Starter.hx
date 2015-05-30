@@ -27,6 +27,7 @@ class Starter {
 		gamepad = new Gamepad();
 		surface = new Surface();
 		Sys.init();
+		kha.audio2.Audio._init();
 		Loader.init(new kha.kore.Loader());
 		Scheduler.init();
 	}
