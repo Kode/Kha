@@ -367,7 +367,7 @@ class GlslOut {
 		decls.push("precision mediump float;");
 
 		//if( s.funs.length != 1 ) throw "assert";
-		var f = s.funs[0];
+		var f = s.funs[index];
 		isVertex = f.kind == Vertex;
 
 		for( v in s.vars ) {
@@ -375,7 +375,8 @@ class GlslOut {
 			case Param, Global:
 				add("uniform ");
 			case Input:
-				add("attribute ");
+				if (isVertex) add("attribute ");
+				else continue;
 			case Var:
 				add("varying ");
 			case Function, Output: continue;
