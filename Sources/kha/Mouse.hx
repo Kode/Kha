@@ -28,11 +28,11 @@ class Mouse {
 	}
 	
 	private function hideSystemCursor(): Void {
-		throw "Not implemented";
+		//throw "Not implemented";
 	}
 	
 	private function showSystemCursor(): Void {
-		throw "Not implemented";
+		//throw "Not implemented";
 	}
 	
 	public function forceSystemCursor(force : Bool) : Void {
