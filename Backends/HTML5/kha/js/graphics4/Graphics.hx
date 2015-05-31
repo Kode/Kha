@@ -55,6 +55,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
+	public function flush(): Void {
+		
+	}
+	
 	public function vsynced(): Bool {
 		return true;
 	}

@@ -7,7 +7,7 @@ import kha.networking.Controller;
 @:expose
 class Keyboard 
 #if js
-implements Controller
+//implements Controller
 #end
 {
 	public static function get(num: Int = 0): Keyboard {
