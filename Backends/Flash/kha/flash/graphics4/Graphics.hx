@@ -51,6 +51,10 @@ class Graphics implements kha.graphics4.Graphics {
 		this.target = target;
 	}
 	
+	public function flush(): Void {
+		
+	}
+	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
 		
 	}
