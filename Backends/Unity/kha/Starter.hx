@@ -77,6 +77,16 @@ class Starter {
 		Game.the.buttonUp(Button.DOWN);
 		Keyboard.get().sendUpEvent(Key.DOWN, '');
 	}
+
+	public static function mouseDown(button: Int, x: Int, y: Int): Void {
+		Game.the.mouseDown(x, y);
+		kha.input.Mouse.get().sendDownEvent(button, x, y);
+	}
+
+	public static function mouseUp(button: Int, x: Int, y: Int): Void {
+		Game.the.mouseUp(x, y);
+		kha.input.Mouse.get().sendUpEvent(button, x, y);
+	}
 	
 	public static function update(): Void {
 		Scheduler.executeFrame();
