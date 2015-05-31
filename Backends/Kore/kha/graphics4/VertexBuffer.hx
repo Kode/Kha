@@ -1,5 +1,7 @@
 package kha.graphics4;
 
+import haxe.io.BytesData;
+import haxe.io.Float32Array;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
@@ -11,12 +13,11 @@ import kha.graphics4.VertexStructure;
 
 @:headerClassCode("Kore::VertexBuffer* buffer;")
 class VertexBuffer {
-	private var data: Array<Float>;
+	private var data: Float32Array;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		init(vertexCount, structure);
-		data = new Array<Float>();
-		data[Std.int(stride() / 4) * count() - 1] = 0;
+		data = new Float32Array(Std.int(stride() / 4) * count());
 		
 		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
@@ -47,19 +48,24 @@ class VertexBuffer {
 		
 	}
 	
-	public function lock(?start: Int, ?count: Int): Array<Float> {
+	public function lock(?start: Int, ?count: Int): Float32Array {
 		return data;
 	}
 	
 	@:functionCode("
 		float* vertices = buffer->lock();
+		float* pointer = (float*)bytes->Pointer();
 		for (int i = 0; i < buffer->count() * buffer->stride() / 4; ++i) {
-			vertices[i] = data[i];
+			vertices[i] = pointer[i];
 		}
 		buffer->unlock();
 	")
-	public function unlock(): Void {
+	private function unlock2(bytes: BytesData): Void {
 		
+	}
+	
+	public function unlock(): Void {
+		unlock2(data.getData().bytes.getData());
 	}
 	
 	@:functionCode("

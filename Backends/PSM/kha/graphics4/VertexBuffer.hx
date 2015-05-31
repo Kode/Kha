@@ -1,6 +1,7 @@
 package kha.graphics4;
 
 import cs.NativeArray;
+import haxe.io.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexData;
 import sce.playstation.core.graphics.VertexFormat;
@@ -12,7 +13,7 @@ class VertexBuffer {
 	private var myStructure: kha.graphics4.VertexStructure;
 	private var vertexCount: Int;
 	private var vertices: NativeArray<Single>;
-	private var lockedVertices: Array<Float>;
+	private var lockedVertices: Float32Array;
 	
 	public function new(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage) {
 		this.vertexCount = vertexCount;
@@ -31,11 +32,10 @@ class VertexBuffer {
 			}
 		}
 		vertices = new NativeArray<Single>(stride() * count());
-		lockedVertices = new Array<Float>();
-		lockedVertices[stride() * count() - 1] = 0;
+		lockedVertices = new Float32Array(stride() * count());
 	}
 	
-	public function lock(?start: Int, ?count: Int): Array<Float> {
+	public function lock(?start: Int, ?count: Int): Float32Array {
 		return lockedVertices;
 	}
 	

@@ -22,7 +22,10 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import sce.playstation.core.graphics.BlendFuncFactor;
+import sce.playstation.core.graphics.BlendFuncMode;
 import sce.playstation.core.graphics.DrawMode;
+import sce.playstation.core.graphics.EnableMode;
 import sce.playstation.core.graphics.GraphicsContext;
 
 class Graphics implements kha.graphics4.Graphics {
@@ -76,7 +79,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
+		context.Enable(EnableMode.Blend, true);
+		context.SetBlendFunc(BlendFuncMode.Add, BlendFuncFactor.SrcAlpha, BlendFuncFactor.OneMinusSrcAlpha);
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
@@ -158,10 +162,10 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	@:functionCode('
 		var m = new Sce.PlayStation.Core.Matrix4(
-			(float)matrix.get(0, 0), (float)matrix.get(1, 0), (float)matrix.get(2, 0), (float)matrix.get(3, 0),
-			(float)matrix.get(0, 1), (float)matrix.get(1, 1), (float)matrix.get(2, 1), (float)matrix.get(3, 1),
-			(float)matrix.get(0, 2), (float)matrix.get(1, 2), (float)matrix.get(2, 2), (float)matrix.get(3, 2),
-			(float)matrix.get(0, 3), (float)matrix.get(1, 3), (float)matrix.get(2, 3), (float)matrix.get(3, 3)
+			(float)matrix._00, (float)matrix._01, (float)matrix._02, (float)matrix._03,
+			(float)matrix._10, (float)matrix._11, (float)matrix._12, (float)matrix._13,
+			(float)matrix._20, (float)matrix._21, (float)matrix._22, (float)matrix._23,
+			(float)matrix._30, (float)matrix._31, (float)matrix._32, (float)matrix._33
 			);
 		program.program.SetUniformValue(location.location, ref m);
 	')

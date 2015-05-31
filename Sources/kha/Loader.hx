@@ -331,12 +331,12 @@ class Loader {
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
 			if (basePath != '.') assets[i].file = basePath + "/" + assets[i].file;
-			this.assets.set(assets[i].id, assets[i]);
+			this.assets.set(assets[i].name, assets[i]);
 		}
 		
 		var rooms: Dynamic = project.rooms;
 		for (i in 0...rooms.length) {
-			var room = new Room(rooms[i].id);
+			var room = new Room(rooms[i].name);
 			var roomAssets: Dynamic = rooms[i].assets;
 			for (i2 in 0...roomAssets.length) {
 				room.assets.push(this.assets.get(roomAssets[i2]));
@@ -350,7 +350,7 @@ class Loader {
 		for (room in this.rooms) {
 			if (room.parent != null) {
 				for (room2 in this.rooms) {
-					if (room2.id == room.parent.id) {
+					if (room2.name == room.parent.name) {
 						room.parent = room2;
 						break;
 					}

@@ -1,5 +1,7 @@
 package kha;
 
-class Music extends Media {
+import haxe.io.Bytes;
 
+class Music extends Media {
+	public var data: Bytes;
 }

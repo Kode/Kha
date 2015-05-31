@@ -1,10 +1,11 @@
 package kha.input;
 
 import kha.Key;
+import kha.networking.Controller;
 
 @:allow(kha.Starter)
 @:expose
-class Keyboard {
+class Keyboard implements Controller {
 	public static function get(num: Int = 0): Keyboard {
 		if (num != 0) return null;
 		return instance;
@@ -30,13 +31,21 @@ class Keyboard {
 		instance = this;
 	}
 	
+	@input
 	private function sendDownEvent(key: Key, char: String): Void {
+		#if node
+		js.Node.console.log("Down: " + key + " from " + kha.networking.Session.the().me.id);
+		#end
 		for (listener in downListeners) {
 			listener(key, char);
 		}
 	}
 	
+	@input
 	private function sendUpEvent(key: Key, char: String): Void {
+		#if node
+		js.Node.console.log("Up: " + key + " from " + kha.networking.Session.the().me.id);
+		#end
 		for (listener in upListeners) {
 			listener(key, char);
 		}

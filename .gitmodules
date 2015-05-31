@@ -8,13 +8,17 @@
 	branch = master
 [submodule "Backends/Kore/khacpp"]
 	path = Backends/Kore/khacpp
-	url = http://github.com/KTXSoftware/khacpp
+	url = ../khacpp
 	branch = master
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = http://github.com/KTXSoftware/haxe_bin
+	url = ../haxe_bin
 	branch = master
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
-	url = http://github.com/KTXSoftware/oggenc_bin
+	url = ../oggenc_bin
+	branch = master
+[submodule "Tools/kravur"]
+	path = Tools/kravur
+	url = ../kravur_bin
 	branch = master

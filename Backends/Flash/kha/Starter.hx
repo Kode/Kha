@@ -76,8 +76,8 @@ class Starter {
 		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		kha.flash.graphics4.Graphics.initContext(context);
 		var g4 = new kha.flash.graphics4.Graphics();
-		frame = new Framebuffer(null, g4);
-		frame.init(new kha.flash.graphics4.Graphics2(frame), g4);
+		frame = new Framebuffer(null, null, g4);
+		frame.init(new kha.graphics2.Graphics1(frame), new kha.flash.graphics4.Graphics2(frame), g4);
 		
 		Configuration.setScreen(gameToStart);
 		Scheduler.start();

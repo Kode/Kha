@@ -1,6 +1,9 @@
 package kha.js;
 
+import haxe.ds.Vector;
+import haxe.io.Bytes;
 import js.Browser;
+import js.html.audio.AudioBuffer;
 import js.html.AudioElement;
 import js.html.XMLHttpRequest;
 import js.Lib;
@@ -56,7 +59,7 @@ class WebAudioChannel extends kha.SoundChannel {
 
 class WebAudioSound extends kha.Sound {
 	private var done: kha.Sound -> Void;
-	private var buffer: Dynamic;
+	private var buffer: AudioBuffer;
 	private static var initialized: Bool = false;
 	private static var playsOgg: Bool = false;
 	
@@ -85,6 +88,18 @@ class WebAudioSound extends kha.Sound {
 			Sys.audio.decodeAudioData(request.response,
 			function(buf) {
 				buffer = buf;
+				
+				var channelData1 = buffer.getChannelData(0);
+				var channelData2 = channelData1;
+				if (buffer.numberOfChannels > 1) {
+					channelData2 = buffer.getChannelData(1);
+				}
+				data = new Vector<Float>(Std.int(channelData1.byteLength / 2));
+				for (i in 0...Std.int(data.length / 2)) {
+					data[i * 2 + 0] = channelData1[i];
+					data[i * 2 + 1] = channelData2[i];
+				}
+				
 				done(this);
 			},
 			function() {

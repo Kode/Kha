@@ -6,7 +6,6 @@ class TimeTask {
 	public var start: Float;
 	public var period: Float;
 	public var duration: Float;
-	public var last: Float;
 	public var next: Float;
 	
 	public var id: Int;
@@ -52,22 +51,26 @@ class Scheduler {
 	private static var halted_count: Int;
 
 	private static var DIF_COUNT = 3;
-	private static var maxframetime = 0.1;
+	private static var maxframetime = 0.5;
 	
-	private static var difs: Array<Float>;
+	private static var deltas: Array<Float>;
 	
-	private static var delta:Float = 0;
+	//private static var delta:Float = 0;
 	private static var dScale:Float = 1;
 	
+	private static var startTime: Float = 0;
+	
+	private static var lastNow: Float = 0;
+	
 	public static function init(): Void {
-		difs = new Array<Float>();
-		for (i in 0...DIF_COUNT-1) difs[i] = 0;
+		deltas = new Array<Float>();
+		for (i in 0...DIF_COUNT) deltas[i] = 0;
 		
 		stopped = true;
 		halted_count = 0;
 		frame_tasks_sorted = true;
-		current = 0;
-		lastTime = 0;
+		current = realTime();
+		lastTime = realTime();
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -85,8 +88,9 @@ class Scheduler {
 		onedifhz = 1.0 / hz;
 
 		stopped = false;
-		lastTime = Sys.getTime();
-		for (i in 0...DIF_COUNT-1) difs[i] = 0;
+		resetTime();
+		lastTime = realTime();
+		for (i in 0...DIF_COUNT) deltas[i] = 0;
 	}
 	
 	public static function stop(): Void {
@@ -97,11 +101,29 @@ class Scheduler {
 		return stopped;
 	}
 	
+	public static function back(time: Float): Void {
+		lastTime = time;
+		for (timeTask in timeTasks) {
+			if (timeTask.start >= time) {
+				timeTask.next = timeTask.start;
+			}
+			else {
+				timeTask.next = timeTask.start;
+				while (timeTask.next < time) { // TODO: Implement without looping
+					timeTask.next += timeTask.period;
+				}
+			}
+		}
+	}
+	
 	public static function executeFrame(): Void {
 		Sys.mouse.update();
 		
-		var now: Float = Sys.getTime();
-		delta = now - lastTime;
+		var now: Float = realTime();
+		var delta = now - lastNow;
+		lastNow = now;
+		
+		/*delta = now - lastTime;
 		lastTime = now;
 		var frameEnd: Float = current;
 		 
@@ -153,12 +175,30 @@ class Scheduler {
 		}
 		
 		delta = dScale * delta;
-		frameEnd += delta;
+		frameEnd += delta;*/
+		
+		//var delta = now - lastTime;
+		
+		for (i in 0...DIF_COUNT - 1) {
+			deltas[i] = deltas[i + 1];
+		}
+		deltas[DIF_COUNT - 1] = delta;
+		
+		var next: Float = 0;
+		for (i in 0...DIF_COUNT) {
+			next += deltas[i];
+		}
+		next /= DIF_COUNT;
+		
+		//delta = interpolated_delta; // average the frame end estimation
+		
+		//lastTime = now;
+		var frameEnd = current + next;
+		lastTime = frameEnd;
 		
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
 			current = t.next;
-			t.last = t.next;
 			t.next += t.period;
 			timeTasks.remove(t);
 			
@@ -204,6 +244,24 @@ class Scheduler {
 		return current;
 	}
 	
+	public static function realTime(): Float {
+		return Sys.getTime() - startTime;
+	}
+	
+	public static function resetTime(): Void {
+		var now = Sys.getTime();
+		lastNow = 0;
+		var dif = now - startTime;
+		startTime = now;
+		for (timeTask in timeTasks) {
+			timeTask.start -= dif;
+			timeTask.next -= dif;
+		}
+		for (i in 0...DIF_COUNT) deltas[i] = 0;
+		current = 0;
+		lastTime = 0;
+	}
+	
 	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
 		frameTasks.push(new FrameTask(task, priority, ++currentFrameTaskId));
 		frame_tasks_sorted = false;
@@ -243,7 +301,6 @@ class Scheduler {
 		if (duration != 0) t.duration = t.start + duration; //-1 ?
 
 		t.next = t.start;
-		t.last = current;
 		insertSorted(timeTasks, t);
 		return t.id;
 	}
@@ -310,13 +367,13 @@ class Scheduler {
 		frame_tasks_sorted = true;
 	}
 	
-	private static function get_deltaTime():Float 
-	{
-		return delta;
-	}
+	//private static function get_deltaTime():Float 
+	//{
+	//	return delta;
+	//}
 	
 	/** Delta time between frames*/
-	static public var deltaTime(get_deltaTime, null):Float;
+	//static public var deltaTime(get_deltaTime, null):Float;
 	
 	private static function get_deltaScale():Float 
 	{
