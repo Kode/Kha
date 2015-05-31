@@ -7,6 +7,7 @@ class ControllerBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
+		#if js
 		#if !node
 		{
 			var funcindex = 0;
@@ -259,6 +260,7 @@ class ControllerBuilder {
 			kind: FVar(macro: Int, macro 0),
 			pos: Context.currentPos()
 		});
+		#end
 		
 		return fields;
 	}

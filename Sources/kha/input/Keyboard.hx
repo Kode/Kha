@@ -5,7 +5,11 @@ import kha.networking.Controller;
 
 @:allow(kha.Starter)
 @:expose
-class Keyboard implements Controller {
+class Keyboard 
+#if js
+implements Controller
+#end
+{
 	public static function get(num: Int = 0): Keyboard {
 		if (num != 0) return null;
 		return instance;

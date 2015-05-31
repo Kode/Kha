@@ -1,6 +1,7 @@
 package kha.vr;
 
 
+import haxe.io.Float32Array;
 import kha.Button;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
@@ -247,7 +248,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
 	var program: Program;
 	
-	private function setVertex(a: Array<Float>, index: Int, pos: Vector3, uv: Vector2, color: Vector4) {
+	private function setVertex(a: Float32Array, index: Int, pos: Vector3, uv: Vector2, color: Vector4) {
 		var base: Int = index * 9;
 		a[base + 0] = pos.x;
 		a[base + 1] = pos.y;
@@ -281,7 +282,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		structure.add("vertexColor", VertexData.Float4);
 		
 		vb = new VertexBuffer(4, structure, Usage.StaticUsage);
-		var verts: Array<Float> = vb.lock();
+		var verts = vb.lock();
 		
 		setVertex(verts, 0, new Vector3(-1, -1, 0), new Vector2(0, 0), new Vector4(1, 1, 1, 1));
 		setVertex(verts, 1, new Vector3(-1, 1, 0), new Vector2(0, 1), new Vector4(1, 1, 1, 1));

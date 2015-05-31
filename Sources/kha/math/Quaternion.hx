@@ -93,17 +93,12 @@ class Quaternion
 		var yz: Float = y * zs;
 		var zz: Float = z * zs;
 
-		var m: Matrix4 = Matrix4.identity();
-		m.set(0, 0, 1 - (yy + zz));
-		m.set(1, 0, xy - wz);
-		m.set(2, 0, xz + wy);
-		m.set(0, 1, xy + wz); 
-		m.set(1, 1, 1 - (xx + zz)); 
-		m.set(2, 1, yz - wx);
-		m.set(0, 2, xz - wy); 
-		m.set(1, 2, yz + wx); 
-		m.set(2, 2, 1 - (xx + yy));
-		return m;
+		return new Matrix4(
+			1 - (yy + zz), xy - wz, xz + wy, 0,
+			xy + wz, 1 - (xx + zz), yz - wx, 0,
+			xz - wy, yz + wx, 1 - (xx + yy), 0,
+			0, 0, 0, 1
+		);
 	}
 	
 	

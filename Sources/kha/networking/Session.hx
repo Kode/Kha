@@ -1,6 +1,7 @@
 package kha.networking;
 
 import haxe.io.Bytes;
+#if js
 #if node
 import js.node.Http;
 import js.Node;
@@ -8,6 +9,7 @@ import js.Node;
 import js.Browser;
 import js.html.BinaryType;
 import js.html.WebSocket;
+#end
 
 class State {
 	public var time: Float;
@@ -20,6 +22,7 @@ class State {
 }
 
 class Session {
+	#if js
 	public static inline var START = 0;
 	public static inline var ENTITY_UPDATES = 1;
 	public static inline var CONTROLLER_UPDATES = 2;
@@ -199,4 +202,5 @@ class Session {
 		//network.send(send(), false);
 		#end
 	}
+	#end
 }
