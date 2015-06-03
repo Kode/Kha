@@ -7,6 +7,7 @@ import js.html.audio.AudioBuffer;
 import js.html.AudioElement;
 import js.html.XMLHttpRequest;
 import js.Lib;
+import kha.audio2.Audio;
 
 class WebAudioChannel extends kha.SoundChannel {
 	private var buffer: Dynamic;
@@ -18,23 +19,23 @@ class WebAudioChannel extends kha.SoundChannel {
 		super();
 		this.offset = 0;
 		this.buffer = buffer;
-		this.startTime = Sys.audio.currentTime;
-		this.source = Sys.audio.createBufferSource();
+		this.startTime = Audio._context.currentTime;
+		this.source = Audio._context.createBufferSource();
 		this.source.buffer = this.buffer;
-		this.source.connect(Sys.audio.destination);
+		this.source.connect(Audio._context.destination);
 		this.source.start(0);
 	}
 	
 	override public function play(): Void {
 		if (source != null) return;
 		super.play();
-		startTime = Sys.audio.currentTime - offset;
+		startTime = Audio._context.currentTime - offset;
 		source.start(0, offset);
 	}
 	
 	override public function pause(): Void {
 		source.stop();
-		offset = Sys.audio.currentTime - startTime;
+		offset = Audio._context.currentTime - startTime;
 		startTime = -1;
 		source = null;
 	}
@@ -49,7 +50,7 @@ class WebAudioChannel extends kha.SoundChannel {
 	
 	override public function getCurrentPos(): Int {
 		if (startTime < 0) return Math.ceil(offset * 1000);
-		else return Math.ceil((Sys.audio.currentTime - startTime) * 1000); //Miliseconds
+		else return Math.ceil((Audio._context.currentTime - startTime) * 1000); //Miliseconds
 	}
 	
 	override public function getLength(): Int {
@@ -81,11 +82,11 @@ class WebAudioSound extends kha.Sound {
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
-			Browser.alert("loadSound failed");
+			Browser.console.log("loadSound failed");
 		};
 		request.onload = function() {
 			var arrayBuffer = request.response;
-			Sys.audio.decodeAudioData(request.response,
+			Audio._context.decodeAudioData(request.response,
 			function(buf) {
 				buffer = buf;
 				
@@ -103,7 +104,7 @@ class WebAudioSound extends kha.Sound {
 				done(this);
 			},
 			function() {
-				Browser.alert("loadSound failed");
+				Browser.console.log("loadSound failed");
 			}
 			);
 		};

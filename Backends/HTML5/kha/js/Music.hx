@@ -88,7 +88,7 @@ class Music extends kha.Music {
 		}
 		
 		trace("Error loading " + extractName(element.src) + concatExtensions());
-		Browser.alert("loadSound failed");
+		Browser.console.log("loadMusic failed");
 	
 		finishAsset();
 	}

@@ -5,7 +5,7 @@ import js.html.CanvasElement;
 
 class Sys {
 	public static var gl: Dynamic;
-	public static var audio: Dynamic;
+	@:noCompletion public static var _hasWebAudio: Bool;
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	//public static var graphics(default, null): Graphics;
 	private static var theMouse: Mouse;

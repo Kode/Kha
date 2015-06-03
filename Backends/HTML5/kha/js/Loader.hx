@@ -19,12 +19,12 @@ class Loader extends kha.Loader {
 	}
 		
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		if (Sys.audio != null) new WebAudioMusic(desc.file, done);
+		if (Sys._hasWebAudio) new WebAudioMusic(desc.file, done);
 		else new Music(desc.file, done);
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
-		if (Sys.audio != null) new WebAudioSound(desc.file, done);
+		if (Sys._hasWebAudio) new WebAudioSound(desc.file, done);
 		else new Sound(desc.file, done);
 	}
 	

@@ -7,17 +7,36 @@ import js.html.audio.ScriptProcessorNode;
 
 class Audio {
 	private static var buffer: Buffer;
-	private static var audioContext: AudioContext;
+	@:noCompletion public static var _context: AudioContext;
 	private static var processingNode: ScriptProcessorNode;
 	
+	private static function initContext(): Void {
+		try {
+			_context = new AudioContext();
+			return;
+		}
+		catch (e: Dynamic) {
+			
+		}
+		try {
+			untyped __js__('this._context = new webkitAudioContext();');
+			return;
+		}
+		catch (e: Dynamic) {
+			
+		}
+	}
+	
 	@:noCompletion
-	public static function _init() {
+	public static function _init(): Bool {
 		var bufferSize = 1024 * 2;
 		
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
 		
-		audioContext = new AudioContext();
-		processingNode = audioContext.createScriptProcessor(bufferSize, 0, 2);
+		initContext();
+		if (_context == null) return false;
+		
+		processingNode = _context.createScriptProcessor(bufferSize, 0, 2);
 		processingNode.onaudioprocess = function (e: AudioProcessingEvent) {
 			var output1 = e.outputBuffer.getChannelData(0);
 			var output2 = e.outputBuffer.getChannelData(1);
@@ -40,7 +59,8 @@ class Audio {
 				}
 			}
 		}
-		processingNode.connect(audioContext.destination);
+		processingNode.connect(_context.destination);
+		return true;
 	}
 
 	public static var audioCallback: Int->Buffer->Void;

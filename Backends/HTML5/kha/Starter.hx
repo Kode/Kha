@@ -12,6 +12,7 @@ import kha.Game;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
 import kha.Key;
 import kha.Loader;
@@ -145,25 +146,16 @@ class Starter {
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
 		}
 		//canvas.getContext("2d").scale(transform, transform);
-		
-		try {
-			Sys.audio = null;
-			Sys.audio = untyped __js__("new AudioContext()");
+
+		if (kha.audio2.Audio._init()) {
+			Sys._hasWebAudio = true;
+			kha.audio2.Audio1._init();
 		}
-		catch (e: Dynamic) {
-			
+		else {
+			Sys._hasWebAudio = false;
+			AudioElementAudio._compile();
+			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
-		if (Sys.audio == null) {
-			try {
-				Sys.audio = untyped __js__("new webkitAudioContext()");
-			}
-			catch (e: Dynamic) {
-				
-			}
-		}
-		
-		kha.audio2.Audio._init();
-		kha.audio2.Audio1._init();
 
 		Scheduler.start();
 		
