@@ -52,6 +52,10 @@ class Graphics implements kha.graphics4.Graphics {
 		RenderTexture.active = null;
 	}
 	
+	public function flush(): Void {
+		
+	}
+	
 	public function vsynced(): Bool {
 		return true;
 	}
@@ -106,7 +110,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
-		return false;
+		return !UnityBackend.uvStartsAtTop();
 	}
 	
 	public function setProgram(program: Program): Void {

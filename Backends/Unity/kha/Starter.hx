@@ -11,6 +11,7 @@ class Starter {
 	public static var mouseY: Int = 0;
 	
 	public function new() {
+		Sys.init();
 		kha.Loader.init(new kha.unity.Loader());
 		Scheduler.init();
 		new Keyboard();
@@ -26,7 +27,6 @@ class Starter {
 	
 	public static function loadFinished(): Void {
 		Loader.the.initProject();
-		Sys.init();
 		var g4 = new kha.unity.Graphics(null);
 		frame = new Framebuffer(null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);
