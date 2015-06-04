@@ -20,6 +20,7 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
+import unityEngine.GL;
 import unityEngine.Matrix4x4;
 import unityEngine.RenderTexture;
 
@@ -65,7 +66,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
-		
+		var c = new unityEngine.Color(0, 0, 0, 0);
+		if (color != null) c = new unityEngine.Color(color.R, color.G, color.B, color.A);
+		GL.Clear(depth != null, color != null, c, depth != null ? depth : 0);
 	}
 	
 	public function setCullMode(mode: CullMode): Void {
