@@ -58,6 +58,7 @@ class Audio1 {
 	}
 	
 	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
+		if (music.data == null) return null;
 		for (i in 0...channelCount) {
 			if (musicChannels[i] == null) {
 				var channel = new MusicChannel(music.data, loop);

@@ -1,6 +1,5 @@
 package kha;
 
-
 import kha.Game;
 import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;
@@ -12,7 +11,6 @@ import kha.Loader;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.vr.VrInterface;
-
 
 #if ANDROID 
 	#if VR_CARDBOARD
@@ -31,8 +29,6 @@ import kha.vr.VrInterface;
 	#end
 #end
 
-
-
 class Starter {
 	private var gameToStart: Game;
 	private static var framebuffer: Framebuffer;
@@ -50,6 +46,7 @@ class Starter {
 		surface = new Surface();
 		Sys.init();
 		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
 		Loader.init(new kha.kore.Loader());
 		Scheduler.init();
 	}
