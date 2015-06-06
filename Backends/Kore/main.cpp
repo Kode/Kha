@@ -178,8 +178,7 @@ namespace {
 	void update() {
 		Kore::Audio::update();
 		if (visible) {
-			
-			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
+			#ifndef VR_RIFT
 			Kore::Graphics::begin();
 			#endif
 			
@@ -188,24 +187,20 @@ namespace {
 			//	Kore::VrInterface::DistortionBefore();
 			#endif
 
-			//#endif
 			Starter_obj::frame();
-			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
-				Kore::Graphics::end();
+
+			#ifndef VR_RIFT
+			Kore::Graphics::end();
 			#endif
 			
-
 			// Google Cardboard: Call the DistortionMesh Renderer
 			#ifdef VR_CARDBOARD
 			//	Kore::VrInterface::DistortionAfter();
 			#endif
 
-
-			#if defined(SYS_WINDOWS) && !defined(VR_RIFT)
+			#ifndef VR_RIFT
 			Kore::Graphics::swapBuffers();
 			#endif
-			
-			
 		}
 	}
 	
