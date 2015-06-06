@@ -15,7 +15,7 @@ class VorbisTools
 {
     static public inline var EOP = -1;
     static public var integerDivideTable:Vector<Vector<Int>>;
-    static inline var M_PI = 3.14159265358979323846264;
+    static inline var M__PI = 3.14159265358979323846264;
 
     static inline var DIVTAB_NUMER = 32;
     static inline var DIVTAB_DENOM = 64;
@@ -161,7 +161,7 @@ class VorbisTools
     {
         var n2 = n >> 1;
         for (i in 0...n2) {
-            window[i] = Math.sin(0.5 * M_PI * square(Math.sin((i - 0 + 0.5) / n2 * 0.5 * M_PI)));
+            window[i] = Math.sin(0.5 * M__PI * square(Math.sin((i - 0 + 0.5) / n2 * 0.5 * M__PI)));
         }
     }
 
@@ -186,17 +186,17 @@ class VorbisTools
 
         var k2 = 0;
         for (k in 0...n4) {
-            af[k2] = Math.cos(4*k*M_PI/n);
-            af[k2 + 1] = -Math.sin(4*k*M_PI/n);
-            bf[k2] = Math.cos((k2+1)*M_PI/n/2) * 0.5;
-            bf[k2 + 1] = Math.sin((k2 + 1) * M_PI / n / 2) * 0.5;
+            af[k2] = Math.cos(4*k*M__PI/n);
+            af[k2 + 1] = -Math.sin(4*k*M__PI/n);
+            bf[k2] = Math.cos((k2+1)*M__PI/n/2) * 0.5;
+            bf[k2 + 1] = Math.sin((k2 + 1) * M__PI / n / 2) * 0.5;
             k2 += 2;
         }
 
         var k2 = 0;
         for (k in 0...n8) {
-            cf[k2  ] = Math.cos(2*(k2+1) * M_PI/n);
-            cf[k2+1] = -Math.sin(2*(k2+1) * M_PI/n);
+            cf[k2  ] = Math.cos(2*(k2+1) * M__PI/n);
+            cf[k2+1] = -Math.sin(2*(k2+1) * M__PI/n);
             k2 += 2;
         }
     }
