@@ -24,10 +24,15 @@ class Painter extends kha.graphics2.Graphics {
 	}
 	
 	@:functionCode('
-		graphics.clearRect(0, 0, 1024, 1024);
+		graphics.setBackground(new java.awt.Color(color));
+		graphics.clearRect(0, 0, 2048, 2048);
 	')
-	override public function clear(color: Color = null): Void {
+	private function clear2(color: Int): Void {
 		
+	}
+	
+	override public function clear(color: Color = null): Void {
+		clear2(color != null ? color.value : Color.Black.value);
 	}
 	
 	@:functionCode('
