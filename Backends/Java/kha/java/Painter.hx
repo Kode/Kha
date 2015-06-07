@@ -24,6 +24,13 @@ class Painter extends kha.graphics2.Graphics {
 	}
 	
 	@:functionCode('
+		graphics.clearRect(0, 0, 1024, 1024);
+	')
+	override public function clear(color: Color = null): Void {
+		
+	}
+	
+	@:functionCode('
 		graphics.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 	')
 	function setRenderHint(): Void {
@@ -125,8 +132,8 @@ class Painter extends kha.graphics2.Graphics {
 	
 	@:functionCode('
 		graphics.setTransform(new java.awt.geom.AffineTransform(
-			((Number)transformation.__get(0)).floatValue(), ((Number)transformation.__get(3)).floatValue(), ((Number)transformation.__get(1)).floatValue(),
-			((Number)transformation.__get(4)).floatValue(), ((Number)transformation.__get(2)).floatValue(), ((Number)transformation.__get(5)).floatValue()));
+			((Number)transformation._00).floatValue(), ((Number)transformation._01).floatValue(), ((Number)transformation._10).floatValue(),
+			((Number)transformation._11).floatValue(), ((Number)transformation._20).floatValue(), ((Number)transformation._21).floatValue()));
 	')
 	override function setTransformation(transformation: Matrix3): Void {
 		

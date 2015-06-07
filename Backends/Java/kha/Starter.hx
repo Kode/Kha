@@ -20,7 +20,10 @@ import kha.Key;
 
 		public Window() {
 			instance = this;
-			framebuffer = new kha.Framebuffer(new kha.java.Painter(), null);
+			kha.java.Painter g2 = new kha.java.Painter();
+			framebuffer = new kha.Framebuffer(null, g2, null);
+			kha.graphics2.Graphics1 g1 = new kha.graphics2.Graphics1(framebuffer);
+			framebuffer.init(g1, g2, null);
 			keyreleased = new boolean[256];
 			for (int i = 0; i < 256; ++i) keyreleased[i] = true;
 		}
