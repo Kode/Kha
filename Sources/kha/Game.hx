@@ -2,17 +2,42 @@ package kha;
 
 import kha.graphics4.TextureFormat;
 
+/**
+ * Main Kha class.
+ * Inherit from this in your game or application.
+ */
 class Game {
+	/**
+	 * ID name.
+	 */
 	private var name: String;
-	
+	/**
+	 * The current FPS.
+	 */	
 	public static var FPS: Int = 60;
-	
+	/**
+	 * Static instance.
+	 */
 	public static var the(default, null): Game;
-	
+	/**
+	 * Defined width.
+	 */
 	public var width(default, default): Int;
+	/**
+	 * Defined height.
+	 */
 	public var height(default, default): Int;
+	/**
+	 * The high scores list.
+	 */
 	public var highscores(default, null): HighscoreList;
 	
+	/**
+	 * Instantiate a new game object.
+	 * 
+	 * @param name				The ID name.
+	 * @param hasHighscores		If it has high scores or not.
+	 */
 	public function new(name: String, hasHighscores: Bool = false) {
 		setInstance();
 		this.name = name;
@@ -21,10 +46,18 @@ class Game {
 		height = Std.int(Loader.the.height);
 	}
 	
+	/**
+	 * Set the static instance.
+	 */
 	public function setInstance(): Void {
 		the = this;
 	}
 	
+	/**
+	 * Callback from when the loaded finished.
+	 * This updates the game width and height values 
+	 * and also call init().
+	 */
 	public function loadFinished(): Void {
 		var w = Loader.the.width;
 		if (w > 0) width = w;
@@ -33,18 +66,36 @@ class Game {
 		init();
 	}
 	
+	/**
+	 * Override this to get your own custom init behavior.
+	 * Called after the loading process.
+	 */
 	public function init(): Void { }
 	
+	/**
+	 * Override this to get your own custom update behavior.
+	 * Called per frame or various times per frame.
+	 */
 	public function update(): Void {
 		
 	}
 	
+	/**
+	 * Start render mode for the passed frame.
+	 * 
+	 * @param frame		The frame buffer we will be rendering on.
+	 */
 	private function startRender(frame: Framebuffer): Void {
 		#if !VR_GEAR_VR
 			frame.g2.begin();
 		#end
 	}
-	
+
+	/**
+	 * Finish render mode for the passed frame.
+	 * 
+	 * @param frame		The frame buffer we will be rendering on.
+	 */
 	private function endRender(frame: Framebuffer): Void {
 		//Sys.mouse.render(frame.g2);
 		#if !VR_GEAR_VR
@@ -52,6 +103,10 @@ class Game {
 		#end
 	}
 	
+	/**
+	 * Override this to get your own custom render behavior.
+	 * Called per frame.
+	 */
 	public function render(frame: Framebuffer): Void {
 		#if !ANDROID
 		startRender(frame);
@@ -62,6 +117,9 @@ class Game {
 		#end
 	}
 	
+	/**
+	 * Return the high score list.
+	 */
 	public function getHighscores(): HighscoreList {
 		return highscores;
 	}
@@ -112,9 +170,29 @@ class Game {
 	//@:deprecated("kha.Game.mouseWheel(delta) is deprecated, use kha.input.Mouse or kha.input.Surface instead.")
 	public function mouseWheel(delta: Int):     Void { }
 	
+	/**
+	 * Override this to get your own custom foreground behavior.
+	 * Called when this application frame is moved from background of the screen to the top.
+	 */
 	public function onForeground(): Void { }
+	/**
+	 * Override this to get your own custom resume behavior.
+	 * Called when resuming the application from pause.
+	 */
 	public function onResume(): Void { }
+	/**
+	 * Override this to get your own custom shutdown behavior.
+	 * Called when pausing the application.
+	 */
 	public function onPause(): Void { }
+	/**
+	 * Override this to get your own custom background behavior.
+	 * Called when this app frame is moved from top of the screen to the background.
+	 */
 	public function onBackground(): Void { }
+	/**
+	 * Override this to get your own custom shutdown behavior.
+	 * Called when shutting down the system.
+	 */
 	public function onShutdown(): Void { }
 }
