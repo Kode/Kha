@@ -245,20 +245,25 @@ namespace {
 		}
 	}
 	
+	bool mixThreadregistered = false;
+
 	void mix(int samples) {
 		using namespace Kore;
-		//mutex.Lock();
-		
-		//::kha::audio2::Audio_obj::_callCallback(samples);
+
+		if (!mixThreadregistered) {
+			int a = 3;
+			hx::RegisterCurrentThread(&a);
+			mixThreadregistered = true;
+		}
+
+		::kha::audio2::Audio_obj::_callCallback(samples);
 
 		for (int i = 0; i < samples; ++i) {
-			float value = 0;//::kha::audio2::Audio_obj::_readSample();
+			float value = ::kha::audio2::Audio_obj::_readSample();
 			*(float*)&Audio::buffer.data[Audio::buffer.writeLocation] = value;
 			Audio::buffer.writeLocation += 4;
 			if (Audio::buffer.writeLocation >= Audio::buffer.dataSize) Audio::buffer.writeLocation = 0;
 		}
-		
-		//mutex.Unlock();
 	}
 }
 

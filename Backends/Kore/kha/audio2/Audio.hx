@@ -6,10 +6,7 @@ class Audio {
 	@:noCompletion
 	public static function _init() {
 		var bufferSize = 1024 * 2;
-		
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
-		
-		
 	}
 
 	@:noCompletion
