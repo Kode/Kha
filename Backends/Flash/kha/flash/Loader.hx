@@ -42,12 +42,20 @@ class Loader extends kha.Loader {
 		
 		#else
 		
-		var urlRequest = new URLRequest(desc.file + ".mp3");
+		/*var urlRequest = new URLRequest(desc.file + ".mp3");
 		var music = new flash.media.Sound();
 		music.addEventListener(Event.COMPLETE, function(e : Event) {
 			done(new Music(music));
 		});
-		music.load(urlRequest);
+		music.load(urlRequest);*/
+		
+		var urlRequest = new URLRequest(desc.file + ".ogg");
+		var urlLoader = new URLLoader();
+		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+			done(new Music(Bytes.ofData(urlLoader.data)));
+		});
+		urlLoader.load(urlRequest);
 		
 		#end
 	}
@@ -99,7 +107,7 @@ class Loader extends kha.Loader {
 		
 		#else
 		
-		var urlRequest = new URLRequest(desc.file + ".mp3");
+		/*var urlRequest = new URLRequest(desc.file + ".mp3");
 		var sound = new flash.media.Sound();
 		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
 			trace ("Couldn't load " + desc.file + ".mp3");
@@ -108,7 +116,15 @@ class Loader extends kha.Loader {
 		sound.addEventListener(Event.COMPLETE, function(e : Event) {
 			done(new Sound(sound));
 		});
-		sound.load(urlRequest);
+		sound.load(urlRequest);*/
+		
+		var urlRequest = new URLRequest(desc.file + ".ogg");
+		var urlLoader = new URLLoader();
+		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+			done(new Sound(Bytes.ofData(urlLoader.data)));
+		});
+		urlLoader.load(urlRequest);
 		
 		#end
 	}

@@ -1,5 +1,11 @@
 package kha.flash;
+
 import flash.media.SoundTransform;
+import haxe.ds.Vector;
+import haxe.io.Bytes;
+import haxe.io.BytesInput;
+import haxe.io.BytesOutput;
+import kha.audio2.ogg.vorbis.Reader;
 
 class SoundChannel extends kha.SoundChannel {
 	private var channel: flash.media.SoundChannel;
@@ -50,7 +56,7 @@ class SoundChannel extends kha.SoundChannel {
 	
 }
 
-class Sound extends kha.Sound {
+/*class Sound extends kha.Sound {
 	var sound: flash.media.Sound;
 	
 	public function new(sound: flash.media.Sound) {
@@ -60,5 +66,28 @@ class Sound extends kha.Sound {
 	
 	public override function play(): SoundChannel {
 		return new SoundChannel(sound.play(), Std.int(sound.length));
+	}
+}*/
+
+class Sound extends kha.Sound {
+	public function new(bytes: Bytes) {
+		super();
+		var output = new BytesOutput();
+		var header = Reader.readAll(bytes, output, true);
+		var soundBytes = output.getBytes();
+		var count = Std.int(soundBytes.length / 4);
+		if (header.channel == 1) {
+			data = new Vector<Float>(count * 2);
+			for (i in 0...count) {
+				data[i * 2 + 0] = soundBytes.getFloat(i * 4);
+				data[i * 2 + 1] = soundBytes.getFloat(i * 4);
+			}
+		}
+		else {
+			data = new Vector<Float>(count);
+			for (i in 0...count) {
+				data[i] = soundBytes.getFloat(i * 4);
+			}
+		}
 	}
 }

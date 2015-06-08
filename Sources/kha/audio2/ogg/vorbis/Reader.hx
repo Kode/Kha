@@ -99,8 +99,10 @@ class Reader {
     }
     #end
 
-    public static function readAll(input:Input, output:Output, useFloat:Bool = false):Header {
+    public static function readAll(bytes:Bytes, output:Output, useFloat:Bool = false):Header {
+		var input = new BytesInput(bytes);
         var decoder = VorbisDecoder.start(input);
+		decoder.setupSampleNumber(seekBytes.bind(input), bytes.length);
         var header = decoder.header;
         var count = 0;
         while (true) {

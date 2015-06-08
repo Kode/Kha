@@ -79,6 +79,9 @@ class Starter {
 		frame = new Framebuffer(null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new kha.flash.graphics4.Graphics2(frame), g4);
 		
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		
 		Configuration.setScreen(gameToStart);
 		Scheduler.start();
 		gameToStart.loadFinished();

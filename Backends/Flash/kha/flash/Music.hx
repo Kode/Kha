@@ -1,7 +1,8 @@
 package kha.flash;
-import flash.events.Event;
 
-class Music extends kha.Music {
+import haxe.io.Bytes;
+
+/*class Music extends kha.Music {
 	private var music: flash.media.Sound;
 	private var channel: flash.media.SoundChannel;
 	private var running : Bool;
@@ -34,5 +35,12 @@ class Music extends kha.Music {
 	
 	override public function isFinished() : Bool {
 		return !running;
+	}
+}*/
+
+class Music extends kha.Music {
+	public function new(bytes: Bytes) {
+		super();
+		data = bytes;
 	}
 }
