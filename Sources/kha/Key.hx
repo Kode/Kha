@@ -1,5 +1,8 @@
 package kha;
 
+/**
+ * List of special keys.
+ */
 enum Key {
 	BACKSPACE;
 	TAB;

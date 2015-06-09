@@ -16,7 +16,10 @@ class Loader {
 	
 	var assets: Map<String, Dynamic>;
 	var rooms: Map<String, Room>;
-	public var isQuitable : Bool = false; // Some backends dont support quitting, for example if the game is embedded in a webpage
+	/**
+	 * Some backends dont support quitting, for example if the game is embedded in a web page.
+	 */
+	public var isQuitable : Bool = false;
 	public var autoCleanupAssets : Bool = true;
 	
 	public var basePath : String = ".";
