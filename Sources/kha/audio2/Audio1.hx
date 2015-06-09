@@ -1,5 +1,8 @@
 package kha.audio2;
 
+#if cpp
+import cpp.vm.Mutex;
+#end
 import haxe.ds.Vector;
 import kha.audio1.MusicChannel;
 import kha.audio1.SoundChannel;
@@ -8,15 +11,24 @@ class Audio1 {
 	private static inline var channelCount: Int = 16;
 	private static var soundChannels: Vector<SoundChannel>;
 	private static var musicChannels: Vector<MusicChannel>;
+	#if cpp
+	private static var mutex: Mutex;
+	#end
 	
 	@:noCompletion
 	public static function _init(): Void {
+		#if cpp
+		mutex = new Mutex();
+		#end
 		soundChannels = new Vector<SoundChannel>(channelCount);
 		musicChannels = new Vector<MusicChannel>(channelCount);
 		Audio.audioCallback = _mix;
 	}
 	
 	private static function _mix(samples: Int, buffer: Buffer): Void {
+		#if cpp
+		mutex.acquire();
+		#end
 		for (i1 in 0...samples) {
 			var value: Float = 0;
 			
@@ -43,9 +55,15 @@ class Audio1 {
 				buffer.writeLocation = 0;
 			}
 		}
+		#if cpp
+		mutex.release();
+		#end
 	}
 	
 	public static function playSound(sound: Sound): kha.audio1.SoundChannel {
+		#if cpp
+		mutex.acquire();
+		#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null) {
 				var channel = new SoundChannel();
@@ -54,11 +72,17 @@ class Audio1 {
 				return channel;
 			}
 		}
+		#if cpp
+		mutex.release();
+		#end
 		return null;
 	}
 	
 	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
 		if (music.data == null) return null;
+		#if cpp
+		mutex.acquire();
+		#end
 		for (i in 0...channelCount) {
 			if (musicChannels[i] == null) {
 				var channel = new MusicChannel(music.data, loop);
@@ -66,6 +90,9 @@ class Audio1 {
 				return channel;
 			}
 		}
+		#if cpp
+		mutex.release();
+		#end
 		return null;
 	}
 }

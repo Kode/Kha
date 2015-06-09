@@ -16,7 +16,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		done(new Music(desc.file));
+		done(new Music(File.getBytes(desc.file + ".ogg")));
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {

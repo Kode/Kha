@@ -17,7 +17,44 @@ class Sound extends kha.Sound {
 	
 	@:functionCode('
 		sound = new Kore::Sound(filename.c_str());
-		this->_createData(sound->size);
+		if (sound->format.channels == 1) {
+			if (sound->format.bitsPerSample == 8) {
+				this->_createData(sound->size * 2);
+				for (int i = 0; i < sound->size; ++i) {
+					data[i * 2 + 0] = sound->data[i] / 255.0 * 2.0 - 1.0;
+					data[i * 2 + 1] = sound->data[i] / 255.0 * 2.0 - 1.0;
+				}
+			}
+			else if (sound->format.bitsPerSample == 16) {
+				this->_createData(sound->size);
+				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
+				for (int i = 0; i < sound->size / 2; ++i) {
+					data[i * 2 + 0] = sdata[i] / 32767.0;
+					data[i * 2 + 1] = sdata[i] / 32767.0;
+				}
+			}
+			else {
+				this->_createData(2);
+			}
+		}
+		else {
+			if (sound->format.bitsPerSample == 8) {
+				this->_createData(sound->size);
+				for (int i = 0; i < sound->size; ++i) {
+					data[i] = sound->data[i] / 255.0 * 2.0 - 1.0;
+				}
+			}
+			else if (sound->format.bitsPerSample == 16) {
+				this->_createData(sound->size / 2);
+				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
+				for (int i = 0; i < sound->size / 2; ++i) {
+					data[i] = sdata[i] / 32767.0;
+				}
+			}
+			else {
+				this->_createData(2);
+			}
+		}
 	')
 	function loadSound(filename: String) {
 		
