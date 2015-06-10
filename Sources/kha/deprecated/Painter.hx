@@ -20,7 +20,7 @@ class Painter {
 	
 	public function drawImage2(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, angle: Float = 0, ox: Float = 0, oy: Float = 0): Void {
 		if (angle != 0) {
-			backbuffer.g2.pushTransformation(Matrix3.translation(ox, oy) * Matrix3.rotation(angle) * Matrix3.translation(-ox, -oy));
+			backbuffer.g2.pushTransformation(Matrix3.translation(ox, oy).multmat(Matrix3.rotation(angle)).multmat(Matrix3.translation(-ox, -oy)));
 			backbuffer.g2.drawScaledSubImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 			backbuffer.g2.popTransformation();
 		}
@@ -51,7 +51,7 @@ class Painter {
 	
 	public function drawString(text: String, x: Float, y: Float, scaleX: Float = 1.0, scaleY: Float = 1.0, scaleCenterX: Float = 0.0, scaleCenterY: Float = 0.0): Void {
 		if (scaleX != 1 || scaleY != 1) {
-			backbuffer.g2.pushTransformation(Matrix3.translation(scaleCenterX, scaleCenterY) * Matrix3.scale(scaleX, scaleY) * Matrix3.translation(-scaleCenterX, -scaleCenterY));
+			backbuffer.g2.pushTransformation(Matrix3.translation(scaleCenterX, scaleCenterY).multmat(Matrix3.scale(scaleX, scaleY)).multmat(Matrix3.translation(-scaleCenterX, -scaleCenterY)));
 			backbuffer.g2.drawString(text, x, y);
 			backbuffer.g2.popTransformation();
 		}
