@@ -1,16 +1,19 @@
 package kha.networking;
 
 import haxe.io.Bytes;
+#if node
 import js.node.Buffer;
 import js.node.Dgram.DgramSocket;
 import js.support.Error;
+#end
 
 class UdpClient implements Client {
+	#if node
 	private var myId: Int;
 	private var socket: DgramSocket;
 	private var address: String;
 	private var port: Int;
-	
+
 	public function new(id: Int, socket: DgramSocket, address: String, port: Int) {
 		myId = id;
 		this.socket = socket;
@@ -47,4 +50,5 @@ class UdpClient implements Client {
 	public function get_id(): Int {
 		return myId;
 	}
+	#end
 }
