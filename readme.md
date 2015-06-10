@@ -68,6 +68,14 @@ In order to do that clone it with the following command:
 git clone --recursive https://github.com/KTXSoftware/Kha.git
 </pre>
 
+
+<a name="games"></a>
+## Games made with Kha
+Kha is still a new engine here but it got already a few titles under its belt!
+
+[![Game](http://luboslenco.com/spiralride/images/1.png)][game1]
+
+
 <a name="bugs"></a>
 ## Bugs?
 If you find any kind of bug, or weird problems with the library add them to the [Issue Tracker][issues].
@@ -77,5 +85,8 @@ Add as much information as possible, also upload the source code that causes the
 ## License
 You can check Kha license [here](https://github.com/KTXSoftware/Kha/blob/master/license.txt).
 
+
 [issues]: https://github.com/KTXSoftware/Kha/issues
 [contribute]: https://github.com/KTXSoftware/Kha/blob/master/CONTRIBUTING.md
+
+[game1]: http://luboslenco.com/spiralride/
