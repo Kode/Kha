@@ -1,5 +1,4 @@
 ##Kha
-===
 
 Kha is a super portable Software Development kit Based on Haxe and GLSL.
 With Kha you can build applications and games that run with native performance in different target devices.
