@@ -118,12 +118,12 @@ git submodule foreach git pull origin master
 
 <a name="games"></a>
 ## Games made with Kha
-Kha is still the new in the school but it got already a few toy!
+Kha is still the new in the school but it got already a few toys!
 
 [![Game](http://i.imgur.com/I2L3y2e.png)][game1]
 
 
-<a name="games"></a>
+<a name="engines"></a>
 ## Engines using with Kha
 In addition to making games Kha has been used as well for a few game engines!
 So if Kha is still too low level for you, or you are used to another engine check our list and you may find one that fit your needs!

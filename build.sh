@@ -29,7 +29,6 @@ echo " * java"
 echo " * psm"
 echo " * dalvik"
 echo " * tizen"
-echo " * tizen"
 echo "___________________________________"
 read target
 
