@@ -7,6 +7,8 @@ With Kha you can build applications and games that run with native performance i
 - [About](#about)
 - [Getting Started](#getting-started)
 - [Features](#features)
+- [Games made with Kha](#games)
+- [Engines using with Kha](#engines)
 - [Bugs?](#bugs)
 - [License](#license)
 
@@ -73,7 +75,16 @@ git clone --recursive https://github.com/KTXSoftware/Kha.git
 ## Games made with Kha
 Kha is still a new engine here but it got already a few titles under its belt!
 
-[![Game](http://luboslenco.com/spiralride/images/1.png)][game1]
+[![Game](http://imgur.com/I2L3y2e)][game1]
+
+
+<a name="games"></a>
+## Engines using with Kha
+In addition to making games Kha has been used as well for a few game engines!
+So if Kha is still to low level for you, or you are used to another engine check our list and you may find one that fit your needs!
+
+- [KhaPunk](engine1): Port of HaxePunk/FlashPunk to Kha.
+- [Zblend](engine2): 3D game engine that integrates into Blender.
 
 
 <a name="bugs"></a>
@@ -90,3 +101,6 @@ You can check Kha license [here](https://github.com/KTXSoftware/Kha/blob/master/
 [contribute]: https://github.com/KTXSoftware/Kha/blob/master/CONTRIBUTING.md
 
 [game1]: http://luboslenco.com/spiralride/
+
+[engine1]: https://bitbucket.org/stalei/khapunk
+[engine2]: https://github.com/luboslenco/zblend
