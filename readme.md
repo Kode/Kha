@@ -64,7 +64,8 @@ Things you can do now:
 * Xbox 360 (XNA)
 
 
-[![Game](http://robdangero.us/wwx2015/slide40.png)]
+![Game](http://robdangero.us/wwx2015/slide40.png)
+
 The complete structure of Kha looks something like this.
 
 
