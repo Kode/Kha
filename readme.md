@@ -88,7 +88,7 @@ Kha is still the new in the school but it got already a few toy!
 <a name="games"></a>
 ## Engines using with Kha
 In addition to making games Kha has been used as well for a few game engines!
-So if Kha is still to low level for you, or you are used to another engine check our list and you may find one that fit your needs!
+So if Kha is still too low level for you, or you are used to another engine check our list and you may find one that fit your needs!
 
 - [KhaPunk](engine1): Port of HaxePunk/FlashPunk to Kha.
 - [Zblend](engine2): 3D game engine that integrates into Blender.
