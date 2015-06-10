@@ -53,7 +53,7 @@ You can get a copy of NodeJS on its site <a target="_blank" href="http://nodejs.
 
 If you have NodeJS already installed make sure it's updated!
 You can do so with the following commands.
-<pre lang="bash">>
+<pre lang="bash">
 sudo npm cache clean -f
 node --version
 sudo npm install -g n
@@ -62,18 +62,25 @@ node --version
 </pre>
 
 
-***Cloning Kha***
+***Starting with Kha***
 
-If you want to use Kha, you need to clone it with all the submodules.
-In order to do that clone it with the following command:
-<pre lang="bash">>
-git clone --recursive https://github.com/KTXSoftware/Kha.git
+Kha projects are usually handled using git submodules so that every dependency is properly versioned.
+Even the Haxe compiler itself is just a submodule.
+
+If you want to add Kha as a submodule for your git project just use
+<pre lang="bash">
+git submodule add https://github.com/KTXSoftware/Kha
+git submodule update --init --recursive
 </pre>
 
+You can also clone the [Empty project](https://github.com/KTXSoftware/Empty) and start from it!
+<pre lang="bash">>
+git clone --recursive https://github.com/KTXSoftware/Empty.git
+</pre>
 
 <a name="games"></a>
 ## Games made with Kha
-Kha is still a new engine here but it got already a few titles under its belt!
+Kha is still the new in the school but it got already a few toy!
 
 [![Game](http://i.imgur.com/I2L3y2e.png)][game1]
 
