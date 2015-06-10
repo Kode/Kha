@@ -75,7 +75,7 @@ git clone --recursive https://github.com/KTXSoftware/Kha.git
 ## Games made with Kha
 Kha is still a new engine here but it got already a few titles under its belt!
 
-[![Game](http://imgur.com/I2L3y2e)][game1]
+[![Game](http://i.imgur.com/I2L3y2e.png)][game1]
 
 
 <a name="games"></a>
