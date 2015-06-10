@@ -6,7 +6,7 @@ class CodeStyle { //upper camel case class names
 	}
 	
 	public function doIt(): Void { //lower camel case method and function names
-		var i;
+		var i = 0;
 		switch (i) {
 		case 1: //case in same column as switch
 			playSfx(2);

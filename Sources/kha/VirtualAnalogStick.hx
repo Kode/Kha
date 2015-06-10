@@ -178,13 +178,13 @@ class VirtualAnalogStick {
 	// render() function.
 	// Please override this with your own function.
 	//
-	public function render(painter: Painter) {
+	public function render(painter: kha.graphics2.Graphics) {
 		// Draw the virtual analog stick
 		if (user_is_interacting) {
-			painter.setColor(255, 0, 0); // Red
+			painter.color = kha.Color.Red;
 		}
 		else {
-			painter.setColor(255, 255, 255); // White
+			painter.color = kha.Color.White;
 		}
 		// Border
 		//painter.drawRect(x, y, size, size);
@@ -192,7 +192,7 @@ class VirtualAnalogStick {
 		//painter.drawRect(x + Std.int((size - dead_area) / 2), y                                  , dead_area, size);
 		//painter.drawRect(x                                  , y + Std.int((size - dead_area) / 2), size, dead_area);
 		// Center of cross
-		painter.setColor(0, 0, 0); // Black
+		painter.color = kha.Color.Black;
 		//painter.drawRect(x + Std.int(size / 2) - dead_area, y + Std.int(size / 2) - dead_area, dead_area * 2 + 1, dead_area * 2 + 1);
 	}
 }

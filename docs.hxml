@@ -1,0 +1,4 @@
+-cp Sources
+-cp Backends/Kore
+-xml docs.xml
+--macro include('kha')

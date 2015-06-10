@@ -18,7 +18,7 @@ class WebSocketClient implements Client {
 	
 	public function receive(receiver: Bytes->Void): Void {
 		socket.on('message', function (message) {
-			js.Node.console.log(message);
+			//js.Node.console.log(message);
 			receiver(Bytes.ofData(message));
 		});
 	}
