@@ -1,5 +1,13 @@
 package kha;
 
+/**
+ * Class representing a color, based on Int.
+ * Provides a variety of methods for creating and converting colors.
+ * 
+ * Color's can be written as Ints. This means you can pass a hex value such as
+ * 0xff123456 to a function expecting a Color, and it will automatically become a Color object.
+ * Similarly, Colors may be treated as Ints.
+ */
 @:expose
 abstract Color(Int) {
 	public static var Black: Color = fromValue(0xff000000);
@@ -15,29 +23,29 @@ abstract Color(Int) {
 	public static var Orange: Color = fromValue(0xffffa500);
 	
 	/**
-		Creates a new Color object from a packed 32 bit ARGB value.
-	**/
+	 * Creates a new Color object from a packed 32 bit ARGB value.
+	 */
 	public static inline function fromValue(value: Int): Color {
 		return new Color(value);
 	}
 	
 	/**
-		Creates a new Color object from components in the range 0 - 255.
-	**/
+	 * Creates a new Color object from components in the range 0 - 255.
+	 */
 	public static function fromBytes(r: Int, g: Int, b: Int, a: Int = 255): Color {
 		return new Color((a << 24) | (r << 16) | (g << 8) | b);
 	}
 	
 	/**
-		Creates a new Color object from components in the range 0 - 1.
-	**/
+	 * Creates a new Color object from components in the range 0 - 1.
+	 */
 	public static function fromFloats(r: Float, g: Float, b: Float, a: Float = 1): Color {
 		return new Color((Std.int(a * 255) << 24) | (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255));
 	}
 	
 	/**
-		Creates a new Color object from #AARRGGBB string.
-	**/
+	 * Creates a new Color object from #AARRGGBB string.
+	 */
 	public static function fromString(value: String) {
 		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
 			var colorValue = Std.parseInt("0x" + value.substr(1));
@@ -52,34 +60,45 @@ abstract Color(Int) {
 	}
 	
 	/**
-		Contains a byte representing the red color component.
-	**/
+	 * Contains a byte representing the red color component.
+	 */
 	public var Rb(get, set): Int;
-	
 	/**
-		Contains a byte representing the green color component.
-	**/
+	 * Contains a byte representing the green color component.
+	 */
 	public var Gb(get, set): Int;
-	
 	/**
-		Contains a byte representing the blue color component.
-	**/
+	 * Contains a byte representing the blue color component.
+	 */
 	public var Bb(get, set): Int;
-	
 	/**
-		Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
-	**/
+	 * Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
+	 */
 	public var Ab(get, set): Int;
-	
+	/**
+	 * Contains a float representing the red color component.
+	 */
 	public var R(get, set): Float;
+	/**
+	 * Contains a float representing the green color component.
+	 */
 	public var G(get, set): Float;
+	/**
+	 * Contains a float representing the blue color component.
+	 */
 	public var B(get, set): Float;
+	/**
+	 * Contains a float representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
+	 */
 	public var A(get, set): Float;
 	
 	private function new(value: Int) {
 		this = value;
 	}
 	
+	/**
+	 * Return this Color instance as Int.
+	 */
 	public var value(get, set): Int;
 	
 	private inline function get_value(): Int {

@@ -1,5 +1,8 @@
 package kha;
 
+/**
+ * List of gamepad buttons.
+ */
 enum Button {
 	NONE;
 	UP;
