@@ -106,6 +106,16 @@ You can also clone the [Empty project](https://github.com/KTXSoftware/Empty) and
 git clone --recursive https://github.com/KTXSoftware/Empty.git
 </pre>
 
+
+***Updating Kha***
+
+If you want to update the Kha submodules in your repository you can do it with just this command!
+
+<pre lang="bash">
+git submodule foreach git pull origin master
+</pre>
+
+
 <a name="games"></a>
 ## Games made with Kha
 Kha is still the new in the school but it got already a few toy!
