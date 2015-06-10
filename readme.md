@@ -129,7 +129,7 @@ In addition to making games Kha has been used as well for a few game engines!
 So if Kha is still too low level for you, or you are used to another engine check our list and you may find one that fit your needs!
 
 - [KhaPunk]: Port of HaxePunk/FlashPunk to Kha.
-- [Zblend]: 3D game engine that integrates into Blender.
+- [ZBlend]: 3D game engine that integrates into Blender.
 - [Komponent2D]: A component based game engine with Kha.
 - [Kha2D]: A simple 2D engine built using Kha.
 
@@ -150,6 +150,6 @@ You can check Kha license [here](https://github.com/KTXSoftware/Kha/blob/master/
 [game1]: http://luboslenco.com/spiralride/
 
 [KhaPunk]: https://bitbucket.org/stalei/khapunk
-[Zblend]: https://github.com/luboslenco/zblend
+[ZBlend]: https://github.com/luboslenco/zblend
 [Komponent2D]: https://github.com/Marc010/Komponent2D
 [Kha2D]: https://github.com/KTXSoftware/Kha2D
