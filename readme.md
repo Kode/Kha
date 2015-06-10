@@ -1,6 +1,6 @@
 ##Kha
 
-Kha is a super portable Software Development kit Based on Haxe and GLSL.
+Kha is a low level SDK for building games and media applications in a portable way, based on Haxe and GLSL.
 With Kha you can build applications and games that run with native performance in different target devices.
 
 # Index
@@ -15,8 +15,13 @@ With Kha you can build applications and games that run with native performance i
 
 <a name="#about"></a>
 ##About
-Kha is a super portable Software Development kit Based on Haxe and GLSL.
-With Kha you can build applications and games that run with native performance in different target devices.
+Kha is a low level SDK for building games and media applications in a portable way. Think SDL, but super-charged.
+
+Based on the Haxe programming language and the Krafix shader-compiler it can cross-compile your code and optimize
+your assets for even the most obscure systems.
+
+Kha is so portable, it can in fact run on top of other game engines and its generational graphics and audio API design
+gets the best out of every target, supporting super fast 2D graphics just as well as high end 3D graphics.
 
 The main development is held by [Robert Konrad](http://tech.ktxsoftware.com/)
 
@@ -28,19 +33,40 @@ Things you can do now:
 <a name="#features"></a>
 ##Features
 
-Kha apps run natively on:
+***Kha Features***
+* Generational graphical API design
+* Generational audio API design
+* Support super fast 2D graphics
+* Support high end 3D graphics
+* Can sun on top of other game engines
+* Support GLSL shaders
+
+
+***Even more Features***
+* Kha apps can also be compiled to C# or Java libraries
+* Only one way to do things
+* No legacy code
+* Support for VR technology
+* Networking multiplayer support
+
+
+***Platforms supported by Kha***
 * HTML5 (Canvas or WebGL)
+* Flash
 * Windows (Direct3D 9, Direct3D 11 or OpenGL)
 * OSX
 * Linux
 * Android
-* iOS
+* iOS (OpenGL or Metal)
 * Tizen
+* Unity 3D
 * PlayStation Vita (PlayStationMobile)
 * Xbox 360 (XNA)
-* Flash
 
-Kha apps can also be compiled to C# or Java libraries.
+
+[Game](http://robdangero.us/wwx2015/slide40.png)
+The complete structure of Kha looks something like this.
+
 
 <a name="#getting-started"></a>
 ##Getting Started
@@ -74,7 +100,7 @@ git submodule update --init --recursive
 </pre>
 
 You can also clone the [Empty project](https://github.com/KTXSoftware/Empty) and start from it!
-<pre lang="bash">>
+<pre lang="bash">
 git clone --recursive https://github.com/KTXSoftware/Empty.git
 </pre>
 
