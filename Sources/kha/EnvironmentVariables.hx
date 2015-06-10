@@ -1,6 +1,6 @@
 package kha;
 
-class EnvironmentVariables{
+class EnvironmentVariables {
 	
 	public static var instance: EnvironmentVariables;
 		
@@ -11,5 +11,4 @@ class EnvironmentVariables{
 	public function getVariable(name: String): String {
 		return ""; 
 	}
-
 }

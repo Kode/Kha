@@ -34,6 +34,7 @@ Things you can do now:
 ##Features
 
 ***Kha Features***
+* Great performance in different target devices
 * Generational graphical API design
 * Generational audio API design
 * Support super fast 2D graphics
@@ -119,6 +120,8 @@ So if Kha is still too low level for you, or you are used to another engine chec
 
 - [KhaPunk](engine1): Port of HaxePunk/FlashPunk to Kha.
 - [Zblend](engine2): 3D game engine that integrates into Blender.
+- [Komponent2D](engine3): A component based game engine with Kha.
+- [Kha2D](engine4): A simple 2D engine built using Kha.
 
 
 <a name="bugs"></a>
@@ -138,3 +141,5 @@ You can check Kha license [here](https://github.com/KTXSoftware/Kha/blob/master/
 
 [engine1]: https://bitbucket.org/stalei/khapunk
 [engine2]: https://github.com/luboslenco/zblend
+[engine3]: https://github.com/Marc010/Komponent2D
+[engine4]: https://github.com/KTXSoftware/Kha2D
