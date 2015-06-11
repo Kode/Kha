@@ -27,6 +27,7 @@
 
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
+void __hxcpp_register_current_thread();
 
 namespace {
 	using kha::Starter_obj;
@@ -251,8 +252,9 @@ namespace {
 		using namespace Kore;
 
 		if (!mixThreadregistered) {
-			int a = 3;
-			hx::RegisterCurrentThread(&a);
+			//int a = 3;
+			//hx::RegisterCurrentThread(&a);
+			__hxcpp_register_current_thread();
 			mixThreadregistered = true;
 		}
 
