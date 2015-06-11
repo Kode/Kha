@@ -64,18 +64,19 @@ class Audio1 {
 		#if cpp
 		mutex.acquire();
 		#end
+		var channel: kha.audio1.SoundChannel = null;
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null) {
-				var channel = new SoundChannel();
+				channel = new SoundChannel();
 				channel.data = sound.data;
 				soundChannels[i] = channel;
-				return channel;
+				break;
 			}
 		}
 		#if cpp
 		mutex.release();
 		#end
-		return null;
+		return channel;
 	}
 	
 	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
@@ -83,16 +84,17 @@ class Audio1 {
 		#if cpp
 		mutex.acquire();
 		#end
+		var channel: kha.audio1.MusicChannel = null;
 		for (i in 0...channelCount) {
 			if (musicChannels[i] == null) {
-				var channel = new MusicChannel(music.data, loop);
+				channel = new MusicChannel(music.data, loop);
 				musicChannels[i] = channel;
-				return channel;
+				break;
 			}
 		}
 		#if cpp
 		mutex.release();
 		#end
-		return null;
+		return channel;
 	}
 }
