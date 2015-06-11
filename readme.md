@@ -118,20 +118,20 @@ git submodule foreach git pull origin master
 
 <a name="games"></a>
 ## Games made with Kha
-Kha is still the new in the school but it got already a few toy!
+Kha is still the new in the school but it got already a few toys!
 
 [![Game](http://i.imgur.com/I2L3y2e.png)][game1]
 
 
-<a name="games"></a>
+<a name="engines"></a>
 ## Engines using with Kha
 In addition to making games Kha has been used as well for a few game engines!
 So if Kha is still too low level for you, or you are used to another engine check our list and you may find one that fit your needs!
 
-- [KhaPunk](engine1): Port of HaxePunk/FlashPunk to Kha.
-- [Zblend](engine2): 3D game engine that integrates into Blender.
-- [Komponent2D](engine3): A component based game engine with Kha.
-- [Kha2D](engine4): A simple 2D engine built using Kha.
+- [KhaPunk]: Port of HaxePunk/FlashPunk to Kha.
+- [ZBlend]: 3D game engine that integrates into Blender.
+- [Komponent2D]: A component based game engine with Kha.
+- [Kha2D]: A simple 2D engine built using Kha.
 
 
 <a name="bugs"></a>
@@ -149,7 +149,7 @@ You can check Kha license [here](https://github.com/KTXSoftware/Kha/blob/master/
 
 [game1]: http://luboslenco.com/spiralride/
 
-[engine1]: https://bitbucket.org/stalei/khapunk
-[engine2]: https://github.com/luboslenco/zblend
-[engine3]: https://github.com/Marc010/Komponent2D
-[engine4]: https://github.com/KTXSoftware/Kha2D
+[KhaPunk]: https://bitbucket.org/stalei/khapunk
+[ZBlend]: https://github.com/luboslenco/zblend
+[Komponent2D]: https://github.com/Marc010/Komponent2D
+[Kha2D]: https://github.com/KTXSoftware/Kha2D
