@@ -79,7 +79,7 @@ class VorbisDecoder
         return decoder;
     }
 
-    public function read(output:Output, samples:Int, channels:Int, sampleRate:Int, useFloat:Bool) {
+    public function read(output:Vector<Float>, samples:Int, channels:Int, sampleRate:Int, useFloat:Bool) {
         if (sampleRate % header.sampleRate != 0) {
             throw 'Unsupported sampleRate : can\'t convert ${header.sampleRate} to $sampleRate';
         }
@@ -96,6 +96,7 @@ class VorbisDecoder
             len = totalSample - currentSample;
         }
 
+		var index = 0;
         while (n < len) {
             var k = channelBufferEnd - channelBufferStart;
             if (k >= len - n) k = len - n;
@@ -111,9 +112,11 @@ class VorbisDecoder
                             }
 
                             if (useFloat) {
-                                output.writeFloat(value);
+                                //output.writeFloat(value);
+								output[index] = value;
+								++index;
                             } else {
-                                output.writeInt16(Math.floor(value * 0x7FFF));
+                                //output.writeInt16(Math.floor(value * 0x7FFF));
                             }
                         }
                     }
@@ -131,9 +134,11 @@ class VorbisDecoder
                 for (i in 0...header.channel) {
                     for (cr in 0...channelRepeat) {
                         if (useFloat) {
-                            output.writeFloat(0);
+                            //output.writeFloat(0);
+							output[index] = 0;
+							++index;
                         } else {
-                            output.writeInt16(0);
+                            //output.writeInt16(0);
                         }
                     }
                 }

@@ -99,7 +99,7 @@ class Reader {
     }
     #end
 
-    public static function readAll(bytes:Bytes, output:Output, useFloat:Bool = false):Header {
+    public static function readAll(bytes:Bytes, output:Vector<Float>, useFloat:Bool = false):Header {
 		var input = new BytesInput(bytes);
         var decoder = VorbisDecoder.start(input);
 		decoder.setupSampleNumber(seekBytes.bind(input), bytes.length);
@@ -113,7 +113,7 @@ class Reader {
         return decoder.header;
     }
 
-    public function read(output:Output, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
+    public function read(output:Vector<Float>, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
         decoder.ensurePosition(seekFunc);
 
         if (samples == null) {
