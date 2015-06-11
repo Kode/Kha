@@ -42,14 +42,14 @@ class Audio1 {
 		mutex.acquire();
 		#end
 		for (channel in soundChannels) {
-			if (channel == null) continue;
+			if (channel == null || channel.ended()) continue;
 			channel.nextSamples(sampleCache1);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
 		for (channel in musicChannels) {
-			if (channel == null) continue;
+			if (channel == null || channel.ended()) continue;
 			channel.nextSamples(sampleCache1);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
@@ -101,7 +101,7 @@ class Audio1 {
 		#end
 		var channel: kha.audio1.SoundChannel = null;
 		for (i in 0...channelCount) {
-			if (soundChannels[i] == null) {
+			if (soundChannels[i] == null || soundChannels[i].ended()) {
 				channel = new SoundChannel();
 				channel.data = sound.data;
 				soundChannels[i] = channel;
@@ -121,7 +121,7 @@ class Audio1 {
 		#end
 		var channel: kha.audio1.MusicChannel = null;
 		for (i in 0...channelCount) {
-			if (musicChannels[i] == null) {
+			if (musicChannels[i] == null || musicChannels[i].ended()) {
 				channel = new MusicChannel(music.data, loop);
 				musicChannels[i] = channel;
 				break;
