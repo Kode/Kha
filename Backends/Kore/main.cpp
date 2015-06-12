@@ -27,6 +27,7 @@
 
 extern "C" const char* hxRunLibrary();
 extern "C" void hxcpp_set_top_of_stack();
+void __hxcpp_register_current_thread();
 
 namespace {
 	using kha::Starter_obj;
@@ -250,11 +251,12 @@ namespace {
 	void mix(int samples) {
 		using namespace Kore;
 
+#ifdef KORE_MULTITHREADED_AUDIO
 		if (!mixThreadregistered) {
-			int a = 3;
-			hx::RegisterCurrentThread(&a);
+			__hxcpp_register_current_thread();
 			mixThreadregistered = true;
 		}
+#endif
 
 		::kha::audio2::Audio_obj::_callCallback(samples);
 

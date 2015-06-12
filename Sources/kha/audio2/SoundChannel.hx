@@ -12,10 +12,11 @@ class SoundChannel {
 		position = 0;
 	}
 	
-	public function nextSample(): Float {
-		var sample = data[position];
-		++position;
-		return sample;
+	public function nextSamples(samples: Vector<Float>): Void {
+		for (i in 0...samples.length) {
+			samples[i] = position < data.length ? data[position] : 0;
+			++position;
+		}
 	}
 	
 	public function ended(): Bool {

@@ -123,8 +123,6 @@ class Scheduler {
 		var delta = now - lastNow;
 		lastNow = now;
 		
-		/*delta = now - lastTime;
-		lastTime = now;
 		var frameEnd: Float = current;
 		 
 		if (delta < 0 || stopped) {
@@ -141,9 +139,8 @@ class Scheduler {
 		}
 		else {
 			if (vsync) {
-				// TODO: fix it!
-				// this commulates delta errors with Scheduler.time()
-				// running quite different (faster) than Sys.time()
+				// this is optimized not to run at exact speed
+				// but to run as fluid as possible
 				var realdif = onedifhz;
 				while (realdif < delta - onedifhz) {
 					realdif += onedifhz;
@@ -151,49 +148,35 @@ class Scheduler {
 				
 				delta = realdif;
 				for (i in 0...DIF_COUNT - 2) {
-					delta += difs[i];
-					difs[i] = difs[i + 1];
+					delta += deltas[i];
+					deltas[i] = deltas[i + 1];
 				}
-				delta += difs[DIF_COUNT - 2];
+				delta += deltas[DIF_COUNT - 2];
 				delta /= DIF_COUNT;
-				difs[DIF_COUNT - 2] = realdif;
+				deltas[DIF_COUNT - 2] = realdif;
+				
+				delta = dScale * delta;
+				frameEnd += delta;
 			}
 			else {
-				#if true
-					var interpolated_delta = delta;
-					for (i in 0...DIF_COUNT-2) {
-						interpolated_delta += difs[i];
-						difs[i] = difs[i+1];
-					}
-					interpolated_delta += difs[DIF_COUNT-2];
-					interpolated_delta /= DIF_COUNT;
-					difs[DIF_COUNT-2] = delta;
-					
-					delta =interpolated_delta; // average the frame end estimation
-				#end
+				for (i in 0...DIF_COUNT - 1) {
+					deltas[i] = deltas[i + 1];
+				}
+				deltas[DIF_COUNT - 1] = delta;
+				
+				var next: Float = 0;
+				for (i in 0...DIF_COUNT) {
+					next += deltas[i];
+				}
+				next /= DIF_COUNT;
+				
+				//delta = interpolated_delta; // average the frame end estimation
+				
+				//lastTime = now;
+				frameEnd = current + next;
 			}
 		}
 		
-		delta = dScale * delta;
-		frameEnd += delta;*/
-		
-		//var delta = now - lastTime;
-		
-		for (i in 0...DIF_COUNT - 1) {
-			deltas[i] = deltas[i + 1];
-		}
-		deltas[DIF_COUNT - 1] = delta;
-		
-		var next: Float = 0;
-		for (i in 0...DIF_COUNT) {
-			next += deltas[i];
-		}
-		next /= DIF_COUNT;
-		
-		//delta = interpolated_delta; // average the frame end estimation
-		
-		//lastTime = now;
-		var frameEnd = current + next;
 		lastTime = frameEnd;
 		
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {

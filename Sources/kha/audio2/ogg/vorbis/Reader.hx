@@ -105,15 +105,20 @@ class Reader {
 		decoder.setupSampleNumber(seekBytes.bind(input), bytes.length);
         var header = decoder.header;
         var count = 0;
+		var bufferSize = 4096 * header.channel;
+		var buffer = new Vector<Float>(bufferSize);
         while (true) {
-            var n = decoder.read(output, 65536, header.channel, header.sampleRate, useFloat);
+            var n = decoder.read(buffer, bufferSize, header.channel, header.sampleRate, useFloat);
+			for (i in 0...n * header.channel) {
+				output.writeFloat(buffer[i]);
+			}
             if (n == 0) { break; }
             count += n;
         }
         return decoder.header;
     }
 
-    public function read(output:Output, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
+    public function read(output:Vector<Float>, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
         decoder.ensurePosition(seekFunc);
 
         if (samples == null) {
