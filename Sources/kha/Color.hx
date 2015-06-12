@@ -9,7 +9,7 @@ package kha;
  * Similarly, Colors may be treated as Ints.
  */
 @:expose
-abstract Color(Int) {
+abstract Color(Int) from Int from UInt to Int to UInt {
 	public static var Black: Color = fromValue(0xff000000);
 	public static var White: Color = fromValue(0xffffffff);
 	public static var Red: Color = fromValue(0xffff0000);
