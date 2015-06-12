@@ -61,7 +61,7 @@ class Matrix3 {
 		);
 	}
 
-	@:extern public static function rotation(alpha: Float): Matrix3 {
+	@:extern public static inline function rotation(alpha: Float): Matrix3 {
 		return new Matrix3(
 			Math.cos(alpha), -Math.sin(alpha), 0,
 			Math.sin(alpha), Math.cos(alpha), 0,
