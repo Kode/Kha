@@ -804,10 +804,12 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawImage(img: kha.Image, x: Float, y: Float): Void {
 		coloredPainter.end();
 		textPainter.end();
-		var p1 = transformation.multvec(new Vector2(x, y + img.height));
+		var xw = x + img.width;
+		var yh = y + img.height;
+		var p1 = transformation.multvec(new Vector2(x, yh));
 		var p2 = transformation.multvec(new Vector2(x, y));
-		var p3 = transformation.multvec(new Vector2(x + img.width, y));
-		var p4 = transformation.multvec(new Vector2(x + img.width, y + img.height));
+		var p3 = transformation.multvec(new Vector2(xw, y));
+		var p4 = transformation.multvec(new Vector2(xw, yh));
 		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
 	
