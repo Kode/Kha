@@ -285,7 +285,20 @@ class Starter {
 		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 	
-	private static function keycodeToChar(keycode: Int, shift: Bool): String {
+	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
+		if (key != null) {
+			if (key.length == 1) return key;
+			switch (key) {
+				case "Add":
+					return "+";
+				case "Subtract":
+					return "-";
+				case "Multiply":
+					return "*";
+				case "Divide":
+					return "/";
+			}
+		}
 		switch (keycode) {
 			case 187:
 				if (shift) return "*";
@@ -425,7 +438,7 @@ class Starter {
 			event.preventDefault();
 		default:
 			if (!event.altKey) {
-				var char = event.key != null ? event.key : keycodeToChar(event.keyCode, event.shiftKey);
+				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
 				Game.the.keyDown(Key.CHAR, char);
 				keyboard.sendDownEvent(Key.CHAR, char);
 			}
@@ -480,7 +493,7 @@ class Starter {
 			keyboard.sendUpEvent(Key.RIGHT, "");
 		default:
 			if (!event.altKey) {
-				var char = event.key != null ? event.key : keycodeToChar(event.keyCode, event.shiftKey);
+				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
 				Game.the.keyUp(Key.CHAR, char);
 				keyboard.sendUpEvent(Key.CHAR, char);
 			}
