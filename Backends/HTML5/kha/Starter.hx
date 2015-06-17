@@ -34,8 +34,6 @@ class Starter {
 	private var gameToStart: Game;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
-	private static var lastPressedKey: Int;
-	private static var pressedKeyToChar: Array<String>;
 	private static var buttonspressed: Array<Bool>;
 	private static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard;
@@ -43,8 +41,8 @@ class Starter {
 	private static var gamepad: Gamepad;
 	private static var gamepadStates: Array<GamepadStates>;
 	
-	@:allow(kha.Scheduler) static var mouseX: Int;
-	@:allow(kha.Scheduler) static var mouseY: Int;
+	private static var mouseX: Int;
+	private static var mouseY: Int;
 	
 	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
@@ -55,8 +53,6 @@ class Starter {
 		gamepadStates.push(new GamepadStates());
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
-		lastPressedKey = null;
-		pressedKeyToChar = new Array<String>();
 		for (i in 0...256) pressedKeys.push(null);
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
@@ -219,7 +215,6 @@ class Starter {
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
-		canvas.onkeypress = keyPress;
 		canvas.onkeyup = keyUp;
 		
 		Browser.window.addEventListener("unload", unload);
@@ -235,19 +230,17 @@ class Starter {
 		Game.the.onShutdown();
 	}
 	
-	static inline function setMouseXY(event: MouseEvent): Void {
+	private static function setMouseXY(event: MouseEvent): Void {
 		var rect = Sys.khanvas.getBoundingClientRect();
 		var borderWidth = Sys.khanvas.clientLeft;
 		var borderHeight = Sys.khanvas.clientTop;
-		mouseX = Std.int((event.clientX - rect.left - borderWidth) * Sys.khanvas.width/(rect.width-2*borderWidth));
-		mouseY = Std.int((event.clientY - rect.top - borderHeight) * Sys.khanvas.height/(rect.height-2*borderHeight));
+		mouseX = Std.int((event.clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
+		mouseY = Std.int((event.clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 	
-	static function mouseDown(event: MouseEvent): Void {
+	private static function mouseDown(event: MouseEvent): Void {
 		Browser.document.addEventListener('mouseup', mouseUp);
-		checkMouseShift(event);
 		setMouseXY(event);
-		//trace ( 'mouse (${event.button}) DOWN' );
 		if (event.button == 0) {
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
@@ -266,10 +259,8 @@ class Starter {
 		}
 	}
 	
-	static function mouseUp(event: MouseEvent): Void {
+	private static function mouseUp(event: MouseEvent): Void {
 		Browser.document.removeEventListener('mouseup', mouseUp);
-		checkMouseShift(event);
-		//trace ( 'mouse (${event.button}) UP' );
 		setMouseXY(event);
 		if (event.button == 0) {
 			if (leftMouseCtrlDown) {
@@ -288,50 +279,98 @@ class Starter {
 		}
 	}
 	
-	static function mouseMove(event : MouseEvent) {
-		checkMouseShift(event);
+	private static function mouseMove(event: MouseEvent): Void {
 		setMouseXY(event);
 		Game.the.mouseMove(mouseX, mouseY);
 		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 	
-	static function checkMouseShift(event: MouseEvent) {
-		if (event.shiftKey && !pressedKeys[16]) {
-			//trace ("SHIFT DOWN (mouse event)");
-			pressedKeys[16] = true;
-			Game.the.keyDown(Key.SHIFT, "");
-		} else if (pressedKeys[16] && !event.shiftKey) {
-			//trace ("SHIFT UP (mouse event)");
-			pressedKeys[16] = false;
-			Game.the.keyUp(Key.SHIFT, "");
+	private static function keycodeToChar(keycode: Int, shift: Bool): String {
+		switch (keycode) {
+			case 187:
+				if (shift) return "*";
+				else return "+";
+			case 188:
+				if (shift) return ";";
+				else return ",";
+			case 189:
+				if (shift) return "_";
+				else return "-";
+			case 190:
+				if (shift) return ":";
+				else return ".";
+			case 191:
+				if (shift) return "'";
+				else return "#";
+			case 226:
+				if (shift) return ">";
+				else return "<";
+			case 106:
+				return "*";
+			case 107:
+				return "+";
+			case 109:
+				return "-";
+			case 111:
+				return "/";
+			case 49:
+				if (shift) return "!";
+				else return "1";
+			case 50:
+				if (shift) return "\"";
+				else return "2";
+			case 51:
+				if (shift) return "§";
+				else return "3";
+			case 52:
+				if (shift) return "$";
+				else return "4";
+			case 53:
+				if (shift) return "%";
+				else return "5";
+			case 54:
+				if (shift) return "&";
+				else return "6";
+			case 55:
+				if (shift) return "/";
+				else return "7";
+			case 56:
+				if (shift) return "(";
+				else return "8";
+			case 57:
+				if (shift) return ")";
+				else return "9";
+			case 48:
+				if (shift) return "=";
+				else return "0";
+			case 219:
+				if (shift) return "?";
+				else return "ß";
+			case 212:
+				if (shift) return "`";
+				else return "´";
 		}
+		if (keycode >= 96 && keycode <= 105) { // num block
+			return String.fromCharCode('0'.code - 96 + keycode);
+		}
+		if (keycode >= 'A'.code && keycode <= 'Z'.code) {
+			if (shift) return String.fromCharCode(keycode);
+			else return String.fromCharCode(keycode - 'A'.code + 'a'.code);
+		}
+		return String.fromCharCode(keycode);
 	}
 	
-	static function checkKeyShift(event: Dynamic) {
-		if (event.shiftKey && !pressedKeys[16]) {
-			//trace ("SHIFT DOWN (key event)");
-			pressedKeys[16] = true;
-			Game.the.keyDown(Key.SHIFT, "");
-		} else if (pressedKeys[16] && event.keyCode != 16 && !event.shiftKey) {
-			//trace ("SHIFT UP (key event)");
-			pressedKeys[16] = false;
-			Game.the.keyUp(Key.SHIFT, "");
-		}
-	}
-	
-	static function keyDown(event: KeyboardEvent) {
-		//trace ("keyDown(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
-		
+	private static function keyDown(event: KeyboardEvent): Void {
 		event.stopPropagation();
 		
+		// prevent key repeat
 		if (pressedKeys[event.keyCode]) {
-			lastPressedKey = 0;
 			event.preventDefault();
 			return;
 		}
-		lastPressedKey = event.keyCode;
+		
 		pressedKeys[event.keyCode] = true;
-		switch (lastPressedKey) {
+		switch (event.keyCode) {
 		case 8:
 			Game.the.keyDown(Key.BACKSPACE, "");
 			keyboard.sendDownEvent(Key.BACKSPACE, "");
@@ -347,7 +386,6 @@ class Starter {
 		case 16:
 			Game.the.keyDown(Key.SHIFT, "");
 			keyboard.sendDownEvent(Key.SHIFT, "");
-			//trace ("SHIFT DOWN (keyDown)");
 			event.preventDefault();
 		case 17:
 			Game.the.keyDown(Key.CTRL, "");
@@ -364,7 +402,6 @@ class Starter {
 		case 32:
 			Game.the.keyDown(Key.CHAR, " ");
 			keyboard.sendDownEvent(Key.CHAR, " ");
-			lastPressedKey = 0;
 			event.preventDefault(); // don't scroll down in IE
 		case 46:
 			Game.the.keyDown(Key.DEL, "");
@@ -388,67 +425,16 @@ class Starter {
 			event.preventDefault();
 		default:
 			if (!event.altKey) {
-				var char = String.fromCharCode(lastPressedKey);
-				if (lastPressedKey >= 96 && lastPressedKey <= 105) { // num block seems to return special key codes
-					char = String.fromCharCode('0'.code - 96 + lastPressedKey);
-				}
-				if (lastPressedKey >= 'A'.code && lastPressedKey <= 'Z'.code) {
-					if (event.shiftKey) char = String.fromCharCode(lastPressedKey);
-					else char = String.fromCharCode(lastPressedKey - 'A'.code + 'a'.code);
-				}
-				pressedKeyToChar[lastPressedKey] = char;
-				//trace ('"$char" DOWN');
+				var char = keycodeToChar(event.keyCode, event.shiftKey);
 				Game.the.keyDown(Key.CHAR, char);
 				keyboard.sendDownEvent(Key.CHAR, char);
-				lastPressedKey = 0;
 			}
 		}
 	}
-	
-	static function keyPress(event: Dynamic) {
-		//trace ("keyPress(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
-		
+
+	private static function keyUp(event: KeyboardEvent): Void {
 		event.preventDefault();
 		event.stopPropagation();
-		
-		// Determine the keycode crossplatform is a bit tricky.
-		// Situation will be better when Gecko implements key and char: https://developer.mozilla.org/en-US/docs/DOM/KeyboardEvent
-		// We saved the keycode in keyDown() and map pressed char to that code.
-		// In keyUp() we can then get the char from keycode again.
-		if (lastPressedKey == 0) return;
-		
-		if (event.keyCode == 0) {
-			// current Gecko
-			var char = String.fromCharCode(event.charCode);
-			
-			checkKeyShift(event);
-			
-			Game.the.keyDown(Key.CHAR, char);
-			keyboard.sendDownEvent(Key.CHAR, char);
-			//trace ('"$char" DOWN');
-			pressedKeyToChar[lastPressedKey] = char;
-			
-		}
-		// DOM3
-		else if (event.char != null) { // IE
-			if (event.char != "") { // Gecko (planned)
-				Game.the.keyDown(Key.CHAR, event.char);
-				keyboard.sendDownEvent(Key.CHAR, event.char);
-				//trace ('"${event.char}" DOWN');
-				pressedKeyToChar[lastPressedKey] = event.char;
-			}
-		}
-		
-		lastPressedKey = 0;
-	}
-	
-	static function keyUp(event: KeyboardEvent) {
-		//trace ("keyUp(keyCode: " + event.keyCode + "; charCode: " + event.charCode + "; char: '" + event.char + "'; key: '" + event.key + "')");
-		
-		event.preventDefault();
-		event.stopPropagation();
-		
-		checkKeyShift(event);
 		
 		pressedKeys[event.keyCode] = false;
 		
@@ -465,7 +451,6 @@ class Starter {
 		case 16:
 			Game.the.keyUp(Key.SHIFT, "");
 			keyboard.sendUpEvent(Key.SHIFT, "");
-			//trace ("SHIFT UP (keyUp)");
 		case 17:
 			Game.the.keyUp(Key.CTRL, "");
 			keyboard.sendUpEvent(Key.CTRL, "");
@@ -493,13 +478,12 @@ class Starter {
 		case 39:
 			Game.the.buttonUp(Button.RIGHT);
 			keyboard.sendUpEvent(Key.RIGHT, "");
-		}
-		
-		if (pressedKeyToChar[event.keyCode] != null) {
-			Game.the.keyUp(Key.CHAR, pressedKeyToChar[event.keyCode]);
-			keyboard.sendUpEvent(Key.CHAR, pressedKeyToChar[event.keyCode]);
-			//trace ('"${pressedKeyToChar[event.keyCode]}" UP');
-			pressedKeyToChar[event.keyCode] = null;
+		default:
+			if (!event.altKey) {
+				var char = keycodeToChar(event.keyCode, event.shiftKey);
+				Game.the.keyUp(Key.CHAR, char);
+				keyboard.sendUpEvent(Key.CHAR, char);
+			}
 		}
 	}
 }
