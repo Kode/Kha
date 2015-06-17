@@ -425,7 +425,7 @@ class Starter {
 			event.preventDefault();
 		default:
 			if (!event.altKey) {
-				var char = keycodeToChar(event.keyCode, event.shiftKey);
+				var char = event.key != null ? event.key : keycodeToChar(event.keyCode, event.shiftKey);
 				Game.the.keyDown(Key.CHAR, char);
 				keyboard.sendDownEvent(Key.CHAR, char);
 			}
@@ -480,7 +480,7 @@ class Starter {
 			keyboard.sendUpEvent(Key.RIGHT, "");
 		default:
 			if (!event.altKey) {
-				var char = keycodeToChar(event.keyCode, event.shiftKey);
+				var char = event.key != null ? event.key : keycodeToChar(event.keyCode, event.shiftKey);
 				Game.the.keyUp(Key.CHAR, char);
 				keyboard.sendUpEvent(Key.CHAR, char);
 			}
