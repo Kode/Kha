@@ -6,13 +6,13 @@ import haxe.io.BytesOutput;
 import kha.audio2.ogg.vorbis.Reader;
 
 class MusicChannel {
-	public var volume: Float;
 	private var reader: Reader;
 	private var atend: Bool = false;
 	private var loop: Bool;
+	private var myVolume: Float;
 	
 	public function new(data: Bytes, loop: Bool) {
-		volume = 1;
+		myVolume = 1;
 		this.loop = loop;
 		reader = Reader.openFromBytes(data);
 	}
@@ -32,7 +32,43 @@ class MusicChannel {
 		}
 	}
 	
-	public function ended(): Bool {
+	public function play(): Void {
+		
+	}
+
+	public function pause(): Void {
+		
+	}
+
+	public function stop(): Void {
+		
+	}
+
+	public var length(get, null): Int; // Miliseconds
+	
+	private function get_length(): Int {
+		return 0;
+	}
+
+	public var position(get, null): Int; // Miliseconds
+	
+	private function get_position(): Int {
+		return 0;
+	}
+	
+	public var volume(get, set): Float;
+	
+	private function get_volume(): Float {
+		return myVolume;
+	}
+
+	private function set_volume(value: Float): Float {
+		return myVolume = value;
+	}
+
+	public var finished(get, null): Bool;
+
+	private function get_finished(): Bool {
 		return atend;
 	}
 }
