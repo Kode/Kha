@@ -10,6 +10,7 @@ class MusicChannel {
 	private var atend: Bool = false;
 	private var loop: Bool;
 	private var myVolume: Float;
+	private var paused: Bool = false;
 	
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
@@ -18,6 +19,13 @@ class MusicChannel {
 	}
 
 	public function nextSamples(samples: Vector<Float>): Void {
+		if (paused) {
+			for (i in 0...samples.length) {
+				samples[i] = 0;
+			}
+			return;
+		}
+		
 		var count = reader.read(samples, Std.int(samples.length / 2), 2, 44100, true) * 2;
 		if (count < samples.length) {
 			if (loop) {
@@ -33,27 +41,27 @@ class MusicChannel {
 	}
 	
 	public function play(): Void {
-		
+		paused = false;
 	}
 
 	public function pause(): Void {
-		
+		paused = true;
 	}
 
 	public function stop(): Void {
-		
+		atend = true;
 	}
 
 	public var length(get, null): Int; // Miliseconds
 	
 	private function get_length(): Int {
-		return 0;
+		return Std.int(reader.totalMillisecond);
 	}
 
 	public var position(get, null): Int; // Miliseconds
 	
 	private function get_position(): Int {
-		return 0;
+		return Std.int(reader.currentMillisecond);
 	}
 	
 	public var volume(get, set): Float;

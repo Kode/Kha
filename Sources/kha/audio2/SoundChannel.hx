@@ -6,6 +6,7 @@ class SoundChannel {
 	public var data: Vector<Float>;
 	private var myVolume: Float;
 	private var myPosition: Int;
+	private var paused: Bool = false;
 	
 	public function new() {
 		myVolume = 1;
@@ -13,6 +14,13 @@ class SoundChannel {
 	}
 	
 	public function nextSamples(samples: Vector<Float>): Void {
+		if (paused) {
+			for (i in 0...samples.length) {
+				samples[i] = 0;
+			}
+			return;
+		}
+		
 		for (i in 0...samples.length) {
 			samples[i] = myPosition < data.length ? data[myPosition] : 0;
 			++myPosition;
@@ -20,27 +28,27 @@ class SoundChannel {
 	}
 	
 	public function play(): Void {
-		
+		paused = false;
 	}
 
 	public function pause(): Void {
-		
+		paused = true;
 	}
 
 	public function stop(): Void {
-		
+		myPosition = data.length;
 	}
 
 	public var length(get, null): Int; // Miliseconds
 	
 	private function get_length(): Int {
-		return 0;
+		return Std.int(data.length / 44.1 / 2); // 44.1 khz in stereo
 	}
 
 	public var position(get, null): Int; // Miliseconds
 	
 	private function get_position(): Int {
-		return 0;
+		return Std.int(myPosition / 44.1 / 2);
 	}
 	
 	public var volume(get, set): Float;
