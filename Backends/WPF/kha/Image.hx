@@ -7,7 +7,7 @@ import kha.wpf.Painter;
 import system.windows.media.DrawingVisual;
 import system.windows.media.imaging.BitmapSource;
 
-class Image implements Canvas implements Resource {
+class Image implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;

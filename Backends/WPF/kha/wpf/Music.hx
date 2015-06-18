@@ -1,6 +1,6 @@
 package kha.wpf;
 
-import kha.wpf.Sound.SoundChannel;
+import kha.audio1.MusicChannel;
 import system.io.Path;
 import system.Uri;
 import system.UriKind;
@@ -9,8 +9,8 @@ import system.windows.controls.MediaState;
 
 class Music extends kha.Music{
 	//private var player: MediaElement;
-	private var filename: String;
-	private var soundChannel : SoundChannel;
+	public var filename: String;
+	private var channel : MusicChannel;
 	
 	public function new(filename: String) : Void {
 		super();
@@ -24,21 +24,21 @@ class Music extends kha.Music{
 	}
 	
 	public override function play(loop: Bool = false): Void {
-		soundChannel = new SoundChannel(filename);
-		soundChannel.play();
+		channel = new MusicChannel(filename, loop);
+		channel.play();
 	}
 	
-	public override function pause() : Void { soundChannel.pause(); }
+	public override function pause() : Void { channel.pause(); }
 	
-	public override function stop(): Void { soundChannel.stop(); }
+	public override function stop(): Void { channel.stop(); }
 
-	public override function getLength() : Int { return soundChannel.getLength(); } // Miliseconds
+	public override function getLength() : Int { return channel.length; } // Miliseconds
 	
-	public override function getCurrentPos() : Int { return soundChannel.getCurrentPos(); } // Miliseconds
+	public override function getCurrentPos() : Int { return channel.position; } // Miliseconds
 	
-	public override function getVolume() : Float { return soundChannel.getVolume(); } // [0, 1]
+	public override function getVolume() : Float { return channel.volume; } // [0, 1]
 
-	public override function setVolume(volume : Float) : Void { soundChannel.setVolume(volume); } // [0, 1]
+	public override function setVolume(volume : Float) : Void { channel.volume = volume; } // [0, 1]
 	
-	override public function isFinished() : Bool { return soundChannel.isFinished(); }
+	override public function isFinished() : Bool { return channel.finished; }
 }
