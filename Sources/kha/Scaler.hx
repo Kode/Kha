@@ -99,6 +99,15 @@ class Scaler {
 		return new TargetRectangle(scalex, scaley, scalew, scaleh, scale, rotation);
 	}
 	
+	/**
+	 * Transform the X value from the given position in the source to a position in the destination canvas.
+	 *
+	 * @param x					The X position.
+	 * @param y					The Y position.
+	 * @param source			The source image.
+	 * @param destination		The destination canvas.
+	 * @param rotation			The screen rotation.
+	 */
 	public static function transformX(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
 		var targetRect = targetRect(source.width, source.height, destination, rotation);
 		switch (targetRect.rotation) {
@@ -112,7 +121,16 @@ class Scaler {
 			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
 		}
 	}
-	
+
+	/**
+	 * Transform the Y value from the given position in the source to a position in the destination canvas.
+	 *
+	 * @param x					The X position.
+	 * @param y					The Y position.
+	 * @param source			The source image.
+	 * @param destination		The destination canvas.
+	 * @param rotation			The screen rotation.
+	 */
 	public static function transformY(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
 		var targetRect = targetRect(source.width, source.height, destination, rotation);
 		switch (targetRect.rotation) {
