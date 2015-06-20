@@ -55,9 +55,6 @@ class Scheduler {
 	
 	private static var deltas: Array<Float>;
 	
-	//private static var delta:Float = 0;
-	private static var dScale:Float = 1;
-	
 	private static var startTime: Float = 0;
 	
 	private static var lastNow: Float = 0;
@@ -155,7 +152,6 @@ class Scheduler {
 				delta /= DIF_COUNT;
 				deltas[DIF_COUNT - 2] = realdif;
 				
-				delta = dScale * delta;
 				frameEnd += delta;
 			}
 			else {
@@ -357,17 +353,4 @@ class Scheduler {
 	
 	/** Delta time between frames*/
 	//static public var deltaTime(get_deltaTime, null):Float;
-	
-	private static function get_deltaScale():Float 
-	{
-		return dScale;
-	}
-	
-	private static function set_deltaScale(value:Float):Float 
-	{
-		return dScale = value;
-	}
-	
-	/** Multiplier for delta time*/
-	static public var deltaScale(get_deltaScale, set_deltaScale):Float;
 }

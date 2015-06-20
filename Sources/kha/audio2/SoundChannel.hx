@@ -4,22 +4,66 @@ import haxe.ds.Vector;
 
 class SoundChannel {
 	public var data: Vector<Float>;
-	public var volume: Float;
-	private var position: Int;
+	private var myVolume: Float;
+	private var myPosition: Int;
+	private var paused: Bool = false;
 	
 	public function new() {
-		volume = 1;
-		position = 0;
+		myVolume = 1;
+		myPosition = 0;
 	}
 	
 	public function nextSamples(samples: Vector<Float>): Void {
+		if (paused) {
+			for (i in 0...samples.length) {
+				samples[i] = 0;
+			}
+			return;
+		}
+		
 		for (i in 0...samples.length) {
-			samples[i] = position < data.length ? data[position] : 0;
-			++position;
+			samples[i] = myPosition < data.length ? data[myPosition] : 0;
+			++myPosition;
 		}
 	}
 	
-	public function ended(): Bool {
-		return position >= data.length;
+	public function play(): Void {
+		paused = false;
+	}
+
+	public function pause(): Void {
+		paused = true;
+	}
+
+	public function stop(): Void {
+		myPosition = data.length;
+	}
+
+	public var length(get, null): Int; // Miliseconds
+	
+	private function get_length(): Int {
+		return Std.int(data.length / 44.1 / 2); // 44.1 khz in stereo
+	}
+
+	public var position(get, null): Int; // Miliseconds
+	
+	private function get_position(): Int {
+		return Std.int(myPosition / 44.1 / 2);
+	}
+	
+	public var volume(get, set): Float;
+	
+	private function get_volume(): Float {
+		return myVolume;
+	}
+
+	private function set_volume(value: Float): Float {
+		return myVolume = value;
+	}
+
+	public var finished(get, null): Bool;
+
+	private function get_finished(): Bool {
+		return myPosition >= data.length;
 	}
 }

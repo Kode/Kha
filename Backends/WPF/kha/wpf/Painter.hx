@@ -1,6 +1,5 @@
 package kha.wpf;
 
-import kha.Animation;
 import kha.FontStyle;
 import kha.Image;
 import kha.Kravur;
@@ -35,7 +34,7 @@ class Painter extends kha.graphics2.Graphics {
 	
 	override public function begin(clear: Bool = true, clearColor: kha.Color = null): Void {
 		if (visual != null) context = visual.RenderOpen();
-		context.PushTransform(new MatrixTransform(transformation[0], transformation[3], transformation[1], transformation[4], transformation[2], transformation[5]));
+		context.PushTransform(new MatrixTransform(transformation._00, transformation._01, transformation._10, transformation._11, transformation._20, transformation._21));
 		if (clear) this.clear(clearColor);
 	}
 	
@@ -58,7 +57,7 @@ class Painter extends kha.graphics2.Graphics {
 	
 	override public function setTransformation(transformation: Matrix3): Void {
 		context.Pop();
-		context.PushTransform(new MatrixTransform(transformation[0], transformation[3], transformation[1], transformation[4], transformation[2], transformation[5]));
+		context.PushTransform(new MatrixTransform(transformation._00, transformation._01, transformation._10, transformation._11, transformation._20, transformation._21));
 	}
 	
 	@:functionCode('
