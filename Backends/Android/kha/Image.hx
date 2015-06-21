@@ -1,4 +1,4 @@
-package kha.android;
+package kha;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import java.lang.ref.WeakReference;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.io.Exceptions;
+import java.io.IOException;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 
 class BitmapManager {
 	static var images : Array<Image> = new Array<Image>();
@@ -22,21 +24,44 @@ class BitmapManager {
 	}
 }
 
-class Image implements kha.Image {
+class Image {
 	public static var assets : AssetManager;
-	var name : String;
-	var bitmap : WeakReference<Bitmap>;
-	var b : Bitmap;
+	private var name: String;
+	private var bitmap: WeakReference<Bitmap>;
+	private var b: Bitmap;
 	
-	public var tex : Int = -1;
-	var buffer : Buffer;
+	public var tex: Int = -1;
+	private var buffer: Buffer;
 	
-	public function new(name : String) {
+	public function new(name: String) {
 		this.name = name;
 		BitmapManager.add(this);
 	}
 	
-	function load() : Void {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+		if (format == null) format = TextureFormat.RGBA32;
+		if (usage == null) usage = Usage.StaticUsage;
+		return null;
+	}
+	
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+		if (format == null) format = TextureFormat.RGBA32;
+		return null;
+	}
+	
+	public var g2(get, null): kha.graphics2.Graphics;
+	
+	private function get_g2(): kha.graphics2.Graphics {
+		return null;
+	}
+	
+	public var g4(get, null): kha.graphics4.Graphics;
+	
+	private function get_g4(): kha.graphics4.Graphics {
+		return null;
+	}
+	
+	private function load() : Void {
 		if (bitmap != null && bitmap.get() != null) return;
 		try {
 			b = BitmapFactory.decodeStream(assets.open(name));
@@ -66,12 +91,16 @@ class Image implements kha.Image {
 		return bitmap.get();
 	}
 	
-	public function getWidth() : Int {
+	public var width(get, null): Int;
+	
+	private function get_width() : Int {
 		load();
 		return bitmap.get().getWidth();
 	}
+	
+	public var height(get, null): Int;
 
-	public function getHeight() : Int {
+	private function get_height() : Int {
 		load();
 		return bitmap.get().getHeight();
 	}
