@@ -21,4 +21,7 @@ class Starter {
 	public static function loadFinished() {
 		//game.loadFinished();
 	}
+	
+	public static var mouseX: Int;
+	public static var mouseY: Int;
 }
