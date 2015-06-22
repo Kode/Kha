@@ -7,9 +7,9 @@ class Video extends Media {
 	/**
 	 * The width of the video file in pixels.
 	 */
-	public function width() : Int { return 100; }
+	public function width(): Int { return 100; }
 	/**
 	 * The height of the video file in pixels.
 	 */
-	public function height() : Int { return 100; }
+	public function height(): Int { return 100; }
 }

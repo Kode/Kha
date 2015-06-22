@@ -396,13 +396,13 @@ class Loader {
 		}
 	}
 	
-	public function loadImage(desc: Dynamic, done: Image -> Void) { }
-	public function loadBlob (desc: Dynamic, done: Blob  -> Void) { }
-	public function loadSound(desc: Dynamic, done: Sound -> Void) { }
-	public function loadMusic(desc: Dynamic, done: Music -> Void) { }
-	public function loadVideo(desc: Dynamic, done: Video -> Void) { }
+	public function loadImage(desc: Dynamic, done: Image -> Void): Void { }
+	public function loadBlob (desc: Dynamic, done: Blob  -> Void): Void { }
+	public function loadSound(desc: Dynamic, done: Sound -> Void): Void { }
+	public function loadMusic(desc: Dynamic, done: Music -> Void): Void { }
+	public function loadVideo(desc: Dynamic, done: Video -> Void): Void { }
 	
-	public function loadFont(name : String, style : FontStyle, size : Float) : Font { return null; }
+	public function loadFont(name : String, style : FontStyle, size : Float): Font { return null; }
 	
 	public function loadURL(url : String) : Void { }
 	

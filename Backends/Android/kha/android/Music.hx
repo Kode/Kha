@@ -2,6 +2,7 @@ package kha.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import java.lang.Exception;
 import java.lang.Throwable;
 
 class Music extends kha.Music {
@@ -18,18 +19,18 @@ class Music extends kha.Music {
 			mp.prepare();
 			mp.start();
 		}
-		catch (e : Exception) {
+		catch (e: Exception) {
 			e.printStackTrace();
 		}
 	}
 	
-	override public function play() : Void {
-		mp.start();
-	}
+	//override public function play() : Void {
+	//	mp.start();
+	//}
 
-	override public function stop() : Void {
-		mp.stop();
-	}
+	//override public function stop() : Void {
+	//	mp.stop();
+	//}
 	
 	public static function stopit() {
 		if (instance != null) instance.stop();

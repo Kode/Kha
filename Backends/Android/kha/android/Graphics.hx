@@ -1,4 +1,4 @@
-package kha.psm.graphics4;
+package kha.android;
 
 import kha.Blob;
 import kha.graphics4.BlendingOperation;
@@ -22,20 +22,14 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
-import sce.playstation.core.graphics.BlendFuncFactor;
-import sce.playstation.core.graphics.BlendFuncMode;
-import sce.playstation.core.graphics.DrawMode;
-import sce.playstation.core.graphics.EnableMode;
-import sce.playstation.core.graphics.GraphicsContext;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var context: GraphicsContext;
 	private var indexBuffer: IndexBuffer;
 	private var vertexBuffer: VertexBuffer;
 	private var program: Program;
 
 	public function new() {
-		context = new GraphicsContext();
+		
 	}
 	
 	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
@@ -83,8 +77,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		context.Enable(EnableMode.Blend, true);
-		context.SetBlendFunc(BlendFuncMode.Add, BlendFuncFactor.SrcAlpha, BlendFuncFactor.OneMinusSrcAlpha);
+		
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
@@ -97,7 +90,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setProgram(program: kha.graphics4.Program): Void {
 		this.program = program;
-		context.SetShaderProgram(program.program);
+		
 	}
 	
 	public function maxTextureSize(): Int {
@@ -110,14 +103,12 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture != null) {
-			context.SetTexture(0, texture.texture);
+			
 		}
 	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		vertexBuffer.setIndices(indexBuffer);
-		context.SetVertexBuffer(0, vertexBuffer.buffer);
-		context.DrawArrays(DrawMode.Triangles, start, count);
+		
 	}
 	
 	public function createVertexShader(source: Blob): kha.graphics4.VertexShader {
@@ -164,21 +155,8 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	@:functionCode('
-		var m = new Sce.PlayStation.Core.Matrix4(
-			(float)matrix._00, (float)matrix._01, (float)matrix._02, (float)matrix._03,
-			(float)matrix._10, (float)matrix._11, (float)matrix._12, (float)matrix._13,
-			(float)matrix._20, (float)matrix._21, (float)matrix._22, (float)matrix._23,
-			(float)matrix._30, (float)matrix._31, (float)matrix._32, (float)matrix._33
-			);
-		program.program.SetUniformValue(location.location, ref m);
-	')
-	private function setMatrix2(location: kha.psm.graphics4.ConstantLocation, matrix: Matrix4): Void {
-		
-	}
-	
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
-		setMatrix2(cast location, matrix);
+		
 	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
@@ -194,6 +172,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		context.SwapBuffers();
+		
 	}
 }

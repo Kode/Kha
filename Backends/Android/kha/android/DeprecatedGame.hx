@@ -5,7 +5,7 @@ import android.widget.LinearLayout;
 import android.os.Bundle;
 import android.view.Window;
 
-class Game extends Activity {
+class DeprecatedGame extends Activity {
 	var layout : LinearLayout;
 
 	override public function onCreate(savedInstanceState : Bundle) : Void {

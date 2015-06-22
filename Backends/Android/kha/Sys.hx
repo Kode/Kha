@@ -1,6 +1,10 @@
 package kha;
 
 class Sys {
+	public static function init(): Void {
+		
+	}
+	
 	public static var pixelWidth(get, null): Int;
 	
 	private static function get_pixelWidth(): Int {

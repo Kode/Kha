@@ -3,6 +3,7 @@ package kha;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import haxe.io.Bytes;
 import java.lang.ref.WeakReference;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -104,9 +105,41 @@ class Image {
 		load();
 		return bitmap.get().getHeight();
 	}
+	
+	public var realWidth(get, null): Int;
+	
+	private function get_realWidth(): Int {
+		return width;
+	}
+	
+	public var realHeight(get, null): Int;
+	
+	private function get_realHeight(): Int {
+		return height;
+	}
 
 	public function isOpaque(x : Int, y : Int) : Bool {
 		load();
 		return (bitmap.get().getPixel(x, y) >> 24) != 0;
+	}
+	
+	public function lock(level: Int = 0): Bytes {
+		return null;
+	}
+	
+	public function unlock(): Void {
+		
+	}
+	
+	public static var maxSize(get, null): Int;
+	
+	public static function get_maxSize(): Int {
+		return 2048;
+	}
+	
+	public static var nonPow2Supported(get, null): Bool;
+	
+	public static function get_nonPow2Supported(): Bool {
+		return false;
 	}
 }

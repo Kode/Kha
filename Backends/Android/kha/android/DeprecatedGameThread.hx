@@ -6,7 +6,7 @@ import android.content.Context;
 import android.view.KeyEvent;
 import android.graphics.Canvas;
 
-class GameThread extends Thread {
+class DeprecatedGameThread extends Thread {
 	var running : Bool = false;
 	var surface : SurfaceHolder;
 	var context : Context;

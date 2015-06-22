@@ -2,12 +2,13 @@ package kha.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import java.lang.Exception;
 import java.lang.Throwable;
 
 class Video extends kha.Video {
-	var mp : MediaPlayer;
+	var mp: MediaPlayer;
 	
-	public function new(file : AssetFileDescriptor) {
+	public function new(file: AssetFileDescriptor) {
 		super();
 		try {
 			mp = new MediaPlayer();
@@ -16,17 +17,17 @@ class Video extends kha.Video {
 			mp.prepare();
 			mp.start();
 		}
-		catch (e : Exception) {
+		catch (e: Exception) {
 			e.printStackTrace();
 		}
 	}
 	
-	override public function play() : Void {
-		mp.setDisplay(GameView.the().getHolder());
+	override public function play(loop: Bool = false): Void {
+		//mp.setDisplay(GameView.the().getHolder());
 		mp.start();
 	}
 
-	override public function stop() : Void {
+	override public function stop(): Void {
 		mp.stop();
 	}
 }

@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.KeyEvent;
 import java.lang.InterruptedException;
 
-class GameView extends SurfaceView, implements SurfaceHolderCallback {
+class DeprecatedGameView extends SurfaceView implements SurfaceHolderCallback {
 	var thread : GameThread;
 	//private int lastTouch;
 	public static var instance : GameView;
