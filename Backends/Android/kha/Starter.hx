@@ -30,7 +30,8 @@ import kha.android.Graphics;
 class Starter {
 	public static var game: Game;
 	private static var framebuffer: Framebuffer;
-	
+	private static var w: Int;
+	private static var h: Int;
 	public static var mouseX: Int = 0;
 	public static var mouseY: Int = 0;
 	
@@ -54,7 +55,7 @@ class Starter {
 		Loader.the.initProject();
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
-		Sys.init();
+		Sys.init(w, h);
 		
 		var graphics = new Graphics();
 		framebuffer = new Framebuffer(null, null, graphics);
@@ -69,6 +70,8 @@ class Starter {
 	}
 	
 	public static function init(width: Int, height: Int): Void {
+		w = width;
+		h = height;
 		Main.main();
 	}
 	

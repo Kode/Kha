@@ -1,20 +1,26 @@
 package kha;
 
 class Sys {
-	public static function init(): Void {
-		
+	private static var w: Int = 640;
+	private static var h: Int = 480;
+	private static var m: Mouse;
+	
+	public static function init(width: Int, height: Int): Void {
+		w = width;
+		h = height;
+		m = new Mouse();
 	}
 	
 	public static var pixelWidth(get, null): Int;
 	
 	private static function get_pixelWidth(): Int {
-		return 640;
+		return w;
 	}
 	
 	public static var pixelHeight(get, null): Int;
 	
 	private static function get_pixelHeight(): Int {
-		return 480;
+		return h;
 	}
 	
 	public static var screenRotation: ScreenRotation;
@@ -30,7 +36,7 @@ class Sys {
 	public static var mouse(get, null): Mouse;
 	
 	public static function get_mouse(): Mouse {
-		return null;
+		return m;
 	}
 	
 	public static function vsynced(): Bool {
