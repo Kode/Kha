@@ -87,6 +87,9 @@ class VertexBuffer {
 	}
 	
 	public function unlock(): Void {
+		for (i in 0...Std.int(mySize * myStride / 4)) {
+			data.put(i, lockedData[i]);
+		}
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffer);
 		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mySize * myStride, data, usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
 	}
