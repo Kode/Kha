@@ -69,12 +69,7 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	private var renderer: KhaRenderer;
 	private var inputManager: InputMethodManager;
 	
-	//unused
-	@:overload public function new(context: Context) {
-		super(context);
-	}
-	
-	@:overload public function new(activity: KhaActivity) {
+	public function new(activity: KhaActivity) {
 		super(activity);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -84,6 +79,11 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
    		setOnTouchListener(this);
    		inputManager = cast activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 	}
+	
+	//unused
+	//@:overload public function new(context: Context) {
+	//	super(context);
+	//}
 	
 	public function showKeyboard(): Void {
 		inputManager.toggleSoftInputFromWindow(getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);

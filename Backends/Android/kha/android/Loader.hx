@@ -64,12 +64,12 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadBlob(desc: Dynamic, done: kha.Blob->Void): Void {
-		var bytes: Array<Byte> = new Array<Byte>();
+		var bytes: Array<Int> = new Array<Int>();
 		try {
 			var stream: java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(desc.file));
 			var c: Int = -1;
 			while ((c = stream.read()) != -1) {
-				bytes.push(cast(c, Byte));
+				bytes.push(c);
 			}
 			stream.close();
 		}

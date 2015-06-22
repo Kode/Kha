@@ -40,7 +40,7 @@ class Starter {
 		new kha.input.Mouse();
 		//gamepad = new Gamepad();
 		
-		Loader.init(new kha.android.Loader(null));
+		Loader.init(new kha.android.Loader(KhaActivity.the().getApplicationContext()));
 		Scheduler.init();
 	}
 	
