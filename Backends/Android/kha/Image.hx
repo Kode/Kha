@@ -3,8 +3,11 @@ package kha;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import haxe.io.Bytes;
 import java.lang.ref.WeakReference;
+import java.NativeArray;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.io.IOException;
@@ -62,20 +65,43 @@ class Image {
 		return null;
 	}
 	
-	private function load() : Void {
+	private function load(): Void {
 		if (bitmap != null && bitmap.get() != null) return;
 		try {
 			b = BitmapFactory.decodeStream(assets.open(name));
 			bitmap = new WeakReference<Bitmap>(b);
 		}
-		catch (e : IOException) {
+		catch (e: IOException) {
 			e.printStackTrace();
 		}
 		BitmapManager.touch(this);
 	}
 	
-	public function unload() : Void {
+	public function unload(): Void {
 		b = null;
+	}
+	
+	private function createTexture(): Int {
+		var textures = new NativeArray<Int>(1);
+		GLES20.glGenTextures(1, textures, 0);
+		return textures[0];
+	}
+
+	public function set(stage: Int): Void {
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + stage);
+		if (tex == -1) {
+			tex = createTexture();
+			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
+			//glContext.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, getBitmap(), 0);
+			//GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, img.getBuffer());
+			//GLES20.glUniform1i(textureUniform, GLES20.GL_TEXTURE0);
+		}
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
 	}
 	
 	public function getBuffer() : Buffer {
