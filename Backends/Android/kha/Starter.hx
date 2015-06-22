@@ -75,6 +75,11 @@ class Starter {
 		Main.main();
 	}
 	
+	public static function setWidthHeight(width: Int, height: Int): Void {
+		w = width;
+		h = height;
+	}
+	
 	public static function step(): Void {
 		Scheduler.executeFrame();
 		game.render(framebuffer);

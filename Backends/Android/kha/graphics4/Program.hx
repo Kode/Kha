@@ -1,6 +1,7 @@
 package kha.graphics4;
 
 import android.opengl.GLES20;
+import java.NativeArray;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
@@ -40,9 +41,11 @@ class Program {
 		}
 		
 		GLES20.glLinkProgram(program);
-		//if (!Sys.gl.getProgramParameter(program, Sys.gl.LINK_STATUS)) {
-		//	throw "Could not link the shader program.";
-		//}
+		var values = new NativeArray<Int>(1);
+		GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, values, 0);
+		if (values[0] == GLES20.GL_FALSE) {
+			throw "Could not link the shader program.";
+		}
 	}
 	
 	public function set(): Void {
@@ -53,13 +56,15 @@ class Program {
 	}
 	
 	private function compileShader(shader: Dynamic): Void {
-		if (shader.shader != null) return;
+		if (shader.shader != -1) return;
 		var s = GLES20.glCreateShader(shader.type);
 		GLES20.glShaderSource(s, shader.source);
 		GLES20.glCompileShader(s);
-		//if (!Sys.gl.getShaderParameter(s, Sys.gl.COMPILE_STATUS)) {
-		//	throw "Could not compile shader:\n" + Sys.gl.getShaderInfoLog(s);
-		//}
+		var values = new NativeArray<Int>(1);
+		GLES20.glGetShaderiv(s, GLES20.GL_COMPILE_STATUS, values, 0);
+		if (values[0] == GLES20.GL_FALSE) {
+			throw "Could not compile shader:\n" + GLES20.glGetShaderInfoLog(s);
+		}
 		shader.shader = s;
 	}
 	

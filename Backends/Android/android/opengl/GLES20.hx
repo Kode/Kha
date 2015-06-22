@@ -27,6 +27,10 @@ extern class GLES20 {
 	public static var GL_ELEMENT_ARRAY_BUFFER : Int;
 	public static var GL_STATIC_DRAW : Int;
 	public static var GL_UNSIGNED_SHORT: Int;
+	public static var GL_COMPILE_STATUS: Int;
+	public static var GL_LINK_STATUS: Int;
+	public static var GL_TRUE: Int;
+	public static var GL_FALSE: Int;
 	
 	public static function glClear(bits : Int) : Void;
 	public static function glGetError() : Int;
@@ -63,4 +67,8 @@ extern class GLES20 {
 	public static function glBufferData(type : Int, size : Int, vertices : Buffer, draw : Int) : Void;
 	public static function glGenTextures(unknown1 : Int, textures : NativeArray<Int>, unknown2 : Int) : Void;
 	public static function glGenBuffers(unknown1 : Int, textures : NativeArray<Int>, unknown2 : Int) : Void;
+	public static function glGetShaderiv(shader: Int, pname: Int, params: NativeArray<Int>, offset: Int): Void;
+	public static function glGetShaderInfoLog(shader: Int): String;
+	public static function glGetProgramiv(program: Int, pname: Int, params: NativeArray<Int>, offset: Int): Void;
+	public static function glGetProgramInfoLog(program: Int): String;
 }

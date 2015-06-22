@@ -4,11 +4,13 @@ class Sys {
 	private static var w: Int = 640;
 	private static var h: Int = 480;
 	private static var m: Mouse;
+	private static var startTime: Float;
 	
 	public static function init(width: Int, height: Int): Void {
 		w = width;
 		h = height;
 		m = new Mouse();
+		startTime = getTimestamp();
 	}
 	
 	public static var pixelWidth(get, null): Int;
@@ -29,8 +31,19 @@ class Sys {
 		return ScreenRotation.RotationNone;
 	}
 	
-	public static function getTime(): Float {
+	public static function getFrequency(): Int {
+		return 1000;
+	}
+	
+	@:functionCode('
+		return System.currentTimeMillis();
+	')
+	public static function getTimestamp(): Float {
 		return 0;
+	}
+	
+	public static function getTime(): Float {
+		return (getTimestamp() - startTime) / getFrequency();
 	}
 	
 	public static var mouse(get, null): Mouse;

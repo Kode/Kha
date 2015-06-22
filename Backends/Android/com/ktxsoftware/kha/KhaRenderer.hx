@@ -1,6 +1,7 @@
 package com.ktxsoftware.kha;
 
 import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceViewRenderer;
 import android.text.method.MetaKeyKeyListener;
 import android.view.KeyCharacterMap;
@@ -46,10 +47,13 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 	} 
 	
 	public function onSurfaceCreated(gl: GL10, config: EGLConfig): Void {
-		
+		Starter.init(640, 480);
 	}
 	
 	public function onDrawFrame(gl: GL10): Void {
+		GLES20.glClearColor(1.0, 1.0, 0.0, 1.0);
+		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+		
 		Starter.step();
 		
 		if (Starter.keyboardShown()) {
@@ -67,7 +71,7 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 	}
 
 	public function onSurfaceChanged(gl: GL10, width: Int, height: Int): Void {
-		Starter.init(width, height); // , context.getResources().getAssets(), context.getApplicationInfo().sourceDir, context.getFilesDir().toString());
+		Starter.setWidthHeight(width, height); // , context.getResources().getAssets(), context.getApplicationInfo().sourceDir, context.getFilesDir().toString());
 	}
 	
 	public function key(keyCode: Int, down: Bool): Void {
