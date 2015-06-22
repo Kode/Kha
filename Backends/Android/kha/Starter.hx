@@ -28,7 +28,7 @@ import kha.android.Graphics;
 }*/
 
 class Starter {
-	static public var game: Game;
+	public static var game: Game;
 	private static var framebuffer: Framebuffer;
 	
 	public static var mouseX: Int = 0;
@@ -66,18 +66,15 @@ class Starter {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
-		/*while (true) {
-			Scheduler.executeFrame();
-			game.render(framebuffer);
-		}*/
 	}
 	
 	public static function init(width: Int, height: Int): Void {
-		
+		Main.main();
 	}
 	
 	public static function step(): Void {
-		
+		Scheduler.executeFrame();
+		game.render(framebuffer);
 	}
 	
 	public static function touch(index: Int, x: Int, y: Int, action: Int): Void {
