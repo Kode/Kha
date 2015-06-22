@@ -1,4 +1,5 @@
 package android.opengl;
+
 import java.NativeArray;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -50,7 +51,7 @@ extern class GLES20 {
 	public static function glBindAttribLocation(program : Int, unknown : Int, name : String) : Void;
 	public static function glGetUniformLocation(program : Int, name : String) : Int;
 	public static function glGetAttribLocation(program : Int, name : String) : Int;
-	public static function glVertexAttribPointer(attribute : Int, count : Int, type : Int, unknown : Bool, bytes : Int, vertices : FloatBuffer) : Void;
+	public static function glVertexAttribPointer(attribute: Int, count: Int, type: Int, unknown: Bool, bytes: Int, offset: Int): Void;
 	public static function glBufferData(type : Int, size : Int, vertices : Buffer, draw : Int) : Void;
 	public static function glGenTextures(unknown1 : Int, textures : NativeArray<Int>, unknown2 : Int) : Void;
 	public static function glGenBuffers(unknown1 : Int, textures : NativeArray<Int>, unknown2 : Int) : Void;
