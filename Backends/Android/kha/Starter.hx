@@ -72,12 +72,15 @@ class Starter {
 	public static function init(width: Int, height: Int): Void {
 		w = width;
 		h = height;
+		Sys.initTime();
 		Main.main();
 	}
 	
 	public static function setWidthHeight(width: Int, height: Int): Void {
 		w = width;
 		h = height;
+		Sys.w = w;
+		Sys.h = h;
 	}
 	
 	public static function step(): Void {

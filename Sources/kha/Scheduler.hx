@@ -133,6 +133,7 @@ class Scheduler {
 		}
 		else if (delta > maxframetime) {
 			delta = maxframetime;
+			frameEnd += delta;
 		}
 		else {
 			if (vsync) {
@@ -169,7 +170,7 @@ class Scheduler {
 				//delta = interpolated_delta; // average the frame end estimation
 				
 				//lastTime = now;
-				frameEnd = current + next;
+				frameEnd += next;
 			}
 		}
 		

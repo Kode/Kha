@@ -1,8 +1,8 @@
 package kha;
 
 class Sys {
-	private static var w: Int = 640;
-	private static var h: Int = 480;
+	public static var w: Int = 640;
+	public static var h: Int = 480;
 	private static var m: Mouse;
 	private static var startTime: Float;
 	
@@ -10,6 +10,9 @@ class Sys {
 		w = width;
 		h = height;
 		m = new Mouse();
+	}
+	
+	public static function initTime(): Void {
 		startTime = getTimestamp();
 	}
 	
