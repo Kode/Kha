@@ -31,7 +31,7 @@ import kha.Rectangle;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var framebuffer: Dynamic;
-	private var indicesCount: Int;
+	private var indexBuffer: IndexBuffer;
 	private var renderTarget: Image;
 	
 	public function new(renderTarget: Image = null) {
@@ -53,7 +53,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		
+		if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
+			trace('GL Error.');
+		}
 	}
 	
 	public function flush(): Void {
@@ -154,8 +156,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		indicesCount = indexBuffer.count();
-		cast(indexBuffer, IndexBuffer).set();
+		//indicesCount = indexBuffer.count();
+		//cast(indexBuffer, IndexBuffer).set();
+		this.indexBuffer = indexBuffer;
 	}
 	
 	//public function maxTextureSize(): Int {
@@ -303,7 +306,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indicesCount : count, GLES20.GL_UNSIGNED_SHORT, start * 2);
+		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indexBuffer.count() : count, GLES20.GL_UNSIGNED_SHORT, indexBuffer.data);
 	}
 	
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {

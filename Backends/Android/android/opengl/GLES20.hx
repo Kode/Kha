@@ -27,13 +27,14 @@ extern class GLES20 {
 	public static var GL_ELEMENT_ARRAY_BUFFER : Int;
 	public static var GL_STATIC_DRAW : Int;
 	public static var GL_UNSIGNED_SHORT: Int;
+	public static var GL_SHORT: Int;
 	public static var GL_COMPILE_STATUS: Int;
 	public static var GL_LINK_STATUS: Int;
 	public static var GL_TRUE: Int;
 	public static var GL_FALSE: Int;
 	
-	public static function glClear(bits : Int) : Void;
-	public static function glGetError() : Int;
+	public static function glClear(bits: Int): Void;
+	public static function glGetError(): Int;
 	public static function glBindBuffer(type : Int, buffer : Int) : Void;
 	public static function glActiveTexture(texture : Int) : Void;
 	public static function glBindTexture(type : Int, texture : Int) : Void;
@@ -41,7 +42,7 @@ extern class GLES20 {
 	public static function glEnableVertexAttribArray(attribute : Int) : Void;
 	public static function glCreateShader(shader : Int) : Int;
 	public static function glDrawArrays(type : Int, start : Int, count : Int) : Void;
-	public static function glDrawElements(mode: Int, count: Int, type: Int, offset: Int): Void;
+	public static function glDrawElements(mode: Int, count: Int, type: Int, indices: Buffer): Void;
 	public static function glUniform1i(location: Int, x: Int): Void;
 	public static function glUniform1f(location: Int, x: Single): Void;
 	public static function glUniform2f(location: Int, x: Single, y: Single): Void;
