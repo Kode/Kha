@@ -37,6 +37,7 @@ extern class GLES20 {
 	public static var GL_UNSIGNED_BYTE: Int;
 	public static var GL_FRAMEBUFFER: Int;
 	public static var GL_COLOR_ATTACHMENT0: Int;
+	public static var GL_LUMINANCE: Int;
 	
 	public static function glClear(bits: Int): Void;
 	public static function glGetError(): Int;

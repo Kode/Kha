@@ -21,6 +21,7 @@ class Image implements Canvas implements Resource {
 	private var myHeight: Int;
 	private var myRealWidth: Int;
 	private var myRealHeight: Int;
+	private var format: TextureFormat;
 	public var tex: Int = -1;
 	public var framebuffer: Int = -1;
 	
@@ -33,6 +34,7 @@ class Image implements Canvas implements Resource {
 		myHeight = height;
 		myRealWidth = upperPowerOfTwo(width);
 		myRealHeight = upperPowerOfTwo(height);
+		this.format = format;
 		tex = createTexture();
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
 		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -50,6 +52,14 @@ class Image implements Canvas implements Resource {
 		}
 		else {
 			//GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, GLES20.GL_RGBA, format == TextureFormat.RGBA128 ? GLES20.GL_FLOAT : GLES20.GL_UNSIGNED_BYTE, image);
+			switch (format) {
+			case L8:
+				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, realWidth, realHeight, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, null);
+			case RGBA32:
+				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+			case RGBA128:
+				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, GLES20.GL_FLOAT, null);
+			}
 		}
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
@@ -178,12 +188,29 @@ class Image implements Canvas implements Resource {
 		return false;
 	}
 	
+	private var bytes: Bytes = null;
+	
 	public function lock(level: Int = 0): Bytes {
-		return null;
+		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
+		return bytes;
 	}
 	
 	public function unlock(): Void {
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
+		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
 		
+		switch (format) {
+		case L8:
+			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
+		case RGBA32:
+			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
+		case RGBA128:
+			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_FLOAT, ByteBuffer.wrap(bytes.getData()));
+		}
+		
+		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+		bytes = null;
 	}
 	
 	public static var maxSize(get, null): Int;

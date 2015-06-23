@@ -59,8 +59,8 @@ class Loader extends kha.Loader {
 		done(video);
 	}
 	
-	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return null; // new Kravur(name, style, size);
+	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
+		return Kravur.get(name, style, size);
 	}
 	
 	override public function loadBlob(desc: Dynamic, done: kha.Blob->Void): Void {
