@@ -9,16 +9,6 @@ import android.view.View;
 import android.view.ViewOnTouchListener;
 import java.lang.Runnable;
 
-/*
-import android.content.Context;
-import android.opengl.GLSurfaceView;
-import android.view.SurfaceView;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-*/
-
 class OnTouchRunner implements Runnable {
 	private var renderer: KhaRenderer;
 	private var event: MotionEvent;
@@ -77,7 +67,12 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 		setEGLContextClientVersion(2);
    		setRenderer(renderer = new KhaRenderer(activity.getApplicationContext(), this));
    		setOnTouchListener(this);
-   		inputManager = cast activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+   		initInputManager(activity);
+	}
+	
+	@:functionCode('inputManager = (android.view.inputmethod.InputMethodManager)activity.getSystemService(android.content.Context.INPUT_METHOD_SERVICE);')
+	private function initInputManager(activity: KhaActivity): Void {
+		
 	}
 	
 	//unused

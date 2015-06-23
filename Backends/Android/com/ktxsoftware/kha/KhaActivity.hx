@@ -11,10 +11,7 @@ import java.lang.Runnable;
 import kha.Starter;
 
 /*
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,8 +23,6 @@ import android.opengl.GLES20;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-import android.view.Window;
-import android.view.WindowManager;
 */
 
 class OnCreateRunner implements Runnable {
