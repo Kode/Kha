@@ -48,7 +48,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, renderTarget.framebuffer);
-			GLES20.glViewport(0, 0, renderTarget.width, renderTarget.height);
+			GLES20.glViewport(0, 0, renderTarget.realWidth, renderTarget.realHeight);
 		}
 	}
 	
@@ -71,7 +71,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
-		/*var clearMask: Int = 0;
+		var clearMask: Int = 0;
 		if (color != null) {
 			clearMask |= GLES20.GL_COLOR_BUFFER_BIT;
 			GLES20.glClearColor(color.R, color.G, color.B, color.A);
@@ -83,7 +83,7 @@ class Graphics implements kha.graphics4.Graphics {
 		if (stencil != null) {
 			//clearMask |= GLES20.GL_STENCIL_BUFFER_BIT;
 		}
-		GLES20.glClear(clearMask);*/
+		GLES20.glClear(clearMask);
 	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {

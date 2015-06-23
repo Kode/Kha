@@ -51,8 +51,8 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 	}
 	
 	public function onDrawFrame(gl: GL10): Void {
-		GLES20.glClearColor(1.0, 1.0, 0.0, 1.0);
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+		//GLES20.glClearColor(1.0, 1.0, 0.0, 1.0);
+		//GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 		
 		Starter.step();
 		

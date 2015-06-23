@@ -14,7 +14,7 @@ import java.io.IOException;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
-class Image {
+class Image implements Canvas implements Resource {
 	public static var assets: AssetManager;
 	
 	private var myWidth: Int;
@@ -23,11 +23,10 @@ class Image {
 	private var myRealHeight: Int;
 	public var tex: Int = -1;
 	public var framebuffer: Int = -1;
-	//private var buffer: Buffer;
 	
-	//public function new(name: String) {
-	//	this.name = name;
-	//}
+	private var graphics1: kha.graphics1.Graphics;
+	private var graphics2: kha.graphics2.Graphics;
+	private var graphics4: kha.graphics4.Graphics;
 	
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool) {
 		myWidth = width;
@@ -93,16 +92,31 @@ class Image {
 		return new Image(width, height, format, true);
 	}
 	
+	public var g1(get, null): kha.graphics1.Graphics;
+	
+	private function get_g1(): kha.graphics1.Graphics {
+		if (graphics1 == null) {
+			graphics1 = new kha.graphics2.Graphics1(this);
+		}
+		return graphics1;
+	}
+		
 	public var g2(get, null): kha.graphics2.Graphics;
 	
 	private function get_g2(): kha.graphics2.Graphics {
-		return null;
+		if (graphics2 == null) {
+			graphics2 = new kha.graphics4.Graphics2(this);
+		}
+		return graphics2;
 	}
 	
 	public var g4(get, null): kha.graphics4.Graphics;
 	
 	private function get_g4(): kha.graphics4.Graphics {
-		return null;
+		if (graphics4 == null) {
+			graphics4 = new kha.android.Graphics(this);
+		}
+		return graphics4;
 	}
 	
 	public function unload(): Void {
@@ -130,42 +144,11 @@ class Image {
 		return textures[0];
 	}
 
-	/*public function set(stage: Int): Void {
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + stage);
-		if (tex == -1) {
-			tex = createTexture();
-			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
-			//glContext.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, getBitmap(), 0);
-			//GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, img.getBuffer());
-			//GLES20.glUniform1i(textureUniform, GLES20.GL_TEXTURE0);
-		}
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
-	}*/
-	
 	public function set(stage: Int): Void {
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + stage);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
 	}
-	
-	/*public function getBuffer() : Buffer {
-		load();
-		if (buffer == null) {
-			buffer = ByteBuffer.allocateDirect(getBitmap().getWidth() * getBitmap().getHeight() * 4);
-			getBitmap().copyPixelsToBuffer(buffer);
-		}
-		return buffer;
-	}
-	
-	public function getBitmap(): Bitmap {
-		load();
-		return b;
-	}*/
-	
+		
 	public var width(get, null): Int;
 	
 	private function get_width() : Int {

@@ -28,7 +28,7 @@ class Sys {
 		return h;
 	}
 	
-	public static var screenRotation: ScreenRotation;
+	public static var screenRotation(get, null): ScreenRotation;
 	
 	private static function get_screenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
