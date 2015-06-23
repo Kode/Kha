@@ -23,7 +23,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadImage(desc: Dynamic, done: kha.Image->Void) {
-		done(new Image(desc.file));
+		done(Image.createFromFile(desc.file));
 	}
 
 	override public function loadSound(desc: Dynamic, done: kha.Sound->Void) {

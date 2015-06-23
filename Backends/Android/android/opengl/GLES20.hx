@@ -32,6 +32,11 @@ extern class GLES20 {
 	public static var GL_LINK_STATUS: Int;
 	public static var GL_TRUE: Int;
 	public static var GL_FALSE: Int;
+	public static var GL_LINEAR: Int;
+	public static var GL_RGBA: Int;
+	public static var GL_UNSIGNED_BYTE: Int;
+	public static var GL_FRAMEBUFFER: Int;
+	public static var GL_COLOR_ATTACHMENT0: Int;
 	
 	public static function glClear(bits: Int): Void;
 	public static function glGetError(): Int;
@@ -72,4 +77,11 @@ extern class GLES20 {
 	public static function glGetShaderInfoLog(shader: Int): String;
 	public static function glGetProgramiv(program: Int, pname: Int, params: NativeArray<Int>, offset: Int): Void;
 	public static function glGetProgramInfoLog(program: Int): String;
+	public static function glBindFramebuffer(target: Int, framebuffer: Int): Void;
+	public static function glGenFramebuffers(n: Int, framebuffers: NativeArray<Int>, offset: Int): Void;
+	public static function glFramebufferTexture2D(target: Int, attachment: Int, textarget: Int, texture: Int, level: Int): Void;
+	public static function glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Buffer): Void;
+	public static function glDeleteTextures(n: Int, textures: NativeArray<Int>, offset: Int): Void;
+	public static function glDeleteFramebuffers(n: Int, framebuffers: NativeArray<Int>, offset: Int): Void;
+	public static function glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer): Void;
 }

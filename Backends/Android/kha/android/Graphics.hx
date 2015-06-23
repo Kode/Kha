@@ -43,11 +43,11 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function begin(): Void {
 		if (renderTarget == null) {
-			//Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
+			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 			GLES20.glViewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
 		}
 		else {
-			//Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, renderTarget.frameBuffer);
+			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, renderTarget.framebuffer);
 			GLES20.glViewport(0, 0, renderTarget.width, renderTarget.height);
 		}
 	}
