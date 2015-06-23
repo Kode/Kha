@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManagerLayoutParams;
 import java.lang.Object;
 import java.lang.Runnable;
+import kha.Starter;
 
 /*
 import android.app.Activity;
@@ -35,7 +36,7 @@ class OnCreateRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onCreate();
+		
 	}
 }
 
@@ -45,7 +46,7 @@ class OnStartRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onStart();
+		Starter.foreground();
 	}
 }
 
@@ -55,7 +56,7 @@ class OnPauseRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onPause();
+		Starter.pause();
 	}
 }
 
@@ -65,7 +66,7 @@ class OnResumeRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onResume();
+		Starter.resume();
 	}
 }
 
@@ -75,7 +76,7 @@ class OnStopRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onStop();
+		Starter.background();
 	}
 }
 
@@ -85,7 +86,7 @@ class OnRestartRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onRestart();
+		
 	}
 }
 
@@ -95,7 +96,7 @@ class OnDestroyRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		// KoreLib.onDestroy();
+		Starter.shutdown();
 	}
 }
 

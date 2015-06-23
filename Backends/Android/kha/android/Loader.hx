@@ -81,4 +81,12 @@ class Loader extends kha.Loader {
 		var hbytes = Bytes.ofData(array);
 		done(new kha.Blob(hbytes));
 	}
+	
+	override public function showKeyboard(): Void {
+		Starter.showKeyboard = true;
+	}
+	
+	override public function hideKeyboard(): Void {
+		Starter.showKeyboard = false;
+	}
 }
