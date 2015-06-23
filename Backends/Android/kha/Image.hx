@@ -14,24 +14,9 @@ import java.io.IOException;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
-class BitmapManager {
-	static var images : Array<Image> = new Array<Image>();
-	
-	public static function add(image : Image) {
-		images.push(image);
-	}
-	
-	public static function touch(image : Image) {
-		images.remove(image);
-		images.push(image);
-		for (i in 0...images.length - 10) images[i].unload();
-	}
-}
-
 class Image {
 	public static var assets : AssetManager;
 	private var name: String;
-	private var bitmap: WeakReference<Bitmap>;
 	private var b: Bitmap;
 	
 	public var tex: Int = -1;
@@ -39,7 +24,6 @@ class Image {
 	
 	public function new(name: String) {
 		this.name = name;
-		BitmapManager.add(this);
 	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
@@ -66,15 +50,13 @@ class Image {
 	}
 	
 	private function load(): Void {
-		if (bitmap != null && bitmap.get() != null) return;
+		if (b != null) return;
 		try {
 			b = BitmapFactory.decodeStream(assets.open(name));
-			bitmap = new WeakReference<Bitmap>(b);
 		}
 		catch (e: IOException) {
 			e.printStackTrace();
 		}
-		BitmapManager.touch(this);
 	}
 	
 	public function unload(): Void {
@@ -113,23 +95,23 @@ class Image {
 		return buffer;
 	}
 	
-	public function getBitmap() : Bitmap {
+	public function getBitmap(): Bitmap {
 		load();
-		return bitmap.get();
+		return b;
 	}
 	
 	public var width(get, null): Int;
 	
 	private function get_width() : Int {
 		load();
-		return bitmap.get().getWidth();
+		return b.getWidth();
 	}
 	
 	public var height(get, null): Int;
 
 	private function get_height() : Int {
 		load();
-		return bitmap.get().getHeight();
+		return b.getHeight();
 	}
 	
 	public var realWidth(get, null): Int;
@@ -146,7 +128,7 @@ class Image {
 
 	public function isOpaque(x : Int, y : Int) : Bool {
 		load();
-		return (bitmap.get().getPixel(x, y) >> 24) != 0;
+		return (b.getPixel(x, y) >> 24) != 0;
 	}
 	
 	public function lock(level: Int = 0): Bytes {
