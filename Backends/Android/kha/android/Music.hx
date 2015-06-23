@@ -24,9 +24,9 @@ class Music extends kha.Music {
 		}
 	}
 	
-	//override public function play() : Void {
-	//	mp.start();
-	//}
+	override public function play(loop: Bool = false) : Void {
+		mp.start();
+	}
 
 	//override public function stop() : Void {
 	//	mp.stop();
