@@ -77,70 +77,70 @@ class Graphics implements kha.graphics4.Graphics {
 			GLES20.glClearColor(color.R, color.G, color.B, color.A);
 		}
 		if (depth != null) {
-			//clearMask |= GLES20.DEPTH_BUFFER_BIT;
+			clearMask |= GLES20.GL_DEPTH_BUFFER_BIT;
 			GLES20.glClearDepthf(depth);
 		}
 		if (stencil != null) {
-			//clearMask |= GLES20.GL_STENCIL_BUFFER_BIT;
+			clearMask |= GLES20.GL_STENCIL_BUFFER_BIT;
 		}
 		GLES20.glClear(clearMask);
 	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
-		/*switch (mode) {
+		switch (mode) {
 		case Always:
-			Sys.gl.disable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.ALWAYS);
+			GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_ALWAYS);
 		case Never:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.NEVER);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_NEVER);
 		case Equal:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.EQUAL);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_EQUAL);
 		case NotEqual:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.NOTEQUAL);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_NOTEQUAL);
 		case Less:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.LESS);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_LESS);
 		case LessEqual:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.LEQUAL);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 		case Greater:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.GREATER);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_GREATER);
 		case GreaterEqual:
-			Sys.gl.enable(Sys.gl.DEPTH_TEST);
-			Sys.gl.depthFunc(Sys.gl.GEQUAL);
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+			GLES20.glDepthFunc(GLES20.GL_GEQUAL);
 		}
-		Sys.gl.depthMask(write);*/
+		GLES20.glDepthMask(write);
 	}
 	
-	/*private function getBlendFunc(op: BlendingOperation): Int {
+	private static function getBlendFunc(op: BlendingOperation): Int {
 		switch (op) {
 		case BlendZero, Undefined:
-			return Sys.gl.ZERO;
+			return GLES20.GL_ZERO;
 		case BlendOne:
-			return Sys.gl.ONE;
+			return GLES20.GL_ONE;
 		case SourceAlpha:
-			return Sys.gl.SRC_ALPHA;
+			return GLES20.GL_SRC_ALPHA;
 		case DestinationAlpha:
-			return Sys.gl.DST_ALPHA;
+			return GLES20.GL_DST_ALPHA;
 		case InverseSourceAlpha:
-			return Sys.gl.ONE_MINUS_SRC_ALPHA;
+			return GLES20.GL_ONE_MINUS_SRC_ALPHA;
 		case InverseDestinationAlpha:
-			return Sys.gl.ONE_MINUS_DST_ALPHA;
+			return GLES20.GL_ONE_MINUS_DST_ALPHA;
 		}
-	}*/
+	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		/*if (source == BlendOne && destination == BlendZero) {
-			Sys.gl.disable(Sys.gl.BLEND);
+		if (source == BlendOne && destination == BlendZero) {
+			GLES20.glDisable(GLES20.GL_BLEND);
 		}
 		else {
-			Sys.gl.enable(Sys.gl.BLEND);
-			Sys.gl.blendFunc(getBlendFunc(source), getBlendFunc(destination));
-		}*/
+			GLES20.glEnable(GLES20.GL_BLEND);
+			GLES20.glBlendFunc(getBlendFunc(source), getBlendFunc(destination));
+		}
 	}
 	
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
@@ -161,22 +161,14 @@ class Graphics implements kha.graphics4.Graphics {
 		this.indexBuffer = indexBuffer;
 	}
 	
-	//public function maxTextureSize(): Int {
-	//	return Sys.gl == null ? 8192 : Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
-	//}
-	
-	//public function supportsNonPow2Textures(): Bool {
-	//	return false;
-	//}
-	
 	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
 		return null;
 	}
 	
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
-			//GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(stage, TextureUnit).value);
-			//GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, -1);
+			GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(stage, TextureUnit).value);
+			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 		}
 		else {
 			texture.set(cast(stage, TextureUnit).value);
@@ -184,66 +176,66 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		/*Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(texunit, TextureUnit).value);
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(texunit, TextureUnit).value);
 		
 		switch (uAddressing) {
 		case Clamp:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.CLAMP_TO_EDGE);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
 		case Repeat:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.REPEAT);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
 		case Mirror:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_S, Sys.gl.MIRRORED_REPEAT);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
 		}
 		
 		switch (vAddressing) {
 		case Clamp:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.CLAMP_TO_EDGE);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 		case Repeat:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.REPEAT);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
 		case Mirror:
-			Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_WRAP_T, Sys.gl.MIRRORED_REPEAT);
+			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
 		}
 	
 		switch (minificationFilter) {
 		case PointFilter:
 			switch (mipmapFilter) {
 			case NoMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.NEAREST);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
 			case PointMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.NEAREST_MIPMAP_NEAREST);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
 			case LinearMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.NEAREST_MIPMAP_LINEAR);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_LINEAR);
 			}
 		case LinearFilter, AnisotropicFilter:
 			switch (mipmapFilter) {
 			case NoMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
 			case PointMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR_MIPMAP_NEAREST);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_NEAREST);
 			case LinearMipFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MIN_FILTER, Sys.gl.LINEAR_MIPMAP_LINEAR);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
 			}
 		}
 		
 		switch (magnificationFilter) {
 			case PointFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.NEAREST);
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 			case LinearFilter, AnisotropicFilter:
-				Sys.gl.texParameteri(Sys.gl.TEXTURE_2D, Sys.gl.TEXTURE_MAG_FILTER, Sys.gl.LINEAR);
-		}*/
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+		}
 	}
 	
 	public function setCullMode(mode: CullMode): Void {
-		/*switch (mode) {
+		switch (mode) {
 		case None:
-			Sys.gl.disable(Sys.gl.CULL_FACE);
+			GLES20.glDisable(GLES20.GL_CULL_FACE);
 		case Clockwise:
-			Sys.gl.enable(Sys.gl.CULL_FACE);
-			Sys.gl.cullFace(Sys.gl.FRONT);
+			GLES20.glEnable(GLES20.GL_CULL_FACE);
+			GLES20.glCullFace(GLES20.GL_FRONT);
 		case CounterClockwise:
-			Sys.gl.enable(Sys.gl.CULL_FACE);
-			Sys.gl.cullFace(Sys.gl.BACK);
-		}*/
+			GLES20.glEnable(GLES20.GL_CULL_FACE);
+			GLES20.glCullFace(GLES20.GL_BACK);
+		}
 	}
 
 	public function setProgram(program: kha.graphics4.Program): Void {

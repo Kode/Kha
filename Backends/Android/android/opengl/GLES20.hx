@@ -38,6 +38,30 @@ extern class GLES20 {
 	public static var GL_FRAMEBUFFER: Int;
 	public static var GL_COLOR_ATTACHMENT0: Int;
 	public static var GL_LUMINANCE: Int;
+	public static var GL_DEPTH_BUFFER_BIT: Int;
+	public static var GL_STENCIL_BUFFER_BIT: Int;
+	public static var GL_DEPTH_TEST: Int;
+	public static var GL_ALWAYS: Int;
+	public static var GL_NEVER: Int;
+	public static var GL_EQUAL: Int;
+	public static var GL_NOTEQUAL: Int;
+	public static var GL_LESS: Int;
+	public static var GL_LEQUAL: Int;
+	public static var GL_GREATER: Int;
+	public static var GL_GEQUAL: Int;
+	public static var GL_CULL_FACE: Int;
+	public static var GL_FRONT: Int;
+	public static var GL_BACK: Int;
+	public static var GL_ZERO: Int;
+	public static var GL_ONE: Int;
+	public static var GL_DST_ALPHA: Int;
+	public static var GL_ONE_MINUS_DST_ALPHA: Int;
+	public static var GL_REPEAT: Int;
+	public static var GL_MIRRORED_REPEAT: Int;
+	public static var GL_NEAREST_MIPMAP_NEAREST: Int;
+	public static var GL_NEAREST_MIPMAP_LINEAR: Int;
+	public static var GL_LINEAR_MIPMAP_NEAREST: Int;
+	public static var GL_LINEAR_MIPMAP_LINEAR: Int;
 	
 	public static function glClear(bits: Int): Void;
 	public static function glGetError(): Int;
@@ -85,4 +109,8 @@ extern class GLES20 {
 	public static function glDeleteTextures(n: Int, textures: NativeArray<Int>, offset: Int): Void;
 	public static function glDeleteFramebuffers(n: Int, framebuffers: NativeArray<Int>, offset: Int): Void;
 	public static function glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer): Void;
+	public static function glDisable(cap: Int): Void;
+	public static function glDepthFunc(func: Int): Void;
+	public static function glDepthMask(flag: Bool): Void;
+	public static function glCullFace(mode: Int): Void;
 }
