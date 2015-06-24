@@ -118,9 +118,7 @@ class Graphics {
 		return opacities[opacities.length - 1] = opacity;
 	}
 	
-	//#if graphics4
-	#if !cs
-	#if !java
+	#if sys_g4
 	private var prog: kha.graphics4.Program;
 	
 	public var program(get, set): kha.graphics4.Program;
@@ -133,7 +131,6 @@ class Graphics {
 		setProgram(program);
 		return prog = program;
 	}
-	#end
 	#end
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
@@ -148,10 +145,8 @@ class Graphics {
 		transformations.push(Matrix3.identity());
 		opacities = new Array<Float>();
 		opacities.push(1);
-		#if !cs
-		#if !java
+		#if sys_g4
 		prog = null;
-		#end
 		#end
 	}
 	
