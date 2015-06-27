@@ -9,6 +9,7 @@ import kha.graphics4.VertexStructure;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Graphics/Graphics.h>
+#include <string.h>
 ')
 
 @:headerClassCode("Kore::VertexBuffer* buffer;")
@@ -55,9 +56,7 @@ class VertexBuffer {
 	@:functionCode("
 		float* vertices = buffer->lock();
 		float* pointer = (float*)bytes->Pointer();
-		for (int i = 0; i < buffer->count() * buffer->stride() / 4; ++i) {
-			vertices[i] = pointer[i];
-		}
+        memcpy(vertices, pointer, buffer->myCount * buffer->myStride / 4);
 		buffer->unlock();
 	")
 	private function unlock2(bytes: BytesData): Void {
