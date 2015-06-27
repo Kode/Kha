@@ -185,6 +185,7 @@ class ImageShaderPainter {
 
 		g.setTexture(textureLocation, null);
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	public function setBilinearFilter(bilinear: Bool): Void {
@@ -437,6 +438,7 @@ class ColoredShaderPainter {
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	private function drawTriBuffer(rectsDone: Bool): Void {
@@ -457,6 +459,7 @@ class ColoredShaderPainter {
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
 		triangleBufferIndex = 0;
+		triangleVertices = triangleVertexBuffer.lock();
 	}
 	
 	public function fillRect(color: Color,
@@ -657,6 +660,7 @@ class TextShaderPainter {
 
 		g.setTexture(textureLocation, null);
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	public function setFont(font: Font): Void {
