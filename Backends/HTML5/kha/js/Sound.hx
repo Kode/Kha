@@ -84,15 +84,15 @@ class Sound extends kha.Sound {
 		element.load();
 	}
 	
-	override public function play(): kha.SoundChannel {
-		try {
-			element.play();
-		}
-		catch (e: Dynamic) {
-			trace(e);
-		}
-		return new SoundChannel(element);
-	}
+	//override public function play(): kha.SoundChannel {
+	//	try {
+	//		element.play();
+	//	}
+	//	catch (e: Dynamic) {
+	//		trace(e);
+	//	}
+	//	return new SoundChannel(element);
+	//}
 	
 	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {

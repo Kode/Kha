@@ -102,7 +102,7 @@ class WebAudioSound extends kha.Sound {
 		request.send(null);
 	}
 	
-	override public function play(): kha.SoundChannel {
-		return new WebAudioChannel(buffer);
-	}
+	//override public function play(): kha.SoundChannel {
+	//	return new WebAudioChannel(buffer);
+	//}
 }

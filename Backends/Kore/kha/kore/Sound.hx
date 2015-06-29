@@ -60,16 +60,16 @@ class Sound extends kha.Sound {
 		
 	}
 	
-	@:functionCode('channel->sound = sound; Kore::Mixer::play(sound);')
-	private function playInternal(channel: kha.kore.SoundChannel): Void {
-		
-	}
+	//@:functionCode('channel->sound = sound; Kore::Mixer::play(sound);')
+	//private function playInternal(channel: kha.kore.SoundChannel): Void {
+	//	
+	//}
 	
-	override public function play(): kha.SoundChannel {
-		var channel = new kha.kore.SoundChannel();
-		playInternal(channel);
-		return channel;
-	}
+	//override public function play(): kha.SoundChannel {
+	//	var channel = new kha.kore.SoundChannel();
+	//	playInternal(channel);
+	//	return channel;
+	//}
 	
 	@:functionCode("Kore::Mixer::stop(sound); delete sound; sound = nullptr;")
 	override public function unload(): Void {
