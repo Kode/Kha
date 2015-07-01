@@ -15,22 +15,26 @@ class StorageFile {
 	 *
 	 * @return		The data in blod format.
 	 */
+	 
 	public function read(): Blob { return null; }
 	/**
 	 * Write data to a file.
 	 *
 	 * @param data		The data to write.
 	 */
+
 	public function write(data: Blob): Void { }
 	/**
 	 * Append data to a file.
 	 *
 	 * @param data		The data to write.
 	 */
+
 	public function append(data: Blob): Void { }
 	/**
 	 * Returns true if we can happend data to a file.
 	 */
+
 	public function canAppend(): Bool { return false; }
 	/**
 	 * Returns the file max size.
@@ -44,7 +48,7 @@ class StorageFile {
 	 */
 	public function writeString(data: String): Void {
 		var bytes = Bytes.ofString(data);
-		//write(new Blob(bytes));
+		write(new Blob(bytes));
 	}
 	
 	/**
@@ -54,7 +58,7 @@ class StorageFile {
 	 */
 	public function appendString(data: String): Void {
 		var bytes = Bytes.ofString(data);
-		//append(new Blob(bytes));
+		append(new Blob(bytes));
 	}
 	
 	/**
