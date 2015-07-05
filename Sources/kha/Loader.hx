@@ -14,7 +14,7 @@ class Loader {
 	var loadcount: Int;
 	var numberOfFiles: Int;
 	
-	var assets: Map<String, Dynamic>;
+	var assets: Map<String, Array<Dynamic>>;
 	var rooms: Map<String, Room>;
 	/**
 	 * Some backends dont support quitting, for example if the game is embedded in a web page.
@@ -30,7 +30,7 @@ class Loader {
 		sounds = new Map<String, Sound>();
 		musics = new Map<String, Music>();
 		videos = new Map<String, Video>();
-		assets = new Map<String, Dynamic>();
+		assets = new Map<String, Array<Dynamic>>();
 		shaders = new Map<String, Blob>();
 		rooms = new Map<String, Room>();
 		enqueued = new Array<Dynamic>();
@@ -87,26 +87,31 @@ class Loader {
 	public function getAvailableBlobs(): Iterator<String> {
 		return blobs.keys();
 	}
+	
 	public inline function isBlobAvailable(name: String) { return blobs.exists(name); }
 	
 	public function getAvailableImages(): Iterator<String> {
 		return images.keys();
 	}
+	
 	public inline function isImageAvailable(name: String) { return images.exists(name); }
 	
 	public function getAvailableMusic(): Iterator<String> {
 		return musics.keys();
 	}
+	
 	public inline function isMusicAvailable(name: String) { return musics.exists(name); }
 	
 	public function getAvailableSounds(): Iterator<String> {
 		return sounds.keys();
 	}
+	
 	public inline function isSoundAvailable(name: String) { return sounds.exists(name); }
 	
 	public function getAvailableVideos(): Iterator<String> {
 		return videos.keys();
 	}
+	
 	public inline function isVideoAvailable(name: String) { return videos.exists(name); }
 	
 	private var enqueued: Array<Dynamic>;
@@ -317,14 +322,11 @@ class Loader {
 		loadRoomAssets(rooms.get(name));
 		loadFiles(call, autoCleanupAssets);
 	}
-	
-	
+		
 	public function unloadedImage(name: String) {
 		removeImage(images, name);
 	}
-	
-	
-	
+		
 	public function initProject() {
 		var project = parseProject();
 		name = project.game.name;
@@ -334,7 +336,12 @@ class Loader {
 		var assets: Dynamic = project.assets;
 		for (i in 0...assets.length) {
 			if (basePath != '.') assets[i].file = basePath + "/" + assets[i].file;
-			this.assets.set(assets[i].name, assets[i]);
+			if (this.assets.exists(assets[i].name)) {
+				this.assets.get(assets[i].name).push(assets[i]);
+			}
+			else {
+				this.assets.set(assets[i].name, [assets[i]]);
+			}
 		}
 		
 		var rooms: Dynamic = project.rooms;
@@ -342,7 +349,10 @@ class Loader {
 			var room = new Room(rooms[i].name);
 			var roomAssets: Dynamic = rooms[i].assets;
 			for (i2 in 0...roomAssets.length) {
-				room.assets.push(this.assets.get(roomAssets[i2]));
+				var assets = this.assets.get(roomAssets[i2]);
+				for (asset in assets) {
+					room.assets.push(asset);
+				}
 			}
 			if (rooms[i].parent != null) {
 				room.parent = new Room(rooms[i].parent);
