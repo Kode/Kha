@@ -12,6 +12,8 @@ class Audio1 {
 	private static var soundChannels: Vector<SoundChannel>;
 	private static var musicChannels: Vector<MusicChannel>;
 	
+	private static var internalSoundChannels: Vector<SoundChannel>;
+	private static var internalMusicChannels: Vector<MusicChannel>;
 	private static var sampleCache1: Vector<Float>;
 	private static var sampleCache2: Vector<Float>;
 	#if cpp
@@ -25,6 +27,8 @@ class Audio1 {
 		#end
 		soundChannels = new Vector<SoundChannel>(channelCount);
 		musicChannels = new Vector<MusicChannel>(channelCount);
+		internalSoundChannels = new Vector<SoundChannel>(channelCount);
+		internalMusicChannels = new Vector<MusicChannel>(channelCount);
 		sampleCache1 = new Vector<Float>(512);
 		sampleCache2 = new Vector<Float>(512);
 		Audio.audioCallback = _mix;
@@ -38,23 +42,35 @@ class Audio1 {
 		for (i in 0...samples) {
 			sampleCache2[i] = 0;
 		}
+
 		#if cpp
 		mutex.acquire();
 		#end
-		for (channel in soundChannels) {
+		for (i in 0...channelCount) {
+			internalSoundChannels[i] = soundChannels[i];
+		}
+		for (i in 0...channelCount) {
+			internalMusicChannels[i] = musicChannels[i];
+		}
+		#if cpp
+		mutex.release();
+		#end
+
+		for (channel in internalSoundChannels) {
 			if (channel == null || channel.finished) continue;
 			channel.nextSamples(sampleCache1);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
-		for (channel in musicChannels) {
+		for (channel in internalMusicChannels) {
 			if (channel == null || channel.finished) continue;
 			channel.nextSamples(sampleCache1);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
+
 		for (i in 0...samples) {
 			buffer.data.set(buffer.writeLocation, Math.max(Math.min(sampleCache2[i], 1.0), -1.0));
 			buffer.writeLocation += 1;
@@ -62,37 +78,6 @@ class Audio1 {
 				buffer.writeLocation = 0;
 			}
 		}
-		
-		/*for (i1 in 0...samples) {
-			var value: Float = 0;
-			
-			for (i2 in 0...channelCount) {
-				if (soundChannels[i2] != null) {
-					var channel = soundChannels[i2];
-					value += channel.nextSample() * channel.volume;
-					value = Math.max(Math.min(value, 1.0), -1.0);
-					if (channel.ended()) soundChannels[i2] = null;
-				}
-			}
-			for (i2 in 0...channelCount) {
-				if (musicChannels[i2] != null) {
-					var channel = musicChannels[i2];
-					value += channel.nextSample() * channel.volume;
-					value = Math.max(Math.min(value, 1.0), -1.0);
-					if (channel.ended()) musicChannels[i2] = null;
-				}
-			}
-			
-			buffer.data.set(buffer.writeLocation, value);
-			buffer.writeLocation += 1;
-			if (buffer.writeLocation >= buffer.size) {
-				buffer.writeLocation = 0;
-			}
-		}*/
-		
-		#if cpp
-		mutex.release();
-		#end
 	}
 	
 	public static function playSound(sound: Sound): kha.audio1.SoundChannel {
