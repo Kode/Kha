@@ -2,7 +2,11 @@ package kha.network;
 
 import haxe.io.Bytes;
 
-@:include("Kore/Network/Http.h")
+@:headerCode('
+#include <Kore/pch.h>
+#include <Kore/Network/Http.h>
+')
+
 class Http {
 	@:functionCode('
 		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method);
