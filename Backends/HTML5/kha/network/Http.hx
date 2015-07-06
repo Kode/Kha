@@ -17,10 +17,11 @@ class Http {
 		}
 	}
 	
-	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, callback: Int->Int->String->Void /*error, response, body*/): Void {
+	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, contentType: String, callback: Int->Int->String->Void /*error, response, body*/): Void {
 		var req = new XMLHttpRequest("");
 		var completeUrl = secure ? "https://" : "http://" + url + ":" + port + "/" + path;
 		req.open(methodToString(method), completeUrl, true);
+		if (contentType != null) req.setRequestHeader("Content-type", contentType);
 		req.onreadystatechange = function () {
 			if (req.readyState != 4) return;
 			if (req.status != 200)  {
