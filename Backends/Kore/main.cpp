@@ -358,6 +358,9 @@ int kore(int argc, char** argv) {
 		delete string;
 	}
 
+	width = Kore::min(width, Kore::System::desktopWidth());
+	height = Kore::min(height, Kore::System::desktopHeight());
+
 	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name);
 	//Kore::Mixer::init();
 	mutex.Create();
