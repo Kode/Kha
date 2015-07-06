@@ -1,4 +1,4 @@
-package kha.networking;
+package kha.network;
 
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
