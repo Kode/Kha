@@ -6,7 +6,7 @@ package kha;
  */
 interface Resource {
 	/**
-	 * Unload the resource from memory.
+	 * Unload the resource from memory. Normally called by the Loader.
 	 */
 	function unload(): Void;
 }

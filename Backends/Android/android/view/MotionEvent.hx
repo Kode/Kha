@@ -1,10 +1,16 @@
 package android.view;
 
 extern class MotionEvent {
-	public static var ACTION_DOWN : Int;
-	public static var ACTION_MOVE : Int;
-	public static var ACTION_UP : Int;
-	public function getAction() : Int;
-	public function getX() : Int;
-	public function getY() : Int;
+	public static var ACTION_DOWN: Int;
+	public static var ACTION_MOVE: Int;
+	public static var ACTION_UP: Int;
+	public static var ACTION_POINTER_DOWN: Int;
+	public static var ACTION_POINTER_UP: Int;
+	public static var ACTION_CANCEL: Int;
+	public function getAction(): Int;
+	public function getX(pointerIndex: Int): Single;
+	public function getY(pointerIndex: Int): Single;
+	public function getPointerId(pointerIndex: Int): Int;
+	public function getActionIndex(): Int;
+	public function getActionMasked(): Int;
 }

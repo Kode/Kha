@@ -5,7 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-class Painter extends kha.Painter {
+class DeprecatedPainter extends kha.Painter {
 	var c : Canvas;
 	var paint : Paint;
 	var tx : Float;

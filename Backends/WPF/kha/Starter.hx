@@ -332,7 +332,9 @@ class Starter {
 	}
 
 	@:functionCode('
-		new System.Windows.Application().Run(mainWindow);
+		if (System.Windows.Application.Current == null) {
+			new System.Windows.Application().Run(mainWindow);
+		}
 	')
 	static function startWindow() : Void {
 		

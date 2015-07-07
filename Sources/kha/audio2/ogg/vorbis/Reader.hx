@@ -105,8 +105,8 @@ class Reader {
 		decoder.setupSampleNumber(seekBytes.bind(input), bytes.length);
         var header = decoder.header;
         var count = 0;
-		var bufferSize = 4096 * header.channel;
-		var buffer = new Vector<Float>(bufferSize);
+		var bufferSize = 4096;
+		var buffer = new Vector<Float>(bufferSize * header.channel);
         while (true) {
             var n = decoder.read(buffer, bufferSize, header.channel, header.sampleRate, useFloat);
 			for (i in 0...n * header.channel) {

@@ -2,13 +2,14 @@ package kha.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import java.lang.Exception;
 import java.lang.Throwable;
 
 class Music extends kha.Music {
-	var mp : MediaPlayer;
-	static var instance : Music;
-	
-	public function new(file : AssetFileDescriptor) {
+	private static var instance: Music;
+	private var mp: MediaPlayer;
+		
+	public function new(file: AssetFileDescriptor) {
 		super();
 		instance = this;
 		try {
@@ -16,22 +17,22 @@ class Music extends kha.Music {
 			mp.setLooping(true);
 			mp.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 			mp.prepare();
-			mp.start();
+			//mp.start();
 		}
-		catch (e : Exception) {
+		catch (e: Exception) {
 			e.printStackTrace();
 		}
 	}
 	
-	override public function play() : Void {
+	override public function play(loop: Bool = false) : Void {
 		mp.start();
 	}
 
-	override public function stop() : Void {
-		mp.stop();
-	}
+	//override public function stop() : Void {
+	//	mp.stop();
+	//}
 	
-	public static function stopit() {
+	public static function stopit(): Void {
 		if (instance != null) instance.stop();
 	}
 }

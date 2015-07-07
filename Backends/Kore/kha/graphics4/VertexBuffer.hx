@@ -17,8 +17,7 @@ class VertexBuffer {
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		init(vertexCount, structure);
-		data = new Float32Array(Std.int(stride() / 4) * count());
-		
+		data = new Float32Array(0);
 		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
 	
@@ -48,24 +47,24 @@ class VertexBuffer {
 		
 	}
 	
-	public function lock(?start: Int, ?count: Int): Float32Array {
-		return data;
-	}
-	
-	@:functionCode("
-		float* vertices = buffer->lock();
-		float* pointer = (float*)bytes->Pointer();
-		for (int i = 0; i < buffer->count() * buffer->stride() / 4; ++i) {
-			vertices[i] = pointer[i];
-		}
-		buffer->unlock();
-	")
-	private function unlock2(bytes: BytesData): Void {
+	@:functionCode('
+		int byteLength = buffer->count() * buffer->stride();
+		data->byteLength = byteLength;
+		data->bytes->length = byteLength;
+		data->bytes->b->setUnmanagedData(buffer->lock(), byteLength);
+	')
+	private function lock2(): Void {
 		
 	}
 	
+	public function lock(?start: Int, ?count: Int): Float32Array {
+		lock2();
+		return data;
+	}
+	
+	@:functionCode('buffer->unlock();')
 	public function unlock(): Void {
-		unlock2(data.getData().bytes.getData());
+		
 	}
 	
 	@:functionCode("

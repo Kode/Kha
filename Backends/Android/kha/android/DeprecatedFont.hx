@@ -4,7 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import kha.FontStyle;
 
-class Font implements kha.Font {
+class DeprecatedFont implements kha.Font {
 	public var name : String;
 	public var style : FontStyle;
 	public var size : Int;

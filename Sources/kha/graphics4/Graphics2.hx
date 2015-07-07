@@ -105,7 +105,7 @@ class ImageShaderPainter {
 		indexBuffer.unlock();
 	}
 	
-	private function setRectVertices(
+	private inline function setRectVertices(
 		bottomleftx: Float, bottomlefty: Float,
 		topleftx: Float, toplefty: Float,
 		toprightx: Float, toprighty: Float,
@@ -128,7 +128,7 @@ class ImageShaderPainter {
 		rectVertices[baseIndex + 29] = -5.0;
 	}
 	
-	private function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
+	private inline function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  3] = left;
 		rectVertices[baseIndex +  4] = bottom;
@@ -143,7 +143,7 @@ class ImageShaderPainter {
 		rectVertices[baseIndex + 31] = bottom;
 	}
 	
-	private function setRectColor(r: Float, g: Float, b: Float, a: Float): Void {
+	private inline function setRectColor(r: Float, g: Float, b: Float, a: Float): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  5] = r;
 		rectVertices[baseIndex +  6] = g;
@@ -185,6 +185,7 @@ class ImageShaderPainter {
 
 		g.setTexture(textureLocation, null);
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	public function setBilinearFilter(bilinear: Bool): Void {
@@ -192,7 +193,7 @@ class ImageShaderPainter {
 		this.bilinear = bilinear;
 	}
 	
-	public function drawImage(img: kha.Image,
+	public inline function drawImage(img: kha.Image,
 		bottomleftx: Float, bottomlefty: Float,
 		topleftx: Float, toplefty: Float,
 		toprightx: Float, toprighty: Float,
@@ -209,7 +210,7 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float,
+	public inline function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float,
 		bottomleftx: Float, bottomlefty: Float,
 		topleftx: Float, toplefty: Float,
 		toprightx: Float, toprighty: Float,
@@ -226,7 +227,7 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public function drawImageScale(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, left: Float, top: Float, right: Float, bottom: Float, opacity: Float, color: Color): Void {
+	public inline function drawImageScale(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, left: Float, top: Float, right: Float, bottom: Float, opacity: Float, color: Color): Void {
 		var tex = img;
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -437,6 +438,7 @@ class ColoredShaderPainter {
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	private function drawTriBuffer(rectsDone: Bool): Void {
@@ -457,6 +459,7 @@ class ColoredShaderPainter {
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
 		triangleBufferIndex = 0;
+		triangleVertices = triangleVertexBuffer.lock();
 	}
 	
 	public function fillRect(color: Color,
@@ -657,6 +660,7 @@ class TextShaderPainter {
 
 		g.setTexture(textureLocation, null);
 		bufferIndex = 0;
+		rectVertices = rectVertexBuffer.lock();
 	}
 	
 	public function setFont(font: Font): Void {

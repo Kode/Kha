@@ -30,28 +30,28 @@ class Music extends kha.Music {
 		stream->setLooping(loop);
 		Kore::Mixer::play(stream);
 	')*/
-	override public function play(loop: Bool = false): Void {
-		
-	}
+	//override public function play(loop: Bool = false): Void {
+	//	
+	//}
 	
 	//@:functionCode("Kore::Mixer::stop(stream);")
-	override public function stop(): Void {
-		
-	}
+	//override public function stop(): Void {
+	//	
+	//}
 	
 	//@:functionCode('return stream->position() * 1000;')
-	override public function getCurrentPos(): Int {
-		return 0;
-	}
+	//override public function getCurrentPos(): Int {
+	//	return 0;
+	//}
 	
 	//@:functionCode('return stream->length() * 1000;')
-	override public function getLength(): Int {
-		return 0;
-	}
+	//override public function getLength(): Int {
+	//	return 0;
+	//}
 	
 	//@:functionCode('return stream->volume();')
-	override public function getVolume(): Float { return 1; }
+	//override public function getVolume(): Float { return 1; }
 
 	//@:functionCode('stream->setVolume(volume);')
-	override public function setVolume(volume: Float): Void { }
+	//override public function setVolume(volume: Float): Void { }
 }

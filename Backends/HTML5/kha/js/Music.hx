@@ -37,7 +37,7 @@ class Music extends kha.Music {
 		element.load();
 	}
 	
-	override public function play(loop: Bool = false): Void {
+	/*override public function play(loop: Bool = false): Void {
 		super.play();
 		element.loop = loop;
 		element.play();
@@ -74,7 +74,7 @@ class Music extends kha.Music {
 		else {
 			return -1;
 		}
-	}
+	}*/
 	
 	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {

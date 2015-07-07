@@ -1,7 +1,7 @@
 package kha.input;
 
 import kha.Key;
-import kha.networking.Controller;
+import kha.network.Controller;
 
 @:allow(kha.Starter)
 @:expose

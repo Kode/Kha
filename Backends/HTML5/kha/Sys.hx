@@ -17,7 +17,7 @@ class Sys {
 			performance = Browser.window.performance;
 		}
 		else {
-			performance = untyped __js__("Date.now");
+			performance = untyped __js__("window.Date");
 		}
 	}
 	

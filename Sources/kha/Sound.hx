@@ -11,19 +11,7 @@ class Sound implements Resource {
 	 */
 	public var data: Vector<Float>;
 	
-	/**
-	 * Instantiate a new sound object.
-	 */
 	public function new() { }
-
-	/**
-	 * Play this sound.
-	 *
-	 * @return		Return a sound channel.
-	 */
-	public function play(): SoundChannel {
-		return null;
-	}
 
 	/**
 	 * Unload this sound resource.
