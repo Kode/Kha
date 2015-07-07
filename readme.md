@@ -113,9 +113,7 @@ git clone --recursive https://github.com/KTXSoftware/Empty.git
 If you want to update the Kha and it's submodules in your repository you can do it with just this command!
 
 <pre lang="bash">
-cd Kha
-git pull origin master
-git submodule foreach git pull origin master
+git submodule foreach --recursive git pull origin master
 </pre>
 
 
