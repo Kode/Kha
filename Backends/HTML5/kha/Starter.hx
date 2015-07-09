@@ -189,6 +189,21 @@ class Starter {
 			Scheduler.executeFrame();
 			
 			if (canvas.getContext) {
+
+				// Lookup the size the browser is displaying the canvas.
+				//TODO deal with window.devicePixelRatio ?
+				var displayWidth  = canvas.clientWidth;
+				var displayHeight = canvas.clientHeight;
+
+				// Check if the canvas is not the same size.
+				if (canvas.width  != displayWidth ||
+					canvas.height != displayHeight) {
+
+					// Make the canvas the same size
+					canvas.width  = displayWidth;
+					canvas.height = displayHeight;
+				}
+
 				Configuration.screen().render(frame);
 				if (Sys.gl != null) {
 					// Clear alpha for IE11
