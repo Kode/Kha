@@ -13,7 +13,7 @@ class Sound extends kha.Sound {
 		soundid = pool.load(file, 1);
 	}
 	
-	override public function play(): SoundChannel {
+	public function play(): SoundChannel {
 		pool.play(soundid, 1, 1, 1, 0, 1);
 		return null;
 	}
