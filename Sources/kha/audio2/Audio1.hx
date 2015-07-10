@@ -14,8 +14,8 @@ class Audio1 {
 	
 	private static var internalSoundChannels: Vector<SoundChannel>;
 	private static var internalMusicChannels: Vector<MusicChannel>;
-	private static var sampleCache1: Vector<Float>;
-	private static var sampleCache2: Vector<Float>;
+	private static var sampleCache1: Vector<FastFloat>;
+	private static var sampleCache2: Vector<FastFloat>;
 	#if cpp
 	private static var mutex: Mutex;
 	#end
@@ -29,15 +29,15 @@ class Audio1 {
 		musicChannels = new Vector<MusicChannel>(channelCount);
 		internalSoundChannels = new Vector<SoundChannel>(channelCount);
 		internalMusicChannels = new Vector<MusicChannel>(channelCount);
-		sampleCache1 = new Vector<Float>(512);
-		sampleCache2 = new Vector<Float>(512);
+		sampleCache1 = new Vector<FastFloat>(512);
+		sampleCache2 = new Vector<FastFloat>(512);
 		Audio.audioCallback = _mix;
 	}
 	
 	private static function _mix(samples: Int, buffer: Buffer): Void {
 		if (sampleCache1.length < samples) {
-			sampleCache1 = new Vector<Float>(samples);
-			sampleCache2 = new Vector<Float>(samples);
+			sampleCache1 = new Vector<FastFloat>(samples);
+			sampleCache2 = new Vector<FastFloat>(samples);
 		}
 		for (i in 0...samples) {
 			sampleCache2[i] = 0;

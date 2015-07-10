@@ -13,7 +13,7 @@ class SoundChannel {
 		myPosition = 0;
 	}
 	
-	public function nextSamples(samples: Vector<Float>, length: Int): Void {
+	public function nextSamples(samples: Vector<FastFloat>, length: Int): Void {
 		if (paused) {
 			for (i in 0...length) {
 				samples[i] = 0;
