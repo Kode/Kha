@@ -58,14 +58,14 @@ class Audio1 {
 
 		for (channel in internalSoundChannels) {
 			if (channel == null || channel.finished) continue;
-			channel.nextSamples(sampleCache1);
+			channel.nextSamples(sampleCache1, samples);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
 		for (channel in internalMusicChannels) {
 			if (channel == null || channel.finished) continue;
-			channel.nextSamples(sampleCache1);
+			channel.nextSamples(sampleCache1, samples);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}

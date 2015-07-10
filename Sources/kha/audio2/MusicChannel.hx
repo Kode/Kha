@@ -18,23 +18,23 @@ class MusicChannel {
 		reader = Reader.openFromBytes(data);
 	}
 
-	public function nextSamples(samples: Vector<Float>): Void {
+	public function nextSamples(samples: Vector<Float>, length: Int): Void {
 		if (paused) {
-			for (i in 0...samples.length) {
+			for (i in 0...length) {
 				samples[i] = 0;
 			}
 			return;
 		}
 		
-		var count = reader.read(samples, Std.int(samples.length / 2), 2, 44100, true) * 2;
-		if (count < samples.length) {
+		var count = reader.read(samples, Std.int(length / 2), 2, 44100, true) * 2;
+		if (count < length) {
 			if (loop) {
 				reader.currentMillisecond = 0;
 			}
 			else {
 				atend = true;
 			}
-			for (i in count...samples.length) {
+			for (i in count...length) {
 				samples[i] = 0;
 			}
 		}
