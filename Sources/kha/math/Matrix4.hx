@@ -115,28 +115,29 @@ class Matrix4 {
 			0,                  0,                  0,               1
 		);
 	}
-	
+
 	public static function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
-		var uh = Math.cos(fovY / 2) / Math.sin(fovY / 2);
+		var uh = 1.0 / Math.tan((fovY / 2) * (Math.PI / 180));
 		var uw = uh / aspect;
 		return new Matrix4(
 			uw, 0, 0, 0,
 			0, uh, 0, 0,
-			0, 0, (zf + zn) / (zf - zn), -((2 * zf * zn) / (zf - zn)),
-			0, 0, 1, 0
+			0, 0, (zf + zn) / (zn - zf), 2 * zf * zn / (zn - zf),
+			0, 0, -1, 0
 		);
 	}
 	
 	public static function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
 		var zaxis = at.sub(eye);
 		zaxis.normalize();
-		var xaxis = up.cross(zaxis);
+		var xaxis = zaxis.cross(up);
 		xaxis.normalize();
-		var yaxis = zaxis.cross(xaxis);
+		var yaxis = xaxis.cross(zaxis);
+
 		return new Matrix4(
 			xaxis.x, xaxis.y, xaxis.z, -xaxis.dot(eye),
 			yaxis.x, yaxis.y, yaxis.z, -yaxis.dot(eye),
-			zaxis.x, zaxis.y, zaxis.z, -zaxis.dot(eye),
+			-zaxis.x, -zaxis.y, -zaxis.z, zaxis.dot(eye),
 			0, 0, 0, 1
 		);
 	}
