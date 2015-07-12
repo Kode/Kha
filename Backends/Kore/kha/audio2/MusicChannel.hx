@@ -18,7 +18,7 @@ class MusicChannel {
 		initVorbis(data);
 	}
 	
-	@:functionCode('vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, nullptr, nullptr);')
+	@:functionCode('vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, NULL, NULL);')
 	private function initVorbis(data: Bytes): Void {
 		
 	}
@@ -67,7 +67,7 @@ class MusicChannel {
 	public var length(get, null): Int; // Miliseconds
 	
 	@:functionCode('
-		if (vorbis == nullptr) return 0;
+		if (vorbis == NULL) return 0;
 		return stb_vorbis_stream_length_in_seconds(vorbis) * 1000;
 	')
 	private function get_length(): Int {
@@ -77,7 +77,7 @@ class MusicChannel {
 	public var position(get, null): Int; // Miliseconds
 	
 	@:functionCode('
-		 if (vorbis == nullptr) return 0;
+		 if (vorbis == NULL) return 0;
 		return stb_vorbis_get_sample_offset(vorbis) / stb_vorbis_stream_length_in_samples(vorbis) * 1000;
 	')
 	private function get_position(): Int {
