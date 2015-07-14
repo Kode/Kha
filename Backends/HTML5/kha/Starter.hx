@@ -8,10 +8,12 @@ import js.html.Event;
 import js.html.EventListener;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
+import js.html.TouchEvent;
 import kha.Game;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
 import kha.Key;
@@ -38,16 +40,20 @@ class Starter {
 	private static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var surface: Surface;
 	private static var gamepad: Gamepad;
 	private static var gamepadStates: Array<GamepadStates>;
 	
 	private static var mouseX: Int;
 	private static var mouseY: Int;
+	private static var touchX: Int;
+	private static var touchY: Int;
 	
 	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
+		surface = new Surface();
 		gamepad = new Gamepad();
 		gamepadStates = new Array<GamepadStates>();
 		gamepadStates.push(new GamepadStates());
@@ -231,6 +237,9 @@ class Starter {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
+		canvas.addEventListener("touchstart", touchDown, false);
+		canvas.addEventListener("touchend", touchUp, false);
+		canvas.addEventListener("touchmove", touchMove, false);
 		
 		Browser.window.addEventListener("unload", unload);
 
@@ -298,6 +307,35 @@ class Starter {
 		setMouseXY(event);
 		Game.the.mouseMove(mouseX, mouseY);
 		mouse.sendMoveEvent(mouseX, mouseY);
+	}
+	
+	private static function setTouchXY(event: TouchEvent): Void {
+		var rect = Sys.khanvas.getBoundingClientRect();
+		var borderWidth = Sys.khanvas.clientLeft;
+		var borderHeight = Sys.khanvas.clientTop;
+		touchX = Std.int((event.touches[0].clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
+		touchY = Std.int((event.touches[0].clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
+	}
+	
+	private static function touchDown(event: TouchEvent): Void {
+		setTouchXY(event);
+		Game.the.mouseDown(touchX, touchY);
+		mouse.sendDownEvent(0, touchX, touchY);
+		surface.sendTouchStartEvent(0, touchX, touchY);
+	}
+	
+	private static function touchUp(event: TouchEvent): Void {
+		setTouchXY(event);
+		Game.the.mouseUp(touchX, touchY);
+		mouse.sendUpEvent(0, touchX, touchY);
+		surface.sendTouchEndEvent(0, touchX, touchY);
+	}
+	
+	private static function touchMove(event: TouchEvent): Void {
+		setTouchXY(event);
+		Game.the.mouseMove(touchX, touchY);
+		mouse.sendMoveEvent(touchX, touchY);
+		surface.sendMoveEvent(0, touchX, touchY);
 	}
 	
 	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
