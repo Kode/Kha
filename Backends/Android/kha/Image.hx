@@ -131,12 +131,12 @@ class Image implements Canvas implements Resource {
 	
 	public function unload(): Void {
 		if (tex >= 0) {
-			var textures = new NativeArray<Int>(0);
+			var textures = new NativeArray<Int>(1);
 			textures[0] = tex;
 			GLES20.glDeleteTextures(1, textures, 0);
 		}
 		if (framebuffer >= 0) {
-			var framebuffers = new NativeArray<Int>(0);
+			var framebuffers = new NativeArray<Int>(1);
 			framebuffers[0] = framebuffer;
 			GLES20.glDeleteFramebuffers(1, framebuffers, 0);
 		}
