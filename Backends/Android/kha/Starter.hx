@@ -92,7 +92,7 @@ class Starter {
 	
 	public static function step(): Void {
 		Scheduler.executeFrame();
-		game.render(framebuffer);
+		Configuration.screen().render(framebuffer);
 	}
 	
 	public static function touch(index: Int, x: Int, y: Int, action: Int): Void {
