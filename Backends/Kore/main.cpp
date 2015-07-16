@@ -364,8 +364,6 @@ int kore(int argc, char** argv) {
 	Kore::Application* app = new Kore::Application(argc, argv, width, height, fullscreen, name);
 	//Kore::Mixer::init();
 	mutex.Create();
-	Kore::Audio::audioCallback = mix;
-	Kore::Audio::init();
 #ifndef VR_RIFT
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 #endif
@@ -386,6 +384,8 @@ int kore(int argc, char** argv) {
 		return 1;
 	}
 
+	Kore::Audio::audioCallback = mix;
+	Kore::Audio::init();
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
 	Kore::Mouse::the()->Press = mouseDown;
