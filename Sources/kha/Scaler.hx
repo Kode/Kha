@@ -28,7 +28,7 @@ class TargetRectangle {
 }
 
 class Scaler {
-	public static function targetRect(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): TargetRectangle {
+	public static function targetRect(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): TargetRectangle {
 		var scalex: Float;
 		var scaley: Float;
 		var scalew: Float;
@@ -36,67 +36,81 @@ class Scaler {
 		var scale: Float;
 		switch (rotation) {
 		case ScreenRotation.RotationNone:
-			if (width / height > destination.width / destination.height) {
-				scale = destination.width / width;
+			if (width / height > destinationWidth / destinationHeight) {
+				scale = destinationWidth / width;
 				scalew = width * scale;
 				scaleh = height * scale;
 				scalex = 0;
-				scaley = (destination.height - scaleh) * 0.5;
+				scaley = (destinationHeight - scaleh) * 0.5;
 			}
 			else {
-				scale = destination.height / height;
+				scale = destinationHeight / height;
 				scalew = width * scale;
 				scaleh = height * scale;
-				scalex = (destination.width - scalew) * 0.5;
+				scalex = (destinationWidth - scalew) * 0.5;
 				scaley = 0;
 			}
 		case ScreenRotation.Rotation90:
-			if (width / height > destination.height / destination.width) {
-				scale = destination.height / width;
+			if (width / height > destinationHeight / destinationWidth) {
+				scale = destinationHeight / width;
 				scalew = width * scale;
 				scaleh = height * scale;
-				scalex = (destination.width - scaleh) * 0.5 + scaleh;
+				scalex = (destinationWidth - scaleh) * 0.5 + scaleh;
 				scaley = 0;
 			}
 			else {
-				scale = destination.width / height;
+				scale = destinationWidth / height;
 				scalew = width * scale;
 				scaleh = height * scale;
 				scalex = 0 + scaleh;
-				scaley = (destination.height - scalew) * 0.5;
+				scaley = (destinationHeight - scalew) * 0.5;
 			}
 		case ScreenRotation.Rotation180:
-			if (width / height > destination.width / destination.height) {
-				scale = destination.width / width;
+			if (width / height > destinationWidth / destinationHeight) {
+				scale = destinationWidth / width;
 				scalew = width * scale;
 				scaleh = height * scale;
 				scalex = 0 + scalew;
-				scaley = (destination.height - scaleh) * 0.5 + scaleh;
+				scaley = (destinationHeight - scaleh) * 0.5 + scaleh;
 			}
 			else {
-				scale = destination.height / height;
+				scale = destinationHeight / height;
 				scalew = width * scale;
 				scaleh = height * scale;
-				scalex = (destination.width - scalew) * 0.5 + scalew;
+				scalex = (destinationWidth - scalew) * 0.5 + scalew;
 				scaley = 0 + scaleh;
 			}
 		case ScreenRotation.Rotation270:
-			if (width / height > destination.height / destination.width) {
-				scale = destination.height / width;
+			if (width / height > destinationHeight / destinationWidth) {
+				scale = destinationHeight / width;
 				scalew = width * scale;
 				scaleh = height * scale;
-				scalex = (destination.width - scaleh) * 0.5;
+				scalex = (destinationWidth - scaleh) * 0.5;
 				scaley = 0 + scalew;
 			}
 			else {
-				scale = destination.width / height;
+				scale = destinationWidth / height;
 				scalew = width * scale;
 				scaleh = height * scale;
 				scalex = 0;
-				scaley = (destination.height - scalew) * 0.5 + scalew;
+				scaley = (destinationHeight - scalew) * 0.5 + scalew;
 			}
 		}
 		return new TargetRectangle(scalex, scaley, scalew, scaleh, scale, rotation);
+	}
+	
+	public static function transformXDirectly(x: Int, y: Int, sourceWidth: Int, sourceHeight: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Int {
+		var targetRect = targetRect(sourceWidth, sourceHeight, destinationWidth, destinationHeight, rotation);
+		switch (targetRect.rotation) {
+		case ScreenRotation.RotationNone:
+			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
+		case ScreenRotation.Rotation90:
+			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
+		case ScreenRotation.Rotation180:
+			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
+		case ScreenRotation.Rotation270:
+			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
+		}
 	}
 	
 	/**
@@ -109,16 +123,20 @@ class Scaler {
 	 * @param rotation			The screen rotation.
 	 */
 	public static function transformX(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
-		var targetRect = targetRect(source.width, source.height, destination, rotation);
+		return transformXDirectly(x, y, source.width, source.height, destination.width, destination.height, rotation);
+	}
+	
+	public static function transformYDirectly(x: Int, y: Int, sourceWidth: Int, sourceHeight: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Int {
+		var targetRect = targetRect(sourceWidth, sourceHeight, destinationWidth, destinationHeight, rotation);
 		switch (targetRect.rotation) {
 		case ScreenRotation.RotationNone:
-			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation90:
 			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation180:
+		case ScreenRotation.Rotation90:
 			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation270:
+		case ScreenRotation.Rotation180:
 			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
+		case ScreenRotation.Rotation270:
+			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
 		}
 	}
 
@@ -132,29 +150,19 @@ class Scaler {
 	 * @param rotation			The screen rotation.
 	 */
 	public static function transformY(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
-		var targetRect = targetRect(source.width, source.height, destination, rotation);
-		switch (targetRect.rotation) {
-		case ScreenRotation.RotationNone:
-			return Std.int((y - targetRect.y) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation90:
-			return Std.int((targetRect.x - x) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation180:
-			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
-		case ScreenRotation.Rotation270:
-			return Std.int((x - targetRect.x) / targetRect.scaleFactor);
-		}
+		return transformYDirectly(x, y, source.width, source.height, destination.width, destination.height, rotation);
 	}
 	
 	public static function scale(source: Image, destination: Canvas, rotation: ScreenRotation): Void {
 		var g = destination.g2;
-		g.transformation = getScaledTransformation(source.width, source.height, destination, rotation);
+		g.transformation = getScaledTransformation(source.width, source.height, destination.width, destination.height, rotation);
 		g.color = Color.White;
 		g.opacity = 1;
 		g.drawImage(source, 0, 0);
 	}
 	
-	public static function getScaledTransformation(width: Int, height: Int, destination: Canvas, rotation: ScreenRotation): Matrix3 {
-		var rect = targetRect(width, height, destination, rotation);
+	public static function getScaledTransformation(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Matrix3 {
+		var rect = targetRect(width, height, destinationWidth, destinationHeight, rotation);
 		var sf = rect.scaleFactor;
 		var transformation = new Matrix3(sf,  0, rect.x,
 										   0, sf, rect.y,
