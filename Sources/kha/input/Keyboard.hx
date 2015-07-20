@@ -6,7 +6,7 @@ import kha.network.Controller;
 @:allow(kha.Starter)
 @:expose
 class Keyboard
-#if js || sys_server
+#if sys_server || sys_html5
 implements Controller
 #end
 {
