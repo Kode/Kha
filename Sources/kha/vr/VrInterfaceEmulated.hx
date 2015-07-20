@@ -257,9 +257,10 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		a[base + 0] = uv.x;
 		a[base + 1] = uv.y;
 		base += 2;
-		for (i in 0...4) {
-			a[base + i] = color.get(i);
-		}
+		a[base + 0] = color.x;
+		a[base + 1] = color.y;
+		a[base + 2] = color.z;
+		a[base + 3] = color.w;
 	}
 	
 	public function new() {
