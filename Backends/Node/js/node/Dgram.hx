@@ -1,29 +1,42 @@
+/*
+ * Copyright (C)2014-2015 Haxe Foundation
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 package js.node;
 
-import haxe.io.Bytes;
-import js.node.events.EventEmitter;
-import js.support.Callback;
+import js.node.Buffer;
+import js.node.dgram.Socket;
 
-/* UDP ........................................ */
+/**
+    Datagram sockets
+**/
+@:jsRequire("dgram")
+extern class Dgram {
+    /**
+        Creates a datagram `Socket` of the specified types.
 
-/* 
-   Emits: message,listening,close
-*/
-typedef DgramSocket = { > EventEmitter,
-  function send(buf:Buffer,offset:Int,length:Int,port:Int,address:String,cb:Callback0):Void;
-  function bind(port:Int,?address:String):Void;
-  function close():Void;
-  function address():Dynamic;
-  function setBroadcast(flag:Bool):Void;
-  function setTTL(ttl:Int):Void;
-  function setMulticastTTL(ttl:Int):Void;
-  function setMulticastLoopback(flag:Bool):Void;
-  function addMembership(multicastAddress:String,?multicastInterface:String):Void;
-  function dropMembership(multicastAddress:String,?multicastInterface:String):Void;
-}
+        Takes an optional `callback` which is added as a listener for 'message' events.
 
-extern class Dgram
-implements npm.Package.Require<"dgram","*"> {
-  // Valid types: udp6, and unix_dgram.
-  public static function createSocket(type:String,cb:Callback<Bytes>):DgramSocket;
+        Call `socket.bind` if you want to receive datagrams. `socket.bind` will bind to
+        the "all interfaces" address on a random port (it does the right thing for both `udp4` and `udp6` sockets).
+        You can then retrieve the address and port with `socket.address().address` and `socket.address().port`.
+    **/
+    static function createSocket(type:SocketType, ?callback:MessageListener):Socket;
 }
