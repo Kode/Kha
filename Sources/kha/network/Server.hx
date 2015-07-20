@@ -9,15 +9,21 @@ import js.node.Dgram;
 
 class Server {
 	#if sys_server
-	private var webSocket: Dynamic;
+	private var app: Dynamic;
 	//private var udpSocket: DgramSocket;
 	private var lastId: Int = -1;
 	#end
 
 	public function new(port: Int) {
 		#if sys_server
-		var WebSocketServer = Node.require("ws").Server;
-		webSocket = untyped __js__("new WebSocketServer({ port: port })");
+		
+		var express = Node.require("express");
+		var app = express();
+		var expressWs = Node.require("express-ws")(app);
+		
+		app.use('/', untyped __js__("express.static('../html5')"));
+		
+		app.listen(port);
 		
 		//udpSocket = Dgram.createSocket("udp4", function (error: Error, bytes: Bytes) { });
 		//udpSocket.bind(port + 1);
@@ -26,7 +32,7 @@ class Server {
 	
 	public function onConnection(connection: Client->Void): Void {
 		#if sys_server
-		webSocket.on("connection", function (socket: Dynamic) {
+		app.ws('/', function (socket, req) {
 			++lastId;
 			connection(new WebSocketClient(lastId, socket));
 		});
