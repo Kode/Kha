@@ -1,0 +1,7 @@
+version: 1.0.{build}
+before_build:
+- git clone https://github.com/ktxsoftware/iojs_bin.git
+- iojs_bin/iojs.exe make.js --kha . --from Tests/Empty
+build:
+  project: build\windows-build\Empty.sln
+  verbosity: minimal
