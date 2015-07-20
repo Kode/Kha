@@ -1,64 +1,21 @@
 package kha.math;
 
 class Vector4 {
-	private var values: Array<Float>;
-	
-	public function new(x: Float = 0, y: Float = 0, z: Float = 0, w: Float = 1): Void {
-		values = new Array<Float>();
-		values.push(x);
-		values.push(y);
-		values.push(z);
-		values.push(w);
+	public inline function new(x: Float = 0, y: Float = 0, z: Float = 0, w: Float = 1): Void {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 	}
 	
-	public function get(index: Int): Float {
-		return values[index];
-	}
-	
-	public function set(index: Int, value: Float): Void {
-		values[index] = value;
-	}
-	
-	public var x(get, set): Float;
-	public var y(get, set): Float;
-	public var z(get, set): Float;
-	public var w(get, set): Float;
+	public var x: Float;
+	public var y: Float;
+	public var z: Float;
+	public var w: Float;
 	public var length(get, set): Float;
 	
-	public function get_x(): Float {
-		return values[0];
-	}
-	
-	public function set_x(value: Float): Float {
-		return values[0] = value;
-	}
-	
-	public function get_y(): Float {
-		return values[1];
-	}
-	
-	public function set_y(value: Float): Float {
-		return values[1] = value;
-	}
-	
-	public function get_z(): Float {
-		return values[2];
-	}
-	
-	public function set_z(value: Float): Float {
-		return values[2] = value;
-	}
-	
-	public function get_w(): Float {
-		return values[3];
-	}
-	
-	public function set_w(value: Float): Float {
-		return values[3] = value;
-	}
-	
 	private function get_length(): Float {
-		return Math.sqrt(x * x + y * y + z * z);
+		return Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 	
 	private function set_length(length: Float): Float {
@@ -67,18 +24,27 @@ class Vector4 {
 		x *= mul;
 		y *= mul;
 		z *= mul;
+		w *= mul;
 		return length;
 	}
 	
-	public function add(vec: Vector4): Vector4 {
-		return new Vector4(x + vec.x, y + vec.y, z + vec.z);
+	@:extern public inline function add(vec: Vector4): Vector4 {
+		return new Vector4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
 	
-	public function sub(vec: Vector4): Vector4 {
-		return new Vector4(x - vec.x, y - vec.y, z - vec.z);
+	@:extern public inline function sub(vec: Vector4): Vector4 {
+		return new Vector4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 	
-	public function mult(value: Float): Vector4 {
-		return new Vector4(x * value, y * value, z * value);
+	@:extern public inline function mult(value: Float): Vector4 {
+		return new Vector4(x * value, y * value, z * value, w * value);
+	}
+	
+	@:extern public inline function normalize(): Void {
+		var l = 1 / length;
+		x *= l;
+		y *= l;
+		z *= l;
+		w *= l;
 	}
 }

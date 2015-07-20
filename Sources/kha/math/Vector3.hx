@@ -1,7 +1,7 @@
 package kha.math;
 
 class Vector3 {
-	public function new(x: Float = 0, y: Float = 0, z: Float = 0): Void {
+	public inline function new(x: Float = 0, y: Float = 0, z: Float = 0): Void {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -25,30 +25,30 @@ class Vector3 {
 		return length;
 	}
 	
-	public function add(vec: Vector3): Vector3 {
+	@:extern public inline function add(vec: Vector3): Vector3 {
 		return new Vector3(x + vec.x, y + vec.y, z + vec.z);
 	}
 	
-	public function sub(vec: Vector3): Vector3 {
+	@:extern public inline function sub(vec: Vector3): Vector3 {
 		return new Vector3(x - vec.x, y - vec.y, z - vec.z);
 	}
 	
-	public function mult(value: Float): Vector3 {
+	@:extern public inline function mult(value: Float): Vector3 {
 		return new Vector3(x * value, y * value, z * value);
 	}
 	
-	public function dot(v: Vector3): Float {
+	@:extern public inline function dot(v: Vector3): Float {
 		return x * v.x + y * v.y + z * v.z;
 	}
 	
-	public function cross(v: Vector3): Vector3 {
+	@:extern public inline function cross(v: Vector3): Vector3 {
 		var _x = y * v.z - z * v.y;
 		var _y = z * v.x - x * v.z;
 		var _z = x * v.y - y * v.x;
 		return new Vector3(_x, _y, _z);
 	}
 	
-	public function normalize(): Void {
+	@:extern public inline function normalize(): Void {
 		var l = 1 / length;
 		x *= l;
 		y *= l;

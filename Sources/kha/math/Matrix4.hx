@@ -19,7 +19,7 @@ class Matrix4 {
 		this._03 = _03; this._13 = _13; this._23 = _23; this._33 = _33;
 	}
 		
-	public static inline function translation(x: Float, y: Float, z: Float): Matrix4 {
+	@:extern public static inline function translation(x: Float, y: Float, z: Float): Matrix4 {
 		return new Matrix4(
 			1, 0, 0, x,
 			0, 1, 0, y,
@@ -28,7 +28,7 @@ class Matrix4 {
 		);
 	}
 	
-	public static inline function empty(): Matrix4 {
+	@:extern public static inline function empty(): Matrix4 {
 		return new Matrix4(
 			0, 0, 0, 0,
 			0, 0, 0, 0,
@@ -37,7 +37,7 @@ class Matrix4 {
 		);
 	}
 
-	public static inline function identity(): Matrix4 {
+	@:extern public static inline function identity(): Matrix4 {
 		return new Matrix4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
@@ -46,7 +46,7 @@ class Matrix4 {
 		);
 	}
 
-	public static inline function scale(x: Float, y: Float, z: Float): Matrix4 {
+	@:extern public static inline function scale(x: Float, y: Float, z: Float): Matrix4 {
 		return new Matrix4(
 			x, 0, 0, 0,
 			0, y, 0, 0,
@@ -55,7 +55,7 @@ class Matrix4 {
 		);
 	}
 
-	public static inline function rotationX(alpha: Float): Matrix4 {
+	@:extern public static inline function rotationX(alpha: Float): Matrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new Matrix4(
@@ -66,7 +66,7 @@ class Matrix4 {
 		);
 	}
 
-	public static inline function rotationY(alpha: Float): Matrix4 {
+	@:extern public static inline function rotationY(alpha: Float): Matrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new Matrix4(
@@ -77,7 +77,7 @@ class Matrix4 {
 		);
 	}
 
-	public static inline function rotationZ(alpha: Float): Matrix4 {
+	@:extern public static inline function rotationZ(alpha: Float): Matrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new Matrix4(
@@ -88,7 +88,7 @@ class Matrix4 {
 		);
 	}
 	
-	public static inline function rotation(yaw: Float, pitch: Float, roll: Float): Matrix4 {
+	@:extern public static inline function rotation(yaw: Float, pitch: Float, roll: Float): Matrix4 {
 		var sy = Math.sin(yaw);
 		var cy = Math.cos(yaw);
 		var sx = Math.sin(pitch);
@@ -142,7 +142,7 @@ class Matrix4 {
 		);
 	}
 	
-	public function add(m: Matrix4): Matrix4 {
+	@:extern public inline function add(m: Matrix4): Matrix4 {
 		return new Matrix4(
 			_00 + m._00, _10 + m._10, _20 + m._20, _30 + m._30,
 			_01 + m._01, _11 + m._11, _21 + m._21, _31 + m._31,
@@ -151,7 +151,7 @@ class Matrix4 {
 		);
 	}
 
-	public function sub(m: Matrix4): Matrix4 {
+	@:extern public inline function sub(m: Matrix4): Matrix4 {
 		return new Matrix4(
 			_00 - m._00, _10 - m._10, _20 - m._20, _30 - m._30,
 			_01 - m._01, _11 - m._11, _21 - m._21, _31 - m._31,
@@ -160,7 +160,7 @@ class Matrix4 {
 		);
 	}
 
-	public function mult(value: Float): Matrix4 {
+	@:extern public inline function mult(value: Float): Matrix4 {
 		return new Matrix4(
 			_00 * value, _10 * value, _20 * value, _30 * value,
 			_01 * value, _11 * value, _21 * value, _31 * value,
@@ -169,7 +169,7 @@ class Matrix4 {
 		);
 	}
 	
-	public function transpose(): Matrix4 {
+	@:extern public inline function transpose(): Matrix4 {
 		return new Matrix4(
 			_00, _01, _02, _03,
 			_10, _11, _12, _13,
@@ -178,7 +178,7 @@ class Matrix4 {
 		);
 	}
 
-	public function transpose3x3(): Matrix4 {
+	@:extern public inline function transpose3x3(): Matrix4 {
 		return new Matrix4(
 			_00, _01, _02, _30,
 			_10, _11, _12, _31,
@@ -187,11 +187,11 @@ class Matrix4 {
 		);
 	}
 	
-	public function trace(): Float {
+	@:extern public inline function trace(): Float {
 		return _00 + _11 + _22 + _33;
 	}
 	
-	public inline function multmat(m: Matrix4): Matrix4 {
+	@:extern public inline function multmat(m: Matrix4): Matrix4 {
 		return new Matrix4(
 			_00 * m._00 + _10 * m._01 + _20 * m._02 + _30 * m._03, _00 * m._10 + _10 * m._11 + _20 * m._12 + _30 * m._13, _00 * m._20 + _10 * m._21 + _20 * m._22 + _30 * m._23, _00 * m._30 + _10 * m._31 + _20 * m._32 + _30 * m._33,
 			_01 * m._00 + _11 * m._01 + _21 * m._02 + _31 * m._03, _01 * m._10 + _11 * m._11 + _21 * m._12 + _31 * m._13, _01 * m._20 + _11 * m._21 + _21 * m._22 + _31 * m._23, _01 * m._30 + _11 * m._31 + _21 * m._32 + _31 * m._33,
@@ -200,7 +200,7 @@ class Matrix4 {
 		);
 	}
 	
-	public inline function multvec(value: Vector4): Vector4 {
+	@:extern public inline function multvec(value: Vector4): Vector4 {
 		var product = new Vector4();
 		product.x = _00 * value.x + _10 * value.y + _20 * value.z + _30 * value.w;
 		product.y = _01 * value.x + _11 * value.y + _21 * value.z + _31 * value.w;
@@ -209,7 +209,7 @@ class Matrix4 {
 		return product;
 	}
 
-	public inline function determinant(): Float {
+	@:extern public inline function determinant(): Float {
 		return _00 * (
 			  _11 * (_22 * _33 - _32 * _23)
 			+ _21 * (_32 * _13 - _12 * _33)
