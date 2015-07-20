@@ -4,5 +4,5 @@ compiler:
   - gcc
   - clang
 before_script:
-  - git clone https://github.com/ktxsoftware/koremake.git
-script: node make.js --kha . --from Tests/Empty --compile
+  - git clone https://github.com/ktxsoftware/iojs_bin.git
+script: iojs_bin/iojs-linux64 make.js --kha . --from Tests/Empty --compile
