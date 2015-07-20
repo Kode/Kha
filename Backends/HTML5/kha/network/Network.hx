@@ -1,4 +1,4 @@
-package kha.networking;
+package kha.network;
 
 import haxe.io.Bytes;
 import js.html.BinaryType;

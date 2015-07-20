@@ -7,8 +7,7 @@ class ControllerBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
-		#if js
-		#if !node
+		#if !sys_server
 		{
 			var funcindex = 0;
 			for (field in fields) {
@@ -45,7 +44,7 @@ class ControllerBuilder {
 					
 					var expr = macro @:mergeBlock {
 						var bytes = haxe.io.Bytes.alloc($v { size } );
-						bytes.set(0, kha.networking.Session.CONTROLLER_UPDATES);
+						bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 						bytes.setInt32(1, _id());
 						bytes.setDouble(5, Scheduler.realTime());
 						bytes.setInt32(13, $v { funcindex } );
@@ -97,7 +96,7 @@ class ControllerBuilder {
 					var original = f.expr;
 					expr = macro {
 						$expr;
-						kha.networking.Session.the().network.send(bytes, false);
+						kha.network.Session.the().network.send(bytes, false);
 						$original;
 					};
 					f.expr = expr;
@@ -260,7 +259,6 @@ class ControllerBuilder {
 			kind: FVar(macro: Int, macro 0),
 			pos: Context.currentPos()
 		});
-		#end
 		
 		return fields;
 	}

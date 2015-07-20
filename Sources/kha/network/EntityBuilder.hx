@@ -11,7 +11,7 @@ class EntityBuilder {
 		var isBaseEntity = false;
 		for (i in Context.getLocalClass().get().interfaces) {
 			var intf = i.t.get();
-			if (intf.module == "kha.networking.Entity") {
+			if (intf.module == "kha.network.Entity") {
 				isBaseEntity = true;
 				break;
 			}
@@ -39,7 +39,7 @@ class EntityBuilder {
 		for (field in fields) {
 			var replicated = false;
 			for (meta in field.meta) {
-				if (meta.name == "replicated") {
+				if (meta.name == "replicate" || meta.name == "replicated") {
 					replicated = true;
 					break;
 				}

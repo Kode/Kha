@@ -1,11 +1,11 @@
 package kha.network;
 
 import haxe.io.Bytes;
-#if js
 #if sys_server
 import js.node.Http;
 import js.Node;
 #end
+#if js
 import js.Browser;
 import js.html.BinaryType;
 import js.html.WebSocket;
@@ -22,7 +22,6 @@ class State {
 }
 
 class Session {
-	#if js
 	public static inline var START = 0;
 	public static inline var ENTITY_UPDATES = 1;
 	public static inline var CONTROLLER_UPDATES = 2;
@@ -194,7 +193,7 @@ class Session {
 	}
 	
 	public function update(): Void {
-		#if node
+		#if sys_server
 		for (client in clients) {
 			client.send(send(), false);
 		}
@@ -202,5 +201,4 @@ class Session {
 		//network.send(send(), false);
 		#end
 	}
-	#end
 }

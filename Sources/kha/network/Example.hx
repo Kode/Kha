@@ -1,4 +1,4 @@
-package kha.networking;
+package kha.network;
 
 class Example implements Entity {
 	@replicated
