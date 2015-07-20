@@ -1,4 +1,8 @@
 sudo: false
+addons:
+  apt:
+    packages:
+    - libasound2-dev
 language: cpp
 compiler:
   - gcc
