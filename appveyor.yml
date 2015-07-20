@@ -1,5 +1,6 @@
 version: 1.0.{build}
 before_build:
+- git submodule update --init --recursive
 - git clone https://github.com/ktxsoftware/iojs_bin.git
 - iojs_bin\iojs.exe make.js --kha . --from Tests/Empty
 build:
