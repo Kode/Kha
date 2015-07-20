@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/KTXSoftware/Kha.png?label=ready&title=Ready)](https://waffle.io/KTXSoftware/Kha)
+[![Build Status](https://travis-ci.org/KTXSoftware/Kha.svg?branch=master)](https://travis-ci.org/KTXSoftware/Kha) [![Build status](https://ci.appveyor.com/api/projects/status/qk7bx2l38ch2t1pr?svg=true)](https://ci.appveyor.com/project/RobDangerous/kha) [![Stories in Ready](https://badge.waffle.io/KTXSoftware/Kha.png?label=ready&title=Ready)](https://waffle.io/KTXSoftware/Kha)
 ##Kha
 
 Kha is a low level SDK for building games and media applications in a portable way, based on Haxe and GLSL.
