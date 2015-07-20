@@ -1,8 +1,8 @@
-package kha.networking;
+package kha.network;
 
 import haxe.io.Bytes;
 
-@:autoBuild(kha.networking.EntityBuilder.build())
+@:autoBuild(kha.network.EntityBuilder.build())
 interface Entity {
 	function _id(): Int;
 	function _size(): Int;

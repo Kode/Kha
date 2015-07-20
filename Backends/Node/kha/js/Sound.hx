@@ -30,9 +30,4 @@ class Sound extends kha.Sound {
 	public function new() {
 		super();
 	}
-	
-	override public function play(): kha.SoundChannel {
-		return new SoundChannel();
-	}
 }
-

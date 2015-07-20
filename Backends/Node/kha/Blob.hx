@@ -1,13 +1,23 @@
 package kha;
 
+import haxe.io.Bytes;
 import js.node.Buffer;
 
 class Blob implements Resource {
 	private var buffer: Buffer;
 	
-	public function new(buffer: Buffer) {
-		this.buffer = buffer;
+	public function new(bytes: Bytes) {
+		buffer = new Buffer(bytes.length);
+		for (i in 0...bytes.length) {
+			buffer.writeUInt8(bytes.get(i), i);
+		}
 		position = 0;
+	}
+	
+	public static function fromBuffer(buffer: Buffer): Blob {
+		var blob = new Blob(null);
+		blob.buffer = buffer;
+		return blob;
 	}
 	
 	public function length() {

@@ -45,4 +45,8 @@ class Sys {
 	public static function refreshRate(): Int {
 		return 60;
 	}
+	
+	public static function systemId(): String {
+		return "nodejs";
+	}
 }

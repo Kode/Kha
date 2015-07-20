@@ -38,6 +38,10 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 	
+	public function flush(): Void {
+		
+	}
+	
 	public function vsynced(): Bool {
 		return true;
 	}

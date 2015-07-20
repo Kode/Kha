@@ -1,48 +1,47 @@
-package kha.networking;
+package kha.network;
 
 import haxe.io.Bytes;
-#if node
+#if sys_server
 import js.Node;
 import js.node.Buffer;
 import js.node.Dgram;
-import js.support.Error;
 #end
 
 class Server {
-	#if node
+	#if sys_server
 	private var webSocket: Dynamic;
-	private var udpSocket: DgramSocket;
+	//private var udpSocket: DgramSocket;
 	private var lastId: Int = -1;
 	#end
 
 	public function new(port: Int) {
-		#if node
+		#if sys_server
 		var WebSocketServer = Node.require("ws").Server;
 		webSocket = untyped __js__("new WebSocketServer({ port: port })");
 		
-		udpSocket = Dgram.createSocket("udp4", function (error: Error, bytes: Bytes) { });
-		udpSocket.bind(port + 1);
+		//udpSocket = Dgram.createSocket("udp4", function (error: Error, bytes: Bytes) { });
+		//udpSocket.bind(port + 1);
 		#end
 	}
 	
 	public function onConnection(connection: Client->Void): Void {
-		#if node
+		#if sys_server
 		webSocket.on("connection", function (socket: Dynamic) {
 			++lastId;
 			connection(new WebSocketClient(lastId, socket));
 		});
 		
-		udpSocket.on('message', function(message: Buffer, info) {
-			if (compare(message, "JOIN")) {
-				++lastId;
-				connection(new UdpClient(lastId, udpSocket, info.address, info.port));
-			}
-			//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
-		});
+		//udpSocket.on('message', function(message: Buffer, info) {
+		//	if (compare(message, "JOIN")) {
+		//		++lastId;
+		//		connection(new UdpClient(lastId, udpSocket, info.address, info.port));
+		//	}
+		//	//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
+		//});
 		#end
 	}
 	
-	#if node
+	#if sys_server
 	private static function compare(buffer: Buffer, message: String): Bool {
 		if (buffer.length != message.length) return false;
 		for (i in 0...buffer.length) {

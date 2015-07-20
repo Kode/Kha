@@ -2,12 +2,12 @@ package kha.js;
 
 import js.Boot;
 import js.Browser;
+import js.Error;
 import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
 import js.Node;
 import js.node.Buffer;
 import js.node.Fs;
-import js.support.Error;
 import kha.FontStyle;
 import kha.Blob;
 import kha.Image;
@@ -49,7 +49,7 @@ class Loader extends kha.Loader {
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
 		Fs.readFile(desc.file, function (error: Error, data: Buffer) {
-			done(new Blob(data));
+			done(Blob.fromBuffer(data));
 		});
 	}
 	

@@ -12,13 +12,15 @@ interface Graphics {
 	 * You MUST call this.
 	 */
 	public function begin(): Void;
+	
 	/**
 	 * Terminate all graphical operations and apply them.
 	 * You MUST call this at the end.
 	 */
 	public function end(): Void;
+	
 	/**
-	 * Set the pixel color in a specific position.
+	 * Set the pixel color at a specific position.
 	 */
 	public function setPixel(x: Int, y: Int, color: Color): Void;
 }

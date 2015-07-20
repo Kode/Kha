@@ -3,18 +3,21 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.js.EmptyGraphics1;
 import kha.js.EmptyGraphics2;
 import kha.js.EmptyGraphics4;
 
 class Image implements Canvas implements Resource {
 	private var w: Int;
 	private var h: Int;
+	private var graphics1: EmptyGraphics1;
 	private var graphics2: EmptyGraphics2;
 	private var graphics4: EmptyGraphics4;
 	
 	public function new(width: Int, height: Int) {
 		w = width;
 		h = height;
+		graphics1 = new EmptyGraphics1(w, h);
 		graphics2 = new EmptyGraphics2(w, h);
 		graphics4 = new EmptyGraphics4(w, h);
 	}
@@ -51,8 +54,13 @@ class Image implements Canvas implements Resource {
 	private function get_realWidth(): Int { return w; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return h; }
+	
+	public var g1(get, null): kha.graphics1.Graphics;
+	private function get_g1(): kha.graphics1.Graphics { return graphics1; }
+	
 	public var g2(get, null): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return graphics2; }
+	
 	public var g4(get, null): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics { return graphics4; }
 }

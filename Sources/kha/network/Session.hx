@@ -1,8 +1,8 @@
-package kha.networking;
+package kha.network;
 
 import haxe.io.Bytes;
 #if js
-#if node
+#if sys_server
 import js.node.Http;
 import js.Node;
 #end
@@ -32,7 +32,7 @@ class Session {
 	private var controllers: Map<Int, Controller> = new Map();
 	private var players: Int;
 	private var startCallback: Void->Void;
-	#if node
+	#if sys_server
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
 	private var current: Client;
@@ -46,7 +46,7 @@ class Session {
 	public var me(get, null): Client;
 	
 	private function get_me(): Client {
-		#if node
+		#if sys_server
 		return current;
 		#else
 		return localClient;
@@ -71,7 +71,7 @@ class Session {
 	}
 	
 	private function send(): Bytes {
-		#if node
+		#if sys_server
 		var size = 0;
 		for (entity in entities) {
 			size += entity._size();
@@ -112,7 +112,7 @@ class Session {
 	}
 	
 	public function receive(bytes: Bytes): Void {
-		#if node
+		#if sys_server
 		switch (bytes.get(0)) {
 		case CONTROLLER_UPDATES:
 			var id = bytes.getInt32(1);
@@ -155,7 +155,7 @@ class Session {
 	
 	public function waitForStart(callback: Void->Void): Void {
 		startCallback = callback;
-		#if node
+		#if sys_server
 		server = new Server(6789);
 		server.onConnection(function (client: Client) {
 			clients.push(client);
