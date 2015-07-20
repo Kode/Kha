@@ -5,7 +5,11 @@ import kha.network.Controller;
 
 @:allow(kha.Starter)
 @:expose
-class Keyboard implements Controller {
+class Keyboard
+#if js || sys_server
+implements Controller
+#end
+{
 	public static function get(num: Int = 0): Keyboard {
 		if (num != 0) return null;
 		return instance;
@@ -33,7 +37,7 @@ class Keyboard implements Controller {
 	
 	@input
 	private function sendDownEvent(key: Key, char: String): Void {
-		#if node
+		#if sys_server
 		js.Node.console.log("Down: " + key + " from " + kha.networking.Session.the().me.id);
 		#end
 		for (listener in downListeners) {
@@ -43,7 +47,7 @@ class Keyboard implements Controller {
 	
 	@input
 	private function sendUpEvent(key: Key, char: String): Void {
-		#if node
+		#if sys_server
 		js.Node.console.log("Up: " + key + " from " + kha.networking.Session.the().me.id);
 		#end
 		for (listener in upListeners) {
