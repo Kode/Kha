@@ -18,8 +18,8 @@ class Server {
 		#if sys_server
 		
 		var express = Node.require("express");
-		var app = express();
-		var expressWs = Node.require("express-ws")(app);
+		app = express();
+		Node.require("express-ws")(app);
 		
 		app.use('/', untyped __js__("express.static('../html5')"));
 		
