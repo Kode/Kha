@@ -7,7 +7,9 @@ class ControllerBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
-		#if !sys_server
+		// macros failing everywhere but in JavaScript?
+		#if (!sys_server && sys_html5)
+		
 		{
 			var funcindex = 0;
 			for (field in fields) {
@@ -105,7 +107,11 @@ class ControllerBuilder {
 				++funcindex;
 			}
 		}
+		
 		#end
+		
+		// macros failing everywhere but in JavaScript?
+		#if (sys_server || sys_html5)
 		
 		var receive = macro @:mergeBlock {
 			var funcindex = bytes.getInt32(offset + 0);
@@ -236,6 +242,33 @@ class ControllerBuilder {
 			}),
 			pos: Context.currentPos()
 		});
+		
+		#else
+		
+		fields.push({
+			name: "_receive",
+			doc: null,
+			meta: [],
+			access: [APublic],
+			kind: FFun({
+				ret: null,
+				params: null,
+				expr: macro {},
+				args: [{
+					value: null,
+					type: Context.toComplexType(Context.getType("Int")),
+					opt: null,
+					name: "offset" },
+					{
+					value: null,
+					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+					opt: null,
+					name: "bytes"}]
+			}),
+			pos: Context.currentPos()
+		});
+		
+		#end
 		
 		fields.push({
 			name: "_id",
