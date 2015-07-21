@@ -50,10 +50,15 @@ class Starter {
 		
 		gameToStart.loadFinished();
 		
+		var lastTime = 0;
 		Node.setInterval(function () {
 			Scheduler.executeFrame();
 			Session.the().update();
-			Node.console.log("" + Scheduler.time());
+			var time = Scheduler.time();
+			if (time >= lastTime + 10) {
+				lastTime += 10;
+				Node.console.log(lastTime + " seconds.");
+			}
 		}, 100);
 	}
 }
