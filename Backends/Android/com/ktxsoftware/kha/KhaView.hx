@@ -12,18 +12,21 @@ import java.lang.Runnable;
 class OnTouchRunner implements Runnable {
 	private var renderer: KhaRenderer;
 	private var event: MotionEvent;
-	private var index: Int;
+	private var id: Int;
+	private var x: Single;
+	private var y: Single;
 	private var action: Int;
 	
-	public function new(renderer: KhaRenderer, event: MotionEvent, index: Int, action: Int) {
+	public function new(renderer: KhaRenderer, id: Int, x: Single, y: Single, action: Int) {
 		this.renderer = renderer;
-		this.event = event;
-		this.index = index;
+		this.id = id;
+		this.x = x;
+		this.y = y;
 		this.action = action;
 	}
 	
 	public function run(): Void {
-		renderer.touch(event.getPointerId(index), Math.round(event.getX(index)), Math.round(event.getY(index)), action);
+		renderer.touch(id, Math.round(x), Math.round(y), action);
 	}
 }
 
@@ -99,7 +102,7 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 		action = (action == -1 && maskedAction == MotionEvent.ACTION_MOVE) ? ACTION_MOVE : action;
 		action = (action == -1 && (maskedAction == MotionEvent.ACTION_UP || maskedAction == MotionEvent.ACTION_POINTER_UP || maskedAction == MotionEvent.ACTION_CANCEL))
 				? ACTION_UP : action;
-		queueEvent(new OnTouchRunner(renderer, event, index, action));
+		queueEvent(new OnTouchRunner(renderer, event.getPointerId(index), event.getX(index), event.getY(index), action));
 		return true;
 	}
 	
