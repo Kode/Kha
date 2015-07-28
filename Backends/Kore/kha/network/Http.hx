@@ -7,12 +7,24 @@ import haxe.io.Bytes;
 #include <Kore/Network/Http.h>
 ')
 
+@:headerClassCode('
+	static void internalCallback(int error, int response, const char* body, void* data) {
+		int callbackindex = (int)(Kore::spint)data;
+		internalCallback2(error, response, callbackindex);
+	}
+')
 class Http {
+	private static var callbacks: Array<Int->Int->String->Void>;
+
 	@:functionCode('
-		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method);
+		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method, internalCallback, (void*)callbackindex);
 	')
-	private static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, callback: Int->Int->String->Void /*error, response, body*/): Void {
-		
+	private static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, callbackindex: Int): Void {
+
+	}
+
+	private static function internalCallback2(error: Int, response: Int, callbackindex: Int): Void {
+		callbacks[callbackindex](error, response, null);
 	}
 	
 	private static function convertMethod(method: HttpMethod): Int {
@@ -31,6 +43,11 @@ class Http {
 	}
 	
 	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, contentType: String, callback: Int->Int->String->Void /*error, response, body*/): Void {
-		request2(url, path, data, port, secure, convertMethod(method), callback);
+		if (callbacks == null) {
+			callbacks = new Array<Int->Int->String->Void>();
+		}
+		var index = callbacks.length;
+		callbacks.push(callback);
+		request2(url, path, data, port, secure, convertMethod(method), index);
 	}
 }
