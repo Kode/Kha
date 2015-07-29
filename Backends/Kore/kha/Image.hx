@@ -151,6 +151,15 @@ class Image implements Canvas implements Resource {
 	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
 	}
+
+	@:functionCode('return texture->at(x, y);')
+	private function atInternal(x: Int, y: Int): Int {
+		return 0;
+	} 
+
+	public inline function at(x: Int, y: Int): Color {
+		return Color.fromValue(atInternal(x, y));
+	}
 	
 	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr;")
 	public function unload(): Void {
