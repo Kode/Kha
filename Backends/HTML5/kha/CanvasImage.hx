@@ -91,6 +91,14 @@ class CanvasImage extends Image {
 		return (data.data[y * Std.int(image.width) * 4 + x * 4 + 3] != 0);
 	}
 	
+	override public function at(x: Int, y: Int): Color {
+		if (data == null) {
+			if (context == null) return Color.Black;
+			else createImageData();
+		}
+		return Color.fromValue(data.data[y * Std.int(image.width) * 4 + x * 4 + 0]);
+	}
+	
 	function createImageData() {
 		context.strokeStyle = "rgba(0,0,0,0)";
 		context.fillStyle = "rgba(0,0,0,0)";

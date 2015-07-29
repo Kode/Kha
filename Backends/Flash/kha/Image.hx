@@ -138,6 +138,10 @@ class Image implements Canvas implements Resource {
 		return true;
 	}
 	
+	public inline function at(x: Int, y: Int): Color {
+		return Color.fromValue(data.getPixel32(x, y));
+	}
+	
 	public function getFlashTexture(): Texture {
 		return tex;
 	}
