@@ -97,8 +97,10 @@ class ControllerBuilder {
 					}
 					var original = f.expr;
 					expr = macro {
-						$expr;
-						kha.network.Session.the().network.send(bytes, false);
+						if (kha.network.Session.the() != null) {
+							$expr;
+							kha.network.Session.the().network.send(bytes, false);
+						}
 						$original;
 					};
 					f.expr = expr;
