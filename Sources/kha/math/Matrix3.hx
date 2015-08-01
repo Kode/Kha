@@ -121,23 +121,42 @@ class Matrix3 {
 		return new Vector2(x, y);
 	}
 
-	@:extern public inline function determinant(): Float
-	{
-		return
-		    _00 * ( _11 * _22 - _21 * _12 )
-		  - _10 * ( _01 * _22 - _21 * _02 )
-		  + _20 * ( _01 * _12 - _11 * _02 );
-	}
+    @:extern public inline function cofactor(m0:Float, m1:Float, m2:Float, m3:Float): Float
+    {
+        return m0 * m3 - m1 * m2;
+    }
 
-	@:extern public inline function inverse(): Matrix3
-	{
-		var det = determinant();
-		if( det < 0.0000001 )
-			throw "determinant is too small";
-		return new Matrix3(
-			(_11 * _22 - _21 * _12) / det, (_20 * _12 - _10 * _22) / det, (_10 * _21 - _20 * _11) / det,
-			(_21 * _02 - _01 * _22) / det, (_00 * _22 - _20 * _02) / det, (_20 * _01 - _00 * _21) / det,
-			(_01 * _12 - _11 * _02) / det, (_10 * _02 - _00 * _12) / det, (_00 * _11 - _10 * _01) / det
-		);
-	}
+    @:extern public inline function determinant(): Float
+    {
+        var c00 = cofactor(_11, _21, _12, _22);
+        var c01 = cofactor(_10, _20, _12, _22);
+        var c02 = cofactor(_10, _20, _11, _21);
+        return _00 * c00 - _01 * c01 + _02 * c02;
+    }
+
+    @:extern public inline function inverse(): Matrix3
+    {
+        var c00 = cofactor(_11, _21, _12, _22);
+        var c01 = cofactor(_10, _20, _12, _22);
+        var c02 = cofactor(_10, _20, _11, _21);
+
+        var det:Float = _00 * c00 - _01 * c01 + _02 * c02;
+        if( Math.abs(det) < 0.000001 )
+            throw "determinant is too small";
+
+        var c10 = cofactor(_01, _21, _02, _22);
+        var c11 = cofactor(_00, _20, _02, _22);
+        var c12 = cofactor(_00, _20, _01, _21);
+
+        var c20 = cofactor(_01, _11, _02, _12);
+        var c21 = cofactor(_00, _10, _02, _12);
+        var c22 = cofactor(_00, _10, _01, _11);
+
+        var invdet:Float = 1.0 / det;
+        return new Matrix3(
+              c00 * invdet, - c01 * invdet,   c02 * invdet,
+            - c10 * invdet,   c11 * invdet, - c12 * invdet,
+              c20 * invdet, - c21 * invdet,   c22 * invdet
+        );
+    }
 }
