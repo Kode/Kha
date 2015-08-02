@@ -57,12 +57,12 @@ class SoundChannel extends kha.SoundChannel {
 }
 
 class Sound extends kha.Sound {
-	private static var extensions: Array<String> = null;
+	private var filenames: Array<String>;
 	static var loading : List<Sound> = new List();
 	private var done: kha.Sound -> Void;
 	public var element: AudioElement;
 	
-	public function new(filename: String, done: kha.Sound -> Void) {
+	public function new(filenames: Array<String>, done: kha.Sound -> Void) {
 		super();
 		
 		this.done = done;
@@ -70,16 +70,16 @@ class Sound extends kha.Sound {
 		
 		element = Browser.document.createAudioElement();
 		
-		if (extensions == null) {
-			extensions = new Array<String>();
-			if (element.canPlayType("audio/ogg") != "") extensions.push(".ogg");
-			if (element.canPlayType("audio/mp4") != "") extensions.push(".mp4");
+		this.filenames = [];
+		for (filename in filenames) {
+			if (element.canPlayType("audio/ogg") != "" && filename.endsWith(".ogg")) this.filenames.push(filename);
+			if (element.canPlayType("audio/mp4") != "" && filename.endsWith(".mp4")) this.filenames.push(filename);
 		}
 		
 		element.addEventListener("error", errorListener, false);
 		element.addEventListener("canplay", canPlayThroughListener, false);
 		
-		element.src = filename + extensions[0];
+		element.src = this.filenames[0];
 		element.preload = "auto";
 		element.load();
 	}
@@ -96,29 +96,19 @@ class Sound extends kha.Sound {
 	
 	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-			for (i in 0...extensions.length - 1) {
-				if (element.src.endsWith(extensions[i])) {
+			for (i in 0...filenames.length - 1) {
+				if (element.src == filenames[i]) {
 					// try loading with next extension:
-					element.src = extractName(element.src) + extensions[i + 1];
+					element.src = filenames[i + 1];
 					return;
 				}
 			}
 		}
 		
-		trace("Error loading " + extractName(element.src) + concatExtensions());
+		trace("Error loading " + element.src);
 		Browser.console.log("loadSound failed");
 	
 		finishAsset();
-	}
-	
-	private static function extractName(filename: String): String {
-		return filename.substr(0, filename.lastIndexOf("."));
-	}
-	
-	private static function concatExtensions(): String {
-		var value = extensions[0];
-		for (i in 1...extensions.length) value += "|" + extensions[i];
-		return value;
 	}
 	
 	private function canPlayThroughListener(eventInfo: Event): Void {

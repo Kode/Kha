@@ -13,24 +13,42 @@ import haxe.io.BytesData;
 import js.Lib;
 import js.html.XMLHttpRequest;
 
+using StringTools;
+
 class Loader extends kha.Loader {
 	public function new() {
 		super();
 	}
 		
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		if (Sys._hasWebAudio) new WebAudioMusic(desc.file, done);
-		else new Music(desc.file, done);
+		if (Sys._hasWebAudio) {
+			for (i in 0...desc.files.length) {
+				var file: String = desc.files[i];
+				if (file.endsWith(".ogg")) {
+					new WebAudioMusic(file, done);
+					break;
+				}
+			}
+		}
+		else new Music(desc.files, done);
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
-		if (Sys._hasWebAudio) new WebAudioSound(desc.file, done);
+		if (Sys._hasWebAudio) {
+			for (i in 0...desc.files.length) {
+				var file: String = desc.files[i];
+				if (file.endsWith(".ogg")) {
+					new WebAudioSound(file, done);
+					break;
+				}
+			}
+		}
 		else new Sound(desc.file, done);
 	}
 	
 	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
 		var img: ImageElement = cast Browser.document.createElement("img");
-		img.src = desc.file;
+		img.src = desc.files[0];
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		img.onload = function(event: Dynamic) {
 			done(Image.fromImage(img, readable));
@@ -38,12 +56,12 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadVideo(desc: Dynamic, done: kha.Video -> Void): Void {
-		var video = new Video(desc.file, done);
+		var video = new Video(desc.files, done);
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", desc.file, true);
+		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
 		
 		request.onreadystatechange = function() {

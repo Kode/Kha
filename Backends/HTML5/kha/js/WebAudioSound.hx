@@ -70,7 +70,7 @@ class WebAudioSound extends kha.Sound {
 		this.done = done;
 		
 		var request = untyped new XMLHttpRequest();
-		request.open("GET", filename + ".ogg", true);
+		request.open("GET", filename, true);
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {

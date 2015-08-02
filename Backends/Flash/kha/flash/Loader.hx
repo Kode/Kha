@@ -37,7 +37,7 @@ class Loader extends kha.Loader {
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
-		var file: String = adjustFilename(desc.file + ".mp3");
+		var file: String = adjustFilename(desc.files[0]);
 		done(new Music(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
 		
 		#else
@@ -49,13 +49,19 @@ class Loader extends kha.Loader {
 		});
 		music.load(urlRequest);*/
 		
-		var urlRequest = new URLRequest(desc.file + ".ogg");
-		var urlLoader = new URLLoader();
-		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-			done(new Music(Bytes.ofData(urlLoader.data)));
-		});
-		urlLoader.load(urlRequest);
+		for (i in 0...desc.files.length) {
+			var file: String = desc.files[i];
+			if (file.endsWith(".ogg")) {
+				var urlRequest = new URLRequest(file);
+				var urlLoader = new URLLoader();
+				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+					done(new Music(Bytes.ofData(urlLoader.data)));
+				});
+				urlLoader.load(urlRequest);
+				break;
+			}
+		}
 		
 		#end
 	}
@@ -65,12 +71,12 @@ class Loader extends kha.Loader {
 		
 		#if KHA_EMBEDDED_ASSETS
 		
-		var file: String = adjustFilename(desc.file);
+		var file: String = adjustFilename(desc.files[0]);
 		done(Image.fromBitmapData(cast Type.createInstance(Type.resolveClass("Assets_" + file), [0, 0]), readable));
 
 		#else
 		
-		var urlRequest = new URLRequest(desc.file);
+		var urlRequest = new URLRequest(desc.files[0]);
 		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e: Event) {
 			done(Image.fromBitmap(loader.content, readable));
@@ -83,12 +89,12 @@ class Loader extends kha.Loader {
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
-		var file: String = adjustFilename(desc.file);
+		var file: String = adjustFilename(desc.files[0]);
 		done(new Blob(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
-		var urlRequest = new URLRequest(desc.file);
+		var urlRequest = new URLRequest(desc.files[0]);
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
@@ -102,7 +108,7 @@ class Loader extends kha.Loader {
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
-		var file: String = adjustFilename(desc.file + ".mp3");
+		var file: String = adjustFilename(desc.files[0]);
 		done(new Sound(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
 		
 		#else
@@ -118,19 +124,24 @@ class Loader extends kha.Loader {
 		});
 		sound.load(urlRequest);*/
 		
-		var urlRequest = new URLRequest(desc.file + ".ogg");
-		var urlLoader = new URLLoader();
-		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-			done(new Sound(Bytes.ofData(urlLoader.data)));
-		});
-		urlLoader.load(urlRequest);
+		for (i in 0...desc.files.length) {
+			var file: String = desc.files[i];
+			if (file.endsWith(".ogg")) {
+				var urlRequest = new URLRequest(file);
+				var urlLoader = new URLLoader();
+				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+					done(new Sound(Bytes.ofData(urlLoader.data)));
+				});
+				urlLoader.load(urlRequest);
+			}
+		}
 		
 		#end
 	}
 
 	override function loadVideo(desc: Dynamic, done: kha.Video -> Void) {
-		done(new Video(desc.file + ".mp4"));
+		done(new Video(desc.files[0]));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

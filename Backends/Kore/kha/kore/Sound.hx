@@ -12,7 +12,7 @@ import haxe.ds.Vector;
 class Sound extends kha.Sound {
 	public function new(filename: String) {
 		super();
-		loadSound(filename + ".wav");
+		loadSound(filename);
 	}
 	
 	@:functionCode('

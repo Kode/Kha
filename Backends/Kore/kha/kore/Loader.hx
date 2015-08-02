@@ -16,20 +16,20 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		done(new Music(File.getBytes(desc.file + ".ogg")));
+		done(new Music(File.getBytes(desc.files[0])));
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
-		done(new Sound(desc.file));
+		done(new Sound(desc.files[0]));
 	}
 	
 	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		done(kha.Image.fromFile(desc.file, readable));
+		done(kha.Image.fromFile(desc.files[0], readable));
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
-		done(new Blob(File.getBytes(desc.file)));
+		done(new Blob(File.getBytes(desc.files[0])));
 	}
 	
 	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
@@ -37,7 +37,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadVideo(desc: Dynamic, done: Video -> Void) {
-		done(new Video(desc.file));
+		done(new Video(desc.files[0]));
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')
