@@ -5,6 +5,7 @@ import flash.events.SampleDataEvent;
 class Audio {
 	private static var buffer: Buffer;
 	private static inline var bufferSize = 4096;
+	
 	@:noCompletion
 	public static function _init(): Void {
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
@@ -36,4 +37,8 @@ class Audio {
     }
 	
 	public static var audioCallback: Int->Buffer->Void;
+	
+	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
+		return null;
+	}
 }
