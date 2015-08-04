@@ -26,7 +26,7 @@ class Loader extends kha.Loader {
 	}
 	
 	public override function loadProject(call: Void -> Void) {
-		enqueue({file: "project.kha", name: "project.kha", type: "blob"});
+		enqueue({files: ["project.kha"], name: "project.kha", type: "blob"});
 		loadFiles(call, false);
 	}
 	
