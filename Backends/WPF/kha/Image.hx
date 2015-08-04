@@ -92,8 +92,12 @@ class Image implements Resource {
 		image.CopyPixels(new System.Windows.Int32Rect(x, y, 1, 1), pixels, image.PixelWidth * 4, 0);
 		return pixels[3] > 0;
 	')
-	public function isOpaque(x: Int, y: Int) : Bool {
+	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
+	}
+	
+	public function at(x: Int, y: Int): Int {
+		return 0;
 	}
 	
 	public function unload(): Void {
