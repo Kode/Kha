@@ -10,6 +10,9 @@ extern class Float32x4 {
 	@:native("Kore::float32x4")
 	public static function create(): Float32x4;
 	
+	@:native("Kore::loadAll")
+	public static function loadAllFast(t: FastFloat): Float32x4;
+	
 	@:native("Kore::load")
 	public static function load(a: Float, b: Float, c: Float, d: Float): Float32x4;
 	
