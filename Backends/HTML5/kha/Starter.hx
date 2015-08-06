@@ -325,7 +325,6 @@ class Starter {
 	}
 	
 	private static function touchUp(event: TouchEvent): Void {
-		setTouchXY(event);
 		Game.the.mouseUp(touchX, touchY);
 		mouse.sendUpEvent(0, touchX, touchY);
 		surface.sendTouchEndEvent(0, touchX, touchY);
