@@ -6,6 +6,7 @@ import kha.graphics2.Graphics;
 import kha.graphics4.Graphics2;
 #end
 #end
+import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 
@@ -161,20 +162,20 @@ class Scaler {
 		g.drawImage(source, 0, 0);
 	}
 	
-	public static function getScaledTransformation(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Matrix3 {
+	public static function getScaledTransformation(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): FastMatrix3 {
 		var rect = targetRect(width, height, destinationWidth, destinationHeight, rotation);
 		var sf = rect.scaleFactor;
-		var transformation = new Matrix3(sf,  0, rect.x,
+		var transformation = new FastMatrix3(sf,  0, rect.x,
 										   0, sf, rect.y,
 										   0,  0, 1);
 		switch (rotation) {
 		case RotationNone:
 		case Rotation90:
-			transformation = transformation.multmat(Matrix3.rotation(Math.PI / 2));
+			transformation = transformation.multmat(FastMatrix3.rotation(Math.PI / 2));
 		case Rotation180:
-			transformation = transformation.multmat(Matrix3.rotation(Math.PI));
+			transformation = transformation.multmat(FastMatrix3.rotation(Math.PI));
 		case Rotation270:
-			transformation = transformation.multmat(Matrix3.rotation(Math.PI * 3 / 2));
+			transformation = transformation.multmat(FastMatrix3.rotation(Math.PI * 3 / 2));
 		}
 		return transformation;
 	}

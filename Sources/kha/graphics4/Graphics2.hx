@@ -3,6 +3,7 @@ package kha.graphics4;
 import haxe.io.Float32Array;
 import kha.Canvas;
 import kha.Color;
+import kha.FastFloat;
 import kha.Font;
 import kha.Image;
 import kha.graphics4.BlendingOperation;
@@ -18,6 +19,8 @@ import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexStructure;
+import kha.math.FastMatrix3;
+import kha.math.FastVector2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
@@ -106,10 +109,10 @@ class ImageShaderPainter {
 	}
 	
 	private inline function setRectVertices(
-		bottomleftx: Float, bottomlefty: Float,
-		topleftx: Float, toplefty: Float,
-		toprightx: Float, toprighty: Float,
-		bottomrightx: Float, bottomrighty: Float): Void {
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  0] = bottomleftx;
 		rectVertices[baseIndex +  1] = bottomlefty;
@@ -128,7 +131,7 @@ class ImageShaderPainter {
 		rectVertices[baseIndex + 29] = -5.0;
 	}
 	
-	private inline function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
+	private inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  3] = left;
 		rectVertices[baseIndex +  4] = bottom;
@@ -143,7 +146,7 @@ class ImageShaderPainter {
 		rectVertices[baseIndex + 31] = bottom;
 	}
 	
-	private inline function setRectColor(r: Float, g: Float, b: Float, a: Float): Void {
+	private inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
 		rectVertices[baseIndex +  5] = r;
 		rectVertices[baseIndex +  6] = g;
@@ -194,11 +197,11 @@ class ImageShaderPainter {
 	}
 	
 	public inline function drawImage(img: kha.Image,
-		bottomleftx: Float, bottomlefty: Float,
-		topleftx: Float, toplefty: Float,
-		toprightx: Float, toprighty: Float,
-		bottomrightx: Float, bottomrighty: Float,
-		opacity: Float, color: Color): Void {
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat,
+		opacity: FastFloat, color: Color): Void {
 		var tex = img;
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -210,12 +213,12 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public inline function drawImage2(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float,
-		bottomleftx: Float, bottomlefty: Float,
-		topleftx: Float, toplefty: Float,
-		toprightx: Float, toprighty: Float,
-		bottomrightx: Float, bottomrighty: Float,
-		opacity: Float, color: Color): Void {
+	public inline function drawImage2(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat,
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat,
+		opacity: FastFloat, color: Color): Void {
 		var tex = img;
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -227,7 +230,7 @@ class ImageShaderPainter {
 		lastTexture = tex;
 	}
 	
-	public inline function drawImageScale(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, left: Float, top: Float, right: Float, bottom: Float, opacity: Float, color: Color): Void {
+	public inline function drawImageScale(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
@@ -482,15 +485,15 @@ class ColoredShaderPainter {
 		++triangleBufferIndex;
 	}
 	
-	public function endTris(rectsDone: Bool): Void {
+	public inline function endTris(rectsDone: Bool): Void {
 		if (triangleBufferIndex > 0) drawTriBuffer(rectsDone);
 	}
 	
-	public function endRects(trisDone: Bool): Void {
+	public inline function endRects(trisDone: Bool): Void {
 		if (bufferIndex > 0) drawBuffer(trisDone);
 	}
 	
-	public function end(): Void {
+	public inline function end(): Void {
 		endTris(false);
 		endRects(false);
 	}
@@ -705,7 +708,7 @@ class TextShaderPainter {
 		text = null;
 	}
 	
-	public function drawString(text: String, color: Color, x: Float, y: Float, transformation: Matrix3): Void {
+	public function drawString(text: String, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -719,10 +722,10 @@ class TextShaderPainter {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(color);
 				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
-				var p0 = transformation.multvec(new Vector2(q.x0, q.y1)); //bottom-left
-				var p1 = transformation.multvec(new Vector2(q.x0, q.y0)); //top-left
-				var p2 = transformation.multvec(new Vector2(q.x1, q.y0)); //top-right
-				var p3 = transformation.multvec(new Vector2(q.x1, q.y1)); //bottom-right
+				var p0 = transformation.multvec(new FastVector2(q.x0, q.y1)); //bottom-left
+				var p1 = transformation.multvec(new FastVector2(q.x0, q.y0)); //top-left
+				var p2 = transformation.multvec(new FastVector2(q.x1, q.y0)); //top-right
+				var p3 = transformation.multvec(new FastVector2(q.x1, q.y1)); //bottom-right
 				setRectVertices(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 				xpos += q.xadvance;
 				++bufferIndex;
@@ -805,25 +808,25 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.setProjection(projectionMatrix);
 	}
 	
-	public override function drawImage(img: kha.Image, x: Float, y: Float): Void {
+	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
-		var xw = x + img.width;
-		var yh = y + img.height;
-		var p1 = transformation.multvec(new Vector2(x, yh));
-		var p2 = transformation.multvec(new Vector2(x, y));
-		var p3 = transformation.multvec(new Vector2(xw, y));
-		var p4 = transformation.multvec(new Vector2(xw, yh));
+		var xw: FastFloat = x + img.width;
+		var yh: FastFloat = y + img.height;
+		var p1 = transformation.multvec(new FastVector2(x, yh));
+		var p2 = transformation.multvec(new FastVector2(x, y));
+		var p3 = transformation.multvec(new FastVector2(xw, y));
+		var p4 = transformation.multvec(new FastVector2(xw, yh));
 		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
 	
-	public override function drawScaledSubImage(img: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
+	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
-		var p1 = transformation.multvec(new Vector2(dx, dy + dh));
-		var p2 = transformation.multvec(new Vector2(dx, dy));
-		var p3 = transformation.multvec(new Vector2(dx + dw, dy));
-		var p4 = transformation.multvec(new Vector2(dx + dw, dy + dh));
+		var p1 = transformation.multvec(new FastVector2(dx, dy + dh));
+		var p2 = transformation.multvec(new FastVector2(dx, dy));
+		var p3 = transformation.multvec(new FastVector2(dx + dw, dy));
+		var p4 = transformation.multvec(new FastVector2(dx + dw, dy + dh));
 		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
 	
@@ -839,26 +842,26 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		
-		var p1 = transformation.multvec(new Vector2(x - strength / 2, y + strength / 2)); //bottom-left
-		var p2 = transformation.multvec(new Vector2(x - strength / 2, y - strength / 2)); //top-left
-		var p3 = transformation.multvec(new Vector2(x + width + strength / 2, y - strength / 2)); //top-right
-		var p4 = transformation.multvec(new Vector2(x + width + strength / 2, y + strength / 2)); //bottom-right
+		var p1 = transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2)); //bottom-left
+		var p2 = transformation.multvec(new FastVector2(x - strength / 2, y - strength / 2)); //top-left
+		var p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y - strength / 2)); //top-right
+		var p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)); //bottom-right
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
 		
-		p1 = transformation.multvec(new Vector2(x - strength / 2, y + height + strength / 2));
-		p3 = transformation.multvec(new Vector2(x + strength / 2, y - strength / 2));
-		p4 = transformation.multvec(new Vector2(x + strength / 2, y + height + strength / 2));
+		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2));
+		p3 = transformation.multvec(new FastVector2(x + strength / 2, y - strength / 2));
+		p4 = transformation.multvec(new FastVector2(x + strength / 2, y + height + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
 		
-		p2 = transformation.multvec(new Vector2(x - strength / 2, y + height - strength / 2));
-		p3 = transformation.multvec(new Vector2(x + width + strength / 2, y + height - strength / 2));
-		p4 = transformation.multvec(new Vector2(x + width + strength / 2, y + height + strength / 2));
+		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
+		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
+		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
 		
-		p1 = transformation.multvec(new Vector2(x + width - strength / 2, y + height + strength / 2));
-		p2 = transformation.multvec(new Vector2(x + width - strength / 2, y - strength / 2));
-		p3 = transformation.multvec(new Vector2(x + width + strength / 2, y - strength / 2));
-		p4 = transformation.multvec(new Vector2(x + width + strength / 2, y + height + strength / 2));
+		p1 = transformation.multvec(new FastVector2(x + width - strength / 2, y + height + strength / 2));
+		p2 = transformation.multvec(new FastVector2(x + width - strength / 2, y - strength / 2));
+		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y - strength / 2));
+		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
 	}
 	
@@ -866,10 +869,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		
-		var p1 = transformation.multvec(new Vector2(x, y + height));
-		var p2 = transformation.multvec(new Vector2(x, y));
-		var p3 = transformation.multvec(new Vector2(x + width, y));
-		var p4 = transformation.multvec(new Vector2(x + width, y + height));
+		var p1 = transformation.multvec(new FastVector2(x, y + height));
+		var p2 = transformation.multvec(new FastVector2(x, y));
+		var p3 = transformation.multvec(new FastVector2(x + width, y));
+		var p4 = transformation.multvec(new FastVector2(x + width, y + height));
 		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 	}
 
@@ -893,12 +896,12 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		
-		var vec: Vector2;
-		if (y2 == y1) vec = new Vector2(0, -1);
-		else vec = new Vector2(1, -(x2 - x1) / (y2 - y1));
+		var vec: FastVector2;
+		if (y2 == y1) vec = new FastVector2(0, -1);
+		else vec = new FastVector2(1, -(x2 - x1) / (y2 - y1));
 		vec.length = strength;
-		var p1 = new Vector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
-		var p2 = new Vector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
+		var p1 = new FastVector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
+		var p2 = new FastVector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
 		var p3 = p1.sub(vec);
 		var p4 = p2.sub(vec);
 		
@@ -915,9 +918,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		
-		var p1 = transformation.multvec(new Vector2(x1, y1));
-		var p2 = transformation.multvec(new Vector2(x2, y2));
-		var p3 = transformation.multvec(new Vector2(x3, y3));
+		var p1 = transformation.multvec(new FastVector2(x1, y1));
+		var p2 = transformation.multvec(new FastVector2(x2, y2));
+		var p3 = transformation.multvec(new FastVector2(x3, y3));
 		coloredPainter.fillTriangle(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 	
