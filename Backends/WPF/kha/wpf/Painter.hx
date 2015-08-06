@@ -3,6 +3,7 @@ package kha.wpf;
 import kha.FontStyle;
 import kha.Image;
 import kha.Kravur;
+import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.Rotation;
 import system.windows.media.Color;
@@ -55,7 +56,7 @@ class Painter extends kha.graphics2.Graphics {
 		
 	}
 	
-	override public function setTransformation(transformation: Matrix3): Void {
+	override public function setTransformation(transformation: FastMatrix3): Void {
 		context.Pop();
 		context.PushTransform(new MatrixTransform(transformation._00, transformation._01, transformation._10, transformation._11, transformation._20, transformation._21));
 	}
