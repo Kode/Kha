@@ -24,6 +24,7 @@ import kha.math.FastVector2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
+import kha.simd.Float32x4;
 
 class ImageShaderPainter {
 	private var projectionMatrix: Matrix4;
@@ -813,11 +814,27 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.end();
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
-		var p1 = transformation.multvec(new FastVector2(x, yh));
-		var p2 = transformation.multvec(new FastVector2(x, y));
-		var p3 = transformation.multvec(new FastVector2(xw, y));
-		var p4 = transformation.multvec(new FastVector2(xw, yh));
-		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
+		
+		var xx = Float32x4.loadFast(x, x, xw, xw);
+		var yy = Float32x4.loadFast(yh, y, y, yh);
+		
+		var _00 = Float32x4.loadAllFast(transformation._00);
+		var _01 = Float32x4.loadAllFast(transformation._01);
+		var _02 = Float32x4.loadAllFast(transformation._02);
+		var _10 = Float32x4.loadAllFast(transformation._10);
+		var _11 = Float32x4.loadAllFast(transformation._11);
+		var _12 = Float32x4.loadAllFast(transformation._12);
+		var _20 = Float32x4.loadAllFast(transformation._20);
+		var _21 = Float32x4.loadAllFast(transformation._21);
+		var _22 = Float32x4.loadAllFast(transformation._22);
+		
+		// matrix multiply
+		var w = Float32x4.add(Float32x4.add(Float32x4.mul(_02, xx), Float32x4.mul(_12, yy)), _22);
+		var px = Float32x4.div(Float32x4.add(Float32x4.add(Float32x4.mul(_00, xx), Float32x4.mul(_10, yy)), _20), w);
+		var py = Float32x4.div(Float32x4.add(Float32x4.add(Float32x4.mul(_01, xx), Float32x4.mul(_11, yy)), _21), w);
+		
+		imagePainter.drawImage(img, Float32x4.get(px, 0), Float32x4.get(py, 0), Float32x4.get(px, 1), Float32x4.get(py, 1),
+			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), opacity, this.color);
 	}
 	
 	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
