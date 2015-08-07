@@ -8,6 +8,7 @@ import js.html.Event;
 import js.html.EventListener;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
+import js.html.Touch;
 import js.html.TouchEvent;
 import kha.Game;
 import kha.graphics4.TextureFormat;
@@ -309,32 +310,39 @@ class Starter {
 		mouse.sendMoveEvent(mouseX, mouseY);
 	}
 	
-	private static function setTouchXY(event: TouchEvent): Void {
+	private static function setTouchXY(touch: Touch): Void {
 		var rect = Sys.khanvas.getBoundingClientRect();
 		var borderWidth = Sys.khanvas.clientLeft;
 		var borderHeight = Sys.khanvas.clientTop;
-		touchX = Std.int((event.touches[0].clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
-		touchY = Std.int((event.touches[0].clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
+		touchX = Std.int((touch.clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
+		touchY = Std.int((touch.clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 	
 	private static function touchDown(event: TouchEvent): Void {
-		setTouchXY(event);
-		Game.the.mouseDown(touchX, touchY);
-		mouse.sendDownEvent(0, touchX, touchY);
-		surface.sendTouchStartEvent(0, touchX, touchY);
+		for (touch in event.changedTouches)	{
+			setTouchXY(touch);
+			Game.the.mouseDown(touchX, touchY);
+			mouse.sendDownEvent(0, touchX, touchY);
+			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
+		}
 	}
 	
 	private static function touchUp(event: TouchEvent): Void {
-		Game.the.mouseUp(touchX, touchY);
-		mouse.sendUpEvent(0, touchX, touchY);
-		surface.sendTouchEndEvent(0, touchX, touchY);
+		for (touch in event.changedTouches)	{
+			setTouchXY(touch);
+			Game.the.mouseUp(touchX, touchY);
+			mouse.sendUpEvent(0, touchX, touchY);
+			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
+		}
 	}
 	
 	private static function touchMove(event: TouchEvent): Void {
-		setTouchXY(event);
-		Game.the.mouseMove(touchX, touchY);
-		mouse.sendMoveEvent(touchX, touchY);
-		surface.sendMoveEvent(0, touchX, touchY);
+		for (touch in event.changedTouches) {
+			setTouchXY(touch);
+			Game.the.mouseMove(touchX, touchY);
+			mouse.sendMoveEvent(touchX, touchY);
+			surface.sendMoveEvent(touch.identifier, touchX, touchY);
+		}
 	}
 	
 	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
