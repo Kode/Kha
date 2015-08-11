@@ -43,7 +43,7 @@ class Loader extends kha.Loader {
 				}
 			}
 		}
-		else new Sound(desc.file, done);
+		else new Sound(desc.files, done);
 	}
 	
 	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
