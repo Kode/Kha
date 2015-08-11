@@ -4,8 +4,8 @@ package kha.input;
 @:expose
 class Gamepad {	
 	public static function get(num: Int = 0): Gamepad {
-		if (num != 0) return null;
-		return instance;
+		if (num >= instances.length) return null;
+		return instances[num];
 	}
 
 	public function notify(axisListener: Int->Float->Void, buttonListener: Int->Float->Void): Void {
@@ -18,14 +18,14 @@ class Gamepad {
 		if (buttonListener != null) buttonListeners.remove(buttonListener);
 	}
 	
-	private static var instance: Gamepad;
+	private static var instances: Array<Gamepad> = new Array<Gamepad>();
 	private var axisListeners: Array<Int->Float->Void>;
 	private var buttonListeners: Array<Int->Float->Void>;
 	
-	private function new() {
+	private function new(id : Int = 0) {
 		axisListeners = new Array<Int->Float->Void>();
 		buttonListeners = new Array<Int->Float->Void>();
-		instance = this;
+		instances[id] = this;
 	}
 	
 	private function sendAxisEvent(axis: Int, value: Float): Void {

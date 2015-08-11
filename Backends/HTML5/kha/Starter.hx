@@ -34,6 +34,8 @@ class GamepadStates {
 }
 
 class Starter {
+	private static var maxGamepads : Int = 4;
+	
 	private var gameToStart: Game;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
@@ -42,7 +44,7 @@ class Starter {
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var surface: Surface;
-	private static var gamepad: Gamepad;
+	private static var gamepads: Array<Gamepad>;
 	private static var gamepadStates: Array<GamepadStates>;
 	
 	private static var mouseX: Int;
@@ -55,7 +57,10 @@ class Starter {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		surface = new Surface();
-		gamepad = new Gamepad();
+		gamepads = new Array<Gamepad>();
+		for (i in 0...maxGamepads) {
+			gamepads[i] = new Gamepad(i);
+		}
 		gamepadStates = new Array<GamepadStates>();
 		gamepadStates.push(new GamepadStates());
 		pressedKeys = new Array<Bool>();
@@ -92,7 +97,7 @@ class Starter {
 			if (pad.axes[i] != null) {
 				if (gamepadStates[0].axes[i] != pad.axes[i]) {
 					gamepadStates[0].axes[i] = pad.axes[i];
-					gamepad.sendAxisEvent(i, pad.axes[i]);
+					gamepads[pad.index].sendAxisEvent(i, pad.axes[i]);
 				}
 			}
 		}
@@ -100,7 +105,7 @@ class Starter {
 			if (pad.buttons[i] != null) {
 				if (gamepadStates[0].buttons[i] != pad.buttons[i].value) {
 					gamepadStates[0].buttons[i] = pad.buttons[i].value;
-					gamepad.sendButtonEvent(i, pad.buttons[i].value);
+					gamepads[pad.index].sendButtonEvent(i, pad.buttons[i].value);
 				}
 			}
 		}
@@ -173,11 +178,10 @@ class Starter {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 			
-			var gamepads: Dynamic = untyped __js__("navigator.getGamepads && navigator.getGamepads()");
-			if (gamepads == null) gamepads = untyped __js__("navigator.webkitGetGamepads && navigator.webkitGetGamepads()");
-			if (gamepads != null) {
-				for (i in 0...gamepads.length) {
-					var pad = gamepads[i];
+			var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
+			if (sysGamepads != null) {
+				for (i in 0...sysGamepads.length) {
+					var pad = sysGamepads[i];
 					if (pad != null) {
 						checkGamepadButton(pad, 0, Button.BUTTON_1);
 						checkGamepadButton(pad, 1, Button.BUTTON_2);
@@ -186,9 +190,7 @@ class Starter {
 						checkGamepadButton(pad, 14, Button.LEFT);
 						checkGamepadButton(pad, 15, Button.RIGHT);
 						
-						if (pad.index == 0) {
-							checkGamepad(pad);
-						}
+						checkGamepad(pad);
 					}					
 				}
 			}
