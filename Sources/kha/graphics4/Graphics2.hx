@@ -8,6 +8,7 @@ import kha.Font;
 import kha.Image;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.ConstantLocation;
+import kha.graphics4.CullMode;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.Program;
@@ -967,6 +968,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		g.begin();
 		if (clear) this.clear(clearColor);
 		setProjection();
+		g.setCullMode(CullMode.None);
 	}
 	
 	override public function clear(color: Color = null): Void {
