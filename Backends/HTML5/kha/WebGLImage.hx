@@ -144,7 +144,7 @@ class WebGLImage extends Image {
 			Sys.gl.renderbufferStorage(Sys.gl.RENDERBUFFER, Sys.gl.DEPTH_COMPONENT16, realWidth, realHeight);
 			Sys.gl.framebufferRenderbuffer(Sys.gl.FRAMEBUFFER, Sys.gl.DEPTH_ATTACHMENT, Sys.gl.RENDERBUFFER, renderBuffer);
 			
-			Sys.gl.bindFramebuffer(Sys.gl.RENDERBUFFER, null);
+			Sys.gl.bindRenderbuffer(Sys.gl.RENDERBUFFER, null);
 			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
 		}
 		else if (video != null) Sys.gl.texImage2D(Sys.gl.TEXTURE_2D, 0, Sys.gl.RGBA, Sys.gl.RGBA, Sys.gl.UNSIGNED_BYTE, video);
