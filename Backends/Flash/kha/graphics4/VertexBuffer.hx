@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import flash.display3D.Context3DBufferUsage;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
@@ -9,8 +10,7 @@ import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	public var vertexBuffer: VertexBuffer3D;
-	private var vertices: Vector<Float>;
-	private var lockedVertices: Float32Array;
+	private var vertices: Float32Array;
 	private var vertexCount: Int;
 	private var myStride: Int;
 	private var myStructure: kha.graphics4.VertexStructure;
@@ -31,20 +31,16 @@ class VertexBuffer {
 			}
 		}
 		myStructure = structure;
-		vertexBuffer = kha.flash.graphics4.Graphics.context.createVertexBuffer(vertexCount, myStride);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
-		vertices = new Vector<Float>(myStride * vertexCount);
-		lockedVertices = new Float32Array(myStride * vertexCount);
+		vertexBuffer = kha.flash.graphics4.Graphics.context.createVertexBuffer(vertexCount, myStride, usage == Usage.DynamicUsage ? Context3DBufferUsage.DYNAMIC_DRAW : Context3DBufferUsage.STATIC_DRAW);
+		vertices = new Float32Array(myStride * vertexCount);
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return lockedVertices;
+		return vertices;
 	}
 	
 	public function unlock(): Void {
-		for (i in 0...vertices.length) {
-			vertices[i] = lockedVertices[i];
-		}
-		vertexBuffer.uploadFromVector(vertices, 0, vertexCount);
+		vertexBuffer.uploadFromByteArray(vertices.getData().bytes.getData(), 0, 0, vertexCount);
 	}
 	
 	public function stride(): Int {
