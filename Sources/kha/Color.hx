@@ -22,6 +22,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static var Pink: Color = fromValue(0xffffc0cb);
 	public static var Orange: Color = fromValue(0xffffa500);
 	
+	private static inline var invMaxChannelValue: FastFloat = 1 / 255;
+	
 	/**
 	 * Creates a new Color object from a packed 32 bit ARGB value.
 	 */
@@ -39,7 +41,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Creates a new Color object from components in the range 0 - 1.
 	 */
-	public static function fromFloats(r: Float, g: Float, b: Float, a: Float = 1): Color {
+	public static function fromFloats(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat = 1): Color {
 		return new Color((Std.int(a * 255) << 24) | (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255));
 	}
 	
@@ -78,19 +80,19 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Contains a float representing the red color component.
 	 */
-	public var R(get, set): Float;
+	public var R(get, set): FastFloat;
 	/**
 	 * Contains a float representing the green color component.
 	 */
-	public var G(get, set): Float;
+	public var G(get, set): FastFloat;
 	/**
 	 * Contains a float representing the blue color component.
 	 */
-	public var B(get, set): Float;
+	public var B(get, set): FastFloat;
 	/**
 	 * Contains a float representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	 */
-	public var A(get, set): Float;
+	public var A(get, set): FastFloat;
 	
 	private function new(value: Int) {
 		this = value;
@@ -146,38 +148,38 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return i;
 	}
 
-	private inline function get_R(): Float {
-		return get_Rb() / 255;
+	private inline function get_R(): FastFloat {
+		return get_Rb() * invMaxChannelValue;
 	}
 	
-	private inline function get_G(): Float {
-		return get_Gb() / 255;
+	private inline function get_G(): FastFloat {
+		return get_Gb() * invMaxChannelValue;
 	}
 	
-	private inline function get_B(): Float {
-		return get_Bb() / 255;
+	private inline function get_B(): FastFloat {
+		return get_Bb() * invMaxChannelValue;
 	}
 	
-	private inline function get_A(): Float {
-		return get_Ab() / 255;
+	private inline function get_A(): FastFloat {
+		return get_Ab() * invMaxChannelValue;
 	}
 
-	private inline function set_R(f: Float): Float {
+	private inline function set_R(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private inline function set_G(f: Float): Float {
+	private inline function set_G(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private inline function set_B(f: Float): Float {
+	private inline function set_B(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
 		return f;
 	}
 
-	private inline function set_A(f: Float): Float {
+	private inline function set_A(f: FastFloat): FastFloat {
 		this = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
