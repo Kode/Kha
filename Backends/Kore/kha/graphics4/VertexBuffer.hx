@@ -1,7 +1,6 @@
 package kha.graphics4;
 
-import haxe.io.BytesData;
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
@@ -17,7 +16,7 @@ class VertexBuffer {
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		init(vertexCount, structure);
-		data = new Float32Array(0);
+		data = new Float32Array();
 		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
 	
@@ -48,17 +47,11 @@ class VertexBuffer {
 	}
 	
 	@:functionCode('
-		int byteLength = buffer->count() * buffer->stride();
-		data->byteLength = byteLength;
-		data->bytes->length = byteLength;
-		data->bytes->b->setUnmanagedData(buffer->lock(), byteLength);
+		data->data.data = buffer->lock();
+		data->data.myLength = buffer->count() * buffer->stride() / 4;
+		return data;
 	')
-	private function lock2(): Void {
-		
-	}
-	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		lock2();
 		return data;
 	}
 	

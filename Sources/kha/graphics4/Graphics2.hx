@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import kha.Canvas;
 import kha.Color;
 import kha.FastFloat;
@@ -116,59 +116,59 @@ class ImageShaderPainter {
 		toprightx: FastFloat, toprighty: FastFloat,
 		bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
-		rectVertices[baseIndex +  0] = bottomleftx;
-		rectVertices[baseIndex +  1] = bottomlefty;
-		rectVertices[baseIndex +  2] = -5.0;
+		rectVertices.set(baseIndex +  0, bottomleftx);
+		rectVertices.set(baseIndex +  1, bottomlefty);
+		rectVertices.set(baseIndex +  2, -5.0);
 		
-		rectVertices[baseIndex +  9] = topleftx;
-		rectVertices[baseIndex + 10] = toplefty;
-		rectVertices[baseIndex + 11] = -5.0;
+		rectVertices.set(baseIndex +  9, topleftx);
+		rectVertices.set(baseIndex + 10, toplefty);
+		rectVertices.set(baseIndex + 11, -5.0);
 		
-		rectVertices[baseIndex + 18] = toprightx;
-		rectVertices[baseIndex + 19] = toprighty;
-		rectVertices[baseIndex + 20] = -5.0;
+		rectVertices.set(baseIndex + 18, toprightx);
+		rectVertices.set(baseIndex + 19, toprighty);
+		rectVertices.set(baseIndex + 20, -5.0);
 		
-		rectVertices[baseIndex + 27] = bottomrightx;
-		rectVertices[baseIndex + 28] = bottomrighty;
-		rectVertices[baseIndex + 29] = -5.0;
+		rectVertices.set(baseIndex + 27, bottomrightx);
+		rectVertices.set(baseIndex + 28, bottomrighty);
+		rectVertices.set(baseIndex + 29, -5.0);
 	}
 	
 	private inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
-		rectVertices[baseIndex +  3] = left;
-		rectVertices[baseIndex +  4] = bottom;
+		rectVertices.set(baseIndex +  3, left);
+		rectVertices.set(baseIndex +  4, bottom);
 		
-		rectVertices[baseIndex + 12] = left;
-		rectVertices[baseIndex + 13] = top;
+		rectVertices.set(baseIndex + 12, left);
+		rectVertices.set(baseIndex + 13, top);
 		
-		rectVertices[baseIndex + 21] = right;
-		rectVertices[baseIndex + 22] = top;
+		rectVertices.set(baseIndex + 21, right);
+		rectVertices.set(baseIndex + 22, top);
 		
-		rectVertices[baseIndex + 30] = right;
-		rectVertices[baseIndex + 31] = bottom;
+		rectVertices.set(baseIndex + 30, right);
+		rectVertices.set(baseIndex + 31, bottom);
 	}
 	
 	private inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
-		rectVertices[baseIndex +  5] = r;
-		rectVertices[baseIndex +  6] = g;
-		rectVertices[baseIndex +  7] = b;
-		rectVertices[baseIndex +  8] = a;
+		rectVertices.set(baseIndex +  5, r);
+		rectVertices.set(baseIndex +  6, g);
+		rectVertices.set(baseIndex +  7, b);
+		rectVertices.set(baseIndex +  8, a);
 		
-		rectVertices[baseIndex + 14] = r;
-		rectVertices[baseIndex + 15] = g;
-		rectVertices[baseIndex + 16] = b;
-		rectVertices[baseIndex + 17] = a;
+		rectVertices.set(baseIndex + 14, r);
+		rectVertices.set(baseIndex + 15, g);
+		rectVertices.set(baseIndex + 16, b);
+		rectVertices.set(baseIndex + 17, a);
 		
-		rectVertices[baseIndex + 23] = r;
-		rectVertices[baseIndex + 24] = g;
-		rectVertices[baseIndex + 25] = b;
-		rectVertices[baseIndex + 26] = a;
+		rectVertices.set(baseIndex + 23, r);
+		rectVertices.set(baseIndex + 24, g);
+		rectVertices.set(baseIndex + 25, b);
+		rectVertices.set(baseIndex + 26, a);
 		
-		rectVertices[baseIndex + 32] = r;
-		rectVertices[baseIndex + 33] = g;
-		rectVertices[baseIndex + 34] = b;
-		rectVertices[baseIndex + 35] = a;
+		rectVertices.set(baseIndex + 32, r);
+		rectVertices.set(baseIndex + 33, g);
+		rectVertices.set(baseIndex + 34, b);
+		rectVertices.set(baseIndex + 35, a);
 	}
 
 	private function drawBuffer(): Void {
@@ -352,77 +352,77 @@ class ColoredShaderPainter {
 		toprightx: Float, toprighty: Float,
 		bottomrightx: Float, bottomrighty: Float): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
-		rectVertices[baseIndex +  0] = bottomleftx;
-		rectVertices[baseIndex +  1] = bottomlefty;
-		rectVertices[baseIndex +  2] = -5.0;
+		rectVertices.set(baseIndex +  0, bottomleftx);
+		rectVertices.set(baseIndex +  1, bottomlefty);
+		rectVertices.set(baseIndex +  2, -5.0);
 		
-		rectVertices[baseIndex +  7] = topleftx;
-		rectVertices[baseIndex +  8] = toplefty;
-		rectVertices[baseIndex +  9] = -5.0;
+		rectVertices.set(baseIndex +  7, topleftx);
+		rectVertices.set(baseIndex +  8, toplefty);
+		rectVertices.set(baseIndex +  9, -5.0);
 		
-		rectVertices[baseIndex + 14] = toprightx;
-		rectVertices[baseIndex + 15] = toprighty;
-		rectVertices[baseIndex + 16] = -5.0;
+		rectVertices.set(baseIndex + 14, toprightx);
+		rectVertices.set(baseIndex + 15, toprighty);
+		rectVertices.set(baseIndex + 16, -5.0);
 		
-		rectVertices[baseIndex + 21] = bottomrightx;
-		rectVertices[baseIndex + 22] = bottomrighty;
-		rectVertices[baseIndex + 23] = -5.0;
+		rectVertices.set(baseIndex + 21, bottomrightx);
+		rectVertices.set(baseIndex + 22, bottomrighty);
+		rectVertices.set(baseIndex + 23, -5.0);
 	}
 	
 	public function setRectColors(color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
-		rectVertices[baseIndex +  3] = color.R;
-		rectVertices[baseIndex +  4] = color.G;
-		rectVertices[baseIndex +  5] = color.B;
-		rectVertices[baseIndex +  6] = color.A;
+		rectVertices.set(baseIndex +  3, color.R);
+		rectVertices.set(baseIndex +  4, color.G);
+		rectVertices.set(baseIndex +  5, color.B);
+		rectVertices.set(baseIndex +  6, color.A);
 		
-		rectVertices[baseIndex + 10] = color.R;
-		rectVertices[baseIndex + 11] = color.G;
-		rectVertices[baseIndex + 12] = color.B;
-		rectVertices[baseIndex + 13] = color.A;
+		rectVertices.set(baseIndex + 10, color.R);
+		rectVertices.set(baseIndex + 11, color.G);
+		rectVertices.set(baseIndex + 12, color.B);
+		rectVertices.set(baseIndex + 13, color.A);
 		
-		rectVertices[baseIndex + 17] = color.R;
-		rectVertices[baseIndex + 18] = color.G;
-		rectVertices[baseIndex + 19] = color.B;
-		rectVertices[baseIndex + 20] = color.A;
+		rectVertices.set(baseIndex + 17, color.R);
+		rectVertices.set(baseIndex + 18, color.G);
+		rectVertices.set(baseIndex + 19, color.B);
+		rectVertices.set(baseIndex + 20, color.A);
 		
-		rectVertices[baseIndex + 24] = color.R;
-		rectVertices[baseIndex + 25] = color.G;
-		rectVertices[baseIndex + 26] = color.B;
-		rectVertices[baseIndex + 27] = color.A;
+		rectVertices.set(baseIndex + 24, color.R);
+		rectVertices.set(baseIndex + 25, color.G);
+		rectVertices.set(baseIndex + 26, color.B);
+		rectVertices.set(baseIndex + 27, color.A);
 	}
 	
 	private function setTriVertices(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
 		var baseIndex: Int = triangleBufferIndex * 7 * 3;
-		triangleVertices[baseIndex +  0] = x1;
-		triangleVertices[baseIndex +  1] = y1;
-		triangleVertices[baseIndex +  2] = -5.0;
+		triangleVertices.set(baseIndex +  0, x1);
+		triangleVertices.set(baseIndex +  1, y1);
+		triangleVertices.set(baseIndex +  2, -5.0);
 		
-		triangleVertices[baseIndex +  7] = x2;
-		triangleVertices[baseIndex +  8] = y2;
-		triangleVertices[baseIndex +  9] = -5.0;
+		triangleVertices.set(baseIndex +  7, x2);
+		triangleVertices.set(baseIndex +  8, y2);
+		triangleVertices.set(baseIndex +  9, -5.0);
 		
-		triangleVertices[baseIndex + 14] = x3;
-		triangleVertices[baseIndex + 15] = y3;
-		triangleVertices[baseIndex + 16] = -5.0;
+		triangleVertices.set(baseIndex + 14, x3);
+		triangleVertices.set(baseIndex + 15, y3);
+		triangleVertices.set(baseIndex + 16, -5.0);
 	}
 	
 	private function setTriColors(color: Color): Void {
 		var baseIndex: Int = triangleBufferIndex * 7 * 3;
-		triangleVertices[baseIndex +  3] = color.R;
-		triangleVertices[baseIndex +  4] = color.G;
-		triangleVertices[baseIndex +  5] = color.B;
-		triangleVertices[baseIndex +  6] = color.A;
+		triangleVertices.set(baseIndex +  3, color.R);
+		triangleVertices.set(baseIndex +  4, color.G);
+		triangleVertices.set(baseIndex +  5, color.B);
+		triangleVertices.set(baseIndex +  6, color.A);
 		
-		triangleVertices[baseIndex + 10] = color.R;
-		triangleVertices[baseIndex + 11] = color.G;
-		triangleVertices[baseIndex + 12] = color.B;
-		triangleVertices[baseIndex + 13] = color.A;
+		triangleVertices.set(baseIndex + 10, color.R);
+		triangleVertices.set(baseIndex + 11, color.G);
+		triangleVertices.set(baseIndex + 12, color.B);
+		triangleVertices.set(baseIndex + 13, color.A);
 		
-		triangleVertices[baseIndex + 17] = color.R;
-		triangleVertices[baseIndex + 18] = color.G;
-		triangleVertices[baseIndex + 19] = color.B;
-		triangleVertices[baseIndex + 20] = color.A;
+		triangleVertices.set(baseIndex + 17, color.R);
+		triangleVertices.set(baseIndex + 18, color.G);
+		triangleVertices.set(baseIndex + 19, color.B);
+		triangleVertices.set(baseIndex + 20, color.A);
 	}
 
 	private function drawBuffer(trisDone: Bool): Void {
@@ -592,59 +592,59 @@ class TextShaderPainter {
 		toprightx: Float, toprighty: Float,
 		bottomrightx: Float, bottomrighty: Float): Void {
 		var baseIndex: Int = bufferIndex * 9 * 4;
-		rectVertices[baseIndex +  0] = bottomleftx;
-		rectVertices[baseIndex +  1] = bottomlefty;
-		rectVertices[baseIndex +  2] = -5.0;
+		rectVertices.set(baseIndex +  0, bottomleftx);
+		rectVertices.set(baseIndex +  1, bottomlefty);
+		rectVertices.set(baseIndex +  2, -5.0);
 		
-		rectVertices[baseIndex +  9] = topleftx;
-		rectVertices[baseIndex + 10] = toplefty;
-		rectVertices[baseIndex + 11] = -5.0;
+		rectVertices.set(baseIndex +  9, topleftx);
+		rectVertices.set(baseIndex + 10, toplefty);
+		rectVertices.set(baseIndex + 11, -5.0);
 		
-		rectVertices[baseIndex + 18] = toprightx;
-		rectVertices[baseIndex + 19] = toprighty;
-		rectVertices[baseIndex + 20] = -5.0;
+		rectVertices.set(baseIndex + 18, toprightx);
+		rectVertices.set(baseIndex + 19, toprighty);
+		rectVertices.set(baseIndex + 20, -5.0);
 		
-		rectVertices[baseIndex + 27] = bottomrightx;
-		rectVertices[baseIndex + 28] = bottomrighty;
-		rectVertices[baseIndex + 29] = -5.0;
+		rectVertices.set(baseIndex + 27, bottomrightx);
+		rectVertices.set(baseIndex + 28, bottomrighty);
+		rectVertices.set(baseIndex + 29, -5.0);
 	}
 	
 	private function setRectTexCoords(left: Float, top: Float, right: Float, bottom: Float): Void {
 		var baseIndex: Int = bufferIndex * 9 * 4;
-		rectVertices[baseIndex +  3] = left;
-		rectVertices[baseIndex +  4] = bottom;
+		rectVertices.set(baseIndex +  3, left);
+		rectVertices.set(baseIndex +  4, bottom);
 		
-		rectVertices[baseIndex + 12] = left;
-		rectVertices[baseIndex + 13] = top;
+		rectVertices.set(baseIndex + 12, left);
+		rectVertices.set(baseIndex + 13, top);
 		
-		rectVertices[baseIndex + 21] = right;
-		rectVertices[baseIndex + 22] = top;
+		rectVertices.set(baseIndex + 21, right);
+		rectVertices.set(baseIndex + 22, top);
 		
-		rectVertices[baseIndex + 30] = right;
-		rectVertices[baseIndex + 31] = bottom;
+		rectVertices.set(baseIndex + 30, right);
+		rectVertices.set(baseIndex + 31, bottom);
 	}
 	
 	private function setRectColors(color: Color): Void {
 		var baseIndex: Int = bufferIndex * 9 * 4;
-		rectVertices[baseIndex +  5] = color.R;
-		rectVertices[baseIndex +  6] = color.G;
-		rectVertices[baseIndex +  7] = color.B;
-		rectVertices[baseIndex +  8] = color.A;
+		rectVertices.set(baseIndex +  5, color.R);
+		rectVertices.set(baseIndex +  6, color.G);
+		rectVertices.set(baseIndex +  7, color.B);
+		rectVertices.set(baseIndex +  8, color.A);
 		
-		rectVertices[baseIndex + 14] = color.R;
-		rectVertices[baseIndex + 15] = color.G;
-		rectVertices[baseIndex + 16] = color.B;
-		rectVertices[baseIndex + 17] = color.A;
+		rectVertices.set(baseIndex + 14, color.R);
+		rectVertices.set(baseIndex + 15, color.G);
+		rectVertices.set(baseIndex + 16, color.B);
+		rectVertices.set(baseIndex + 17, color.A);
 		
-		rectVertices[baseIndex + 23] = color.R;
-		rectVertices[baseIndex + 24] = color.G;
-		rectVertices[baseIndex + 25] = color.B;
-		rectVertices[baseIndex + 26] = color.A;
+		rectVertices.set(baseIndex + 23, color.R);
+		rectVertices.set(baseIndex + 24, color.G);
+		rectVertices.set(baseIndex + 25, color.B);
+		rectVertices.set(baseIndex + 26, color.A);
 		
-		rectVertices[baseIndex + 32] = color.R;
-		rectVertices[baseIndex + 33] = color.G;
-		rectVertices[baseIndex + 34] = color.B;
-		rectVertices[baseIndex + 35] = color.A;
+		rectVertices.set(baseIndex + 32, color.R);
+		rectVertices.set(baseIndex + 33, color.G);
+		rectVertices.set(baseIndex + 34, color.B);
+		rectVertices.set(baseIndex + 35, color.A);
 	}
 	
 	private function drawBuffer(): Void {

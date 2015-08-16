@@ -4,7 +4,7 @@ import flash.display3D.Context3DBufferUsage;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexData;
 
@@ -40,7 +40,7 @@ class VertexBuffer {
 	}
 	
 	public function unlock(): Void {
-		vertexBuffer.uploadFromByteArray(vertices.getData().bytes.getData(), 0, 0, vertexCount);
+		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, vertexCount);
 	}
 	
 	public function stride(): Int {

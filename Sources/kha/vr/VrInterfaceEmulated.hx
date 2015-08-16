@@ -1,7 +1,6 @@
 package kha.vr;
 
-
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import kha.Button;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
@@ -29,9 +28,7 @@ import kha.vr.TimeWarpParms;
 import kha.input.Gamepad;
 import kha.input.Mouse;
 
-
-class VrInterfaceEmulated extends kha.vr.VrInterface {
-	
+class VrInterfaceEmulated extends kha.vr.VrInterface {	
 	public var framebuffer: Framebuffer;
 	
 	private var orientation: Quaternion;
@@ -250,17 +247,17 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
 	private function setVertex(a: Float32Array, index: Int, pos: Vector3, uv: Vector2, color: Vector4) {
 		var base: Int = index * 9;
-		a[base + 0] = pos.x;
-		a[base + 1] = pos.y;
-		a[base + 2] = pos.z;
+		a.set(base + 0, pos.x);
+		a.set(base + 1, pos.y);
+		a.set(base + 2, pos.z);
 		base += 3;
-		a[base + 0] = uv.x;
-		a[base + 1] = uv.y;
+		a.set(base + 0, uv.x);
+		a.set(base + 1, uv.y);
 		base += 2;
-		a[base + 0] = color.x;
-		a[base + 1] = color.y;
-		a[base + 2] = color.z;
-		a[base + 3] = color.w;
+		a.set(base + 0, color.x);
+		a.set(base + 1, color.y);
+		a.set(base + 2, color.z);
+		a.set(base + 3, color.w);
 	}
 	
 	public function new() {
