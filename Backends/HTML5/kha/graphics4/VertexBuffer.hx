@@ -92,11 +92,11 @@ class VertexBuffer {
 			Sys.gl.enableVertexAttribArray(i);
 			Sys.gl.vertexAttribPointer(i, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
 			
-			// Not having the following lines and using instanced rendering causes the following error messages:
-			// [Chrome] glDrawElementsInstancedANGLE: attempt to draw with all attributes having non - zero divisors
-			// [Firefox] Error: WebGL: drawElementsInstanced: at least one vertex attribute divisor should be 0
-			var ext = Sys.gl.getExtension("ANGLE_instanced_arrays");
-			ext.vertexAttribDivisorANGLE(i, 0);
+			// Not having the following lines prevents instanced rendering in cases where there is no additional attribute with a non-zero divisor
+			var ext : Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
+			if (ext) {
+				ext.vertexAttribDivisorANGLE(i, 0);
+			}
 		}
 	}
 }

@@ -10,7 +10,7 @@ class ArrayBuffer {
 	private var structureSize: Int;
 	private var usage: Usage;
 	
-	public function new(indexCount: Int, structureSize: Int, usage: Usage, canRead: Bool = false) {
+	public function new(indexCount: Int, structureSize: Int, usage: Usage) {
 		this.usage = usage;
 		this.structureSize = structureSize;
 		mySize = indexCount;
