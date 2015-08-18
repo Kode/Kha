@@ -8,15 +8,16 @@ class ArrayBuffer {
 	private var data: Float32Array;
 	private var mySize: Int;
 	private var structureSize: Int;
+	private var structureCount: Int;
 	private var usage: Usage;
 	
-	public function new(indexCount: Int, structureSize: Int, usage: Usage) {
+	public function new(indexCount: Int, structureSize: Int, structureCount: Int, usage: Usage) {
 		this.usage = usage;
 		this.structureSize = structureSize;
+		this.structureCount = structureCount;
 		mySize = indexCount;
 		buffer = Sys.gl.createBuffer();
 		data = new Float32Array(indexCount);
-		data[indexCount - 1] = 0;
 	}
 	
 	public function lock(): Float32Array {
@@ -29,13 +30,17 @@ class ArrayBuffer {
 	}
 	
 	public function set(location : AttributeLocation, divisor : Int): Void {
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		Sys.gl.enableVertexAttribArray(cast(location, kha.js.graphics4.AttributeLocation).value);
-		Sys.gl.vertexAttribPointer(cast(location, kha.js.graphics4.AttributeLocation).value, structureSize, Sys.gl.FLOAT, false, 0, 0);
-		
 		var ext : Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
-		if (ext) {
-			ext.vertexAttribDivisorANGLE(cast(location, kha.js.graphics4.AttributeLocation).value, divisor);
+		var locationID : Dynamic = cast(location, kha.js.graphics4.AttributeLocation).value;
+		
+		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
+		for (i in 0...structureCount) {
+			Sys.gl.enableVertexAttribArray(locationID + i);
+			Sys.gl.vertexAttribPointer(locationID + i, structureSize, Sys.gl.FLOAT, false, 4 * structureSize * structureCount, i * 4 * structureSize);
+			
+			if (ext) {
+				ext.vertexAttribDivisorANGLE(locationID + i, divisor);
+			}
 		}
 	}
 	
