@@ -7,5 +7,6 @@ extern class Program {
 	public function link(structure: VertexStructure): Void;
 	
 	public function getConstantLocation(name: String): ConstantLocation;
+	public function getAttributeLocation(name: String): AttributeLocation;
 	public function getTextureUnit(name: String): TextureUnit;
 }
