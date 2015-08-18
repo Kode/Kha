@@ -314,12 +314,6 @@ class Graphics implements kha.graphics4.Graphics {
 		return true;
 	}
 	
-	public function setVertexAttribDivisor(location : kha.graphics4.AttributeLocation, divisor : Int) {
-		if (instancedRenderingAvailable()) {
-			instancedExtension.vertexAttribDivisorANGLE(cast(location, kha.js.graphics4.AttributeLocation).value, divisor);
-		}
-	}
-	
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
 			instancedExtension.drawElementsInstancedANGLE(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2, instanceCount);

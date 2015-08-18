@@ -5,6 +5,6 @@ extern class ArrayBuffer {
 	public function new(indexCount: Int, structureSize: Int, usage: Usage);
 	public function lock(): Float32Array;
 	public function unlock(): Void;
-	public function set(location : AttributeLocation): Void;
+	public function set(location: AttributeLocation, divisor: Int): Void;
 	public function count(): Int;
 }
