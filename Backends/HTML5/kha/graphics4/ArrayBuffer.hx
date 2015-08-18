@@ -28,10 +28,10 @@ class ArrayBuffer {
 		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, data, usage == Usage.DynamicUsage ? Sys.gl.DYNAMIC_DRAW : Sys.gl.STATIC_DRAW);
 	}
 	
-	public function set(location : Dynamic): Void {
+	public function set(location : AttributeLocation): Void {
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		Sys.gl.enableVertexAttribArray(location); // cast(location, kha.js.graphics4.ConstantLocation).value);
-		Sys.gl.vertexAttribPointer(location, structureSize, Sys.gl.FLOAT, false, 0, 0);
+		Sys.gl.enableVertexAttribArray(cast(location, kha.js.graphics4.AttributeLocation).value);
+		Sys.gl.vertexAttribPointer(cast(location, kha.js.graphics4.AttributeLocation).value, structureSize, Sys.gl.FLOAT, false, 0, 0);
 	}
 	
 	public function count(): Int {

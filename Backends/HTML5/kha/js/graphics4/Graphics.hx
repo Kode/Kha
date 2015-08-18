@@ -30,6 +30,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	private var renderTarget: WebGLImage;
+	public var instancedExtension: Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
 	
 	public function new(webgl: Bool, renderTarget: WebGLImage = null) {
 		this.renderTarget = renderTarget;
@@ -312,13 +313,11 @@ class Graphics implements kha.graphics4.Graphics {
 		return true;
 	}
 	
-	public function setVertexAttribDivisor(location : Dynamic, divisor : Int) {
-		var ext = Sys.gl.getExtension("ANGLE_instanced_arrays");
-		ext.vertexAttribDivisorANGLE(location, divisor);
+	public function setVertexAttribDivisor(location : kha.graphics4.AttributeLocation, divisor : Int) {
+		instancedExtension.vertexAttribDivisorANGLE(cast(location, kha.js.graphics4.AttributeLocation).value, divisor);
 	}
 	
-	public function drawIndexedVerticesInstanced(start: Int = 0, count: Int = -1, instanceCount : Int = 1) {
-		var ext = Sys.gl.getExtension("ANGLE_instanced_arrays");
-		ext.drawElementsInstancedANGLE(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2, instanceCount);
+	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
+		instancedExtension.drawElementsInstancedANGLE(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2, instanceCount);
 	}
 }
