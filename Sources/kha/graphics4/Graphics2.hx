@@ -810,6 +810,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.setProjection(projectionMatrix);
 	}
 	
+	#if cpp
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
@@ -837,6 +838,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.drawImage(img, Float32x4.get(px, 0), Float32x4.get(py, 0), Float32x4.get(px, 1), Float32x4.get(py, 1),
 			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), opacity, this.color);
 	}
+	#else
+	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
+		coloredPainter.end();
+		textPainter.end();
+		var xw: FastFloat = x + img.width;
+		var yh: FastFloat = y + img.height;
+		var p1 = transformation.multvec(new FastVector2(x, yh));
+		var p2 = transformation.multvec(new FastVector2(x, y));
+		var p3 = transformation.multvec(new FastVector2(xw, y));
+		var p4 = transformation.multvec(new FastVector2(xw, yh));
+		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
+	}
+	#end
 	
 	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		coloredPainter.end();
