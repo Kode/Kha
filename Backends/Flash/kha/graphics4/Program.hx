@@ -77,7 +77,7 @@ class Program {
 				vec[1] = field[1];
 				vec[2] = field[2];
 				vec[3] = field[3];
-				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, vec);
+				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, i, vec);
 			}
 		}
 		for (i in 0...28) {
@@ -88,7 +88,7 @@ class Program {
 				vec[1] = field[1];
 				vec[2] = field[2];
 				vec[3] = field[3];
-				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, vec);
+				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, i, vec);
 			}
 		}
 	}
