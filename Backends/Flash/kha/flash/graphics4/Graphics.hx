@@ -252,6 +252,14 @@ class Graphics implements kha.graphics4.Graphics {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}
 	
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
+		
+	}
+	
+	public function instancedRenderingAvailable(): Bool {
+		return false;
+	}
+	
 	public function createVertexShader(source: Blob): kha.graphics4.VertexShader {
 		return new VertexShader(source);
 	}
