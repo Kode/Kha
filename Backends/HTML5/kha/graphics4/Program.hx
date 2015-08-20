@@ -64,6 +64,10 @@ class Program {
 		return new kha.js.graphics4.ConstantLocation(Sys.gl.getUniformLocation(program, name));
 	}
 	
+	public function getAttributeLocation(name: String) : kha.graphics4.AttributeLocation {
+		return new kha.js.graphics4.AttributeLocation(Sys.gl.getAttribLocation(program, name));
+	}
+	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var index = findTexture(name);
 		if (index < 0) {

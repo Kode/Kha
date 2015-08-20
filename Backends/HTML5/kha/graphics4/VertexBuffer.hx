@@ -91,6 +91,12 @@ class VertexBuffer {
 		for (i in 0...sizes.length) {
 			Sys.gl.enableVertexAttribArray(i);
 			Sys.gl.vertexAttribPointer(i, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
+			
+			// Not having the following lines prevents instanced rendering in cases where there is no additional attribute with a non-zero divisor
+			var ext : Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
+			if (ext) {
+				ext.vertexAttribDivisorANGLE(i, 0);
+			}
 		}
 	}
 }

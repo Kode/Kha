@@ -36,6 +36,7 @@ interface Graphics {
 	function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap;
 	
 	function renderTargetsInvertedY(): Bool;
+	function instancedRenderingAvailable(): Bool;
 	//function renderToTexture(texture: Texture): Void;
 	//function renderToBackbuffer(): Void;
 	
@@ -54,6 +55,7 @@ interface Graphics {
 	function setMatrix(location: ConstantLocation, value: Matrix4): Void;
 	
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
+	function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1): Void;
 	
 	function flush(): Void;
 }

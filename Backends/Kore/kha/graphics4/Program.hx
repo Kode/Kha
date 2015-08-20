@@ -85,6 +85,10 @@ class Program {
 		
 	}
 	
+	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
+		return null; // TODO
+	}
+	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.kore.graphics4.TextureUnit();
 		initTextureUnit(unit, name);

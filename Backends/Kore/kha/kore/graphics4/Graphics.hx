@@ -194,6 +194,10 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 	
+	public function instancedRenderingAvailable(): Bool {
+		return false; // TODO
+	}
+	
 	@:functionCode('
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::U, (Kore::TextureAddressing)uWrap);
 		Kore::Graphics::setTextureAddressing(unit->unit, Kore::V, (Kore::TextureAddressing)vWrap);
@@ -423,6 +427,10 @@ class Graphics implements kha.graphics4.Graphics {
 	')
 	public function drawSomeIndexedVertices(start: Int, count: Int): Void {
 		
+	}
+	
+	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1): Void {
+		// TODO
 	}
 	
 	@:functionCode('Kore::Graphics::setRenderTarget(target->renderTarget, 0);')

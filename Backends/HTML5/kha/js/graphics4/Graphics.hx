@@ -30,6 +30,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	private var renderTarget: WebGLImage;
+	private var instancedExtension: Dynamic;
 	
 	public function new(webgl: Bool, renderTarget: WebGLImage = null) {
 		this.renderTarget = renderTarget;
@@ -37,6 +38,7 @@ class Graphics implements kha.graphics4.Graphics {
 			Sys.gl.enable(Sys.gl.BLEND);
 			Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
 			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
+			instancedExtension = Sys.gl.getExtension("ANGLE_instanced_arrays");
 		}
 	}
 
@@ -310,5 +312,15 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function renderTargetsInvertedY(): Bool {
 		return true;
+	}
+	
+	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
+		if (instancedRenderingAvailable()) {
+			instancedExtension.drawElementsInstancedANGLE(Sys.gl.TRIANGLES, count == -1 ? indicesCount : count, Sys.gl.UNSIGNED_SHORT, start * 2, instanceCount);
+		}
+	}
+	
+	public function instancedRenderingAvailable(): Bool {
+		return instancedExtension;
 	}
 }
