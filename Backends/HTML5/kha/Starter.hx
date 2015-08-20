@@ -58,11 +58,11 @@ class Starter {
 		mouse = new kha.input.Mouse();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
+		gamepadStates = new Array<GamepadStates>();
 		for (i in 0...maxGamepads) {
 			gamepads[i] = new Gamepad(i);
+			gamepadStates[i] = new GamepadStates();
 		}
-		gamepadStates = new Array<GamepadStates>();
-		gamepadStates.push(new GamepadStates());
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		for (i in 0...256) pressedKeys.push(null);
@@ -95,16 +95,16 @@ class Starter {
 	static function checkGamepad(pad: Dynamic) {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
-				if (gamepadStates[0].axes[i] != pad.axes[i]) {
-					gamepadStates[0].axes[i] = pad.axes[i];
+				if (gamepadStates[pad.index].axes[i] != pad.axes[i]) {
+					gamepadStates[pad.index].axes[i] = pad.axes[i];
 					gamepads[pad.index].sendAxisEvent(i, pad.axes[i]);
 				}
 			}
 		}
 		for (i in 0...pad.buttons.length) {
 			if (pad.buttons[i] != null) {
-				if (gamepadStates[0].buttons[i] != pad.buttons[i].value) {
-					gamepadStates[0].buttons[i] = pad.buttons[i].value;
+				if (gamepadStates[pad.index].buttons[i] != pad.buttons[i].value) {
+					gamepadStates[pad.index].buttons[i] = pad.buttons[i].value;
 					gamepads[pad.index].sendButtonEvent(i, pad.buttons[i].value);
 				}
 			}
