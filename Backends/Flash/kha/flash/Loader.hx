@@ -42,27 +42,38 @@ class Loader extends kha.Loader {
 		
 		#else
 		
-		/*var urlRequest = new URLRequest(desc.file + ".mp3");
-		var music = new flash.media.Sound();
-		music.addEventListener(Event.COMPLETE, function(e : Event) {
-			done(new Music(music));
-		});
-		music.load(urlRequest);*/
-		
+		var mp3file: String = null;
+		var oggfile: String = null;
 		for (i in 0...desc.files.length) {
 			var file: String = desc.files[i];
 			if (file.endsWith(".ogg")) {
-				var urlRequest = new URLRequest(file);
-				var urlLoader = new URLLoader();
-				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-					done(new Music(Bytes.ofData(urlLoader.data)));
-				});
-				urlLoader.load(urlRequest);
-				break;
+				oggfile = file;
+			}
+			if (file.endsWith(".mp3")) {
+				mp3file = file;
 			}
 		}
 		
+		var urlRequest = new URLRequest(oggfile);
+		var urlLoader = new URLLoader();
+		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+			var music = new Music(Bytes.ofData(urlLoader.data));
+			if (mp3file == null) {
+				done(music);
+			}
+			else {
+				var urlRequest = new URLRequest(mp3file);
+				var flashmusic = new flash.media.Sound();
+				flashmusic.addEventListener(Event.COMPLETE, function(e: Event) {
+					music._nativemusic = flashmusic;
+					done(music);
+				});
+				flashmusic.load(urlRequest);
+			}
+		});
+		urlLoader.load(urlRequest);
+
 		#end
 	}
 	

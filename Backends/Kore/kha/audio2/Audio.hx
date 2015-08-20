@@ -36,4 +36,8 @@ class Audio {
 	}
 
 	public static var audioCallback: Int->Buffer->Void;
+	
+	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
+		return null;
+	}
 }

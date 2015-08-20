@@ -6,7 +6,7 @@ import haxe.io.Bytes;
 @:headerCode('#include <Kore/Audio/stb_vorbis.h>')
 
 @:headerClassCode('stb_vorbis* vorbis;')
-class MusicChannel {
+class MusicChannel implements kha.audio1.MusicChannel {
 	private var atend: Bool = false;
 	private var loop: Bool;
 	private var myVolume: Float;

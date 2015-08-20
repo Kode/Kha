@@ -6,7 +6,7 @@ import haxe.io.BytesOutput;
 import kha.audio2.ogg.vorbis.Reader;
 
 #if !cpp
-class MusicChannel {
+class MusicChannel implements kha.audio1.MusicChannel {
 	private var reader: Reader;
 	private var atend: Bool = false;
 	private var loop: Bool;

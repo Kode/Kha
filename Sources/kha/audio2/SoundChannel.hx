@@ -2,7 +2,7 @@ package kha.audio2;
 
 import haxe.ds.Vector;
 
-class SoundChannel {
+class SoundChannel implements kha.audio1.SoundChannel {
 	public var data: Vector<Float>;
 	private var myVolume: Float;
 	private var myPosition: Int;

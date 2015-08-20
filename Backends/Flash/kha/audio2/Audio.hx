@@ -1,6 +1,79 @@
 package kha.audio2;
 
+import flash.events.Event;
 import flash.events.SampleDataEvent;
+
+/*
+public function play(): Void;
+public function pause(): Void;
+public function stop(): Void;
+public var length(get, null): Int; // Miliseconds
+private function get_length(): Int;
+public var position(get, null): Int; // Miliseconds
+private function get_position(): Int;
+public var volume(get, set): Float;
+private function get_volume(): Float;
+private function set_volume(value: Float): Float;
+public var finished(get, null): Bool;
+private function get_finished(): Bool;
+*/
+class HardwareMusicChannel implements kha.audio1.MusicChannel {
+	private var music: flash.media.Sound;
+	private var channel: flash.media.SoundChannel;
+	private var running: Bool;
+	private var loop: Bool;
+	private var myVolume: Float;
+	
+	public function new(music: flash.media.Sound, loop: Bool) {
+		this.music = music;
+		this.loop = loop;
+		running = false;
+		myVolume = 1;
+	}
+	
+	public function play(): Void {
+		if (channel != null) channel.stop();
+		running = true;
+		channel = music.play(0, loop ? 2147483647 : 1);
+		channel.addEventListener(Event.SOUND_COMPLETE, function(_) { running = false; } );
+	}
+	
+	public function pause(): Void {
+		
+	}
+	
+	public function stop(): Void {
+		if (channel != null) channel.stop();
+	}
+	
+	public var length(get, null): Int;
+	
+	private function get_length(): Int {
+		return Std.int(music.length * 10) * 10; // FIXME! there seems to be a timing issue.
+	}
+	
+	public var position(get, null): Int;
+	
+	private function get_position(): Int {
+		return Std.int(channel.position * 10) * 10; // FIXME! there seems to be a timing issue.
+	}
+	
+	public var volume(get, set): Float;
+
+	private function get_volume(): Float {
+		return myVolume;
+	}
+
+	private function set_volume(value: Float): Float {
+		return myVolume = value;
+	}
+	
+	public var finished(get, null): Bool;
+	
+	private function get_finished(): Bool {
+		return !running;
+	}
+}
 
 class Audio {
 	private static var buffer: Buffer;
@@ -38,7 +111,12 @@ class Audio {
 	
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
+	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
+		if (music._nativemusic != null) {
+			var channel = new HardwareMusicChannel(cast music._nativemusic, loop);
+			channel.play();
+			return channel;
+		}
 		return null;
 	}
 }

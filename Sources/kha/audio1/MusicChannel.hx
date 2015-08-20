@@ -1,6 +1,6 @@
 package kha.audio1;
 
-extern class MusicChannel {
+interface MusicChannel {
 	public function play(): Void;
 	public function pause(): Void;
 	public function stop(): Void;
