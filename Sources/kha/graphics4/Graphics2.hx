@@ -961,7 +961,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override private function setProgram(program: Program): Void {
-		endDrawing();
+		flush();
 		imagePainter.program = program;
 		coloredPainter.program = program;
 		textPainter.program = program;
@@ -969,7 +969,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		endDrawing();
+		flush();
 		imagePainter.sourceBlend = source;
 		imagePainter.destinationBlend = destination;
 		coloredPainter.sourceBlend = source;
@@ -989,14 +989,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		g.clear(color == null ? Color.Black : color);
 	}
 	
-	private function endDrawing(): Void {
+	public override function flush(): Void {
 		imagePainter.end();
 		textPainter.end();
 		coloredPainter.end();
 	}
 	
 	public override function end(): Void {
-		endDrawing();
+		flush();
 		g.end();
 	}
 	

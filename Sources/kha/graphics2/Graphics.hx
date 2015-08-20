@@ -11,6 +11,7 @@ import kha.math.Matrix3;
 class Graphics {
 	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
 	public function end(): Void { }
+	public function flush(): Void { }
 	
 	//scale-filtering
 	//draw/fillPolygon
