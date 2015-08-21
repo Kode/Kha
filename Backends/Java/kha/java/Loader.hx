@@ -34,16 +34,16 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void): Void {
-		done(new Music(desc.file + ".wav"));
+		done(new Music(desc.files[0]));
 	}
 
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void): Void {
-		done(new Sound(desc.file + ".wav"));
+		done(new Sound(desc.files[0]));
 	}
 
 	override function loadImage(desc: Dynamic, done: Image -> Void): Void {
-		var image = new kha.Image(desc.file);
-		loadRealImage(desc.file, image);
+		var image = new kha.Image(desc.files[0]);
+		loadRealImage(desc.files[0], image);
 		done(image);
 	}
 	
@@ -59,7 +59,7 @@ class Loader extends kha.Loader {
 	}
 
 	override function loadBlob(desc: Dynamic, done: Blob -> Void): Void {
-		loadRealBlob(desc.file, done);
+		loadRealBlob(desc.files[0], done);
 	}
 	
 	@:functionCode('
