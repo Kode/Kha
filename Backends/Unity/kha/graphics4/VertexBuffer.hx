@@ -1,7 +1,7 @@
 package kha.graphics4;
 
 import cs.NativeArray;
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import unityEngine.Mesh;
 import unityEngine.Vector2;
 import unityEngine.Vector3;
@@ -57,6 +57,7 @@ class VertexBuffer {
 	}
 
 	public function unlock(): Void {
+		var array = this.array.data();
 		//mesh.Clear(true);
 		var offset: Int = 0;
 		var uvindex: Int = 0;

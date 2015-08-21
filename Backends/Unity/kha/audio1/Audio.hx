@@ -9,6 +9,6 @@ class Audio {
 	}
 	
 	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
-		return null;
+		return new UnityMusicChannel();
 	}
 }

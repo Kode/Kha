@@ -31,4 +31,8 @@ class Program {
 	public function getTextureUnit(name: String): TextureUnit {
 		return new kha.unity.TextureUnit(name);
 	}
+	
+	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
+		return null;
+	}
 }

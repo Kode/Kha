@@ -207,4 +207,12 @@ class Graphics implements kha.graphics4.Graphics {
 			}
 		}
 	}
+	
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
+		
+	}
+	
+	public function instancedRenderingAvailable(): Bool {
+		return false;
+	}
 }
