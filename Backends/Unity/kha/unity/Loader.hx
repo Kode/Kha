@@ -9,11 +9,11 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadImage(desc: Dynamic, done: Image -> Void) { 
-		done(Image.fromFilename(desc.file, desc.original_width, desc.original_height));
+		done(Image.fromFilename(desc.files[0], desc.original_width, desc.original_height));
 	}
 	
 	override public function loadBlob (desc: Dynamic, done: Blob  -> Void) {
-		done(new Blob(Bytes.ofData(UnityBackend.loadBlob(desc.file))));
+		done(new Blob(Bytes.ofData(UnityBackend.loadBlob(desc.files[0]))));
 	}
 	
 	override public function loadSound(desc: Dynamic, done: Sound -> Void) {
