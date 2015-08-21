@@ -6,13 +6,11 @@ import system.UriKind;
 import system.windows.controls.MediaElement;
 import system.windows.controls.MediaState;
 
-class SoundChannel {
-	
+class WpfSoundChannel implements kha.audio1.SoundChannel {
 	private var player: MediaElement;
-	
 	private var hasFinished: Bool = false;
 	
-	public function new(filename : String) {
+	public function new(filename: String) {
 		this.player = new MediaElement();
 		addEventHandlers();
 		player.LoadedBehavior = MediaState.Manual;
@@ -70,8 +68,7 @@ class SoundChannel {
 	
 	public var finished(get, null): Bool;
 	
-	function get_finished(): Bool 
-	{
+	function get_finished(): Bool {
 		return hasFinished;
 	}
 	
@@ -79,6 +76,7 @@ class SoundChannel {
 		player.MediaEnded += OnMediaEnded;
 	')
 	function addEventHandlers() {
+		
 	}
 	
 	function OnMediaEnded(obj : Dynamic, e : RoutedEventArgs) {
