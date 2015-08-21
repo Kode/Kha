@@ -5,8 +5,12 @@ import js.Browser;
 import js.html.XMLHttpRequest;
 
 class WebAudioMusic extends kha.Music {
-	public function new(filename: String, done: kha.Music -> Void) {
+	public var aemusic: kha.js.Music;
+	
+	public function new(aemusic: kha.js.Music, filename: String, done: kha.Music -> Void) {
 		super();
+		
+		this.aemusic = aemusic;
 		
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);

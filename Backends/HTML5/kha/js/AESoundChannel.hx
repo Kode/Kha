@@ -3,7 +3,7 @@ package kha.js;
 import js.html.AudioElement;
 import kha.audio1.SoundChannel;
 
-class AESoundChannel {
+class AESoundChannel implements kha.audio1.SoundChannel {
 	private var element: AudioElement;
 	
 	public function new(sound: Sound) {

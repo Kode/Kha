@@ -21,16 +21,20 @@ class Loader extends kha.Loader {
 	}
 		
 	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		if (Sys._hasWebAudio) {
-			for (i in 0...desc.files.length) {
-				var file: String = desc.files[i];
-				if (file.endsWith(".ogg")) {
-					new WebAudioMusic(file, done);
-					break;
+		new Music(desc.files, function (music: kha.Music) {
+			if (Sys._hasWebAudio) {
+				for (i in 0...desc.files.length) {
+					var file: String = desc.files[i];
+					if (file.endsWith(".ogg")) {
+						new WebAudioMusic(cast music, file, done);
+						break;
+					}
 				}
 			}
-		}
-		else new Music(desc.files, done);
+			else {
+				done(music);
+			}
+		});
 	}
 	
 	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
