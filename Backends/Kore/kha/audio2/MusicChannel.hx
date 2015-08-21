@@ -41,7 +41,7 @@ class MusicChannel implements kha.audio1.MusicChannel {
 		
 	}
 
-	public function nextSamples(samples: Vector<FastFloat>, length: Int): Void {
+	public function nextSamples(samples: Vector<FastFloat>, length: Int, sampleRate: Int): Void {
 		if (paused) {
 			for (i in 0...length) {
 				samples[i] = 0;
