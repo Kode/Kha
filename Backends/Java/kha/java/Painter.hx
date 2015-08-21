@@ -3,6 +3,7 @@ package kha.java;
 import kha.Color;
 import kha.Font;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.Rotation;
 
@@ -140,7 +141,7 @@ class Painter extends kha.graphics2.Graphics {
 			((Number)transformation._00).floatValue(), ((Number)transformation._01).floatValue(), ((Number)transformation._10).floatValue(),
 			((Number)transformation._11).floatValue(), ((Number)transformation._20).floatValue(), ((Number)transformation._21).floatValue()));
 	')
-	override function setTransformation(transformation: Matrix3): Void {
+	override function setTransformation(transformation: FastMatrix3): Void {
 		
 	}
 }

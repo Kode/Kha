@@ -123,7 +123,7 @@ class Sound extends kha.Sound {
 		thread.play(index);
 		return null;
 	')
-	override public function play(): SoundChannel {
+	public function play(): SoundChannel {
 		return null;
 	}
 	
