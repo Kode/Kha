@@ -1,19 +1,18 @@
 package kha.graphics4;
 
 import android.opengl.GLES20;
-import haxe.io.Float32Array;
 import java.NativeArray;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	private var buffer: Int;
-	private var data: FloatBuffer;
-	private var lockedData: Float32Array;
+	private var data: Float32Array;
 	private var mySize: Int;
 	private var myStride: Int;
 	private var sizes: Array<Int>;
@@ -38,8 +37,7 @@ class VertexBuffer {
 		}
 	
 		buffer = createBuffer();
-		lockedData = new Float32Array(Std.int(vertexCount * myStride / 4));
-		data = ByteBuffer.allocateDirect(vertexCount * myStride).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		data = new Float32Array(Std.int(vertexCount * myStride / 4));
 		
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
@@ -83,15 +81,12 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return lockedData;
+		return data;
 	}
 	
 	public function unlock(): Void {
-		for (i in 0...Std.int(mySize * myStride / 4)) {
-			data.put(i, lockedData[i]);
-		}
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffer);
-		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mySize * myStride, data, usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
+		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mySize * myStride, data.data(), usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
 	}
 	
 	public function stride(): Int {

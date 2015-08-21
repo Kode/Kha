@@ -301,6 +301,14 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indexBuffer.count() : count, GLES20.GL_UNSIGNED_SHORT, indexBuffer.data);
 	}
 	
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
+		
+	}
+	
+	public function instancedRenderingAvailable(): Bool {
+		return false;
+	}
+	
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
 		
 	}
