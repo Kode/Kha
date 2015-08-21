@@ -18,8 +18,8 @@ class Mouse {
 	public function remove(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Void, wheelListener: Int->Void): Void {
 		if (downListener != null) downListeners.remove(downListener);
 		if (upListener != null) upListeners.remove(upListener);
-		if (moveListener != null) moveListeners.push(moveListener);
-		if (wheelListener != null) wheelListeners.push(wheelListener);
+		if (moveListener != null) moveListeners.remove(moveListener);
+		if (wheelListener != null) wheelListeners.remove(wheelListener);
 	}
 	
 	private static var instance: Mouse;
