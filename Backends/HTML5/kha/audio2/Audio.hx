@@ -29,12 +29,11 @@ class Audio {
 	
 	@:noCompletion
 	public static function _init(): Bool {
-		var bufferSize = 1024 * 2;
-		
-		buffer = new Buffer(bufferSize * 4, 2, 44100);
-		
 		initContext();
 		if (_context == null) return false;
+		
+		var bufferSize = 1024 * 2;
+		buffer = new Buffer(bufferSize * 4, 2, Std.int(_context.sampleRate));
 		
 		processingNode = _context.createScriptProcessor(bufferSize, 0, 2);
 		processingNode.onaudioprocess = function (e: AudioProcessingEvent) {
