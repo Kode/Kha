@@ -9,15 +9,15 @@ package kha.math;
 
 // Mersenne twister
 class Random {
-	public static function init(seed: Int): Void {
+	public function new(seed: Int): Void {
 		MT = new Array<Int>();
 		MT[624 - 1] = 0;
 		MT[0] = seed;
 		for (i in 1...624) MT[i] = 0x6c078965 * (MT[i - 1] ^ (MT[i - 1] >> 30)) + i;
 	}
 	
-	public static function get(): Int {
-		if (index == 0) generateNumbers();
+	public function Get(): Int {
+		if (index == 0) GenerateNumbers();
 
 		var y: Int = MT[index];
 		y = y ^ (y >> 11);
@@ -29,22 +29,40 @@ class Random {
 		return y;
 	}
 	
-	public static function getUpTo(max: Int): Int {
+	public function GetUpTo(max: Int): Int {
 		return get() % (max + 1);
 	}
 	
-	public static function getIn(min: Int, max: Int): Int {
+	public function GetIn(min: Int, max: Int): Int {
 		return get() % (max + 1 - min) + min;
 	}
 	
-	private static var MT: Array<Int>;
-	private static var index: Int = 0;
+	private var MT: Array<Int>;
+	private var index: Int = 0;
 	
-	private static function generateNumbers(): Void {
+	private function GenerateNumbers(): Void {
 		for (i in 0...624) {
 			var y: Int = (MT[i] & 1) + (MT[(i + 1) % 624]) & 0x7fffffff;
 			MT[i] = MT[(i + 397) % 624] ^ (y >> 1);
 			if ((y % 2) != 0) MT[i] = MT[i] ^ 0x9908b0df;
 		}
+	}
+	
+	public static var Default: Random;
+	
+	public static function init(seed: Int): Void {
+		Default = new Random(seed);
+	}
+	
+	public static function get(): Int {
+		return Default.Get();
+	}
+	
+	public static function getUpTo(max: Int): Int {
+		return Default.GetUpTo(max);
+	}
+	
+	public static function getIn(min: Int, max: Int): Int {
+		return Default.GetIn(min, max);
 	}
 }
