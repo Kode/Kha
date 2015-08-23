@@ -21,7 +21,7 @@ class Graphics {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
 	}
 	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
-		drawScaledSubImage(img, sx, sy, sw, sh, x, y, img.width, img.height);
+		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh);
 	}
 	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
