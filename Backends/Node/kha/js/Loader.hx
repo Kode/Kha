@@ -54,7 +54,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return null;
+		return new EmptyFont(name, style, size);
 	}
 
 	override public function loadURL(url: String): Void {
