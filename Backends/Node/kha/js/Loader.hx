@@ -48,7 +48,7 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
-		Fs.readFile(desc.file, function (error: Error, data: Buffer) {
+		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
 			done(Blob.fromBuffer(data));
 		});
 	}

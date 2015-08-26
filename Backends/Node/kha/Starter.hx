@@ -53,7 +53,9 @@ class Starter {
 		var lastTime = 0;
 		Node.setInterval(function () {
 			Scheduler.executeFrame();
-			Session.the().update();
+			if (Session.the() != null) {
+				Session.the().update();
+			}
 			var time = Scheduler.time();
 			if (time >= lastTime + 10) {
 				lastTime += 10;
