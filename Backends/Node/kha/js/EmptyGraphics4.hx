@@ -149,4 +149,12 @@ class EmptyGraphics4 implements Graphics {
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		
 	}
+	
+	public function instancedRenderingAvailable(): Bool {
+		return true;
+	}
+	
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
+		
+	}
 }
