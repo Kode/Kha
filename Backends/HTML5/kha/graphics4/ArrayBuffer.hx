@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 
 class ArrayBuffer {

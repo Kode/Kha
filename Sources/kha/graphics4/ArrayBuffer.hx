@@ -1,5 +1,5 @@
 package kha.graphics4;
-import haxe.io.Float32Array;
+import kha.arrays.Float32Array;
 
 extern class ArrayBuffer {
 	public function new(indexCount: Int, structureSize: Int, structureCount: Int, usage: Usage);
