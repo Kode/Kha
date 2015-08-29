@@ -378,11 +378,19 @@ int kore(int argc, char** argv) {
 	Kore::log(Kore::Info, "Initializing Haxe libraries");
 	hxcpp_set_top_of_stack();
 
+// TODO: remove Graphics::begin/end/swapBuffers when loading is async
+#ifndef VR_RIFT
+	Kore::Graphics::begin();
+#endif
 	const char* err = hxRunLibrary();
 	if (err) {
 		fprintf(stderr, "Error %s\n", err);
 		return 1;
 	}
+#ifndef VR_RIFT
+	Kore::Graphics::end();
+	Kore::Graphics::swapBuffers();
+#endif
 
 	Kore::Audio::audioCallback = mix;
 	Kore::Audio::init();

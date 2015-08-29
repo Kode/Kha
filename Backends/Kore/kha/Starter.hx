@@ -58,7 +58,7 @@ class Starter {
 	}
 	
 	public function loadFinished() {
-		trace("Starter.hx: Load finished");
+		trace("Project files loaded.");
 		Loader.the.initProject();
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
@@ -66,8 +66,7 @@ class Starter {
 		Configuration.screen().setInstance();
 		Scheduler.start();
 		
-		
-		
+		/*
 		#if ANDROID
 			#if VR_GEAR_VR
 				kha.vr.VrInterface.instance = new kha.kore.vr.VrInterface();
@@ -84,24 +83,20 @@ class Starter {
 				kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
 			#end
 		#end
+		*/
 		
-		trace("Calling gameToStart.loadFinished()");
+		trace("Initializing application.");
 		gameToStart.loadFinished();
-
 		
-		#if !VR_GEAR_VR
-		#if !VR_RIFT
+		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-		
 		#end
-		#end
-		
-		
 	}
 
 	public static function frame() {
+		/*
 		#if !ANDROID
 		#if !VR_RIFT
 			if (framebuffer == null) return;
@@ -114,6 +109,8 @@ class Starter {
 				vrInterface.framebuffer = framebuffer;
 			#end
 		#end
+		*/
+		
 		Scheduler.executeFrame();
 		Game.the.render(framebuffer);
 	}
