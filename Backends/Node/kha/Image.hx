@@ -43,6 +43,7 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
+	public function at(x: Int, y: Int): Color { return 0; }
 	public function unload(): Void { }
 	public function lock(level: Int = 0): Bytes { return null; }
 	public function unlock(): Void { }

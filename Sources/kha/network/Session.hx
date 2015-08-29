@@ -26,7 +26,7 @@ class Session {
 	public static inline var ENTITY_UPDATES = 1;
 	public static inline var CONTROLLER_UPDATES = 2;
 	
-	private static var instance: Session;
+	private static var instance: Session = null;
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
 	private var players: Int;

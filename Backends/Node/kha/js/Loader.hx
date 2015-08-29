@@ -48,13 +48,13 @@ class Loader extends kha.Loader {
 	}
 	
 	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
-		Fs.readFile(desc.file, function (error: Error, data: Buffer) {
+		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
 			done(Blob.fromBuffer(data));
 		});
 	}
 	
 	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return null;
+		return new EmptyFont(name, style, size);
 	}
 
 	override public function loadURL(url: String): Void {
