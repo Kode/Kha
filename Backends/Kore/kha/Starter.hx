@@ -284,6 +284,11 @@ class Starter {
 		Game.the.mouseMove(x, y);
 		mouse.sendMoveEvent(x, y);
 	}
+
+	public static function mouseWheel(delta: Int): Void {
+		Game.the.mouseWheel(delta);
+		mouse.sendWheelEvent(delta);
+	}
 	
 	public static function gamepadAxis(axis: Int, value: Float): Void {
 		gamepad.sendAxisEvent(axis, value);
