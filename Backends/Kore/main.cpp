@@ -146,6 +146,10 @@ namespace {
 		Starter_obj::mouseMove(x, y);
 	}
 
+	void mouseWheel(int delta) {
+		Starter_obj::mouseWheel(delta);
+	}
+
 	void accelerometerChanged(float x, float y, float z) {
 		Sensor_obj::_changed(0, x, y, z);
 	}
@@ -399,6 +403,7 @@ int kore(int argc, char** argv) {
 	Kore::Mouse::the()->Press = mouseDown;
 	Kore::Mouse::the()->Release = mouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
+	Kore::Mouse::the()->Scroll = mouseWheel;
 	Kore::Gamepad::get(0)->Axis = gamepadAxis;
 	Kore::Gamepad::get(0)->Button = gamepadButton;
 	Kore::Surface::the()->TouchStart = touchStart;
