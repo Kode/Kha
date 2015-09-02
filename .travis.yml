@@ -1,7 +1,4 @@
 sudo: false
-language: node_js
-node_js:
-  - "0.12"
 os:
   - linux
   - osx
@@ -15,4 +12,6 @@ compiler:
   - clang
 before_script:
   - git submodule update --init --recursive
-script: node make.js --kha . --from Tests/Empty --compile
+  - git clone https://github.com/ktxsoftware/iojs_bin.git
+  - iojs_bin/copysysbin.sh
+script: iojs_bin/iojs make.js --kha . --from Tests/Empty --compile
