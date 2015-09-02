@@ -1,4 +1,7 @@
 sudo: false
+os:
+  - linux
+  - osx
 addons:
   apt:
     packages:
@@ -9,5 +12,4 @@ compiler:
   - clang
 before_script:
   - git submodule update --init --recursive
-  - git clone https://github.com/ktxsoftware/iojs_bin.git
-script: iojs_bin/iojs-linux64 make.js --kha . --from Tests/Empty --compile
+script: node make.js --kha . --from Tests/Empty --compile
