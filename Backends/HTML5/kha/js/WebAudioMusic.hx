@@ -17,7 +17,8 @@ class WebAudioMusic extends kha.Music {
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
-			Browser.alert("loadMusic failed");
+			trace("Error loading " + filename);
+			Browser.console.log("loadMusic failed");
 		};
 		request.onload = function() {
 			var arrayBuffer = request.response;

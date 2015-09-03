@@ -74,6 +74,7 @@ class WebAudioSound extends kha.Sound {
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
+			trace("Error loading " + filename);
 			Browser.console.log("loadSound failed");
 		};
 		request.onload = function() {
