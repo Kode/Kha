@@ -63,7 +63,7 @@ class WebGLImage extends Image {
 		
 	override private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
-			graphics4 = new Graphics(true, this);
+			graphics4 = new Graphics(this);
 		}
 		return graphics4;
 	}
