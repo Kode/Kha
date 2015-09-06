@@ -15,8 +15,9 @@ class FastVector2 {
 	}
 	
 	private function set_length(length: FastFloat): FastFloat {
-		if (get_length() == 0) return 0;
-		var mul = length / get_length();
+		var currentLength = get_length();
+		if (currentLength == 0) return 0;
+		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;
 		return length;
@@ -43,8 +44,6 @@ class FastVector2 {
 	}
 	
 	@:extern public inline function normalize(): Void {
-		var l = 1 / length;
-		x *= l;
-		y *= l;
+		length = 1;
 	}
 }

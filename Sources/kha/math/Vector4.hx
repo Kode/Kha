@@ -19,8 +19,9 @@ class Vector4 {
 	}
 	
 	private function set_length(length: Float): Float {
-		if (get_length() == 0) return 0;
-		var mul = length / get_length();
+		var currentLength = get_length();
+		if (currentLength == 0) return 0;
+		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;
 		z *= mul;
@@ -41,10 +42,6 @@ class Vector4 {
 	}
 	
 	@:extern public inline function normalize(): Void {
-		var l = 1 / length;
-		x *= l;
-		y *= l;
-		z *= l;
-		w *= l;
+		length = 1;
 	}
 }
