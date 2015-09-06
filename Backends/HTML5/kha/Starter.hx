@@ -144,7 +144,7 @@ class Starter {
 		var heightTransform: Float = canvas.height / Loader.the.height;
 		var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
-			var g4 = gl ? new kha.js.graphics4.Graphics(true) : null;
+			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
 			frame = new Framebuffer(null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
 		}

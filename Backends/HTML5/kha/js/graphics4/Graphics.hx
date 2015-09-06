@@ -32,17 +32,14 @@ class Graphics implements kha.graphics4.Graphics {
 	private var renderTarget: WebGLImage;
 	private var instancedExtension: Dynamic;
 	
-	public function new(webgl: Bool, renderTarget: WebGLImage = null) {
+	public function new(renderTarget: WebGLImage = null) {
 		this.renderTarget = renderTarget;
-		if (webgl) {
-			Sys.gl.enable(Sys.gl.BLEND);
-			Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
-			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
-			instancedExtension = Sys.gl.getExtension("ANGLE_instanced_arrays");
-		}
+		instancedExtension = Sys.gl.getExtension("ANGLE_instanced_arrays");
 	}
 
 	public function begin(): Void {
+		Sys.gl.enable(Sys.gl.BLEND);
+		Sys.gl.blendFunc(Sys.gl.SRC_ALPHA, Sys.gl.ONE_MINUS_SRC_ALPHA);
 		if (renderTarget == null) {
 			Sys.gl.bindFramebuffer(Sys.gl.FRAMEBUFFER, null);
 			Sys.gl.viewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
