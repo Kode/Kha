@@ -38,10 +38,12 @@ class ArrayBuffer {
 		
 	}
 	
-	@:functionCode("
-		buffer->set((AttributeLocation) location, divisor);
-	")
-	public function set(location: AttributeLocation, divisor: Int): Void {
+	public function set(location: kha.graphics4.AttributeLocation, divisor: Int): Void {
+		setPrivate(cast location, divisor);
+	}
+	
+	@:functionCode('buffer->set(location->location, divisor);')
+	private function setPrivate(location: kha.kore.graphics4.AttributeLocation, divisor: Int): Void {
 		
 	}
 	

@@ -110,7 +110,7 @@ class Program {
 	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
 		
 	}
-		
+	
 	@:functionCode('
 		program->set();
 	')
