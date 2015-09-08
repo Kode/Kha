@@ -195,7 +195,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function instancedRenderingAvailable(): Bool {
-		return false; // TODO
+		return true;
 	}
 	
 	@:functionCode('
@@ -430,7 +430,22 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1): Void {
-		// TODO
+		if (count < 0) drawAllIndexedVerticesInstanced(instanceCount);
+		else drawSomeIndexedVerticesInstanced(instanceCount, start, count);
+	}
+	
+	@:functionCode('
+		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount);
+	')
+	private function drawAllIndexedVerticesInstanced(instanceCount : Int): Void {
+		
+	}
+	
+	@:functionCode('
+		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount, start, count);
+	')
+	public function drawSomeIndexedVerticesInstanced(instanceCount : Int, start: Int, count: Int): Void {
+		
 	}
 	
 	@:functionCode('Kore::Graphics::setRenderTarget(target->renderTarget, 0);')
