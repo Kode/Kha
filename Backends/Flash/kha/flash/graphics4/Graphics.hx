@@ -247,6 +247,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
+	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);

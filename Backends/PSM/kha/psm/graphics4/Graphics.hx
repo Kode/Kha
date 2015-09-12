@@ -113,6 +113,10 @@ class Graphics implements kha.graphics4.Graphics {
 			context.SetTexture(0, texture.texture);
 		}
 	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
+	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		vertexBuffer.setIndices(indexBuffer);

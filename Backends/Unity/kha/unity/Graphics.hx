@@ -104,6 +104,10 @@ class Graphics implements kha.graphics4.Graphics {
 		program.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
 	
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
+	}
+	
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		
 	}

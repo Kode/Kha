@@ -22,6 +22,7 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import kha.Video;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -267,6 +268,11 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		texture.set(cast unit);
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+		if (texture == null) return;
+		Image.createFromVideo(video).set(cast unit);
 	}
 	
 	//public function createVertexShader(source: Blob): VertexShader {

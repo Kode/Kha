@@ -10,6 +10,7 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import kha.Video;
 
 interface Graphics {
 	function begin(): Void;
@@ -30,6 +31,7 @@ interface Graphics {
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
 	function setTexture(unit: TextureUnit, texture: Image): Void;
+	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;

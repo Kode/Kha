@@ -177,6 +177,16 @@ class Graphics implements kha.graphics4.Graphics {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
 		}
 	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+		if (texture == null) {
+			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(stage, TextureUnit).value);
+			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+		}
+		else {
+			cast(texture, kha.js.Video).texture.set(cast(stage, TextureUnit).value);
+		}
+	}
 	
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(texunit, TextureUnit).value);
