@@ -180,11 +180,11 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) {
-			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(stage, TextureUnit).value);
+			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(unit, TextureUnit).value);
 			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
 		}
 		else {
-			cast(texture, kha.js.Video).texture.set(cast(stage, TextureUnit).value);
+			cast(cast(texture, kha.js.Video).texture, WebGLImage).set(cast(unit, TextureUnit).value);
 		}
 	}
 	

@@ -272,7 +272,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) return;
-		Image.createFromVideo(video).set(cast unit);
+		Image.createFromVideo(texture).set(cast unit);
 	}
 	
 	//public function createVertexShader(source: Blob): VertexShader {
