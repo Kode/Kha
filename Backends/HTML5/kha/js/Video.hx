@@ -35,6 +35,14 @@ class Video extends kha.Video {
 		element.preload = "auto";
 		element.src = this.filenames[0];
 	}
+
+	override public function width(): Int{
+		return element.videoWidth;
+	}
+	
+	override public function height(): Int{
+		return element.videoHeight;
+	}
 	
 	override public function play(loop: Bool = false): Void {
 		try {
