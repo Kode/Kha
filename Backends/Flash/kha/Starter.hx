@@ -1,6 +1,7 @@
 package kha;
 
 import flash.display.StageScaleMode;
+import flash.display3D.Context3DProfile;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.flash.utils.PerspectiveMatrix3D;
 import kha.Game;
@@ -60,7 +61,7 @@ class Starter {
 		Loader.the.initProject();
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
-		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */); //, Context3DProfile.BASELINE_EXTENDED);
+		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
 	
 	private function onReady(_): Void {
