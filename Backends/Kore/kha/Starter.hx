@@ -84,15 +84,15 @@ class Starter {
 			#end
 		#end
 		*/
-		
-		trace("Initializing application.");
-		gameToStart.loadFinished();
-		
+
 		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		#end
+		
+		trace("Initializing application.");
+		gameToStart.loadFinished();
 	}
 
 	public static function frame() {
