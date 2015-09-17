@@ -40,7 +40,7 @@ Things you can do now:
 * Support super fast 2D graphics
 * Support high end 3D graphics
 * Can run on top of other game engines
-* Write shaders in GLSL; compiles to HLSL if applicable.
+* Write shaders in GLSL - cross-compiles to other shading-lanugages
 
 
 ***Even more Features***
