@@ -23,6 +23,7 @@ set "TRUE="
 IF %target%==windows 	set TRUE=1
 IF %target%==linux 		set TRUE=1
 IF %target%==android 	set TRUE=1
+IF %target%==android-native 	set TRUE=1
 IF %target%==windowsrt 	set TRUE=1
 IF %target%==osx 		set TRUE=1
 IF %target%==ios 		set TRUE=1
