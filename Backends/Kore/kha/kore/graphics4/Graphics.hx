@@ -57,6 +57,13 @@ class Graphics implements kha.graphics4.Graphics {
 		if (stencil != null) flags |= 4;
 		clear2(flags, color == null ? 0 : color.value, z, stencil);
 	}
+
+	@:functionCode('
+		Kore::Graphics::viewport(x,y,width,height);
+	')
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+	
+	}
 	
 	@:functionCode('
 		switch (mode) {

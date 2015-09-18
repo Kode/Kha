@@ -58,6 +58,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		
 	}

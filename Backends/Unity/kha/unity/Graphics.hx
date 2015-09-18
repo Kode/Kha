@@ -70,6 +70,11 @@ class Graphics implements kha.graphics4.Graphics {
 		if (color != null) c = new unityEngine.Color(color.R, color.G, color.B, color.A);
 		GL.Clear(depth != null, color != null, c, depth != null ? depth : 0);
 	}
+
+	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, w, h));')
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		
+	}
 	
 	public function setCullMode(mode: CullMode): Void {
 		
