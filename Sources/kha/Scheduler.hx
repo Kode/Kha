@@ -315,15 +315,16 @@ class Scheduler {
 	}
 	
 	public static function removeTimeTasks(groupId: Int): Void {
-		while (true) {
-			for (timeTask in timeTasks) {
-				if (timeTask.groupId == groupId) {
-					timeTask.active = false;
-					timeTasks.remove(timeTask);
-					break;
-				}
+		var toDelete : Array<TimeTask> = new Array<TimeTask>();
+		for (timeTask in timeTasks) {
+			if (timeTask.groupId == groupId) {
+				timeTask.active = true;
+				toDelete.push(timeTask);
 			}
-			break;
+		}
+		
+		for (timeTask in toDelete) {
+			timeTasks.remove(timeTask);
 		}
 	}
 
