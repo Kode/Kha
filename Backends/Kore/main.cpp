@@ -305,6 +305,7 @@ int kore(int argc, char** argv) {
 				int gamesize = tokens[i].size * 2;
 				++i;
 				int gamestart = i;
+				char number[25];
 				for (; i < gamestart + gamesize; ++i) {
 					if (tokens[i].type == JSMN_STRING && strncmp("name", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
 						++i;
@@ -317,7 +318,6 @@ int kore(int argc, char** argv) {
 					}
 					else if (tokens[i].type == JSMN_STRING && strncmp("width", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
 						++i;
-						char number[25];
 						int ni = 0;
 						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
 							number[ni] = string[i2];
@@ -328,7 +328,6 @@ int kore(int argc, char** argv) {
 					}
 					else if (tokens[i].type == JSMN_STRING && strncmp("height", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
 						++i;
-						char number[25];
 						int ni = 0;
 						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
 							number[ni] = string[i2];
@@ -339,7 +338,6 @@ int kore(int argc, char** argv) {
 					}
 					else if (tokens[i].type == JSMN_STRING && strncmp("antiAliasingSamples", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
 						++i;
-						char number[25];
 						int ni = 0;
 						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
 							number[ni] = string[i2];
