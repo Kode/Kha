@@ -81,6 +81,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		Sys.gl.clear(clearMask);
 	}
+
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		Sys.gl.viewport(x,y,width,height);
+	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {

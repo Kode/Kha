@@ -53,6 +53,10 @@ class EmptyGraphics4 implements Graphics {
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		
 	}
+
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		
+	}
 	
 	public function setCullMode(mode: CullMode): Void {
 		

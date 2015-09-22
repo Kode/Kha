@@ -78,6 +78,14 @@ class Graphics implements kha.graphics4.Graphics {
 		var a = color == null ? 1.0 : color.A;
 		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
 	}
+
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		//TODO better access to stage3d 
+		var stage3D = flash.Lib.current.stage.stage3Ds[0];
+		stage3D.x = x;
+		stage3D.y = y;
+		context.configureBackBuffer(width,height,0,false); 
+	}
 	
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
