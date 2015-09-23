@@ -194,29 +194,31 @@ class Scheduler {
 		
 		current = frameEnd;
 		
-		while (true) {
-			for (timeTask in timeTasks) {
-				if (!timeTask.active) {
-					timeTasks.remove(timeTask);
-					break;
-				}
+		var toDeleteTime : Array<TimeTask> = new Array<TimeTask>();
+		for (timeTask in timeTasks) {
+			if (!timeTask.active) {
+				toDeleteTime.push(timeTask);
 			}
-			break;
+		}
+		
+		for (timeTask in toDeleteTime) {
+			timeTasks.remove(timeTask);
 		}
 
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
 			if (!frameTask.task()) frameTask.active = false;
 		}
-
-		while (true) {
-			for (frameTask in frameTasks) {
-				if (!frameTask.active) {
-					frameTasks.remove(frameTask);
-					break;
-				}
+		
+		var toDeleteFrame : Array<FrameTask> = new Array<FrameTask>();
+		for (frameTask in frameTasks) {
+			if (!frameTask.active) {
+				toDeleteFrame.push(frameTask);
 			}
-			break;
+		}
+		
+		for (frameTask in toDeleteFrame) {
+			frameTasks.remove(frameTask);
 		}
 	}
 
