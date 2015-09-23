@@ -35,6 +35,9 @@ class Scheduler {
 	private static var timeTasks: Array<TimeTask>;
 	private static var frameTasks: Array<FrameTask>;
 	
+	private static var toDeleteTime : Array<TimeTask>;
+	private static var toDeleteFrame : Array<FrameTask>;
+	
 	private static var current: Float;
 	private static var lastTime: Float;
 	
@@ -47,8 +50,6 @@ class Scheduler {
 	private static var currentFrameTaskId: Int;
 	private static var currentTimeTaskId: Int;
 	private static var currentGroupId: Int;
-
-	private static var halted_count: Int;
 
 	private static var DIF_COUNT = 3;
 	private static var maxframetime = 0.5;
@@ -64,7 +65,6 @@ class Scheduler {
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
 		
 		stopped = true;
-		halted_count = 0;
 		frame_tasks_sorted = true;
 		current = realTime();
 		lastTime = realTime();
@@ -75,6 +75,8 @@ class Scheduler {
 		
 		timeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
+		toDeleteTime = new Array<TimeTask>();
+		toDeleteFrame = new Array<FrameTask>();
 		Configuration.schedulerInitialized();
 	}
 	
@@ -128,10 +130,7 @@ class Scheduler {
 		
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
-		if (halted_count > 0) {
-			delta = 0;
-		}
-		else if (delta > maxframetime) {
+		if (delta > maxframetime) {
 			delta = maxframetime;
 			frameEnd += delta;
 		}
@@ -178,7 +177,6 @@ class Scheduler {
 		
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
-			current = t.next;
 			t.next += t.period;
 			timeTasks.remove(t);
 			
@@ -194,15 +192,14 @@ class Scheduler {
 		
 		current = frameEnd;
 		
-		var toDeleteTime : Array<TimeTask> = new Array<TimeTask>();
 		for (timeTask in timeTasks) {
 			if (!timeTask.active) {
 				toDeleteTime.push(timeTask);
 			}
 		}
 		
-		for (timeTask in toDeleteTime) {
-			timeTasks.remove(timeTask);
+		while (toDeleteTime.length > 0) {
+			timeTasks.remove(toDeleteTime.pop());
 		}
 
 		sortFrameTasks();
@@ -210,15 +207,14 @@ class Scheduler {
 			if (!frameTask.task()) frameTask.active = false;
 		}
 		
-		var toDeleteFrame : Array<FrameTask> = new Array<FrameTask>();
 		for (frameTask in frameTasks) {
 			if (!frameTask.active) {
 				toDeleteFrame.push(frameTask);
 			}
 		}
 		
-		for (frameTask in toDeleteFrame) {
-			frameTasks.remove(frameTask);
+		while (toDeleteFrame.length > 0) {
+			frameTasks.remove(toDeleteFrame.pop());
 		}
 	}
 
@@ -317,16 +313,15 @@ class Scheduler {
 	}
 	
 	public static function removeTimeTasks(groupId: Int): Void {
-		var toDelete : Array<TimeTask> = new Array<TimeTask>();
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = true;
-				toDelete.push(timeTask);
+				toDeleteTime.push(timeTask);
 			}
 		}
 		
-		for (timeTask in toDelete) {
-			timeTasks.remove(timeTask);
+		while (toDeleteTime.length > 0) {
+			timeTasks.remove(toDeleteTime.pop());
 		}
 	}
 
