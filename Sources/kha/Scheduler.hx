@@ -83,7 +83,7 @@ class Scheduler {
 		Configuration.schedulerInitialized();
 	}
 	
-	public static function start(): Void {
+	public static function start(restartTimers : Bool = false): Void {
 		vsync = Sys.vsynced();
 		var hz = Sys.refreshRate();
 		if (hz >= 57 && hz <= 63) hz = 60;
@@ -93,6 +93,16 @@ class Scheduler {
 		resetTime();
 		lastTime = realTime();
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
+		
+		if (restartTimers) {
+			for (timeTask in timeTasks) {
+				timeTask.paused = false;
+			}
+			
+			for (frameTask in frameTasks) {
+				frameTask.paused = false;
+			}
+		}
 	}
 	
 	public static function stop(): Void {
@@ -182,7 +192,7 @@ class Scheduler {
 		}
 		
 		for (t in timeTasks) {
-			if (stopped || t.paused) {
+			if (stopped || t.paused) { // Extend endpoint by paused time
 				t.next += delta;
 			}
 			else if (t.next <= frameEnd) {
