@@ -124,7 +124,7 @@ class Scheduler {
 		
 		var frameEnd: Float = current;
 		 
-		if (delta < 0 || stopped) {
+		if (delta < 0) {
 			return;
 		}
 		
@@ -174,6 +174,13 @@ class Scheduler {
 		}
 		
 		lastTime = frameEnd;
+		
+		if (stopped) {
+			for (timeTask in timeTasks) {
+				timeTask.next += delta;
+			}
+			return;
+		}
 		
 		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
 			var t = timeTasks[0];
