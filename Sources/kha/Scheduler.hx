@@ -11,6 +11,7 @@ class TimeTask {
 	public var id: Int;
 	public var groupId: Int;
 	public var active: Bool;
+	public var paused: Bool;
 	
 	public function new() {
 		
@@ -22,12 +23,14 @@ class FrameTask {
 	public var priority: Int;
 	public var id: Int;
 	public var active: Bool;
+	public var paused: Bool;
 	
 	public function new(task: Void -> Bool, priority: Int, id: Int) {
 		this.task = task;
 		this.priority = priority;
 		this.id = id;
 		active = true;
+		paused = false;
 	}
 }
 
@@ -174,30 +177,28 @@ class Scheduler {
 		}
 		
 		lastTime = frameEnd;
-		
-		if (stopped) {
-			for (timeTask in timeTasks) {
-				timeTask.next += delta;
-			}
-			return;
+		if (!stopped) { // Stop simulation time
+			current = frameEnd;
 		}
 		
-		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
-			var t = timeTasks[0];
-			t.next += t.period;
-			timeTasks.remove(t);
-			
-			if (t.active && t.task()) {
-				if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
-					insertSorted(timeTasks, t);
+		for (t in timeTasks) {
+			if (stopped || t.paused) {
+				t.next += delta;
+			}
+			else if (t.next <= frameEnd) {
+				t.next += t.period;
+				timeTasks.remove(t);
+				
+				if (t.active && t.task()) {
+					if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
+						insertSorted(timeTasks, t);
+					}
+				}
+				else {
+					t.active = false;
 				}
 			}
-			else {
-				t.active = false;
-			}
 		}
-		
-		current = frameEnd;
 		
 		for (timeTask in timeTasks) {
 			if (!timeTask.active) {
@@ -211,7 +212,9 @@ class Scheduler {
 
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
-			if (!frameTask.task()) frameTask.active = false;
+			if (!stopped && frameTask.paused) {
+				if (!frameTask.task()) frameTask.active = false;
+			}
 		}
 		
 		for (frameTask in frameTasks) {
@@ -255,6 +258,15 @@ class Scheduler {
 	
 	public static function addFrameTask(task: Void -> Void, priority: Int): Int {
 		return addBreakableFrameTask(function() { task(); return true; }, priority);
+	}
+	
+	public static function pauseFrameTask(id: Int, paused: Bool): Void {
+		for (frameTask in frameTasks) {
+			if (frameTask.id == id) {
+				frameTask.paused = paused;
+				break;
+			}
+		}
 	}
 	
 	public static function removeFrameTask(id: Int): Void {
@@ -309,6 +321,21 @@ class Scheduler {
 			}
 		}
 		return null;
+	}
+
+	public static function pauseTimeTask(id: Int, paused: Bool): Void {
+		var timeTask : TimeTask = getTimeTask(id);
+		if (timeTask != null) {
+			timeTask.paused = paused;
+		}
+	}
+	
+	public static function pauseTimeTasks(groupId: Int, paused: Bool): Void {
+		for (timeTask in timeTasks) {
+			if (timeTask.groupId == groupId) {
+				timeTask.paused = paused;
+			}
+		}
 	}
 
 	public static function removeTimeTask(id: Int): Void {
