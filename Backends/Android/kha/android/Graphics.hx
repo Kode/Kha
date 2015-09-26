@@ -86,6 +86,10 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glClear(clearMask);
 	}
 	
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
+		GLES20.glViewport(x, y, width, height);
+	}
+	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:

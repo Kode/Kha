@@ -21,7 +21,7 @@ interface Graphics {
 	
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 
-	function viewport(x : Int, y : Int, width : Int, height : Int): Void;
+	function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	
 	function setCullMode(mode: CullMode): Void;
 	function setDepthMode(write: Bool, mode: CompareMode): Void;
