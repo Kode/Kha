@@ -11,6 +11,7 @@ class TimeTask {
 	public var id: Int;
 	public var groupId: Int;
 	public var active: Bool;
+	public var paused: Bool;
 	
 	public function new() {
 		
@@ -22,18 +23,23 @@ class FrameTask {
 	public var priority: Int;
 	public var id: Int;
 	public var active: Bool;
+	public var paused: Bool;
 	
 	public function new(task: Void -> Bool, priority: Int, id: Int) {
 		this.task = task;
 		this.priority = priority;
 		this.id = id;
 		active = true;
+		paused = false;
 	}
 }
 
 class Scheduler {
 	private static var timeTasks: Array<TimeTask>;
 	private static var frameTasks: Array<FrameTask>;
+	
+	private static var toDeleteTime : Array<TimeTask>;
+	private static var toDeleteFrame : Array<FrameTask>;
 	
 	private static var current: Float;
 	private static var lastTime: Float;
@@ -47,8 +53,6 @@ class Scheduler {
 	private static var currentFrameTaskId: Int;
 	private static var currentTimeTaskId: Int;
 	private static var currentGroupId: Int;
-
-	private static var halted_count: Int;
 
 	private static var DIF_COUNT = 3;
 	private static var maxframetime = 0.5;
@@ -64,7 +68,6 @@ class Scheduler {
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
 		
 		stopped = true;
-		halted_count = 0;
 		frame_tasks_sorted = true;
 		current = realTime();
 		lastTime = realTime();
@@ -75,10 +78,12 @@ class Scheduler {
 		
 		timeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
+		toDeleteTime = new Array<TimeTask>();
+		toDeleteFrame = new Array<FrameTask>();
 		Configuration.schedulerInitialized();
 	}
 	
-	public static function start(): Void {
+	public static function start(restartTimers : Bool = false): Void {
 		vsync = Sys.vsynced();
 		var hz = Sys.refreshRate();
 		if (hz >= 57 && hz <= 63) hz = 60;
@@ -88,6 +93,16 @@ class Scheduler {
 		resetTime();
 		lastTime = realTime();
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
+		
+		if (restartTimers) {
+			for (timeTask in timeTasks) {
+				timeTask.paused = false;
+			}
+			
+			for (frameTask in frameTasks) {
+				frameTask.paused = false;
+			}
+		}
 	}
 	
 	public static function stop(): Void {
@@ -122,16 +137,13 @@ class Scheduler {
 		
 		var frameEnd: Float = current;
 		 
-		if (delta < 0 || stopped) {
+		if (delta < 0) {
 			return;
 		}
 		
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
-		if (halted_count > 0) {
-			delta = 0;
-		}
-		else if (delta > maxframetime) {
+		if (delta > maxframetime) {
 			delta = maxframetime;
 			frameEnd += delta;
 		}
@@ -175,48 +187,54 @@ class Scheduler {
 		}
 		
 		lastTime = frameEnd;
+		if (!stopped) { // Stop simulation time
+			current = frameEnd;
+		}
 		
-		while (timeTasks.length > 0 && timeTasks[0].next <= frameEnd) {
-			var t = timeTasks[0];
-			current = t.next;
-			t.next += t.period;
-			timeTasks.remove(t);
-			
-			if (t.active && t.task()) {
-				if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
-					insertSorted(timeTasks, t);
-				}
+		for (t in timeTasks) {
+			if (stopped || t.paused) { // Extend endpoint by paused time
+				t.next += delta;
 			}
-			else {
-				t.active = false;
+			else if (t.next <= frameEnd) {
+				t.next += t.period;
+				timeTasks.remove(t);
+				
+				if (t.active && t.task()) {
+					if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
+						insertSorted(timeTasks, t);
+					}
+				}
+				else {
+					t.active = false;
+				}
 			}
 		}
 		
-		current = frameEnd;
-		
-		while (true) {
-			for (timeTask in timeTasks) {
-				if (!timeTask.active) {
-					timeTasks.remove(timeTask);
-					break;
-				}
+		for (timeTask in timeTasks) {
+			if (!timeTask.active) {
+				toDeleteTime.push(timeTask);
 			}
-			break;
+		}
+		
+		while (toDeleteTime.length > 0) {
+			timeTasks.remove(toDeleteTime.pop());
 		}
 
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
-			if (!frameTask.task()) frameTask.active = false;
-		}
-
-		while (true) {
-			for (frameTask in frameTasks) {
-				if (!frameTask.active) {
-					frameTasks.remove(frameTask);
-					break;
-				}
+			if (!stopped && frameTask.paused) {
+				if (!frameTask.task()) frameTask.active = false;
 			}
-			break;
+		}
+		
+		for (frameTask in frameTasks) {
+			if (!frameTask.active) {
+				toDeleteFrame.push(frameTask);
+			}
+		}
+		
+		while (toDeleteFrame.length > 0) {
+			frameTasks.remove(toDeleteFrame.pop());
 		}
 	}
 
@@ -250,6 +268,15 @@ class Scheduler {
 	
 	public static function addFrameTask(task: Void -> Void, priority: Int): Int {
 		return addBreakableFrameTask(function() { task(); return true; }, priority);
+	}
+	
+	public static function pauseFrameTask(id: Int, paused: Bool): Void {
+		for (frameTask in frameTasks) {
+			if (frameTask.id == id) {
+				frameTask.paused = paused;
+				break;
+			}
+		}
 	}
 	
 	public static function removeFrameTask(id: Int): Void {
@@ -306,6 +333,21 @@ class Scheduler {
 		return null;
 	}
 
+	public static function pauseTimeTask(id: Int, paused: Bool): Void {
+		var timeTask : TimeTask = getTimeTask(id);
+		if (timeTask != null) {
+			timeTask.paused = paused;
+		}
+	}
+	
+	public static function pauseTimeTasks(groupId: Int, paused: Bool): Void {
+		for (timeTask in timeTasks) {
+			if (timeTask.groupId == groupId) {
+				timeTask.paused = paused;
+			}
+		}
+	}
+
 	public static function removeTimeTask(id: Int): Void {
 		var timeTask : TimeTask = getTimeTask(id);
 		if (timeTask != null) {
@@ -315,16 +357,15 @@ class Scheduler {
 	}
 	
 	public static function removeTimeTasks(groupId: Int): Void {
-		var toDelete : Array<TimeTask> = new Array<TimeTask>();
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = true;
-				toDelete.push(timeTask);
+				toDeleteTime.push(timeTask);
 			}
 		}
 		
-		for (timeTask in toDelete) {
-			timeTasks.remove(timeTask);
+		while (toDeleteTime.length > 0) {
+			timeTasks.remove(toDeleteTime.pop());
 		}
 	}
 
