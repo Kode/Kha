@@ -410,7 +410,6 @@ int kore(int argc, char** argv) {
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
-
 #ifdef VR_GEAR_VR
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
