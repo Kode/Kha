@@ -147,7 +147,7 @@ class Image implements Canvas implements Resource {
 		
 	}
 	
-	@:functionCode("return texture->at(x, y) & 0xff != 0;")
+	@:functionCode("return (texture->at(x, y) & 0xff) != 0;")
 	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
 	}
