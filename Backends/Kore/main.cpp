@@ -179,8 +179,10 @@ namespace {
 	}
 	
 	bool visible = true;
+	bool paused = false;
 
 	void update() {
+		if (paused) return;
 		Kore::Audio::update();
 		if (visible) {
 			#ifndef VR_RIFT
@@ -216,10 +218,12 @@ namespace {
 	
 	void resume() {
 		Starter_obj::resume();
+		paused = false;
 	}
 
 	void pause() {
 		Starter_obj::pause();
+		paused = true;
 	}
 	
 	void background() {
