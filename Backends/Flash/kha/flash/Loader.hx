@@ -38,7 +38,7 @@ class Loader extends kha.Loader {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
-		done(new Music(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
+		done(new Music(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
@@ -120,7 +120,7 @@ class Loader extends kha.Loader {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
-		done(new Sound(cast Type.createInstance(Type.resolveClass("Assets_" + file), [])));
+		done(new Sound(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
