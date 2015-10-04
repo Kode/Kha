@@ -79,6 +79,9 @@ namespace {
 		case Kore::Key_Delete:
 			Starter_obj::pushDelete();
 			break;
+		case Kore::Key_Back:
+			Starter_obj::pushBack();
+			break;
 		default:
 			Starter_obj::pushChar(character);
 			break;
@@ -127,6 +130,9 @@ namespace {
 			break;
 		case Kore::Key_Delete:
 			Starter_obj::releaseDelete();
+			break;
+		case Kore::Key_Back:
+			Starter_obj::releaseBack();
 			break;
 		default:
 			Starter_obj::releaseChar(character);

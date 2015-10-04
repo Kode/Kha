@@ -261,6 +261,16 @@ class Starter {
 		keyboard.sendUpEvent(Key.DEL, null);
 	}
 	
+	public static function pushBack(): Void {
+		Game.the.keyDown(Key.BACK, null);
+		keyboard.sendDownEvent(Key.BACK, null);
+	}
+	
+	public static function releaseBack(): Void {
+		Game.the.keyUp(Key.BACK, null);
+		keyboard.sendUpEvent(Key.BACK, null);
+	}
+	
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
