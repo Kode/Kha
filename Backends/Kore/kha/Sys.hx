@@ -2,6 +2,7 @@ package kha;
 
 @:headerCode('
 #include <Kore/pch.h>
+#include <Kore/Application.h>
 #include <Kore/System.h>
 ')
 
@@ -50,5 +51,10 @@ class Sys {
 	@:functionCode('return ::String(Kore::System::systemId());')
 	public static function systemId(): String {
 		return '';
+	}
+	
+	@:functionCode('Kore::Application::the()->stop();')
+	public static function requestShutdown(): Void {
+		
 	}
 }

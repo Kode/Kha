@@ -182,11 +182,4 @@ class Loader extends kha.Loader {
 		else
 			Mouse.show();
 	}
-
-	override public function quit(): Void {
-		Game.the.onPause();
-		Game.the.onBackground();
-		Game.the.onShutdown();
-		flash.Lib.fscommand("quit");
-	}
 }
