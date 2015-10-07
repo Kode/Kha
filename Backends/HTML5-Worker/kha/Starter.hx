@@ -47,6 +47,32 @@ class Starter {
 		
 		gameToStart.loadFinished();
 	}
+
+	public function lockMouse() : Void{
+		
+	}
+	
+	public function unlockMouse() : Void{
+		
+	}
+
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
 	
 	private function messageHandler(value: Dynamic): Void {
 		switch (value.data.command) {

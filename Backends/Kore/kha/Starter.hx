@@ -41,7 +41,7 @@ class Starter {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		gamepad = new Gamepad();
 		surface = new Surface();
 		Sys.init();
@@ -93,6 +93,31 @@ class Starter {
 		
 		trace("Initializing application.");
 		gameToStart.loadFinished();
+	}
+
+	public function lockMouse() : Void{
+		
+	}
+	
+	public function unlockMouse() : Void{
+		
+	}
+
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
 	}
 
 	public static function frame() {
@@ -289,10 +314,12 @@ class Starter {
 	}
 	
 	public static function mouseMove(x: Int, y: Int): Void {
+		var movementX = x - mouseX;
+		var movementY = y - mouseY;
 		mouseX = x;
 		mouseY = y;
 		Game.the.mouseMove(x, y);
-		mouse.sendMoveEvent(x, y);
+		mouse.sendMoveEvent(x, y, movementX, movementY);
 	}
 
 	public static function mouseWheel(delta: Int): Void {

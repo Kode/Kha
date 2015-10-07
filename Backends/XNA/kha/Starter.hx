@@ -145,6 +145,32 @@ class Starter {
 		createGame(images);
 		startGame();
 	}
+
+	public function lockMouse() : Void{
+		
+	}
+	
+	public function unlockMouse() : Void{
+		
+	}
+
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
 	
 	public static function loadReallyFinished() : Void {
 		game.loadFinished();
