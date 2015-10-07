@@ -125,7 +125,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	private var oldMouseX: Int = 0;
 	private var oldMouseY: Int = 0;
 	
-	private function mouseMoveEvent(x: Int, y: Int) {
+	private function mouseMoveEvent(x: Int, y: Int, movementX : Int, movementY : Int) {
 		if (!mouseButtonDown) return;
 		
 		var mouseDeltaX: Int = x - oldMouseX;

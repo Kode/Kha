@@ -51,11 +51,16 @@ class Starter {
 	private static var mouseY: Int;
 	private static var touchX: Int;
 	private static var touchY: Int;
+	private static var lastFirstTouchX: Int = 0;
+	private static var lastFirstTouchY: Int = 0;
+
+	var canvas : Dynamic;
+
 	
 	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
 		gamepadStates = new Array<GamepadStates>();
@@ -73,6 +78,8 @@ class Starter {
 		Sys.initPerformanceTimer();
 		Scheduler.init();
 		
+		canvas = Browser.document.getElementById("khanvas");
+
 		// TODO: Move?
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
@@ -119,8 +126,6 @@ class Starter {
 	
 	public function loadFinished() {
 		Loader.the.initProject();
-		
-		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
@@ -250,7 +255,60 @@ class Starter {
 		
 		gameToStart.loadFinished();
 	}
+
+	public function lockMouse() : Void{
+		untyped if (canvas.requestPointerLock) {
+        	canvas.requestPointerLock();
+        } else if (canvas.mozRequestPointerLock) {
+        	canvas.mozRequestPointerLock();
+        } else if (canvas.webkitRequestPointerLock) {
+        	canvas.webkitRequestPointerLock();
+        };
+	}
 	
+	public function unlockMouse() : Void{
+		untyped if (document.exitPointerLock) {
+			document.exitPointerLock();
+        } else if (document.mozExitPointerLock) {
+         	document.mozExitPointerLock();
+        } else if (document.webkitExitPointerLock) {
+        	document.webkitExitPointerLock();
+        };
+	}
+
+	public function canLockMouse() : Bool{
+		return untyped __js__("'pointerLockElement' in document ||
+        'mozPointerLockElement' in document ||
+        'webkitPointerLockElement' in document");
+	}
+
+	public function isMouseLocked() : Bool{
+		return untyped __js__("document.pointerLockElement === this.canvas ||
+  			document.mozPointerLockElement === this.canvas ||
+  			document.webkitPointerLockElement === this.canvas");
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		js.Browser.document.addEventListener('pointerlockchange', func, false);
+		js.Browser.document.addEventListener('mozpointerlockchange', func, false);
+		js.Browser.document.addEventListener('webkitpointerlockchange', func, false);
+
+		js.Browser.document.addEventListener('pointerlockerror', error, false);
+		js.Browser.document.addEventListener('mozpointerlockerror', error, false);
+		js.Browser.document.addEventListener('webkitpointerlockerror', error, false);
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		js.Browser.document.removeEventListener('pointerlockchange', func, false);
+		js.Browser.document.removeEventListener('mozpointerlockchange', func, false);
+		js.Browser.document.removeEventListener('webkitpointerlockchange', func, false);
+
+		js.Browser.document.removeEventListener('pointerlockerror', error, false);
+		js.Browser.document.removeEventListener('mozpointerlockerror', error, false);
+		js.Browser.document.removeEventListener('webkitpointerlockerror', error, false);
+	}
+
 	static function unload(_): Void {
 		Game.the.onPause();
 		Game.the.onBackground();
@@ -307,9 +365,13 @@ class Starter {
 	}
 	
 	private static function mouseMove(event: MouseEvent): Void {
+		var lastMouseX = mouseX;
+		var lastMouseY = mouseY;
 		setMouseXY(event);
+		var movementX = untyped event.movementX || event.mozMovementX || event.webkitMovementX || mouseX - lastMouseX;
+		var movementY = untyped event.movementY || event.mozMovementY || event.webkitMovementY || mouseY - lastMouseY;
 		Game.the.mouseMove(mouseX, mouseY);
-		mouse.sendMoveEvent(mouseX, mouseY);
+		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementY);
 	}
 	
 	private static function setTouchXY(touch: Touch): Void {
@@ -339,11 +401,21 @@ class Starter {
 	}
 	
 	private static function touchMove(event: TouchEvent): Void {
+		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
-			Game.the.mouseMove(touchX, touchY);
-			mouse.sendMoveEvent(touchX, touchY);
+			if(index == 0){
+				var movementX = touchX - lastFirstTouchX;
+				var movementY = touchY - lastFirstTouchY;
+				lastFirstTouchX = touchX;
+				lastFirstTouchY = touchY;
+				
+				Game.the.mouseMove(touchX, touchY);
+				mouse.sendMoveEvent(touchX, touchY, movementX, movementY);
+			}
+			
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);
+			index++;
 		}
 	}
 	
