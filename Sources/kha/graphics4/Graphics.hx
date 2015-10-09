@@ -30,6 +30,7 @@ interface Graphics {
 	function setScissor(rect: Rectangle): Void;
 	
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
+	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
 	function setTexture(unit: TextureUnit, texture: Image): Void;

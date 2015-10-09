@@ -26,7 +26,7 @@ class Program {
 		this.fragmentShader = fragmentShader;
 	}
 	
-	public function link(structure: VertexStructure): Void {
+	public function link(structure: VertexStructure, instancedStructure: VertexStructure = null): Void {
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
 		Sys.gl.attachShader(program, vertexShader.shader);
@@ -36,6 +36,13 @@ class Program {
 		for (element in structure.elements) {
 			Sys.gl.bindAttribLocation(program, index, element.name);
 			++index;
+		}
+		
+		if (instancedStructure != null) {
+			for (element in instancedStructure.elements) {
+				Sys.gl.bindAttribLocation(program, index, element.name);
+				++index;
+			}
 		}
 		
 		Sys.gl.linkProgram(program);
@@ -62,10 +69,6 @@ class Program {
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		return new kha.js.graphics4.ConstantLocation(Sys.gl.getUniformLocation(program, name));
-	}
-	
-	public function getAttributeLocation(name: String) : kha.graphics4.AttributeLocation {
-		return new kha.js.graphics4.AttributeLocation(Sys.gl.getAttribLocation(program, name));
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {

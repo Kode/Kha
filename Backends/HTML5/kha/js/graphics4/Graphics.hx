@@ -148,7 +148,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set();
+		cast(vertexBuffer, VertexBuffer).set(0);
+	}
+	
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		var offset: Int = 0;
+		for (vertexBuffer in vertexBuffers) {
+			offset += cast(vertexBuffer, VertexBuffer).set(offset);
+		}
 	}
 	
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {

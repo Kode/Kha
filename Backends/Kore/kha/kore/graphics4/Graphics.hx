@@ -442,7 +442,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1): Void {
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
 		if (count < 0) drawAllIndexedVerticesInstanced(instanceCount);
 		else drawSomeIndexedVerticesInstanced(instanceCount, start, count);
 	}
@@ -450,14 +450,14 @@ class Graphics implements kha.graphics4.Graphics {
 	@:functionCode('
 		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount);
 	')
-	private function drawAllIndexedVerticesInstanced(instanceCount : Int): Void {
+	private function drawAllIndexedVerticesInstanced(instanceCount: Int): Void {
 		
 	}
 	
 	@:functionCode('
 		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount, start, count);
 	')
-	public function drawSomeIndexedVerticesInstanced(instanceCount : Int, start: Int, count: Int): Void {
+	private function drawSomeIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void {
 		
 	}
 	
