@@ -75,6 +75,32 @@ class Starter {
 		Configuration.screen().setInstance();
 		game.loadFinished();
 	}
+
+	public function lockMouse() : Void{
+		
+	}
+	
+	public function unlockMouse() : Void{
+		
+	}
+
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
 	
 	public static function init(width: Int, height: Int): Void {
 		w = width;
@@ -94,23 +120,34 @@ class Starter {
 		Scheduler.executeFrame();
 		Configuration.screen().render(framebuffer);
 	}
+
+	private static function setMousePosition(x : Int, y : Int){
+		mouseX = x;
+		mouseY = y;
+	}
 	
 	public static function touch(index: Int, x: Int, y: Int, action: Int): Void {
+		
 		switch (action) {
 		case 0: //DOWN
 			if (index == 0) {
+				setMousePosition(x,y);
 				mouse.sendDownEvent(0, x, y);
 				if (Game.the != null) Game.the.mouseDown(x, y);
 			}
 			surface.sendTouchStartEvent(index, x, y);
 		case 1: //MOVE
 			if (index == 0) {
-				mouse.sendMoveEvent(x, y);
+				var movementX = x - mouseX;
+				var movementY = y - mouseY;
+				setMousePosition(x,y);
+				mouse.sendMoveEvent(x, y, movementX, movementY);
 				if (Game.the != null) Game.the.mouseMove(x, y);
 			}
 			surface.sendMoveEvent(index, x, y);
 		case 2: //UP
 			if (index == 0) {
+				setMousePosition(x,y);
 				mouse.sendUpEvent(0, x, y);
 				if (Game.the != null) Game.the.mouseUp(x, y);
 			}
