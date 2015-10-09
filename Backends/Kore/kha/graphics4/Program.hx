@@ -86,7 +86,16 @@ class Program {
 	}
 	
 	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
-		return null; // TODO
+		var location = new kha.kore.graphics4.AttributeLocation();
+		initAttribteLocation(location, name);
+		return location;
+	}
+	
+	@:functionCode('
+		location->location = program->getAttributeLocation(name.c_str());
+	')
+	private function initAttribteLocation(location: kha.kore.graphics4.AttributeLocation, name: String): Void {
+		
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
@@ -101,7 +110,7 @@ class Program {
 	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
 		
 	}
-		
+	
 	@:functionCode('
 		program->set();
 	')
