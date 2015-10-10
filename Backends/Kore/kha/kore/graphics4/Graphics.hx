@@ -157,17 +157,23 @@ class Graphics implements kha.graphics4.Graphics {
 	//}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		vertexBuffer.set();
+		vertexBuffer.set(0);
+	}
+	
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		var offset: Int = 0;
+		for (vertexBuffer in vertexBuffers) {
+			offset += vertexBuffers[0].set(offset);
+		}
 	}
 	
 	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 	//	return new IndexBuffer(indexCount);
 	//}
+	
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		indexBuffer.set();
-	}
-	
-	
+	}	
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 	//	return Image.create(width, height, format, canRead, false, false);

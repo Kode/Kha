@@ -14,8 +14,8 @@ import kha.graphics4.VertexStructure;
 class VertexBuffer {
 	private var data: Float32Array;
 	
-	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
-		init(vertexCount, structure);
+	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
+		init(vertexCount, structure, instanceDataStepRate);
 		data = new Float32Array();
 		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
@@ -40,9 +40,9 @@ class VertexBuffer {
 			}
 			structure2.add(structure->get(i)->name, data);
 		}
-		buffer = new Kore::VertexBuffer(vertexCount, structure2);
+		buffer = new Kore::VertexBuffer(vertexCount, structure2, instanceDataStepRate);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure) {
+	private function init(vertexCount: Int, structure: VertexStructure, instanceDataStepRate: Int) {
 		
 	}
 	
@@ -60,24 +60,18 @@ class VertexBuffer {
 		
 	}
 	
-	@:functionCode("
-		return buffer->stride();
-	")
+	@:functionCode("return buffer->stride();")
 	public function stride(): Int {
 		return 0;
 	}
 	
-	@:functionCode("
-		return buffer->count();
-	")
+	@:functionCode("return buffer->count();")
 	public function count(): Int {
 		return 0;
 	}
 	
-	@:functionCode("
-		buffer->set();
-	")
-	public function set(): Void {
-		
+	@:functionCode("return buffer->set(offset);")
+	public function set(offset: Int): Int {
+		return 0;
 	}
 }

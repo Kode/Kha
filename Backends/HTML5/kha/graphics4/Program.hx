@@ -11,11 +11,13 @@ class Program {
 	private var fragmentShader: FragmentShader;
 	private var textures: Array<String>;
 	private var textureValues: Array<Dynamic>;
+	private var singleStructureArray: Array<VertexStructure>;
 	
 	public function new() {
 		program = Sys.gl.createProgram();
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
+		singleStructureArray = new Array();
 	}
 	
 	public function setVertexShader(vertexShader: VertexShader): Void {
@@ -26,20 +28,20 @@ class Program {
 		this.fragmentShader = fragmentShader;
 	}
 	
-	public function link(structure: VertexStructure, instancedStructure: VertexStructure = null): Void {
+	public function link(structure: VertexStructure): Void {
+		singleStructureArray[0] = structure;
+		linkWithStructures(singleStructureArray);
+	}
+	
+	public function linkWithStructures(structures: Array<VertexStructure>): Void {
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
 		Sys.gl.attachShader(program, vertexShader.shader);
 		Sys.gl.attachShader(program, fragmentShader.shader);
 		
 		var index = 0;
-		for (element in structure.elements) {
-			Sys.gl.bindAttribLocation(program, index, element.name);
-			++index;
-		}
-		
-		if (instancedStructure != null) {
-			for (element in instancedStructure.elements) {
+		for (structure in structures) {
+			for (element in structure.elements) {
 				Sys.gl.bindAttribLocation(program, index, element.name);
 				++index;
 			}
