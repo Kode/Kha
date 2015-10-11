@@ -148,8 +148,9 @@ namespace {
 		Starter_obj::mouseUp(button, x, y);
 	}
 
-	void mouseMove(int x, int y) {
-		Starter_obj::mouseMove(x, y);
+	void mouseMove(int x, int y, int movementX, int movementY) {
+		Kore::log(Kore::LogLevel::Info, "movement : %i,%i", movementX, movementY);
+		Starter_obj::mouseMove(x, y, movementX, movementY);
 	}
 
 	void mouseWheel(int delta) {
