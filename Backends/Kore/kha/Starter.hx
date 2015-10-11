@@ -11,6 +11,7 @@ import kha.Loader;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.vr.VrInterface;
+import kha.input.Mouse;
 
 #if ANDROID 
 	#if VR_CARDBOARD
@@ -29,6 +30,7 @@ import kha.vr.VrInterface;
 	#end
 #end
 
+@:headerCode("#include <Kore/Input/Mouse.h>")
 class Starter {
 	private var gameToStart: Game;
 	private static var framebuffer: Framebuffer;
@@ -36,8 +38,11 @@ class Starter {
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
+
+	private var mouseLockListeners: Array<Void->Void>;
 	
 	public function new(?backbufferFormat: TextureFormat) {
+		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
@@ -96,28 +101,44 @@ class Starter {
 	}
 
 	public function lockMouse() : Void{
-		
+		untyped __cpp__("Kore::Mouse::the()->lock();");
+		for (listener in mouseLockListeners) {
+			listener();
+		}
 	}
 	
 	public function unlockMouse() : Void{
-		
+		untyped __cpp__("Kore::Mouse::the()->unlock();");	
+		for (listener in mouseLockListeners) {
+			listener();
+		}
 	}
 
+	@:functionCode('
+		return Kore::Mouse::the()->canLock();
+	')
 	public function canLockMouse() : Bool{
 		return false;
 	}
 
+	@:functionCode('
+		return Kore::Mouse::the()->isLocked();
+	')
 	public function isMouseLocked() : Bool{
 		return false;
 	}
 
 	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+		if(canLockMouse() && func != null){
+			mouseLockListeners.push(func);
+		}
 	}
 
 
 	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+		if(canLockMouse() && func != null){
+			mouseLockListeners.remove(func);
+		}	
 	}
 
 	public static function frame() {
@@ -313,9 +334,9 @@ class Starter {
 		mouse.sendUpEvent(button, x, y);
 	}
 	
-	public static function mouseMove(x: Int, y: Int): Void {
-		var movementX = x - mouseX;
-		var movementY = y - mouseY;
+	public static function mouseMove(x: Int, y: Int, movementX : Int, movementY : Int): Void {
+		// var movementX = x - mouseX;
+		// var movementY = y - mouseY;
 		mouseX = x;
 		mouseY = y;
 		Game.the.mouseMove(x, y);
