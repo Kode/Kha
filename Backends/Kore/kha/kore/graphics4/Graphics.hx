@@ -14,6 +14,7 @@ import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.Image;
@@ -156,23 +157,40 @@ class Graphics implements kha.graphics4.Graphics {
 	//	return new VertexBuffer(vertexCount, structure);
 	//}
 	
+	@:functionCode('Kore::Graphics::setVertexBuffer(*vertexBuffer->buffer);')
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		vertexBuffer.set(0);
+		
+	}
+	
+	@:functionCode('
+		Kore::VertexBuffer* vertexBuffers[4] = {
+			vb0 == null() ? nullptr : vb0->buffer,
+			vb1 == null() ? nullptr : vb1->buffer,
+			vb2 == null() ? nullptr : vb2->buffer,
+			vb3 == null() ? nullptr : vb3->buffer
+		};
+		Kore::Graphics::setVertexBuffers(vertexBuffers, count);
+	')
+	private function setVertexBuffersInternal(vb0: VertexBuffer, vb1: VertexBuffer, vb2: VertexBuffer, vb3: VertexBuffer, count: Int): Void {
+		
 	}
 	
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		var offset: Int = 0;
-		for (vertexBuffer in vertexBuffers) {
-			offset += vertexBuffers[0].set(offset);
-		}
+		setVertexBuffersInternal(
+			vertexBuffers.length > 0 ? vertexBuffers[0] : null,
+			vertexBuffers.length > 1 ? vertexBuffers[1] : null,
+			vertexBuffers.length > 2 ? vertexBuffers[2] : null,
+			vertexBuffers.length > 3 ? vertexBuffers[3] : null,
+			vertexBuffers.length);
 	}
 	
 	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 	//	return new IndexBuffer(indexCount);
 	//}
 	
+	@:functionCode('Kore::Graphics::setIndexBuffer(*indexBuffer->buffer);')
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		indexBuffer.set();
+		
 	}	
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
@@ -278,14 +296,22 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullModeNative(mode.getIndex());
 	}
 	
+	@:functionCode('
+		if (texture->texture != nullptr) Kore::Graphics::setTexture(unit->unit, texture->texture);
+		else texture->renderTarget->useColorAsTexture(unit->unit);
+	')
+	private function setTextureInternal(unit: kha.kore.graphics4.TextureUnit, texture: kha.Image): Void {
+		
+	}
+	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
-		texture.set(cast unit);
+		setTextureInternal(cast unit, texture);
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) return;
-		Image.createFromVideo(texture).set(cast unit);
+		setTextureInternal(cast unit, Image.createFromVideo(texture));
 	}
 	
 	//public function createVertexShader(source: Blob): VertexShader {

@@ -39,13 +39,6 @@ class IndexBuffer {
 		
 	}
 	
-	@:functionCode("
-		buffer->set();
-	")
-	public function set(): Void {
-		
-	}
-	
 	public function count(): Int {
 		return myCount;
 	}

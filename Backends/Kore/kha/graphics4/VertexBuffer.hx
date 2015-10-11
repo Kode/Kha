@@ -69,9 +69,4 @@ class VertexBuffer {
 	public function count(): Int {
 		return 0;
 	}
-	
-	@:functionCode("return buffer->set(offset);")
-	public function set(offset: Int): Int {
-		return 0;
-	}
 }
