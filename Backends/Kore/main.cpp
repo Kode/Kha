@@ -149,7 +149,7 @@ namespace {
 	}
 
 	void mouseMove(int x, int y, int movementX, int movementY) {
-		Kore::log(Kore::LogLevel::Info, "movement : %i,%i", movementX, movementY);
+		Kore::log(Kore::Info, "movement : %i,%i", movementX, movementY);
 		Starter_obj::mouseMove(x, y, movementX, movementY);
 	}
 
