@@ -66,6 +66,7 @@ class Session {
 	}
 	
 	public function addController(controller: Controller): Void {
+		trace("Adding controller id " + controller._id());
 		controllers.set(controller._id(), controller);
 	}
 	
@@ -114,7 +115,7 @@ class Session {
 		#if sys_server
 		switch (bytes.get(0)) {
 		case CONTROLLER_UPDATES:
-			var id = bytes.getInt32(1);
+			/*var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
 			Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
 			if (time < Scheduler.time()) {
@@ -131,7 +132,7 @@ class Session {
 					}
 					--i;
 				}
-			}
+			}*/
 		}
 		#else
 		switch (bytes.get(0)) {
@@ -155,6 +156,7 @@ class Session {
 	public function waitForStart(callback: Void->Void): Void {
 		startCallback = callback;
 		#if sys_server
+		trace("Starting server at 6789.");
 		server = new Server(6789);
 		server.onConnection(function (client: Client) {
 			clients.push(client);
@@ -165,6 +167,7 @@ class Session {
 			client.receive(function (bytes: Bytes) {
 				current = client;
 				receive(bytes);
+				current = null;
 			});
 			
 			client.onClose(function () {
@@ -176,6 +179,7 @@ class Session {
 				Node.console.log("Starting game.");
 				var index = 0;
 				for (c in clients) {
+					trace("Starting client " + c.id);
 					var bytes = Bytes.alloc(2);
 					bytes.set(0, START);
 					bytes.set(1, index);

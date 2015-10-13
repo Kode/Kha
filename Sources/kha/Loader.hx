@@ -5,21 +5,21 @@ import kha.loader.Room;
 
 @:expose
 class Loader {
-	var blobs: Map<String, Blob>;
-	var images: Map<String, Image>;
-	var sounds: Map<String, Sound>;
-	var musics: Map<String, Music>;
-	var videos: Map<String, Video>;
-	var shaders: Map<String, Blob>;
-	var loadcount: Int;
-	var numberOfFiles: Int;
+	private var blobs: Map<String, Blob>;
+	private var images: Map<String, Image>;
+	private var sounds: Map<String, Sound>;
+	private var musics: Map<String, Music>;
+	private var videos: Map<String, Video>;
+	private var shaders: Map<String, Blob>;
+	private var loadingFilesLeft: Int;
+	private var loadingFilesCount: Int;
 	
-	var assets: Map<String, Array<Dynamic>>;
-	var rooms: Map<String, Room>;
-	/**
-	 * Some backends dont support quitting, for example if the game is embedded in a web page.
-	 */
-	public var isQuitable : Bool = false;
+	private var assets: Map<String, Array<Dynamic>>;
+	private var rooms: Map<String, Room>;
+	
+	private var enqueued: Array<Dynamic>;
+	private var multiFileCallbacks: Array<Void -> Void>;
+	
 	public var autoCleanupAssets : Bool = true;
 	
 	public var basePath : String = ".";
@@ -34,8 +34,9 @@ class Loader {
 		shaders = new Map<String, Blob>();
 		rooms = new Map<String, Room>();
 		enqueued = new Array<Dynamic>();
-		loadcount = 100;
-		numberOfFiles = 100;
+		multiFileCallbacks = [];
+		loadingFilesLeft = 0;
+		loadingFilesCount = 0;
 		width = -1;
 		height = -1;
 	}
@@ -50,15 +51,16 @@ class Loader {
 		the = loader;
 	}
 	
-	public function getLoadPercentage() : Int {
-		return Std.int((loadcount - numberOfFiles) / loadcount * 100);
+	public function getLoadPercentage(): Int {
+		if (loadingFilesCount == 0) return 0;
+		return Std.int((loadingFilesCount - loadingFilesLeft) / loadingFilesCount * 100);
 	}
 	
-	public function getBlob(name : String) : Blob {
+	public function getBlob(name: String): Blob {
 		return blobs.get(name);
 	}
 	
-	public function getImage(name : String) : Image {
+	public function getImage(name: String): Image {
 		if (!images.exists(name) && name != "") {
 			trace("Could not find image " + name + ".");
 		}
@@ -113,12 +115,11 @@ class Loader {
 	}
 	
 	public inline function isVideoAvailable(name: String) { return videos.exists(name); }
-	
-	private var enqueued: Array<Dynamic>;
-	public var loadFinished: Void -> Void;
-	
+		
 	public function enqueue(asset: Dynamic) {
 		if (!Lambda.has(enqueued, asset)) {
+			++loadingFilesLeft;
+			++loadingFilesCount;
 			enqueued.push(asset);
 		}
 	}
@@ -171,8 +172,7 @@ class Loader {
 	}
 	
 	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
-		loadFinished = call;
-		loadStarted(enqueued.length);
+		multiFileCallbacks.push(call);
 		
 		if (autoCleanup) cleanup();
 		
@@ -191,7 +191,7 @@ class Loader {
 									trace ('loaded image "$imageName"');
 								#end
 									images.set(imageName, image);
-									--numberOfFiles;
+									--loadingFilesLeft;
 									checkComplete();
 								}
 							});
@@ -209,7 +209,7 @@ class Loader {
 									trace ('loaded music "$musicName"');
 								#end
 									musics.set(musicName, music);
-									--numberOfFiles;
+									--loadingFilesLeft;
 									checkComplete();
 								}
 							});
@@ -227,7 +227,7 @@ class Loader {
 									trace ('loaded sound "$soundName"');
 								#end
 									sounds.set(soundName, sound);
-									--numberOfFiles;
+									--loadingFilesLeft;
 									checkComplete();
 								}
 							});
@@ -245,7 +245,7 @@ class Loader {
 									trace ('loaded video "$videoName"');
 								#end
 									videos.set(videoName, video);
-									--numberOfFiles;
+									--loadingFilesLeft;
 									checkComplete();
 								}
 							});
@@ -263,7 +263,7 @@ class Loader {
 									trace ('loaded blob "$blobName"');
 								#end
 									blobs.set(blobName, blob);
-									--numberOfFiles;
+									--loadingFilesLeft;
 									checkComplete();
 								}
 							});
@@ -376,34 +376,32 @@ class Loader {
 		return Json.parse(getBlob("project.kha").toString());
 	}
 	
-	function checkComplete() {
-		if (numberOfFiles <= 0) {
+	private function checkComplete() {
+		if (loadingFilesLeft == 0) {
 		#if debug_loader
-			trace ( "loadFinished!" );
+			trace("loadFinished!");
 		#end
+			loadingFilesCount = 0;
 			if (autoCleanupAssets) enqueued = new Array<Dynamic>();
-			if (loadFinished != null) loadFinished();
+			var lastMultiFileCallbacks = multiFileCallbacks;
+			multiFileCallbacks = [];
+			for (callback in lastMultiFileCallbacks) {
+				callback();
+			}
+		}
+		else if (loadingFilesLeft < 0) {
+			trace("Weird loading error, please restart the internet.");
 		}
 	#if debug_loader
 		else {
-			trace ( "Files to load: " + numberOfFiles );
+			trace("Files to load: " + numberOfFiles);
 		}
 	#end
 	}
 	
-	function loadDummyFile(): Void {
-		--numberOfFiles;
+	private function loadDummyFile(): Void {
+		--loadingFilesLeft;
 		checkComplete();
-	}
-	
-	function loadStarted(numberOfFiles: Int) {
-		if (numberOfFiles > 0) {
-			this.loadcount = numberOfFiles;
-			this.numberOfFiles = numberOfFiles;
-		} else {
-			this.loadcount = 1;
-			this.numberOfFiles = 0;
-		}
 	}
 	
 	public function loadImage(desc: Dynamic, done: Image -> Void): Void { }
@@ -412,13 +410,13 @@ class Loader {
 	public function loadMusic(desc: Dynamic, done: Music -> Void): Void { }
 	public function loadVideo(desc: Dynamic, done: Video -> Void): Void { }
 	
-	public function loadFont(name : String, style : FontStyle, size : Float): Font { return null; }
+	public function loadFont(name: String, style: FontStyle, size: Float): Font { return null; }
 	
-	public function loadURL(url : String) : Void { }
+	public function loadURL(url: String) : Void { }
 	
 	public function setNormalCursor() { }
 	public function setHandCursor() { }
-	public function setCursorBusy(busy : Bool) { }
+	public function setCursorBusy(busy: Bool) { }
 	
 	public function showKeyboard(): Void { }
 	public function hideKeyboard(): Void { }
