@@ -49,4 +49,8 @@ class Sys {
 	public static function systemId(): String {
 		return "nodejs";
 	}
+	
+	public static function requestShutdown(): Void {
+		Node.process.exit(0);
+	}
 }
