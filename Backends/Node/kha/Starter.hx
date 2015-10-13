@@ -23,7 +23,7 @@ class Starter {
 
 	public function new() {
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		gamepad = new Gamepad();
 		
 		Loader.init(new kha.js.Loader());

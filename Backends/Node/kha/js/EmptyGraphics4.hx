@@ -81,6 +81,10 @@ class EmptyGraphics4 implements Graphics {
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
 		
 	}
+	
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		
+	}
 
 	public function setIndexBuffer(indexBuffer: IndexBuffer): Void {
 		
