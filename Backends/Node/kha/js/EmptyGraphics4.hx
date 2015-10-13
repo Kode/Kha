@@ -53,6 +53,10 @@ class EmptyGraphics4 implements Graphics {
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		
 	}
+
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		
+	}
 	
 	public function setCullMode(mode: CullMode): Void {
 		
@@ -84,6 +88,10 @@ class EmptyGraphics4 implements Graphics {
 	
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
 		
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
 	}
 
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {

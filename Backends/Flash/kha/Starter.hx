@@ -1,6 +1,7 @@
 package kha;
 
 import flash.display.StageScaleMode;
+import flash.display3D.Context3DProfile;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.flash.utils.PerspectiveMatrix3D;
 import kha.Game;
@@ -60,14 +61,40 @@ class Starter {
 		Loader.the.initProject();
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
-		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */); //, Context3DProfile.BASELINE_EXTENDED);
+		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
+
+	public function lockMouse() : Void{
+		
+	}
+	
+	public function unlockMouse() : Void{
+		
+	}
+
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
 	
 	private function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(Loader.the.width, Loader.the.height, 0, false);
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		Sys.init();
 		#if debug
 		context.enableErrorChecking = true;
@@ -265,9 +292,11 @@ class Starter {
 	}
 	
 	private function mouseMoveHandler(event: MouseEvent): Void {
+		var movementX = Std.int(event.stageY) - mouseX;
+		var movementY = Std.int(event.stageY) - mouseY;
 		setMousePosition(event);
 		Game.the.mouseMove(mouseX, mouseY);
-		mouse.sendMoveEvent(mouseX, mouseY);
+		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementX);
 	}
 
 	private function mouseWheelHandler(event: MouseEvent): Void {

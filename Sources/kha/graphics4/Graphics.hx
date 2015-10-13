@@ -10,6 +10,7 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import kha.Video;
 
 interface Graphics {
 	function begin(): Void;
@@ -19,6 +20,8 @@ interface Graphics {
 	function refreshRate(): Int;
 	
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
+
+	function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	
 	function setCullMode(mode: CullMode): Void;
 	function setDepthMode(write: Bool, mode: CompareMode): Void;
@@ -27,9 +30,11 @@ interface Graphics {
 	function setScissor(rect: Rectangle): Void;
 	
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
+	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
 	function setTexture(unit: TextureUnit, texture: Image): Void;
+	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;

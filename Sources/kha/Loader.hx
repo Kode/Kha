@@ -420,6 +420,4 @@ class Loader {
 	
 	public function showKeyboard(): Void { }
 	public function hideKeyboard(): Void { }
-
-	public function quit() : Void { }
 }

@@ -78,7 +78,7 @@ class AGALMiniAssembler {
 
 		_agalcode.endian = Endian.LITTLE_ENDIAN;
 		_agalcode.writeByte(0xa0);            // tag version
-		_agalcode.writeUnsignedInt(0x1);      // AGAL version, big endian, bit pattern will be 0x01000000
+		_agalcode.writeUnsignedInt(0x2);      // AGAL version, big endian, bit pattern will be 0x01000000
 		_agalcode.writeByte(0xa1);            // tag program id
 		_agalcode.writeByte(isFrag ? 1 : 0);  // vertex or fragment
 
@@ -457,11 +457,11 @@ class AGALMiniAssembler {
 
 		REGMAP.set(VA, new Register(VA,  "vertex attribute",   0x0,   7, REG_VERT | REG_READ));
 		REGMAP.set(VC, new Register(VC,  "vertex constant",    0x1, 127, REG_VERT | REG_READ));
-		REGMAP.set(VT, new Register(VT,  "vertex temporary",   0x2,   7, REG_VERT | REG_WRITE | REG_READ));
+		REGMAP.set(VT, new Register(VT,  "vertex temporary",   0x2,  25, REG_VERT | REG_WRITE | REG_READ));
 		REGMAP.set(OP, new Register(OP,  "vertex output",      0x3,   0, REG_VERT | REG_WRITE));
 		REGMAP.set( V, new Register( V,  "varying",            0x4,   7, REG_VERT | REG_FRAG | REG_READ | REG_WRITE));
 		REGMAP.set(FC, new Register(FC,  "fragment constant",  0x1,  27, REG_FRAG | REG_READ));
-		REGMAP.set(FT, new Register(FT,  "fragment temporary", 0x2,   7, REG_FRAG | REG_WRITE | REG_READ));
+		REGMAP.set(FT, new Register(FT,  "fragment temporary", 0x2,  25, REG_FRAG | REG_WRITE | REG_READ));
 		REGMAP.set(FS, new Register(FS,  "texture sampler",    0x5,   7, REG_FRAG | REG_READ));
 		REGMAP.set(OC, new Register(OC,  "fragment output",    0x3,   0, REG_FRAG | REG_WRITE));
 

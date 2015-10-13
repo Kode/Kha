@@ -14,6 +14,7 @@ import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.Image;
@@ -22,6 +23,7 @@ import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
 import kha.Rectangle;
+import kha.Video;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -55,6 +57,13 @@ class Graphics implements kha.graphics4.Graphics {
 		if (z != null) flags |= 2;
 		if (stencil != null) flags |= 4;
 		clear2(flags, color == null ? 0 : color.value, z, stencil);
+	}
+
+	@:functionCode('
+		Kore::Graphics::viewport(x,y,width,height);
+	')
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+	
 	}
 	
 	@:functionCode('
@@ -148,18 +157,41 @@ class Graphics implements kha.graphics4.Graphics {
 	//	return new VertexBuffer(vertexCount, structure);
 	//}
 	
+	@:functionCode('Kore::Graphics::setVertexBuffer(*vertexBuffer->buffer);')
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		vertexBuffer.set();
+		
+	}
+	
+	@:functionCode('
+		Kore::VertexBuffer* vertexBuffers[4] = {
+			vb0 == null() ? nullptr : vb0->buffer,
+			vb1 == null() ? nullptr : vb1->buffer,
+			vb2 == null() ? nullptr : vb2->buffer,
+			vb3 == null() ? nullptr : vb3->buffer
+		};
+		Kore::Graphics::setVertexBuffers(vertexBuffers, count);
+	')
+	private function setVertexBuffersInternal(vb0: VertexBuffer, vb1: VertexBuffer, vb2: VertexBuffer, vb3: VertexBuffer, count: Int): Void {
+		
+	}
+	
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		setVertexBuffersInternal(
+			vertexBuffers.length > 0 ? vertexBuffers[0] : null,
+			vertexBuffers.length > 1 ? vertexBuffers[1] : null,
+			vertexBuffers.length > 2 ? vertexBuffers[2] : null,
+			vertexBuffers.length > 3 ? vertexBuffers[3] : null,
+			vertexBuffers.length);
 	}
 	
 	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics.IndexBuffer {
 	//	return new IndexBuffer(indexCount);
 	//}
+	
+	@:functionCode('Kore::Graphics::setIndexBuffer(*indexBuffer->buffer);')
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		indexBuffer.set();
-	}
-	
-	
+		
+	}	
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 	//	return Image.create(width, height, format, canRead, false, false);
@@ -195,7 +227,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function instancedRenderingAvailable(): Bool {
-		return false; // TODO
+		return true;
 	}
 	
 	@:functionCode('
@@ -264,9 +296,22 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullModeNative(mode.getIndex());
 	}
 	
+	@:functionCode('
+		if (texture->texture != nullptr) Kore::Graphics::setTexture(unit->unit, texture->texture);
+		else texture->renderTarget->useColorAsTexture(unit->unit);
+	')
+	private function setTextureInternal(unit: kha.kore.graphics4.TextureUnit, texture: kha.Image): Void {
+		
+	}
+	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
-		texture.set(cast unit);
+		setTextureInternal(cast unit, texture);
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+		if (texture == null) return;
+		setTextureInternal(cast unit, Image.createFromVideo(texture));
 	}
 	
 	//public function createVertexShader(source: Blob): VertexShader {
@@ -429,8 +474,23 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1): Void {
-		// TODO
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
+		if (count < 0) drawAllIndexedVerticesInstanced(instanceCount);
+		else drawSomeIndexedVerticesInstanced(instanceCount, start, count);
+	}
+	
+	@:functionCode('
+		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount);
+	')
+	private function drawAllIndexedVerticesInstanced(instanceCount: Int): Void {
+		
+	}
+	
+	@:functionCode('
+		Kore::Graphics::drawIndexedVerticesInstanced(instanceCount, start, count);
+	')
+	private function drawSomeIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void {
+		
 	}
 	
 	@:functionCode('Kore::Graphics::setRenderTarget(target->renderTarget, 0);')

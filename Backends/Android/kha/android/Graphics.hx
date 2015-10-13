@@ -86,6 +86,10 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glClear(clearMask);
 	}
 	
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
+		GLES20.glViewport(x, y, width, height);
+	}
+	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
@@ -173,6 +177,10 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			texture.set(cast(stage, TextureUnit).value);
 		}
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
 	}
 	
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {

@@ -81,6 +81,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		Sys.gl.clear(clearMask);
 	}
+
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		Sys.gl.viewport(x,y,width,height);
+	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
@@ -144,7 +148,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set();
+		cast(vertexBuffer, VertexBuffer).set(0);
+	}
+	
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		var offset: Int = 0;
+		for (vertexBuffer in vertexBuffers) {
+			offset += cast(vertexBuffer, VertexBuffer).set(offset);
+		}
 	}
 	
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
@@ -175,6 +186,16 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
+		}
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+		if (texture == null) {
+			Sys.gl.activeTexture(Sys.gl.TEXTURE0 + cast(unit, TextureUnit).value);
+			Sys.gl.bindTexture(Sys.gl.TEXTURE_2D, null);
+		}
+		else {
+			cast(cast(texture, kha.js.Video).texture, WebGLImage).set(cast(unit, TextureUnit).value);
 		}
 	}
 	

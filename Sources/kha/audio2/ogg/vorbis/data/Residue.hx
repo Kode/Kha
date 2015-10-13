@@ -88,7 +88,7 @@ class Residue
         var nRead = end - begin;
         var partSize = this.partSize;
         var partRead = Std.int(nRead / partSize);
-        var classifications = new Vector<Int>(header.channel *  partRead);
+        var classifications = new Vector<Int>(header.channel * partRead + 1); // + 1 is a hack for a possible crash in line 268 with some ogg files
 
         VorbisTools.stbProf(2);
         for (i in 0...ch) {

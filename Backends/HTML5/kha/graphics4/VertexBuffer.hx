@@ -13,9 +13,11 @@ class VertexBuffer {
 	private var sizes: Array<Int>;
 	private var offsets: Array<Int>;
 	private var usage: Usage;
+	private var instanceDataStepRate: Int;
 	
-	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
+	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.usage = usage;
+		this.instanceDataStepRate = instanceDataStepRate;
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
@@ -86,17 +88,16 @@ class VertexBuffer {
 		return mySize;
 	}
 	
-	public function set(): Void {
+	public function set(offset: Int): Int {
+		var ext: Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
 		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
 		for (i in 0...sizes.length) {
-			Sys.gl.enableVertexAttribArray(i);
-			Sys.gl.vertexAttribPointer(i, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
-			
-			// Not having the following lines prevents instanced rendering in cases where there is no additional attribute with a non-zero divisor
-			var ext : Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
+			Sys.gl.enableVertexAttribArray(i + offset);
+			Sys.gl.vertexAttribPointer(i + offset, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
 			if (ext) {
-				ext.vertexAttribDivisorANGLE(i, 0);
+				ext.vertexAttribDivisorANGLE(i + offset, instanceDataStepRate);
 			}
 		}
+		return sizes.length;
 	}
 }

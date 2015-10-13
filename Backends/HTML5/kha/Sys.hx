@@ -58,4 +58,8 @@ class Sys {
 	public static function systemId(): String {
 		return "HTML5";
 	}
+	
+	public static function requestShutdown(): Void {
+		Browser.window.close();
+	}
 }

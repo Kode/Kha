@@ -11,6 +11,7 @@ import kha.Loader;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.vr.VrInterface;
+import kha.input.Mouse;
 
 #if ANDROID 
 	#if VR_CARDBOARD
@@ -29,6 +30,7 @@ import kha.vr.VrInterface;
 	#end
 #end
 
+@:headerCode("#include <Kore/Input/Mouse.h>")
 class Starter {
 	private var gameToStart: Game;
 	private static var framebuffer: Framebuffer;
@@ -36,12 +38,15 @@ class Starter {
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
+
+	private var mouseLockListeners: Array<Void->Void>;
 	
 	public function new(?backbufferFormat: TextureFormat) {
+		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		gamepad = new Gamepad();
 		surface = new Surface();
 		Sys.init();
@@ -84,15 +89,56 @@ class Starter {
 			#end
 		#end
 		*/
-		
-		trace("Initializing application.");
-		gameToStart.loadFinished();
-		
+
 		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		#end
+		
+		trace("Initializing application.");
+		gameToStart.loadFinished();
+	}
+
+	public function lockMouse() : Void{
+		untyped __cpp__("Kore::Mouse::the()->lock();");
+		for (listener in mouseLockListeners) {
+			listener();
+		}
+	}
+	
+	public function unlockMouse() : Void{
+		untyped __cpp__("Kore::Mouse::the()->unlock();");	
+		for (listener in mouseLockListeners) {
+			listener();
+		}
+	}
+
+	@:functionCode('
+		return Kore::Mouse::the()->canLock();
+	')
+	public function canLockMouse() : Bool{
+		return false;
+	}
+
+	@:functionCode('
+		return Kore::Mouse::the()->isLocked();
+	')
+	public function isMouseLocked() : Bool{
+		return false;
+	}
+
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		if(canLockMouse() && func != null){
+			mouseLockListeners.push(func);
+		}
+	}
+
+
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+		if(canLockMouse() && func != null){
+			mouseLockListeners.remove(func);
+		}	
 	}
 
 	public static function frame() {
@@ -261,6 +307,16 @@ class Starter {
 		keyboard.sendUpEvent(Key.DEL, null);
 	}
 	
+	public static function pushBack(): Void {
+		Game.the.keyDown(Key.BACK, null);
+		keyboard.sendDownEvent(Key.BACK, null);
+	}
+	
+	public static function releaseBack(): Void {
+		Game.the.keyUp(Key.BACK, null);
+		keyboard.sendUpEvent(Key.BACK, null);
+	}
+	
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
@@ -278,11 +334,13 @@ class Starter {
 		mouse.sendUpEvent(button, x, y);
 	}
 	
-	public static function mouseMove(x: Int, y: Int): Void {
+	public static function mouseMove(x: Int, y: Int, movementX : Int, movementY : Int): Void {
+		// var movementX = x - mouseX;
+		// var movementY = y - mouseY;
 		mouseX = x;
 		mouseY = y;
 		Game.the.mouseMove(x, y);
-		mouse.sendMoveEvent(x, y);
+		mouse.sendMoveEvent(x, y, movementX, movementY);
 	}
 
 	public static function mouseWheel(delta: Int): Void {

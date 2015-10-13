@@ -139,15 +139,7 @@ class Image implements Canvas implements Resource {
 		return 0;
 	}
 	
-	@:functionCode("
-		if (texture != nullptr) texture-> set(unit->unit);
-		else renderTarget->useColorAsTexture(unit->unit);
-	")
-	public function set(unit: TextureUnit): Void {
-		
-	}
-	
-	@:functionCode("return texture->at(x, y) & 0xff != 0;")
+	@:functionCode("return (texture->at(x, y) & 0xff) != 0;")
 	public function isOpaque(x: Int, y: Int): Bool {
 		return true;
 	}

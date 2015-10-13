@@ -72,6 +72,45 @@ class Program {
 		
 	}
 	
+	@:functionCode('
+		Kore::VertexStructure s0, s1, s2, s3;
+		Kore::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
+		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
+		for (int i1 = 0; i1 < size; ++i1) {
+			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
+				Kore::VertexData data;
+				switch ((*structures[i1])->get(i2)->data->index) {
+				case 0:
+					data = Kore::Float1VertexData;
+					break;
+				case 1:
+					data = Kore::Float2VertexData;
+					break;
+				case 2:
+					data = Kore::Float3VertexData;
+					break;
+				case 3:
+					data = Kore::Float4VertexData;
+					break;
+				}
+				structures2[i1]->add((*structures[i1])->get(i2)->name, data);
+			}
+		}
+		program->link(structures2, size);
+	')
+	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
+		
+	}
+	
+	public function linkWithStructures(structures: Array<VertexStructure>): Void {
+		linkWithStructures2(
+			structures.length > 0 ? structures[0] : null,
+			structures.length > 1 ? structures[1] : null,
+			structures.length > 2 ? structures[2] : null,
+			structures.length > 3 ? structures[3] : null,
+			structures.length);
+	}
+	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		var location = new kha.kore.graphics4.ConstantLocation();
 		initConstantLocation(location, name);
@@ -84,11 +123,7 @@ class Program {
 	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
 		
 	}
-	
-	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
-		return null; // TODO
-	}
-	
+		
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.kore.graphics4.TextureUnit();
 		initTextureUnit(unit, name);
@@ -101,7 +136,7 @@ class Program {
 	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
 		
 	}
-		
+	
 	@:functionCode('
 		program->set();
 	')

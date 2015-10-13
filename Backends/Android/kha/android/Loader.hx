@@ -23,13 +23,13 @@ class Loader extends kha.Loader {
 	}
 	
 	override public function loadImage(desc: Dynamic, done: kha.Image->Void) {
-		done(Image.createFromFile(desc.file));
+		done(Image.createFromFile(desc.files[0]));
 	}
 
 	override public function loadSound(desc: Dynamic, done: kha.Sound->Void) {
 		var sound: kha.Sound = null;
 		try {
-			sound = new Sound(assetManager.openFd(desc.file + ".wav"));
+			sound = new Sound(assetManager.openFd(desc.files[0]));
 		}
 		catch (ex: IOException) {
 			ex.printStackTrace();
@@ -40,7 +40,7 @@ class Loader extends kha.Loader {
 	override public function loadMusic(desc: Dynamic, done: kha.Music->Void) {
 		var music: kha.Music = null;
 		try {
-			music = new Music(assetManager.openFd(desc.file + ".ogg"));
+			music = new Music(assetManager.openFd(desc.files[0]));
 		}
 		catch (ex: IOException) {
 			ex.printStackTrace();
@@ -51,7 +51,7 @@ class Loader extends kha.Loader {
 	override public function loadVideo(desc: Dynamic, done: kha.Video->Void) {
 		var video: kha.Video = null;
 		try {
-			video = new Video(assetManager.openFd(desc.file + ".mp4"));
+			video = new Video(assetManager.openFd(desc.files[0]));
 		}
 		catch (ex: IOException) {
 			ex.printStackTrace();
@@ -66,7 +66,7 @@ class Loader extends kha.Loader {
 	override public function loadBlob(desc: Dynamic, done: kha.Blob->Void): Void {
 		var bytes: Array<Int> = new Array<Int>();
 		try {
-			var stream: java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(desc.file));
+			var stream: java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(desc.files[0]));
 			var c: Int = -1;
 			while ((c = stream.read()) != -1) {
 				bytes.push(c);

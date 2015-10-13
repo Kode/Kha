@@ -58,6 +58,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+		
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		
 	}
@@ -112,6 +116,10 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture != null) {
 			context.SetTexture(0, texture.texture);
 		}
+	}
+
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+
 	}
 		
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

@@ -45,4 +45,11 @@ class Sys {
 	public static function systemId(): String {
 		return "Flash";
 	}
+	
+	public static function requestShutdown(): Void {
+		Game.the.onPause();
+		Game.the.onBackground();
+		Game.the.onShutdown();
+		flash.Lib.fscommand("quit");
+	}
 }
