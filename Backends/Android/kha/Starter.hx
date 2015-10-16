@@ -44,7 +44,7 @@ class Starter {
 	public function new() {
 		KhaActivity.the();
 		new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.Mouse(this);
 		//gamepad = new Gamepad();
 		surface = new Surface();
 		

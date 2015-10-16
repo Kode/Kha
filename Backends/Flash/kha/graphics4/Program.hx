@@ -60,11 +60,7 @@ class Program {
 		}
 		return unit;
 	}
-	
-	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
-		return null;
-	}
-	
+		
 	public function set(): Void {
 		kha.flash.graphics4.Graphics.context.setProgram(program);
 		
