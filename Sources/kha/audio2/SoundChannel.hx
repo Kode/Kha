@@ -8,8 +8,8 @@ class SoundChannel implements kha.audio1.SoundChannel {
 	private var myPosition: Int;
 	private var paused: Bool = false;
 	
-	public function new() {
-		myVolume = 1;
+	public function new(volume: Float) {
+		myVolume = volume;
 		myPosition = 0;
 	}
 	

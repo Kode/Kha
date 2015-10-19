@@ -78,14 +78,14 @@ class Audio1 {
 		}
 	}
 	
-	public static function playSound(sound: Sound): kha.audio1.SoundChannel {
+	public static function playSound(sound: Sound, volume: Float = 1.0): kha.audio1.SoundChannel {
 		#if cpp
 		mutex.acquire();
 		#end
 		var channel: kha.audio2.SoundChannel = null;
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
-				channel = new SoundChannel();
+				channel = new SoundChannel(volume);
 				channel.data = sound.data;
 				soundChannels[i] = channel;
 				break;
