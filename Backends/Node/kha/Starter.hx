@@ -23,7 +23,7 @@ class Starter {
 
 	public function new() {
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse(this);
+		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
 		
 		Loader.init(new kha.js.Loader());
@@ -64,29 +64,27 @@ class Starter {
 		}, 100);
 	}
 
-	public function lockMouse() : Void{
+	public static function lockMouse(): Void {
 		
 	}
 	
-	public function unlockMouse() : Void{
+	public static function unlockMouse(): Void {
 		
 	}
 
-	public function canLockMouse() : Bool{
+	public static function canLockMouse(): Bool {
 		return false;
 	}
 
-	public function isMouseLocked() : Bool{
+	public static function isMouseLocked(): Bool {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
-
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
-
 }

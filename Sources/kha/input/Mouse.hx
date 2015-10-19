@@ -5,7 +5,7 @@ import kha.Starter;
 
 @:allow(kha.Starter)
 @:expose
-class Mouse {
+class Mouse implements Controller {
 	public static function get(num: Int = 0): Mouse {
 		if (num != 0) return null;
 		return instance;
@@ -63,24 +63,28 @@ class Mouse {
 		instance = this;
 	}
 	
+	@input
 	private function sendDownEvent(button: Int, x: Int, y: Int): Void {
 		for (listener in downListeners) {
 			listener(button, x, y);
 		}
 	}
 	
+	@input
 	private function sendUpEvent(button: Int, x: Int, y: Int): Void {
 		for (listener in upListeners) {
 			listener(button, x, y);
 		}
 	}
 	
+	@input
 	private function sendMoveEvent(x: Int, y: Int, movementX: Int, movementY: Int): Void {
 		for (listener in moveListeners) {
 			listener(x, y, movementX, movementY);
 		}
 	}
 	
+	@input
 	private function sendWheelEvent(delta: Int): Void {
 		for (listener in wheelListeners) {
 			listener(delta);
