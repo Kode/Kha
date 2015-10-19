@@ -70,8 +70,8 @@ class Session {
 		controllers.set(controller._id(), controller);
 	}
 	
+	#if sys_server
 	private function send(): Bytes {
-		#if sys_server
 		var size = 0;
 		for (entity in entities) {
 			size += entity._size();
@@ -93,29 +93,14 @@ class Session {
 		}
 		
 		return bytes;
-		#else
-		/*var size = 0;
-		for (controller in controllers) {
-			size += controller._size();
-		}
-		var offset = 0;
-		var bytes = Bytes.alloc(size + 1);
-		bytes.set(0, CONTROLLER_UPDATES);
-		offset += 1;
-		for (controller in controllers) {
-			controller._send(offset, bytes);
-			offset += controller._size();
-		}
-		return bytes;*/
-		return null;
-		#end
 	}
+	#end
 	
 	public function receive(bytes: Bytes): Void {
 		#if sys_server
 		switch (bytes.get(0)) {
 		case CONTROLLER_UPDATES:
-			/*var id = bytes.getInt32(1);
+			var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
 			Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
 			if (time < Scheduler.time()) {
@@ -132,7 +117,7 @@ class Session {
 					}
 					--i;
 				}
-			}*/
+			}
 		}
 		#else
 		switch (bytes.get(0)) {
@@ -201,8 +186,6 @@ class Session {
 		for (client in clients) {
 			client.send(send(), false);
 		}
-		#else
-		//network.send(send(), false);
 		#end
 	}
 }
