@@ -4,6 +4,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr.Field;
 
 class ControllerBuilder {
+	public static var nextId: Int = 0;
+	
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
@@ -226,7 +228,7 @@ class ControllerBuilder {
 			name: "_receive",
 			doc: null,
 			meta: [],
-			access: [APublic],
+			access: [APublic, AOverride],
 			kind: FFun({
 				ret: null,
 				params: null,
@@ -251,7 +253,7 @@ class ControllerBuilder {
 			name: "_receive",
 			doc: null,
 			meta: [],
-			access: [APublic],
+			access: [APublic, AOverride],
 			kind: FFun({
 				ret: null,
 				params: null,
@@ -271,29 +273,6 @@ class ControllerBuilder {
 		});
 		
 		#end
-		
-		fields.push({
-			name: "_id",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FFun({
-				ret: Context.toComplexType(Context.getType("Int")),
-				params: null,
-				expr: macro { return __id; },
-				args: []
-			}),
-			pos: Context.currentPos()
-		});
-		
-		fields.push({
-			name: "__id",
-			doc: null,
-			meta: [],
-			access: [APrivate],
-			kind: FVar(macro: Int, macro 0),
-			pos: Context.currentPos()
-		});
 		
 		return fields;
 	}

@@ -5,7 +5,7 @@ import kha.Starter;
 
 @:allow(kha.Starter)
 @:expose
-class Mouse implements Controller {
+class Mouse extends Controller {
 	public static function get(num: Int = 0): Mouse {
 		if (num != 0) return null;
 		return instance;
@@ -56,6 +56,7 @@ class Mouse implements Controller {
 	private var wheelListeners: Array<Int->Void>;
 	
 	private function new() {
+		super();
 		downListeners = new Array<Int->Int->Int->Void>();
 		upListeners = new Array<Int->Int->Int->Void>();
 		moveListeners = new Array<Int->Int->Int->Int->Void>();

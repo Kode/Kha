@@ -102,20 +102,22 @@ class Session {
 		case CONTROLLER_UPDATES:
 			var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
-			Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
-			if (time < Scheduler.time()) {
-				var i = lastStates.length - 1;
-				while (i >= 0) {
-					if (lastStates[i].time < time) {
-						var offset = 9;
-						for (entity in entities) {
-							entity._receive(offset, lastStates[i].data);
-							offset += entity._size();
+			if (controllers.exists(id)) {
+				Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
+				if (time < Scheduler.time()) {
+					var i = lastStates.length - 1;
+					while (i >= 0) {
+						if (lastStates[i].time < time) {
+							var offset = 9;
+							for (entity in entities) {
+								entity._receive(offset, lastStates[i].data);
+								offset += entity._size();
+							}
+							Scheduler.back(time);
+							break;
 						}
-						Scheduler.back(time);
-						break;
+						--i;
 					}
-					--i;
 				}
 			}
 		}

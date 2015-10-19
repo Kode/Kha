@@ -5,7 +5,7 @@ import kha.network.Controller;
 
 @:allow(kha.Starter)
 @:expose
-class Keyboard implements Controller {
+class Keyboard extends Controller {
 	public static function get(num: Int = 0): Keyboard {
 		if (num != 0) return null;
 		return instance;
@@ -26,6 +26,7 @@ class Keyboard implements Controller {
 	private var upListeners: Array<Key->String->Void>;
 	
 	private function new() {
+		super();
 		downListeners = new Array<Key->String->Void>();
 		upListeners = new Array<Key->String->Void>();
 		instance = this;
