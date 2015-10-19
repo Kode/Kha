@@ -11,9 +11,10 @@ extern class Audio {
 	 * Play a sound.
 	 *
 	 * @param sound		The sound we want to play.
+	 * @param sound		The volume of the sound to play.
 	 * @return 			The sound channel of the sound we are playing.
 	 */
-	public static function playSound(sound: Sound): SoundChannel;
+	public static function playSound(sound: Sound, volume: Float = 1.0): SoundChannel;
 	
 	/**
 	 * Play some music.
