@@ -89,8 +89,4 @@ class Program {
 		}
 		return -1;
 	}
-	
-	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
-		return null;
-	}
 }

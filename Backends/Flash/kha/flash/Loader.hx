@@ -24,7 +24,6 @@ class Loader extends kha.Loader {
 		#if KHA_EMBEDDED_ASSETS
 		Assets.visit();
 		#end
-		isQuitable = true;
 	}
 	
 	private static function adjustFilename(filename: String): String {
