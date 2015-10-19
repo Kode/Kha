@@ -26,7 +26,7 @@ class ControllerBuilder {
 				
 				switch (field.kind) {
 				case FFun(f):
-					var size = 17;
+					var size = 26;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):
@@ -51,9 +51,12 @@ class ControllerBuilder {
 						bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 						bytes.setInt32(1, _id());
 						bytes.setDouble(5, Scheduler.realTime());
-						bytes.setInt32(13, $v { funcindex } );
+						bytes.setInt32(13, Sys.pixelWidth);
+						bytes.setInt32(17, Sys.pixelHeight);
+						bytes.set(21, Sys.screenRotation.getIndex());
+						bytes.setInt32(22, $v { funcindex } );
 					};
-					var index: Int = 17;
+					var index: Int = 26;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):

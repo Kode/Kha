@@ -10,6 +10,7 @@ import js.Browser;
 import js.html.BinaryType;
 import js.html.WebSocket;
 #end
+import kha.Sys;
 
 class State {
 	public var time: Float;
@@ -102,8 +103,15 @@ class Session {
 		case CONTROLLER_UPDATES:
 			var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
+			
+			var width = bytes.getInt32(13);
+			var height = bytes.getInt32(17);
+			var rotation = bytes.get(21);
+			Sys._updateSize(width, height);
+			Sys._updateScreenRotation(rotation);
+			
 			if (controllers.exists(id)) {
-				Scheduler.addTimeTask(function () { controllers[id]._receive(13, bytes); }, time - Scheduler.time());
+				Scheduler.addTimeTask(function () { controllers[id]._receive(22, bytes); }, time - Scheduler.time());
 				if (time < Scheduler.time()) {
 					var i = lastStates.length - 1;
 					while (i >= 0) {

@@ -15,6 +15,15 @@ class Sys {
 		Sys.height = height;
 	}
 	
+	public static function _updateSize(width: Int, height: Int): Void {
+		Sys.width = width;
+		Sys.height = height;
+	}
+	
+	public static function _updateScreenRotation(value: Int): Void {
+		screenRotation = ScreenRotation.createByIndex(value);
+	}
+	
 	public static function getTime(): Float {
 		var time = Node.process.hrtime();
 		return cast(time[0], Float) + cast(time[1], Float) / 1000000000;
