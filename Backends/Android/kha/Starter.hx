@@ -44,7 +44,7 @@ class Starter {
 	public function new() {
 		KhaActivity.the();
 		new Keyboard();
-		mouse = new kha.input.Mouse(this);
+		mouse = new kha.input.Mouse();
 		//gamepad = new Gamepad();
 		surface = new Surface();
 		
@@ -76,31 +76,29 @@ class Starter {
 		game.loadFinished();
 	}
 
-	public function lockMouse() : Void{
+	public static function lockMouse(): Void {
 		
 	}
 	
-	public function unlockMouse() : Void{
+	public static function unlockMouse(): Void {
 		
 	}
 
-	public function canLockMouse() : Bool{
+	public static function canLockMouse(): Bool {
 		return false;
 	}
 
-	public function isMouseLocked() : Bool{
+	public static function isMouseLocked(): Bool {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
-
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
-
 	
 	public static function init(width: Int, height: Int): Void {
 		w = width;

@@ -38,15 +38,14 @@ class Starter {
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
 	private static var surface: Surface;
-
-	private var mouseLockListeners: Array<Void->Void>;
+	private  static var mouseLockListeners: Array<Void->Void>;
 	
 	public function new(?backbufferFormat: TextureFormat) {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse(this);
+		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
 		surface = new Surface();
 		Sys.init();
@@ -100,45 +99,40 @@ class Starter {
 		gameToStart.loadFinished();
 	}
 
-	public function lockMouse() : Void{
+	public static function lockMouse(): Void {
 		untyped __cpp__("Kore::Mouse::the()->lock();");
 		for (listener in mouseLockListeners) {
 			listener();
 		}
 	}
 	
-	public function unlockMouse() : Void{
+	public static function unlockMouse(): Void {
 		untyped __cpp__("Kore::Mouse::the()->unlock();");	
 		for (listener in mouseLockListeners) {
 			listener();
 		}
 	}
 
-	@:functionCode('
-		return Kore::Mouse::the()->canLock();
-	')
-	public function canLockMouse() : Bool{
+	@:functionCode('return Kore::Mouse::the()->canLock();')
+	public static function canLockMouse(): Bool {
 		return false;
 	}
 
-	@:functionCode('
-		return Kore::Mouse::the()->isLocked();
-	')
-	public function isMouseLocked() : Bool{
+	@:functionCode('return Kore::Mouse::the()->isLocked();')
+	public static function isMouseLocked(): Bool {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		if(canLockMouse() && func != null){
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canLockMouse() && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		if(canLockMouse() && func != null){
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canLockMouse() && func != null) {
 			mouseLockListeners.remove(func);
-		}	
+		}
 	}
 
 	public static function frame() {

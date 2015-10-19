@@ -54,13 +54,10 @@ class Starter {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	var canvas : Dynamic;
-
-	
 	public function new(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse(this);
+		mouse = new kha.input.Mouse();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
 		gamepadStates = new Array<GamepadStates>();
@@ -78,8 +75,6 @@ class Starter {
 		Sys.initPerformanceTimer();
 		Scheduler.init();
 		
-		canvas = Browser.document.getElementById("khanvas");
-
 		// TODO: Move?
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
@@ -129,6 +124,8 @@ class Starter {
 		
 		gameToStart.width = Loader.the.width;
 		gameToStart.height = Loader.the.height;
+		
+		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
 		var gl: Bool = false;
 		
@@ -256,39 +253,43 @@ class Starter {
 		gameToStart.loadFinished();
 	}
 
-	public function lockMouse() : Void{
-		untyped if (canvas.requestPointerLock) {
-        	canvas.requestPointerLock();
-        } else if (canvas.mozRequestPointerLock) {
-        	canvas.mozRequestPointerLock();
-        } else if (canvas.webkitRequestPointerLock) {
-        	canvas.webkitRequestPointerLock();
-        };
+	public static function lockMouse(): Void {
+		untyped if (Sys.khanvas.requestPointerLock) {
+        	Sys.khanvas.requestPointerLock();
+        }
+		else if (canvas.mozRequestPointerLock) {
+        	Sys.khanvas.mozRequestPointerLock();
+        }
+		else if (canvas.webkitRequestPointerLock) {
+        	Sys.khanvas.webkitRequestPointerLock();
+        }
 	}
 	
-	public function unlockMouse() : Void{
+	public static function unlockMouse(): Void {
 		untyped if (document.exitPointerLock) {
 			document.exitPointerLock();
-        } else if (document.mozExitPointerLock) {
+        }
+		else if (document.mozExitPointerLock) {
          	document.mozExitPointerLock();
-        } else if (document.webkitExitPointerLock) {
+        }
+		else if (document.webkitExitPointerLock) {
         	document.webkitExitPointerLock();
-        };
+        }
 	}
 
-	public function canLockMouse() : Bool{
+	public static function canLockMouse(): Bool {
 		return untyped __js__("'pointerLockElement' in document ||
         'mozPointerLockElement' in document ||
         'webkitPointerLockElement' in document");
 	}
 
-	public function isMouseLocked() : Bool{
-		return untyped __js__("document.pointerLockElement === this.canvas ||
-  			document.mozPointerLockElement === this.canvas ||
-  			document.webkitPointerLockElement === this.canvas");
+	public static function isMouseLocked(): Bool {
+		return untyped __js__("document.pointerLockElement === kha_Sys.khanvas ||
+  			document.mozPointerLockElement === kha_Sys.khanvas ||
+  			document.webkitPointerLockElement === kha_Sys.khanvas");
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void{
 		js.Browser.document.addEventListener('pointerlockchange', func, false);
 		js.Browser.document.addEventListener('mozpointerlockchange', func, false);
 		js.Browser.document.addEventListener('webkitpointerlockchange', func, false);
@@ -298,8 +299,7 @@ class Starter {
 		js.Browser.document.addEventListener('webkitpointerlockerror', error, false);
 	}
 
-
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
 		js.Browser.document.removeEventListener('pointerlockchange', func, false);
 		js.Browser.document.removeEventListener('mozpointerlockchange', func, false);
 		js.Browser.document.removeEventListener('webkitpointerlockchange', func, false);

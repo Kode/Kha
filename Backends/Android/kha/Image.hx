@@ -161,13 +161,13 @@ class Image implements Canvas implements Resource {
 		
 	public var width(get, null): Int;
 	
-	private function get_width() : Int {
+	private function get_width(): Int {
 		return myWidth;
 	}
 	
 	public var height(get, null): Int;
 
-	private function get_height() : Int {
+	private function get_height(): Int {
 		return myHeight;
 	}
 	
@@ -182,8 +182,12 @@ class Image implements Canvas implements Resource {
 	private function get_realHeight(): Int {
 		return myRealHeight;
 	}
+	
+	public function at(x: Int, y: Int): Int {
+		return 0;
+	}
 
-	public function isOpaque(x : Int, y : Int) : Bool {
+	public function isOpaque(x: Int, y: Int): Bool {
 		//return (b.getPixel(x, y) >> 24) != 0;
 		return false;
 	}

@@ -41,4 +41,9 @@ class Sys {
 	public static function systemId(): String {
 		return "WPF";
 	}
+	
+	@:functionCode('System.Windows.Application.Current.Shutdown();')
+	public static function requestShutdown(): Void {
+		
+	}
 }

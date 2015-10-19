@@ -1,5 +1,6 @@
 package kha.input;
 
+import kha.network.Controller;
 import kha.Starter;
 
 @:allow(kha.Starter)
@@ -24,28 +25,28 @@ class Mouse {
 		if (wheelListener != null) wheelListeners.remove(wheelListener);
 	}
 	
-	public function lock() : Void{
-		starter.lockMouse();
+	public function lock(): Void {
+		Starter.lockMouse();
 	}
 
-	public function unlock() : Void{
-		starter.unlockMouse();
+	public function unlock(): Void {
+		Starter.unlockMouse();
 	}
 
-	public function canLock() : Bool{
-		return starter.canLockMouse();
+	public function canLock(): Bool {
+		return Starter.canLockMouse();
 	}
 
-	public function isLocked() : Bool{
-		return starter.isMouseLocked();
+	public function isLocked(): Bool {
+		return Starter.isMouseLocked();
 	}
 
-	public function notifyOfLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		starter.notifyOfMouseLockChange(func,error);
+	public function notifyOfLockChange(func: Void -> Void, error: Void -> Void): Void {
+		Starter.notifyOfMouseLockChange(func, error);
 	}
 
-	public function removeFromLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		starter.removeFromMouseLockChange(func,error);
+	public function removeFromLockChange(func: Void -> Void, error: Void -> Void): Void{
+		Starter.removeFromMouseLockChange(func, error);
 	}
 
 	private static var instance: Mouse;
@@ -53,15 +54,13 @@ class Mouse {
 	private var upListeners: Array<Int->Int->Int->Void>;
 	private var moveListeners: Array<Int->Int->Int->Int->Void>;
 	private var wheelListeners: Array<Int->Void>;
-	private var starter : Starter;
 	
-	private function new(starter : Starter) {
+	private function new() {
 		downListeners = new Array<Int->Int->Int->Void>();
 		upListeners = new Array<Int->Int->Int->Void>();
 		moveListeners = new Array<Int->Int->Int->Int->Void>();
 		wheelListeners = new Array<Int->Void>();
 		instance = this;
-		this.starter = starter;
 	}
 	
 	private function sendDownEvent(button: Int, x: Int, y: Int): Void {
@@ -76,7 +75,7 @@ class Mouse {
 		}
 	}
 	
-	private function sendMoveEvent(x: Int, y: Int, movementX : Int, movementY : Int): Void {
+	private function sendMoveEvent(x: Int, y: Int, movementX: Int, movementY: Int): Void {
 		for (listener in moveListeners) {
 			listener(x, y, movementX, movementY);
 		}

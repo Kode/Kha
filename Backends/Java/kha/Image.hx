@@ -103,6 +103,10 @@ class Image implements Canvas implements Resource {
 		return true;
 	}
 	
+	public function at(x: Int, y: Int): Int {
+		return 0;
+	}
+	
 	public function unload(): Void {
 		
 	}

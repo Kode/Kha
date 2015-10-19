@@ -66,4 +66,8 @@ class Sys {
 	public static function systemId(): String {
 		return "Android";
 	}
+	
+	public static function requestShutdown(): Void {
+		
+	}
 }

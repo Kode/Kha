@@ -17,12 +17,11 @@ import system.windows.input.Mouse;
 class Loader extends kha.Loader {
 	public static var path: String = "";
 	public static var forceBusyCursor: Bool = false;
-	var savedCursor: Cursor;
-	var busyCursor: Bool = false;
+	private var savedCursor: Cursor;
+	private var busyCursor: Bool = false;
 	
 	public function new() {
 		super();
-		isQuitable = true;
 	}
 	
 	public override function loadProject(call: Void -> Void) {
@@ -58,17 +57,16 @@ class Loader extends kha.Loader {
 		return Kravur.get(name, style, size);
 	}
 
-	@:functionCode('
-		System.Diagnostics.Process.Start(new System.Uri(url).AbsoluteUri);
-	')
-	override public function loadURL(url : String) : Void {
+	@:functionCode('System.Diagnostics.Process.Start(new System.Uri(url).AbsoluteUri);')
+	override public function loadURL(url: String): Void {
 		
 	}
 
 	override function checkComplete(): Void {
-		if (numberOfFiles <= 0) {
-			if (forceBusyCursor)
+		if (loadingFilesLeft <= 0) {
+			if (forceBusyCursor) {
 				Starter.frameworkElement.Cursor = Cursors.Wait;
+			}
 		}
 		super.checkComplete();
 	}
@@ -83,16 +81,13 @@ class Loader extends kha.Loader {
 		if (!busyCursor && !forceBusyCursor) Starter.frameworkElement.Cursor = Cursors.Hand;
 	}
 	
-	override function setCursorBusy(busy : Bool) {
+	override function setCursorBusy(busy: Bool) {
 		busyCursor = busy;
-		if (busy || forceBusyCursor)
+		if (busy || forceBusyCursor) {
 			Starter.frameworkElement.Cursor = Cursors.Wait;
-		else
+		}
+		else {
 			Starter.frameworkElement.Cursor = savedCursor;
+		}
 	}
-	
-	@:functionCode('
-		System.Windows.Application.Current.Shutdown();
-	')
-	override function quit() : Void { }
 }

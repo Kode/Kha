@@ -64,37 +64,35 @@ class Starter {
 		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
 
-	public function lockMouse() : Void{
+	public static function lockMouse(): Void {
 		
 	}
 	
-	public function unlockMouse() : Void{
+	public static function unlockMouse(): Void {
 		
 	}
 
-	public function canLockMouse() : Bool{
+	public static function canLockMouse(): Bool {
 		return false;
 	}
 
-	public function isMouseLocked() : Bool{
+	public static function isMouseLocked(): Bool {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
-
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
-
 	
 	private function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(Loader.the.width, Loader.the.height, 0, false);
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse(this);
+		mouse = new kha.input.Mouse();
 		Sys.init();
 		#if debug
 		context.enableErrorChecking = true;
