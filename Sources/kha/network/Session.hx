@@ -248,7 +248,7 @@ class Session {
 		});
 		#else
 		network = new Network("localhost", 6789);
-		network.listen(receive);
+		network.listen(function (bytes: Bytes) { receive(bytes); } );
 		#end
 	}
 	

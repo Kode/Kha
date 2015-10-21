@@ -20,9 +20,7 @@ class Loader {
 	private var enqueued: Array<Dynamic>;
 	private var multiFileCallbacks: Array<Void -> Void>;
 	
-	public var autoCleanupAssets : Bool = true;
-	
-	public var basePath : String = ".";
+	public var basePath: String = ".";
 	
 	public function new() {
 		blobs = new Map<String, Blob>();
@@ -167,14 +165,12 @@ class Loader {
 		for (soundname in sounds.keys()) if (!containsAsset(soundname, "sound", enqueued)) removeSound(sounds, soundname);
 		for (videoname in videos.keys()) if (!containsAsset(videoname, "video", enqueued)) removeVideo(videos, videoname);
 		for (blobname  in blobs.keys())  if (!containsAsset(blobname,  "blob",  enqueued)) removeBlob(blobs, blobname);
-
-		if (!autoCleanupAssets) enqueued = new Array<Dynamic>();
 	}
 	
-	public function loadFiles(call: Void -> Void, autoCleanup: Bool) {
+	public function loadFiles(call: Void -> Void) {
 		multiFileCallbacks.push(call);
 		
-		if (autoCleanup) cleanup();
+		cleanup();
 		
 		if (enqueued.length > 0) {
 			for (i in 0...enqueued.length) {
@@ -279,7 +275,7 @@ class Loader {
 	
 	public function loadProject(call: Void -> Void) {
 		enqueue({name: "project.kha", files: [basePath == "." ? "project.kha" : basePath + "/project.kha"], type: "blob"});
-		loadFiles(function() { loadShaders(call); }, false);
+		loadFiles(function() { loadShaders(call); });
 	}
 	
 	private function loadShaders(call: Void -> Void): Void {
@@ -320,7 +316,7 @@ class Loader {
 	
 	public function loadRoom(name: String, call: Void -> Void) {
 		loadRoomAssets(rooms.get(name));
-		loadFiles(call, autoCleanupAssets);
+		loadFiles(call);
 	}
 		
 	public function unloadedImage(name: String) {
@@ -372,17 +368,17 @@ class Loader {
 		}
 	}
 	
-	private function parseProject() : Dynamic {
+	private function parseProject(): Dynamic {
 		return Json.parse(getBlob("project.kha").toString());
 	}
 	
-	private function checkComplete() {
+	private function checkComplete(): Void {
 		if (loadingFilesLeft == 0) {
 		#if debug_loader
 			trace("loadFinished!");
 		#end
 			loadingFilesCount = 0;
-			if (autoCleanupAssets) enqueued = new Array<Dynamic>();
+			enqueued = new Array<Dynamic>();
 			var lastMultiFileCallbacks = multiFileCallbacks;
 			multiFileCallbacks = [];
 			for (callback in lastMultiFileCallbacks) {
