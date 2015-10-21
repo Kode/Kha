@@ -98,7 +98,7 @@ class Session {
 	}
 	#end
 	
-	public function receive(bytes: Bytes): Void {
+	public function receive(bytes: Bytes, client: Client = null): Void {
 		#if sys_server
 		
 		switch (bytes.get(0)) {
@@ -113,7 +113,11 @@ class Session {
 			Sys._updateScreenRotation(rotation);
 			
 			if (controllers.exists(id)) {
-				Scheduler.addTimeTask(function () { controllers[id]._receive(22, bytes); }, time - Scheduler.time());
+				Scheduler.addTimeTask(function () {
+					current = client;
+					controllers[id]._receive(22, bytes);
+					current = null;					
+				}, time - Scheduler.time());
 				if (time < Scheduler.time()) {
 					var i = lastStates.length - 1;
 					while (i >= 0) {
@@ -219,9 +223,7 @@ class Session {
 			Node.console.log(clients.length + " client" + (clients.length > 1 ? "s " : " ") + "connected.");
 			
 			client.receive(function (bytes: Bytes) {
-				current = client;
-				receive(bytes);
-				current = null;
+				receive(bytes, client);
 			});
 			
 			client.onClose(function () {
