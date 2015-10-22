@@ -1,4 +1,4 @@
-package kha.flash;
+package kha;
 
 import flash.net.NetStream;
 import kha.Blob;
@@ -18,13 +18,13 @@ import haxe.io.Bytes;
 
 using StringTools;
 
-class Loader extends kha.Loader {
-	public function new(main: Starter) {
+class LoaderImpl {
+	/*public function new(main: Starter) {
 		super();
 		#if KHA_EMBEDDED_ASSETS
 		Assets.visit();
 		#end
-	}
+	}*/
 	
 	private static function adjustFilename(filename: String): String {
 		filename = filename.replace(".", "_");
@@ -33,11 +33,11 @@ class Loader extends kha.Loader {
 		return filename;
 	}
 	
-	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
+	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
-		done(new Music(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
+		done(new kha.flash.Music(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
@@ -57,7 +57,7 @@ class Loader extends kha.Loader {
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-			var music = new Music(Bytes.ofData(urlLoader.data));
+			var music = new kha.flash.Music(Bytes.ofData(urlLoader.data));
 			if (mp3file == null) {
 				done(music);
 			}
@@ -76,7 +76,7 @@ class Loader extends kha.Loader {
 		#end
 	}
 	
-	override function loadImage(desc: Dynamic, done: Image -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: Image -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		
 		#if KHA_EMBEDDED_ASSETS
@@ -96,7 +96,7 @@ class Loader extends kha.Loader {
 		#end
 	}
 	
-	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
@@ -115,11 +115,11 @@ class Loader extends kha.Loader {
 		#end
 	}
 
-	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
-		done(new Sound(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
+		done(new kha.flash.Sound(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
@@ -141,7 +141,7 @@ class Loader extends kha.Loader {
 				var urlLoader = new URLLoader();
 				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-					done(new Sound(Bytes.ofData(urlLoader.data)));
+					done(new kha.flash.Sound(Bytes.ofData(urlLoader.data)));
 				});
 				urlLoader.load(urlRequest);
 			}
@@ -150,11 +150,11 @@ class Loader extends kha.Loader {
 		#end
 	}
 
-	override function loadVideo(desc: Dynamic, done: kha.Video -> Void) {
-		done(new Video(desc.files[0]));
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void) {
+		done(new kha.flash.Video(desc.files[0]));
 	}
 	
-	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
+	/*override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
 		return Kravur.get(name, style, size);
 	}
   
@@ -180,5 +180,5 @@ class Loader extends kha.Loader {
 			Mouse.hide();
 		else
 			Mouse.show();
-	}
+	}*/
 }

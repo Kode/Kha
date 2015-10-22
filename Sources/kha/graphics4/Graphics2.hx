@@ -78,8 +78,8 @@ class ImageShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-image.frag"));
-		var vertexShader = new VertexShader(Loader.the.getShader("painter-image.vert"));
+		var fragmentShader = new FragmentShader(Loader.getShader("painter-image.frag"));
+		var vertexShader = new VertexShader(Loader.getShader("painter-image.vert"));
 	
 		shaderProgram = new Program();
 		shaderProgram.setFragmentShader(fragmentShader);
@@ -303,8 +303,8 @@ class ColoredShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-colored.frag"));
-		var vertexShader = new VertexShader(Loader.the.getShader("painter-colored.vert"));
+		var fragmentShader = new FragmentShader(Loader.getShader("painter-colored.frag"));
+		var vertexShader = new VertexShader(Loader.getShader("painter-colored.vert"));
 	
 		shaderProgram = new Program();
 		shaderProgram.setFragmentShader(fragmentShader);
@@ -554,8 +554,8 @@ class TextShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-text.frag"));
-		var vertexShader = new VertexShader(Loader.the.getShader("painter-text.vert"));
+		var fragmentShader = new FragmentShader(Loader.getShader("painter-text.frag"));
+		var vertexShader = new VertexShader(Loader.getShader("painter-text.vert"));
 	
 		shaderProgram = new Program();
 		shaderProgram.setFragmentShader(fragmentShader);
@@ -763,8 +763,8 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter = new TextShaderPainter(g);
 		setProjection();
 		
-		var fragmentShader = new FragmentShader(Loader.the.getShader("painter-video.frag"));
-		var vertexShader = new VertexShader(Loader.the.getShader("painter-video.vert"));
+		var fragmentShader = new FragmentShader(Loader.getShader("painter-video.frag"));
+		var vertexShader = new VertexShader(Loader.getShader("painter-video.vert"));
 	
 		videoProgram = new Program();
 		videoProgram.setFragmentShader(fragmentShader);

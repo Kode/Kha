@@ -39,7 +39,7 @@ class Starter {
 	public function new() {
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
-		Loader.init(new kha.flash.Loader(this));
+		//Loader.init(new kha.flash.Loader(this));
 		Scheduler.init();
 	}
 	
@@ -51,16 +51,18 @@ class Starter {
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 		gameToStart = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Loader.the.loadProject(loadFinished);
+		
+		//Loader.the.loadProject(loadFinished);
+		loadFinished();
 		
 		// TODO: Move?
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
 	
 	public function loadFinished(): Void {
-		Loader.the.initProject();
-		gameToStart.width = Loader.the.width;
-		gameToStart.height = Loader.the.height;
+		//Loader.the.initProject();
+		gameToStart.width = 640; // Loader.the.width;
+		gameToStart.height = 480; // Loader.the.height;
 		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
 
@@ -90,7 +92,7 @@ class Starter {
 	
 	private function onReady(_): Void {
 		context = stage3D.context3D;
-		context.configureBackBuffer(Loader.the.width, Loader.the.height, 0, false);
+		context.configureBackBuffer(640, 480, 0, false); // TODO
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		Sys.init();

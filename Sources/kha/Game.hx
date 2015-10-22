@@ -42,8 +42,8 @@ class Game {
 		setInstance();
 		this.name = name;
 		if (hasHighscores) highscores = new HighscoreList();
-		width = Std.int(Loader.the.width);
-		height = Std.int(Loader.the.height);
+		width = 640; // Std.int(Loader.the.width);
+		height = 480; // Std.int(Loader.the.height);
 	}
 	
 	/**
@@ -59,9 +59,9 @@ class Game {
 	 * and also call init().
 	 */
 	public function loadFinished(): Void {
-		var w = Loader.the.width;
+		var w = 640; // Loader.the.width;
 		if (w > 0) width = w;
-		var h = Loader.the.height;
+		var h = 480; // Loader.the.height;
 		if (h > 0) height = h;
 		init();
 	}
