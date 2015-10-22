@@ -47,10 +47,11 @@ class Kravur implements Font {
 	private var baseline: Float;
 	
 	private static var fontCache: Map<String, Kravur> = new Map();
+	
 	/**
 		Returns the cached Kravur for name, style and size or loads it.
 	**/
-	public static function get(name: String, style: FontStyle, size: Float) : Kravur {
+	public static function load(name: String, style: FontStyle, size: Float, done: Kravur -> Void): Void {
 		var key = name;
 		if (style.getBold()) {
 			key += "#Bold";
@@ -62,17 +63,22 @@ class Kravur implements Font {
 		
 		var kravur = fontCache.get(key);
 		if (kravur == null) {
-			var blob = Loader.getBlob(key);
-			if (blob != null) {
-				kravur = new Kravur(blob);
-				kravur.myName = name;
-				kravur.myStyle = style;
-				kravur.mySize = size;
-				
-				fontCache.set(key, kravur);
-			}
+			Loader.loadBlob(key, function (blob: Blob) {
+				if (blob != null) {
+					var kravur = new Kravur(blob);
+					kravur.myName = name;
+					kravur.myStyle = style;
+					kravur.mySize = size;
+					
+					fontCache.set(key, kravur);
+					
+					done(kravur);
+				}
+			});
 		}
-		return kravur;
+		else {
+			done(kravur);
+		}
 	}
 	
 	private function new(blob: Blob) {
