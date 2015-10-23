@@ -17,10 +17,11 @@ class Loader {
 	 * Loads an image from a path. Most targets support PNG and JPEG formats.
 	 * 
 	 * @param	path The path to the image file.
+	 * @param   readable If true, a copy of the image will be kept in main memory for image read operations.
 	 * @param	done A callback.
 	 */
-	public static function loadImageFromPath(path: String, done: Image -> Void): Void {
-		var description = { file: path };
+	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void): Void {
+		var description = { file: path, readable: readable };
 		LoaderImpl.loadImageFromDescription(description, done);
 	}
 	

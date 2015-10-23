@@ -12,12 +12,14 @@ class LoaderBuilder {
 		var content = Json.parse(sys.io.File.getContent(p));
 		var files: Iterable<Dynamic> = content.files;
 		for (file in files) {
+			var name = file.name;
+			var filename = file.file;
 			fields.push({
 				name: file.type + "_" + file.name,
 				doc: null,
 				meta: [],
 				access: [APublic, AStatic],
-				kind: FVar(macro: Dynamic, macro null),
+				kind: FVar(macro: { name: String, file: String }, macro { name: $v { name }, file: $v { filename } }),
 				pos: Context.currentPos()
 			});
 		}
