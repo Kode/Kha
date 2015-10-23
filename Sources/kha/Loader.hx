@@ -1,5 +1,8 @@
 package kha;
 
+import haxe.io.Bytes;
+import haxe.Unserializer;
+
 @:build(kha.LoaderBuilder.build())
 class Loader {
 	/**
@@ -70,6 +73,8 @@ class Loader {
 	}
 	
 	public static function getShader(name: String): Blob {
-		return null;
+		var description = Reflect.field(Loader, "shader_" + name);
+		var bytes: Bytes = Unserializer.run(description.content);
+		return new Blob(bytes);
 	}
 }
