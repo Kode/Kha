@@ -100,16 +100,20 @@ class Starter {
 	}
 
 	public static function lockMouse(): Void {
-		untyped __cpp__("Kore::Mouse::the()->lock();");
-		for (listener in mouseLockListeners) {
-			listener();
+		if(!isMouseLocked()){
+			untyped __cpp__("Kore::Mouse::the()->lock();");
+			for (listener in mouseLockListeners) {
+				listener();
+			}	
 		}
 	}
 	
 	public static function unlockMouse(): Void {
-		untyped __cpp__("Kore::Mouse::the()->unlock();");	
-		for (listener in mouseLockListeners) {
-			listener();
+		if(isMouseLocked()){
+			untyped __cpp__("Kore::Mouse::the()->unlock();");	
+			for (listener in mouseLockListeners) {
+				listener();
+			}	
 		}
 	}
 
