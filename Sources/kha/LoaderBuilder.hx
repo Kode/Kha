@@ -34,7 +34,7 @@ class LoaderBuilder {
 					doc: null,
 					meta: [],
 					access: [APublic, AStatic],
-					kind: FVar(macro: { name: String, file: String }, macro { name: $v { name }, file: $v { filename } }),
+					kind: FVar(macro: { name: String, files: Array<String> }, macro { name: $v { name }, files: [$v { filename }] }),
 					pos: Context.currentPos()
 				});
 			}
