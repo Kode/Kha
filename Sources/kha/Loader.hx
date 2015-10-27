@@ -3,8 +3,49 @@ package kha;
 import haxe.io.Bytes;
 import haxe.Unserializer;
 
+@:build(kha.internal.LoaderBuilder.build("image"))
+class LoaderImages {
+	public function new() {
+		
+	}
+}
+
+@:build(kha.internal.LoaderBuilder.build("sound"))
+class LoaderSounds {
+	public function new() {
+		
+	}
+}
+
+@:build(kha.internal.LoaderBuilder.build("music"))
+class LoaderMusic {
+	public function new() {
+		
+	}
+}
+
+@:build(kha.internal.LoaderBuilder.build("blob"))
+class LoaderBlobs {
+	public function new() {
+		
+	}
+}
+
+@:build(kha.internal.LoaderBuilder.build("video"))
+class LoaderVideos {
+	public function new() {
+		
+	}
+}
+
 @:build(kha.LoaderBuilder.build())
 class Loader {
+	public static var images: LoaderImages = new LoaderImages();
+	public static var sounds: LoaderSounds = new LoaderSounds();
+	public static var music: LoaderMusic = new LoaderMusic();
+	public static var blobs: LoaderBlobs = new LoaderBlobs();
+	public static var videos: LoaderVideos = new LoaderVideos();
+		
 	/**
 	 * Loads an image by name which was preprocessed by khamake.
 	 * 
@@ -12,7 +53,7 @@ class Loader {
 	 * @param	done A callback.
 	 */
 	public static function loadImage(name: String, done: Image -> Void): Void {
-		var description = Reflect.field(Loader, "image_" + name);
+		var description = Reflect.field(images, name + "Description");
 		LoaderImpl.loadImageFromDescription(description, done);
 	}
 	
@@ -29,7 +70,7 @@ class Loader {
 	}
 	
 	public static function loadBlob(name: String, done: Blob -> Void): Void {
-		var description = Reflect.field(Loader, "blob_" + name);
+		var description = Reflect.field(blobs, name + "Description");
 		LoaderImpl.loadBlobFromDescription(description, done);
 	}
 	
@@ -39,7 +80,7 @@ class Loader {
 	}
 	
 	public static function loadMusic(name: String, done: Music -> Void): Void {
-		var description = Reflect.field(Loader, "music_" + name);
+		var description = Reflect.field(music, name + "Description");
 		return LoaderImpl.loadMusicFromDescription(description, done);
 	}
 	
@@ -49,7 +90,7 @@ class Loader {
 	}
 	
 	public static function loadSound(name: String, done: Sound -> Void): Void {
-		var description = Reflect.field(Loader, "sound_" + name);
+		var description = Reflect.field(sounds, name + "Description");
 		return LoaderImpl.loadSoundFromDescription(description, done);
 	}
 	
@@ -59,7 +100,7 @@ class Loader {
 	}
 	
 	public static function loadVideo(name: String, done: Video -> Void): Void {
-		var description = Reflect.field(Loader, "video_" + name);
+		var description = Reflect.field(videos, name + "Description");
 		return LoaderImpl.loadVideoFromDescription(description, done);
 	}
 	
