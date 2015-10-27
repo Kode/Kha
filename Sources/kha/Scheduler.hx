@@ -80,7 +80,6 @@ class Scheduler {
 		frameTasks = new Array<FrameTask>();
 		toDeleteTime = new Array<TimeTask>();
 		toDeleteFrame = new Array<FrameTask>();
-		Configuration.schedulerInitialized();
 	}
 	
 	public static function start(restartTimers : Bool = false): Void {
@@ -129,8 +128,6 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		Sys.mouse.update();
-		
 		var now: Float = realTime();
 		var delta = now - lastNow;
 		lastNow = now;

@@ -1,9 +1,8 @@
 package kha.input;
 
 import kha.network.Controller;
-import kha.Starter;
 
-@:allow(kha.Starter)
+@:allow(kha.SystemImpl)
 @:expose
 class Mouse extends Controller {
 	public static function get(num: Int = 0): Mouse {
@@ -26,27 +25,27 @@ class Mouse extends Controller {
 	}
 	
 	public function lock(): Void {
-		Starter.lockMouse();
+		//Starter.lockMouse();
 	}
 
 	public function unlock(): Void {
-		Starter.unlockMouse();
+		//Starter.unlockMouse();
 	}
 
 	public function canLock(): Bool {
-		return Starter.canLockMouse();
+		return false; // Starter.canLockMouse();
 	}
 
 	public function isLocked(): Bool {
-		return Starter.isMouseLocked();
+		return false; // Starter.isMouseLocked();
 	}
 
 	public function notifyOfLockChange(func: Void -> Void, error: Void -> Void): Void {
-		Starter.notifyOfMouseLockChange(func, error);
+		//Starter.notifyOfMouseLockChange(func, error);
 	}
 
 	public function removeFromLockChange(func: Void -> Void, error: Void -> Void): Void{
-		Starter.removeFromMouseLockChange(func, error);
+		//Starter.removeFromMouseLockChange(func, error);
 	}
 
 	private static var instance: Mouse;

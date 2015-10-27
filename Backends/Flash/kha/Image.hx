@@ -4,7 +4,6 @@ import flash.utils.ByteArray;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
-import kha.Starter;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
@@ -45,7 +44,7 @@ class Image implements Canvas implements Resource {
 		this.format = format;
 		this.depthStencil = depthStencil;
 		this.readable = readable;
-		tex = Starter.context.createTexture(texWidth, texHeight, format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
+		tex = SystemImpl.context.createTexture(texWidth, texHeight, format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
 	}
 	
 	public static function fromBitmap(image: DisplayObject, readable: Bool): Image {

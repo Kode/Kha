@@ -3,7 +3,7 @@ package kha.input;
 import kha.Key;
 import kha.network.Controller;
 
-@:allow(kha.Starter)
+@:allow(kha.SystemImpl)
 @:expose
 class Keyboard extends Controller {
 	public static function get(num: Int = 0): Keyboard {

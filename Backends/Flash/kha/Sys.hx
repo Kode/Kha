@@ -6,21 +6,14 @@ import kha.graphics4.Graphics;
 
 class Sys {
 	public static var needs3d: Bool = false;
-	private static var theMouse: Mouse;
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	
 	public static function init(): Void {
-		theMouse = new kha.flash.Mouse();
+		//theMouse = new kha.flash.Mouse();
 	}
 	
 	public static function getTime(): Float {
 		return Lib.getTimer() / 1000;
-	}
-	
-	public static var mouse(get, null): Mouse;
-	
-	public static function get_mouse(): Mouse {
-		return theMouse;
 	}
 	
 	public static var pixelWidth(get, null): Int;
@@ -47,9 +40,9 @@ class Sys {
 	}
 	
 	public static function requestShutdown(): Void {
-		Game.the.onPause();
-		Game.the.onBackground();
-		Game.the.onShutdown();
+		//Game.the.onPause();
+		//Game.the.onBackground();
+		//Game.the.onShutdown();
 		flash.Lib.fscommand("quit");
 	}
 }
