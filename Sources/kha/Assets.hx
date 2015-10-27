@@ -3,48 +3,47 @@ package kha;
 import haxe.io.Bytes;
 import haxe.Unserializer;
 
-@:build(kha.internal.LoaderBuilder.build("image"))
-class LoaderImages {
+@:build(kha.internal.AssetsBuilder.build("image"))
+class ImageList {
 	public function new() {
 		
 	}
 }
 
-@:build(kha.internal.LoaderBuilder.build("sound"))
-class LoaderSounds {
+@:build(kha.internal.AssetsBuilder.build("sound"))
+class SoundList {
 	public function new() {
 		
 	}
 }
 
-@:build(kha.internal.LoaderBuilder.build("music"))
-class LoaderMusic {
+@:build(kha.internal.AssetsBuilder.build("music"))
+class MusicList {
 	public function new() {
 		
 	}
 }
 
-@:build(kha.internal.LoaderBuilder.build("blob"))
-class LoaderBlobs {
+@:build(kha.internal.AssetsBuilder.build("blob"))
+class BlobList {
 	public function new() {
 		
 	}
 }
 
-@:build(kha.internal.LoaderBuilder.build("video"))
-class LoaderVideos {
+@:build(kha.internal.AssetsBuilder.build("video"))
+class VideoList {
 	public function new() {
 		
 	}
 }
 
-@:build(kha.LoaderBuilder.build())
-class Loader {
-	public static var images: LoaderImages = new LoaderImages();
-	public static var sounds: LoaderSounds = new LoaderSounds();
-	public static var music: LoaderMusic = new LoaderMusic();
-	public static var blobs: LoaderBlobs = new LoaderBlobs();
-	public static var videos: LoaderVideos = new LoaderVideos();
+class Assets {
+	public static var images: ImageList = new ImageList();
+	public static var sounds: SoundList = new SoundList();
+	public static var music: MusicList = new MusicList();
+	public static var blobs: BlobList = new BlobList();
+	public static var videos: VideoList = new VideoList();
 		
 	/**
 	 * Loads an image by name which was preprocessed by khamake.
@@ -126,11 +125,5 @@ class Loader {
 	
 	public static function loadFont(name: String, style: FontStyle, size: Float, done: Font -> Void): Void {
 		Kravur.load(name, style, size, done);
-	}
-	
-	public static function getShader(name: String): Blob {
-		var description = Reflect.field(Loader, "shader_" + name);
-		var bytes: Bytes = Unserializer.run(description.content);
-		return new Blob(bytes);
 	}
 }

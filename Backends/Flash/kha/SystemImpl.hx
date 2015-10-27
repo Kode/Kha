@@ -8,7 +8,6 @@ import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.MouseImpl;
 import kha.Key;
-import kha.Loader;
 import flash.display.Stage;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;

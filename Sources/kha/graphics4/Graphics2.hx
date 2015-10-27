@@ -25,6 +25,7 @@ import kha.math.FastVector2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
+import kha.Shaders;
 import kha.simd.Float32x4;
 
 class ImageShaderPainter {
@@ -78,12 +79,9 @@ class ImageShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.getShader("painter-image.frag"));
-		var vertexShader = new VertexShader(Loader.getShader("painter-image.vert"));
-	
 		shaderProgram = new Program();
-		shaderProgram.setFragmentShader(fragmentShader);
-		shaderProgram.setVertexShader(vertexShader);
+		shaderProgram.setFragmentShader(Shaders.painter_image_frag);
+		shaderProgram.setVertexShader(Shaders.painter_image_vert);
 
 		structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
@@ -303,12 +301,9 @@ class ColoredShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.getShader("painter-colored.frag"));
-		var vertexShader = new VertexShader(Loader.getShader("painter-colored.vert"));
-	
 		shaderProgram = new Program();
-		shaderProgram.setFragmentShader(fragmentShader);
-		shaderProgram.setVertexShader(vertexShader);
+		shaderProgram.setFragmentShader(Shaders.painter_colored_frag);
+		shaderProgram.setVertexShader(Shaders.painter_colored_vert);
 
 		structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
@@ -554,12 +549,9 @@ class TextShaderPainter {
 	}
 	
 	private function initShaders(): Void {
-		var fragmentShader = new FragmentShader(Loader.getShader("painter-text.frag"));
-		var vertexShader = new VertexShader(Loader.getShader("painter-text.vert"));
-	
 		shaderProgram = new Program();
-		shaderProgram.setFragmentShader(fragmentShader);
-		shaderProgram.setVertexShader(vertexShader);
+		shaderProgram.setFragmentShader(Shaders.painter_text_frag);
+		shaderProgram.setVertexShader(Shaders.painter_text_vert);
 
 		structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
@@ -763,12 +755,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter = new TextShaderPainter(g);
 		setProjection();
 		
-		var fragmentShader = new FragmentShader(Loader.getShader("painter-video.frag"));
-		var vertexShader = new VertexShader(Loader.getShader("painter-video.vert"));
-	
 		videoProgram = new Program();
-		videoProgram.setFragmentShader(fragmentShader);
-		videoProgram.setVertexShader(vertexShader);
+		videoProgram.setFragmentShader(Shaders.painter_video_frag);
+		videoProgram.setVertexShader(Shaders.painter_video_vert);
 
 		var structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);

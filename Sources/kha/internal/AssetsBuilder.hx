@@ -5,7 +5,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr.Field;
 import sys.io.File;
 
-class LoaderBuilder {
+class AssetsBuilder {
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
 		
@@ -87,31 +87,31 @@ class LoaderBuilder {
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Loader.loadImage($v{name}, function (image: Image) {
+							Assets.loadImage($v{name}, function (image: Image) {
 								done();
 							});
 						};
 					case "sound":
 						loadExpressions = macro {
-							Loader.loadSound($v{name}, function (sound: Sound) {
+							Assets.loadSound($v{name}, function (sound: Sound) {
 								done();
 							});
 						};
 					case "music":
 						loadExpressions = macro {
-							Loader.loadMusic($v{name}, function (music: Music) {
+							Assets.loadMusic($v{name}, function (music: Music) {
 								done();
 							});
 						};
 					case "blob":
 						loadExpressions = macro {
-							Loader.loadBlob($v{name}, function (blob: Blob) {
+							Assets.loadBlob($v{name}, function (blob: Blob) {
 								done();
 							});
 						};
 					case "video":
 						loadExpressions = macro {
-							Loader.loadVideo($v{name}, function (video: Video) {
+							Assets.loadVideo($v{name}, function (video: Video) {
 								done();
 							});
 						};

@@ -10,6 +10,7 @@ class System {
 	private static var shutdownListeners: Array<Void -> Void> = new Array();
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
+		Shaders.init();
 		SystemImpl.init(title, width, height, callback);
 	}
 	
