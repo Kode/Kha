@@ -28,16 +28,6 @@ class LoaderBuilder {
 					pos: Context.currentPos()
 				});
 			}
-			else {
-				fields.push({
-					name: file.type + "_" + file.name,
-					doc: null,
-					meta: [],
-					access: [APublic, AStatic],
-					kind: FVar(macro: { name: String, files: Array<String> }, macro { name: $v { name }, files: [$v { filename }] }),
-					pos: Context.currentPos()
-				});
-			}
 		}
 		
 		return fields;

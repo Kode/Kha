@@ -88,35 +88,30 @@ class LoaderBuilder {
 					case "image":
 						loadExpressions = macro {
 							Loader.loadImage($v{name}, function (image: Image) {
-								$i{name} = image;
 								done();
 							});
 						};
 					case "sound":
 						loadExpressions = macro {
 							Loader.loadSound($v{name}, function (sound: Sound) {
-								$i{name} = sound;
 								done();
 							});
 						};
 					case "music":
 						loadExpressions = macro {
 							Loader.loadMusic($v{name}, function (music: Music) {
-								$i{name} = music;
 								done();
 							});
 						};
 					case "blob":
 						loadExpressions = macro {
 							Loader.loadBlob($v{name}, function (blob: Blob) {
-								$i{name} = blob;
 								done();
 							});
 						};
 					case "video":
 						loadExpressions = macro {
 							Loader.loadVideo($v{name}, function (video: Video) {
-								$i{name} = video;
 								done();
 							});
 						};

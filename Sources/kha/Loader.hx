@@ -54,7 +54,10 @@ class Loader {
 	 */
 	public static function loadImage(name: String, done: Image -> Void): Void {
 		var description = Reflect.field(images, name + "Description");
-		LoaderImpl.loadImageFromDescription(description, done);
+		LoaderImpl.loadImageFromDescription(description, function (image: Image) {
+			Reflect.setField(images, name, image);
+			done(image);
+		});
 	}
 	
 	/**
@@ -71,7 +74,10 @@ class Loader {
 	
 	public static function loadBlob(name: String, done: Blob -> Void): Void {
 		var description = Reflect.field(blobs, name + "Description");
-		LoaderImpl.loadBlobFromDescription(description, done);
+		LoaderImpl.loadBlobFromDescription(description, function (blob: Blob) {
+			Reflect.setField(blobs, name, blob);
+			done(blob);
+		});
 	}
 	
 	public static function loadBlobFromPath(path: String, done: Blob -> Void): Void {
@@ -81,7 +87,10 @@ class Loader {
 	
 	public static function loadMusic(name: String, done: Music -> Void): Void {
 		var description = Reflect.field(music, name + "Description");
-		return LoaderImpl.loadMusicFromDescription(description, done);
+		return LoaderImpl.loadMusicFromDescription(description, function (m: Music) {
+			Reflect.setField(music, name, m);
+			done(m);
+		});
 	}
 	
 	public static function loadMusicFromPath(path: String, done: Music -> Void): Void {
@@ -91,7 +100,10 @@ class Loader {
 	
 	public static function loadSound(name: String, done: Sound -> Void): Void {
 		var description = Reflect.field(sounds, name + "Description");
-		return LoaderImpl.loadSoundFromDescription(description, done);
+		return LoaderImpl.loadSoundFromDescription(description, function (sound: Sound) {
+			Reflect.setField(sounds, name, sound);
+			done(sound);
+		});
 	}
 	
 	public static function loadSoundFromPath(path: String, done: Sound -> Void): Void {
@@ -101,7 +113,10 @@ class Loader {
 	
 	public static function loadVideo(name: String, done: Video -> Void): Void {
 		var description = Reflect.field(videos, name + "Description");
-		return LoaderImpl.loadVideoFromDescription(description, done);
+		return LoaderImpl.loadVideoFromDescription(description, function (video: Video) {
+			Reflect.setField(videos, name, video);
+			done(video);
+		});
 	}
 	
 	public static function loadVideoFromPath(path: String, done: Video -> Void): Void {
