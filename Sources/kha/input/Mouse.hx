@@ -6,8 +6,7 @@ import kha.network.Controller;
 @:expose
 class Mouse extends Controller {
 	public static function get(num: Int = 0): Mouse {
-		if (num != 0) return null;
-		return instance;
+		return MouseImpl.get(num);
 	}
 	
 	public function notify(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {
@@ -25,27 +24,35 @@ class Mouse extends Controller {
 	}
 	
 	public function lock(): Void {
-		//Starter.lockMouse();
+		
 	}
 
 	public function unlock(): Void {
-		//Starter.unlockMouse();
+		
 	}
 
 	public function canLock(): Bool {
-		return false; // Starter.canLockMouse();
+		return false;
 	}
 
 	public function isLocked(): Bool {
-		return false; // Starter.isMouseLocked();
+		return false;
 	}
 
-	public function notifyOfLockChange(func: Void -> Void, error: Void -> Void): Void {
-		//Starter.notifyOfMouseLockChange(func, error);
+	public function notifyOnLockChange(func: Void -> Void, error: Void -> Void): Void {
+		
 	}
 
 	public function removeFromLockChange(func: Void -> Void, error: Void -> Void): Void{
-		//Starter.removeFromMouseLockChange(func, error);
+		
+	}
+	
+	public function hideSystemCursor(): Void {
+		
+	}
+	
+	public function showSystemCursor(): Void {
+		
 	}
 
 	private static var instance: Mouse;

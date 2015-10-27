@@ -5,6 +5,8 @@ import flash.display3D.Context3DProfile;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.flash.utils.PerspectiveMatrix3D;
 import kha.input.Keyboard;
+import kha.input.Mouse;
+import kha.input.MouseImpl;
 import kha.Key;
 import kha.Loader;
 import flash.display.Stage;
@@ -33,7 +35,7 @@ class SystemImpl {
 	private static var stage: Stage;
 	private static var stage3D: Stage3D;
 	private static var keyboard: Keyboard;
-	private static var mouse: kha.input.Mouse;
+	private static var mouse: Mouse;
 	private static var callback: Void -> Void;
 	public static var context: Context3D;
 	
@@ -62,7 +64,8 @@ class SystemImpl {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, false);
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		MouseImpl.init();
+		mouse = Mouse.get();
 
 		#if debug
 		context.enableErrorChecking = true;
