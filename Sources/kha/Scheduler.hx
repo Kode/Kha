@@ -83,8 +83,8 @@ class Scheduler {
 	}
 	
 	public static function start(restartTimers : Bool = false): Void {
-		vsync = Sys.vsynced();
-		var hz = Sys.refreshRate();
+		vsync = System.vsync;
+		var hz = System.refreshRate;
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
 
@@ -240,11 +240,11 @@ class Scheduler {
 	}
 	
 	public static function realTime(): Float {
-		return Sys.getTime() - startTime;
+		return System.time - startTime;
 	}
 	
 	public static function resetTime(): Void {
-		var now = Sys.getTime();
+		var now = System.time;
 		lastNow = 0;
 		var dif = now - startTime;
 		startTime = now;

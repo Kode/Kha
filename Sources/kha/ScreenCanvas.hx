@@ -27,7 +27,7 @@ class ScreenCanvas implements Canvas {
 	public var width(get, null): Int;
 	
 	private function get_width(): Int {
-		return Sys.pixelWidth;
+		return System.pixelWidth;
 	}
 	
 	/**
@@ -37,7 +37,7 @@ class ScreenCanvas implements Canvas {
 	public var height(get, null): Int;
 	
 	private function get_height(): Int {
-		return Sys.pixelHeight;
+		return System.pixelHeight;
 	}
 	
 	/**

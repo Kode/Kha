@@ -100,7 +100,7 @@ class Framebuffer implements Canvas {
 	 * Return the width of the buffer in pixels.
 	 */
 	private function get_width(): Int {
-		return Sys.pixelWidth;
+		return System.pixelWidth;
 	}
 
 	/**
@@ -112,6 +112,6 @@ class Framebuffer implements Canvas {
 	 * Return the height of the buffer in pixels.
 	 */
 	private function get_height(): Int {
-		return Sys.pixelHeight;
+		return System.pixelHeight;
 	}
 }

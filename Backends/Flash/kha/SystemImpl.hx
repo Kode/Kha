@@ -58,36 +58,12 @@ class SystemImpl {
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
 	
-	public static function lockMouse(): Void {
-		
-	}
-	
-	public static function unlockMouse(): Void {
-		
-	}
-
-	public static function canLockMouse(): Bool {
-		return false;
-	}
-
-	public static function isMouseLocked(): Bool {
-		return false;
-	}
-
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
-	}
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
-	}
-	
 	private static function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, false);
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
-		Sys.init();
+
 		#if debug
 		context.enableErrorChecking = true;
 		#end
@@ -259,5 +235,40 @@ class SystemImpl {
 		if (frame != null && stage.stageWidth >= 32 && stage.stageHeight >= 32) {
 			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, false);
 		}
+	}
+	
+	public static function getScreenRotation(): ScreenRotation {
+		return ScreenRotation.RotationNone;
+	}
+	
+	public static function getTime(): Float {
+		return Lib.getTimer() / 1000;
+	}
+	
+	public static function getPixelWidth(): Int {
+		return Lib.current.stage.stageWidth;
+	}
+	
+	public static function getPixelHeight(): Int {
+		return Lib.current.stage.stageHeight;
+	}
+	
+	public static function getVsync(): Bool {
+		return true;
+	}
+	
+	public static function getRefreshRate(): Int {
+		return 60;
+	}
+	
+	public static function getSystemId(): String {
+		return "Flash";
+	}
+	
+	public static function requestShutdown(): Void {
+		System.pause();
+		System.background();
+		System.shutdown();
+		flash.Lib.fscommand("quit");
 	}
 }
