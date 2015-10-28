@@ -13,11 +13,11 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 	}
 	
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
-		Sys.gl.colorMask(true, true, true, true);
+		SystemImpl.gl.colorMask(true, true, true, true);
 		
 		// Disable depth test so that everything is just overpainted as determined by the order of function calls2
-		Sys.gl.disable(Sys.gl.DEPTH_TEST);
-		Sys.gl.depthFunc(Sys.gl.ALWAYS);
+		SystemImpl.gl.disable(SystemImpl.gl.DEPTH_TEST);
+		SystemImpl.gl.depthFunc(SystemImpl.gl.ALWAYS);
 		
 		super.begin(clear, clearColor);
 	}

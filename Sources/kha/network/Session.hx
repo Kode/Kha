@@ -10,7 +10,7 @@ import js.Browser;
 import js.html.BinaryType;
 import js.html.WebSocket;
 #end
-import kha.Sys;
+import kha.System;
 
 class State {
 	public var time: Float;

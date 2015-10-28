@@ -1,6 +1,6 @@
 package kha.input;
 
-@:allow(kha.Starter)
+@:allow(kha.SystemImpl)
 @:expose
 class Surface {
 	public static function get(num: Int = 0): Surface {

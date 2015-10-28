@@ -9,7 +9,7 @@ class VertexShader {
 	
 	public function new(source: Blob) {
 		this.source = source.toString();
-		this.type = Sys.gl.VERTEX_SHADER;
+		this.type = SystemImpl.gl.VERTEX_SHADER;
 		this.shader = null;
 	}
 }

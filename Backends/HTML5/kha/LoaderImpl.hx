@@ -1,4 +1,4 @@
-package kha.js;
+package kha;
 
 import js.Boot;
 import js.Browser;
@@ -6,8 +6,8 @@ import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
 import kha.FontStyle;
 import kha.Blob;
+import kha.js.WebAudioSound;
 import kha.Kravur;
-import kha.Starter;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import js.Lib;
@@ -15,18 +15,14 @@ import js.html.XMLHttpRequest;
 
 using StringTools;
 
-class Loader extends kha.Loader {
-	public function new() {
-		super();
-	}
-		
-	override function loadMusic(desc: Dynamic, done: kha.Music -> Void) {
-		new Music(desc.files, function (music: kha.Music) {
-			if (Sys._hasWebAudio) {
+class LoaderImpl {
+	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
+		new kha.js.Music(desc.files, function (music: kha.Music) {
+			if (SystemImpl._hasWebAudio) {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];
 					if (file.endsWith(".ogg")) {
-						new WebAudioMusic(cast music, file, done);
+						new kha.js.WebAudioMusic(cast music, file, done);
 						break;
 					}
 				}
@@ -37,8 +33,8 @@ class Loader extends kha.Loader {
 		});
 	}
 	
-	override function loadSound(desc: Dynamic, done: kha.Sound -> Void) {
-		if (Sys._hasWebAudio) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
+		if (SystemImpl._hasWebAudio) {
 			for (i in 0...desc.files.length) {
 				var file: String = desc.files[i];
 				if (file.endsWith(".ogg")) {
@@ -47,10 +43,10 @@ class Loader extends kha.Loader {
 				}
 			}
 		}
-		else new Sound(desc.files, done);
+		else new kha.js.Sound(desc.files, done);
 	}
 	
-	override function loadImage(desc: Dynamic, done: kha.Image -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
 		var img: ImageElement = cast Browser.document.createElement("img");
 		img.src = desc.files[0];
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
@@ -59,11 +55,11 @@ class Loader extends kha.Loader {
 		};
 	}
 
-	override function loadVideo(desc: Dynamic, done: kha.Video -> Void): Void {
-		var video = new Video(desc.files, done);
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
+		var video = new kha.js.Video(desc.files, done);
 	}
 	
-	override function loadBlob(desc: Dynamic, done: Blob -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
@@ -97,12 +93,12 @@ class Loader extends kha.Loader {
 		request.send(null);
 	}
 	
-	override public function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		if (Sys.gl != null) return Kravur.get(name, style, size);
-		else return new Font(name, style, size);
-	}
+	//public static function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
+	//	if (Sys.gl != null) return Kravur.get(name, style, size);
+	//	else return new Font(name, style, size);
+	//}
 
-	override public function loadURL(url: String): Void {
+	/*override public function loadURL(url: String): Void {
 		// inDAgo hack
 		if (url.substr(0, 1) == '#')
 			Browser.location.hash = url.substr(1, url.length - 1);
@@ -118,5 +114,5 @@ class Loader extends kha.Loader {
 	override public function setHandCursor() {
 		Mouse.SystemCursor = "pointer";
 		Mouse.UpdateSystemCursor();
-	}
+	}*/
 }

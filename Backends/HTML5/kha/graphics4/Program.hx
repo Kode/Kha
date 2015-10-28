@@ -14,7 +14,7 @@ class Program {
 	private var singleStructureArray: Array<VertexStructure>;
 	
 	public function new() {
-		program = Sys.gl.createProgram();
+		program = SystemImpl.gl.createProgram();
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
 		singleStructureArray = new Array();
@@ -36,47 +36,47 @@ class Program {
 	public function linkWithStructures(structures: Array<VertexStructure>): Void {
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
-		Sys.gl.attachShader(program, vertexShader.shader);
-		Sys.gl.attachShader(program, fragmentShader.shader);
+		SystemImpl.gl.attachShader(program, vertexShader.shader);
+		SystemImpl.gl.attachShader(program, fragmentShader.shader);
 		
 		var index = 0;
 		for (structure in structures) {
 			for (element in structure.elements) {
-				Sys.gl.bindAttribLocation(program, index, element.name);
+				SystemImpl.gl.bindAttribLocation(program, index, element.name);
 				++index;
 			}
 		}
 		
-		Sys.gl.linkProgram(program);
-		if (!Sys.gl.getProgramParameter(program, Sys.gl.LINK_STATUS)) {
+		SystemImpl.gl.linkProgram(program);
+		if (!SystemImpl.gl.getProgramParameter(program, SystemImpl.gl.LINK_STATUS)) {
 			throw "Could not link the shader program.";
 		}
 	}
 	
 	public function set(): Void {
-		Sys.gl.useProgram(program);
-		for (index in 0...textureValues.length) Sys.gl.uniform1i(textureValues[index], index);
+		SystemImpl.gl.useProgram(program);
+		for (index in 0...textureValues.length) SystemImpl.gl.uniform1i(textureValues[index], index);
 	}
 	
 	private function compileShader(shader: Dynamic): Void {
 		if (shader.shader != null) return;
-		var s = Sys.gl.createShader(shader.type);
-		Sys.gl.shaderSource(s, shader.source);
-		Sys.gl.compileShader(s);
-		if (!Sys.gl.getShaderParameter(s, Sys.gl.COMPILE_STATUS)) {
-			throw "Could not compile shader:\n" + Sys.gl.getShaderInfoLog(s);
+		var s = SystemImpl.gl.createShader(shader.type);
+		SystemImpl.gl.shaderSource(s, shader.source);
+		SystemImpl.gl.compileShader(s);
+		if (!SystemImpl.gl.getShaderParameter(s, SystemImpl.gl.COMPILE_STATUS)) {
+			throw "Could not compile shader:\n" + SystemImpl.gl.getShaderInfoLog(s);
 		}
 		shader.shader = s;
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return new kha.js.graphics4.ConstantLocation(Sys.gl.getUniformLocation(program, name));
+		return new kha.js.graphics4.ConstantLocation(SystemImpl.gl.getUniformLocation(program, name));
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var index = findTexture(name);
 		if (index < 0) {
-			var location = Sys.gl.getUniformLocation(program, name);
+			var location = SystemImpl.gl.getUniformLocation(program, name);
 			index = textures.length;
 			textureValues.push(location);
 			textures.push(name);

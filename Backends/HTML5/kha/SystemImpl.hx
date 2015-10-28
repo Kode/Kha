@@ -1,27 +1,17 @@
 package kha;
 
 import js.Browser;
-import js.html.audio.DynamicsCompressorNode;
 import js.html.CanvasElement;
-import js.html.Document;
-import js.html.Event;
-import js.html.EventListener;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.html.Touch;
 import js.html.TouchEvent;
-import kha.Game;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
-import kha.Key;
-import kha.Loader;
-import js.Lib;
-import js.Browser;
-import js.html.DOMWindow;
 
 class GamepadStates {
 	public var axes: Array<Float>;
@@ -33,10 +23,63 @@ class GamepadStates {
 	}
 }
 
-class Starter {
-	private static var maxGamepads : Int = 4;
+class SystemImpl {
+	public static var gl: Dynamic;
+	@:noCompletion public static var _hasWebAudio: Bool;
+	//public static var graphics(default, null): Graphics;
+	public static var khanvas: CanvasElement;
+	private static var performance: Dynamic;
 	
-	private var gameToStart: Game;
+	public static function initPerformanceTimer(): Void {
+		if (Browser.window.performance != null) {
+			performance = Browser.window.performance;
+		}
+		else {
+			performance = untyped __js__("window.Date");
+		}
+	}
+	
+	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+		callback();
+	}
+	
+	public static function setCanvas(canvas: CanvasElement): Void {
+		khanvas = canvas;
+	}
+	
+	public static function getScreenRotation(): ScreenRotation {
+		return ScreenRotation.RotationNone;
+	}
+	
+	public static function getTime(): Float {
+		return performance.now() / 1000;
+	}
+	
+	public static function getPixelWidth(): Int {
+		return khanvas.width;
+	}
+	
+	public static function getPixelHeight(): Int {
+		return khanvas.height;
+	}
+	
+	public static function getVsync(): Bool {
+		return true;
+	}
+	
+	public static function getRefreshRate(): Int {
+		return 60;
+	}
+	
+	public static function getSystemId(): String {
+		return "HTML5";
+	}
+	
+	public static function requestShutdown(): Void {
+		Browser.window.close();
+	}
+	
+	private static var maxGamepads : Int = 4;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var buttonspressed: Array<Bool>;
@@ -54,7 +97,7 @@ class Starter {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	public function new(?backbufferFormat: TextureFormat) {
+	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
@@ -71,8 +114,8 @@ class Starter {
 		buttonspressed = new Array<Bool>();
 		for (i in 0...10) buttonspressed.push(false);
 		CanvasImage.init();
-		Loader.init(new kha.js.Loader());
-		Sys.initPerformanceTimer();
+		//Loader.init(new kha.js.Loader());
+		SystemImpl.initPerformanceTimer();
 		Scheduler.init();
 		
 		// TODO: Move?
@@ -82,13 +125,11 @@ class Starter {
 	static function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
-				Game.the.buttonUp(button);
 				buttonspressed[num] = false;
 			}
 		}
 		else {
 			if (pad.buttons[num] > 0.5) {
-				Game.the.buttonDown(button);
 				buttonspressed[num] = true;
 			}
 		}
@@ -113,27 +154,22 @@ class Starter {
 		}
 	}
 	
-	public function start(game: Game): Void {
-		gameToStart = game;
-		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Loader.the.loadProject(loadFinished);
-	}
+	//public function start(game: Game): Void {
+	//	gameToStart = game;
+	//	Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
+	//	Loader.the.loadProject(loadFinished);
+	//}
 	
 	public function loadFinished() {
-		Loader.the.initProject();
-		
-		gameToStart.width = Loader.the.width;
-		gameToStart.height = Loader.the.height;
-		
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
 		var gl: Bool = false;
 		
 		try {
-			Sys.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: Loader.the.antiAliasingSamples > 1 } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
-			if (Sys.gl != null) {
-				Sys.gl.pixelStorei(Sys.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-				Sys.gl.getExtension("OES_texture_float");
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			if (SystemImpl.gl != null) {
+				SystemImpl.gl.pixelStorei(SystemImpl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+				SystemImpl.gl.getExtension("OES_texture_float");
 				gl = true;
 			}
 		}
@@ -141,28 +177,28 @@ class Starter {
 			trace(e);
 		}
 		
-		Sys.init(canvas);
-		var widthTransform: Float = canvas.width / Loader.the.width;
-		var heightTransform: Float = canvas.height / Loader.the.height;
-		var transform: Float = Math.min(widthTransform, heightTransform);
+		setCanvas(canvas);
+		//var widthTransform: Float = canvas.width / Loader.the.width;
+		//var heightTransform: Float = canvas.height / Loader.the.height;
+		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
 			frame = new Framebuffer(null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
 		}
 		else {
-			var g2 = new CanvasGraphics(canvas.getContext("2d"), Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
+			var g2 = new CanvasGraphics(canvas.getContext("2d"), 640, 480); // Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
 			frame = new Framebuffer(null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
 		}
 		//canvas.getContext("2d").scale(transform, transform);
 
 		if (kha.audio2.Audio._init()) {
-			Sys._hasWebAudio = true;
+			SystemImpl._hasWebAudio = true;
 			kha.audio2.Audio1._init();
 		}
 		else {
-			Sys._hasWebAudio = false;
+			SystemImpl._hasWebAudio = false;
 			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
@@ -215,13 +251,13 @@ class Starter {
 					canvas.height = displayHeight;
 				}
 
-				Configuration.screen().render(frame);
-				if (Sys.gl != null) {
+				//Configuration.screen().render(frame);
+				if (SystemImpl.gl != null) {
 					// Clear alpha for IE11
-					Sys.gl.clearColor(1, 1, 1, 1);
-					Sys.gl.colorMask(false, false, false, true);
-					Sys.gl.clear(Sys.gl.COLOR_BUFFER_BIT);
-					Sys.gl.colorMask(true, true, true, true);
+					SystemImpl.gl.clearColor(1, 1, 1, 1);
+					SystemImpl.gl.colorMask(false, false, false, true);
+					SystemImpl.gl.clear(SystemImpl.gl.COLOR_BUFFER_BIT);
+					SystemImpl.gl.colorMask(true, true, true, true);
 				}
 			}
 		}
@@ -247,10 +283,6 @@ class Starter {
 		canvas.addEventListener("touchmove", touchMove, false);
 		
 		Browser.window.addEventListener("unload", unload);
-
-		Configuration.setScreen(gameToStart);
-		
-		gameToStart.loadFinished();
 	}
 
 	public static function lockMouse(): Void {
@@ -310,17 +342,17 @@ class Starter {
 	}
 
 	static function unload(_): Void {
-		Game.the.onPause();
-		Game.the.onBackground();
-		Game.the.onShutdown();
+		//Game.the.onPause();
+		//Game.the.onBackground();
+		//Game.the.onShutdown();
 	}
 	
 	private static function setMouseXY(event: MouseEvent): Void {
-		var rect = Sys.khanvas.getBoundingClientRect();
-		var borderWidth = Sys.khanvas.clientLeft;
-		var borderHeight = Sys.khanvas.clientTop;
-		mouseX = Std.int((event.clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
-		mouseY = Std.int((event.clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
+		var rect = SystemImpl.khanvas.getBoundingClientRect();
+		var borderWidth = SystemImpl.khanvas.clientLeft;
+		var borderHeight = SystemImpl.khanvas.clientTop;
+		mouseX = Std.int((event.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
+		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 	
 	private static function mouseDown(event: MouseEvent): Void {
@@ -329,17 +361,14 @@ class Starter {
 		if (event.button == 0) {
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
-				Game.the.rightMouseDown(mouseX, mouseY);
 				mouse.sendDownEvent(1, mouseX, mouseY);
 			}
 			else {
 				leftMouseCtrlDown = false;
-				Game.the.mouseDown(mouseX, mouseY);
 				mouse.sendDownEvent(0, mouseX, mouseY);
 			}
 		}
 		else {
-			Game.the.rightMouseDown(mouseX, mouseY);
 			mouse.sendDownEvent(1, mouseX, mouseY);
 		}
 	}
@@ -349,17 +378,14 @@ class Starter {
 		setMouseXY(event);
 		if (event.button == 0) {
 			if (leftMouseCtrlDown) {
-				Game.the.rightMouseUp(mouseX, mouseY);
 				mouse.sendUpEvent(1, mouseX, mouseY);
 			}
 			else {
-				Game.the.mouseUp(mouseX, mouseY);
 				mouse.sendUpEvent(0, mouseX, mouseY);
 			}
 			leftMouseCtrlDown = false;
 		}
 		else {
-			Game.the.rightMouseUp(mouseX, mouseY);
 			mouse.sendUpEvent(1, mouseX, mouseY);
 		}
 	}
@@ -370,22 +396,20 @@ class Starter {
 		setMouseXY(event);
 		var movementX = untyped event.movementX || event.mozMovementX || event.webkitMovementX || mouseX - lastMouseX;
 		var movementY = untyped event.movementY || event.mozMovementY || event.webkitMovementY || mouseY - lastMouseY;
-		Game.the.mouseMove(mouseX, mouseY);
 		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementY);
 	}
 	
 	private static function setTouchXY(touch: Touch): Void {
-		var rect = Sys.khanvas.getBoundingClientRect();
-		var borderWidth = Sys.khanvas.clientLeft;
-		var borderHeight = Sys.khanvas.clientTop;
-		touchX = Std.int((touch.clientX - rect.left - borderWidth) * Sys.khanvas.width / (rect.width - 2 * borderWidth));
-		touchY = Std.int((touch.clientY - rect.top - borderHeight) * Sys.khanvas.height / (rect.height - 2 * borderHeight));
+		var rect = SystemImpl.khanvas.getBoundingClientRect();
+		var borderWidth = SystemImpl.khanvas.clientLeft;
+		var borderHeight = SystemImpl.khanvas.clientTop;
+		touchX = Std.int((touch.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
+		touchY = Std.int((touch.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 	
 	private static function touchDown(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			Game.the.mouseDown(touchX, touchY);
 			mouse.sendDownEvent(0, touchX, touchY);
 			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
 		}
@@ -394,7 +418,6 @@ class Starter {
 	private static function touchUp(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			Game.the.mouseUp(touchX, touchY);
 			mouse.sendUpEvent(0, touchX, touchY);
 			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
 		}
@@ -410,7 +433,6 @@ class Starter {
 				lastFirstTouchX = touchX;
 				lastFirstTouchY = touchY;
 				
-				Game.the.mouseMove(touchX, touchY);
 				mouse.sendMoveEvent(touchX, touchY, movementX, movementY);
 			}
 			
@@ -519,61 +541,47 @@ class Starter {
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
 		case 8:
-			Game.the.keyDown(Key.BACKSPACE, "");
 			keyboard.sendDownEvent(Key.BACKSPACE, "");
 			event.preventDefault();
 		case 9:
-			Game.the.keyDown(Key.TAB, "");
 			keyboard.sendDownEvent(Key.TAB, "");
 			event.preventDefault();
 		case 13:
-			Game.the.keyDown(Key.ENTER, "");
 			keyboard.sendDownEvent(Key.ENTER, "");
 			event.preventDefault();
 		case 16:
-			Game.the.keyDown(Key.SHIFT, "");
 			keyboard.sendDownEvent(Key.SHIFT, "");
 			event.preventDefault();
 		case 17:
-			Game.the.keyDown(Key.CTRL, "");
 			keyboard.sendDownEvent(Key.CTRL, "");
 			event.preventDefault();
 		case 18:
-			Game.the.keyDown(Key.ALT, "");
 			keyboard.sendDownEvent(Key.ALT, "");
 			event.preventDefault();
 		case 27:
-			Game.the.keyDown(Key.ESC, "");
 			keyboard.sendDownEvent(Key.ESC, "");
 			event.preventDefault();
 		case 32:
-			Game.the.keyDown(Key.CHAR, " ");
 			keyboard.sendDownEvent(Key.CHAR, " ");
 			event.preventDefault(); // don't scroll down in IE
 		case 46:
-			Game.the.keyDown(Key.DEL, "");
 			keyboard.sendDownEvent(Key.DEL, "");
 			event.preventDefault();
 		case 38:
-			Game.the.buttonDown(Button.UP);
 			keyboard.sendDownEvent(Key.UP, "");
 			event.preventDefault();
 		case 40:
-			Game.the.buttonDown(Button.DOWN);
 			keyboard.sendDownEvent(Key.DOWN, "");
 			event.preventDefault();
 		case 37:
-			Game.the.buttonDown(Button.LEFT);
 			keyboard.sendDownEvent(Key.LEFT, "");
 			event.preventDefault();
 		case 39:
-			Game.the.buttonDown(Button.RIGHT);
 			keyboard.sendDownEvent(Key.RIGHT, "");
 			event.preventDefault();
 		default:
 			if (!event.altKey) {
 				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
-				Game.the.keyDown(Key.CHAR, char);
 				keyboard.sendDownEvent(Key.CHAR, char);
 			}
 		}
@@ -587,48 +595,34 @@ class Starter {
 		
 		switch (event.keyCode) {
 		case 8:
-			Game.the.keyUp(Key.BACKSPACE, "");
 			keyboard.sendUpEvent(Key.BACKSPACE, "");
 		case 9:
-			Game.the.keyUp(Key.TAB, "");
 			keyboard.sendUpEvent(Key.TAB, "");
 		case 13:
-			Game.the.keyUp(Key.ENTER, "");
 			keyboard.sendUpEvent(Key.ENTER, "");
 		case 16:
-			Game.the.keyUp(Key.SHIFT, "");
 			keyboard.sendUpEvent(Key.SHIFT, "");
 		case 17:
-			Game.the.keyUp(Key.CTRL, "");
 			keyboard.sendUpEvent(Key.CTRL, "");
 		case 18:
-			Game.the.keyUp(Key.ALT, "");
 			keyboard.sendUpEvent(Key.ALT, "");
 		case 27:
-			Game.the.keyUp(Key.ESC, "");
 			keyboard.sendUpEvent(Key.ESC, "");
 		case 32:
-			Game.the.keyUp(Key.CHAR, " ");
 			keyboard.sendUpEvent(Key.CHAR, " ");
 		case 46:
-			Game.the.keyUp(Key.DEL, "");
 			keyboard.sendUpEvent(Key.DEL, "");
 		case 38:
-			Game.the.buttonUp(Button.UP);
 			keyboard.sendUpEvent(Key.UP, "");
 		case 40:
-			Game.the.buttonUp(Button.DOWN);
 			keyboard.sendUpEvent(Key.DOWN, "");
 		case 37:
-			Game.the.buttonUp(Button.LEFT);
 			keyboard.sendUpEvent(Key.LEFT, "");
 		case 39:
-			Game.the.buttonUp(Button.RIGHT);
 			keyboard.sendUpEvent(Key.RIGHT, "");
 		default:
 			if (!event.altKey) {
 				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
-				Game.the.keyUp(Key.CHAR, char);
 				keyboard.sendUpEvent(Key.CHAR, char);
 			}
 		}

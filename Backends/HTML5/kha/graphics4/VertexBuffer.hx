@@ -33,7 +33,7 @@ class VertexBuffer {
 			}
 		}
 	
-		buffer = Sys.gl.createBuffer();
+		buffer = SystemImpl.gl.createBuffer();
 		data = new Float32Array(Std.int(vertexCount * myStride / 4));
 		
 		sizes = new Array<Int>();
@@ -76,8 +76,8 @@ class VertexBuffer {
 	}
 	
 	public function unlock(): Void {
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
-		Sys.gl.bufferData(Sys.gl.ARRAY_BUFFER, data, usage == Usage.DynamicUsage ? Sys.gl.DYNAMIC_DRAW : Sys.gl.STATIC_DRAW);
+		SystemImpl.gl.bindBuffer(SystemImpl.gl.ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bufferData(SystemImpl.gl.ARRAY_BUFFER, data, usage == Usage.DynamicUsage ? SystemImpl.gl.DYNAMIC_DRAW : SystemImpl.gl.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
@@ -89,11 +89,11 @@ class VertexBuffer {
 	}
 	
 	public function set(offset: Int): Int {
-		var ext: Dynamic = Sys.gl.getExtension("ANGLE_instanced_arrays");
-		Sys.gl.bindBuffer(Sys.gl.ARRAY_BUFFER, buffer);
+		var ext: Dynamic = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
+		SystemImpl.gl.bindBuffer(SystemImpl.gl.ARRAY_BUFFER, buffer);
 		for (i in 0...sizes.length) {
-			Sys.gl.enableVertexAttribArray(i + offset);
-			Sys.gl.vertexAttribPointer(i + offset, sizes[i], Sys.gl.FLOAT, false, myStride, offsets[i]);
+			SystemImpl.gl.enableVertexAttribArray(i + offset);
+			SystemImpl.gl.vertexAttribPointer(i + offset, sizes[i], SystemImpl.gl.FLOAT, false, myStride, offsets[i]);
 			if (ext) {
 				ext.vertexAttribDivisorANGLE(i + offset, instanceDataStepRate);
 			}

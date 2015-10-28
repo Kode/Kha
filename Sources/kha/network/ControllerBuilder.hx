@@ -51,9 +51,9 @@ class ControllerBuilder {
 						bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 						bytes.setInt32(1, _id());
 						bytes.setDouble(5, Scheduler.realTime());
-						bytes.setInt32(13, Sys.pixelWidth);
-						bytes.setInt32(17, Sys.pixelHeight);
-						bytes.set(21, Sys.screenRotation.getIndex());
+						bytes.setInt32(13, System.pixelWidth);
+						bytes.setInt32(17, System.pixelHeight);
+						bytes.set(21, System.screenRotation.getIndex());
 						bytes.setInt32(22, $v { funcindex } );
 					};
 					var index: Int = 26;

@@ -108,7 +108,7 @@ class Video extends kha.Video {
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
-		if (Sys.gl != null) texture = Image.fromVideo(this);
+		if (SystemImpl.gl != null) texture = Image.fromVideo(this);
 		done(this);
 		loading.remove(this);
 	}

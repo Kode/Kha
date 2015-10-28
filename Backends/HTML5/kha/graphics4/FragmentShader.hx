@@ -7,7 +7,7 @@ class FragmentShader {
 	
 	public function new(source: Blob) {
 		this.source = source.toString();
-		this.type = Sys.gl.FRAGMENT_SHADER;
+		this.type = SystemImpl.gl.FRAGMENT_SHADER;
 		this.shader = null;
 	}
 }

@@ -12,6 +12,7 @@ import js.Lib;
 import kha.audio2.Audio;
 import kha.audio2.ogg.vorbis.Reader;
 
+/*
 class WebAudioChannel extends kha.SoundChannel {
 	private var buffer: Dynamic;
 	private var startTime: Float;
@@ -60,6 +61,7 @@ class WebAudioChannel extends kha.SoundChannel {
 		return Math.floor(buffer.duration * 1000); //Miliseconds
 	}
 }
+*/
 
 class WebAudioSound extends kha.Sound {
 	private var done: kha.Sound -> Void;

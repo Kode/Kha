@@ -17,7 +17,7 @@ class Font implements kha.Font {
 		myName = name;
 		myStyle = style;
 		mySize = size;
-		kravur = Kravur.get(name, style, size);
+		//kravur = Kravur.get(name, style, size);
 		images = new Map<Int, ImageElement>();
 	}
 	

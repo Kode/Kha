@@ -9,7 +9,7 @@ import js.Lib;
 
 using StringTools;
 
-class SoundChannel extends kha.SoundChannel {
+/*class SoundChannel extends kha.SoundChannel {
 	private var element: Dynamic;
 	
 	public function new(element: Dynamic) {
@@ -54,7 +54,7 @@ class SoundChannel extends kha.SoundChannel {
 			return -1;
 		}
 	}
-}
+}*/
 
 class Sound extends kha.Sound {
 	private var filenames: Array<String>;
