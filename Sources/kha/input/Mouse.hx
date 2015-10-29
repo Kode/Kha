@@ -6,7 +6,7 @@ import kha.network.Controller;
 @:expose
 class Mouse extends Controller {
 	public static function get(num: Int = 0): Mouse {
-		return MouseImpl.get(num);
+		return SystemImpl.getMouse(num);
 	}
 	
 	public function notify(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {

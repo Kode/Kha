@@ -9,6 +9,8 @@ import js.html.TouchEvent;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.Mouse;
+import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
@@ -41,7 +43,7 @@ class SystemImpl {
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
 		init2();
-		
+		//MouseImpl.init();
 		callback();
 	}
 	
@@ -122,6 +124,11 @@ class SystemImpl {
 		
 		loadFinished();
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
+	}
+	
+	public static function getMouse(num: Int): Mouse {
+		if (num != 0) return null;
+		return mouse;
 	}
 	
 	static function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
