@@ -70,6 +70,7 @@ class SystemImpl {
 		context.enableErrorChecking = true;
 		#end
 		
+		Shaders.init();
 		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		kha.flash.graphics4.Graphics.initContext(context);
 		var g4 = new kha.flash.graphics4.Graphics();

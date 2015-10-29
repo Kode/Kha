@@ -40,6 +40,8 @@ class SystemImpl {
 	}
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+		init2();
+		
 		callback();
 	}
 	
@@ -118,7 +120,7 @@ class SystemImpl {
 		SystemImpl.initPerformanceTimer();
 		Scheduler.init();
 		
-		// TODO: Move?
+		loadFinished();
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 	
@@ -160,7 +162,7 @@ class SystemImpl {
 	//	Loader.the.loadProject(loadFinished);
 	//}
 	
-	public function loadFinished() {
+	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		
 		var gl: Bool = false;
@@ -171,6 +173,7 @@ class SystemImpl {
 				SystemImpl.gl.pixelStorei(SystemImpl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				SystemImpl.gl.getExtension("OES_texture_float");
 				gl = true;
+				Shaders.init();
 			}
 		}
 		catch (e: Dynamic) {
@@ -251,7 +254,7 @@ class SystemImpl {
 					canvas.height = displayHeight;
 				}
 
-				//Configuration.screen().render(frame);
+				System.render(frame);
 				if (SystemImpl.gl != null) {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
