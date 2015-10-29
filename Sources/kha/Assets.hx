@@ -67,7 +67,7 @@ class Assets {
 	 * @param	done A callback.
 	 */
 	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void): Void {
-		var description = { file: path, readable: readable };
+		var description = { files: [ path ], readable: readable };
 		LoaderImpl.loadImageFromDescription(description, done);
 	}
 	
@@ -80,7 +80,7 @@ class Assets {
 	}
 	
 	public static function loadBlobFromPath(path: String, done: Blob -> Void): Void {
-		var description = { file: path };
+		var description = { files: [ path ] };
 		LoaderImpl.loadBlobFromDescription(description, done);
 	}
 	
@@ -93,7 +93,7 @@ class Assets {
 	}
 	
 	public static function loadMusicFromPath(path: String, done: Music -> Void): Void {
-		var description = { file: path };
+		var description = { files: [ path ] };
 		return LoaderImpl.loadMusicFromDescription(description, done);
 	}
 	
@@ -106,7 +106,7 @@ class Assets {
 	}
 	
 	public static function loadSoundFromPath(path: String, done: Sound -> Void): Void {
-		var description = { file: path };
+		var description = { files: [ path ] };
 		return LoaderImpl.loadSoundFromDescription(description, done);
 	}
 	
@@ -119,7 +119,7 @@ class Assets {
 	}
 	
 	public static function loadVideoFromPath(path: String, done: Video -> Void): Void {
-		var description = { file: path };
+		var description = { files: [ path ] };
 		return LoaderImpl.loadVideoFromDescription(description, done);
 	}
 	
