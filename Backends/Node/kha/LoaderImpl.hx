@@ -10,6 +10,7 @@ import js.node.Buffer;
 import js.node.Fs;
 import kha.FontStyle;
 import kha.Blob;
+import kha.graphics4.TextureFormat;
 import kha.Image;
 import kha.Kravur;
 import haxe.io.Bytes;
@@ -32,7 +33,7 @@ class LoaderImpl {
 	
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
 		Node.setTimeout(function () {
-			done(new Image(100, 100));
+			done(new Image(100, 100, TextureFormat.RGBA32));
 		}, 0);
 	}
 
