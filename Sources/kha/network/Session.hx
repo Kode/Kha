@@ -109,8 +109,8 @@ class Session {
 			var width = bytes.getInt32(13);
 			var height = bytes.getInt32(17);
 			var rotation = bytes.get(21);
-			Sys._updateSize(width, height);
-			Sys._updateScreenRotation(rotation);
+			SystemImpl._updateSize(width, height);
+			SystemImpl._updateScreenRotation(rotation);
 			
 			if (controllers.exists(id)) {
 				Scheduler.addTimeTask(function () {
