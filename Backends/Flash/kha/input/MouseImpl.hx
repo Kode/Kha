@@ -1,17 +1,6 @@
 package kha.input;
 
 class MouseImpl extends Mouse {
-	private static var mouse: MouseImpl;
-	
-	public static function init(): Void {
-		mouse = new MouseImpl();
-	}
-	
-	public static function get(num: Int): Mouse {
-		if (num != 0) return null;
-		return mouse;
-	}
-	
 	public function new() {
 		super();
 	}

@@ -2,8 +2,6 @@ package kha.graphics2.truetype;
 
 import haxe.ds.Vector;
 import haxe.io.Bytes;
-import kha.graphics2.truetype.stbtt_tag4;
-import kha.graphics2.truetype.ttLONG;
 
 typedef Stbtt_uint8  = Int;
 typedef Stbtt_int8   = Int;
@@ -69,7 +67,10 @@ class Stbtt_pack_range {
 	public var array_of_unicode_codepoints: Vector<Int>; // if non-zero, then this is an array of unicode codepoints
 	public var num_chars: Int;
 	public var chardata_for_range: Stbtt_packedchar;     // output
-	public var h_oversample, v_oversample: Int;          // don't set these, they're used internally
+	
+	// don't set these, they're used internally
+	public var h_oversample: Int;
+	public var v_oversample: Int;
 }
 
 class Stbtt_pack_context {
@@ -79,7 +80,8 @@ class Stbtt_pack_context {
 	public var height: Int;
 	public var stride_in_bytes: Int;
 	public var padding: Int;
-	public var h_oversample, v_oversample: Int;
+	public var h_oversample: Int;
+	public var v_oversample: Int;
 	public var pixels: Bytes;
 	//**void  *nodes;
 }
@@ -91,7 +93,14 @@ class Stbtt_fontinfo {
 
 	public var numGlyphs: Int;                     // number of glyphs, needed for range checking
 
-	public var loca,head,glyf,hhea,hmtx,kern: Int; // table locations as offset from start of .ttf
+	// table locations as offset from start of .ttf
+	public var loca: Int;
+	public var head: Int;
+	public var glyf: Int;
+	public var hhea: Int;
+	public var hmtx: Int;
+	public var kern: Int;
+	
 	public var index_map: Int;                     // a cmap mapping for our chosen character encoding
 	public var indexToLocFormat: Int;              // format needed to map from glyph index to glyph
 }
@@ -113,6 +122,7 @@ class Stbtt__bitmap {
 }
 
 class StbTruetype {
+	private static inline function STBTT_assert(value: Bool): Void { if (!value) throw "Error"; }
 	private static inline function STBTT_POINT_SIZE(x: Float): Float { return -x; }
 	
 	public static inline var STBTT_vmove  = 1;
@@ -146,11 +156,11 @@ class StbTruetype {
    
 	// encodingID for STBTT_PLATFORM_ID_MAC; same as Script Manager codes
 	public static inline var STBTT_MAC_EID_ROMAN        = 0;
-	public static inline var STBTT_MAC_EID_ARABIC       = 4,
+	public static inline var STBTT_MAC_EID_ARABIC       = 4;
 	public static inline var STBTT_MAC_EID_JAPANESE     = 1;
-	public static inline var STBTT_MAC_EID_HEBREW       = 5,
+	public static inline var STBTT_MAC_EID_HEBREW       = 5;
 	public static inline var STBTT_MAC_EID_CHINESE_TRAD = 2;
-	public static inline var STBTT_MAC_EID_GREEK        = 6,
+	public static inline var STBTT_MAC_EID_GREEK        = 6;
 	public static inline var STBTT_MAC_EID_KOREAN       = 3;
 	public static inline var STBTT_MAC_EID_RUSSIAN      = 7;
 	
@@ -200,13 +210,13 @@ class StbTruetype {
 	private static inline function stbtt_tag4(p: Bytes, pos: Int, c0: Int, c1: Int, c2: Int, c3: Int): Bool { return p.get(pos + 0) == c0 && p.get(pos + 1) == c1 && p.get(pos + 2) == c2 && p.get(pos + 3) == c3; }
 	private static inline function stbtt_tag(p: Bytes, pos: Int, str: String): Bool { return stbtt_tag4(p, pos, str.charCodeAt(0), str.charCodeAt(1), str.charCodeAt(2), str.charCodeAt(3)); }
 
-   private static function stbtt__isfont(font: Bytes): Int {
+   private static function stbtt__isfont(font: Bytes): Bool {
 		// check the version number
-		if (stbtt_tag4(font, 0, '1'.charCodeAt(0),0,0,0))  return 1; // TrueType 1
-		if (stbtt_tag(font, 0, "typ1"))   return 1; // TrueType with type 1 font -- we don't support this!
-		if (stbtt_tag(font, 0, "OTTO"))   return 1; // OpenType with CFF
-		if (stbtt_tag4(font, 0, 0,1,0,0)) return 1; // OpenType 1.0
-		return 0;
+		if (stbtt_tag4(font, 0, '1'.charCodeAt(0),0,0,0)) return true; // TrueType 1
+		if (stbtt_tag(font, 0, "typ1"))   return true; // TrueType with type 1 font -- we don't support this!
+		if (stbtt_tag(font, 0, "OTTO"))   return true; // OpenType with CFF
+		if (stbtt_tag4(font, 0, 0,1,0,0)) return true; // OpenType 1.0
+		return false;
 	}
 
 	// @OPTIMIZE: binary search
@@ -214,7 +224,7 @@ class StbTruetype {
 		var num_tables: Stbtt_int32 = ttUSHORT(data, fontstart+4);
 		var tabledir: Stbtt_uint32 = fontstart + 12;
 		for (i in 0...num_tables) {
-			var loc: stbtt_uint32 = tabledir + 16*i;
+			var loc: Stbtt_uint32 = tabledir + 16*i;
 			if (stbtt_tag(data, loc+0, tag))
 				return ttULONG(data, loc+8);
 		}
@@ -227,7 +237,7 @@ class StbTruetype {
 			return index == 0 ? 0 : -1;
 
 		// check if it's a TTC
-		if (stbtt_tag(font_collection, "ttcf")) {
+		if (stbtt_tag(font_collection, 0, "ttcf")) {
 			// version 1?
 			if (ttULONG(font_collection, 4) == 0x00010000 || ttULONG(font_collection, 4) == 0x00020000) {
 				var n: Stbtt_int32 = ttLONG(font_collection, 8);
@@ -253,27 +263,27 @@ class StbTruetype {
 		info.hhea = stbtt__find_table(data, fontstart, "hhea"); // required
 		info.hmtx = stbtt__find_table(data, fontstart, "hmtx"); // required
 		info.kern = stbtt__find_table(data, fontstart, "kern"); // not required
-		if (!cmap || !info.loca || !info.head || !info.glyf || !info.hhea || !info.hmtx)
+		if (cmap == 0 || info.loca == 0 || info.head == 0 || info.glyf == 0 || info.hhea == 0 || info.hmtx == 0)
 			return 0;
 
 		t = stbtt__find_table(data, fontstart, "maxp");
-		if (t)
-			info.numGlyphs = ttUSHORT(data+t+4);
+		if (t != 0)
+			info.numGlyphs = ttUSHORT(data, t+4);
 		else
 			info.numGlyphs = 0xffff;
 
 		// find a cmap encoding table we understand *now* to avoid searching
 		// later. (todo: could make this installable)
 		// the same regardless of glyph.
-		numTables = ttUSHORT(data + cmap + 2);
+		numTables = ttUSHORT(data, cmap + 2);
 		info.index_map = 0;
 		
 		for (i in 0...numTables) {
 			var encoding_record: Stbtt_uint32 = cmap + 4 + 8 * i;
 			// find an encoding we understand:
-			switch(ttUSHORT(data+encoding_record)) {
+			switch(ttUSHORT(data, encoding_record)) {
 				case STBTT_PLATFORM_ID_MICROSOFT:
-					switch (ttUSHORT(data+encoding_record+2)) {
+					switch (ttUSHORT(data, encoding_record+2)) {
 						case STBTT_MS_EID_UNICODE_BMP:
 						case STBTT_MS_EID_UNICODE_FULL:
 							// MS/Unicode
@@ -299,26 +309,26 @@ class StbTruetype {
 		var data: Bytes = info.data;
 		var index_map: Stbtt_uint32 = info.index_map;
 
-		var format: Stbtt_uint16 = ttUSHORT(data + index_map + 0);
+		var format: Stbtt_uint16 = ttUSHORT(data, index_map + 0);
 		if (format == 0) { // apple byte encoding
-			var bytes: Stbtt_int32 = ttUSHORT(data + index_map + 2);
+			var bytes: Stbtt_int32 = ttUSHORT(data, index_map + 2);
 			if (unicode_codepoint < bytes-6)
-				return ttBYTE(data + index_map + 6 + unicode_codepoint);
+				return ttBYTE(data, index_map + 6 + unicode_codepoint);
 			return 0;
 		} else if (format == 6) {
-			var first: stbtt_uint32 = ttUSHORT(data + index_map + 6);
-			var count: stbtt_uint32 = ttUSHORT(data + index_map + 8);
-			if ((stbtt_uint32) unicode_codepoint >= first && (stbtt_uint32) unicode_codepoint < first+count)
-				return ttUSHORT(data + index_map + 10 + (unicode_codepoint - first)*2);
+			var first: Stbtt_uint32 = ttUSHORT(data, index_map + 6);
+			var count: Stbtt_uint32 = ttUSHORT(data, index_map + 8);
+			if (cast(unicode_codepoint, Stbtt_uint32) >= first && cast(unicode_codepoint, Stbtt_uint32) < first+count)
+				return ttUSHORT(data, index_map + 10 + (unicode_codepoint - first)*2);
 			return 0;
 		} else if (format == 2) {
-			STBTT_assert(0); // @TODO: high-byte mapping for japanese/chinese/korean
+			STBTT_assert(false); // @TODO: high-byte mapping for japanese/chinese/korean
 			return 0;
 		} else if (format == 4) { // standard mapping for windows fonts: binary search collection of ranges
-			var segcount: Stbtt_uint16 = ttUSHORT(data+index_map+6) >> 1;
-			var searchRange: Stbtt_uint16 = ttUSHORT(data + index_map + 8) >> 1;
-			var entrySelector: Stbtt_uint16 = ttUSHORT(data+index_map+10);
-			var rangeShift: Stbtt_uint16 = ttUSHORT(data+index_map+12) >> 1;
+			var segcount: Stbtt_uint16 = ttUSHORT(data, index_map+6) >> 1;
+			var searchRange: Stbtt_uint16 = ttUSHORT(data, index_map + 8) >> 1;
+			var entrySelector: Stbtt_uint16 = ttUSHORT(data, index_map+10);
+			var rangeShift: Stbtt_uint16 = ttUSHORT(data, index_map+12) >> 1;
 
 			// do a binary search of the segments
 			var endCount: Stbtt_uint32 = index_map + 14;
@@ -329,15 +339,15 @@ class StbTruetype {
 
 			// they lie from endCount .. endCount + segCount
 			// but searchRange is the nearest power of two, so...
-			if (unicode_codepoint >= ttUSHORT(data + search + rangeShift*2))
+			if (unicode_codepoint >= ttUSHORT(data, search + rangeShift*2))
 				search += rangeShift*2;
 
 			// now decrement to bias correctly to find smallest
 			search -= 2;
-			while (entrySelector) {
+			while (entrySelector != 0) {
 				var end: Stbtt_uint16;
 				searchRange >>= 1;
-				end = ttUSHORT(data + search + searchRange*2);
+				end = ttUSHORT(data, search + searchRange*2);
 				if (unicode_codepoint > end)
 					search += searchRange*2;
 				--entrySelector;
@@ -355,7 +365,7 @@ class StbTruetype {
 
 				offset = ttUSHORT(data, index_map + 14 + segcount*6 + 2 + 2*item);
 				if (offset == 0)
-					return (stbtt_uint16) (unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item));
+					return cast(unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item), Stbtt_uint16);
 
 				return ttUSHORT(data, offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
 			}
@@ -383,7 +393,7 @@ class StbTruetype {
 			return 0; // not found
 		}
 		// @TODO
-		STBTT_assert(0);
+		STBTT_assert(false);
 		return 0;
 	}
 
@@ -406,11 +416,11 @@ class StbTruetype {
 		if (info.indexToLocFormat >= 2)    return -1; // unknown index->glyph map format
 
 		if (info.indexToLocFormat == 0) {
-			g1 = info.glyf + ttUSHORT(info.data + info.loca + glyph_index * 2) * 2;
-			g2 = info.glyf + ttUSHORT(info.data + info.loca + glyph_index * 2 + 2) * 2;
+			g1 = info.glyf + ttUSHORT(info.data, info.loca + glyph_index * 2) * 2;
+			g2 = info.glyf + ttUSHORT(info.data, info.loca + glyph_index * 2 + 2) * 2;
 		} else {
-			g1 = info.glyf + ttULONG (info.data + info.loca + glyph_index * 4);
-			g2 = info.glyf + ttULONG (info.data + info.loca + glyph_index * 4 + 4);
+			g1 = info.glyf + ttULONG (info.data, info.loca + glyph_index * 4);
+			g2 = info.glyf + ttULONG (info.data, info.loca + glyph_index * 4 + 4);
 		}
 
 		return g1==g2 ? -1 : g1; // if length is 0, return -1
@@ -435,23 +445,27 @@ class StbTruetype {
 		var numberOfContours: Stbtt_int16;
 		var g: Int = stbtt__GetGlyfOffset(info, glyph_index);
 		if (g < 0) return true;
-		numberOfContours = ttSHORT(info->data + g);
+		numberOfContours = ttSHORT(info.data, g);
 		return numberOfContours == 0;
 	}
 
 	private static function stbtt__close_shape(vertices: Vector<Stbtt_vertex>, num_vertices: Int, was_off: Int, start_off: Int,
     sx: Stbtt_int32, sy: Stbtt_int32, scx: Stbtt_int32, scy: Stbtt_int32, cx: Stbtt_int32, cy: Stbtt_int32): Int {
-		if (start_off) {
-			if (was_off)
-				stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, (cx+scx)>>1, (cy+scy)>>1, cx,cy);
-			stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, sx,sy,scx,scy);
+		if (start_off != 0) {
+			if (was_off != 0)
+				stbtt_setvertex(vertices[num_vertices++], STBTT_vcurve, (cx+scx)>>1, (cy+scy)>>1, cx,cy);
+			stbtt_setvertex(vertices[num_vertices++], STBTT_vcurve, sx,sy,scx,scy);
 		} else {
-			if (was_off)
-				stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve,sx,sy,cx,cy);
+			if (was_off != 0)
+				stbtt_setvertex(vertices[num_vertices++], STBTT_vcurve,sx,sy,cx,cy);
 			else
-				stbtt_setvertex(&vertices[num_vertices++], STBTT_vline,sx,sy,0,0);
+				stbtt_setvertex(vertices[num_vertices++], STBTT_vline,sx,sy,0,0);
 		}
 		return num_vertices;
+	}
+	
+	public static function stbtt_GetGlyphShape(info: Stbtt_fontinfo, glyph_index: Int, pvertices: Vector<Stbtt_vertex>): Int {
+		return 0;
 	}
 /*
 	public static function stbtt_GetGlyphShape(info: stbtt_fontinfo, glyph_index: Int, pvertices: Vector<stbtt_vertex>): Int {
