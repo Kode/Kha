@@ -135,6 +135,31 @@ class Stbtt__bitmap {
 	public var pixels: Bytes;
 }
 
+class Stbtt__edge {
+	public function new() { }
+	public var x0: Float;
+	public var y0: Float;
+	public var x1: Float;
+	public var y1: Float;
+	public var invert: Bool;
+}
+
+class Stbtt__active_edge {
+	public function new() { }
+	public var next: Stbtt__active_edge;
+	public var fx: Float;
+	public var fdx: Float;
+	public var fdy: Float;
+	public var direction: Float;
+	public var sy: Float;
+	public var ey: Float;
+}
+
+class Stbtt__point {
+	public var x: Float;
+	public var y: Float;
+}
+
 class StbTruetype {
 	private static inline function STBTT_assert(value: Bool): Void { if (!value) throw "Error"; }
 	private static inline function STBTT_POINT_SIZE(x: Float): Float { return -x; }
@@ -837,831 +862,557 @@ class StbTruetype {
 		return stbtt_GetCodepointBitmapBoxSubpixel(font, codepoint, scale_x, scale_y,0.0,0.0);
 	}
 
-//////////////////////////////////////////////////////////////////////////////
-//
-//  Rasterizer
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	//  Rasterizer
+
+	private static function stbtt__new_active(e: Vector<Stbtt__edge>, eIndex: Int, off_x: Int, start_point: Float): Stbtt__active_edge {
+		var z: Stbtt__active_edge = new Stbtt__active_edge();
+		var dxdy: Float = (e[eIndex].x1 - e[eIndex].x0) / (e[eIndex].y1 - e[eIndex].y0);
+		//STBTT_assert(e->y0 <= start_point);
+		if (z == null) return z;
+		z.fdx = dxdy;
+		z.fdy = dxdy != 0.0 ? (1.0/dxdy) : 0.0;
+		z.fx = e[eIndex].x0 + dxdy * (start_point - e[eIndex].y0);
+		z.fx -= off_x;
+		z.direction = e[eIndex].invert ? 1.0 : -1.0;
+		z.sy = e[eIndex].y0;
+		z.ey = e[eIndex].y1;
+		z.next = null;
+		return z;
+	}
+
+	// the edge passed in here does not cross the vertical line at x or the vertical line at x+1
+	// (i.e. it has already been clipped to those)
+	private static function stbtt__handle_clipped_edge(scanline: Vector<Float>, scanlineIndex: Int, x: Int, e: Stbtt__active_edge, x0: Float, y0: Float, x1: Float, y1: Float): Void {
+		if (y0 == y1) return;
+		STBTT_assert(y0 < y1);
+		STBTT_assert(e.sy <= e.ey);
+		if (y0 > e.ey) return;
+		if (y1 < e.sy) return;
+		if (y0 < e.sy) {
+			x0 += (x1-x0) * (e.sy - y0) / (y1-y0);
+			y0 = e.sy;
+		}
+		if (y1 > e.ey) {
+			x1 += (x1-x0) * (e.ey - y1) / (y1-y0);
+			y1 = e.ey;
+		}
+
+		if (x0 == x)
+			STBTT_assert(x1 <= x+1);
+		else if (x0 == x+1)
+			STBTT_assert(x1 >= x);
+		else if (x0 <= x)
+			STBTT_assert(x1 <= x);
+		else if (x0 >= x+1)
+			STBTT_assert(x1 >= x+1);
+		else
+			STBTT_assert(x1 >= x && x1 <= x+1);
+
+		if (x0 <= x && x1 <= x)
+			scanline[scanlineIndex + x] += e.direction * (y1-y0);
+		else if (x0 >= x + 1 && x1 >= x + 1) {
+			
+		} else {
+			STBTT_assert(x0 >= x && x0 <= x+1 && x1 >= x && x1 <= x+1);
+			scanline[scanlineIndex + x] += e.direction * (y1-y0) * (1-((x0-x)+(x1-x))/2); // coverage = 1 - average x position
+		}
+	}
+
+	private static function stbtt__fill_active_edges_new(scanline: Vector<Float>, scanline_fill: Vector<Float>, scanline_fillIndex: Int, len: Int, e: Stbtt__active_edge, y_top: Float): Void {
+		var y_bottom: Float = y_top+1;
+
+		while (e != null) {
+			// brute force every pixel
+
+			// compute intersection points with top & bottom
+			STBTT_assert(e.ey >= y_top);
+
+			if (e.fdx == 0) {
+				var x0: Float = e.fx;
+				if (x0 < len) {
+					if (x0 >= 0) {
+						stbtt__handle_clipped_edge(scanline, 0, Std.int(x0),e, x0,y_top, x0,y_bottom);
+						stbtt__handle_clipped_edge(scanline_fill, scanline_fillIndex - 1, Std.int(x0+1),e, x0,y_top, x0,y_bottom);
+					} else {
+						stbtt__handle_clipped_edge(scanline_fill, scanline_fillIndex - 1, 0,e, x0,y_top, x0,y_bottom);
+					}
+				}
+			} else {
+				var x0: Float = e.fx;
+				var dx: Float = e.fdx;
+				var xb: Float = x0 + dx;
+				var x_top, x_bottom: Float;
+				var sy0,sy1: Float;
+				var dy: Float = e.fdy;
+				STBTT_assert(e.sy <= y_bottom && e.ey >= y_top);
+
+				// compute endpoints of line segment clipped to this scanline (if the
+				// line segment starts on this scanline. x0 is the intersection of the
+				// line with y_top, but that may be off the line segment.
+				if (e.sy > y_top) {
+					x_top = x0 + dx * (e.sy - y_top);
+					sy0 = e.sy;
+				} else {
+					x_top = x0;
+					sy0 = y_top;
+				}
+				if (e.ey < y_bottom) {
+					x_bottom = x0 + dx * (e.ey - y_top);
+					sy1 = e.ey;
+				} else {
+					x_bottom = xb;
+					sy1 = y_bottom;
+				}
+
+				if (x_top >= 0 && x_bottom >= 0 && x_top < len && x_bottom < len) {
+					// from here on, we don't have to range check x values
+
+					if (Std.int(x_top) == Std.int(x_bottom)) {
+						var height: Float;
+						// simple case, only spans one pixel
+						var x: Int = Std.int(x_top);
+						height = sy1 - sy0;
+						STBTT_assert(x >= 0 && x < len);
+						scanline[x] += e.direction * (1-((x_top - x) + (x_bottom-x))/2)  * height;
+						scanline_fill[x] += e.direction * height; // everything right of this pixel is filled
+					} else {
+						var x,x1,x2: Int;
+						var y_crossing, step, sign, area: Float;
+						// covers 2+ pixels
+						if (x_top > x_bottom) {
+							// flip scanline vertically; signed area is the same
+							var t: Float;
+							sy0 = y_bottom - (sy0 - y_top);
+							sy1 = y_bottom - (sy1 - y_top);
+							t = sy0; sy0 = sy1; sy1 = t;
+							t = x_bottom; x_bottom = x_top; x_top = t;
+							dx = -dx;
+							dy = -dy;
+							t = x0; x0 = xb; xb = t;
+						}
+
+						x1 = Std.int(x_top);
+						x2 = Std.int(x_bottom);
+						// compute intersection with y axis at x1+1
+						y_crossing = (x1+1 - x0) * dy + y_top;
+
+						sign = e.direction;
+						// area of the rectangle covered from y0..y_crossing
+						area = sign * (y_crossing-sy0);
+						// area of the triangle (x_top,y0), (x+1,y0), (x+1,y_crossing)
+						scanline[x1] += area * (1-((x_top - x1)+(x1+1-x1))/2);
+
+						step = sign * dy;
+						for (x in x1 + 1...x2) {
+							scanline[x] += area + step/2;
+							area += step;
+						}
+						y_crossing += dy * (x2 - (x1+1));
+
+						STBTT_assert(Math.abs(area) <= 1.01);
+
+						scanline[x2] += area + sign * (1-((x2-x2)+(x_bottom-x2))/2) * (sy1-y_crossing);
+
+						scanline_fill[x2] += sign * (sy1-sy0);
+					}
+				} else {
+					// if edge goes outside of box we're drawing, we require
+					// clipping logic. since this does not match the intended use
+					// of this library, we use a different, very slow brute
+					// force implementation
+					for (x in 0...len) {
+						// cases:
+						//
+						// there can be up to two intersections with the pixel. any intersection
+						// with left or right edges can be handled by splitting into two (or three)
+						// regions. intersections with top & bottom do not necessitate case-wise logic.
+						//
+						// the old way of doing this found the intersections with the left & right edges,
+						// then used some simple logic to produce up to three segments in sorted order
+						// from top-to-bottom. however, this had a problem: if an x edge was epsilon
+						// across the x border, then the corresponding y position might not be distinct
+						// from the other y segment, and it might ignored as an empty segment. to avoid
+						// that, we need to explicitly produce segments based on x positions.
+
+						// rename variables to clear pairs
+						var y0: Float = y_top;
+						var x1: Float = cast(x, Float);
+						var x2: Float = cast(x+1, Float);
+						var x3: Float = xb;
+						var y3: Float = y_bottom;
+						var y1,y2: Float;
+
+						// x = e->x + e->dx * (y-y_top)
+						// (y-y_top) = (x - e->x) / e->dx
+						// y = (x - e->x) / e->dx + y_top
+						y1 = (x - x0) / dx + y_top;
+						y2 = (x+1 - x0) / dx + y_top;
+
+						if (x0 < x1 && x3 > x2) {         // three segments descending down-right
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x1,y1);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x1,y1, x2,y2);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x2,y2, x3,y3);
+						} else if (x3 < x1 && x0 > x2) {  // three segments descending down-left
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x2,y2);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x2,y2, x1,y1);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x1,y1, x3,y3);
+						} else if (x0 < x1 && x3 > x1) {  // two segments across x, down-right
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x1,y1);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x1,y1, x3,y3);
+						} else if (x3 < x1 && x0 > x1) {  // two segments across x, down-left
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x1,y1);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x1,y1, x3,y3);
+						} else if (x0 < x2 && x3 > x2) {  // two segments across x+1, down-right
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x2,y2);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x2,y2, x3,y3);
+						} else if (x3 < x2 && x0 > x2) {  // two segments across x+1, down-left
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x2,y2);
+							stbtt__handle_clipped_edge(scanline,0,x,e, x2,y2, x3,y3);
+						} else {  // one segment
+							stbtt__handle_clipped_edge(scanline,0,x,e, x0,y0, x3,y3);
+						}
+					}
+				}
+			}
+			e = e.next;
+		}
+	}
+
+	// directly AA rasterize edges w/o supersampling
+	private static function stbtt__rasterize_sorted_edges(result: Stbtt__bitmap, e: Vector<Stbtt__edge>, n: Int, vsubsample: Int, off_x: Int, off_y: Int): Void {
+		var active: Stbtt__active_edge = null;
+		var y: Int, j: Int = 0, i: Int;
+		var scanline: Vector<Float>, scanline2: Vector<Float>;
+		var scanline2Index: Int = 0;
+		var eIndex: Int = 0;
+
+		if (result.w > 64)
+			scanline = new Vector<Float>(result.w * 2 + 1);
+		else
+			scanline = new Vector<Float>(129);
+
+		scanline2 = scanline;
+		scanline2Index = result.w;
+
+		y = off_y;
+		e[eIndex + n].y0 = cast((off_y + result.h) + 1, Float);
+
+		while (j < result.h) {
+			// find center of pixel for this scanline
+			var scan_y_top: Float = y + 0.0;
+			var scan_y_bottom: Float = y + 1.0;
+			var step: Stbtt__active_edge = active;
+
+			for (i in 0...result.w) scanline[i] = 0;
+			for (i in 0...result.w + 1) scanline2[scanline2Index + i] = 0;
+
+			// update all active edges;
+			// remove all active edges that terminate before the top of this scanline
+			while (step != null) {
+				var z: Stbtt__active_edge = step;
+				if (z.ey <= scan_y_top) {
+					step = z.next; // delete from list
+					STBTT_assert(z.direction != 0);
+					z.direction = 0;
+				} else {
+					step = step.next; // advance through list
+				}
+			}
+
+			// insert all edges that start before the bottom of this scanline
+			while (e[eIndex].y0 <= scan_y_bottom) {
+				if (e[eIndex].y0 != e[eIndex].y1) {
+					var z: Stbtt__active_edge = stbtt__new_active(e, eIndex, off_x, scan_y_top);
+					STBTT_assert(z.ey >= scan_y_top);
+					// insert at front
+					z.next = active;
+					active = z;
+				}
+				++eIndex;
+			}
+
+			// now process all active edges
+			if (active != null)
+				stbtt__fill_active_edges_new(scanline, scanline2, scanline2Index + 1, result.w, active, scan_y_top);
+
+			{
+				var sum: Float = 0;
+				for (i in 0...result.w) {
+					var k: Float;
+					var m: Int;
+					sum += scanline2[scanline2Index + i];
+					k = scanline[i] + sum;
+					k = cast(Math.abs(k)*255 + 0.5, Float);
+					m = Std.int(k);
+					if (m > 255) m = 255;
+					result.pixels.set(j*result.stride + i, cast(m, Int));
+				}
+			}
+			// advance all the edges
+			step = active;
+			while (step != null) {
+				var z: Stbtt__active_edge = step;
+				z.fx += z.fdx; // advance to position for current scanline
+				step = step.next; // advance through list
+			}
+
+			++y;
+			++j;
+		}
+	}
+
+	private static function STBTT__COMPARE(a: Stbtt__edge, b: Stbtt__edge): Bool { return a.y0 < b.y0; }
+
+	private static function stbtt__sort_edges_ins_sort(p: Vector<Stbtt__edge>, n: Int): Void {
+		var i: Int, j: Int;
+		for (i in 1...n) {
+			var t: Stbtt__edge = p[i];
+			var a: Stbtt__edge = t;
+			j = i;
+			while (j > 0) {
+				var b: Stbtt__edge = p[j-1];
+				var c: Bool = STBTT__COMPARE(a,b);
+				if (!c) break;
+				p[j] = p[j-1];
+				--j;
+			}
+			if (i != j)
+				p[j] = t;
+		}
+	}
+
+	private static function stbtt__sort_edges_quicksort(p: Vector<Stbtt__edge>, pIndex: Int, n: Int): Void {
+		// threshhold for transitioning to insertion sort
+		while (n > 12) {
+			var t: Stbtt__edge;
+			var c01: Bool, c12: Bool, c: Bool;
+			var m: Int, i: Int, j: Int;
+
+			// compute median of three
+			m = n >> 1;
+			c01 = STBTT__COMPARE(p[pIndex + 0],p[pIndex + m]);
+			c12 = STBTT__COMPARE(p[pIndex + m],p[pIndex + n-1]);
+			// if 0 >= mid >= end, or 0 < mid < end, then use mid
+			if (c01 != c12) {
+				// otherwise, we'll need to swap something else to middle
+				var z: Int;
+				c = STBTT__COMPARE(p[pIndex + 0],p[pIndex + n-1]);
+				// 0>mid && mid<n:  0>n => n; 0<n => 0
+				// 0<mid && mid>n:  0>n => 0; 0<n => n
+				z = (c == c12) ? 0 : n-1;
+				t = p[z];
+				p[pIndex + z] = p[pIndex + m];
+				p[pIndex + m] = t;
+			}
+			// now p[m] is the median-of-three
+			// swap it to the beginning so it won't move around
+			t = p[pIndex + 0];
+			p[pIndex + 0] = p[pIndex + m];
+			p[pIndex + m] = t;
+
+			// partition loop
+			i=1;
+			j=n-1;
+			while (true) {
+				// handling of equality is crucial here
+				// for sentinels & efficiency with duplicates
+				while (true) {
+					if (!STBTT__COMPARE(p[pIndex + i], p[pIndex + 0])) break;
+					++i;
+				}
+				while (true) {
+					if (!STBTT__COMPARE(p[pIndex + 0], p[pIndex + j])) break;
+					--j;
+				}
+				// make sure we haven't crossed
+				if (i >= j) break;
+				t = p[pIndex + i];
+				p[pIndex + i] = p[pIndex + j];
+				p[pIndex + j] = t;
+
+				++i;
+				--j;
+			}
+			// recurse on smaller side, iterate on larger
+			if (j < (n-i)) {
+				stbtt__sort_edges_quicksort(p, pIndex, j);
+				pIndex += i;
+				n = n-i;
+			} else {
+				stbtt__sort_edges_quicksort(p, pIndex + i, n-i);
+				n = j;
+			}
+		}
+	}
+
+	private static function stbtt__sort_edges(p: Vector<Stbtt__edge>, n: Int): Void {
+		stbtt__sort_edges_quicksort(p, 0, n);
+		stbtt__sort_edges_ins_sort(p, n);
+	}
+
+	private static function stbtt__rasterize(result: Stbtt__bitmap, pts: Vector<Stbtt__point>, wcount: Vector<Int>, windings: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, off_x: Int, off_y: Int, invert: Bool): Void {
+		var y_scale_inv: Float = invert ? -scale_y : scale_y;
+		var e: Vector<Stbtt__edge>;
+		var n: Int, i: Int, j: Int, k: Int, m: Int;
+		var vsubsample: Int = 1;
+		var ptsIndex: Int = 0;
+
+		// vsubsample should divide 255 evenly; otherwise we won't reach full opacity
+
+		// now we have to blow out the windings into explicit edge lists
+		n = 0;
+		for (i in 0...windings)
+			n += wcount[i];
+
+		e = new Vector<Stbtt__edge>(n + 1); // add an extra one as a sentinel
+		if (e == null) return;
+		n = 0;
+
+		m = 0;
+		for (i in 0...windings) {
+			var p: Vector<Stbtt__point> = pts;
+			var pIndex: Int = ptsIndex + m;
+			m += wcount[i];
+			j = wcount[i] - 1;
+			for (k in 0...wcount[i]) {
+				var a: Int=k,b: Int=j;
+				// skip the edge if horizontal
+				if (p[pIndex + j].y == p[pIndex + k].y)
+					continue;
+				// add edge from j to k to the list
+				e[n].invert = false;
+				if (invert ? p[pIndex + j].y > p[pIndex + k].y : p[pIndex + j].y < p[pIndex + k].y) {
+					e[n].invert = true;
+					a = j; b = k;
+				}
+				e[n].x0 = p[pIndex + a].x * scale_x + shift_x;
+				e[n].y0 = (p[pIndex + a].y * y_scale_inv + shift_y) * vsubsample;
+				e[n].x1 = p[pIndex + b].x * scale_x + shift_x;
+				e[n].y1 = (p[pIndex + b].y * y_scale_inv + shift_y) * vsubsample;
+				++n;
+				j = k;
+			}
+		}
+
+		// now sort the edges by their highest point (should snap to integer, and then by x)
+		//STBTT_sort(e, n, sizeof(e[0]), stbtt__edge_compare);
+		stbtt__sort_edges(e, n);
+
+		// now, traverse the scanlines and find the intersections on each scanline, use xor winding rule
+		stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y);
+	}
+
+	private static function stbtt__add_point(points: Vector<Stbtt__point>, n: Int, x: Float, y: Float): Void {
+		if (points == null) return; // during first pass, it's unallocated
+		points[n].x = x;
+		points[n].y = y;
+	}
+
+	// tesselate until threshhold p is happy... @TODO warped to compensate for non-linear stretching
+	private static function stbtt__tesselate_curve(points: Vector<Stbtt__point>, num_points: { value: Int }, x0: Float, y0: Float, x1: Float, y1: Float, x2: Float, y2: Float, objspace_flatness_squared: Float, n: Int): Int {
+		// midpoint
+		var mx: Float = (x0 + 2*x1 + x2)/4;
+		var my: Float = (y0 + 2*y1 + y2)/4;
+		// versus directly drawn line
+		var dx: Float = (x0+x2)/2 - mx;
+		var dy: Float = (y0+y2)/2 - my;
+		if (n > 16) // 65536 segments on one curve better be enough!
+			return 1;
+		if (dx*dx+dy*dy > objspace_flatness_squared) { // half-pixel error allowed... need to be smaller if AA
+			stbtt__tesselate_curve(points, num_points, x0,y0, (x0+x1)/2.0,(y0+y1)/2.0, mx,my, objspace_flatness_squared,n+1);
+			stbtt__tesselate_curve(points, num_points, mx,my, (x1+x2)/2.0,(y1+y2)/2.0, x2,y2, objspace_flatness_squared,n+1);
+		} else {
+			stbtt__add_point(points, num_points.value,x2,y2);
+			num_points.value = num_points.value+1;
+		}
+		return 1;
+	}
+
+	// returns number of contours
+	private static function stbtt_FlattenCurves(vertices: Vector<Stbtt_vertex>, num_verts: Int, objspace_flatness: Float, contour_lengths: { value: Vector<Int> }, num_contours: { value: Int }): Vector<Stbtt__point> {
+		var points: Vector<Stbtt__point>=null;
+		var num_points: Int = 0;
+
+		var objspace_flatness_squared: Float = objspace_flatness * objspace_flatness;
+		var i: Int, n: Int = 0, start: Int = 0, pass: Int;
+
+		// count how many "moves" there are to get the contour count
+		for (i in 0...num_verts)
+			if (vertices[i].type == STBTT_vmove)
+				++n;
+
+		num_contours.value = n;
+		if (n == 0) return null;
+
+		contour_lengths.value = new Vector<Int>(n);
+
+		if (contour_lengths.value == null) {
+			num_contours.value = 0;
+			return null;
+		}
+
+		// make two passes through the points so we don't need to realloc
+		for (pass in 0...2) {
+			var x: Float = 0, y: Float = 0;
+			if (pass == 1) {
+				points = new Vector<Stbtt__point>(num_points);
+				if (points == null) {
+					contour_lengths.value = null;
+					num_contours.value = 0;
+					return null;
+				}
+			}
+			num_points = 0;
+			n = -1;
+			for (i in 0...num_verts) {
+				switch (vertices[i].type) {
+					case STBTT_vmove:
+						// start the next contour
+						if (n >= 0)
+							contour_lengths.value[n] = num_points - start;
+						++n;
+						start = num_points;
+
+						x = vertices[i].x; y = vertices[i].y;
+						stbtt__add_point(points, num_points++, x,y);
+						break;
+					case STBTT_vline:
+						x = vertices[i].x; y = vertices[i].y;
+						stbtt__add_point(points, num_points++, x, y);
+						break;
+					case STBTT_vcurve:
+						var num_points_reference = { value: num_points };
+						stbtt__tesselate_curve(points, num_points_reference, x, y,
+							vertices[i].cx, vertices[i].cy,
+							vertices[i].x,  vertices[i].y,
+							objspace_flatness_squared, 0);
+						num_points = num_points_reference.value;
+						x = vertices[i].x; y = vertices[i].y;
+						break;
+				}
+			}
+			contour_lengths.value[n] = num_points - start;
+		}
+
+		return points;
+	}
+
+	public static function stbtt_Rasterize(result: Stbtt__bitmap, flatness_in_pixels: Float, vertices: Vector<Stbtt_vertex>, num_verts: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, x_off: Int, y_off: Int, invert: Bool): Void {
+		var scale: Float = scale_x > scale_y ? scale_y : scale_x;
+		var winding_count: Int = 0;
+		var winding_lengths: Vector<Int> = null;
+		var winding_count_reference = { value: winding_count };
+		var winding_lengths_reference = { value: winding_lengths };
+		var windings: Vector<Stbtt__point> = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, winding_lengths_reference, winding_count_reference);
+		winding_count = winding_count_reference.value;
+		winding_lengths = winding_lengths_reference.value;
+		if (windings != null) {
+			stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert);
+		}
+	}
 /*
-typedef struct stbtt__hheap_chunk
-{
-   struct stbtt__hheap_chunk *next;
-} stbtt__hheap_chunk;
-
-typedef struct stbtt__hheap
-{
-   struct stbtt__hheap_chunk *head;
-   void   *first_free;
-   int    num_remaining_in_head_chunk;
-} stbtt__hheap;
-
-static void *stbtt__hheap_alloc(stbtt__hheap *hh, size_t size, void *userdata)
-{
-   if (hh->first_free) {
-      void *p = hh->first_free;
-      hh->first_free = * (void **) p;
-      return p;
-   } else {
-      if (hh->num_remaining_in_head_chunk == 0) {
-         int count = (size < 32 ? 2000 : size < 128 ? 800 : 100);
-         stbtt__hheap_chunk *c = (stbtt__hheap_chunk *) STBTT_malloc(sizeof(stbtt__hheap_chunk) + size * count, userdata);
-         if (c == NULL)
-            return NULL;
-         c->next = hh->head;
-         hh->head = c;
-         hh->num_remaining_in_head_chunk = count;
-      }
-      --hh->num_remaining_in_head_chunk;
-      return (char *) (hh->head) + size * hh->num_remaining_in_head_chunk;
-   }
-}
-
-static void stbtt__hheap_free(stbtt__hheap *hh, void *p)
-{
-   *(void **) p = hh->first_free;
-   hh->first_free = p;
-}
-
-static void stbtt__hheap_cleanup(stbtt__hheap *hh, void *userdata)
-{
-   stbtt__hheap_chunk *c = hh->head;
-   while (c) {
-      stbtt__hheap_chunk *n = c->next;
-      STBTT_free(c, userdata);
-      c = n;
-   }
-}
-
-typedef struct stbtt__edge {
-   float x0,y0, x1,y1;
-   int invert;
-} stbtt__edge;
-
-
-typedef struct stbtt__active_edge
-{
-   struct stbtt__active_edge *next;
-   #if STBTT_RASTERIZER_VERSION==1
-   int x,dx;
-   float ey;
-   int direction;
-   #elif STBTT_RASTERIZER_VERSION==2
-   float fx,fdx,fdy;
-   float direction;
-   float sy;
-   float ey;
-   #else
-   #error "Unrecognized value of STBTT_RASTERIZER_VERSION"
-   #endif
-} stbtt__active_edge;
-
-#if STBTT_RASTERIZER_VERSION == 1
-#define STBTT_FIXSHIFT   10
-#define STBTT_FIX        (1 << STBTT_FIXSHIFT)
-#define STBTT_FIXMASK    (STBTT_FIX-1)
-
-static stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata)
-{
-   stbtt__active_edge *z = (stbtt__active_edge *) stbtt__hheap_alloc(hh, sizeof(*z), userdata);
-   float dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
-   if (!z) return z;
-   
-   // round dx down to avoid overshooting
-   if (dxdy < 0)
-      z->dx = -STBTT_ifloor(STBTT_FIX * -dxdy);
-   else
-      z->dx = STBTT_ifloor(STBTT_FIX * dxdy);
-
-   z->x = STBTT_ifloor(STBTT_FIX * e->x0 + z->dx * (start_point - e->y0)); // use z->dx so when we offset later it's by the same amount
-   z->x -= off_x * STBTT_FIX;
-
-   z->ey = e->y1;
-   z->next = 0;
-   z->direction = e->invert ? 1 : -1;
-   return z;
-}
-#elif STBTT_RASTERIZER_VERSION == 2
-static stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata)
-{
-   stbtt__active_edge *z = (stbtt__active_edge *) stbtt__hheap_alloc(hh, sizeof(*z), userdata);
-   float dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
-   //STBTT_assert(e->y0 <= start_point);
-   if (!z) return z;
-   z->fdx = dxdy;
-   z->fdy = dxdy != 0.0f ? (1.0f/dxdy) : 0.0f;
-   z->fx = e->x0 + dxdy * (start_point - e->y0);
-   z->fx -= off_x;
-   z->direction = e->invert ? 1.0f : -1.0f;
-   z->sy = e->y0;
-   z->ey = e->y1;
-   z->next = 0;
-   return z;
-}
-#else
-#error "Unrecognized value of STBTT_RASTERIZER_VERSION"
-#endif
-
-#if STBTT_RASTERIZER_VERSION == 1
-// note: this routine clips fills that extend off the edges... ideally this
-// wouldn't happen, but it could happen if the truetype glyph bounding boxes
-// are wrong, or if the user supplies a too-small bitmap
-static void stbtt__fill_active_edges(unsigned char *scanline, int len, stbtt__active_edge *e, int max_weight)
-{
-   // non-zero winding fill
-   int x0=0, w=0;
-
-   while (e) {
-      if (w == 0) {
-         // if we're currently at zero, we need to record the edge start point
-         x0 = e->x; w += e->direction;
-      } else {
-         int x1 = e->x; w += e->direction;
-         // if we went to zero, we need to draw
-         if (w == 0) {
-            int i = x0 >> STBTT_FIXSHIFT;
-            int j = x1 >> STBTT_FIXSHIFT;
-
-            if (i < len && j >= 0) {
-               if (i == j) {
-                  // x0,x1 are the same pixel, so compute combined coverage
-                  scanline[i] = scanline[i] + (stbtt_uint8) ((x1 - x0) * max_weight >> STBTT_FIXSHIFT);
-               } else {
-                  if (i >= 0) // add antialiasing for x0
-                     scanline[i] = scanline[i] + (stbtt_uint8) (((STBTT_FIX - (x0 & STBTT_FIXMASK)) * max_weight) >> STBTT_FIXSHIFT);
-                  else
-                     i = -1; // clip
-
-                  if (j < len) // add antialiasing for x1
-                     scanline[j] = scanline[j] + (stbtt_uint8) (((x1 & STBTT_FIXMASK) * max_weight) >> STBTT_FIXSHIFT);
-                  else
-                     j = len; // clip
-
-                  for (++i; i < j; ++i) // fill pixels between x0 and x1
-                     scanline[i] = scanline[i] + (stbtt_uint8) max_weight;
-               }
-            }
-         }
-      }
-      
-      e = e->next;
-   }
-}
-
-static void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e, int n, int vsubsample, int off_x, int off_y, void *userdata)
-{
-   stbtt__hheap hh = { 0, 0, 0 };
-   stbtt__active_edge *active = NULL;
-   int y,j=0;
-   int max_weight = (255 / vsubsample);  // weight per vertical scanline
-   int s; // vertical subsample index
-   unsigned char scanline_data[512], *scanline;
-
-   if (result->w > 512)
-      scanline = (unsigned char *) STBTT_malloc(result->w, userdata);
-   else
-      scanline = scanline_data;
-
-   y = off_y * vsubsample;
-   e[n].y0 = (off_y + result->h) * (float) vsubsample + 1;
-
-   while (j < result->h) {
-      STBTT_memset(scanline, 0, result->w);
-      for (s=0; s < vsubsample; ++s) {
-         // find center of pixel for this scanline
-         float scan_y = y + 0.5f;
-         stbtt__active_edge **step = &active;
-
-         // update all active edges;
-         // remove all active edges that terminate before the center of this scanline
-         while (*step) {
-            stbtt__active_edge * z = *step;
-            if (z->ey <= scan_y) {
-               *step = z->next; // delete from list
-               STBTT_assert(z->direction);
-               z->direction = 0;
-               stbtt__hheap_free(&hh, z);
-            } else {
-               z->x += z->dx; // advance to position for current scanline
-               step = &((*step)->next); // advance through list
-            }
-         }
-
-         // resort the list if needed
-         for(;;) {
-            int changed=0;
-            step = &active;
-            while (*step && (*step)->next) {
-               if ((*step)->x > (*step)->next->x) {
-                  stbtt__active_edge *t = *step;
-                  stbtt__active_edge *q = t->next;
-
-                  t->next = q->next;
-                  q->next = t;
-                  *step = q;
-                  changed = 1;
-               }
-               step = &(*step)->next;
-            }
-            if (!changed) break;
-         }
-
-         // insert all edges that start before the center of this scanline -- omit ones that also end on this scanline
-         while (e->y0 <= scan_y) {
-            if (e->y1 > scan_y) {
-               stbtt__active_edge *z = stbtt__new_active(&hh, e, off_x, scan_y, userdata);
-               // find insertion point
-               if (active == NULL)
-                  active = z;
-               else if (z->x < active->x) {
-                  // insert at front
-                  z->next = active;
-                  active = z;
-               } else {
-                  // find thing to insert AFTER
-                  stbtt__active_edge *p = active;
-                  while (p->next && p->next->x < z->x)
-                     p = p->next;
-                  // at this point, p->next->x is NOT < z->x
-                  z->next = p->next;
-                  p->next = z;
-               }
-            }
-            ++e;
-         }
-
-         // now process all active edges in XOR fashion
-         if (active)
-            stbtt__fill_active_edges(scanline, result->w, active, max_weight);
-
-         ++y;
-      }
-      STBTT_memcpy(result->pixels + j * result->stride, scanline, result->w);
-      ++j;
-   }
-
-   stbtt__hheap_cleanup(&hh, userdata);
-
-   if (scanline != scanline_data)
-      STBTT_free(scanline, userdata);
-}
-
-#elif STBTT_RASTERIZER_VERSION == 2
-
-// the edge passed in here does not cross the vertical line at x or the vertical line at x+1
-// (i.e. it has already been clipped to those)
-static void stbtt__handle_clipped_edge(float *scanline, int x, stbtt__active_edge *e, float x0, float y0, float x1, float y1)
-{
-   if (y0 == y1) return;
-   STBTT_assert(y0 < y1);
-   STBTT_assert(e->sy <= e->ey);
-   if (y0 > e->ey) return;
-   if (y1 < e->sy) return;
-   if (y0 < e->sy) {
-      x0 += (x1-x0) * (e->sy - y0) / (y1-y0);
-      y0 = e->sy;
-   }
-   if (y1 > e->ey) {
-      x1 += (x1-x0) * (e->ey - y1) / (y1-y0);
-      y1 = e->ey;
-   }
-
-   if (x0 == x)
-      STBTT_assert(x1 <= x+1);
-   else if (x0 == x+1)
-      STBTT_assert(x1 >= x);
-   else if (x0 <= x)
-      STBTT_assert(x1 <= x);
-   else if (x0 >= x+1)
-      STBTT_assert(x1 >= x+1);
-   else
-      STBTT_assert(x1 >= x && x1 <= x+1);
-
-   if (x0 <= x && x1 <= x)
-      scanline[x] += e->direction * (y1-y0);
-   else if (x0 >= x+1 && x1 >= x+1)
-      ;
-   else {
-      STBTT_assert(x0 >= x && x0 <= x+1 && x1 >= x && x1 <= x+1);
-      scanline[x] += e->direction * (y1-y0) * (1-((x0-x)+(x1-x))/2); // coverage = 1 - average x position
-   }
-}
-
-static void stbtt__fill_active_edges_new(float *scanline, float *scanline_fill, int len, stbtt__active_edge *e, float y_top)
-{
-   float y_bottom = y_top+1;
-
-   while (e) {
-      // brute force every pixel
-
-      // compute intersection points with top & bottom
-      STBTT_assert(e->ey >= y_top);
-
-      if (e->fdx == 0) {
-         float x0 = e->fx;
-         if (x0 < len) {
-            if (x0 >= 0) {
-               stbtt__handle_clipped_edge(scanline,(int) x0,e, x0,y_top, x0,y_bottom);
-               stbtt__handle_clipped_edge(scanline_fill-1,(int) x0+1,e, x0,y_top, x0,y_bottom);
-            } else {
-               stbtt__handle_clipped_edge(scanline_fill-1,0,e, x0,y_top, x0,y_bottom);
-            }
-         }
-      } else {
-         float x0 = e->fx;
-         float dx = e->fdx;
-         float xb = x0 + dx;
-         float x_top, x_bottom;
-         float sy0,sy1;
-         float dy = e->fdy;
-         STBTT_assert(e->sy <= y_bottom && e->ey >= y_top);
-
-         // compute endpoints of line segment clipped to this scanline (if the
-         // line segment starts on this scanline. x0 is the intersection of the
-         // line with y_top, but that may be off the line segment.
-         if (e->sy > y_top) {
-            x_top = x0 + dx * (e->sy - y_top);
-            sy0 = e->sy;
-         } else {
-            x_top = x0;
-            sy0 = y_top;
-         }
-         if (e->ey < y_bottom) {
-            x_bottom = x0 + dx * (e->ey - y_top);
-            sy1 = e->ey;
-         } else {
-            x_bottom = xb;
-            sy1 = y_bottom;
-         }
-
-         if (x_top >= 0 && x_bottom >= 0 && x_top < len && x_bottom < len) {
-            // from here on, we don't have to range check x values
-
-            if ((int) x_top == (int) x_bottom) {
-               float height;
-               // simple case, only spans one pixel
-               int x = (int) x_top;
-               height = sy1 - sy0;
-               STBTT_assert(x >= 0 && x < len);
-               scanline[x] += e->direction * (1-((x_top - x) + (x_bottom-x))/2)  * height;
-               scanline_fill[x] += e->direction * height; // everything right of this pixel is filled
-            } else {
-               int x,x1,x2;
-               float y_crossing, step, sign, area;
-               // covers 2+ pixels
-               if (x_top > x_bottom) {
-                  // flip scanline vertically; signed area is the same
-                  float t;
-                  sy0 = y_bottom - (sy0 - y_top);
-                  sy1 = y_bottom - (sy1 - y_top);
-                  t = sy0, sy0 = sy1, sy1 = t;
-                  t = x_bottom, x_bottom = x_top, x_top = t;
-                  dx = -dx;
-                  dy = -dy;
-                  t = x0, x0 = xb, xb = t;
-               }
-
-               x1 = (int) x_top;
-               x2 = (int) x_bottom;
-               // compute intersection with y axis at x1+1
-               y_crossing = (x1+1 - x0) * dy + y_top;
-
-               sign = e->direction;
-               // area of the rectangle covered from y0..y_crossing
-               area = sign * (y_crossing-sy0);
-               // area of the triangle (x_top,y0), (x+1,y0), (x+1,y_crossing)
-               scanline[x1] += area * (1-((x_top - x1)+(x1+1-x1))/2);
-
-               step = sign * dy;
-               for (x = x1+1; x < x2; ++x) {
-                  scanline[x] += area + step/2;
-                  area += step;
-               }
-               y_crossing += dy * (x2 - (x1+1));
-
-               STBTT_assert(fabs(area) <= 1.01f);
-
-               scanline[x2] += area + sign * (1-((x2-x2)+(x_bottom-x2))/2) * (sy1-y_crossing);
-
-               scanline_fill[x2] += sign * (sy1-sy0);
-            }
-         } else {
-            // if edge goes outside of box we're drawing, we require
-            // clipping logic. since this does not match the intended use
-            // of this library, we use a different, very slow brute
-            // force implementation
-            int x;
-            for (x=0; x < len; ++x) {
-               // cases:
-               //
-               // there can be up to two intersections with the pixel. any intersection
-               // with left or right edges can be handled by splitting into two (or three)
-               // regions. intersections with top & bottom do not necessitate case-wise logic.
-               //
-               // the old way of doing this found the intersections with the left & right edges,
-               // then used some simple logic to produce up to three segments in sorted order
-               // from top-to-bottom. however, this had a problem: if an x edge was epsilon
-               // across the x border, then the corresponding y position might not be distinct
-               // from the other y segment, and it might ignored as an empty segment. to avoid
-               // that, we need to explicitly produce segments based on x positions.
-
-               // rename variables to clear pairs
-               float y0 = y_top;
-               float x1 = (float) (x);
-               float x2 = (float) (x+1);
-               float x3 = xb;
-               float y3 = y_bottom;
-               float y1,y2;
-
-               // x = e->x + e->dx * (y-y_top)
-               // (y-y_top) = (x - e->x) / e->dx
-               // y = (x - e->x) / e->dx + y_top
-               y1 = (x - x0) / dx + y_top;
-               y2 = (x+1 - x0) / dx + y_top;
-
-               if (x0 < x1 && x3 > x2) {         // three segments descending down-right
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x1,y1);
-                  stbtt__handle_clipped_edge(scanline,x,e, x1,y1, x2,y2);
-                  stbtt__handle_clipped_edge(scanline,x,e, x2,y2, x3,y3);
-               } else if (x3 < x1 && x0 > x2) {  // three segments descending down-left
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x2,y2);
-                  stbtt__handle_clipped_edge(scanline,x,e, x2,y2, x1,y1);
-                  stbtt__handle_clipped_edge(scanline,x,e, x1,y1, x3,y3);
-               } else if (x0 < x1 && x3 > x1) {  // two segments across x, down-right
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x1,y1);
-                  stbtt__handle_clipped_edge(scanline,x,e, x1,y1, x3,y3);
-               } else if (x3 < x1 && x0 > x1) {  // two segments across x, down-left
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x1,y1);
-                  stbtt__handle_clipped_edge(scanline,x,e, x1,y1, x3,y3);
-               } else if (x0 < x2 && x3 > x2) {  // two segments across x+1, down-right
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x2,y2);
-                  stbtt__handle_clipped_edge(scanline,x,e, x2,y2, x3,y3);
-               } else if (x3 < x2 && x0 > x2) {  // two segments across x+1, down-left
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x2,y2);
-                  stbtt__handle_clipped_edge(scanline,x,e, x2,y2, x3,y3);
-               } else {  // one segment
-                  stbtt__handle_clipped_edge(scanline,x,e, x0,y0, x3,y3);
-               }
-            }
-         }
-      }
-      e = e->next;
-   }
-}
-
-// directly AA rasterize edges w/o supersampling
-static void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e, int n, int vsubsample, int off_x, int off_y, void *userdata)
-{
-   stbtt__hheap hh = { 0, 0, 0 };
-   stbtt__active_edge *active = NULL;
-   int y,j=0, i;
-   float scanline_data[129], *scanline, *scanline2;
-
-   if (result->w > 64)
-      scanline = (float *) STBTT_malloc((result->w*2+1) * sizeof(float), userdata);
-   else
-      scanline = scanline_data;
-
-   scanline2 = scanline + result->w;
-
-   y = off_y;
-   e[n].y0 = (float) (off_y + result->h) + 1;
-
-   while (j < result->h) {
-      // find center of pixel for this scanline
-      float scan_y_top    = y + 0.0f;
-      float scan_y_bottom = y + 1.0f;
-      stbtt__active_edge **step = &active;
-
-      STBTT_memset(scanline , 0, result->w*sizeof(scanline[0]));
-      STBTT_memset(scanline2, 0, (result->w+1)*sizeof(scanline[0]));
-
-      // update all active edges;
-      // remove all active edges that terminate before the top of this scanline
-      while (*step) {
-         stbtt__active_edge * z = *step;
-         if (z->ey <= scan_y_top) {
-            *step = z->next; // delete from list
-            STBTT_assert(z->direction);
-            z->direction = 0;
-            stbtt__hheap_free(&hh, z);
-         } else {
-            step = &((*step)->next); // advance through list
-         }
-      }
-
-      // insert all edges that start before the bottom of this scanline
-      while (e->y0 <= scan_y_bottom) {
-         if (e->y0 != e->y1) {
-            stbtt__active_edge *z = stbtt__new_active(&hh, e, off_x, scan_y_top, userdata);
-            STBTT_assert(z->ey >= scan_y_top);
-            // insert at front
-            z->next = active;
-            active = z;
-         }
-         ++e;
-      }
-
-      // now process all active edges
-      if (active)
-         stbtt__fill_active_edges_new(scanline, scanline2+1, result->w, active, scan_y_top);
-
-      {
-         float sum = 0;
-         for (i=0; i < result->w; ++i) {
-            float k;
-            int m;
-            sum += scanline2[i];
-            k = scanline[i] + sum;
-            k = (float) fabs(k)*255 + 0.5f;
-            m = (int) k;
-            if (m > 255) m = 255;
-            result->pixels[j*result->stride + i] = (unsigned char) m;
-         }
-      }
-      // advance all the edges
-      step = &active;
-      while (*step) {
-         stbtt__active_edge *z = *step;
-         z->fx += z->fdx; // advance to position for current scanline
-         step = &((*step)->next); // advance through list
-      }
-
-      ++y;
-      ++j;
-   }
-
-   stbtt__hheap_cleanup(&hh, userdata);
-
-   if (scanline != scanline_data)
-      STBTT_free(scanline, userdata);
-}
-#else
-#error "Unrecognized value of STBTT_RASTERIZER_VERSION"
-#endif
-
-#define STBTT__COMPARE(a,b)  ((a)->y0 < (b)->y0)
-
-static void stbtt__sort_edges_ins_sort(stbtt__edge *p, int n)
-{
-   int i,j;
-   for (i=1; i < n; ++i) {
-      stbtt__edge t = p[i], *a = &t;
-      j = i;
-      while (j > 0) {
-         stbtt__edge *b = &p[j-1];
-         int c = STBTT__COMPARE(a,b);
-         if (!c) break;
-         p[j] = p[j-1];
-         --j;
-      }
-      if (i != j)
-         p[j] = t;
-   }
-}
-
-static void stbtt__sort_edges_quicksort(stbtt__edge *p, int n)
-{
-   // threshhold for transitioning to insertion sort
-   while (n > 12) {
-      stbtt__edge t;
-      int c01,c12,c,m,i,j;
-
-      // compute median of three
-      m = n >> 1;
-      c01 = STBTT__COMPARE(&p[0],&p[m]);
-      c12 = STBTT__COMPARE(&p[m],&p[n-1]);
-      // if 0 >= mid >= end, or 0 < mid < end, then use mid
-      if (c01 != c12) {
-         // otherwise, we'll need to swap something else to middle
-         int z;
-         c = STBTT__COMPARE(&p[0],&p[n-1]);
-         // 0>mid && mid<n:  0>n => n; 0<n => 0
-         // 0<mid && mid>n:  0>n => 0; 0<n => n
-         z = (c == c12) ? 0 : n-1;
-         t = p[z];
-         p[z] = p[m];
-         p[m] = t;
-      }
-      // now p[m] is the median-of-three
-      // swap it to the beginning so it won't move around
-      t = p[0];
-      p[0] = p[m];
-      p[m] = t;
-
-      // partition loop
-      i=1;
-      j=n-1;
-      for(;;) {
-         // handling of equality is crucial here
-         // for sentinels & efficiency with duplicates
-         for (;;++i) {
-            if (!STBTT__COMPARE(&p[i], &p[0])) break;
-         }
-         for (;;--j) {
-            if (!STBTT__COMPARE(&p[0], &p[j])) break;
-         }
-         // make sure we haven't crossed
-         if (i >= j) break;
-         t = p[i];
-         p[i] = p[j];
-         p[j] = t;
-
-         ++i;
-         --j;
-      }
-      // recurse on smaller side, iterate on larger
-      if (j < (n-i)) {
-         stbtt__sort_edges_quicksort(p,j);
-         p = p+i;
-         n = n-i;
-      } else {
-         stbtt__sort_edges_quicksort(p+i, n-i);
-         n = j;
-      }
-   }
-}
-
-static void stbtt__sort_edges(stbtt__edge *p, int n)
-{
-   stbtt__sort_edges_quicksort(p, n);
-   stbtt__sort_edges_ins_sort(p, n);
-}
-
-typedef struct
-{
-   float x,y;
-} stbtt__point;
-
-static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, void *userdata)
-{
-   float y_scale_inv = invert ? -scale_y : scale_y;
-   stbtt__edge *e;
-   int n,i,j,k,m;
-#if STBTT_RASTERIZER_VERSION == 1
-   int vsubsample = result->h < 8 ? 15 : 5;
-#elif STBTT_RASTERIZER_VERSION == 2
-   int vsubsample = 1;
-#else
-   #error "Unrecognized value of STBTT_RASTERIZER_VERSION"
-#endif
-   // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
-
-   // now we have to blow out the windings into explicit edge lists
-   n = 0;
-   for (i=0; i < windings; ++i)
-      n += wcount[i];
-
-   e = (stbtt__edge *) STBTT_malloc(sizeof(*e) * (n+1), userdata); // add an extra one as a sentinel
-   if (e == 0) return;
-   n = 0;
-
-   m=0;
-   for (i=0; i < windings; ++i) {
-      stbtt__point *p = pts + m;
-      m += wcount[i];
-      j = wcount[i]-1;
-      for (k=0; k < wcount[i]; j=k++) {
-         int a=k,b=j;
-         // skip the edge if horizontal
-         if (p[j].y == p[k].y)
-            continue;
-         // add edge from j to k to the list
-         e[n].invert = 0;
-         if (invert ? p[j].y > p[k].y : p[j].y < p[k].y) {
-            e[n].invert = 1;
-            a=j,b=k;
-         }
-         e[n].x0 = p[a].x * scale_x + shift_x;
-         e[n].y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
-         e[n].x1 = p[b].x * scale_x + shift_x;
-         e[n].y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
-         ++n;
-      }
-   }
-
-   // now sort the edges by their highest point (should snap to integer, and then by x)
-   //STBTT_sort(e, n, sizeof(e[0]), stbtt__edge_compare);
-   stbtt__sort_edges(e, n);
-
-   // now, traverse the scanlines and find the intersections on each scanline, use xor winding rule
-   stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, userdata);
-
-   STBTT_free(e, userdata);
-}
-
-static void stbtt__add_point(stbtt__point *points, int n, float x, float y)
-{
-   if (!points) return; // during first pass, it's unallocated
-   points[n].x = x;
-   points[n].y = y;
-}
-
-// tesselate until threshhold p is happy... @TODO warped to compensate for non-linear stretching
-static int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float objspace_flatness_squared, int n)
-{
-   // midpoint
-   float mx = (x0 + 2*x1 + x2)/4;
-   float my = (y0 + 2*y1 + y2)/4;
-   // versus directly drawn line
-   float dx = (x0+x2)/2 - mx;
-   float dy = (y0+y2)/2 - my;
-   if (n > 16) // 65536 segments on one curve better be enough!
-      return 1;
-   if (dx*dx+dy*dy > objspace_flatness_squared) { // half-pixel error allowed... need to be smaller if AA
-      stbtt__tesselate_curve(points, num_points, x0,y0, (x0+x1)/2.0f,(y0+y1)/2.0f, mx,my, objspace_flatness_squared,n+1);
-      stbtt__tesselate_curve(points, num_points, mx,my, (x1+x2)/2.0f,(y1+y2)/2.0f, x2,y2, objspace_flatness_squared,n+1);
-   } else {
-      stbtt__add_point(points, *num_points,x2,y2);
-      *num_points = *num_points+1;
-   }
-   return 1;
-}
-
-// returns number of contours
-static stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, float objspace_flatness, int **contour_lengths, int *num_contours, void *userdata)
-{
-   stbtt__point *points=0;
-   int num_points=0;
-
-   float objspace_flatness_squared = objspace_flatness * objspace_flatness;
-   int i,n=0,start=0, pass;
-
-   // count how many "moves" there are to get the contour count
-   for (i=0; i < num_verts; ++i)
-      if (vertices[i].type == STBTT_vmove)
-         ++n;
-
-   *num_contours = n;
-   if (n == 0) return 0;
-
-   *contour_lengths = (int *) STBTT_malloc(sizeof(**contour_lengths) * n, userdata);
-
-   if (*contour_lengths == 0) {
-      *num_contours = 0;
-      return 0;
-   }
-
-   // make two passes through the points so we don't need to realloc
-   for (pass=0; pass < 2; ++pass) {
-      float x=0,y=0;
-      if (pass == 1) {
-         points = (stbtt__point *) STBTT_malloc(num_points * sizeof(points[0]), userdata);
-         if (points == NULL) goto error;
-      }
-      num_points = 0;
-      n= -1;
-      for (i=0; i < num_verts; ++i) {
-         switch (vertices[i].type) {
-            case STBTT_vmove:
-               // start the next contour
-               if (n >= 0)
-                  (*contour_lengths)[n] = num_points - start;
-               ++n;
-               start = num_points;
-
-               x = vertices[i].x, y = vertices[i].y;
-               stbtt__add_point(points, num_points++, x,y);
-               break;
-            case STBTT_vline:
-               x = vertices[i].x, y = vertices[i].y;
-               stbtt__add_point(points, num_points++, x, y);
-               break;
-            case STBTT_vcurve:
-               stbtt__tesselate_curve(points, &num_points, x,y,
-                                        vertices[i].cx, vertices[i].cy,
-                                        vertices[i].x,  vertices[i].y,
-                                        objspace_flatness_squared, 0);
-               x = vertices[i].x, y = vertices[i].y;
-               break;
-         }
-      }
-      (*contour_lengths)[n] = num_points - start;
-   }
-
-   return points;
-error:
-   STBTT_free(points, userdata);
-   STBTT_free(*contour_lengths, userdata);
-   *contour_lengths = 0;
-   *num_contours = 0;
-   return NULL;
-}
-
-STBTT_DEF void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata)
-{
-   float scale = scale_x > scale_y ? scale_y : scale_x;
-   int winding_count, *winding_lengths;
-   stbtt__point *windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths, &winding_count, userdata);
-   if (windings) {
-      stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, userdata);
-      STBTT_free(winding_lengths, userdata);
-      STBTT_free(windings, userdata);
-   }
-}
-
-STBTT_DEF void stbtt_FreeBitmap(unsigned char *bitmap, void *userdata)
-{
-   STBTT_free(bitmap, userdata);
-}
-
 STBTT_DEF unsigned char *stbtt_GetGlyphBitmapSubpixel(const stbtt_fontinfo *info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff)
 {
    int ix0,iy0,ix1,iy1;
