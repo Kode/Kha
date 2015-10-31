@@ -71,7 +71,7 @@ class Graphics implements kha.graphics4.Graphics {
 		GL.Clear(depth != null, color != null, c, depth != null ? depth : 0);
 	}
 
-	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, w, h));')
+	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, width, height));')
 	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
 		
 	}
@@ -99,7 +99,11 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
 		this.vertexBuffer = vertexBuffer;
 	}
-	
+
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+		
+	}
+
 	public function setIndexBuffer(indexBuffer: IndexBuffer): Void {
 		this.indexBuffer = indexBuffer;
 	}
