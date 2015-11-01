@@ -43,6 +43,7 @@ class Stbtt_temp_region {
 }
 
 class Stbtt_bakedchar {
+	public function new() { }
 	// coordinates of bbox in bitmap
 	public var x0: Int;
 	public var y0: Int;
@@ -128,6 +129,7 @@ class Stbtt_fontinfo {
 }
 
 class Stbtt_vertex {
+	public function new() { }
 	public var x: Stbtt_int16;
 	public var y: Stbtt_int16;
 	public var cx: Stbtt_int16;
@@ -166,6 +168,7 @@ class Stbtt__active_edge {
 }
 
 class Stbtt__point {
+	public function new() { }
 	public var x: Float;
 	public var y: Float;
 }
@@ -248,12 +251,42 @@ class StbTruetype {
 	//**typedef int stbtt__test_oversample_pow2[(STBTT_MAX_OVERSAMPLE & (STBTT_MAX_OVERSAMPLE-1)) == 0 ? 1 : -1];
 	public static inline var STBTT_RASTERIZER_VERSION: Int = 2;
 	
-	private static inline function ttBYTE(p: Bytes, pos: Int = 0): Stbtt_uint8 { return p.get(pos); }
-	private static inline function ttCHAR(p: Bytes, pos: Int = 0): Stbtt_int8 { return p.get(pos); }
-	private static inline function ttUSHORT(p: Bytes, pos: Int = 0): Stbtt_uint16 { return p.getUInt16(pos); }
-	private static inline function ttSHORT(p: Bytes, pos: Int = 0): Stbtt_int16 { return p.get(pos + 0) * 256 + p.get(pos + 1); }
-	private static inline function ttULONG(p: Bytes, pos: Int = 0): Stbtt_uint32 { return p.getInt32(pos); }
-	private static inline function ttLONG(p: Bytes, pos: Int = 0): Stbtt_int32 { return p.getInt32(pos); }
+	private static inline function ttBYTE(p: Bytes, pos: Int = 0): Stbtt_uint8 {
+		return p.get(pos);
+	}
+	
+	private static inline function ttCHAR(p: Bytes, pos: Int = 0): Stbtt_int8 {
+		var n = p.get(pos);
+		if (n >= 128)
+			return n - 256;
+		return n;
+	}
+	
+	private static inline function ttUSHORT(p: Bytes, pos: Int = 0): Stbtt_uint16 {
+		var ch1 = p.get(pos + 0);
+		var ch2 = p.get(pos + 1);
+		return ch2 | (ch1 << 8);
+	}
+	
+	private static inline function ttSHORT(p: Bytes, pos: Int = 0): Stbtt_int16 {
+		var ch1 = p.get(pos + 0);
+		var ch2 = p.get(pos + 1);
+		var n = ch2 | (ch1 << 8);
+		if (n & 0x8000 != 0)
+			return n - 0x10000;
+		return n;
+	}
+	
+	private static inline function ttULONG(p: Bytes, pos: Int = 0): Stbtt_uint32 { return ttLONG(p, pos); }
+	
+	private static inline function ttLONG(p: Bytes, pos: Int = 0): Stbtt_int32 {
+		var ch1 = p.get(pos + 0);
+		var ch2 = p.get(pos + 1);
+		var ch3 = p.get(pos + 2);
+		var ch4 = p.get(pos + 3);
+		return ch4 | (ch3 << 8) | (ch2 << 16) | (ch1 << 24);
+	}
+	
 	private static inline function ttFixed(p: Bytes, pos: Int = 0): Stbtt_int32 { return ttLONG(p, pos); }
 	
 	private static inline function stbtt_tag4(p: Bytes, pos: Int, c0: Int, c1: Int, c2: Int, c3: Int): Bool { return p.get(pos + 0) == c0 && p.get(pos + 1) == c1 && p.get(pos + 2) == c2 && p.get(pos + 3) == c3; }
@@ -413,9 +446,9 @@ class StbTruetype {
 					return 0;
 
 				offset = ttUSHORT(data, index_map + 14 + segcount*6 + 2 + 2*item);
-				if (offset == 0)
+				if (offset == 0) {
 					return cast(unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item), Stbtt_uint16);
-
+				}
 				return ttUSHORT(data, offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
 			}
 		} else if (format == 12 || format == 13) {
@@ -549,6 +582,11 @@ class StbTruetype {
 			vertices = new Vector<Stbtt_vertex>(m);
 			if (vertices == null)
 				return null;
+			else {
+				for (i in 0...vertices.length) {
+					vertices[i] = new Stbtt_vertex();
+				}
+			}
 
 			next_move = 0;
 			flagcount=0;
@@ -748,8 +786,15 @@ class StbTruetype {
 			// numberOfCounters == 0, do nothing
 		}
 
-		STBTT_assert(vertices.length == num_vertices);
-		return vertices;
+		STBTT_assert(vertices.length >= num_vertices);
+		if (num_vertices < vertices.length) {
+			var tmp = new Vector<Stbtt_vertex>(num_vertices);
+			copyVertices(vertices, tmp, 0, num_vertices);
+			return tmp;
+		}
+		else {
+			return vertices;
+		}
 	}
 
 	
@@ -1278,6 +1323,11 @@ class StbTruetype {
 
 		e = new Vector<Stbtt__edge>(n + 1); // add an extra one as a sentinel
 		if (e == null) return;
+		else {
+			for (i in 0...e.length) {
+				e[i] = new Stbtt__edge();
+			}
+		}
 		n = 0;
 
 		m = 0;
@@ -1372,6 +1422,11 @@ class StbTruetype {
 					contour_lengths.value = null;
 					num_contours.value = 0;
 					return null;
+				}
+				else {
+					for (i in 0...points.length) {
+						points[i] = new Stbtt__point();
+					}
 				}
 			}
 			num_points = 0;
@@ -1469,7 +1524,7 @@ class StbTruetype {
 	public static function stbtt_MakeGlyphBitmapSubpixel(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int): Void {
 		var ix0: Int = 0, iy0: Int = 0;
 		var vertices: Vector<Stbtt_vertex> = stbtt_GetGlyphShape(info, glyph);
-		var num_verts: Int = vertices.length;
+		var num_verts: Int = vertices == null ? 0 : vertices.length;
 		var gbm: Stbtt__bitmap = new Stbtt__bitmap();
 
 		var rect = stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y);
@@ -1517,7 +1572,7 @@ class StbTruetype {
                                 first_char: Int, num_chars: Int,          // characters to bake
                                 chardata: Vector<Stbtt_bakedchar>): Int {
 		var scale: Float;
-		var x: Int,y: Int,bottom_y: Int, i: Int;
+		var x: Int,y: Int,bottom_y: Int;
 		var f: Stbtt_fontinfo = new Stbtt_fontinfo();
 		if (!stbtt_InitFont(f, data, offset))
 			return -1;
@@ -1548,7 +1603,7 @@ class StbTruetype {
 				return -i;
 			STBTT_assert(x+gw < pw);
 			STBTT_assert(y+gh < ph);
-			stbtt_MakeGlyphBitmap(f, pixels, x+y*pw, gw,gh,pw, scale,scale, g);
+			stbtt_MakeGlyphBitmap(f, pixels, x + y * pw, gw, gh, pw, scale, scale, g);
 			chardata[i].x0 = cast(x, Stbtt_int16);
 			chardata[i].y0 = cast(y, Stbtt_int16);
 			chardata[i].x1 = cast(x + gw, Stbtt_int16);

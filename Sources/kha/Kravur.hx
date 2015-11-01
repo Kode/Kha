@@ -1,5 +1,8 @@
 package kha;
 
+import haxe.ds.Vector;
+import haxe.io.Bytes;
+import kha.graphics2.truetype.StbTruetype;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
@@ -75,6 +78,23 @@ class Kravur implements Font {
 	}
 	
 	public static function getFromBlob(name: String, style: FontStyle, size: Float, blob: Blob): Kravur {
+		var width: Int = 64;
+		var height: Int = 32;
+		var baked = new Vector<Stbtt_bakedchar>(256 - 32);
+		for (i in 0...baked.length) {
+			baked[i] = new Stbtt_bakedchar();
+		}
+
+		var pixels: Bytes = null;
+
+		var status: Int = -1;
+		while (status < 0) {
+			if (height < width) height *= 2;
+			else width *= 2;
+			pixels = Bytes.alloc(width * height);
+			status = StbTruetype.stbtt_BakeFontBitmap(Bytes.ofData(blob.bytes), 0, size, pixels, width, height, 32, 256 - 32, baked);
+		}
+		
 		var key = createKey(name, style, size);
 		
 		var kravur = fontCache.get(key);
