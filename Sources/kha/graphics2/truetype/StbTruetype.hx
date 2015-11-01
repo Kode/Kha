@@ -614,7 +614,15 @@ class StbTruetype {
 					x += (flags & 16 != 0) ? dx : -dx; // ???
 				} else {
 					if (flags & 16 == 0) {
-						x = x + cast(points.get(pointsIndex + 0)*256 + points.get(pointsIndex + 1), Stbtt_int16);
+						var value: Stbtt_int16;
+						var ch1 = points.get(pointsIndex + 0);
+						var ch2 = points.get(pointsIndex + 1);
+						var n = ch2 | (ch1 << 8);
+						if (n & 0x8000 != 0)
+							value = n - 0x10000;
+						else
+							value = n;
+						x = x + value;
 						pointsIndex += 2;
 					}
 				}
@@ -630,7 +638,15 @@ class StbTruetype {
 					y += (flags & 32 != 0) ? dy : -dy; // ???
 				} else {
 					if (flags & 32 == 0) {
-						y = y + cast(points.get(pointsIndex + 0)*256 + points.get(pointsIndex + 1), Stbtt_int16);
+						var value: Stbtt_int16;
+						var ch1 = points.get(pointsIndex + 0);
+						var ch2 = points.get(pointsIndex + 1);
+						var n = ch2 | (ch1 << 8);
+						if (n & 0x8000 != 0)
+							value = n - 0x10000;
+						else
+							value = n;
+						y = y + value;
 						pointsIndex += 2;
 					}
 				}
@@ -793,8 +809,6 @@ class StbTruetype {
 		}
 	}
 
-	
-	
 	public static function stbtt_GetGlyphHMetrics(info: Stbtt_fontinfo, glyph_index: Int): Stbtt_temp_glyph_h_metrics {
 		var numOfLongHorMetrics: Stbtt_uint16 = ttUSHORT(info.data, info.hhea + 34);
 		var metrics = new Stbtt_temp_glyph_h_metrics();
@@ -1154,21 +1168,32 @@ class StbTruetype {
 			// find center of pixel for this scanline
 			var scan_y_top: Float = y + 0.0;
 			var scan_y_bottom: Float = y + 1.0;
-			var step: Stbtt__active_edge = active;
+			var step = { value: active, parent: null };
 
 			for (i in 0...result.w) scanline[i] = 0;
 			for (i in 0...result.w + 1) scanline2[scanline2Index + i] = 0;
 
 			// update all active edges;
 			// remove all active edges that terminate before the top of this scanline
-			while (step != null) {
-				var z: Stbtt__active_edge = step;
+			while (step.value != null) {
+				var z: Stbtt__active_edge = step.value;
 				if (z.ey <= scan_y_top) {
-					step = z.next; // delete from list
+					// delete from list
+					if (step.parent == null) {
+						active = z.next;
+						step.value = z.next;
+					}
+					else {
+						step.parent.next = z.next;
+						step.value = z.next;
+					}
+					
 					STBTT_assert(z.direction != 0);
 					z.direction = 0;
 				} else {
-					step = step.next; // advance through list
+					// advance through list
+					step.parent = step.value;
+					step.value = step.value.next;
 				}
 			}
 
@@ -1202,11 +1227,14 @@ class StbTruetype {
 				}
 			}
 			// advance all the edges
-			step = active;
-			while (step != null) {
-				var z: Stbtt__active_edge = step;
+			step.parent = null;
+			step.value = active;
+			while (step.value != null) {
+				var z: Stbtt__active_edge = step.value;
 				z.fx += z.fdx; // advance to position for current scanline
-				step = step.next; // advance through list
+				// advance through list
+				step.parent = step.value;
+				step.value = step.value.next;
 			}
 
 			++y;
