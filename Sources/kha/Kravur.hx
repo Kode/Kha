@@ -43,7 +43,7 @@ class Kravur implements Font {
 	private var myStyle: FontStyle;
 	private var mySize: Float;
 	
-	private var chars: Array<BakedChar>;
+	private var chars: Vector<Stbtt_bakedchar>;
 	private var texture: Image;
 	public var width: Int;
 	public var height: Int;
@@ -61,7 +61,7 @@ class Kravur implements Font {
 		if (kravur == null) {
 			Assets.loadBlobFromPath(key, function (blob: Blob) {
 				if (blob != null) {
-					var kravur = new Kravur(blob);
+					var kravur = getFromBlob(name, style, size, blob);
 					kravur.myName = name;
 					kravur.myStyle = style;
 					kravur.mySize = size;
@@ -95,11 +95,22 @@ class Kravur implements Font {
 			status = StbTruetype.stbtt_BakeFontBitmap(Bytes.ofData(blob.bytes), 0, size, pixels, width, height, 32, 256 - 32, baked);
 		}
 		
+		// TODO: Scale pixels down if they exceed the supported texture size
+		
+		var info = new Stbtt_fontinfo();
+		StbTruetype.stbtt_InitFont(info, Bytes.ofData(blob.bytes), 0);
+
+		var metrics = StbTruetype.stbtt_GetFontVMetrics(info);
+		var scale = StbTruetype.stbtt_ScaleForPixelHeight(info, size);
+		var ascent = Math.round(metrics.ascent * scale); // equals baseline
+		var descent = Math.round(metrics.descent * scale);
+		var lineGap = Math.round(metrics.lineGap * scale);
+		
 		var key = createKey(name, style, size);
 		
 		var kravur = fontCache.get(key);
 		if (kravur == null) {
-			var kravur = new Kravur(blob);
+			var kravur = new Kravur(Std.int(size), ascent, descent, lineGap, width, height, baked, pixels);
 			kravur.myName = name;
 			kravur.myStyle = style;
 			kravur.mySize = size;
@@ -125,47 +136,19 @@ class Kravur implements Font {
 		return key;
 	}
 	
-	private function new(blob: Blob) {
-		var size = blob.readS32LE();
-		var ascent = blob.readS32LE();
-		var descent = blob.readS32LE();
-		var lineGap = blob.readS32LE();
+	private function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector<Stbtt_bakedchar>, pixels: Bytes) {
+		this.width = width;
+		this.height = height;
+		this.chars = chars;
 		baseline = ascent;
-		chars = new Array<BakedChar>();
-		for (i in 0...256 - 32) {
-			var char = new BakedChar();
-			char.x0 = blob.readS16LE();
-			char.y0 = blob.readS16LE();
-			char.x1 = blob.readS16LE();
-			char.y1 = blob.readS16LE();
-			char.xoff = blob.readF32LE();
-			char.yoff = blob.readF32LE() + baseline;
-			char.xadvance = blob.readF32LE();
-			chars.push(char);
-		}
-		width = blob.readS32LE();
-		height = blob.readS32LE();
-		var w = width;
-		var h = height;
-		while (w > Image.maxSize || h > Image.maxSize) {
-			blob.seek(blob.position + h * w);
-			w = Std.int(w / 2);
-			h = Std.int(h / 2);
-		}
-		texture = Image.create(w, h, TextureFormat.L8);
+		texture = Image.create(width, height, TextureFormat.L8);
 		var bytes = texture.lock();
 		var pos: Int = 0;
-		for (y in 0...h) for (x in 0...w) {
-			bytes.set(pos, blob.readU8());
-			
-			//filter-test
-			//if ((x + y) % 2 == 0) bytes.set(pos, 0xff);
-			//else bytes.set(pos, 0);
-			
+		for (y in 0...height) for (x in 0...width) {
+			bytes.set(pos, pixels.get(pos));
 			++pos;
 		}
 		texture.unlock();
-		blob.reset();
 	}
 	
 	public function getTexture(): Image {
