@@ -1041,7 +1041,7 @@ class StbTruetype {
 						height = sy1 - sy0;
 						STBTT_assert(x >= 0 && x < len);
 						scanline[x] += e.direction * (1-((x_top - x) + (x_bottom-x))/2)  * height;
-						scanline_fill[x] += e.direction * height; // everything right of this pixel is filled
+						scanline_fill[scanline_fillIndex + x] += e.direction * height; // everything right of this pixel is filled
 					} else {
 						var x,x1,x2: Int;
 						var y_crossing, step, sign, area: Float;
@@ -1080,7 +1080,7 @@ class StbTruetype {
 
 						scanline[x2] += area + sign * (1-((x2-x2)+(x_bottom-x2))/2) * (sy1-y_crossing);
 
-						scanline_fill[x2] += sign * (sy1-sy0);
+						scanline_fill[scanline_fillIndex + x2] += sign * (sy1-sy0);
 					}
 				} else {
 					// if edge goes outside of box we're drawing, we require
@@ -1208,7 +1208,7 @@ class StbTruetype {
 				}
 				++eIndex;
 			}
-
+			
 			// now process all active edges
 			if (active != null)
 				stbtt__fill_active_edges_new(scanline, scanline2, scanline2Index + 1, result.w, active, scan_y_top);
@@ -1220,7 +1220,7 @@ class StbTruetype {
 					var m: Int;
 					sum += scanline2[scanline2Index + i];
 					k = scanline[i] + sum;
-					k = cast(Math.abs(k) * 255, Float) + 0.5;
+					k = Math.abs(k) * 255.0 + 0.5;
 					m = Std.int(k);
 					if (m > 255) m = 255;
 					result.pixels.set(result.pixels_offset + j * result.stride + i, cast(m, Int));
@@ -1281,7 +1281,7 @@ class StbTruetype {
 				// 0>mid && mid<n:  0>n => n; 0<n => 0
 				// 0<mid && mid>n:  0>n => 0; 0<n => n
 				z = (c == c12) ? 0 : n-1;
-				t = p[z];
+				t = p[pIndex + z];
 				p[pIndex + z] = p[pIndex + m];
 				p[pIndex + m] = t;
 			}
