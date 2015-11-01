@@ -366,18 +366,14 @@ class StbTruetype {
 			switch(ttUSHORT(data, encoding_record)) {
 				case STBTT_PLATFORM_ID_MICROSOFT:
 					switch (ttUSHORT(data, encoding_record+2)) {
-						case STBTT_MS_EID_UNICODE_BMP:
-						case STBTT_MS_EID_UNICODE_FULL:
+						case STBTT_MS_EID_UNICODE_BMP, STBTT_MS_EID_UNICODE_FULL:
 							// MS/Unicode
 							info.index_map = cmap + ttULONG(data, encoding_record+4);
-							break;
 					}
-					break;
 				case STBTT_PLATFORM_ID_UNICODE:
 					// Mac/iOS has these
 					// all the encodingIDs are unicode, so we don't bother to check it
 					info.index_map = cmap + ttULONG(data, encoding_record+4);
-					break;
 			}
 		}
 		if (info.index_map == 0)
@@ -1199,7 +1195,7 @@ class StbTruetype {
 					var m: Int;
 					sum += scanline2[scanline2Index + i];
 					k = scanline[i] + sum;
-					k = cast(Math.abs(k)*255 + 0.5, Float);
+					k = cast(Math.abs(k) * 255, Float) + 0.5;
 					m = Std.int(k);
 					if (m > 255) m = 255;
 					result.pixels.set(result.pixels_offset + j * result.stride + i, cast(m, Int));
@@ -1339,8 +1335,10 @@ class StbTruetype {
 			for (k in 0...wcount[i]) {
 				var a: Int=k,b: Int=j;
 				// skip the edge if horizontal
-				if (p[pIndex + j].y == p[pIndex + k].y)
+				if (p[pIndex + j].y == p[pIndex + k].y) {
+					j = k;
 					continue;
+				}
 				// add edge from j to k to the list
 				e[n].invert = false;
 				if (invert ? p[pIndex + j].y > p[pIndex + k].y : p[pIndex + j].y < p[pIndex + k].y) {
@@ -1442,11 +1440,9 @@ class StbTruetype {
 
 						x = vertices[i].x; y = vertices[i].y;
 						stbtt__add_point(points, num_points++, x,y);
-						break;
 					case STBTT_vline:
 						x = vertices[i].x; y = vertices[i].y;
 						stbtt__add_point(points, num_points++, x, y);
-						break;
 					case STBTT_vcurve:
 						var num_points_reference = { value: num_points };
 						stbtt__tesselate_curve(points, num_points_reference, x, y,
@@ -1455,7 +1451,6 @@ class StbTruetype {
 							objspace_flatness_squared, 0);
 						num_points = num_points_reference.value;
 						x = vertices[i].x; y = vertices[i].y;
-						break;
 				}
 			}
 			contour_lengths.value[n] = num_points - start;
