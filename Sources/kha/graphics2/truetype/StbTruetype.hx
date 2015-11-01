@@ -34,6 +34,14 @@ class Stbtt_temp_font_v_metrics {
 	public var lineGap: Int;
 }
 
+class Stbtt_temp_region {
+	public function new() { }
+	public var width: Int;
+	public var height: Int;
+	public var xoff: Int;
+	public var yoff: Int;
+}
+
 class Stbtt_bakedchar {
 	// coordinates of bbox in bitmap
 	public var x0: Int;
@@ -101,7 +109,7 @@ class Stbtt_pack_context {
 }
 
 class Stbtt_fontinfo {
-	//**void           * userdata;
+	public function new() { }
 	public var data: Bytes;                        // pointer to .ttf file
 	public var fontstart: Int;                     // offset of start of font
 
@@ -129,10 +137,12 @@ class Stbtt_vertex {
 }
 
 class Stbtt__bitmap {
+	public function new() { }
 	public var w: Int;
 	public var h: Int;
 	public var stride: Int;
 	public var pixels: Bytes;
+	public var pixels_offset: Int;
 }
 
 class Stbtt__edge {
@@ -288,7 +298,7 @@ class StbTruetype {
 		return -1;
 	}
 
-	public static function stbtt_InitFont(info: Stbtt_fontinfo, data: Bytes, fontstart: Int): Int {
+	public static function stbtt_InitFont(info: Stbtt_fontinfo, data: Bytes, fontstart: Int): Bool {
 		var cmap, t: Stbtt_uint32;
 		var numTables: Stbtt_int32 ;
 
@@ -303,7 +313,7 @@ class StbTruetype {
 		info.hmtx = stbtt__find_table(data, fontstart, "hmtx"); // required
 		info.kern = stbtt__find_table(data, fontstart, "kern"); // not required
 		if (cmap == 0 || info.loca == 0 || info.head == 0 || info.glyf == 0 || info.hhea == 0 || info.hmtx == 0)
-			return 0;
+			return false;
 
 		t = stbtt__find_table(data, fontstart, "maxp");
 		if (t != 0)
@@ -338,10 +348,10 @@ class StbTruetype {
 			}
 		}
 		if (info.index_map == 0)
-			return 0;
+			return false;
 
 		info.indexToLocFormat = ttUSHORT(data, info.head + 50);
-		return 1;
+		return true;
 	}
 
 	public static function stbtt_FindGlyphIndex(info: Stbtt_fontinfo, unicode_codepoint: Int): Int {
@@ -1147,7 +1157,7 @@ class StbTruetype {
 					k = cast(Math.abs(k)*255 + 0.5, Float);
 					m = Std.int(k);
 					if (m > 255) m = 255;
-					result.pixels.set(j*result.stride + i, cast(m, Int));
+					result.pixels.set(result.pixels_offset + j * result.stride + i, cast(m, Int));
 				}
 			}
 			// advance all the edges
@@ -1412,92 +1422,88 @@ class StbTruetype {
 			stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert);
 		}
 	}
-/*
-STBTT_DEF unsigned char *stbtt_GetGlyphBitmapSubpixel(const stbtt_fontinfo *info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff)
-{
-   int ix0,iy0,ix1,iy1;
-   stbtt__bitmap gbm;
-   stbtt_vertex *vertices;   
-   int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
 
-   if (scale_x == 0) scale_x = scale_y;
-   if (scale_y == 0) {
-      if (scale_x == 0) return NULL;
-      scale_y = scale_x;
-   }
+	public static function stbtt_GetGlyphBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int, region: Stbtt_temp_region): Bytes {
+		var ix0: Int,iy0: Int,ix1: Int,iy1: Int;
+		var gbm: Stbtt__bitmap = new Stbtt__bitmap();
+		var vertices: Vector<Stbtt_vertex> = stbtt_GetGlyphShape(info, glyph);
+		var num_verts: Int = vertices.length;
 
-   stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,&ix1,&iy1);
+		if (scale_x == 0) scale_x = scale_y;
+		if (scale_y == 0) {
+			if (scale_x == 0) return null;
+			scale_y = scale_x;
+		}
 
-   // now we get the size
-   gbm.w = (ix1 - ix0);
-   gbm.h = (iy1 - iy0);
-   gbm.pixels = NULL; // in case we error
+		var rect = stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y);
+		ix0 = rect.x0;
+		iy0 = rect.y0;
+		ix1 = rect.x1;
+		iy1 = rect.y1;
+		
+		// now we get the size
+		gbm.w = (ix1 - ix0);
+		gbm.h = (iy1 - iy0);
+		gbm.pixels = null; // in case we error
 
-   if (width ) *width  = gbm.w;
-   if (height) *height = gbm.h;
-   if (xoff  ) *xoff   = ix0;
-   if (yoff  ) *yoff   = iy0;
+		region.width  = gbm.w;
+		region.height = gbm.h;
+		region.xoff   = ix0;
+		region.yoff   = iy0;
    
-   if (gbm.w && gbm.h) {
-      gbm.pixels = (unsigned char *) STBTT_malloc(gbm.w * gbm.h, info->userdata);
-      if (gbm.pixels) {
-         gbm.stride = gbm.w;
+		if (gbm.w != 0 && gbm.h != 0) {
+			gbm.pixels = Bytes.alloc(gbm.w * gbm.h);
+			if (gbm.pixels != null) {
+				gbm.stride = gbm.w;
 
-         stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info->userdata);
-      }
-   }
-   STBTT_free(vertices, info->userdata);
-   return gbm.pixels;
-}   
+				stbtt_Rasterize(gbm, 0.35, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, true);
+			}
+		}
+		return gbm.pixels;
+	}
 
-STBTT_DEF unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, int glyph, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, width, height, xoff, yoff);
-}
+	public static function stbtt_GetGlyphBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, glyph: Int, region: Stbtt_temp_region): Bytes {
+		return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0, 0.0, glyph, region);
+	}
 
-STBTT_DEF void stbtt_MakeGlyphBitmapSubpixel(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
-{
-   int ix0,iy0;
-   stbtt_vertex *vertices;
-   int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
-   stbtt__bitmap gbm;   
+	public static function stbtt_MakeGlyphBitmapSubpixel(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int): Void {
+		var ix0: Int = 0, iy0: Int = 0;
+		var vertices: Vector<Stbtt_vertex> = stbtt_GetGlyphShape(info, glyph);
+		var num_verts: Int = vertices.length;
+		var gbm: Stbtt__bitmap = new Stbtt__bitmap();
 
-   stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,0,0);
-   gbm.pixels = output;
-   gbm.w = out_w;
-   gbm.h = out_h;
-   gbm.stride = out_stride;
+		var rect = stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y);
+		ix0 = rect.x0;
+		iy0 = rect.y0;
+		gbm.pixels = output;
+		gbm.pixels_offset = output_offset;
+		gbm.w = out_w;
+		gbm.h = out_h;
+		gbm.stride = out_stride;
 
-   if (gbm.w && gbm.h)
-      stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, 1, info->userdata);
+		if (gbm.w != 0 && gbm.h != 0)
+			stbtt_Rasterize(gbm, 0.35, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, true);
+	}
 
-   STBTT_free(vertices, info->userdata);
-}
+	public static function stbtt_MakeGlyphBitmap(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, glyph: Int): Void {
+		stbtt_MakeGlyphBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0, 0.0, glyph);
+	}
 
-STBTT_DEF void stbtt_MakeGlyphBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int glyph)
-{
-   stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, glyph);
-}
+	public static function stbtt_GetCodepointBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int, region: Stbtt_temp_region): Bytes {
+		return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), region);
+	}   
 
-STBTT_DEF unsigned char *stbtt_GetCodepointBitmapSubpixel(const stbtt_fontinfo *info, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), width,height,xoff,yoff);
-}   
+	public static function stbtt_MakeCodepointBitmapSubpixel(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int): Void {
+		stbtt_MakeGlyphBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
+	}
 
-STBTT_DEF void stbtt_MakeCodepointBitmapSubpixel(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
-{
-   stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
-}
+	public static function stbtt_GetCodepointBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, codepoint: Int, region: Stbtt_temp_region): Bytes {
+		return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0, 0.0, codepoint, region);
+	}   
 
-STBTT_DEF unsigned char *stbtt_GetCodepointBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, int codepoint, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f,0.0f, codepoint, width,height,xoff,yoff);
-}   
-
-STBTT_DEF void stbtt_MakeCodepointBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
-{
-   stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, codepoint);
-}
+	public static function stbtt_MakeCodepointBitmap(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, codepoint: Int): Void {
+		stbtt_MakeCodepointBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0, 0.0, codepoint);
+	}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1505,72 +1511,78 @@ STBTT_DEF void stbtt_MakeCodepointBitmap(const stbtt_fontinfo *info, unsigned ch
 //
 // This is SUPER-CRAPPY packing to keep source code small
 
-STBTT_DEF int stbtt_BakeFontBitmap(const unsigned char *data, int offset,  // font location (use offset=0 for plain .ttf)
-                                float pixel_height,                     // height of font in pixels
-                                unsigned char *pixels, int pw, int ph,  // bitmap to be filled in
-                                int first_char, int num_chars,          // characters to bake
-                                stbtt_bakedchar *chardata)
-{
-   float scale;
-   int x,y,bottom_y, i;
-   stbtt_fontinfo f;
-   if (!stbtt_InitFont(&f, data, offset))
-      return -1;
-   STBTT_memset(pixels, 0, pw*ph); // background of 0 around pixels
-   x=y=1;
-   bottom_y = 1;
+	public static function stbtt_BakeFontBitmap(data: Bytes, offset: Int, // font location (use offset=0 for plain .ttf)
+                                pixel_height: Float,                      // height of font in pixels
+                                pixels: Bytes, pw: Int, ph: Int,          // bitmap to be filled in
+                                first_char: Int, num_chars: Int,          // characters to bake
+                                chardata: Vector<Stbtt_bakedchar>): Int {
+		var scale: Float;
+		var x: Int,y: Int,bottom_y: Int, i: Int;
+		var f: Stbtt_fontinfo = new Stbtt_fontinfo();
+		if (!stbtt_InitFont(f, data, offset))
+			return -1;
+		for (i in 0...pw * ph)
+			pixels.set(i, 0); // background of 0 around pixels
+		x=y=1;
+		bottom_y = 1;
 
-   scale = stbtt_ScaleForPixelHeight(&f, pixel_height);
+		scale = stbtt_ScaleForPixelHeight(f, pixel_height);
 
-   for (i=0; i < num_chars; ++i) {
-      int advance, lsb, x0,y0,x1,y1,gw,gh;
-      int g = stbtt_FindGlyphIndex(&f, first_char + i);
-      stbtt_GetGlyphHMetrics(&f, g, &advance, &lsb);
-      stbtt_GetGlyphBitmapBox(&f, g, scale,scale, &x0,&y0,&x1,&y1);
-      gw = x1-x0;
-      gh = y1-y0;
-      if (x + gw + 1 >= pw)
-         y = bottom_y, x = 1; // advance to next row
-      if (y + gh + 1 >= ph) // check if it fits vertically AFTER potentially moving to next row
-         return -i;
-      STBTT_assert(x+gw < pw);
-      STBTT_assert(y+gh < ph);
-      stbtt_MakeGlyphBitmap(&f, pixels+x+y*pw, gw,gh,pw, scale,scale, g);
-      chardata[i].x0 = (stbtt_int16) x;
-      chardata[i].y0 = (stbtt_int16) y;
-      chardata[i].x1 = (stbtt_int16) (x + gw);
-      chardata[i].y1 = (stbtt_int16) (y + gh);
-      chardata[i].xadvance = scale * advance;
-      chardata[i].xoff     = (float) x0;
-      chardata[i].yoff     = (float) y0;
-      x = x + gw + 1;
-      if (y+gh+1 > bottom_y)
-         bottom_y = y+gh+1;
-   }
-   return bottom_y;
-}
+		for (i in 0...num_chars) {
+			var advance: Int, lsb: Int, x0: Int,y0: Int,x1: Int,y1: Int,gw: Int,gh: Int;
+			var g: Int = stbtt_FindGlyphIndex(f, first_char + i);
+			var metrics = stbtt_GetGlyphHMetrics(f, g);
+			advance = metrics.advanceWidth;
+			lsb = metrics.leftSideBearing;
+			var rect = stbtt_GetGlyphBitmapBox(f, g, scale, scale);
+			x0 = rect.x0;
+			y0 = rect.y0;
+			x1 = rect.x1;
+			y1 = rect.y1;
+			gw = x1-x0;
+			gh = y1-y0;
+			if (x + gw + 1 >= pw) {
+				y = bottom_y; x = 1; // advance to next row
+			}
+			if (y + gh + 1 >= ph) // check if it fits vertically AFTER potentially moving to next row
+				return -i;
+			STBTT_assert(x+gw < pw);
+			STBTT_assert(y+gh < ph);
+			stbtt_MakeGlyphBitmap(f, pixels, x+y*pw, gw,gh,pw, scale,scale, g);
+			chardata[i].x0 = cast(x, Stbtt_int16);
+			chardata[i].y0 = cast(y, Stbtt_int16);
+			chardata[i].x1 = cast(x + gw, Stbtt_int16);
+			chardata[i].y1 = cast(y + gh, Stbtt_int16);
+			chardata[i].xadvance = scale * advance;
+			chardata[i].xoff     = cast(x0, Float);
+			chardata[i].yoff     = cast(y0, Float);
+			x = x + gw + 1;
+			if (y+gh+1 > bottom_y)
+				bottom_y = y+gh+1;
+		}
+		return bottom_y;
+	}
 
-STBTT_DEF void stbtt_GetBakedQuad(stbtt_bakedchar *chardata, int pw, int ph, int char_index, float *xpos, float *ypos, stbtt_aligned_quad *q, int opengl_fillrule)
-{
-   float d3d_bias = opengl_fillrule ? 0 : -0.5f;
-   float ipw = 1.0f / pw, iph = 1.0f / ph;
-   stbtt_bakedchar *b = chardata + char_index;
-   int round_x = STBTT_ifloor((*xpos + b->xoff) + 0.5f);
-   int round_y = STBTT_ifloor((*ypos + b->yoff) + 0.5f);
+	public static function stbtt_GetBakedQuad(chardata: Vector<Stbtt_bakedchar>, pw: Int, ph: Int, char_index: Int, xpos: { value: Float }, ypos: { value: Float }, q: Stbtt_aligned_quad, opengl_fillrule: Bool): Void {
+		var d3d_bias: Float = opengl_fillrule ? 0 : -0.5;
+		var ipw: Float = 1.0 / pw, iph = 1.0 / ph;
+		var b: Stbtt_bakedchar = chardata[char_index];
+		var round_x: Int = Math.floor((xpos.value + b.xoff) + 0.5);
+		var round_y: Int = Math.floor((ypos.value + b.yoff) + 0.5);
 
-   q->x0 = round_x + d3d_bias;
-   q->y0 = round_y + d3d_bias;
-   q->x1 = round_x + b->x1 - b->x0 + d3d_bias;
-   q->y1 = round_y + b->y1 - b->y0 + d3d_bias;
+		q.x0 = round_x + d3d_bias;
+		q.y0 = round_y + d3d_bias;
+		q.x1 = round_x + b.x1 - b.x0 + d3d_bias;
+		q.y1 = round_y + b.y1 - b.y0 + d3d_bias;
 
-   q->s0 = b->x0 * ipw;
-   q->t0 = b->y0 * iph;
-   q->s1 = b->x1 * ipw;
-   q->t1 = b->y1 * iph;
+		q.s0 = b.x0 * ipw;
+		q.t0 = b.y0 * iph;
+		q.s1 = b.x1 * ipw;
+		q.t1 = b.y1 * iph;
 
-   *xpos += b->xadvance;
-}
-
+		xpos.value += b.xadvance;
+	}
+/*
 //////////////////////////////////////////////////////////////////////////////
 //
 // rectangle packing replacement routines if you don't have stb_rect_pack.h
