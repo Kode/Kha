@@ -16,6 +16,42 @@ import js.html.XMLHttpRequest;
 using StringTools;
 
 class LoaderImpl {
+	public static function getImageFormats(): Array<String> {
+		return ["png", "jpg"];
+	}
+	
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
+		var img: ImageElement = cast Browser.document.createElement("img");
+		img.src = desc.files[0];
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
+		img.onload = function(event: Dynamic) {
+			done(Image.fromImage(img, readable));
+		};
+	}
+	
+	public static function getSoundFormats(): Array<String> {
+		if (SystemImpl._hasWebAudio) return ["ogg"];
+		else return ["mp4", "ogg"];
+	}
+	
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
+		if (SystemImpl._hasWebAudio) {
+			for (i in 0...desc.files.length) {
+				var file: String = desc.files[i];
+				if (file.endsWith(".ogg")) {
+					new WebAudioSound(file, done);
+					break;
+				}
+			}
+		}
+		else new kha.js.Sound(desc.files, done);
+	}
+	
+	public static function getMusicFormats(): Array<String> {
+		if (SystemImpl._hasWebAudio) return ["ogg"];
+		else return ["mp4", "ogg"];
+	}
+	
 	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
 		new kha.js.Music(desc.files, function (music: kha.Music) {
 			if (SystemImpl._hasWebAudio) {
@@ -33,26 +69,8 @@ class LoaderImpl {
 		});
 	}
 	
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
-		if (SystemImpl._hasWebAudio) {
-			for (i in 0...desc.files.length) {
-				var file: String = desc.files[i];
-				if (file.endsWith(".ogg")) {
-					new WebAudioSound(file, done);
-					break;
-				}
-			}
-		}
-		else new kha.js.Sound(desc.files, done);
-	}
-	
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
-		var img: ImageElement = cast Browser.document.createElement("img");
-		img.src = desc.files[0];
-		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		img.onload = function(event: Dynamic) {
-			done(Image.fromImage(img, readable));
-		};
+	public static function getVideoFormats(): Array<String> {
+		return ["mp4", "webm"];
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {

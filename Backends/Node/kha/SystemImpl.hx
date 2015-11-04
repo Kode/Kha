@@ -73,6 +73,8 @@ class SystemImpl {
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 
+	private static var lastTime: Float = 0;
+	
 	private static function init2() {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
@@ -84,18 +86,21 @@ class SystemImpl {
 		frame = new Framebuffer(new EmptyGraphics1(width, height), new EmptyGraphics2(width, height), new EmptyGraphics4(width, height));
 		Scheduler.start();
 		
-		var lastTime = 0;
-		Node.setInterval(function () {
-			Scheduler.executeFrame();
-			if (Session.the() != null) {
-				Session.the().update();
-			}
-			var time = Scheduler.time();
-			if (time >= lastTime + 10) {
-				lastTime += 10;
-				Node.console.log(lastTime + " seconds.");
-			}
-		}, 100);
+		lastTime = Scheduler.time();
+		run();
+	}
+	
+	private static function run() {
+		Scheduler.executeFrame();
+		if (Session.the() != null) {
+			Session.the().update();
+		}
+		var time = Scheduler.time();
+		if (time >= lastTime + 10) {
+			lastTime += 10;
+			Node.console.log(lastTime + " seconds.");
+		}
+		Node.setTimeout(run, 0);
 	}
 	
 	public static function getMouse(num: Int): Mouse {
