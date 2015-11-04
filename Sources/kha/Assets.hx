@@ -71,6 +71,12 @@ class Assets {
 		LoaderImpl.loadImageFromDescription(description, done);
 	}
 	
+	public static var imageFormats(get, null): Array<String>;
+	
+	private static function get_imageFormats(): Array<String> {
+		return LoaderImpl.getImageFormats();
+	}
+	
 	public static function loadBlob(name: String, done: Blob -> Void): Void {
 		var description = Reflect.field(blobs, name + "Description");
 		LoaderImpl.loadBlobFromDescription(description, function (blob: Blob) {
@@ -97,6 +103,12 @@ class Assets {
 		return LoaderImpl.loadMusicFromDescription(description, done);
 	}
 	
+	public static var musicFormats(get, null): Array<String>;
+	
+	private static function get_musicFormats(): Array<String> {
+		return LoaderImpl.getMusicFormats();
+	}
+	
 	public static function loadSound(name: String, done: Sound -> Void): Void {
 		var description = Reflect.field(sounds, name + "Description");
 		return LoaderImpl.loadSoundFromDescription(description, function (sound: Sound) {
@@ -110,6 +122,12 @@ class Assets {
 		return LoaderImpl.loadSoundFromDescription(description, done);
 	}
 	
+	public static var soundFormats(get, null): Array<String>;
+	
+	private static function get_soundFormats(): Array<String> {
+		return LoaderImpl.getSoundFormats();
+	}
+	
 	public static function loadVideo(name: String, done: Video -> Void): Void {
 		var description = Reflect.field(videos, name + "Description");
 		return LoaderImpl.loadVideoFromDescription(description, function (video: Video) {
@@ -121,6 +139,12 @@ class Assets {
 	public static function loadVideoFromPath(path: String, done: Video -> Void): Void {
 		var description = { files: [ path ] };
 		return LoaderImpl.loadVideoFromDescription(description, done);
+	}
+	
+	public static var videoFormats(get, null): Array<String>;
+	
+	private static function get_videoFormats(): Array<String> {
+		return LoaderImpl.getVideoFormats();
 	}
 	
 	public static function loadFont(name: String, style: FontStyle, size: Float, done: Font -> Void): Void {

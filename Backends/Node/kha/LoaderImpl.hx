@@ -19,10 +19,18 @@ import js.Lib;
 import js.html.XMLHttpRequest;
 
 class LoaderImpl {
-	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
+	public static function getMusicFormats(): Array<String> {
+		return ["nix"];
+	}
+	
+	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void): Void {
 		Node.setTimeout(function () {
 			done(new Music());
 		}, 0);
+	}
+	
+	public static function getSoundFormats(): Array<String> {
+		return ["nix"];
 	}
 	
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void): Void {
@@ -31,10 +39,18 @@ class LoaderImpl {
 		}, 0);
 	}		
 	
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
+	public static function getImageFormats(): Array<String> {
+		return ["nix"];
+	}
+	
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void): Void {
 		Node.setTimeout(function () {
 			done(new Image(100, 100, TextureFormat.RGBA32));
 		}, 0);
+	}
+	
+	public static function getVideoFormats(): Array<String> {
+		return ["nix"];
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
@@ -43,7 +59,7 @@ class LoaderImpl {
 		}, 0);
 	}
 	
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void): Void {
 		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
 			done(Blob.fromBuffer(data));
 		});
