@@ -63,8 +63,7 @@ class SystemImpl {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, false);
 		keyboard = new Keyboard();
-		MouseImpl.init();
-		mouse = Mouse.get();
+		mouse = new MouseImpl();
 
 		#if debug
 		context.enableErrorChecking = true;
@@ -105,6 +104,11 @@ class SystemImpl {
 		context.clear(0, 0, 0, 0);
 		System.render(frame);
 		context.present();
+	}
+	
+	public static function getMouse(num: Int): Mouse {
+		if (num != 0) return null;
+		return mouse;
 	}
 	
 	private static function keyDownHandler(event: KeyboardEvent): Void {
