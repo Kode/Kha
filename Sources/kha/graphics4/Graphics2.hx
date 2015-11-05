@@ -967,7 +967,11 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.destinationBlend = destination;
 	}
 	
-	public override function begin(clear: Bool = true, clearColor: Color = null): Void {
+	override public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+		g.setScissor(x, y, width, height);
+	}
+	
+	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
 		g.begin();
 		if (clear) this.clear(clearColor);
 		setProjection();

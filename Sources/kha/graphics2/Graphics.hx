@@ -125,6 +125,10 @@ class Graphics {
 		return opacities[opacities.length - 1] = opacity;
 	}
 	
+	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+		
+	}
+	
 	#if sys_g4
 	private var prog: kha.graphics4.Program;
 	

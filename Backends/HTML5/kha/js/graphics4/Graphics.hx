@@ -23,7 +23,6 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
-import kha.Rectangle;
 import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
@@ -324,8 +323,8 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setScissor(rect: Rectangle): Void {
-		
+	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+		SystemImpl.gl.scissor(x, y, width, height);
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
