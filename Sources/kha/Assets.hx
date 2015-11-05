@@ -3,6 +3,8 @@ package kha;
 import haxe.io.Bytes;
 import haxe.Unserializer;
 
+using StringTools;
+
 @:build(kha.internal.AssetsBuilder.build("image"))
 class ImageList {
 	public function new() {
@@ -12,13 +14,6 @@ class ImageList {
 
 @:build(kha.internal.AssetsBuilder.build("sound"))
 class SoundList {
-	public function new() {
-		
-	}
-}
-
-@:build(kha.internal.AssetsBuilder.build("music"))
-class MusicList {
 	public function new() {
 		
 	}
@@ -41,9 +36,70 @@ class VideoList {
 class Assets {
 	public static var images: ImageList = new ImageList();
 	public static var sounds: SoundList = new SoundList();
-	public static var music: MusicList = new MusicList();
 	public static var blobs: BlobList = new BlobList();
 	public static var videos: VideoList = new VideoList();
+	
+	public static function loadEverything(callback: Void -> Void): Void {
+		var filesLeft = 0;
+		for (blob in Type.getInstanceFields(BlobList)) {
+			if (blob.endsWith("Load")) {
+				++filesLeft;
+			}
+		}
+		for (image in Type.getInstanceFields(ImageList)) {
+			if (image.endsWith("Load")) {
+				++filesLeft;
+			}
+		}
+		for (sound in Type.getInstanceFields(SoundList)) {
+			if (sound.endsWith("Load")) {
+				++filesLeft;
+			}
+		}
+		for (video in Type.getInstanceFields(VideoList)) {
+			if (video.endsWith("Load")) {
+				++filesLeft;
+			}
+		}
+		
+		if (filesLeft == 0) {
+			callback();
+			return;
+		}
+		
+		for (blob in Type.getInstanceFields(BlobList)) {
+			if (blob.endsWith("Load")) {
+				Reflect.field(blobs, blob)(function () {
+					--filesLeft;
+					if (filesLeft == 0) callback();
+				});
+			}
+		}
+		for (image in Type.getInstanceFields(ImageList)) {
+			if (image.endsWith("Load")) {
+				Reflect.field(images, image)(function () {
+					--filesLeft;
+					if (filesLeft == 0) callback();
+				});
+			}
+		}
+		for (sound in Type.getInstanceFields(SoundList)) {
+			if (sound.endsWith("Load")) {
+				Reflect.field(sounds, sound)(function () {
+					--filesLeft;
+					if (filesLeft == 0) callback();
+				});
+			}
+		}
+		for (video in Type.getInstanceFields(VideoList)) {
+			if (video.endsWith("Load")) {
+				Reflect.field(videos, video)(function () {
+					--filesLeft;
+					if (filesLeft == 0) callback();
+				});
+			}
+		}
+	}
 		
 	/**
 	 * Loads an image by name which was preprocessed by khamake.
@@ -88,25 +144,6 @@ class Assets {
 	public static function loadBlobFromPath(path: String, done: Blob -> Void): Void {
 		var description = { files: [ path ] };
 		LoaderImpl.loadBlobFromDescription(description, done);
-	}
-	
-	public static function loadMusic(name: String, done: Music -> Void): Void {
-		var description = Reflect.field(music, name + "Description");
-		return LoaderImpl.loadMusicFromDescription(description, function (m: Music) {
-			Reflect.setField(music, name, m);
-			done(m);
-		});
-	}
-	
-	public static function loadMusicFromPath(path: String, done: Music -> Void): Void {
-		var description = { files: [ path ] };
-		return LoaderImpl.loadMusicFromDescription(description, done);
-	}
-	
-	public static var musicFormats(get, null): Array<String>;
-	
-	private static function get_musicFormats(): Array<String> {
-		return LoaderImpl.getMusicFormats();
 	}
 	
 	public static function loadSound(name: String, done: Sound -> Void): Void {

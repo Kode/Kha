@@ -47,28 +47,6 @@ class LoaderImpl {
 		else new kha.js.Sound(desc.files, done);
 	}
 	
-	public static function getMusicFormats(): Array<String> {
-		if (SystemImpl._hasWebAudio) return ["ogg"];
-		else return ["mp4", "ogg"];
-	}
-	
-	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
-		new kha.js.Music(desc.files, function (music: kha.Music) {
-			if (SystemImpl._hasWebAudio) {
-				for (i in 0...desc.files.length) {
-					var file: String = desc.files[i];
-					if (file.endsWith(".ogg")) {
-						new kha.js.WebAudioMusic(cast music, file, done);
-						break;
-					}
-				}
-			}
-			else {
-				done(music);
-			}
-		});
-	}
-	
 	public static function getVideoFormats(): Array<String> {
 		return ["mp4", "webm"];
 	}

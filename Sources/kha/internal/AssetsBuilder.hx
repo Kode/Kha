@@ -36,15 +36,6 @@ class AssetsBuilder {
 							kind: FVar(macro: kha.Sound, macro null),
 							pos: Context.currentPos()
 						});
-					case "music":
-						fields.push({
-							name: file.name,
-							doc: null,
-							meta: [],
-							access: [APublic],
-							kind: FVar(macro: kha.Music, macro null),
-							pos: Context.currentPos()
-						});
 					case "blob":
 						fields.push({
 							name: file.name,
@@ -94,12 +85,6 @@ class AssetsBuilder {
 					case "sound":
 						loadExpressions = macro {
 							Assets.loadSound($v{name}, function (sound: Sound) {
-								done();
-							});
-						};
-					case "music":
-						loadExpressions = macro {
-							Assets.loadMusic($v{name}, function (music: Music) {
 								done();
 							});
 						};
