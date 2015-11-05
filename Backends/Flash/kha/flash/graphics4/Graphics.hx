@@ -36,7 +36,6 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
-import kha.Rectangle;
 
 class Graphics implements kha.graphics4.Graphics {
 	public static var context: Context3D;
@@ -153,8 +152,8 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, getCompareMode(compareMode), getStencilAction(bothPass), getStencilAction(depthFail), getStencilAction(stencilFail));
 	}
 
-	public function setScissor(rect: Rectangle): Void {
-		context.setScissorRectangle(new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height));
+	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+		context.setScissorRectangle(new flash.geom.Rectangle(x, y, width, height));
 	}
 	
 	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
