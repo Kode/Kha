@@ -324,7 +324,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
-		SystemImpl.gl.scissor(x, y, width, height);
+		Sys.gl.scissor(x, y, width, height);
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
