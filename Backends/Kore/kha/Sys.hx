@@ -14,6 +14,10 @@ class Sys {
 	public static var mouse(default, null): kha.Mouse;
 	
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
+
+	private static var fullscreenListeners: Array<Void->Void> = new Array();
+	private static var previousWidth : Int = 0;
+	private static var previousHeight : Int = 0;
 	
 	public static function init(): Void {
 		mouse = new kha.kore.Mouse();
@@ -56,5 +60,52 @@ class Sys {
 	@:functionCode('Kore::Application::the()->stop();')
 	public static function requestShutdown(): Void {
 		
+	}
+
+	public static function canSwitchFullscreen() : Bool{
+		return true;
+	}
+
+	@:functionCode('return Kore::Application::the()->fullscreen();')
+	public static function isFullscreen() : Bool{
+		return false;
+	}
+
+	public static function requestFullscreen(): Void {
+		if(!isFullscreen()){
+			previousWidth = untyped __cpp__("Kore::Application::the()->width();");
+			previousHeight = untyped __cpp__("Kore::Application::the()->height();");
+			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(),Kore::System::desktopHeight(), true);");
+			for (listener in fullscreenListeners) {
+				listener();
+			}
+		}
+		
+	}
+
+	public static function exitFullscreen(): Void {
+		if(isFullscreen()){
+			if (previousWidth == 0 || previousHeight == 0){
+				previousWidth = untyped __cpp__("Kore::Application::the()->width();");
+				previousHeight = untyped __cpp__("Kore::Application::the()->height();");
+			}
+			untyped __cpp__("Kore::System::changeResolution(previousWidth,previousHeight, false);");
+			for (listener in fullscreenListeners) {
+				listener();
+			}
+		}
+  	}
+
+	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		if(canSwitchFullscreen() && func != null){
+			fullscreenListeners.push(func);
+		}
+	}
+
+
+	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		if(canSwitchFullscreen() && func != null){
+			fullscreenListeners.remove(func);
+		}	
 	}
 }

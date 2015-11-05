@@ -62,4 +62,29 @@ class Sys {
 	public static function requestShutdown(): Void {
 		Node.process.exit(0);
 	}
+
+	public static function canSwitchFullscreen() : Bool{
+		return false;
+	}
+
+	public static function isFullscreen() : Bool{
+		return false;
+	}
+
+	public static function requestFullscreen(): Void {
+		
+	}
+
+	public static function exitFullscreen(): Void {
+		
+  	}
+
+	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
 }
