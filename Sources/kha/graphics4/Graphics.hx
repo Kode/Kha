@@ -9,7 +9,6 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.math.Vector4;
-import kha.Rectangle;
 import kha.Video;
 
 interface Graphics {
@@ -27,7 +26,7 @@ interface Graphics {
 	function setDepthMode(write: Bool, mode: CompareMode): Void;
 	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void; // One, Zero deactivates blending
 	function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void;
-	function setScissor(rect: Rectangle): Void;
+	function setScissor(x: Int, y: Int, width: Int, height: Int): Void;
 	
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;

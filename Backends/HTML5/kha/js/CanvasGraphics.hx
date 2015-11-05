@@ -166,6 +166,11 @@ class CanvasGraphics extends Graphics {
 		canvas.fill();
 	}
 	
+	override public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+		drawRect(x, y, width, height);
+		canvas.clip();
+	}
+	
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		canvas.drawImage(cast(video, Video).element, x, y, width, height);
 	}
