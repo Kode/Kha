@@ -32,6 +32,14 @@ class Audio1 {
 		Audio.audioCallback = _mix;
 	}
 	
+	private static inline function max(a: Float, b: Float): Float {
+		return a > b ? a : b;
+	}
+	
+	private static inline function min(a: Float, b: Float): Float {
+		return a < b ? a : b;
+	}
+	
 	private static function _mix(samples: Int, buffer: Buffer): Void {
 		if (sampleCache1.length < samples) {
 			sampleCache1 = new Vector<FastFloat>(samples);
@@ -70,7 +78,7 @@ class Audio1 {
 		}
 
 		for (i in 0...samples) {
-			buffer.data.set(buffer.writeLocation, Math.max(Math.min(sampleCache2[i], 1.0), -1.0));
+			buffer.data.set(buffer.writeLocation, max(min(sampleCache2[i], 1.0), -1.0));
 			buffer.writeLocation += 1;
 			if (buffer.writeLocation >= buffer.size) {
 				buffer.writeLocation = 0;
