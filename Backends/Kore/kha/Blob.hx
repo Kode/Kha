@@ -7,7 +7,7 @@ import haxe.io.Bytes;
 ')
 
 class Blob {
-	private var bytes: Bytes;
+	public var bytes: Bytes;
 	
 	public var position: Int;
 	

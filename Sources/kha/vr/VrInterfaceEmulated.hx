@@ -20,6 +20,7 @@ import kha.math.Quaternion;
 import kha.math.Vector4;
 import kha.math.Vector3;
 import kha.math.Vector2;
+import kha.Shaders;
 import kha.vr.Pose;
 import kha.vr.PoseState;
 import kha.vr.SensorState;
@@ -236,7 +237,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	
 	public override function GetTimeInSeconds(): Float {
 		// TODO: Is it in seconds?
-		return Sys.getTime();
+		return System.time;
 	}
 	
 	
@@ -304,8 +305,8 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 		program = new Program();
 		
-		program.setVertexShader(new VertexShader(Loader.the.getShader("painter-image.vert")));
-		program.setFragmentShader(new FragmentShader(Loader.the.getShader("painter-image.frag")));
+		program.setVertexShader(Shaders.painter_image_vert);
+		program.setFragmentShader(Shaders.painter_image_frag);
 		program.link(structure);
 		
 		
