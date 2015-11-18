@@ -765,7 +765,7 @@ class StbTruetype {
 
 				// Get indexed glyph.
 				comp_verts = stbtt_GetGlyphShape(info, gidx);
-				comp_num_verts = comp_verts.length;
+				comp_num_verts = comp_verts == null ? 0 : comp_verts.length;
 				if (comp_num_verts > 0) {
 					// Transform vertices.
 					for (i in 0...comp_num_verts) {
@@ -798,6 +798,7 @@ class StbTruetype {
 			// numberOfCounters == 0, do nothing
 		}
 
+		if (vertices == null) return null;
 		STBTT_assert(vertices.length >= num_vertices);
 		if (num_vertices < vertices.length) {
 			var tmp = new Vector<Stbtt_vertex>(num_vertices);
