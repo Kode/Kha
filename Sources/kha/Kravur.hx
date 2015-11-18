@@ -92,13 +92,13 @@ class Kravur implements Font {
 			if (height < width) height *= 2;
 			else width *= 2;
 			pixels = Bytes.alloc(width * height);
-			status = StbTruetype.stbtt_BakeFontBitmap(Bytes.ofData(blob.bytes), 0, size, pixels, width, height, 32, 256 - 32, baked);
+			status = StbTruetype.stbtt_BakeFontBitmap(blob.bytes, 0, size, pixels, width, height, 32, 256 - 32, baked);
 		}
 		
 		// TODO: Scale pixels down if they exceed the supported texture size
 		
 		var info = new Stbtt_fontinfo();
-		StbTruetype.stbtt_InitFont(info, Bytes.ofData(blob.bytes), 0);
+		StbTruetype.stbtt_InitFont(info, blob.bytes, 0);
 
 		var metrics = StbTruetype.stbtt_GetFontVMetrics(info);
 		var scale = StbTruetype.stbtt_ScaleForPixelHeight(info, size);
@@ -141,6 +141,9 @@ class Kravur implements Font {
 		this.height = height;
 		this.chars = chars;
 		baseline = ascent;
+		for (char in chars) {
+			char.yoff += baseline;
+		}
 		texture = Image.create(width, height, TextureFormat.L8);
 		var bytes = texture.lock();
 		var pos: Int = 0;
