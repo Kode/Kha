@@ -27,6 +27,7 @@ interface Graphics {
 	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void; // One, Zero deactivates blending
 	function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void;
 	function setScissor(x: Int, y: Int, width: Int, height: Int): Void;
+	function disableScissor(): Void;
 	
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;

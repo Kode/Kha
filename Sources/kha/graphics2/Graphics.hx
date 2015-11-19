@@ -129,6 +129,10 @@ class Graphics {
 		
 	}
 	
+	public function disableScissor(): Void {
+		
+	}
+	
 	#if sys_g4
 	private var prog: kha.graphics4.Program;
 	

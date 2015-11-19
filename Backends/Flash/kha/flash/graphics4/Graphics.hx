@@ -155,6 +155,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
 		context.setScissorRectangle(new flash.geom.Rectangle(x, y, width, height));
 	}
+
+	public function disableScissor(): Void {
+		
+	}
 	
 	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
 		switch (addressing) {

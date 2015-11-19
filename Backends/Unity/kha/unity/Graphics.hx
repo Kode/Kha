@@ -95,6 +95,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setScissor(rect: Rectangle): Void {
 		
 	}
+
+	public function disableScissor(): Void {
+		
+	}
 	
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
 		this.vertexBuffer = vertexBuffer;
