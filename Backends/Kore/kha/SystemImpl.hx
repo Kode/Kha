@@ -35,15 +35,6 @@ import kha.input.Surface;
 class SystemImpl {
 	public static var needs3d: Bool = false;
 	
-	//public static var graphics(default, null): kha.graphics.Graphics;
-
-	//public static var mouse(default, null): kha.Mouse;
-	
-	public static function init2(): Void {
-		//mouse = new kha.kore.Mouse();
-		//graphics = new Graphics();
-	}
-	
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -104,7 +95,6 @@ class SystemImpl {
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
 		surface = new Surface();
-		init2();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
 		Scheduler.init();
@@ -113,7 +103,6 @@ class SystemImpl {
 	}
 	
 	private static function loadFinished() {
-		trace("Project files loaded.");
 		Scheduler.start();
 		
 		/*
@@ -135,13 +124,12 @@ class SystemImpl {
 		#end
 		*/
 
+		Shaders.init();
 		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		framebuffer = new Framebuffer(null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		#end
-		
-		trace("Initializing application.");
 	}
 
 	public static function lockMouse(): Void {
@@ -197,7 +185,7 @@ class SystemImpl {
 		*/
 		
 		Scheduler.executeFrame();
-		//**Game.the.render(framebuffer);
+		System.render(framebuffer);
 	}
 	
 	public static function pushUp(): Void {

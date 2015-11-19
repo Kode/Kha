@@ -10,6 +10,7 @@ class Sound implements Resource {
 	 * The sound data.
 	 */
 	public var data: Vector<Float>;
+	public var compressed: Bool;
 	
 	public function new() { }
 

@@ -14,10 +14,8 @@
 #include "jsmn.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <kha/Starter.h>
-#include <kha/Loader.h>
+#include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
-#include <kha/Sys.h>
 #include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
 
@@ -30,7 +28,7 @@ extern "C" void hxcpp_set_top_of_stack();
 void __hxcpp_register_current_thread();
 
 namespace {
-	using kha::Starter_obj;
+	using kha::SystemImpl_obj;
 	using kha::input::Sensor_obj;
 
 	Kore::Mutex mutex;
@@ -39,51 +37,51 @@ namespace {
 	void keyDown(Kore::KeyCode code, wchar_t character) {
 		switch (code) {
 		case Kore::Key_Up:
-			Starter_obj::pushUp();
+			SystemImpl_obj::pushUp();
 			break;
 		case Kore::Key_Down:
-			Starter_obj::pushDown();
+			SystemImpl_obj::pushDown();
 			break;
 		case Kore::Key_Left:
-			Starter_obj::pushLeft();
+			SystemImpl_obj::pushLeft();
 			break;
 		case Kore::Key_Right:
-			Starter_obj::pushRight();
+			SystemImpl_obj::pushRight();
 			break;
 		case Kore::Key_Space:
-			Starter_obj::pushChar(' ');
+			SystemImpl_obj::pushChar(' ');
 			break;
 		case Kore::Key_Shift:
-			Starter_obj::pushShift();
+			SystemImpl_obj::pushShift();
 			shift = true;
 			break;
 		case Kore::Key_Backspace:
-			Starter_obj::pushBackspace();
+			SystemImpl_obj::pushBackspace();
 			break;
 		case Kore::Key_Tab:
-			Starter_obj::pushTab();
+			SystemImpl_obj::pushTab();
 			break;
 		case Kore::Key_Enter:
 		case Kore::Key_Return:
-			Starter_obj::pushEnter();
+			SystemImpl_obj::pushEnter();
 			break;
 		case Kore::Key_Control:
-			Starter_obj::pushControl();
+			SystemImpl_obj::pushControl();
 			break;
 		case Kore::Key_Alt:
-			Starter_obj::pushAlt();
+			SystemImpl_obj::pushAlt();
 			break;
 		case Kore::Key_Escape:
-			Starter_obj::pushEscape();
+			SystemImpl_obj::pushEscape();
 			break;
 		case Kore::Key_Delete:
-			Starter_obj::pushDelete();
+			SystemImpl_obj::pushDelete();
 			break;
 		case Kore::Key_Back:
-			Starter_obj::pushBack();
+			SystemImpl_obj::pushBack();
 			break;
 		default:
-			Starter_obj::pushChar(character);
+			SystemImpl_obj::pushChar(character);
 			break;
 		}
 	}
@@ -91,69 +89,69 @@ namespace {
 	void keyUp(Kore::KeyCode code, wchar_t character) {
 		switch (code) {
 		case Kore::Key_Up:
-			Starter_obj::releaseUp();
+			SystemImpl_obj::releaseUp();
 			break;
 		case Kore::Key_Down:
-			Starter_obj::releaseDown();
+			SystemImpl_obj::releaseDown();
 			break;
 		case Kore::Key_Left:
-			Starter_obj::releaseLeft();
+			SystemImpl_obj::releaseLeft();
 			break;
 		case Kore::Key_Right:
-			Starter_obj::releaseRight();
+			SystemImpl_obj::releaseRight();
 			break;
 		case Kore::Key_Space:
-			Starter_obj::releaseChar(' ');
+			SystemImpl_obj::releaseChar(' ');
 			break;
 		case Kore::Key_Shift:
-			Starter_obj::releaseShift();
+			SystemImpl_obj::releaseShift();
 			shift = false;
 			break;
 		case Kore::Key_Backspace:
-			Starter_obj::releaseBackspace();
+			SystemImpl_obj::releaseBackspace();
 			break;
 		case Kore::Key_Tab:
-			Starter_obj::releaseTab();
+			SystemImpl_obj::releaseTab();
 			break;
 		case Kore::Key_Enter:
 		case Kore::Key_Return:
-			Starter_obj::releaseEnter();
+			SystemImpl_obj::releaseEnter();
 			break;
 		case Kore::Key_Control:
-			Starter_obj::releaseControl();
+			SystemImpl_obj::releaseControl();
 			break;
 		case Kore::Key_Alt:
-			Starter_obj::releaseAlt();
+			SystemImpl_obj::releaseAlt();
 			break;
 		case Kore::Key_Escape:
-			Starter_obj::releaseEscape();
+			SystemImpl_obj::releaseEscape();
 			break;
 		case Kore::Key_Delete:
-			Starter_obj::releaseDelete();
+			SystemImpl_obj::releaseDelete();
 			break;
 		case Kore::Key_Back:
-			Starter_obj::releaseBack();
+			SystemImpl_obj::releaseBack();
 			break;
 		default:
-			Starter_obj::releaseChar(character);
+			SystemImpl_obj::releaseChar(character);
 			break;
 		}
 	}
 
 	void mouseDown(int button, int x, int y) {
-		Starter_obj::mouseDown(button, x, y);
+		SystemImpl_obj::mouseDown(button, x, y);
 	}
 
 	void mouseUp(int button, int x, int y) {
-		Starter_obj::mouseUp(button, x, y);
+		SystemImpl_obj::mouseUp(button, x, y);
 	}
 
 	void mouseMove(int x, int y, int movementX, int movementY) {
-		Starter_obj::mouseMove(x, y, movementX, movementY);
+		SystemImpl_obj::mouseMove(x, y, movementX, movementY);
 	}
 
 	void mouseWheel(int delta) {
-		Starter_obj::mouseWheel(delta);
+		SystemImpl_obj::mouseWheel(delta);
 	}
 
 	void accelerometerChanged(float x, float y, float z) {
@@ -165,23 +163,23 @@ namespace {
 	}
 
 	void gamepadAxis(int axis, float value) {
-		Starter_obj::gamepadAxis(axis, value);
+		SystemImpl_obj::gamepadAxis(axis, value);
 	}
 
 	void gamepadButton(int button, float value) {
-		Starter_obj::gamepadButton(button, value);
+		SystemImpl_obj::gamepadButton(button, value);
 	}
 
 	void touchStart(int index, int x, int y) {
-		Starter_obj::touchStart(index, x, y);
+		SystemImpl_obj::touchStart(index, x, y);
 	}
 
 	void touchEnd(int index, int x, int y) {
-		Starter_obj::touchEnd(index, x, y);
+		SystemImpl_obj::touchEnd(index, x, y);
 	}
 
 	void touchMove(int index, int x, int y) {
-		Starter_obj::touchMove(index, x, y);
+		SystemImpl_obj::touchMove(index, x, y);
 	}
 	
 	bool visible = true;
@@ -200,7 +198,7 @@ namespace {
 			//	Kore::VrInterface::DistortionBefore();
 			#endif
 
-			Starter_obj::frame();
+			SystemImpl_obj::frame();
 
 			#ifndef VR_RIFT
 			Kore::Graphics::end();
@@ -219,30 +217,30 @@ namespace {
 	
 	void foreground() {
 		visible = true;
-		Starter_obj::foreground();
+		SystemImpl_obj::foreground();
 	}
 	
 	void resume() {
-		Starter_obj::resume();
+		SystemImpl_obj::resume();
 		paused = false;
 	}
 
 	void pause() {
-		Starter_obj::pause();
+		SystemImpl_obj::pause();
 		paused = true;
 	}
 	
 	void background() {
 		visible = false;
-		Starter_obj::background();
+		SystemImpl_obj::background();
 	}
 	
 	void shutdown() {
-		Starter_obj::shutdown();
+		SystemImpl_obj::shutdown();
 	}
 	
 	void orientation(Kore::Orientation orientation) {
-		switch (orientation) {
+		/*switch (orientation) {
 			case Kore::OrientationLandscapeLeft:
 				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation270;
 				break;
@@ -257,7 +255,7 @@ namespace {
 				break;
 			case Kore::OrientationUnknown:
 				break;
-		}
+		}*/
 	}
 	
 	bool mixThreadregistered = false;
@@ -293,7 +291,7 @@ int kore(int argc, char** argv) {
 	char name[256];
 	name[0] = 0;
 	
-	{
+	/*{
 		Kore::log(Kore::Info, "Reading project.kha");
 		Kore::FileReader file("project.kha");
 		int filesize = file.size();
@@ -368,7 +366,7 @@ int kore(int argc, char** argv) {
 		
 		delete[] tokens;
 		delete string;
-	}
+	}*/
 
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());
