@@ -279,99 +279,20 @@ namespace {
 			if (Audio::buffer.writeLocation >= Audio::buffer.dataSize) Audio::buffer.writeLocation = 0;
 		}
 	}
+
+	Kore::Application* app;
 }
 
-int kore(int argc, char** argv) {
+void init_kore(const char* name, int width, int height) {
 	Kore::log(Kore::Info, "Starting Kore");
 
-	int width = 256;
-	int height = 256;
 	bool fullscreen = false;
 	int antialiasing = 1;
-	char name[256];
-	name[0] = 0;
-	
-	/*{
-		Kore::log(Kore::Info, "Reading project.kha");
-		Kore::FileReader file("project.kha");
-		int filesize = file.size();
-		char* string = new char[filesize + 1];
-		char* data = (char*)file.readAll();
-		for (int i = 0; i < filesize; ++i) string[i] = data[i];
-		string[filesize] = 0;
-
-		jsmn_parser parser;
-		jsmn_init(&parser);
-		int size = jsmn_parse(&parser, string, filesize, nullptr, 0);
-		jsmntok_t* tokens = new jsmntok_t[size];
-		jsmn_init(&parser);
-		size = jsmn_parse(&parser, string, filesize, tokens, size);
-
-		for (int i = 0; i < size; ++i) {
-			if (tokens[i].type == JSMN_STRING && strncmp("game", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-				++i;
-				int gamesize = tokens[i].size * 2;
-				++i;
-				int gamestart = i;
-				char number[25];
-				for (; i < gamestart + gamesize; ++i) {
-					if (tokens[i].type == JSMN_STRING && strncmp("name", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-						++i;
-						int ni = 0;
-						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
-							name[ni] = string[i2];
-							++ni;
-						}
-						name[ni] = 0;
-					}
-					else if (tokens[i].type == JSMN_STRING && strncmp("width", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-						++i;
-						int ni = 0;
-						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
-							number[ni] = string[i2];
-							++ni;
-						}
-						number[ni] = 0;
-						width = atoi(number);
-					}
-					else if (tokens[i].type == JSMN_STRING && strncmp("height", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-						++i;
-						int ni = 0;
-						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
-							number[ni] = string[i2];
-							++ni;
-						}
-						number[ni] = 0;
-						height = atoi(number);
-					}
-					else if (tokens[i].type == JSMN_STRING && strncmp("antiAliasingSamples", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-						++i;
-						int ni = 0;
-						for (int i2 = tokens[i].start; i2 < tokens[i].end; ++i2) {
-							number[ni] = string[i2];
-							++ni;
-						}
-						number[ni] = 0;
-						antialiasing = atoi(number);
-					}
-					else if (tokens[i].type == JSMN_STRING && strncmp("fullscreen", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0) {
-						++i;
-						fullscreen = strncmp("true", &string[tokens[i].start], tokens[i].end - tokens[i].start) == 0;
-					}
-				}
-
-				break;
-			}
-		}
-		
-		delete[] tokens;
-		delete string;
-	}*/
 
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());
 
-	Kore::Application* app = new Kore::Application(argc, argv, width, height, antialiasing, fullscreen, name);
+	app = new Kore::Application(0, 0, width, height, antialiasing, fullscreen, name);
 	//Kore::Mixer::init();
 	mutex.Create();
 #ifndef VR_RIFT
@@ -384,23 +305,6 @@ int kore(int argc, char** argv) {
 	app->backgroundCallback = background;
 	app->shutdownCallback = shutdown;
 	app->setCallback(update);
-	
-	Kore::log(Kore::Info, "Initializing Haxe libraries");
-	hxcpp_set_top_of_stack();
-
-// TODO: remove Graphics::begin/end/swapBuffers when loading is async
-#ifndef VR_RIFT
-	Kore::Graphics::begin();
-#endif
-	const char* err = hxRunLibrary();
-	if (err) {
-		fprintf(stderr, "Error %s\n", err);
-		return 1;
-	}
-#ifndef VR_RIFT
-	Kore::Graphics::end();
-	Kore::Graphics::swapBuffers();
-#endif
 
 	Kore::Audio::audioCallback = mix;
 	Kore::Audio::init();
@@ -422,10 +326,21 @@ int kore(int argc, char** argv) {
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
 #endif
+}
 
+void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
 	app->start();
 	Kore::log(Kore::Info, "Application stopped");
+}
 
+int kore(int argc, char** argv) {
+	Kore::log(Kore::Info, "Initializing Haxe libraries");
+	hxcpp_set_top_of_stack();
+	const char* err = hxRunLibrary();
+	if (err) {
+		fprintf(stderr, "Error %s\n", err);
+		return 1;
+	}
 	return 0;
 }

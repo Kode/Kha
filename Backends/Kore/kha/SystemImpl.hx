@@ -30,6 +30,9 @@ import kha.input.Surface;
 #include <Kore/Application.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
+
+void init_kore(const char* name, int width, int height);
+void run_kore();
 ')
 
 class SystemImpl {
@@ -88,6 +91,7 @@ class SystemImpl {
 	
 	//public function new(?backbufferFormat: TextureFormat) {
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
+		initKore(title, width, height);
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -100,6 +104,7 @@ class SystemImpl {
 		Scheduler.init();
 		loadFinished();
 		callback();
+		runKore();
 	}
 	
 	private static function loadFinished() {
@@ -364,6 +369,16 @@ class SystemImpl {
 	}
 
 	public static function shutdown(): Void {
+		
+	}
+	
+	@:functionCode('init_kore(name, width, height);')
+	private static function initKore(name: String, width: Int, height: Int): Void {
+		
+	}
+	
+	@:functionCode('run_kore();')
+	private static function runKore(): Void {
 		
 	}
 }
