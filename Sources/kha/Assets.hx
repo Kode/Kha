@@ -26,6 +26,13 @@ class BlobList {
 	}
 }
 
+@:build(kha.internal.AssetsBuilder.build("font"))
+class FontList {
+	public function new() {
+		
+	}
+}
+
 @:build(kha.internal.AssetsBuilder.build("video"))
 class VideoList {
 	public function new() {
@@ -37,6 +44,7 @@ class Assets {
 	public static var images: ImageList = new ImageList();
 	public static var sounds: SoundList = new SoundList();
 	public static var blobs: BlobList = new BlobList();
+	public static var fonts: FontList = new FontList();
 	public static var videos: VideoList = new VideoList();
 	
 	public static function loadEverything(callback: Void -> Void): Void {
@@ -53,6 +61,11 @@ class Assets {
 		}
 		for (sound in Type.getInstanceFields(SoundList)) {
 			if (sound.endsWith("Load")) {
+				++filesLeft;
+			}
+		}
+		for (font in Type.getInstanceFields(FontList)) {
+			if (font.endsWith("Load")) {
 				++filesLeft;
 			}
 		}
@@ -86,6 +99,14 @@ class Assets {
 		for (sound in Type.getInstanceFields(SoundList)) {
 			if (sound.endsWith("Load")) {
 				Reflect.field(sounds, sound)(function () {
+					--filesLeft;
+					if (filesLeft == 0) callback();
+				});
+			}
+		}
+		for (font in Type.getInstanceFields(FontList)) {
+			if (font.endsWith("Load")) {
+				Reflect.field(fonts, font)(function () {
 					--filesLeft;
 					if (filesLeft == 0) callback();
 				});
@@ -163,6 +184,17 @@ class Assets {
 	
 	private static function get_soundFormats(): Array<String> {
 		return LoaderImpl.getSoundFormats();
+	}
+	
+	public static function loadFontFromPath(path: String, done: Font -> Void): Void {
+		var description = { files: [ path ] };
+		return LoaderImpl.loadFontFromDescription(description, done);
+	}
+	
+	public static var fontFormats(get, null): Array<String>;
+	
+	private static function get_fontFormats(): Array<String> {
+		return ["ttf"];
 	}
 	
 	public static function loadVideo(name: String, done: Video -> Void): Void {

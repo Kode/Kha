@@ -89,11 +89,12 @@ class LoaderImpl {
 		request.send(null);
 	}
 	
-	//public static function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-	//	if (Sys.gl != null) return Kravur.get(name, style, size);
-	//	else return new Font(name, style, size);
-	//}
-
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
+		loadBlobFromDescription(desc, function (blob: Blob) {
+			done(Kravur.getFromBlob(desc.name, new FontStyle(false, false, false), 12, blob));
+		});
+	}
+	
 	/*override public function loadURL(url: String): Void {
 		// inDAgo hack
 		if (url.substr(0, 1) == '#')
