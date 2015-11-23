@@ -10,30 +10,19 @@ class BytesBlob implements Resource {
 	public function new(bytes: Bytes) {
 		this.bytes = bytes;
 		buffer = new Array<Int>();
-		position = 0;
 	}
 	
 	public function length() {
 		return bytes.length;
 	}
 	
-	public function reset() {
-		position = 0;
-	}
-	
-	public function seek(pos: Int): Void {
-		position = pos;
-	}
-	
-	public var position(default, null): Int;
-	
-	public function readU8(): Int {
+	public function readU8(position: Int): Int {
 		var byte = bytes.get(position);
 		++position;
 		return byte;
 	}
 	
-	public function readS8(): Int {
+	public function readS8(position: Int): Int {
 		var byte = bytes.get(position);
 		++position;
 		var sign = (byte & 0x80) == 0 ? 1 : -1;
@@ -41,21 +30,21 @@ class BytesBlob implements Resource {
 		return sign * byte;
 	}
 	
-	public function readU16BE(): Int {
+	public function readU16BE(position: Int): Int {
 		var first = bytes.get(position + 0);
 		var second  = bytes.get(position + 1);
 		position += 2;
 		return first * 256 + second;
 	}
 	
-	public function readU16LE(): Int {
+	public function readU16LE(position: Int): Int {
 		var first = bytes.get(position + 0);
 		var second  = bytes.get(position + 1);
 		position += 2;
 		return second * 256 + first;
 	}
 	
-	public function readS16BE(): Int {
+	public function readS16BE(position: Int): Int {
 		var first = bytes.get(position + 0);
 		var second  = bytes.get(position + 1);
 		position += 2;
@@ -65,7 +54,7 @@ class BytesBlob implements Resource {
 		else return first * 256 + second;
 	}
 	
-	public function readS16LE(): Int {
+	public function readS16LE(position: Int): Int {
 		var first = bytes.get(position + 0);
 		var second  = bytes.get(position + 1);
 		var sign = (second & 0x80) == 0 ? 1 : -1;
@@ -75,7 +64,7 @@ class BytesBlob implements Resource {
 		else return second * 256 + first;
 	}
 	
-	public function readS32LE(): Int {
+	public function readS32LE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
 		var third  = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
@@ -87,7 +76,7 @@ class BytesBlob implements Resource {
 		else return fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
 	}
 
-	public function readS32BE(): Int {
+	public function readS32BE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
 		var third  = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
@@ -99,15 +88,15 @@ class BytesBlob implements Resource {
 		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
 	}
 	
-	public function readF32LE(): Float {
-		return readF32(readS32LE());		
+	public function readF32LE(position: Int): Float {
+		return readF32(readS32LE(position));		
 	}
 	
-	public function readF32BE(): Float {
-		return readF32(readS32BE());		
+	public function readF32BE(position: Int): Float {
+		return readF32(readS32BE(position));		
 	}
 	
-	private function readF32(i: Int): Float {
+	private static function readF32(i: Int): Float {
 		var sign: Float = ((i & 0x80000000) == 0) ? 1 : -1;
 		var exp: Int = ((i >> 23) & 0xFF);
 		var man: Int = (i & 0x7FFFFF);
@@ -128,7 +117,7 @@ class BytesBlob implements Resource {
 		return bytes.toString();
 	}
 	
-	private function bit(value: Int, position: Int): Bool {
+	private static function bit(value: Int, position: Int): Bool {
 		var b = (value >>> position) & 1 == 1;
 		if (b) {
 			var a = 3;
@@ -142,39 +131,41 @@ class BytesBlob implements Resource {
 		}
 	}
 	
-	private function readUtf8Char(): Int {
-		if (position >= length()) return -1;
-		var c: Int = readU8();
+	private function readUtf8Char(position: { value: Int }): Int {
+		if (position.value >= length()) return -1;
+		var c: Int = readU8(position.value);
+		++position.value;
 		var value: Int = 0;
 		if (!bit(c, 7)) {
 			value = c;
 		}
 		else if (bit(c, 7) && bit(c, 6) && !bit(c, 5)) { //110xxxxx 10xxxxxx
 			var a = c & 0x1f;
-			var c2 = readU8();
+			var c2 = readU8(position.value);
+			++position.value;
 			var b = c2 & 0x3f;
 			value = (a << 6) | b;
 		}
 		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && !bit(c, 4)) { //1110xxxx 10xxxxxx 10xxxxxx
 			//currently ignored
-			for (i in 0...2) readU8();
+			position.value += 2;
 		}
 		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && bit(c, 4) && !bit(c, 3)) { //11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 			//currently ignored
-			for (i in 0...3) readU8();
+			position.value += 3;
 		}
 		return value;
 	}
 	
-	private function readUtf8Line(): String {
+	private function readUtf8Line(position: { value: Int }): String {
 		var bufferindex: Int = 0;
-		var c = readUtf8Char();
+		var c = readUtf8Char(position);
 		if (c < 0) return "";
 		while (c != '\n'.code && bufferindex < 2000) {
 			buffer[bufferindex] = c;
 			++bufferindex;
-			c = readUtf8Char();
-			if (position >= length()) {
+			c = readUtf8Char(position);
+			if (position.value >= length()) {
 				buffer[bufferindex] = c;
 				++bufferindex;
 				break;
@@ -201,7 +192,8 @@ class BytesBlob implements Resource {
 
 	public function readUtf8String(): String {
 		var text = "";
-		while (position < length()) text += readUtf8Line() + "\n";
+		var position: { value: Int } = { value: 0 };
+		while (position.value < length()) text += readUtf8Line(position) + "\n";
 		return text;
 	}
 	
