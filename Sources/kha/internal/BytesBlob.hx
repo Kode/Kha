@@ -12,8 +12,22 @@ class BytesBlob implements Resource {
 		buffer = new Array<Int>();
 	}
 	
-	public function length() {
+	public static function alloc(size: Int): Blob {
+		return new Blob(Bytes.alloc(size));
+	}
+	
+	public function sub(start: Int, length: Int): Blob {
+		return new Blob(bytes.sub(start, length));
+	}
+	
+	public var length(get, null): Int;
+	
+	public function get_length(): Int {
 		return bytes.length;
+	}
+	
+	public function writeU8(position: Int, value: Int): Void {
+		bytes.set(position, value);
 	}
 	
 	public function readU8(position: Int): Int {
@@ -132,7 +146,7 @@ class BytesBlob implements Resource {
 	}
 	
 	private function readUtf8Char(position: { value: Int }): Int {
-		if (position.value >= length()) return -1;
+		if (position.value >= length) return -1;
 		var c: Int = readU8(position.value);
 		++position.value;
 		var value: Int = 0;
@@ -165,7 +179,7 @@ class BytesBlob implements Resource {
 			buffer[bufferindex] = c;
 			++bufferindex;
 			c = readUtf8Char(position);
-			if (position.value >= length()) {
+			if (position.value >= length) {
 				buffer[bufferindex] = c;
 				++bufferindex;
 				break;
@@ -193,7 +207,7 @@ class BytesBlob implements Resource {
 	public function readUtf8String(): String {
 		var text = "";
 		var position: { value: Int } = { value: 0 };
-		while (position.value < length()) text += readUtf8Line(position) + "\n";
+		while (position.value < length) text += readUtf8Line(position) + "\n";
 		return text;
 	}
 	

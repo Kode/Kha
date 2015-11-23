@@ -1,7 +1,7 @@
 package kha.graphics2.truetype;
 
 import haxe.ds.Vector;
-import haxe.io.Bytes;
+import kha.Blob;
 
 typedef Stbtt_uint8  = Int;
 typedef Stbtt_int8   = Int;
@@ -105,13 +105,13 @@ class Stbtt_pack_context {
 	public var padding: Int;
 	public var h_oversample: Int;
 	public var v_oversample: Int;
-	public var pixels: Bytes;
+	public var pixels: Blob;
 	//**void  *nodes;
 }
 
 class Stbtt_fontinfo {
 	public function new() { }
-	public var data: Bytes;                        // pointer to .ttf file
+	public var data: Blob;                        // pointer to .ttf file
 	public var fontstart: Int;                     // offset of start of font
 
 	public var numGlyphs: Int;                     // number of glyphs, needed for range checking
@@ -143,7 +143,7 @@ class Stbtt__bitmap {
 	public var w: Int;
 	public var h: Int;
 	public var stride: Int;
-	public var pixels: Bytes;
+	public var pixels: Blob;
 	public var pixels_offset: Int;
 }
 
@@ -251,48 +251,48 @@ class StbTruetype {
 	//**typedef int stbtt__test_oversample_pow2[(STBTT_MAX_OVERSAMPLE & (STBTT_MAX_OVERSAMPLE-1)) == 0 ? 1 : -1];
 	public static inline var STBTT_RASTERIZER_VERSION: Int = 2;
 	
-	private static inline function ttBYTE(p: Bytes, pos: Int = 0): Stbtt_uint8 {
-		return p.get(pos);
+	private static inline function ttBYTE(p: Blob, pos: Int = 0): Stbtt_uint8 {
+		return p.readU8(pos);
 	}
 	
-	private static inline function ttCHAR(p: Bytes, pos: Int = 0): Stbtt_int8 {
-		var n = p.get(pos);
+	private static inline function ttCHAR(p: Blob, pos: Int = 0): Stbtt_int8 {
+		var n = p.readU8(pos);
 		if (n >= 128)
 			return n - 256;
 		return n;
 	}
 	
-	private static inline function ttUSHORT(p: Bytes, pos: Int = 0): Stbtt_uint16 {
-		var ch1 = p.get(pos + 0);
-		var ch2 = p.get(pos + 1);
+	private static inline function ttUSHORT(p: Blob, pos: Int = 0): Stbtt_uint16 {
+		var ch1 = p.readU8(pos + 0);
+		var ch2 = p.readU8(pos + 1);
 		return ch2 | (ch1 << 8);
 	}
 	
-	private static inline function ttSHORT(p: Bytes, pos: Int = 0): Stbtt_int16 {
-		var ch1 = p.get(pos + 0);
-		var ch2 = p.get(pos + 1);
+	private static inline function ttSHORT(p: Blob, pos: Int = 0): Stbtt_int16 {
+		var ch1 = p.readU8(pos + 0);
+		var ch2 = p.readU8(pos + 1);
 		var n = ch2 | (ch1 << 8);
 		if (n & 0x8000 != 0)
 			return n - 0x10000;
 		return n;
 	}
 	
-	private static inline function ttULONG(p: Bytes, pos: Int = 0): Stbtt_uint32 { return ttLONG(p, pos); }
+	private static inline function ttULONG(p: Blob, pos: Int = 0): Stbtt_uint32 { return ttLONG(p, pos); }
 	
-	private static inline function ttLONG(p: Bytes, pos: Int = 0): Stbtt_int32 {
-		var ch1 = p.get(pos + 0);
-		var ch2 = p.get(pos + 1);
-		var ch3 = p.get(pos + 2);
-		var ch4 = p.get(pos + 3);
+	private static inline function ttLONG(p: Blob, pos: Int = 0): Stbtt_int32 {
+		var ch1 = p.readU8(pos + 0);
+		var ch2 = p.readU8(pos + 1);
+		var ch3 = p.readU8(pos + 2);
+		var ch4 = p.readU8(pos + 3);
 		return ch4 | (ch3 << 8) | (ch2 << 16) | (ch1 << 24);
 	}
 	
-	private static inline function ttFixed(p: Bytes, pos: Int = 0): Stbtt_int32 { return ttLONG(p, pos); }
+	private static inline function ttFixed(p: Blob, pos: Int = 0): Stbtt_int32 { return ttLONG(p, pos); }
 	
-	private static inline function stbtt_tag4(p: Bytes, pos: Int, c0: Int, c1: Int, c2: Int, c3: Int): Bool { return p.get(pos + 0) == c0 && p.get(pos + 1) == c1 && p.get(pos + 2) == c2 && p.get(pos + 3) == c3; }
-	private static inline function stbtt_tag(p: Bytes, pos: Int, str: String): Bool { return stbtt_tag4(p, pos, str.charCodeAt(0), str.charCodeAt(1), str.charCodeAt(2), str.charCodeAt(3)); }
+	private static inline function stbtt_tag4(p: Blob, pos: Int, c0: Int, c1: Int, c2: Int, c3: Int): Bool { return p.readU8(pos + 0) == c0 && p.readU8(pos + 1) == c1 && p.readU8(pos + 2) == c2 && p.readU8(pos + 3) == c3; }
+	private static inline function stbtt_tag(p: Blob, pos: Int, str: String): Bool { return stbtt_tag4(p, pos, str.charCodeAt(0), str.charCodeAt(1), str.charCodeAt(2), str.charCodeAt(3)); }
 
-   private static function stbtt__isfont(font: Bytes): Bool {
+   private static function stbtt__isfont(font: Blob): Bool {
 		// check the version number
 		if (stbtt_tag4(font, 0, '1'.charCodeAt(0),0,0,0)) return true; // TrueType 1
 		if (stbtt_tag(font, 0, "typ1"))   return true; // TrueType with type 1 font -- we don't support this!
@@ -302,7 +302,7 @@ class StbTruetype {
 	}
 
 	// @OPTIMIZE: binary search
-	private static function stbtt__find_table(data: Bytes, fontstart: Stbtt_uint32, tag: String): Stbtt_uint32 {
+	private static function stbtt__find_table(data: Blob, fontstart: Stbtt_uint32, tag: String): Stbtt_uint32 {
 		var num_tables: Stbtt_int32 = ttUSHORT(data, fontstart+4);
 		var tabledir: Stbtt_uint32 = fontstart + 12;
 		for (i in 0...num_tables) {
@@ -313,7 +313,7 @@ class StbTruetype {
 		return 0;
 	}
 
-	public static function stbtt_GetFontOffsetForIndex(font_collection: Bytes, index: Int): Int {
+	public static function stbtt_GetFontOffsetForIndex(font_collection: Blob, index: Int): Int {
 		// if it's just a font, there's only one valid index
 		if (stbtt__isfont(font_collection))
 			return index == 0 ? 0 : -1;
@@ -331,7 +331,7 @@ class StbTruetype {
 		return -1;
 	}
 
-	public static function stbtt_InitFont(info: Stbtt_fontinfo, data: Bytes, fontstart: Int): Bool {
+	public static function stbtt_InitFont(info: Stbtt_fontinfo, data: Blob, fontstart: Int): Bool {
 		var cmap, t: Stbtt_uint32;
 		var numTables: Stbtt_int32 ;
 
@@ -384,7 +384,7 @@ class StbTruetype {
 	}
 
 	public static function stbtt_FindGlyphIndex(info: Stbtt_fontinfo, unicode_codepoint: Int): Int {
-		var data: Bytes = info.data;
+		var data: Blob = info.data;
 		var index_map: Stbtt_uint32 = info.index_map;
 
 		var format: Stbtt_uint16 = ttUSHORT(data, index_map + 0);
@@ -550,8 +550,8 @@ class StbTruetype {
 	
 	public static function stbtt_GetGlyphShape(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
 		var numberOfContours: Stbtt_int16;
-		var endPtsOfContours: Bytes;
-		var data: Bytes = info.data;
+		var endPtsOfContours: Blob;
+		var data: Blob = info.data;
 		var vertices: Vector<Stbtt_vertex> = null;
 		var num_vertices: Int = 0;
 		var g: Int = stbtt__GetGlyfOffset(info, glyph_index);
@@ -566,7 +566,7 @@ class StbTruetype {
 			var was_off: Bool = false;
 			var start_off: Bool = false;
 			var x,y,cx,cy,sx,sy, scx,scy: Stbtt_int32;
-			var points: Bytes;
+			var points: Blob;
 			var pointsIndex: Int = 0;
 			endPtsOfContours = data.sub(g + 10, data.length - (g + 10));
 			ins = ttUSHORT(data, g + 10 + numberOfContours * 2);
@@ -597,9 +597,9 @@ class StbTruetype {
 
 			for (i in 0...n) {
 				if (flagcount == 0) {
-					flags = points.get(pointsIndex++);
+					flags = points.readU8(pointsIndex++);
 					if (flags & 8 != 0)
-						flagcount = points.get(pointsIndex++);
+						flagcount = points.readU8(pointsIndex++);
 				} else
 					--flagcount;
 				vertices[off+i].type = flags;
@@ -610,13 +610,13 @@ class StbTruetype {
 			for (i in 0...n) {
 				flags = vertices[off+i].type;
 				if (flags & 2 != 0) {
-					var dx: Stbtt_int16 = points.get(pointsIndex++);
+					var dx: Stbtt_int16 = points.readU8(pointsIndex++);
 					x += (flags & 16 != 0) ? dx : -dx; // ???
 				} else {
 					if (flags & 16 == 0) {
 						var value: Stbtt_int16;
-						var ch1 = points.get(pointsIndex + 0);
-						var ch2 = points.get(pointsIndex + 1);
+						var ch1 = points.readU8(pointsIndex + 0);
+						var ch2 = points.readU8(pointsIndex + 1);
 						var n = ch2 | (ch1 << 8);
 						if (n & 0x8000 != 0)
 							value = n - 0x10000;
@@ -634,13 +634,13 @@ class StbTruetype {
 			for (i in 0...n) {
 				flags = vertices[off+i].type;
 				if (flags & 4 != 0) {
-					var dy: Stbtt_int16 = points.get(pointsIndex++);
+					var dy: Stbtt_int16 = points.readU8(pointsIndex++);
 					y += (flags & 32 != 0) ? dy : -dy; // ???
 				} else {
 					if (flags & 32 == 0) {
 						var value: Stbtt_int16;
-						var ch1 = points.get(pointsIndex + 0);
-						var ch2 = points.get(pointsIndex + 1);
+						var ch1 = points.readU8(pointsIndex + 0);
+						var ch2 = points.readU8(pointsIndex + 1);
 						var n = ch2 | (ch1 << 8);
 						if (n & 0x8000 != 0)
 							value = n - 0x10000;
@@ -712,7 +712,7 @@ class StbTruetype {
 		} else if (numberOfContours == -1) {
 			// Compound shapes.
 			var more: Int = 1;
-			var comp: Bytes = data.sub(g + 10, data.length - (g + 10));
+			var comp: Blob = data.sub(g + 10, data.length - (g + 10));
 			var compIndex: Int = 0;
 			num_vertices = 0;
 			vertices = null;
@@ -824,7 +824,7 @@ class StbTruetype {
 	}
 
 	public static function stbtt_GetGlyphKernAdvance(info: Stbtt_fontinfo, glyph1: Int, glyph2: Int): Int {
-		var data: Bytes = info.data.sub(info.kern, info.data.length - info.kern);
+		var data: Blob = info.data.sub(info.kern, info.data.length - info.kern);
 		var needle, straw: Stbtt_uint32;
 		var l, r, m: Int;
 
@@ -1224,7 +1224,7 @@ class StbTruetype {
 					k = Math.abs(k) * 255.0 + 0.5;
 					m = Std.int(k);
 					if (m > 255) m = 255;
-					result.pixels.set(result.pixels_offset + j * result.stride + i, cast(m, Int));
+					result.pixels.writeU8(result.pixels_offset + j * result.stride + i, cast(m, Int));
 				}
 			}
 			// advance all the edges
@@ -1502,7 +1502,7 @@ class StbTruetype {
 		}
 	}
 
-	public static function stbtt_GetGlyphBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int, region: Stbtt_temp_region): Bytes {
+	public static function stbtt_GetGlyphBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int, region: Stbtt_temp_region): Blob {
 		var ix0: Int,iy0: Int,ix1: Int,iy1: Int;
 		var gbm: Stbtt__bitmap = new Stbtt__bitmap();
 		var vertices: Vector<Stbtt_vertex> = stbtt_GetGlyphShape(info, glyph);
@@ -1531,7 +1531,7 @@ class StbTruetype {
 		region.yoff   = iy0;
    
 		if (gbm.w != 0 && gbm.h != 0) {
-			gbm.pixels = Bytes.alloc(gbm.w * gbm.h);
+			gbm.pixels = Blob.alloc(gbm.w * gbm.h);
 			if (gbm.pixels != null) {
 				gbm.stride = gbm.w;
 
@@ -1541,11 +1541,11 @@ class StbTruetype {
 		return gbm.pixels;
 	}
 
-	public static function stbtt_GetGlyphBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, glyph: Int, region: Stbtt_temp_region): Bytes {
+	public static function stbtt_GetGlyphBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, glyph: Int, region: Stbtt_temp_region): Blob {
 		return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0, 0.0, glyph, region);
 	}
 
-	public static function stbtt_MakeGlyphBitmapSubpixel(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int): Void {
+	public static function stbtt_MakeGlyphBitmapSubpixel(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, glyph: Int): Void {
 		var ix0: Int = 0, iy0: Int = 0;
 		var vertices: Vector<Stbtt_vertex> = stbtt_GetGlyphShape(info, glyph);
 		var num_verts: Int = vertices == null ? 0 : vertices.length;
@@ -1564,23 +1564,23 @@ class StbTruetype {
 			stbtt_Rasterize(gbm, 0.35, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, true);
 	}
 
-	public static function stbtt_MakeGlyphBitmap(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, glyph: Int): Void {
+	public static function stbtt_MakeGlyphBitmap(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, glyph: Int): Void {
 		stbtt_MakeGlyphBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0, 0.0, glyph);
 	}
 
-	public static function stbtt_GetCodepointBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int, region: Stbtt_temp_region): Bytes {
+	public static function stbtt_GetCodepointBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int, region: Stbtt_temp_region): Blob {
 		return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), region);
 	}   
 
-	public static function stbtt_MakeCodepointBitmapSubpixel(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int): Void {
+	public static function stbtt_MakeCodepointBitmapSubpixel(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int): Void {
 		stbtt_MakeGlyphBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
 	}
 
-	public static function stbtt_GetCodepointBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, codepoint: Int, region: Stbtt_temp_region): Bytes {
+	public static function stbtt_GetCodepointBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, codepoint: Int, region: Stbtt_temp_region): Blob {
 		return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0, 0.0, codepoint, region);
 	}   
 
-	public static function stbtt_MakeCodepointBitmap(info: Stbtt_fontinfo, output: Bytes, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, codepoint: Int): Void {
+	public static function stbtt_MakeCodepointBitmap(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, codepoint: Int): Void {
 		stbtt_MakeCodepointBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0, 0.0, codepoint);
 	}
 
@@ -1590,9 +1590,9 @@ class StbTruetype {
 //
 // This is SUPER-CRAPPY packing to keep source code small
 
-	public static function stbtt_BakeFontBitmap(data: Bytes, offset: Int, // font location (use offset=0 for plain .ttf)
+	public static function stbtt_BakeFontBitmap(data: Blob, offset: Int, // font location (use offset=0 for plain .ttf)
                                 pixel_height: Float,                      // height of font in pixels
-                                pixels: Bytes, pw: Int, ph: Int,          // bitmap to be filled in
+                                pixels: Blob, pw: Int, ph: Int,          // bitmap to be filled in
                                 first_char: Int, num_chars: Int,          // characters to bake
                                 chardata: Vector<Stbtt_bakedchar>): Int {
 		var scale: Float;
@@ -1601,7 +1601,7 @@ class StbTruetype {
 		if (!stbtt_InitFont(f, data, offset))
 			return -1;
 		for (i in 0...pw * ph)
-			pixels.set(i, 0); // background of 0 around pixels
+			pixels.writeU8(i, 0); // background of 0 around pixels
 		x=y=1;
 		bottom_y = 1;
 
