@@ -7,58 +7,39 @@ import kha.FontStyle;
 import kha.Kravur;
 
 class Font implements kha.Font {
-	public var myName: String;
-	public var myStyle: FontStyle;
-	public var mySize: Float;
 	public var kravur: Kravur;
-	private var images: Map<Int, ImageElement>;
+	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
 	
-	public function new(name: String, style: FontStyle, size: Float) {
-		myName = name;
-		myStyle = style;
-		mySize = size;
-		//kravur = Kravur.get(name, style, size);
-		images = new Map<Int, ImageElement>();
+	public function new(kravur: Kravur) {
+		this.kravur = kravur;
 	}
 	
-	public var name(get, null): String;
-	public var style(get, null): FontStyle;
-	public var size(get, null): Float;
-	
-	public function get_name(): String {
-		return kravur.get_name();
+	public function getHeight(fontSize: Int): Float {
+		return kravur._get(fontSize).getHeight();
 	}
 	
-	public function get_style(): FontStyle {
-		return kravur.get_style();
+	public function charWidth(fontSize: Int, ch: String): Float {
+		return kravur._get(fontSize).charWidth(ch);
 	}
 	
-	public function get_size(): Float {
-		return kravur.get_size();
+	public function charsWidth(fontSize: Int, ch: String, offset: Int, length: Int): Float {
+		return kravur._get(fontSize).charsWidth(ch, offset, length);
 	}
 	
-	public function getHeight(): Float {
-		return kravur.getHeight();
-	}
-
-	public function charWidth(ch: String): Float {
-		return kravur.charWidth(ch);
-	}
-
-	public function charsWidth(ch: String, offset: Int, length: Int): Float {
-		return kravur.charsWidth(ch, offset, length);
-	}
-
-	public function stringWidth(str: String): Float {
-		return kravur.stringWidth(str);
-	}
-
-	public function getBaselinePosition(): Float {
-		return kravur.getBaselinePosition();
+	public function stringWidth(fontSize: Int, str: String): Float {
+		return kravur._get(fontSize).stringWidth(str);
 	}
 	
-	public function getImage(color: Color): ImageElement {
-		if (!images.exists(color.value)) {
+	public function getBaselinePosition(fontSize: Int): Float {
+		return kravur._get(fontSize).getBaselinePosition();
+	}
+	
+	public function getImage(fontSize: Int, color: Color): ImageElement {
+		if (!images.exists(fontSize)) {
+			images[fontSize] = new Map();
+		}
+		if (!images[fontSize].exists(color.value)) {
+			var kravur = this.kravur._get(fontSize);
 			var canvas: Dynamic = Browser.document.createElement("canvas");
 			canvas.width = kravur.width;
 			canvas.height = kravur.height;
@@ -78,8 +59,9 @@ class Font implements kha.Font {
 		
 			var img: ImageElement = cast Browser.document.createElement("img");
 			img.src = canvas.toDataURL("image/png");
-			images.set(color.value, img);
+			images[fontSize][color.value] = img;
+			return img;
 		}
-		return images.get(color.value);
+		return images[fontSize][color.value];
 	}
 }

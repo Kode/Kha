@@ -39,22 +39,32 @@ class Graphics {
 	*/
 	public var color(get, set): Color;
 	
+	private function get_color(): Color {
+		return Color.Black;
+	}
+	
+	private function set_color(color: Color): Color {
+		return Color.Black;
+	}
+	
 	public var font(get, set): Font;
 	
-	public function get_color(): Color {
-		return Color.Black;
-	}
-	
-	public function set_color(color: Color): Color {
-		return Color.Black;
-	}
-	
-	public function get_font(): Font {
+	private function get_font(): Font {
 		return null;
 	}
 	
-	public function set_font(font: Font): Font {
+	private function set_font(font: Font): Font {
 		return null;
+	}
+	
+	public var fontSize(get, set): Int;
+	
+	private function get_fontSize(): Int {
+		return myFontSize;
+	}
+	
+	private function set_fontSize(value: Int): Int {
+		return myFontSize = value;
 	}
 	
 	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
@@ -150,12 +160,14 @@ class Graphics {
 	
 	private var transformations: Array<FastMatrix3>;
 	private var opacities: Array<Float>;
+	private var myFontSize: Int;
 	
 	public function new() {
 		transformations = new Array<FastMatrix3>();
 		transformations.push(FastMatrix3.identity());
 		opacities = new Array<Float>();
 		opacities.push(1);
+		myFontSize = 12;
 		#if sys_g4
 		prog = null;
 		#end

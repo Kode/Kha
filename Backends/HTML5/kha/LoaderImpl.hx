@@ -91,7 +91,7 @@ class LoaderImpl {
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
-			done(Kravur.getFromBlob(desc.name, new FontStyle(false, false, false), 12, blob));
+			done(new Kravur(blob));
 		});
 	}
 	

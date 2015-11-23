@@ -515,6 +515,7 @@ class TextShaderPainter {
 	private var g: Graphics;
 	private var myProgram: Program = null;
 	public var program(get, set): Program;
+	public var fontSize: Int;
 	
 	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
 	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
@@ -703,6 +704,7 @@ class TextShaderPainter {
 	}
 	
 	public function drawString(text: String, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
+		var font = this.font._get(fontSize);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -753,6 +755,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter = new ImageShaderPainter(g);
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
+		textPainter.fontSize = fontSize;
 		setProjection();
 		
 		videoProgram = new Program();
@@ -911,6 +914,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 	override public function set_font(font: Font): Font {
 		textPainter.setFont(font);
 		return myFont = font;
+	}
+	
+	override public function set_fontSize(value: Int): Int {
+		return super.fontSize = textPainter.fontSize = value;
 	}
 
 	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {

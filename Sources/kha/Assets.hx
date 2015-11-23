@@ -215,8 +215,4 @@ class Assets {
 	private static function get_videoFormats(): Array<String> {
 		return LoaderImpl.getVideoFormats();
 	}
-	
-	public static function loadFont(name: String, style: FontStyle, size: Float, done: Font -> Void): Void {
-		Kravur.load(name, style, size, done);
-	}
 }
