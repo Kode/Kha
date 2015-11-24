@@ -1,16 +1,26 @@
 package kha.internal;
 
 import haxe.Json;
+import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
 import sys.io.File;
 
+using StringTools;
+
 class AssetsBuilder {
+	public static function findResources(): String {
+		var output = Compiler.getOutput();
+		output = output.substring(0, output.lastIndexOf("/"));
+		var system = output.substring(output.lastIndexOf("/") + 1);
+		if (system.endsWith("-build")) system = system.substr(0, system.length - "-build".length);
+		output = output.substring(0, output.lastIndexOf("/"));
+		return output + "/" + system + "-resources/";
+	}
+	
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
-		
-		var p = Context.resolvePath("files.json");
-		var content = Json.parse(File.getContent(p));
+		var content = Json.parse(File.getContent(findResources() + "files.json"));
 		var files: Iterable<Dynamic> = content.files;
 		for (file in files) {
 			var name = file.name;

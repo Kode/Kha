@@ -16,8 +16,7 @@ class ShadersBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
-		var p = Context.resolvePath("files.json");
-		var content = Json.parse(File.getContent(p));
+		var content = Json.parse(File.getContent(AssetsBuilder.findResources() + "files.json"));
 		var files: Iterable<Dynamic> = content.files;
 		
 		var init = macro { };
@@ -29,7 +28,7 @@ class ShadersBuilder {
 			var filename = file.files[0];
 			
 			if (file.type == "shader") {
-				var serialized = Serializer.run(File.getBytes(Context.resolvePath(file.files[0])));
+				var serialized = Serializer.run(File.getBytes(AssetsBuilder.findResources() + file.files[0]));
 				fields.push({
 					name: dataName,
 					doc: null,
