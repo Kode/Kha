@@ -11,11 +11,17 @@ using StringTools;
 class AssetsBuilder {
 	public static function findResources(): String {
 		var output = Compiler.getOutput();
+		output = output.replace("\\", "/");
 		output = output.substring(0, output.lastIndexOf("/"));
-		var system = output.substring(output.lastIndexOf("/") + 1);
-		if (system.endsWith("-build")) system = system.substr(0, system.length - "-build".length);
-		output = output.substring(0, output.lastIndexOf("/"));
-		return output + "/" + system + "-resources/";
+		if (output.lastIndexOf("/") >= 0) {
+			var system = output.substring(output.lastIndexOf("/") + 1);
+			if (system.endsWith("-build")) system = system.substr(0, system.length - "-build".length);
+			output = output.substring(0, output.lastIndexOf("/"));
+			return output + "/" + system + "-resources/";
+		}
+		else {
+			return output + "-resources/";
+		}
 	}
 	
 	macro static public function build(type: String): Array<Field> {
