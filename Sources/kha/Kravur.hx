@@ -91,14 +91,6 @@ class KravurImage {
 		return mySize;
 	}
 	
-	public function charWidth(ch: String): Float {
-		return getCharWidth(ch.charCodeAt(0));
-	}
-
-	public function charsWidth(ch: String, offset: Int, length: Int): Float {
-		return stringWidth(ch.substr(offset, length));
-	}
-	
 	public function stringWidth(string: String): Float {
 		var str = new SuperString(string);
 		var width: Float = 0;
@@ -158,23 +150,15 @@ class Kravur implements Font {
 		return images[fontSize];
 	}
 
-	public function getHeight(fontSize: Int): Float {
+	public function height(fontSize: Int): Float {
 		return _get(fontSize).getHeight();
 	}
 
-	public function charWidth(fontSize: Int, ch: String): Float {
-		return _get(fontSize).charWidth(ch);
-	}
-	
-	public function charsWidth(fontSize: Int, ch: String, offset: Int, length: Int): Float {
-		return _get(fontSize).charsWidth(ch, offset, length);
-	}
-	
-	public function stringWidth(fontSize: Int, str: String): Float {
+	public function width(fontSize: Int, str: String): Float {
 		return _get(fontSize).stringWidth(str);
 	}
 	
-	public function getBaselinePosition(fontSize: Int): Float {
+	public function baseline(fontSize: Int): Float {
 		return _get(fontSize).getBaselinePosition();
 	}
 }

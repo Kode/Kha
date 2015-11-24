@@ -14,23 +14,15 @@ class Font implements kha.Font {
 		this.kravur = kravur;
 	}
 	
-	public function getHeight(fontSize: Int): Float {
+	public function height(fontSize: Int): Float {
 		return kravur._get(fontSize).getHeight();
 	}
 	
-	public function charWidth(fontSize: Int, ch: String): Float {
-		return kravur._get(fontSize).charWidth(ch);
-	}
-	
-	public function charsWidth(fontSize: Int, ch: String, offset: Int, length: Int): Float {
-		return kravur._get(fontSize).charsWidth(ch, offset, length);
-	}
-	
-	public function stringWidth(fontSize: Int, str: String): Float {
+	public function width(fontSize: Int, str: String): Float {
 		return kravur._get(fontSize).stringWidth(str);
 	}
 	
-	public function getBaselinePosition(fontSize: Int): Float {
+	public function baseline(fontSize: Int): Float {
 		return kravur._get(fontSize).getBaselinePosition();
 	}
 	
