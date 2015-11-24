@@ -2,7 +2,7 @@ package kha.audio2;
 
 import haxe.ds.Vector;
 
-class SoundChannel implements kha.audio1.SoundChannel {
+class AudioChannel implements kha.audio1.AudioChannel {
 	public var data: Vector<Float>;
 	private var myVolume: Float;
 	private var myPosition: Int;
@@ -39,16 +39,16 @@ class SoundChannel implements kha.audio1.SoundChannel {
 		myPosition = data.length;
 	}
 
-	public var length(get, null): Int; // Miliseconds
+	public var length(get, null): Float; // Seconds
 	
-	private function get_length(): Int {
-		return Std.int(data.length / 44.1 / 2); // 44.1 khz in stereo
+	private function get_length(): Float {
+		return data.length / 44100 / 2; // 44.1 khz in stereo
 	}
 
-	public var position(get, null): Int; // Miliseconds
+	public var position(get, null): Float; // Seconds
 	
-	private function get_position(): Int {
-		return Std.int(myPosition / 44.1 / 2);
+	private function get_position(): Float {
+		return myPosition / 44100 / 2;
 	}
 	
 	public var volume(get, set): Float;

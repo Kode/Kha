@@ -4,8 +4,9 @@ import js.Browser;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ScriptProcessorNode;
-import kha.js.AEMusicChannel;
-import kha.js.WebAudioMusic;
+import kha.js.AEAudioChannel;
+import kha.js.WebAudioSound;
+import kha.Sound;
 
 class Audio {
 	private static var buffer: Buffer;
@@ -66,9 +67,10 @@ class Audio {
 
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
-		var channel = new AEMusicChannel(cast(music, WebAudioMusic).aemusic, loop);
-		channel.play();
-		return channel;
+	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		//var channel = new AEAudioChannel(cast(sound, WebAudioSound).aemusic, loop);
+		//channel.play();
+		//return channel;
+		return null;
 	}
 }

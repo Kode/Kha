@@ -1,19 +1,16 @@
 package kha.js;
 
 import js.html.AudioElement;
-import kha.audio1.MusicChannel;
+import kha.audio1.AudioChannel;
 
-class AEMusicChannel implements kha.audio1.MusicChannel {
+class AEAudioChannel implements kha.audio1.AudioChannel {
 	private var element: AudioElement;
-	private var loop: Bool;
 	
-	public function new(music: Music, loop: Bool) {
-		this.element = music.element;
-		this.loop = loop;
+	public function new(sound: Sound) {
+		this.element = sound.element;
 	}
-		
+	
 	public function play(): Void {
-		element.loop = loop;
 		element.play();
 	}
 
@@ -36,25 +33,25 @@ class AEMusicChannel implements kha.audio1.MusicChannel {
 		}
 	}
 
-	public var length(get, null): Int; // Miliseconds
+	public var length(get, null): Float; // Seconds
 	
-	private function get_length(): Int {
+	private function get_length(): Float {
 		if (Math.isFinite(element.duration)) {
-			return Math.floor(element.duration * 1000); // Miliseconds
+			return element.duration;
 		}
 		else {
 			return -1;
 		}
 	}
 
-	public var position(get, null): Int; // Miliseconds
+	public var position(get, null): Float; // Seconds
 	
-	private function get_position(): Int {
-		return Math.ceil(element.currentTime * 1000);  // Miliseconds
+	private function get_position(): Float {
+		return element.currentTime;
 	}
 
 	public var volume(get, set): Float;
-	
+
 	private function get_volume(): Float {
 		return 1;
 	}
@@ -64,7 +61,7 @@ class AEMusicChannel implements kha.audio1.MusicChannel {
 	}
 
 	public var finished(get, null): Bool;
-	
+
 	private function get_finished(): Bool {
 		return position >= length;
 	}

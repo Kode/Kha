@@ -1,13 +1,13 @@
 package kha.audio1;
 
-interface SoundChannel {
+interface AudioChannel {
 	public function play(): Void;
 	public function pause(): Void;
 	public function stop(): Void;
-	public var length(get, null): Int; // Miliseconds
-	private function get_length(): Int;
-	public var position(get, null): Int; // Miliseconds
-	private function get_position(): Int;
+	public var length(get, null): Float; // Seconds
+	private function get_length(): Float;
+	public var position(get, null): Float; // Seconds
+	private function get_position(): Float;
 	public var volume(get, set): Float;
 	private function get_volume(): Float;
 	private function set_volume(value: Float): Float;
