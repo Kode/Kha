@@ -28,7 +28,7 @@ class LocalStorageFile extends StorageFile {
 		var storage: WebStorage = untyped __js__("window.localStorage");
 		var value: String = storage.getItem(name);
 		if (value == null) return null;
-		else return new Blob(decode(value));
+		else return Blob.fromBytes(decode(value));
 	}
 	
 	override public function write(data: Blob): Void {

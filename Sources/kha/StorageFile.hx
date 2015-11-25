@@ -48,7 +48,7 @@ class StorageFile {
 	 */
 	public function writeString(data: String): Void {
 		var bytes = Bytes.ofString(data);
-		write(new Blob(bytes));
+		write(Blob.fromBytes(bytes));
 	}
 	
 	/**
@@ -58,7 +58,7 @@ class StorageFile {
 	 */
 	public function appendString(data: String): Void {
 		var bytes = Bytes.ofString(data);
-		append(new Blob(bytes));
+		append(Blob.fromBytes(bytes));
 	}
 	
 	/**
