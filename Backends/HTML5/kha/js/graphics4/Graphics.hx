@@ -325,13 +325,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		Sys.gl.enable(Sys.gl.SCISSOR_TEST);
-		var h: Int = renderTarget == null ? Sys.pixelHeight : renderTarget.height;
-		Sys.gl.scissor(x, h - y - height, width, height);
+		SystemImpl.gl.enable(SystemImpl.gl.SCISSOR_TEST);
+		var h: Int = renderTarget == null ? System.pixelHeight : renderTarget.height;
+		SystemImpl.gl.scissor(x, h - y - height, width, height);
 	}
 	
 	public function disableScissor(): Void {
-		Sys.gl.disable(Sys.gl.SCISSOR_TEST);
+		SystemImpl.gl.disable(SystemImpl.gl.SCISSOR_TEST);
 	}
 	
 	public function renderTargetsInvertedY(): Bool {

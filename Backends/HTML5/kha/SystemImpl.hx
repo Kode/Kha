@@ -389,7 +389,6 @@ class SystemImpl {
 			}
 		}
 		else if(event.which == 2){ //middle button
-			Game.the.middleMouseDown(mouseX, mouseY);
 			mouse.sendDownEvent(2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
@@ -410,7 +409,6 @@ class SystemImpl {
 			leftMouseCtrlDown = false;
 		}
 		else if(event.which == 2){ //middle button
-			Game.the.middleMouseUp(mouseX, mouseY);
 			mouse.sendUpEvent(2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
