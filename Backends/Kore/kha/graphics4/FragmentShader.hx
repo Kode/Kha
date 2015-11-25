@@ -15,7 +15,7 @@ class FragmentShader {
 	}
 	
 	@:functionCode("
-		shader = new Kore::Shader(source->toBytes()->b->Pointer(), source->length(), Kore::FragmentShader);
+		shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::FragmentShader);
 	")
 	private function initFragmentShader(source: Blob): Void {
 		

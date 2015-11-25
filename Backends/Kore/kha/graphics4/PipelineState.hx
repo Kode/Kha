@@ -37,41 +37,13 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	@:functionCode('
-		program->setVertexShader(vertexShader->shader);
-		program->setFragmentShader(fragmentShader->shader);
-		Kore::VertexStructure structure2;
-		for (int i = 0; i < inputLayout->size(); ++i) {
-			Kore::VertexData data;
-			switch (inputLayout->get(i)->data->index) {
-			case 0:
-				data = Kore::Float1VertexData;
-				break;
-			case 1:
-				data = Kore::Float2VertexData;
-				break;
-			case 2:
-				data = Kore::Float3VertexData;
-				break;
-			case 3:
-				data = Kore::Float4VertexData;
-				break;
-			}
-			structure2.add(inputLayout->get(i)->name, data);
-		}
-		program->link(structure2);
-	')
-	public function compile(): Void {
-		
-	}
-	
-	@:functionCode('
 		Kore::VertexStructure s0, s1, s2, s3;
 		Kore::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
 		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
 		for (int i1 = 0; i1 < size; ++i1) {
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
 				Kore::VertexData data;
-				switch ((*structures[i1])->get(i2)->data->index) {
+			switch ((*structures[i1])->get(i2)->data->index) {
 				case 0:
 					data = Kore::Float1VertexData;
 					break;
@@ -94,13 +66,13 @@ class PipelineState extends PipelineStateBase {
 		
 	}
 	
-	public function linkWithStructures(structures: Array<VertexStructure>): Void {
+	public function compile(): Void {
 		linkWithStructures2(
-			structures.length > 0 ? structures[0] : null,
-			structures.length > 1 ? structures[1] : null,
-			structures.length > 2 ? structures[2] : null,
-			structures.length > 3 ? structures[3] : null,
-			structures.length);
+			inputLayout.length > 0 ? inputLayout[0] : null,
+			inputLayout.length > 1 ? inputLayout[1] : null,
+			inputLayout.length > 2 ? inputLayout[2] : null,
+			inputLayout.length > 3 ? inputLayout[3] : null,
+			inputLayout.length);
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
@@ -137,6 +109,8 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function unused(): Void {
-		var include: VertexElement = new VertexElement("include", VertexData.Float2);
+		var include1: VertexElement = new VertexElement("include", VertexData.Float2);
+		var include2: VertexShader = new VertexShader(null);
+		var include2: FragmentShader = new FragmentShader(null);
 	}
 }

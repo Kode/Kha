@@ -15,7 +15,7 @@ class VertexShader {
 	}
 	
 	@:functionCode("
-		shader = new Kore::Shader(source->toBytes()->b->Pointer(), source->length(), Kore::VertexShader);
+		shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::VertexShader);
 	")
 	private function initVertexShader(source: Blob): Void {
 		
