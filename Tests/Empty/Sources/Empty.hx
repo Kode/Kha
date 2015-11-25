@@ -1,9 +1,15 @@
 package;
 
-import kha.Game;
-
-class Empty extends Game {
+class Empty {
 	public function new() {
-		super("Empty", false);
+		
+	}
+
+	public function render(framebuffer: kha.Framebuffer): Void {
+		
+	}
+
+	public function update(): Void {
+
 	}
 }
