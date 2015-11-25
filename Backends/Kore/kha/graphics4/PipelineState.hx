@@ -12,8 +12,9 @@ import kha.graphics4.VertexStructure;
 ')
 
 @:headerClassCode("Kore::Program* program;")
-class Program {
+class PipelineState extends PipelineStateBase {
 	public function new() {
+		super();
 		init();
 	}
 	
@@ -35,22 +36,13 @@ class Program {
 		
 	}
 	
-	public function setFragmentShader(shader: FragmentShader): Void {
-		setFragmentShaderImpl(shader);
-	}
-	
 	@:functionCode('
-		program->setFragmentShader(shader->shader);
-	')
-	private function setFragmentShaderImpl(shader: FragmentShader): Void {
-		
-	}
-	
-	@:functionCode('
+		program->setVertexShader(vertexShader->shader);
+		program->setFragmentShader(fragmentShader->shader);
 		Kore::VertexStructure structure2;
-		for (int i = 0; i < structure->size(); ++i) {
+		for (int i = 0; i < inputLayout->size(); ++i) {
 			Kore::VertexData data;
-			switch (structure->get(i)->data->index) {
+			switch (inputLayout->get(i)->data->index) {
 			case 0:
 				data = Kore::Float1VertexData;
 				break;
@@ -64,11 +56,11 @@ class Program {
 				data = Kore::Float4VertexData;
 				break;
 			}
-			structure2.add(structure->get(i)->name, data);
+			structure2.add(inputLayout->get(i)->name, data);
 		}
 		program->link(structure2);
 	')
-	public function link(structure: VertexStructure): Void {
+	public function compile(): Void {
 		
 	}
 	

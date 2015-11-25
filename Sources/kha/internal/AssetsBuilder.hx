@@ -20,6 +20,7 @@ class AssetsBuilder {
 			return output + "/" + system + "-resources/";
 		}
 		else {
+			if (output.endsWith("-build")) output = output.substr(0, output.length - "-build".length);
 			return output + "-resources/";
 		}
 	}

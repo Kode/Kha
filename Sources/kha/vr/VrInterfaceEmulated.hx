@@ -7,7 +7,7 @@ import kha.graphics4.Graphics;
 import kha.Framebuffer;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.IndexBuffer;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
@@ -212,13 +212,13 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 		var g: Graphics = framebuffer.g4;
 		g.begin();
-		g.setProgram(program);
+		g.setPipeline(pipeline);
 		g.setVertexBuffer(vb);
 		g.setIndexBuffer(ib);
-		var matrixLocation: ConstantLocation = program.getConstantLocation("projectionMatrix");
+		var matrixLocation: ConstantLocation = pipeline.getConstantLocation("projectionMatrix");
 		var p: Matrix4 = Matrix4.identity();
 		g.setMatrix(matrixLocation, p);
-		var texture: TextureUnit = program.getTextureUnit("tex");
+		var texture: TextureUnit = pipeline.getTextureUnit("tex");
 		
 		g.setTexture(texture, parms.RightImage.Image);
 		g.drawIndexedVertices();
@@ -244,7 +244,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	var vb: VertexBuffer;
 	var ib: IndexBuffer;
 	
-	var program: Program;
+	var pipeline: PipelineState;
 	
 	private function setVertex(a: Float32Array, index: Int, pos: Vector3, uv: Vector2, color: Vector4) {
 		var base: Int = index * 9;
@@ -303,14 +303,11 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 		ib.unlock(); 
 		
-		program = new Program();
+		pipeline = new PipelineState();
 		
-		program.setVertexShader(Shaders.painter_image_vert);
-		program.setFragmentShader(Shaders.painter_image_frag);
-		program.link(structure);
-		
-		
+		pipeline.vertexShader = Shaders.painter_image_vert;
+		pipeline.fragmentShader = Shaders.painter_image_frag;
+		pipeline.inputLayout = [structure];
+		pipeline.compile();
 	}
-	
 }
-

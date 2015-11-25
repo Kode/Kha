@@ -1,5 +1,7 @@
 package kha.audio2;
 
+import kha.Sound;
+
 class Audio {
 	private static var buffer: Buffer;
 	
@@ -39,7 +41,7 @@ class Audio {
 
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
+	public static function playMusic(sound: Sound, loop: Bool = false): AudioChannel {
 		return null;
 	}
 }

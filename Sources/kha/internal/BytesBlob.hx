@@ -7,9 +7,14 @@ class BytesBlob implements Resource {
 	private var buffer: Array<Int>;
 	private var myFirstLine: Bool = true;
 	
-	public function new(bytes: Bytes) {
+	@:allow(kha.LoaderImpl)
+	private function new(bytes: Bytes) {
 		this.bytes = bytes;
 		buffer = new Array<Int>();
+	}
+	
+	public static function fromBytes(bytes: Bytes): Blob {
+		return new Blob(bytes);
 	}
 	
 	public static function alloc(size: Int): Blob {

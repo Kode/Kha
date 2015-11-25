@@ -8,6 +8,7 @@ import kha.graphics4.FragmentShader;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.MipMapFilter;
+import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
@@ -216,7 +217,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
 
@@ -329,8 +330,8 @@ class Graphics implements kha.graphics4.Graphics {
 	//	return new Program();
 	//}
 	
-	public function setProgram(program: kha.graphics4.Program): Void {
-		program.set();
+	public function setPipeline(pipeline: PipelineState): Void {
+		pipeline.set();
 	}
 	
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
