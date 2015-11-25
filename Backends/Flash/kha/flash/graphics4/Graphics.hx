@@ -25,6 +25,7 @@ import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
+import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TexDir;
@@ -152,7 +153,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, getCompareMode(compareMode), getStencilAction(bothPass), getStencilAction(depthFail), getStencilAction(stencilFail));
 	}
 
-	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		context.setScissorRectangle(new flash.geom.Rectangle(x, y, width, height));
 	}
 
@@ -239,8 +240,8 @@ class Graphics implements kha.graphics4.Graphics {
 	//	return new Program();
 	//}
 	
-	public function setProgram(program: kha.graphics4.Program): Void {
-		program.set();
+	public function setPipeline(pipeline: PipelineState): Void {
+		pipeline.set();
 	}
 	
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {

@@ -53,7 +53,7 @@ class ShadersBuilder {
 						{
 							var data = Reflect.field(Shaders, $v { dataName } );
 							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.VertexShader(new kha.Blob(bytes));
+							$i { fixedName } = new kha.graphics4.VertexShader(kha.Blob.fromBytes(bytes));
 						}
 					};
 				}
@@ -72,7 +72,7 @@ class ShadersBuilder {
 						{
 							var data = Reflect.field(Shaders, $v { dataName } );
 							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.FragmentShader(new kha.Blob(bytes));
+							$i { fixedName } = new kha.graphics4.FragmentShader(kha.Blob.fromBytes(bytes));
 						}
 					};
 				}

@@ -9,27 +9,17 @@ import kha.graphics4.VertexStructure;
 
 using StringTools;
 
-class Program {
+class PipelineState extends PipelineStateBase {
 	private var program: Program3D;
-	private var fragmentShader: FragmentShader;
-	private var vertexShader: VertexShader;
-	
 	private var vc: haxe.ds.Vector<flash.Vector<Float>>;
 	private var fc: haxe.ds.Vector<flash.Vector<Float>>;
 	
 	public function new() {
+		super();
 		program = kha.flash.graphics4.Graphics.context.createProgram();
 	}
 
-	public function setVertexShader(shader: VertexShader): Void {
-		vertexShader = shader;
-	}
-
-	public function setFragmentShader(shader: FragmentShader): Void {
-		fragmentShader = shader;
-	}
-	
-	public function link(structure: VertexStructure): Void {
+	public function compile(): Void {
 		var vclength: Int = 0;
 		for (i in 0...128) {
 			var name = "vc" + i;

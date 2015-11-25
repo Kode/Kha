@@ -31,7 +31,7 @@ class LoaderImpl {
 		return filename;
 	}
 	
-	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
+	/*public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
@@ -72,7 +72,7 @@ class LoaderImpl {
 		urlLoader.load(urlRequest);
 
 		#end
-	}
+	}*/
 	
 	public static function loadImageFromDescription(desc: Dynamic, done: Image -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
@@ -94,6 +94,10 @@ class LoaderImpl {
 		#end
 	}
 	
+	public static function getImageFormats(): Array<String> {
+		return ["png", "jpg"];
+	}
+	
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 		
@@ -106,11 +110,17 @@ class LoaderImpl {
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 		urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-			done(new Blob(Bytes.ofData(urlLoader.data)));
+			done(new Blob(urlLoader.data));
 		});
 		urlLoader.load(urlRequest);
 		
 		#end
+	}
+	
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
+		loadBlobFromDescription(desc, function (blob: Blob) {
+			done(new Kravur(blob));
+		});
 	}
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
@@ -147,9 +157,17 @@ class LoaderImpl {
 		
 		#end
 	}
+	
+	public static function getSoundFormats(): Array<String> {
+		return ["ogg"];
+	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void) {
 		done(new kha.flash.Video(desc.files[0]));
+	}
+	
+	public static function getVideoFormats(): Array<String> {
+		return ["mp4"];
 	}
 	
 	/*override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {

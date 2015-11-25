@@ -7,18 +7,36 @@ import haxe.io.BytesData;
 class Blob implements Resource {
 	public var bytes: BytesData;
 	
-	public function new(bytes: Bytes) {
-		this.bytes = bytes.getData();
+	@:allow(kha.LoaderImpl)
+	private function new(bytes: BytesData) {
+		this.bytes = bytes;
 	}
 	
-	public var position(get, null): Int;
-	
-	public function get_position(): Int {
-		return bytes.position;
+	public static function fromBytes(bytes: Bytes): Blob {
+		return new Blob(bytes.getData());
 	}
 	
-	public function seek(pos: Int): Void {
-		bytes.position = pos;
+	public static function alloc(size: Int): Blob {
+		var b = new BytesData();
+		b.length = size;
+		return new Blob(b);
+	}
+	
+	public function sub(start: Int, length: Int): Blob {
+		var b = new BytesData();
+		bytes.position = start;
+		bytes.readBytes(b, 0, length);
+		return new Blob(bytes);
+	}
+	
+	public var length(get, null): Int;
+	
+	public function get_length(): Int {
+		return bytes.length;
+	}
+	
+	public function writeU8(position: Int, value: Int): Void {
+		bytes[position] = value;
 	}
 	
 	private function le(): Void {
@@ -29,83 +47,90 @@ class Blob implements Resource {
 		bytes.endian = Endian.BIG_ENDIAN;
 	}
 	
-	public function length() {
-		return bytes.length;
-	}
-	
-	public function reset() {
-		bytes.position = 0;
-	}
-	
-	public function readS8(): Int {
+	public function readS8(position: Int): Int {
+		bytes.position = position;
 		return bytes.readByte();
 	}
 	
-	public function readU8(): UInt {
+	public function readU8(position: Int): Int {
+		bytes.position = position;
 		return bytes.readUnsignedByte();
 	}
 		
-	public function readS16LE(): Int {
+	public function readS16LE(position: Int): Int {
 		le();
+		bytes.position = position;
 		return bytes.readShort();
 	}
 	
-	public function readS16BE(): Int {
+	public function readS16BE(position: Int): Int {
 		be();
+		bytes.position = position;
 		return bytes.readShort();
 	}
 	
-	public function readU16LE(): UInt {
+	public function readU16LE(position: Int): Int {
 		le();
+		bytes.position = position;
 		return bytes.readUnsignedShort();
 	}
 	
-	public function readU16BE(): UInt {
+	public function readU16BE(position: Int): Int {
 		be();
+		bytes.position = position;
 		return bytes.readUnsignedShort();
 	}
 
-	public function readS32LE(): Int {
+	public function readS32LE(position: Int): Int {
 		le();
+		bytes.position = position;
 		return bytes.readInt();
 	}
 	
-	public function readS32BE(): Int {
+	public function readS32BE(position: Int): Int {
 		be();
+		bytes.position = position;
 		return bytes.readInt();
 	}
 	
-	public function readU32LE(): UInt {
+	public function readU32LE(position: Int): Int {
 		le();
+		bytes.position = position;
 		return bytes.readUnsignedInt();
 	}
 	
-	public function readU32BE(): UInt {
+	public function readU32BE(position: Int): Int {
 		be();
+		bytes.position = position;
 		return bytes.readUnsignedInt();
 	}
 	
-	public function readF32LE(): Float {
+	public function readF32LE(position: Int): Float {
 		le();
+		bytes.position = position;
 		return bytes.readFloat();
 	}
 	
-	public function readF32BE(): Float {
+	public function readF32BE(position: Int): Float {
 		be();
+		bytes.position = position;
 		return bytes.readFloat();
 	}
 	
-	public function readF64LE(): Float {
+	public function readF64LE(position: Int): Float {
 		le();
+		bytes.position = position;
 		return bytes.readDouble();
 	}
 	
-	public function readF64BE(): Float {
+	public function readF64BE(position: Int): Float {
 		be();
+		bytes.position = position;
 		return bytes.readDouble();
 	}
 	
 	public function toString(): String {
+		bytes.position = 0;
 		return bytes.toString();
 	}
 		

@@ -3,21 +3,7 @@ package kha.audio2;
 import flash.events.Event;
 import flash.events.SampleDataEvent;
 
-/*
-public function play(): Void;
-public function pause(): Void;
-public function stop(): Void;
-public var length(get, null): Int; // Miliseconds
-private function get_length(): Int;
-public var position(get, null): Int; // Miliseconds
-private function get_position(): Int;
-public var volume(get, set): Float;
-private function get_volume(): Float;
-private function set_volume(value: Float): Float;
-public var finished(get, null): Bool;
-private function get_finished(): Bool;
-*/
-class HardwareMusicChannel implements kha.audio1.MusicChannel {
+/*class HardwareMusicChannel implements kha.audio1.MusicChannel {
 	private var music: flash.media.Sound;
 	private var channel: flash.media.SoundChannel;
 	private var running: Bool;
@@ -73,7 +59,7 @@ class HardwareMusicChannel implements kha.audio1.MusicChannel {
 	private function get_finished(): Bool {
 		return !running;
 	}
-}
+}*/
 
 class Audio {
 	private static var buffer: Buffer;
@@ -111,12 +97,12 @@ class Audio {
 	
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
-		if (music._nativemusic != null) {
+	public static function play(sound: Sound, loop: Bool = false): AudioChannel {
+		/*if (music._nativemusic != null) {
 			var channel = new HardwareMusicChannel(cast music._nativemusic, loop);
 			channel.play();
 			return channel;
-		}
+		}*/
 		return null;
 	}
 }
