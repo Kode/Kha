@@ -21,12 +21,7 @@ interface Graphics {
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 
 	function viewport(x: Int, y: Int, width: Int, height: Int): Void;
-	
-	function setCullMode(mode: CullMode): Void;
-	function setDepthMode(write: Bool, mode: CompareMode): Void;
-	function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void; // One, Zero deactivates blending
-	function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void;
-	function setScissor(x: Int, y: Int, width: Int, height: Int): Void;
+	function scissor(x: Int, y: Int, width: Int, height: Int): Void;
 	
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
@@ -44,7 +39,7 @@ interface Graphics {
 	//function renderToTexture(texture: Texture): Void;
 	//function renderToBackbuffer(): Void;
 	
-	function setProgram(program: Program): Void;
+	function setPipeline(pipeline: PipelineState): Void;
 	
 	function setBool(location: ConstantLocation, value: Bool): Void;
 	function setInt(location: ConstantLocation, value: Int): Void;

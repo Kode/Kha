@@ -166,7 +166,7 @@ class CanvasGraphics extends Graphics {
 		canvas.fill();
 	}
 	
-	override public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		drawRect(x, y, width, height);
 		canvas.clip();
 	}

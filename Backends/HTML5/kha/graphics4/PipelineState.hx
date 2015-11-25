@@ -5,42 +5,26 @@ import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
-class Program {
+class PipelineState extends PipelineStateBase {
 	private var program: Dynamic;
-	private var vertexShader: VertexShader;
-	private var fragmentShader: FragmentShader;
 	private var textures: Array<String>;
 	private var textureValues: Array<Dynamic>;
-	private var singleStructureArray: Array<VertexStructure>;
 	
 	public function new() {
+		super();
 		program = SystemImpl.gl.createProgram();
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
-		singleStructureArray = new Array();
 	}
-	
-	public function setVertexShader(vertexShader: VertexShader): Void {
-		this.vertexShader = vertexShader;
-	}
-	
-	public function setFragmentShader(fragmentShader: FragmentShader): Void {
-		this.fragmentShader = fragmentShader;
-	}
-	
-	public function link(structure: VertexStructure): Void {
-		singleStructureArray[0] = structure;
-		linkWithStructures(singleStructureArray);
-	}
-	
-	public function linkWithStructures(structures: Array<VertexStructure>): Void {
+		
+	public function compile(): Void {
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
 		SystemImpl.gl.attachShader(program, vertexShader.shader);
 		SystemImpl.gl.attachShader(program, fragmentShader.shader);
 		
 		var index = 0;
-		for (structure in structures) {
+		for (structure in inputLayout) {
 			for (element in structure.elements) {
 				SystemImpl.gl.bindAttribLocation(program, index, element.name);
 				++index;

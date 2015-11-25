@@ -9,6 +9,7 @@ import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
+import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
@@ -261,8 +262,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setProgram(program: kha.graphics4.Program): Void {
-		program.set();
+	public function setPipeline(pipe: PipelineState): Void {
+		pipe.set();
 	}
 	
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
@@ -323,7 +324,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		SystemImpl.gl.scissor(x, y, width, height);
 	}
 	

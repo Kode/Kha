@@ -4,6 +4,7 @@ import kha.Color;
 import kha.FastFloat;
 import kha.Font;
 import kha.graphics4.BlendingOperation;
+import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
@@ -135,22 +136,22 @@ class Graphics {
 		return opacities[opacities.length - 1] = opacity;
 	}
 	
-	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
 	
 	#if sys_g4
-	private var prog: kha.graphics4.Program;
+	private var pipe: PipelineState;
 	
-	public var program(get, set): kha.graphics4.Program;
+	public var pipeline(get, set): PipelineState;
 	
-	private function get_program(): kha.graphics4.Program {
-		return prog;
+	private function get_pipeline(): PipelineState {
+		return pipe;
 	}
 	
-	private function set_program(program: kha.graphics4.Program): kha.graphics4.Program {
-		setProgram(program);
-		return prog = program;
+	private function set_pipeline(pipeline: PipelineState): PipelineState {
+		setPipeline(pipeline);
+		return pipe = pipeline;
 	}
 	#end
 	
@@ -169,7 +170,7 @@ class Graphics {
 		opacities.push(1);
 		myFontSize = 12;
 		#if sys_g4
-		prog = null;
+		pipe = null;
 		#end
 	}
 	
@@ -181,7 +182,7 @@ class Graphics {
 		
 	}
 	
-	private function setProgram(program: kha.graphics4.Program): Void {
+	private function setPipeline(pipeline: PipelineState): Void {
 		
 	}
 }
