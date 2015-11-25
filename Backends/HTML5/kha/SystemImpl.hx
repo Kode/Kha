@@ -1,5 +1,6 @@
 package kha;
 
+import js.html.WheelEvent;
 import js.Browser;
 import js.html.CanvasElement;
 import js.html.KeyboardEvent;
@@ -288,6 +289,11 @@ class SystemImpl {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
+		untyped __js__('if(canvas.onwheel !== undefined)
+			canvas.onwheel = kha_Starter.mouseWheel;
+		else if(canvas.onmousewheel  !== undefined)
+			canvas.onmousewheel = kha_Starter.mouseWheel');
+		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
@@ -364,11 +370,15 @@ class SystemImpl {
 		mouseX = Std.int((event.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
 		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
+
+	private static function mouseWheel(event: WheelEvent): Void{
+		mouse.sendWheelEvent(Std.int(event.deltaY));
+	}
 	
 	private static function mouseDown(event: MouseEvent): Void {
 		Browser.document.addEventListener('mouseup', mouseUp);
 		setMouseXY(event);
-		if (event.button == 0) {
+		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
 				mouse.sendDownEvent(1, mouseX, mouseY);
@@ -378,7 +388,11 @@ class SystemImpl {
 				mouse.sendDownEvent(0, mouseX, mouseY);
 			}
 		}
-		else {
+		else if(event.which == 2){ //middle button
+			Game.the.middleMouseDown(mouseX, mouseY);
+			mouse.sendDownEvent(2, mouseX, mouseY);
+		}
+		else if(event.which == 3){ //right button
 			mouse.sendDownEvent(1, mouseX, mouseY);
 		}
 	}
@@ -386,7 +400,7 @@ class SystemImpl {
 	private static function mouseUp(event: MouseEvent): Void {
 		Browser.document.removeEventListener('mouseup', mouseUp);
 		setMouseXY(event);
-		if (event.button == 0) {
+		if (event.which == 1) { //left button
 			if (leftMouseCtrlDown) {
 				mouse.sendUpEvent(1, mouseX, mouseY);
 			}
@@ -395,7 +409,11 @@ class SystemImpl {
 			}
 			leftMouseCtrlDown = false;
 		}
-		else {
+		else if(event.which == 2){ //middle button
+			Game.the.middleMouseUp(mouseX, mouseY);
+			mouse.sendUpEvent(2, mouseX, mouseY);
+		}
+		else if(event.which == 3){ //right button
 			mouse.sendUpEvent(1, mouseX, mouseY);
 		}
 	}

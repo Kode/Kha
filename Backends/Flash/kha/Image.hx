@@ -29,7 +29,7 @@ class Image implements Canvas implements Resource {
 	private var graphics4: kha.graphics4.Graphics;
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
-		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, false);
+		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, usage == Usage.ReadableUsage);
 	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
@@ -161,13 +161,15 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public function lock(level: Int = 0): Bytes {
-		switch (format) {
-			case RGBA32:
-				bytes = Bytes.alloc(texWidth * texHeight * 4);
-			case L8:
-				bytes = Bytes.alloc(texWidth * texHeight);
-			case RGBA128:
-				bytes = Bytes.alloc(texWidth * texHeight * 16);
+		if (bytes == null) {
+			switch (format) {
+				case RGBA32:
+					bytes = Bytes.alloc(texWidth * texHeight * 4);
+				case L8:
+					bytes = Bytes.alloc(texWidth * texHeight);
+				case RGBA128:
+					bytes = Bytes.alloc(texWidth * texHeight * 16);
+			}
 		}
 		return bytes;
 	}

@@ -987,7 +987,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+		flush();
 		g.scissor(x, y, width, height);
+	}
+	
+	
+	override public function disableScissor(): Void {
+		flush();
+		g.disableScissor();
 	}
 	
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {

@@ -24,6 +24,7 @@ class CanvasGraphics extends Graphics {
 		this.height = height;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
+		canvas.save();
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 		//canvas.globalCompositeOperation = "normal";
 	}
@@ -167,8 +168,13 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		drawRect(x, y, width, height);
+		canvas.beginPath();
+		canvas.rect(x, y, width, height);
 		canvas.clip();
+	}
+	
+	override public function disableScissor(): Void {
+		canvas.restore();
 	}
 	
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {

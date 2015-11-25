@@ -3,6 +3,8 @@ package kha.graphics2;
 import haxe.io.Bytes;
 import kha.Canvas;
 import kha.Color;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 import kha.Image;
 
 class Graphics1 implements kha.graphics1.Graphics {
@@ -16,7 +18,7 @@ class Graphics1 implements kha.graphics1.Graphics {
 	
 	public function begin(): Void {
 		if (texture == null) {
-			texture = Image.createRenderTarget(canvas.width, canvas.height);
+			texture = Image.create(canvas.width, canvas.height, TextureFormat.RGBA32, Usage.ReadableUsage);
 		}
 		pixels = texture.lock();
 	}
@@ -29,6 +31,6 @@ class Graphics1 implements kha.graphics1.Graphics {
 	}
 	
 	public function setPixel(x: Int, y: Int, color: Color): Void {
-		pixels.set(y * texture.realWidth * 4 + x * 4, color.value);
+		pixels.setInt32(y * texture.realWidth * 4 + x * 4, color);
 	}
 }

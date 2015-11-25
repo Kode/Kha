@@ -23,6 +23,7 @@ interface Graphics {
 	function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	function scissor(x: Int, y: Int, width: Int, height: Int): Void;
 	
+	function disableScissor(): Void;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
