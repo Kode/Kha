@@ -289,10 +289,8 @@ class SystemImpl {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
-		untyped __js__('if(canvas.onwheel !== undefined)
-			canvas.onwheel = kha_Starter.mouseWheel;
-		else if(canvas.onmousewheel  !== undefined)
-			canvas.onmousewheel = kha_Starter.mouseWheel');
+		untyped if (canvas.onwheel) canvas.onwheel = mouseWheel;
+		else if (canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -302,14 +300,14 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
-		untyped if (Sys.khanvas.requestPointerLock) {
-        	Sys.khanvas.requestPointerLock();
+		untyped if (SystemImpl.khanvas.requestPointerLock) {
+        	SystemImpl.khanvas.requestPointerLock();
         }
 		else if (canvas.mozRequestPointerLock) {
-        	Sys.khanvas.mozRequestPointerLock();
+        	SystemImpl.khanvas.mozRequestPointerLock();
         }
 		else if (canvas.webkitRequestPointerLock) {
-        	Sys.khanvas.webkitRequestPointerLock();
+        	SystemImpl.khanvas.webkitRequestPointerLock();
         }
 	}
 	
