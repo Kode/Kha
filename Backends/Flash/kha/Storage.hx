@@ -14,7 +14,7 @@ class FlashStorageFile extends StorageFile {
 	
 	override public function read(): Blob {
 		if (obj.data.bytes == null) return null;
-		return new Blob(Bytes.ofData(obj.data.bytes));
+		return Blob.fromBytes(Bytes.ofData(obj.data.bytes));
 	}
 	
 	override public function write(data: Blob): Void {
