@@ -46,7 +46,7 @@ class KoreStorageFile extends StorageFile {
 	}
 	
 	private static function createBlob(size: Int): Blob {
-		return new Blob(Bytes.alloc(size));
+		return Blob.alloc(size);
 	}
 }
 
