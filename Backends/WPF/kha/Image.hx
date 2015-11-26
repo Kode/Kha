@@ -19,7 +19,7 @@ class Image implements Resource {
 	}
 	
 	@:functionCode('
-		System.Windows.Media.Imaging.RenderTargetBitmap image = new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+		global::System.Windows.Media.Imaging.RenderTargetBitmap image = new global::System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, global::System.Windows.Media.PixelFormats.Pbgra32);
 		return fromImage(image, image.PixelWidth, image.PixelHeight);
 	')
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
@@ -33,7 +33,7 @@ class Image implements Resource {
 	}
 	
 	@:functionCode('
-		System.Windows.Media.Imaging.BitmapImage image = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(filename, System.UriKind.Relative));
+		global::System.Windows.Media.Imaging.BitmapImage image = new global::System.Windows.Media.Imaging.BitmapImage(new global::System.Uri(filename, global::System.UriKind.Relative));
 		return fromImage(image, image.PixelWidth, image.PixelHeight);
 	')
 	public static function fromFilename(filename: String): Image {
@@ -89,7 +89,7 @@ class Image implements Resource {
             return false;
 		
 		byte[] pixels = new byte[8];
-		image.CopyPixels(new System.Windows.Int32Rect(x, y, 1, 1), pixels, image.PixelWidth * 4, 0);
+		image.CopyPixels(new global::System.Windows.Int32Rect(x, y, 1, 1), pixels, image.PixelWidth * 4, 0);
 		return pixels[3] > 0;
 	')
 	public function isOpaque(x: Int, y: Int): Bool {
@@ -120,7 +120,7 @@ class Image implements Resource {
 	}
 	
 	@:functionCode('
-		System.Windows.Media.PixelFormat pf = System.Windows.Media.PixelFormats.Bgra32;
+		global::System.Windows.Media.PixelFormat pf = global::System.Windows.Media.PixelFormats.Bgra32;
 		int rawStride = (myWidth * pf.BitsPerPixel + 7) / 8;
 		var bgra = new byte[myWidth * myHeight * 4];
 		for (int y = 0; y < myHeight; ++y) {
@@ -131,7 +131,7 @@ class Image implements Resource {
 				bgra[y * myWidth * 4 + x * 4 + 3] = bytes.b[y * myWidth + x];
 			}
 		}
-		image = System.Windows.Media.Imaging.BitmapSource.Create(myWidth, myHeight, 96, 96, pf, null, bgra, rawStride);
+		image = global::System.Windows.Media.Imaging.BitmapSource.Create(myWidth, myHeight, 96, 96, pf, null, bgra, rawStride);
 	')
 	public function unlock(): Void {
 		

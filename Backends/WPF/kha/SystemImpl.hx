@@ -9,13 +9,13 @@ import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
 @:classCode('
-		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext) {
+		protected override void OnRender(global::System.Windows.Media.DrawingContext drawingContext) {
 			base.OnRender(drawingContext);
 			
-			if (kha.Starter.painter != null && Configuration.screen() != null) {
-				Starter.painter.context = drawingContext;
+			if (kha.SystemImpl.painter != null) {
+				kha.SystemImpl.painter.context = drawingContext;
 				//Starter.painter.begin();
-				Configuration.screen().render(Starter.framebuffer);
+				System.render(SystemImpl.framebuffer);
 				//if (drawMousePos) {
 				//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
 				//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
@@ -24,99 +24,92 @@ import system.windows.FrameworkElement;
 				//}
 				//Starter.painter.end();
 			}
-			System.GC.Collect();
+			global::System.GC.Collect();
 		}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
-	var mousePosX : Int;
-	var mousePosY : Int;
-	public var drawMousePos : Bool;
+	private var mousePosX: Int;
+	private var mousePosY: Int;
+	public var drawMousePos: Bool;
 	
-	public function setMousePos(posX : Int, posY : Int) : Void {
+	public function setMousePos(posX: Int, posY: Int): Void {
 		mousePosX = posX;
 		mousePosY = posY;
 	}
 }
 
 @:classCode('
-	private System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
+	private global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key> pressedKeys = new global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key>();
 
-	void CompositionTarget_Rendering(object sender, System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth/Game.the.width;
-		double heightTransform = canvas.ActualHeight/Game.the.height;
-		double transform = System.Math.Min(widthTransform, heightTransform);
-		canvas.RenderTransform = new System.Windows.Media.ScaleTransform(transform, transform);
+	void CompositionTarget_Rendering(object sender, global::System.EventArgs e) {
+		double widthTransform = canvas.ActualWidth / kha.SystemImpl.pixelWidth;
+		double heightTransform = canvas.ActualHeight / kha.SystemImpl.pixelHeight;
+		double transform = global::System.Math.Min(widthTransform, heightTransform);
+		canvas.RenderTransform = new global::System.Windows.Media.ScaleTransform(transform, transform);
 		Scheduler.executeFrame(); // Main loop
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
 	
-	protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e) {
+	protected override void OnTextInput(global::System.Windows.Input.TextCompositionEventArgs e) {
 		base.OnTextInput(e);
-		
-		Starter.OnTextInput(e);
+		kha.SystemImpl.OnTextInput(e);
 	}
 	
-	protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
+	protected override void OnKeyDown(global::System.Windows.Input.KeyEventArgs e) {
 		base.OnKeyDown(e);
-
-		Starter.OnKeyDown(e);
+		kha.SystemImpl.OnKeyDown(e);
 	}
 
-	protected override void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
+	protected override void OnKeyUp(global::System.Windows.Input.KeyEventArgs e) {
 		base.OnKeyUp(e);
-
-		Starter.OnKeyUp(e);
+		kha.SystemImpl.OnKeyUp(e);
 	}
 	
-	protected override void OnClosed(System.EventArgs e) {
+	protected override void OnClosed(global::System.EventArgs e) {
 		base.OnClosed(e);
 		
-		Game.the.onPause();
-		Game.the.onBackground();
-		Game.the.onShutdown();
+		//Game.the.onPause();
+		//Game.the.onBackground();
+		//Game.the.onShutdown();
 	}
 
-	protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
+	protected override void OnMouseDown(global::System.Windows.Input.MouseButtonEventArgs e) {
 		base.OnMouseDown(e);
-		
-		Starter.OnMouseDown(e);
+		kha.SystemImpl.OnMouseDown(e);
 	}
 
-	protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
+	protected override void OnMouseUp(global::System.Windows.Input.MouseButtonEventArgs e) {
 		base.OnMouseUp(e);
-		
-		Starter.OnMouseUp(e);
+		kha.SystemImpl.OnMouseUp(e);
 	}
 
-	protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
+	protected override void OnMouseMove(global::System.Windows.Input.MouseEventArgs e) {
 		base.OnMouseMove(e);
-		
-		Starter.OnMouseMove(e);
+		kha.SystemImpl.OnMouseMove(e);
 	}
 	
-	protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
+	protected override void OnMouseWheel(global::System.Windows.Input.MouseWheelEventArgs e) {
 		base.OnMouseWheel(e);
-
-		Starter.OnMouseWheel(e);
+		kha.SystemImpl.OnMouseWheel(e);
 	}
 ')
 class MainWindow extends system.windows.Window {
-	public var canvas : StoryPublishCanvas;
+	public var canvas: StoryPublishCanvas;
 	
 	@:functionCode('
 		canvas = new StoryPublishCanvas();
 		AddChild(canvas);
 		
-		Width = kha.Game.the.width + (System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
-		Height = kha.Game.the.height + System.Windows.SystemParameters.WindowCaptionHeight + (System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		Width = kha.System.pixelWidth + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
+		Height = kha.System.pixelHeight + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 		
 		// Go fullscreen
 		//WindowStyle = System.Windows.WindowStyle.None;
 		//WindowState = System.Windows.WindowState.Maximized;
 		
-		Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-		System.Windows.Media.CompositionTarget.Rendering += new System.EventHandler(CompositionTarget_Rendering);
+		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
 	public function new() {
 		
@@ -124,139 +117,114 @@ class MainWindow extends system.windows.Window {
 }
 
 @:classCode('
-	private static System.Collections.Generic.HashSet<System.Windows.Input.Key> pressedKeys = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
+	private static global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key> pressedKeys = new global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key>();
 
-	public static void OnTextInput(System.Windows.Input.TextCompositionEventArgs e) {
-		if (!System.String.IsNullOrEmpty(e.Text)) {
+	public static void OnTextInput(global::System.Windows.Input.TextCompositionEventArgs e) {
+		if (!global::System.String.IsNullOrEmpty(e.Text)) {
 			// Used for text input since KeyEventArgs does not provide a string representation
 			// Printable characters only
 			if (e.Text != "") {
 				char[] chararray = e.Text.ToCharArray();
-				int c = System.Convert.ToInt32((char)chararray[0]);
+				int c = global::System.Convert.ToInt32((char)chararray[0]);
 				if (c > 32) {
-					Game.the.keyDown(Key.CHAR, e.Text);
 					keyboard.sendDownEvent(Key.CHAR, e.Text);
 				}
 			}
 		}
 	}
 	
-	public static void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
+	public static void OnKeyDown(global::System.Windows.Input.KeyEventArgs e) {
 		if (pressedKeys.Contains(e.Key)) return;
 		pressedKeys.Add(e.Key);
 
 		switch (e.Key) {
-			case System.Windows.Input.Key.Back:
-				Game.the.keyDown(Key.BACKSPACE, null);
+			case global::System.Windows.Input.Key.Back:
 				keyboard.sendDownEvent(Key.BACKSPACE, null);
 				break;
-			case System.Windows.Input.Key.Enter:
-				Game.the.keyDown(Key.ENTER, "");
+			case global::System.Windows.Input.Key.Enter:
 				keyboard.sendDownEvent(Key.ENTER, null);
 				break;
-			case System.Windows.Input.Key.Escape:
-				Game.the.keyDown(Key.ESC, "");
+			case global::System.Windows.Input.Key.Escape:
 				keyboard.sendDownEvent(Key.ESC, null);
 				break;
-			case System.Windows.Input.Key.Delete:
-				Game.the.keyDown(Key.DEL, "");
+			case global::System.Windows.Input.Key.Delete:
 				keyboard.sendDownEvent(Key.DEL, null);
 				break;
-			case System.Windows.Input.Key.Up:
-				Game.the.buttonDown(Button.UP);
-				Game.the.keyDown(Key.UP, null);
+			case global::System.Windows.Input.Key.Up:
 				keyboard.sendDownEvent(Key.UP, null);
 				break;
-			case System.Windows.Input.Key.Down:
-				Game.the.buttonDown(Button.DOWN);
-				Game.the.keyDown(Key.DOWN, null);
+			case global::System.Windows.Input.Key.Down:
 				keyboard.sendDownEvent(Key.DOWN, null);
 				break;
-			case System.Windows.Input.Key.Left:
-				Game.the.buttonDown(Button.LEFT);
-				Game.the.keyDown(Key.LEFT, null);
+			case global::System.Windows.Input.Key.Left:
 				keyboard.sendDownEvent(Key.LEFT, null);
 				break;
-			case System.Windows.Input.Key.Right:
-				Game.the.buttonDown(Button.RIGHT);
-				Game.the.keyDown(Key.RIGHT, null);
+			case global::System.Windows.Input.Key.Right:
 				keyboard.sendDownEvent(Key.RIGHT, null);
 				break;
 		}
 	}
 	
 	public static void OnKeyDown(Key key, string c) {
-		Game.the.keyDown(key, c);
+		//Game.the.keyDown(key, c);
 	}
 
-	public static void OnKeyUp(System.Windows.Input.KeyEventArgs e) {
+	public static void OnKeyUp(global::System.Windows.Input.KeyEventArgs e) {
 		pressedKeys.Remove(e.Key);
 
 		switch (e.Key) {
-			case System.Windows.Input.Key.Back:
-				Game.the.keyUp(Key.BACKSPACE, null);
+			case global::System.Windows.Input.Key.Back:
 				keyboard.sendUpEvent(Key.BACKSPACE, null);
 				break;
-			case System.Windows.Input.Key.Enter:
-				Game.the.keyUp(Key.ENTER, null);
+			case global::System.Windows.Input.Key.Enter:
 				keyboard.sendUpEvent(Key.ENTER, null);
 				break;
-			case System.Windows.Input.Key.Escape:
-				Game.the.keyUp(Key.ESC, null);
+			case global::System.Windows.Input.Key.Escape:
 				keyboard.sendUpEvent(Key.ESC, null);
 				break;
-			case System.Windows.Input.Key.Delete:
-				Game.the.keyUp(Key.DEL, null);
+			case global::System.Windows.Input.Key.Delete:
 				keyboard.sendUpEvent(Key.DEL, null);
 				break;
-			case System.Windows.Input.Key.Up:
-				Game.the.buttonUp(Button.UP);
-				Game.the.keyUp(Key.UP, null);
+			case global::System.Windows.Input.Key.Up:
 				keyboard.sendUpEvent(Key.UP, null);
 				break;
-			case System.Windows.Input.Key.Down:
-				Game.the.buttonUp(Button.DOWN);
-				Game.the.keyUp(Key.DOWN, null);
+			case global::System.Windows.Input.Key.Down:
 				keyboard.sendUpEvent(Key.DOWN, null);
 				break;
-			case System.Windows.Input.Key.Left:
-				Game.the.buttonUp(Button.LEFT);
-				Game.the.keyUp(Key.LEFT, null);
+			case global::System.Windows.Input.Key.Left:
 				keyboard.sendUpEvent(Key.LEFT, null);
 				break;
-			case System.Windows.Input.Key.Right:
-				Game.the.buttonUp(Button.RIGHT);
-				Game.the.keyUp(Key.RIGHT, null);
+			case global::System.Windows.Input.Key.Right:
 				keyboard.sendUpEvent(Key.RIGHT, null);
 				break;
 		}
 	}
 
-	public static void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e) {
-		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
-			Starter.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	public static void OnMouseDown(global::System.Windows.Input.MouseButtonEventArgs e) {
+		if (e.ChangedButton == global::System.Windows.Input.MouseButton.Left) {
+			kha.SystemImpl.mouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
-		else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
-			Starter.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		else if (e.ChangedButton == global::System.Windows.Input.MouseButton.Right) {
+			kha.SystemImpl.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
 		
 	}
 
-	public static void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e) {
-		if (e.ChangedButton == System.Windows.Input.MouseButton.Left) {
-			Starter.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	public static void OnMouseUp(global::System.Windows.Input.MouseButtonEventArgs e) {
+		if (e.ChangedButton == global::System.Windows.Input.MouseButton.Left) {
+			kha.SystemImpl.mouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
-		else if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
-			Starter.rightMouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+		else if (e.ChangedButton == global::System.Windows.Input.MouseButton.Right) {
+			kha.SystemImpl.rightMouseUp((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
 	}
 
-	public static void OnMouseMove(System.Windows.Input.MouseEventArgs e) {
-		Starter.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
+	public static void OnMouseMove(global::System.Windows.Input.MouseEventArgs e) {
+		kha.SystemImpl.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 	}
 	
-	public static void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) {
-		Starter.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
+	public static void OnMouseWheel(global::System.Windows.Input.MouseWheelEventArgs e) {
+		kha.SystemImpl.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
 	}
 ')
 class SystemImpl {
@@ -304,7 +272,7 @@ class SystemImpl {
 		LoaderImpl.forceBusyCursor = forceBusyCursor;
 	}
 	
-	@:functionCode('System.Windows.MessageBox.Show(msg, "Exeption", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);')
+	@:functionCode('global::System.Windows.MessageBox.Show(msg, "Exeption", global::System.Windows.MessageBoxButton.OK, global::System.Windows.MessageBoxImage.Error);')
 	private static function displayErrorMessage(msg : String) {
 		
 	}
@@ -354,8 +322,8 @@ class SystemImpl {
 	}
 
 	@:functionCode('
-		if (System.Windows.Application.Current == null) {
-			new System.Windows.Application().Run(mainWindow);
+		if (global::System.Windows.Application.Current == null) {
+			new global::System.Windows.Application().Run(mainWindow);
 		}
 	')
 	static function startWindow() : Void {
@@ -444,7 +412,7 @@ class SystemImpl {
 		return "WPF";
 	}
 	
-	@:functionCode('System.Windows.Application.Current.Shutdown();')
+	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
 	public static function requestShutdown(): Void {
 		
 	}

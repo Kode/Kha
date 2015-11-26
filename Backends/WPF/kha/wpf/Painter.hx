@@ -49,7 +49,7 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		if (visual != null) {
 			context.Close();
-			((System.Windows.Media.Imaging.RenderTargetBitmap)image).Render(visual);
+			((global::System.Windows.Media.Imaging.RenderTargetBitmap)image).Render(visual);
 		}
 	')
 	override public function end(): Void {
@@ -63,7 +63,7 @@ class Painter extends kha.graphics2.Graphics {
 	
 	@:functionCode('
 		var img = (Image)image;
-		context.DrawImage(img.image, new System.Windows.Rect(tx + x, ty + y, img.get_width(), img.get_height()));
+		context.DrawImage(img.image, new global::System.Windows.Rect(tx + x, ty + y, img.get_width(), img.get_height()));
 	')
 	override public function drawImage(image: Image, x: Float, y: Float): Void {
 		
@@ -73,9 +73,9 @@ class Painter extends kha.graphics2.Graphics {
 		var img = (Image)image;
 		//var cropped = new System.Windows.Media.Imaging.CroppedBitmap(img.image, new System.Windows.Int32Rect((int)sx, (int)sy, (int)sw, (int)sh));
 		//context.DrawImage(cropped, new System.Windows.Rect(tx + dx, ty + dy, dw, dh)); //super slow
-		var brush = new System.Windows.Media.ImageBrush(img.image);
-		brush.Viewbox = new System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
-		context.DrawRectangle(brush, null, new System.Windows.Rect(tx + dx, ty + dy, dw, dh));
+		var brush = new global::System.Windows.Media.ImageBrush(img.image);
+		brush.Viewbox = new global::System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
+		context.DrawRectangle(brush, null, new global::System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
 	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
 		
@@ -97,18 +97,17 @@ class Painter extends kha.graphics2.Graphics {
 		
 	}*/
 	
-	
 	@:functionCode('
-		var img = (Image)myFont.getTexture();
+		var img = (Image)myFont._get(myFontSize).getTexture();
 		var xpos = tx + x;
 		var ypos = ty + y;
 		for (int i = 0; i < text.Length; ++i) {
-			var q = myFont.getBakedQuad(text[i] - 32, xpos, ypos);
+			var q = myFont._get(myFontSize).getBakedQuad(text[i] - 32, xpos, ypos);
 			if (q != null) {
-				var brush = new System.Windows.Media.ImageBrush(img.image);
-				brush.Viewbox = new System.Windows.Rect(q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0);
+				var brush = new global::System.Windows.Media.ImageBrush(img.image);
+				brush.Viewbox = new global::System.Windows.Rect(q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0);
 				context.PushOpacityMask(brush);
-				context.DrawRectangle(new System.Windows.Media.SolidColorBrush(myColor), null, new System.Windows.Rect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0));
+				context.DrawRectangle(new global::System.Windows.Media.SolidColorBrush(myColor), null, new global::System.Windows.Rect(q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0));
 				context.Pop();
 				xpos += q.xadvance;
 			}
@@ -136,9 +135,9 @@ class Painter extends kha.graphics2.Graphics {
 	}
 	
 	@:functionCode('
-		myColor = System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
+		myColor = global::System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
 	')
-	private function setColorInternal(a : Int, r : Int, g : Int, b : Int) : Void {
+	private function setColorInternal(a: Int, r: Int, g: Int, b: Int): Void {
 		
 	}
 
@@ -151,7 +150,7 @@ class Painter extends kha.graphics2.Graphics {
 			y += height;
 			height = -height;
 		}
-		context.DrawRectangle(null, new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(myColor), strength.value), new System.Windows.Rect(tx + x, ty + y, width, height));
+		context.DrawRectangle(null, new global::System.Windows.Media.Pen(new global::System.Windows.Media.SolidColorBrush(myColor), strength.value), new global::System.Windows.Rect(tx + x, ty + y, width, height));
 	')
 	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
 		
@@ -166,23 +165,23 @@ class Painter extends kha.graphics2.Graphics {
 			y += height;
 			height = -height;
 		}
-		context.DrawRectangle(new System.Windows.Media.SolidColorBrush(myColor), new System.Windows.Media.Pen(), new System.Windows.Rect(tx + x, ty + y, width, height));
+		context.DrawRectangle(new global::System.Windows.Media.SolidColorBrush(myColor), new global::System.Windows.Media.Pen(), new global::System.Windows.Rect(tx + x, ty + y, width, height));
 	')
-	override public function fillRect(x : Float, y : Float, width : Float, height : Float) : Void {
+	override public function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
 		
 	}
 	
 	@:functionCode('
-		context.DrawLine(new System.Windows.Media.Pen(new System.Windows.Media.SolidColorBrush(myColor), 1), new System.Windows.Point(tx + x1, ty + y1), new System.Windows.Point(tx + x2, ty + y2));
+		context.DrawLine(new global::System.Windows.Media.Pen(new global::System.Windows.Media.SolidColorBrush(myColor), 1), new global::System.Windows.Point(tx + x1, ty + y1), new global::System.Windows.Point(tx + x2, ty + y2));
 	')
 	override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 		
 	}
 		
 	@:functionCode('
-		context.DrawVideo(((Video)video).getPlayer(), new System.Windows.Rect(tx + x, ty + y, width, height));
+		context.DrawVideo(((Video)video).getPlayer(), new global::System.Windows.Rect(tx + x, ty + y, width, height));
 	')
-	override function drawVideo(video : kha.Video, x : Float, y : Float, width : Float, height : Float) : Void {
+	override function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 
 	}
 }

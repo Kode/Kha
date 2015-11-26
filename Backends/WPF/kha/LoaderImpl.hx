@@ -53,7 +53,7 @@ class LoaderImpl {
 		});
 	}
 
-	@:functionCode('System.Diagnostics.Process.Start(new System.Uri(url).AbsoluteUri);')
+	@:functionCode('global::System.Diagnostics.Process.Start(new global::System.Uri(url).AbsoluteUri);')
 	public static function loadURL(url: String): Void {
 		
 	}
