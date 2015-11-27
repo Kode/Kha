@@ -10,11 +10,8 @@ import kha.Blob;
 
 @:headerClassCode("Kore::Shader* shader;")
 class VertexShader {
-	private var source: Blob;
-	
 	public function new(source: Blob) {
-		this.source = source;
-		initVertexShader();
+		initVertexShader(source);
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
 	}
 	
@@ -25,7 +22,7 @@ class VertexShader {
 	@:functionCode("
 		shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::VertexShader);
 	")
-	private function initVertexShader(): Void {
+	private function initVertexShader(source: Blob): Void {
 		
 	}
 	

@@ -10,11 +10,8 @@ import kha.Blob;
 
 @:headerClassCode("Kore::Shader* shader;")
 class FragmentShader {
-	private var source: Blob;
-	
 	public function new(source: Blob) {
-		this.source = source;
-		initFragmentShader();
+		initFragmentShader(source);
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
 	}
 	
@@ -25,7 +22,7 @@ class FragmentShader {
 	@:functionCode("
 		shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::FragmentShader);
 	")
-	private function initFragmentShader(): Void {
+	private function initFragmentShader(source: Blob): Void {
 		
 	}
 	
