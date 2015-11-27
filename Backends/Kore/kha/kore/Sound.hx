@@ -71,7 +71,7 @@ class Sound extends kha.Sound {
 	//	return channel;
 	//}
 	
-	@:functionCode("Kore::Mixer::stop(sound); delete sound; sound = nullptr;")
+	@:functionCode("delete sound; sound = nullptr;")
 	override public function unload(): Void {
 
 	}
