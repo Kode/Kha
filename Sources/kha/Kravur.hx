@@ -161,4 +161,9 @@ class Kravur implements Font {
 	public function baseline(fontSize: Int): Float {
 		return _get(fontSize).getBaselinePosition();
 	}
+	
+	public function unload(): Void {
+		blob = null;
+		images = null;
+	}
 }

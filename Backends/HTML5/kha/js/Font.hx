@@ -56,4 +56,9 @@ class Font implements kha.Font {
 		}
 		return images[fontSize][color.value];
 	}
+	
+	public function unload(): Void {
+		kravur = null;
+		images = null;
+	}
 }

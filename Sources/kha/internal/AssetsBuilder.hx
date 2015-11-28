@@ -62,6 +62,15 @@ class AssetsBuilder {
 							kind: FVar(macro: kha.Blob, macro null),
 							pos: Context.currentPos()
 						});
+					case "font":
+						fields.push({
+							name: file.name,
+							doc: null,
+							meta: [],
+							access: [APublic],
+							kind: FVar(macro: kha.Font, macro null),
+							pos: Context.currentPos()
+						});
 					case "video":
 						fields.push({
 							name: file.name,
@@ -108,6 +117,12 @@ class AssetsBuilder {
 					case "blob":
 						loadExpressions = macro {
 							Assets.loadBlob($v{name}, function (blob: Blob) {
+								done();
+							});
+						};
+					case "font":
+						loadExpressions = macro {
+							Assets.loadFont($v{name}, function (font: Font) {
 								done();
 							});
 						};

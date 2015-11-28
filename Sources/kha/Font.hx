@@ -3,7 +3,7 @@ package kha;
 /**
  * This represents a text font.
  */
-interface Font {
+interface Font extends Resource {
 	/**
 	 * Font height
 	 */

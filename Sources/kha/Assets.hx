@@ -186,6 +186,14 @@ class Assets {
 		return LoaderImpl.getSoundFormats();
 	}
 	
+	public static function loadFont(name: String, done: Font -> Void): Void {
+		var description = Reflect.field(fonts, name + "Description");
+		return LoaderImpl.loadFontFromDescription(description, function (font: Font) {
+			Reflect.setField(fonts, name, font);
+			done(font);
+		});
+	}
+	
 	public static function loadFontFromPath(path: String, done: Font -> Void): Void {
 		var description = { files: [ path ] };
 		return LoaderImpl.loadFontFromDescription(description, done);
