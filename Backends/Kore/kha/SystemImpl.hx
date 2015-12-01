@@ -436,4 +436,8 @@ class SystemImpl {
 			fullscreenListeners.remove(func);
 		}	
 	}
+	
+	public static function changeResolution(width: Int, height: Int): Void {
+		
+	}
 }
