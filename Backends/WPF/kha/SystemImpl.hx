@@ -42,8 +42,8 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key> pressedKeys = new global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, global::System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth / kha.SystemImpl.pixelWidth;
-		double heightTransform = canvas.ActualHeight / kha.SystemImpl.pixelHeight;
+		double widthTransform = canvas.ActualWidth / kha.System.get_pixelWidth();
+		double heightTransform = canvas.ActualHeight / kha.System.get_pixelHeight();
 		double transform = global::System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new global::System.Windows.Media.ScaleTransform(transform, transform);
 		Scheduler.executeFrame(); // Main loop
@@ -101,8 +101,8 @@ class MainWindow extends system.windows.Window {
 		canvas = new StoryPublishCanvas();
 		AddChild(canvas);
 		
-		Width = kha.System.pixelWidth + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
-		Height = kha.System.pixelHeight + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+		Title = title;
+		resize(kha.System.get_pixelWidth(), kha.System.get_pixelHeight());
 		
 		// Go fullscreen
 		//WindowStyle = System.Windows.WindowStyle.None;
@@ -111,7 +111,15 @@ class MainWindow extends system.windows.Window {
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
-	public function new() {
+	public function new(title: String) {
+		
+	}
+	
+	@:functionCode('
+		Width = width + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
+		Height = height + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
+	')
+	public function resize(width: Int, height: Int): Void {
 		
 	}
 }
@@ -253,18 +261,41 @@ class SystemImpl {
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+		pixelWidth = width;
+		pixelHeight = height;
+		SystemImpl.title = title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		init2();
 		Scheduler.init();
-		loadFinished();
+		
+		//Sys.pixelWidth = gameToStart.width = Loader.the.width;
+		//Sys.pixelHeight = gameToStart.height = Loader.the.height;
+		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
+		if (openWindow) {
+			mainWindow = new MainWindow(title);
+			frameworkElement = mainWindow.canvas;
+		}
+		painter = new kha.wpf.Painter(System.get_pixelWidth(), System.get_pixelHeight());
+		framebuffer = new Framebuffer(null, painter, null);
+		Scheduler.start();
+		//if (autostartGame) gameToStart.loadFinished();
+		
 		callback();
+		
+		if (openWindow) {
+			startWindow();
+		}
+		else if (frameworkElement != null) {
+			frameworkElement.drawMousePos = SystemImpl.showMousePos;
+		}
 	}
 	
-	public static function configure(path : String, openWindow : Bool, autostartGame : Bool, showMousePos : Bool, forceBusyCursor : Bool) {
+	public static function configure(path: String, openWindow: Bool, autostartGame: Bool, showMousePos: Bool, forceBusyCursor: Bool) {
 		SystemImpl.openWindow = openWindow;
 		SystemImpl.autostartGame = autostartGame;
 		SystemImpl.showMousePos = showMousePos;
@@ -273,30 +304,10 @@ class SystemImpl {
 	}
 	
 	@:functionCode('global::System.Windows.MessageBox.Show(msg, "Exeption", global::System.Windows.MessageBoxButton.OK, global::System.Windows.MessageBoxImage.Error);')
-	private static function displayErrorMessage(msg : String) {
+	private static function displayErrorMessage(msg: String) {
 		
 	}
 	
-	private static function loadFinished() {
-		//Sys.pixelWidth = gameToStart.width = Loader.the.width;
-		//Sys.pixelHeight = gameToStart.height = Loader.the.height;
-		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
-		if (openWindow) {
-			mainWindow = new MainWindow();
-			frameworkElement = mainWindow.canvas;
-		}
-		painter = new kha.wpf.Painter(System.pixelWidth, System.pixelHeight);
-		framebuffer = new Framebuffer(null, painter, null);
-		Scheduler.start();
-		//if (autostartGame) gameToStart.loadFinished();
-		if (openWindow) {
-			startWindow();
-		}
-		else if (frameworkElement != null) {
-			frameworkElement.drawMousePos = SystemImpl.showMousePos;
-		}
-	}
-
 	public static function lockMouse(): Void {
 		
 	}
@@ -326,7 +337,7 @@ class SystemImpl {
 			new global::System.Windows.Application().Run(mainWindow);
 		}
 	')
-	static function startWindow() : Void {
+	static function startWindow(): Void {
 		
 	}
 	
@@ -417,11 +428,11 @@ class SystemImpl {
 		
 	}
 
-	public static function canSwitchFullscreen() : Bool{
+	public static function canSwitchFullscreen(): Bool {
 		return false;
 	}
 
-	public static function isFullscreen() : Bool{
+	public static function isFullscreen(): Bool {
 		return false;
 	}
 
@@ -433,12 +444,16 @@ class SystemImpl {
 		
   	}
 
-	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
 		
 	}
 
-
-	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
+		
+	}
+	
+	@:functionCode('mainWindow.resize(pixelWidth = width, pixelHeight = height);')
+	public static function changeResolution(width: Int, height: Int): Void {
 		
 	}
 }

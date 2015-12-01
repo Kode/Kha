@@ -106,4 +106,8 @@ class System {
 	public static function requestShutdown(): Void {
 		SystemImpl.requestShutdown();
 	}
+	
+	public static function changeResolution(width: Int, height: Int): Void {
+		SystemImpl.changeResolution(width, height);
+	}
 }

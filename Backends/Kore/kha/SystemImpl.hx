@@ -390,12 +390,12 @@ class SystemImpl {
 	private static var previousWidth : Int = 0;
 	private static var previousHeight : Int = 0;
 
-	public static function canSwitchFullscreen() : Bool{
+	public static function canSwitchFullscreen(): Bool {
 		return true;
 	}
 
 	@:functionCode('return Kore::Application::the()->fullscreen();')
-	public static function isFullscreen() : Bool{
+	public static function isFullscreen(): Bool {
 		return false;
 	}
 
@@ -412,7 +412,7 @@ class SystemImpl {
 	}
 
 	public static function exitFullscreen(): Void {
-		if(isFullscreen()){
+		if (isFullscreen()) {
 			if (previousWidth == 0 || previousHeight == 0){
 				previousWidth = untyped __cpp__("Kore::Application::the()->width();");
 				previousHeight = untyped __cpp__("Kore::Application::the()->height();");
@@ -424,15 +424,15 @@ class SystemImpl {
 		}
   	}
 
-	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		if(canSwitchFullscreen() && func != null){
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.push(func);
 		}
 	}
 
 
-	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		if(canSwitchFullscreen() && func != null){
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.remove(func);
 		}	
 	}

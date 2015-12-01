@@ -279,11 +279,11 @@ class SystemImpl {
 		flash.Lib.fscommand("quit");
 	}
 
-	public static function canSwitchFullscreen() : Bool{
+	public static function canSwitchFullscreen(): Bool{
 		return false;
 	}
 
-	public static function isFullscreen() : Bool{
+	public static function isFullscreen(): Bool{
 		return false;
 	}
 
@@ -295,12 +295,16 @@ class SystemImpl {
 		
   	}
 
-	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
 
-	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+		
+	}
+
+	public static function changeResolution(width: Int, height: Int): Void {
 		
 	}
 }

@@ -652,7 +652,7 @@ class SystemImpl {
 		}
 	}
 
-	public static function canSwitchFullscreen() : Bool{
+	public static function canSwitchFullscreen(): Bool {
 		return untyped __js__("'fullscreenElement ' in document ||
         'mozFullScreenElement' in document ||
         'webkitFullscreenElement' in document ||
@@ -660,7 +660,7 @@ class SystemImpl {
         ");
 	}
 
-	public static function isFullscreen() : Bool{
+	public static function isFullscreen(): Bool {
 		return untyped __js__("document.fullscreenElement === this.khanvas ||
   			document.mozFullScreenElement === this.khanvas ||
   			document.webkitFullscreenElement === this.khanvas ||
@@ -691,7 +691,7 @@ class SystemImpl {
 	    }
   	}
 
-	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.addEventListener('fullscreenchange', func, false);
 		js.Browser.document.addEventListener('mozfullscreenchange', func, false);
 		js.Browser.document.addEventListener('webkitfullscreenchange', func, false);
@@ -704,7 +704,7 @@ class SystemImpl {
 	}
 
 
-	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.removeEventListener('fullscreenchange', func, false);
 		js.Browser.document.removeEventListener('mozfullscreenchange', func, false);
 		js.Browser.document.removeEventListener('webkitfullscreenchange', func, false);
@@ -714,5 +714,9 @@ class SystemImpl {
 		js.Browser.document.removeEventListener('mozfullscreenerror', error, false);
 		js.Browser.document.removeEventListener('webkitfullscreenerror', error, false);
 		js.Browser.document.removeEventListener('MSFullscreenError', error, false);
+	}
+
+	public static function changeResolution(width: Int, height: Int): Void {
+		
 	}
 }
