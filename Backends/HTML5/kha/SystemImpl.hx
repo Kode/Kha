@@ -132,7 +132,7 @@ class SystemImpl {
 		return mouse;
 	}
 	
-	static function checkGamepadButton(pad: Dynamic, num: Int, button: kha.Button) {
+	static function checkGamepadButton(pad: Dynamic, num: Int) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
 				buttonspressed[num] = false;
@@ -232,12 +232,12 @@ class SystemImpl {
 				for (i in 0...sysGamepads.length) {
 					var pad = sysGamepads[i];
 					if (pad != null) {
-						checkGamepadButton(pad, 0, Button.BUTTON_1);
-						checkGamepadButton(pad, 1, Button.BUTTON_2);
-						checkGamepadButton(pad, 12, Button.UP);
-						checkGamepadButton(pad, 13, Button.DOWN);
-						checkGamepadButton(pad, 14, Button.LEFT);
-						checkGamepadButton(pad, 15, Button.RIGHT);
+						checkGamepadButton(pad, 0);
+						checkGamepadButton(pad, 1);
+						checkGamepadButton(pad, 12);
+						checkGamepadButton(pad, 13);
+						checkGamepadButton(pad, 14);
+						checkGamepadButton(pad, 15);
 						
 						checkGamepad(pad);
 					}					
