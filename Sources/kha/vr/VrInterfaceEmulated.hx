@@ -1,7 +1,6 @@
 package kha.vr;
 
 import kha.arrays.Float32Array;
-import kha.Button;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
 import kha.Framebuffer;
