@@ -9,6 +9,10 @@ import sys.io.File;
 using StringTools;
 
 class AssetsBuilder {
+	private static function fixName(name: String): String {
+		return name.replace("-", "_").replace(".", "_");
+	}
+	
 	public static function findResources(): String {
 		var output = Compiler.getOutput();
 		output = output.replace("\\", "/");
@@ -30,14 +34,14 @@ class AssetsBuilder {
 		var content = Json.parse(File.getContent(findResources() + "files.json"));
 		var files: Iterable<Dynamic> = content.files;
 		for (file in files) {
-			var name = file.name;
+			var name = fixName(file.name);
 			var filename = file.files[0];
 			
 			if (file.type == type) {
 				switch (type) {
 					case "image":
 						fields.push({
-							name: file.name,
+							name: name,
 							doc: null,
 							meta: [],
 							access: [APublic],
@@ -46,7 +50,7 @@ class AssetsBuilder {
 						});
 					case "sound":
 						fields.push({
-							name: file.name,
+							name: name,
 							doc: null,
 							meta: [],
 							access: [APublic],
@@ -55,7 +59,7 @@ class AssetsBuilder {
 						});
 					case "blob":
 						fields.push({
-							name: file.name,
+							name: name,
 							doc: null,
 							meta: [],
 							access: [APublic],
@@ -64,7 +68,7 @@ class AssetsBuilder {
 						});
 					case "font":
 						fields.push({
-							name: file.name,
+							name: name,
 							doc: null,
 							meta: [],
 							access: [APublic],
@@ -73,7 +77,7 @@ class AssetsBuilder {
 						});
 					case "video":
 						fields.push({
-							name: file.name,
+							name: name,
 							doc: null,
 							meta: [],
 							access: [APublic],
@@ -83,7 +87,7 @@ class AssetsBuilder {
 				}
 				
 				fields.push({
-					name: file.name + "Name",
+					name: name + "Name",
 					doc: null,
 					meta: [],
 					access: [APublic],
@@ -92,7 +96,7 @@ class AssetsBuilder {
 				});
 				
 				fields.push({
-					name: file.name + "Description",
+					name: name + "Description",
 					doc: null,
 					meta: [],
 					access: [APublic],
@@ -135,7 +139,7 @@ class AssetsBuilder {
 				}
 				
 				fields.push({
-					name: file.name + "Load",
+					name: name + "Load",
 					doc: null,
 					meta: [],
 					access: [APublic],
@@ -154,7 +158,7 @@ class AssetsBuilder {
 				});
 				
 				fields.push({
-					name: file.name + "Unload",
+					name: name + "Unload",
 					doc: null,
 					meta: [],
 					access: [APublic],
