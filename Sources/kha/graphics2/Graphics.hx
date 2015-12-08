@@ -35,6 +35,16 @@ class Graphics {
 	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
 	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 	
+	public var imageScaleQuality(get, set): ImageScaleQuality;
+	
+	private function get_imageScaleQuality(): ImageScaleQuality {
+		return ImageScaleQuality.Low;
+	}
+	
+	private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		return ImageScaleQuality.High;
+	}
+	
 	/**
 	The color value is used for geometric primitives as well as for images. Remember to set it back to white to draw images unaltered.
 	*/

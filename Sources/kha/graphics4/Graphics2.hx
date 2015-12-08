@@ -5,6 +5,7 @@ import kha.Canvas;
 import kha.Color;
 import kha.FastFloat;
 import kha.Font;
+import kha.graphics2.ImageScaleQuality;
 import kha.Image;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.ConstantLocation;
@@ -964,8 +965,15 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.fillTriangle(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 	
-	public function setBilinearFiltering(bilinear: Bool): Void {
-		imagePainter.setBilinearFilter(bilinear);
+	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+	
+	override private function get_imageScaleQuality(): ImageScaleQuality {
+		return myImageScaleQuality;
+	}
+	
+	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		imagePainter.setBilinearFilter(value == ImageScaleQuality.High);
+		return myImageScaleQuality = value;
 	}
 	
 	override private function setPipeline(pipeline: PipelineState): Void {
