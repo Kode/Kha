@@ -396,7 +396,7 @@ class StbTruetype {
 		} else if (format == 6) {
 			var first: Stbtt_uint32 = ttUSHORT(data, index_map + 6);
 			var count: Stbtt_uint32 = ttUSHORT(data, index_map + 8);
-			if (cast(unicode_codepoint, Stbtt_uint32) >= first && cast(unicode_codepoint, Stbtt_uint32) < first+count)
+			if (unicode_codepoint >= first && unicode_codepoint < first+count)
 				return ttUSHORT(data, index_map + 10 + (unicode_codepoint - first)*2);
 			return 0;
 		} else if (format == 2) {
@@ -434,7 +434,7 @@ class StbTruetype {
 
 			{
 				var offset, start: Stbtt_uint16;
-				var item: Stbtt_uint16 = cast ((search - endCount) >> 1);
+				var item: Stbtt_uint16 = (search - endCount) >> 1;
 
 				STBTT_assert(unicode_codepoint <= ttUSHORT(data, endCount + 2*item));
 				start = ttUSHORT(data, index_map + 14 + segcount*2 + 2 + 2*item);
@@ -443,22 +443,22 @@ class StbTruetype {
 
 				offset = ttUSHORT(data, index_map + 14 + segcount*6 + 2 + 2*item);
 				if (offset == 0) {
-					return cast(unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item), Stbtt_uint16);
+					return unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item);
 				}
 				return ttUSHORT(data, offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
 			}
 		} else if (format == 12 || format == 13) {
 			var ngroups: Stbtt_uint32 = ttULONG(data, index_map+12);
 			var low,high: Stbtt_int32;
-			low = 0; high = cast ngroups;
+			low = 0; high = ngroups;
 			// Binary search the right group.
 			while (low < high) {
 				var mid: Stbtt_int32 = low + ((high-low) >> 1); // rounds down, so low <= mid < high
 				var start_char: Stbtt_uint32 = ttULONG(data, index_map+16+mid*12);
 				var end_char: Stbtt_uint32 = ttULONG(data, index_map+16+mid*12+4);
-				if (cast(unicode_codepoint, Stbtt_uint32) < start_char)
+				if (unicode_codepoint < start_char)
 					high = mid;
-				else if (cast(unicode_codepoint, Stbtt_uint32) > end_char)
+				else if (unicode_codepoint > end_char)
 					low = mid+1;
 				else {
 					var start_glyph: Stbtt_uint32 = ttULONG(data, index_map+16+mid*12+8);
@@ -481,10 +481,10 @@ class StbTruetype {
 
 	private static function stbtt_setvertex(v: Stbtt_vertex, type: Stbtt_uint8, x: Stbtt_int32, y: Stbtt_int32, cx: Stbtt_int32, cy: Stbtt_int32): Void {
 		v.type = type;
-		v.x = cast x;
-		v.y = cast y;
-		v.cx = cast cx;
-		v.cy = cast cy;
+		v.x = x;
+		v.y = y;
+		v.cx = cx;
+		v.cy = cy;
 	}
 
 	private static function stbtt__GetGlyfOffset(info: Stbtt_fontinfo, glyph_index: Int): Int {
@@ -626,7 +626,7 @@ class StbTruetype {
 						pointsIndex += 2;
 					}
 				}
-				vertices[off+i].x = cast(x, Stbtt_int16);
+				vertices[off+i].x = x;
 			}
 
 			// now load y coordinates
@@ -650,7 +650,7 @@ class StbTruetype {
 						pointsIndex += 2;
 					}
 				}
-				vertices[off+i].y = cast(y, Stbtt_int16);
+				vertices[off+i].y = y;
 			}
 
 			// now convert them to our format
@@ -659,8 +659,8 @@ class StbTruetype {
 			var i: Int = 0;
 			while (i < n) {
 				flags = vertices[off+i].type;
-				x     = cast(vertices[off+i].x, Stbtt_int16);
-				y     = cast(vertices[off+i].y, Stbtt_int16);
+				x     = vertices[off+i].x;
+				y     = vertices[off+i].y;
 
 				if (next_move == i) {
 					if (i != 0)
@@ -675,12 +675,12 @@ class StbTruetype {
 						scy = y;
 						if (vertices[off+i+1].type & 1 == 0) {
 							// next point is also a curve point, so interpolate an on-point curve
-							sx = (x + cast(vertices[off+i+1].x, Stbtt_int32)) >> 1;
-							sy = (y + cast(vertices[off+i+1].y, Stbtt_int32)) >> 1;
+							sx = (x + vertices[off+i+1].x) >> 1;
+							sy = (y + vertices[off+i+1].y) >> 1;
 						} else {
 							// otherwise just use the next point as our start point
-							sx = cast(vertices[off+i+1].x, Stbtt_int32);
-							sy = cast(vertices[off+i+1].y, Stbtt_int32);
+							sx = vertices[off+i+1].x;
+							sy = vertices[off+i+1].y;
 							++i; // we're using point i+1 as the starting point, so skip it
 						}
 					} else {
@@ -772,11 +772,11 @@ class StbTruetype {
 						var v: Stbtt_vertex = comp_verts[i];
 						var x,y: Stbtt_int16;
 						x=v.x; y=v.y;
-						v.x = cast(m * (mtx0*x + mtx2*y + mtx4), Stbtt_int16);
-						v.y = cast(n * (mtx1*x + mtx3*y + mtx5), Stbtt_int16);
+						v.x = Std.int(m * (mtx0*x + mtx2*y + mtx4));
+						v.y = Std.int(n * (mtx1*x + mtx3*y + mtx5));
 						x=v.cx; y=v.cy;
-						v.cx = cast(m * (mtx0*x + mtx2*y + mtx4), Stbtt_int16);
-						v.cy = cast(n * (mtx1*x + mtx3*y + mtx5), Stbtt_int16);
+						v.cx = Std.int(m * (mtx0*x + mtx2*y + mtx4));
+						v.cy = Std.int(n * (mtx1*x + mtx3*y + mtx5));
 					}
 					// Append vertices.
 					tmp = new Vector<Stbtt_vertex>(num_vertices+comp_num_verts);
@@ -881,7 +881,7 @@ class StbTruetype {
 
 	public static function stbtt_ScaleForPixelHeight(info: Stbtt_fontinfo, height: Float): Float {
 		var fheight: Int = ttSHORT(info.data, info.hhea + 4) - ttSHORT(info.data, info.hhea + 6);
-		return cast(height / fheight, Float);
+		return height / fheight;
 	}
 
 	public static function stbtt_ScaleForMappingEmToPixels(info: Stbtt_fontinfo, pixels: Float): Float {
@@ -1104,8 +1104,8 @@ class StbTruetype {
 
 						// rename variables to clear pairs
 						var y0: Float = y_top;
-						var x1: Float = cast(x, Float);
-						var x2: Float = cast(x+1, Float);
+						var x1: Float = x;
+						var x2: Float = x+1;
 						var x3: Float = xb;
 						var y3: Float = y_bottom;
 						var y1,y2: Float;
@@ -1163,7 +1163,7 @@ class StbTruetype {
 		scanline2Index = result.w;
 
 		y = off_y;
-		e[eIndex + n].y0 = cast((off_y + result.h) + 1, Float);
+		e[eIndex + n].y0 = (off_y + result.h) + 1;
 
 		while (j < result.h) {
 			// find center of pixel for this scanline
@@ -1224,7 +1224,7 @@ class StbTruetype {
 					k = Math.abs(k) * 255.0 + 0.5;
 					m = Std.int(k);
 					if (m > 255) m = 255;
-					result.pixels.writeU8(result.pixels_offset + j * result.stride + i, cast(m, Int));
+					result.pixels.writeU8(result.pixels_offset + j * result.stride + i, m);
 				}
 			}
 			// advance all the edges
@@ -1628,13 +1628,13 @@ class StbTruetype {
 			STBTT_assert(x+gw < pw);
 			STBTT_assert(y+gh < ph);
 			stbtt_MakeGlyphBitmap(f, pixels, x + y * pw, gw, gh, pw, scale, scale, g);
-			chardata[i].x0 = cast(x, Stbtt_int16);
-			chardata[i].y0 = cast(y, Stbtt_int16);
-			chardata[i].x1 = cast(x + gw, Stbtt_int16);
-			chardata[i].y1 = cast(y + gh, Stbtt_int16);
+			chardata[i].x0 = x;
+			chardata[i].y0 = y;
+			chardata[i].x1 = x + gw;
+			chardata[i].y1 = y + gh;
 			chardata[i].xadvance = scale * advance;
-			chardata[i].xoff     = cast(x0, Float);
-			chardata[i].yoff     = cast(y0, Float);
+			chardata[i].xoff     = x0;
+			chardata[i].yoff     = y0;
 			x = x + gw + 1;
 			if (y+gh+1 > bottom_y)
 				bottom_y = y+gh+1;
