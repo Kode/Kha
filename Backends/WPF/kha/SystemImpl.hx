@@ -24,7 +24,7 @@ import system.windows.FrameworkElement;
 				//}
 				//Starter.painter.end();
 			}
-			global::System.GC.Collect();
+			//global::System.GC.Collect();
 		}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
