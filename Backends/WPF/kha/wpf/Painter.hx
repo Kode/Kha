@@ -21,8 +21,8 @@ class Painter extends kha.graphics2.Graphics {
 	private var myFont: Kravur;
 	private var tx: Float;
 	private var ty: Float;
-	private var width: Int;
-	private var height: Int;
+	public var width: Int;
+	public var height: Int;
 
 	public function new(width: Int, height: Int) {
 		super();
