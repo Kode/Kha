@@ -105,8 +105,8 @@ class MainWindow extends system.windows.Window {
 		resize(width, height);
 		
 		// Go fullscreen
-		//WindowStyle = System.Windows.WindowStyle.None;
-		//WindowState = System.Windows.WindowState.Maximized;
+		//WindowStyle = global::System.Windows.WindowStyle.None;
+		//WindowState = global::System.Windows.WindowState.Maximized;
 		
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
