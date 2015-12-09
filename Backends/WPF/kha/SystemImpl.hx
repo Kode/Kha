@@ -24,7 +24,7 @@ import system.windows.FrameworkElement;
 				//}
 				//Starter.painter.end();
 			}
-			global::System.GC.Collect();
+			//global::System.GC.Collect();
 		}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
@@ -102,16 +102,16 @@ class MainWindow extends system.windows.Window {
 		AddChild(canvas);
 		
 		Title = title;
-		resize(kha.System.get_pixelWidth(), kha.System.get_pixelHeight());
+		resize(width, height);
 		
 		// Go fullscreen
-		//WindowStyle = System.Windows.WindowStyle.None;
-		//WindowState = System.Windows.WindowState.Maximized;
+		//WindowStyle = global::System.Windows.WindowStyle.None;
+		//WindowState = global::System.Windows.WindowState.Maximized;
 		
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
-	public function new(title: String) {
+	public function new(title: String, width: Int, height: Int) {
 		
 	}
 	
@@ -265,8 +265,6 @@ class SystemImpl {
 	public static var frameworkElement: StoryPublishCanvas;
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
-		pixelWidth = width;
-		pixelHeight = height;
 		SystemImpl.title = title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
@@ -277,10 +275,10 @@ class SystemImpl {
 		//Sys.pixelHeight = gameToStart.height = Loader.the.height;
 		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
-			mainWindow = new MainWindow(title);
+			mainWindow = new MainWindow(title, width, height);
 			frameworkElement = mainWindow.canvas;
 		}
-		painter = new kha.wpf.Painter(System.get_pixelWidth(), System.get_pixelHeight());
+		painter = new kha.wpf.Painter(width, height);
 		framebuffer = new Framebuffer(null, painter, null);
 		Scheduler.start();
 		//if (autostartGame) gameToStart.loadFinished();
@@ -407,16 +405,14 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 	
-	public static var pixelWidth: Int = 640;
-	
-	public static var pixelHeight: Int = 480;
-	
+	@:functionCode('return (int)mainWindow.canvas.ActualWidth;')
 	public static function getPixelWidth(): Int {
-		return pixelWidth;
+		return 0;
 	}
 	
+	@:functionCode('return (int)mainWindow.canvas.ActualHeight;')
 	public static function getPixelHeight(): Int {
-		return pixelHeight;
+		return 0;
 	}
 	
 	public static function getSystemId(): String {
@@ -444,16 +440,17 @@ class SystemImpl {
 		
   	}
 
-	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
-	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 	
-	@:functionCode('mainWindow.resize(pixelWidth = width, pixelHeight = height);')
+	//@:functionCode('mainWindow.resize(width, height);')
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+		painter.width = width;
+		painter.height = height;
 	}
 }
