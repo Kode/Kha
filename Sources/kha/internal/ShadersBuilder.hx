@@ -9,10 +9,6 @@ import sys.io.File;
 using StringTools;
 
 class ShadersBuilder {
-	private static function fixName(name: String): String {
-		return name.replace("-", "_").replace(".", "_");
-	}
-
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
@@ -23,7 +19,7 @@ class ShadersBuilder {
 		
 		for (file in files) {
 			var name: String = file.name;
-			var fixedName: String = fixName(name);
+			var fixedName: String = name;
 			var dataName = fixedName + "Data";
 			var filename = file.files[0];
 			
@@ -38,7 +34,7 @@ class ShadersBuilder {
 					pos: Context.currentPos()
 				});
 				
-				if (name.endsWith(".vert")) {
+				if (name.endsWith("_vert")) {
 					fields.push({
 						name: fixedName,
 						doc: null,

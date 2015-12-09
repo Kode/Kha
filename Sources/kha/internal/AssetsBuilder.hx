@@ -9,10 +9,6 @@ import sys.io.File;
 using StringTools;
 
 class AssetsBuilder {
-	private static function fixName(name: String): String {
-		return name.replace("-", "_").replace(".", "_");
-	}
-	
 	public static function findResources(): String {
 		var output = Compiler.getOutput();
 		output = output.replace("\\", "/");
@@ -34,7 +30,7 @@ class AssetsBuilder {
 		var content = Json.parse(File.getContent(findResources() + "files.json"));
 		var files: Iterable<Dynamic> = content.files;
 		for (file in files) {
-			var name = fixName(file.name);
+			var name = file.name;
 			var filename = file.files[0];
 			
 			if (file.type == type) {
