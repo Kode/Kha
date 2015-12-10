@@ -42,8 +42,13 @@ class LoaderImpl {
 		done(new kha.kore.Video(desc.files[0]));
 	}
 	
+	@:functionCode('return Kore::System::videoFormats()[0];')
+	private static function videoFormat(): String {
+		return "";
+	}
+	
 	public static function getVideoFormats(): Array<String> {
-		return ["mp4"];
+		return [videoFormat()];
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')
