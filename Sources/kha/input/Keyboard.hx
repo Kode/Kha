@@ -7,8 +7,7 @@ import kha.network.Controller;
 @:expose
 class Keyboard extends Controller {
 	public static function get(num: Int = 0): Keyboard {
-		if (num != 0) return null;
-		return instance;
+		return SystemImpl.getKeyboard(num);
 	}
 	
 	public function notify(downListener: Key->String->Void, upListener: Key->String->Void): Void {
@@ -21,6 +20,14 @@ class Keyboard extends Controller {
 		if (upListener != null) upListeners.remove(upListener);
 	}
 	
+	public function show(): Void {
+
+	}
+
+	public function hide(): Void {
+
+	}
+
 	private static var instance: Keyboard;
 	private var downListeners: Array<Key->String->Void>;
 	private var upListeners: Array<Key->String->Void>;

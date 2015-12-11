@@ -42,6 +42,11 @@ class SystemImpl {
 		if (num != 0) return null;
 		return mouse;
 	}
+
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num != 0) return null;
+		return keyboard;
+	}
 	
 	@:functionCode('
 		return Kore::System::time();
@@ -95,7 +100,7 @@ class SystemImpl {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
-		keyboard = new Keyboard();
+		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
 		surface = new Surface();
