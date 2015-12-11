@@ -252,6 +252,11 @@ class SystemImpl {
 		if (num != 0) return null;
 		return mouse;
 	}
+
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num != 0) return null;
+		return keyboard;
+	}
 	
 	private static var mainWindow: MainWindow;
 	private static var openWindow: Bool = true;

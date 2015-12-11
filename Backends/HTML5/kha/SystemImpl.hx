@@ -132,6 +132,11 @@ class SystemImpl {
 		return mouse;
 	}
 	
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num != 0) return null;
+		return keyboard;
+	}
+	
 	static function checkGamepadButton(pad: Dynamic, num: Int) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {

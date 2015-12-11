@@ -110,6 +110,11 @@ class SystemImpl {
 		if (num != 0) return null;
 		return mouse;
 	}
+
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num != 0) return null;
+		return keyboard;
+	}
 	
 	private static function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
