@@ -110,4 +110,8 @@ class System {
 	public static function changeResolution(width: Int, height: Int): Void {
 		SystemImpl.changeResolution(width, height);
 	}
+	
+	public static function loadUrl(url: String): Void {
+		
+	}
 }
