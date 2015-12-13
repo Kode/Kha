@@ -37,6 +37,9 @@ class VertexBuffer {
 			case 3:
 				data = Kore::Float4VertexData;
 				break;
+			case 4:
+				data = Kore::Float4x4VertexData;
+				break;
 			}
 			structure2.add(structure->get(i)->name, data);
 		}

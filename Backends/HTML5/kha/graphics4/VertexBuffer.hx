@@ -121,10 +121,6 @@ class VertexBuffer {
 				}
 				++attributesOffset;
 			}
-			//4, 4
-			//Sys.gl.vertexAttribPointer(locationID + i, structureSize, Sys.gl.FLOAT, false, 4 * structureSize * structureCount, i * 4 * structureSize);
-			
-			
 		}
 		return attributesOffset;
 	}

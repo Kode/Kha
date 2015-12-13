@@ -58,6 +58,9 @@ class PipelineState extends PipelineStateBase {
 				case 3:
 					data = Kore::Float4VertexData;
 					break;
+				case 4:
+					data = Kore::Float4x4VertexData;
+					break;
 				}
 				structures2[i1]->add((*structures[i1])->get(i2)->name, data);
 			}
