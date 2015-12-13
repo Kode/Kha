@@ -11,6 +11,11 @@ using StringTools;
 class AssetsBuilder {
 	public static function findResources(): String {
 		var output = Compiler.getOutput();
+		if (output == "Nothing__") { // For Haxe background compilation
+			#if kha_output
+			output = Compiler.getDefine("kha_output");
+			#end
+		}
 		output = output.replace("\\", "/");
 		output = output.substring(0, output.lastIndexOf("/"));
 		if (output.lastIndexOf("/") >= 0) {
