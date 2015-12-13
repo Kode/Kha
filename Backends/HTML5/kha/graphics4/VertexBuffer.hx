@@ -105,6 +105,9 @@ class VertexBuffer {
 				while (size >= 0) {
 					SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
 					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, SystemImpl.gl.FLOAT, false, myStride, offsets[i] + addonOffset);
+					if (ext) {
+						ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+					}
 					size -= 4;
 					addonOffset += 4 * 4;
 					++attributesOffset;
@@ -113,13 +116,14 @@ class VertexBuffer {
 			else {
 				SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
 				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], SystemImpl.gl.FLOAT, false, myStride, offsets[i]);
+				if (ext) {
+					ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+				}
 				++attributesOffset;
 			}
 			//4, 4
 			//Sys.gl.vertexAttribPointer(locationID + i, structureSize, Sys.gl.FLOAT, false, 4 * structureSize * structureCount, i * 4 * structureSize);
-			if (ext) {
-				ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
-			}
+			
 			
 		}
 		return attributesOffset;
