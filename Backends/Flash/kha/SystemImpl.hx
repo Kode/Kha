@@ -3,7 +3,6 @@ package kha;
 import flash.display.StageScaleMode;
 import flash.display3D.Context3DProfile;
 import kha.flash.utils.AGALMiniAssembler;
-import kha.flash.utils.PerspectiveMatrix3D;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.MouseImpl;
@@ -53,7 +52,7 @@ class SystemImpl {
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 		
-		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
+		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.BASELINE);
 		
 		// TODO: Move?
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
