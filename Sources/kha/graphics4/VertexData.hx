@@ -5,4 +5,5 @@ enum VertexData {
 	Float2;
 	Float3;
 	Float4;
+	Float4x4;
 }

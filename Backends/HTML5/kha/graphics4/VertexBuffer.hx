@@ -22,14 +22,16 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case VertexData.Float1:
+			case Float1:
 				myStride += 4 * 1;
-			case VertexData.Float2:
+			case Float2:
 				myStride += 4 * 2;
-			case VertexData.Float3:
+			case Float3:
 				myStride += 4 * 3;
-			case VertexData.Float4:
+			case Float4:
 				myStride += 4 * 4;
+			case Float4x4:
+				myStride += 4 * 4 * 4;
 			}
 		}
 	
@@ -46,26 +48,30 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			var size;
 			switch (element.data) {
-			case VertexData.Float1:
+			case Float1:
 				size = 1;
-			case VertexData.Float2:
+			case Float2:
 				size = 2;
-			case VertexData.Float3:
+			case Float3:
 				size = 3;
-			case VertexData.Float4:
+			case Float4:
 				size = 4;
+			case Float4x4:
+				size = 4 * 4;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
 			switch (element.data) {
-			case VertexData.Float1:
+			case Float1:
 				offset += 4 * 1;
-			case VertexData.Float2:
+			case Float2:
 				offset += 4 * 2;
-			case VertexData.Float3:
+			case Float3:
 				offset += 4 * 3;
-			case VertexData.Float4:
+			case Float4:
 				offset += 4 * 4;
+			case Float4x4:
+				offset += 4 * 4 * 4;
 			}
 			++index;
 		}
@@ -91,13 +97,31 @@ class VertexBuffer {
 	public function set(offset: Int): Int {
 		var ext: Dynamic = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
 		SystemImpl.gl.bindBuffer(SystemImpl.gl.ARRAY_BUFFER, buffer);
+		var attributesOffset = 0;
 		for (i in 0...sizes.length) {
-			SystemImpl.gl.enableVertexAttribArray(i + offset);
-			SystemImpl.gl.vertexAttribPointer(i + offset, sizes[i], SystemImpl.gl.FLOAT, false, myStride, offsets[i]);
-			if (ext) {
-				ext.vertexAttribDivisorANGLE(i + offset, instanceDataStepRate);
+			if (sizes[i] > 4) {
+				var size = sizes[i];
+				var addonOffset = 0;
+				while (size >= 0) {
+					SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
+					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, SystemImpl.gl.FLOAT, false, myStride, offsets[i] + addonOffset);
+					size -= 4;
+					addonOffset += 4 * 4;
+					++attributesOffset;
+				}
 			}
+			else {
+				SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
+				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], SystemImpl.gl.FLOAT, false, myStride, offsets[i]);
+				++attributesOffset;
+			}
+			//4, 4
+			//Sys.gl.vertexAttribPointer(locationID + i, structureSize, Sys.gl.FLOAT, false, 4 * structureSize * structureCount, i * 4 * structureSize);
+			if (ext) {
+				ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+			}
+			
 		}
-		return sizes.length;
+		return attributesOffset;
 	}
 }
