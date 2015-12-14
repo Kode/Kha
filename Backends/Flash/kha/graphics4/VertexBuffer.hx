@@ -28,6 +28,8 @@ class VertexBuffer {
 				myStride += 3;
 			case VertexData.Float4:
 				myStride += 4;
+			case VertexData.Float4x4:
+				myStride += 4 * 4;
 			}
 		}
 		myStructure = structure;
@@ -59,17 +61,26 @@ class VertexBuffer {
 			case VertexData.Float1:
 				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
 				offset += 1;
+				++index;
 			case VertexData.Float2:
 				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
 				offset += 2;
+				++index;
 			case VertexData.Float3:
 				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_3);
 				offset += 3;
+				++index;
 			case VertexData.Float4:
 				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
 				offset += 4;
+				++index;
+			case VertexData.Float4x4:
+				for (i in 0...4) {
+					kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
+					offset += 4;
+					++index;
+				}
 			}
-			++index;
 		}
 		for (i in index...8) kha.flash.graphics4.Graphics.context.setVertexBufferAt(i, null);
 	}
