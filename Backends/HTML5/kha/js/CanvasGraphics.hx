@@ -4,17 +4,19 @@ import js.Browser;
 import kha.Color;
 import kha.FontStyle;
 import kha.graphics2.Graphics;
+import kha.graphics2.ImageScaleQuality;
 import kha.Kravur;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.Rotation;
 
 class CanvasGraphics extends Graphics {
-	var canvas: Dynamic;
-	var webfont: kha.js.Font;
-	var width: Int;
-	var height: Int;
+	private var canvas: Dynamic;
+	private var webfont: kha.js.Font;
+	private var width: Int;
+	private var height: Int;
 	private var myColor: Color;
+	private var scaleQuality: ImageScaleQuality;
 	private static var instance: CanvasGraphics;
 	
 	public function new(canvas: Dynamic, width: Int, height: Int) {
@@ -102,6 +104,26 @@ class CanvasGraphics extends Graphics {
 	
 	override public function get_color(): Color {
 		return myColor;
+	}
+	
+	override private function get_imageScaleQuality(): ImageScaleQuality {
+		return scaleQuality;
+	}
+	
+	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		if (value == ImageScaleQuality.Low) {
+			canvas.mozImageSmoothingEnabled = false;
+			canvas.webkitImageSmoothingEnabled = false;
+			canvas.msImageSmoothingEnabled = false;
+			canvas.imageSmoothingEnabled = false;
+		}
+		else {
+			canvas.mozImageSmoothingEnabled = true;
+			canvas.webkitImageSmoothingEnabled = true;
+			canvas.msImageSmoothingEnabled = true;
+			canvas.imageSmoothingEnabled = true;
+		}
+		return scaleQuality = value;
 	}
 	
 	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0) {
