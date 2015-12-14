@@ -205,6 +205,6 @@ class CanvasGraphics extends Graphics {
 	
 	override public function setTransformation(transformation: FastMatrix3): Void {
 		canvas.setTransform(transformation._00, transformation._01, transformation._10,
-			transformation._11, transformation._20, transformation._12);
+			transformation._11, transformation._20, transformation._21);
 	}
 }
