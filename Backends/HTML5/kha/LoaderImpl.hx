@@ -91,7 +91,8 @@ class LoaderImpl {
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
-			done(new Kravur(blob));
+			if (SystemImpl.gl == null) done(new kha.js.Font(new Kravur(blob)));
+			else done(new Kravur(blob));
 		});
 	}
 	
