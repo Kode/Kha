@@ -52,7 +52,7 @@ class SystemImpl {
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 		
-		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.BASELINE);
+		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 		
 		// TODO: Move?
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
