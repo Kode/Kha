@@ -44,6 +44,9 @@ class SystemImpl {
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
 		init2();
+
+		changeResolution(width, height);
+
 		//MouseImpl.init();
 		callback();
 	}
@@ -722,6 +725,7 @@ class SystemImpl {
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+		khanvas.width = width;
+		khanvas.height = height;
 	}
 }
