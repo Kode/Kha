@@ -134,7 +134,7 @@ class MainWindow extends system.windows.Window {
 			if (e.Text != "") {
 				char[] chararray = e.Text.ToCharArray();
 				int c = global::System.Convert.ToInt32((char)chararray[0]);
-				if (c > 32) {
+				if (c >= 32) {
 					keyboard.sendDownEvent(Key.CHAR, e.Text);
 				}
 			}
