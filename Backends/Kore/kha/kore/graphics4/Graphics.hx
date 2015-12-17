@@ -442,7 +442,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		float v[100];
+		float v[values->length];
 		for (int i = 0; i < values->length; ++i) v[i] = values[i];
 		Kore::Graphics::setFloats(location->location, v, values->length);
 	')
