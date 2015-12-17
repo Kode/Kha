@@ -63,6 +63,8 @@ class Scheduler {
 	
 	private static var lastNow: Float = 0;
 	
+	private static var activeTimeTask: TimeTask = null;
+	
 	public static function init(): Void {
 		deltas = new Array<Float>();
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
@@ -189,23 +191,25 @@ class Scheduler {
 		}
 		
 		for (t in timeTasks) {
-			if (stopped || t.paused) { // Extend endpoint by paused time
-				t.next += delta;
+			activeTimeTask = t;
+			if (stopped || activeTimeTask.paused) { // Extend endpoint by paused time
+				activeTimeTask.next += delta;
 			}
-			else if (t.next <= frameEnd) {
-				t.next += t.period;
-				timeTasks.remove(t);
+			else if (activeTimeTask.next <= frameEnd) {
+				activeTimeTask.next += t.period;
+				timeTasks.remove(activeTimeTask);
 				
-				if (t.active && t.task()) {
-					if (t.period > 0 && (t.duration == 0 || t.duration >= t.start + t.next)) {
-						insertSorted(timeTasks, t);
+				if (activeTimeTask.active && activeTimeTask.task()) {
+					if (activeTimeTask.period > 0 && (activeTimeTask.duration == 0 || activeTimeTask.duration >= activeTimeTask.start + activeTimeTask.next)) {
+						insertSorted(timeTasks, activeTimeTask);
 					}
 				}
 				else {
-					t.active = false;
+					activeTimeTask.active = false;
 				}
 			}
 		}
+		activeTimeTask = null;
 		
 		for (timeTask in timeTasks) {
 			if (!timeTask.active) {
@@ -322,6 +326,7 @@ class Scheduler {
 	}
 
 	private static function getTimeTask(id: Int): TimeTask {
+		if (activeTimeTask != null && activeTimeTask.id == id) return activeTimeTask;
 		for (timeTask in timeTasks) {
 			if (timeTask.id == id) {
 				return timeTask;
@@ -331,7 +336,7 @@ class Scheduler {
 	}
 
 	public static function pauseTimeTask(id: Int, paused: Bool): Void {
-		var timeTask : TimeTask = getTimeTask(id);
+		var timeTask = getTimeTask(id);
 		if (timeTask != null) {
 			timeTask.paused = paused;
 		}
@@ -343,10 +348,13 @@ class Scheduler {
 				timeTask.paused = paused;
 			}
 		}
+		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
+			activeTimeTask.paused = true;
+		}
 	}
 
 	public static function removeTimeTask(id: Int): Void {
-		var timeTask : TimeTask = getTimeTask(id);
+		var timeTask = getTimeTask(id);
 		if (timeTask != null) {
 			timeTask.active = false;
 			timeTasks.remove(timeTask);
@@ -356,10 +364,13 @@ class Scheduler {
 	public static function removeTimeTasks(groupId: Int): Void {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
-				timeTask.active = true;
+				timeTask.active = false;
 				toDeleteTime.push(timeTask);
 			}
 		}
+		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
+			activeTimeTask.paused = false;
+		} 
 		
 		while (toDeleteTime.length > 0) {
 			timeTasks.remove(toDeleteTime.pop());
