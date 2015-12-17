@@ -1,5 +1,6 @@
 package kha.kore.graphics4;
 
+import haxe.ds.Vector;
 import kha.Blob;
 import kha.Color;
 import kha.graphics4.CubeMap;
@@ -19,6 +20,10 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.Image;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
+import kha.math.FastVector4;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -360,93 +365,91 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
+	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		setFloatPrivate(cast location, value);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat(location->location, value);
 	')
-	private function setFloatPrivate(location: ConstantLocation, value: Float): Void {
+	private function setFloatPrivate(location: ConstantLocation, value: FastFloat): Void {
 		
 	}
 	
-	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
+	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		setFloat2Private(cast location, value1, value2);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat2(location->location, value1, value2);
 	')
-	private function setFloat2Private(location: ConstantLocation, value1: Float, value2: Float): Void {
+	private function setFloat2Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		
 	}
 	
-	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		setFloat3Private(cast location, value1, value2, value3);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat3(location->location, value1, value2, value3);
 	')
-	private function setFloat3Private(location: ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+	private function setFloat3Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		
 	}
 	
-	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		setFloat4Private(cast location, value1, value2, value3, value4);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat4(location->location, value1, value2, value3, value4);
 	')
-	private function setFloat4Private(location: ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+	private function setFloat4Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		
 	}
 	
-	public function setVector2(location: kha.graphics4.ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		setVector2Private(cast location, value.x, value.y);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat2(location->location, x, y);
 	')
-	private function setVector2Private(location: ConstantLocation, x: Float, y: Float): Void {
+	private function setVector2Private(location: ConstantLocation, x: FastFloat, y: FastFloat): Void {
 		
 	}
 	
-	public function setVector3(location: kha.graphics4.ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		setVector3Private(cast location, value.x, value.y, value.z);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat3(location->location, x, y, z);
 	')
-	private function setVector3Private(location: ConstantLocation, x: Float, y: Float, z: Float): Void {
+	private function setVector3Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat): Void {
 		
 	}
 	
-	public function setVector4(location: kha.graphics4.ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		setVector4Private(cast location, value.x, value.y, value.z, value.w);
 	}
 	
 	@:functionCode('
 		Kore::Graphics::setFloat4(location->location, x, y, z, w);
 	')
-	private function setVector4Private(location: ConstantLocation, x: Float, y: Float, z: Float, w: Float): Void {
+	private function setVector4Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat, w: FastFloat): Void {
 		
 	}
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
 		setFloatsPrivate(cast location, values);
 	}
 	
 	@:functionCode('
-		float v[100];
-		for (int i = 0; i < values->length; ++i) v[i] = values[i];
-		Kore::Graphics::setFloats(location->location, v, values->length);
+		Kore::Graphics::setFloats(location->location, values->Pointer(), values->length);
 	')
-	private function setFloatsPrivate(location: ConstantLocation, values: Array<Float>): Void {
+	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
 		
 	}
 	
@@ -459,7 +462,7 @@ class Graphics implements kha.graphics4.Graphics {
 		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
-	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		
 	}
 	

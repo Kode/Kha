@@ -14,6 +14,7 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
 import kha.input.Keyboard;
+import kha.math.FastMatrix4;
 import kha.math.Matrix4;
 import kha.math.Quaternion;
 import kha.math.Vector4;
@@ -215,7 +216,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		g.setVertexBuffer(vb);
 		g.setIndexBuffer(ib);
 		var matrixLocation: ConstantLocation = pipeline.getConstantLocation("projectionMatrix");
-		var p: Matrix4 = Matrix4.identity();
+		var p: FastMatrix4 = FastMatrix4.identity();
 		g.setMatrix(matrixLocation, p);
 		var texture: TextureUnit = pipeline.getTextureUnit("tex");
 		

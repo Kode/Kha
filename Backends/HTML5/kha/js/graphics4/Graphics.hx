@@ -20,6 +20,10 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
 import kha.Image;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
+import kha.math.FastVector4;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -278,41 +282,41 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.uniform1i(cast(location, ConstantLocation).value, value);
 	}
 	
-	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
+	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		SystemImpl.gl.uniform1f(cast(location, ConstantLocation).value, value);
 	}
 	
-	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
+	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		SystemImpl.gl.uniform2f(cast(location, ConstantLocation).value, value1, value2);
 	}
 	
-	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		SystemImpl.gl.uniform3f(cast(location, ConstantLocation).value, value1, value2, value3);
 	}
 	
-	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value1, value2, value3, value4);
 	}
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
 		SystemImpl.gl.uniform1fv(cast(location, ConstantLocation).value, values);
 	}
 	
-	public function setVector2(location: kha.graphics4.ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		SystemImpl.gl.uniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}
 	
-	public function setVector3(location: kha.graphics4.ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		SystemImpl.gl.uniform3f(cast(location, ConstantLocation).value, value.x, value.y, value.z);
 	}
 	
-	public function setVector4(location: kha.graphics4.ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 	
 	private var matrixCache = new Vector<Float>(16);
 	
-	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
 		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;

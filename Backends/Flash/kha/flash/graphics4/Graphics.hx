@@ -33,6 +33,10 @@ import kha.graphics4.TextureFilter;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexShader;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
+import kha.math.FastVector4;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -306,14 +310,14 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 
-	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
+	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value;
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
+	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value1;
@@ -321,7 +325,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
+	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value1;
@@ -330,7 +334,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
+	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value1;
@@ -340,7 +344,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setVector2(location: kha.graphics4.ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value.x;
@@ -348,7 +352,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setVector3(location: kha.graphics4.ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value.x;
@@ -357,7 +361,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setVector4(location: kha.graphics4.ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
 		vec[0] = value.x;
@@ -367,7 +371,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 	
-	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		var projection = new Matrix3D();
 		var vec = new Vector<Float>(16);
 		vec[ 0] = matrix._00; vec[ 1] = matrix._01; vec[ 2] = matrix._02; vec[ 3] = matrix._03;
@@ -379,11 +383,9 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
 	}
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
-		var flashLocation = cast(location, ConstantLocation);
-		var vec = new Vector<Float>(values.length);
-		for (i in 0...values.length) vec[i] = values[i];
-		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: haxe.ds.Vector<FastFloat>): Void {
+		var flashLocation: ConstantLocation = cast location;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, values.toData());
 	}
 	
 	//public function renderToBackbuffer(): Void {

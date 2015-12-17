@@ -21,6 +21,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexStructure;
 import kha.math.FastMatrix3;
+import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
@@ -29,7 +30,7 @@ import kha.Shaders;
 import kha.simd.Float32x4;
 
 class ImageShaderPainter {
-	private var projectionMatrix: Matrix4;
+	private var projectionMatrix: FastMatrix4;
 	private var shaderPipeline: PipelineState;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -74,7 +75,7 @@ class ImageShaderPainter {
 		return myPipeline = pipe;
 	}
 	
-	public function setProjection(projectionMatrix: Matrix4): Void {
+	public function setProjection(projectionMatrix: FastMatrix4): Void {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
@@ -253,7 +254,7 @@ class ImageShaderPainter {
 }
 
 class ColoredShaderPainter {
-	private var projectionMatrix: Matrix4;
+	private var projectionMatrix: FastMatrix4;
 	private var shaderPipeline: PipelineState;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -300,7 +301,7 @@ class ColoredShaderPainter {
 		return myPipeline = pipe;
 	}
 	
-	public function setProjection(projectionMatrix: Matrix4): Void {
+	public function setProjection(projectionMatrix: FastMatrix4): Void {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
@@ -508,7 +509,7 @@ class ColoredShaderPainter {
 @:headerClassCode("const wchar_t* wtext;")
 #end
 class TextShaderPainter {
-	private var projectionMatrix: Matrix4;
+	private var projectionMatrix: FastMatrix4;
 	private var shaderPipeline: PipelineState;
 	private var structure: VertexStructure;
 	private var projectionLocation: ConstantLocation;
@@ -553,7 +554,7 @@ class TextShaderPainter {
 		return myPipeline = pipe;
 	}
 	
-	public function setProjection(projectionMatrix: Matrix4): Void {
+	public function setProjection(projectionMatrix: FastMatrix4): Void {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
@@ -751,7 +752,7 @@ class TextShaderPainter {
 class Graphics2 extends kha.graphics2.Graphics {
 	private var myColor: Color;
 	private var myFont: Font;
-	private var projectionMatrix: Matrix4;
+	private var projectionMatrix: FastMatrix4;
 	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
@@ -798,16 +799,16 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var width = canvas.width;
 		var height = canvas.height;
 		if (Std.is(canvas, Framebuffer)) {
-			projectionMatrix = Matrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
+			projectionMatrix = FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
 		} else {
 			if (!Image.nonPow2Supported) {
 				width = upperPowerOfTwo(width);
 				height = upperPowerOfTwo(height);
 			}
 			if (g.renderTargetsInvertedY()) {
-				projectionMatrix = Matrix4.orthogonalProjection(0, width, 0, height, 0.1, 1000);
+				projectionMatrix = FastMatrix4.orthogonalProjection(0, width, 0, height, 0.1, 1000);
 			} else {
-				projectionMatrix = Matrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
+				projectionMatrix = FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
 			}
 		}
 		imagePainter.setProjection(projectionMatrix);
