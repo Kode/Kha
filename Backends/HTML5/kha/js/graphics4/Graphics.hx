@@ -41,7 +41,7 @@ class Graphics implements kha.graphics4.Graphics {
 		instancedExtension = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
 	}
 
-	public function begin(): Void {
+	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		SystemImpl.gl.enable(SystemImpl.gl.BLEND);
 		SystemImpl.gl.blendFunc(SystemImpl.gl.SRC_ALPHA, SystemImpl.gl.ONE_MINUS_SRC_ALPHA);
 		if (renderTarget == null) {
@@ -51,6 +51,17 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			SystemImpl.gl.bindFramebuffer(SystemImpl.gl.FRAMEBUFFER, renderTarget.frameBuffer);
 			SystemImpl.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
+			if (additionalRenderTargets != null) {
+				SystemImpl.gl.framebufferTexture2D(SystemImpl.gl.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, SystemImpl.gl.TEXTURE_2D, renderTarget.texture, 0);
+				for (i in 0...additionalRenderTargets.length) {
+					SystemImpl.gl.framebufferTexture2D(SystemImpl.gl.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, SystemImpl.gl.TEXTURE_2D, cast(additionalRenderTargets[i], WebGLImage).texture, 0);
+				}
+				var attachments = [SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL];
+				for (i in 0...additionalRenderTargets.length) {
+					attachments.push(SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1);
+				}
+				SystemImpl.drawBuffers.drawBuffersWEBGL(attachments);
+			}
 		}
 	}
 	

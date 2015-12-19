@@ -28,6 +28,7 @@ class GamepadStates {
 
 class SystemImpl {
 	public static var gl: Dynamic;
+	public static var drawBuffers: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
@@ -185,6 +186,7 @@ class SystemImpl {
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(SystemImpl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 				SystemImpl.gl.getExtension("OES_texture_float");
+				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
 				gl = true;
 				Shaders.init();
 			}

@@ -514,7 +514,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function begin(): Void {
+	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) renderToBackbuffer();
 		else renderToTexture();
 	}

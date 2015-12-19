@@ -22,6 +22,7 @@ class WebGLImage extends Image {
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
 	public var renderBuffer: Dynamic;
+	public var texture: Dynamic;
 	
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -107,8 +108,6 @@ class WebGLImage extends Image {
 		context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
 		data = context.getImageData(0, 0, image.width, image.height);
 	}
-		
-	private var texture: Dynamic;
 	
 	private static function upperPowerOfTwo(v: Int): Int {
 		v--;

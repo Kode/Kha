@@ -12,7 +12,7 @@ import kha.math.FastVector4;
 import kha.Video;
 
 interface Graphics {
-	function begin(): Void;
+	function begin(additionalRenderTargets: Array<Canvas> = null): Void;
 	function end(): Void;
 	
 	function vsynced(): Bool;

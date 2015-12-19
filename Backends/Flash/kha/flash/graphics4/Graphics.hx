@@ -400,7 +400,7 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 	
-	public function begin(): Void {
+	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) context.setRenderToBackBuffer();
 		else context.setRenderToTexture(target.getFlashTexture(), target.hasDepthStencil());
 	}
