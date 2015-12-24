@@ -26,7 +26,7 @@ class Blob implements Resource {
 		var b = new BytesData();
 		bytes.position = start;
 		bytes.readBytes(b, 0, length);
-		return new Blob(bytes);
+		return new Blob(b);
 	}
 	
 	public var length(get, null): Int;
@@ -54,7 +54,8 @@ class Blob implements Resource {
 	
 	public function readU8(position: Int): Int {
 		bytes.position = position;
-		return bytes.readUnsignedByte();
+		var value = bytes.readUnsignedByte();
+		return value;
 	}
 		
 	public function readS16LE(position: Int): Int {
