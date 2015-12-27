@@ -102,7 +102,7 @@ class VertexBuffer {
 			if (sizes[i] > 4) {
 				var size = sizes[i];
 				var addonOffset = 0;
-				while (size >= 0) {
+				while (size > 0) {
 					SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
 					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, SystemImpl.gl.FLOAT, false, myStride, offsets[i] + addonOffset);
 					if (ext) {
