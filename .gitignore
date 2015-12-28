@@ -1,17 +1,16 @@
-###########
-#         #
-# PROJECT #
-#         #
-###########
+# PROJECT
+# ------------------------------
 
 *.sublime-project
 *.sublime-workspace
 
-###########
-#         #
-# WINDOWS #
-#         #
-###########
+.idea
+node_modules
+
+
+# WINDOWS
+# ------------------------------
+
 Desktop.ini
 Thumbs.db
 ehthumbs.db
@@ -24,11 +23,10 @@ ehthumbs.db
 
 $RECYCLE.BIN/
 
-###########
-#         #
-# MAC OSX #
-#         #
-###########
+
+# MAC OSX
+# ------------------------------
+
 .DocumentRevisions-V100
 .VolumeIcon.icns
 .Spotlight-V100

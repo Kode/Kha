@@ -8,7 +8,7 @@
 
  /* LABEL - Black */
  .ui.black.labels .label, .ui.black.label {
-  background-color: rgba(0,0,0,0.1) !important;
+  background-color: rgba(0,0,0,0.4) !important;
   border-color: rgba(0,0,0,0.9) !important;
   color: rgba(255,255,255,0.9) !important;
 }
@@ -67,8 +67,7 @@
 .ui.steps .link.step:hover,
 .ui.steps a.step:hover::after,
 .ui.steps a.step:hover {
-  background: rgb(182, 255, 236);
-  box-shadow: 0px 0px 0px 1px #9BFFE5;
+  background: rgb(205, 245, 255);
   border-radius: 0;
   color: #003335;
 }
@@ -196,7 +195,7 @@
 
 /* Homepage HEADER Content */
 .homehead.center.aligned.segment {
-	background-image: url("../../assets/images/spiralride.jpg");
+	background-image: url("../../assets/images/lowpoly.jpg");
 	background-size: cover;
 	padding: 0;
 }
@@ -300,7 +299,7 @@
 
 /* Engines Segment */
 .ui.vertical.stripe.engines {
-	background-color: #00767B !important;
+	background-color: #2185D0 !important;
 }
 .ui.vertical.stripe.engines h3 {
 	font-size: 3.5em;
