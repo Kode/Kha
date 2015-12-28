@@ -1,10 +1,10 @@
-/*eslint-env node*/
+/*jshint node:true*/
 
 //------------------------------------------------------------------------------
 // node.js starter application for Bluemix
 //------------------------------------------------------------------------------
 
-// This application uses express as its web server
+// This application uses express as it's web server
 // for more info, see: http://expressjs.com
 var express = require('express');
 
@@ -22,7 +22,7 @@ app.use(express.static(__dirname + '/public'));
 var appEnv = cfenv.getAppEnv();
 
 // start server on the specified port and binding host
-app.listen(appEnv.port, '0.0.0.0', function() {
+app.listen(appEnv.port, appEnv.bind, function() {
 
 	// print a message when the server starts listening
   console.log("server starting on " + appEnv.url);

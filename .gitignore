@@ -1,0 +1,48 @@
+###########
+#         #
+# PROJECT #
+#         #
+###########
+
+*.sublime-project
+*.sublime-workspace
+
+###########
+#         #
+# WINDOWS #
+#         #
+###########
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+$RECYCLE.BIN/
+
+###########
+#         #
+# MAC OSX #
+#         #
+###########
+.DocumentRevisions-V100
+.VolumeIcon.icns
+.Spotlight-V100
+.TemporaryItems
+.AppleDesktop
+.AppleDouble
+.LSOverride
+.fseventsd
+.DS_Store
+.Trashes
+.AppleDB
+.apdisk
+._*
+
+Network Trash Folder
+Temporary Items
+Icon

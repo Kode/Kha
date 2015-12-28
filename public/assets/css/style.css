@@ -1,0 +1,374 @@
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
+
+/* * * * * * * *
+ *
+ * START Semantic Overrides
+ *
+ * */
+
+ /* LABEL - Black */
+ .ui.black.labels .label, .ui.black.label {
+  background-color: rgba(0,0,0,0.1) !important;
+  border-color: rgba(0,0,0,0.9) !important;
+  color: rgba(255,255,255,0.9) !important;
+}
+
+/* BUTTON - Inverted */
+.ui.inverted.button {
+  background: rgba(255,255,255,0.1) none;
+  box-shadow: 0px 0px 0px 2px #ffffff inset !important;
+  color: #ffffff;
+}
+.ui.inverted.button:hover {
+  background: rgba(255,255,255,0.1) none;
+  box-shadow: 0px 0px 0px 2px #ffffff inset !important;
+  color: #ffffff;
+}
+.ui.inverted.button:focus {
+  background: #ffffff;
+  box-shadow: 0px 0px 0px 2px #ffffff inset !important;
+  color: #111111;
+}
+.ui.inverted.button:active {
+  background: #ffffff;
+  box-shadow: 0px 0px 0px 2px #ffffff inset !important;
+  color: #111111;
+}
+
+/* BUTTON - Secondary */
+.ui.secondary.buttons .button,
+.ui.secondary.button {
+  background-color: rgba(0,0,0,0.9);
+  color: #ffffff;
+  text-shadow: none;
+  background-image: none;
+}
+.ui.secondary.buttons .button:hover,
+.ui.secondary.button:hover {
+  background-color: rgba(0,0,0,0.9);
+  color: #ffffff;
+  text-shadow: none;
+}
+.ui.secondary.buttons .button:focus,
+.ui.secondary.button:focus {
+  background-color: #ffffff;
+  color: #111111;
+  text-shadow: none;
+}
+.ui.secondary.buttons .button:active,
+.ui.secondary.button:active {
+  background-color: #ffffff;
+  color: #111111;
+  text-shadow: none;
+}
+
+/* STEP - Link Hover */
+.ui.steps .link.step:hover::after,
+.ui.steps .link.step:hover,
+.ui.steps a.step:hover::after,
+.ui.steps a.step:hover {
+  background: rgb(182, 255, 236);
+  box-shadow: 0px 0px 0px 1px #9BFFE5;
+  border-radius: 0;
+  color: #003335;
+}
+.ui.steps .link.step:focus::after,
+.ui.steps .link.step:focus,
+.ui.steps a.step:focus::after,
+.ui.steps a.step:focus {
+  background: rgb(182, 255, 236);
+  box-shadow: 0px 0px 0px 1px #9BFFE5;
+  border-radius: 0;
+  color: #003335;
+  outline: 0;
+}
+.ui.steps .link.step:active::after,
+.ui.steps .link.step:active,
+.ui.steps a.step:active::after,
+.ui.steps a.step:active {
+  background: rgb(182, 255, 236);
+  box-shadow: 0px 0px 0px 1px #9BFFE5;
+  border-radius: 0;
+  color: #003335;
+  outline: 0;
+}
+
+/* SEGMENT - Inverted */
+.ui.inverted.segment,
+.ui.primary.inverted.segment {
+  background: #101022;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* *
+ *
+ * END Semantic Overrides
+ *
+ * * * * * * * */
+
+
+/* * * * * * * *
+ *
+ * START Semantic Customization
+ *
+ * */
+
+ /* GitHub Corner Label */
+.ui.corner .github {
+	top: 0.2em !important;
+	padding-right: 0.5em;
+	font-size: 1.7em !important;
+}
+/* Remove menu border */
+.ui.secondary.inverted.pointing.menu {
+	border-width: 0;
+}
+/* Remove shadow frame and fill background */
+.ui.message {
+	background: #EFEFEF;
+	box-shadow: 0px 0px 0px 1px rgba(34, 36, 38, 0.05) inset, 0px 0px 0px 0px rgba(0, 0, 0, 0);
+}
+/* Set menu items to white and smerald theme */
+.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
+	color: rgb(255, 255, 255) !important;
+}
+.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:hover {
+	color: rgba(255, 255, 255, 0.7) !important;
+	-webkit-transition: color 0.4s ease;
+	transition: color 0.4s ease;
+}
+.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:focus {
+	color: #338488 !important;
+	background-color: rgb(255, 255, 255);
+	outline: 0;
+	-webkit-transition: background-color 0.1s ease;
+	transition: background-color 0.1s ease;
+}
+.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:active {
+	color: #338488 !important;
+	background-color: rgb(255, 255, 255);
+	outline: 0;
+	-webkit-transition: background-color 0s ease;
+	transition: background-color 0s ease;
+}
+/* Set fixed menu items to white and smerald theme */
+.ui.menu.fixed .link.item, .ui.menu.fixed a.item:focus {
+	background-color: #338488 !important;
+	color: rgb(255, 255, 255);
+	outline: 0;
+	-webkit-transition: background-color 0.1s ease;
+	transition: background-color 0.1s ease;
+}
+.ui.menu.fixed .link.item, .ui.menu.fixed a.item:active {
+	background-color: #338488 !important;
+	color: rgb(255, 255, 255);
+	outline: 0;
+	-webkit-transition: background-color 0s ease;
+	transition: background-color 0s ease;
+}
+/* Messages */
+.ui.compact.message {
+	display: table;
+}
+/* Warning Message - Change to smerald color */
+.ui.warning.message {
+	box-shadow: 0px 0px 0px 1px #9BFFE5 inset, 0px 0px 0px 0px rgba(0, 0, 0, 0);
+	background-color: rgba(182, 255, 236, 0.35);
+	border-radius: 0;
+	color: #5AAAAD;
+}
+.ui.warning.message .header {
+	color: #338488;
+}
+
+/* *
+ *
+ * END Semantic Customization
+ *
+ * * * * * * * */
+
+
+/* * * * * * * *
+ *
+ * START Site Customization
+ *
+ * */
+
+/* Homepage HEADER Content */
+.homehead.center.aligned.segment {
+	background-image: url("../../assets/images/spiralride.jpg");
+	background-size: cover;
+	padding: 0;
+}
+.homehead h1.ui.header {
+	margin-top: 1.60em;
+	margin-bottom: 0em;
+	color: white;
+	font-family: "Arial";
+	font-size: 4.5em;
+	font-weight: bold;
+	text-shadow:
+	0 1px 0 #999,
+	0 2px 0 #909090,
+	0 3px 0 #888,
+	0 14px 10px rgba(0,0,0,0.45),
+	0 24px 2px rgba(0,0,0,0.1),
+	0 34px 30px rgba(0,0,0,0.1);
+}
+.homehead h2 {
+	color: white;
+	font-size: 1.7em;
+	font-weight: bold;
+	text-shadow: 0px 0px 6px rgba(50,50,50,0.7);
+}
+.homehead p {
+	color: rgb(255, 255, 255);
+	font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-size: 1.33em;
+	font-weight: normal;
+}
+.black.layer {
+	background: rgba(0,0,0,0.25) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHElEQVQIW2NkYGCoZ2BgaGSAAkYYAyYBEsCvAgCC3gQFmrZRQgAAAABJRU5ErkJggg==);
+}
+
+/* Small HEADER */
+.smallhead.center.aligned.segment {
+	background-color: #00767B !important;
+	padding-bottom: 20px;
+}
+.smallhead div.ui.header b{
+	color: #111;
+	font-family: "Arial";
+	font-size: 2.5em;
+}
+.smallhead div.ui.header {
+	color: rgba(0, 0, 0, 0.6);
+	font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-size: 1.33em;
+	font-weight: normal;
+	padding: 20px;
+}
+
+/* GET STARTED and DOWNLOAD buttons */
+.homehead .ui.button {
+	margin-top: 1.5em;
+}
+
+/* Set mouse cursor on github icon hover */
+.ui.black.right.corner.huge.label > i.github.icon {
+	cursor: pointer;
+}
+
+/* Stripes Segments */
+.ui.vertical.stripe {
+	padding: 6em 0em;
+}
+.ui.vertical.stripe h3 {
+	font-size: 3em;
+}
+.ui.vertical.stripe p {
+	font-size: 1.33em;
+}
+.ui.vertical.stripe.segment.end {
+	margin-bottom: 6em !important;
+}
+
+/* Squarify Components */
+.squared {
+	-webkit-border-radius: 0px !important;
+	-moz-border-radius: 0px !important;
+	-o-border-radius: 0px !important;
+	border-radius: 0px !important;
+}
+
+/* FOOTER Content */
+.footer.segment {
+	padding: 3em 0em;
+}
+
+/* Steps Icons Number */
+.ui.header .step-number {
+	font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+/* White Divider */
+.ui.divider.white {
+	margin: 0 !important;
+	border: 0 !important;
+}
+
+/* Engines Segment */
+.ui.vertical.stripe.engines {
+	background-color: #00767B !important;
+}
+.ui.vertical.stripe.engines h3 {
+	font-size: 3.5em;
+}
+.engines p {
+	font-size: 2.5em !important;
+}
+
+/* Others Customizations */
+.hidden.menu {
+	display: none;
+}
+.title.row {
+	margin-top: 50px;
+}
+.toc.item {
+	display: none !important;
+}
+.platforms {
+	padding: 30px 0 50px 0;
+}
+.gametag {
+	margin-top: 120px !important;
+}
+.console {
+	font-family: "Inconsolata";
+	font-size: 1.2em !important;
+}
+.txt-centre {
+	text-align: center;
+}
+.kha {
+	font-family: "Arial";
+	font-size: 1em;
+	color: #111;
+}
+
+/* *
+ *
+ * END Site Customization
+ *
+ * * * * * * * */
+
+
+@media only screen and (max-width: 450px) {
+
+	/* HEADER */
+	.secondary.pointing.menu .item,
+	.secondary.pointing.menu .menu {
+		display: none;
+	}
+	.homehead.segment {
+		min-height: 250px;
+	}
+	.homehead h1.ui.header {
+		font-size: 2em;
+		margin-top: 1.5em;
+	}
+	.homehead h2 {
+		margin-top: 0.5em;
+		font-size: 1.5em;
+	}
+
+	/* Hide Fixed Menu and Show Sidebar Menu */
+	.ui.fixed.menu {
+		display: none !important;
+	}
+	.toc.item {
+		display: block !important;
+	}
+}

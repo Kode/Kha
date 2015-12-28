@@ -1,8 +1,8 @@
 applications:
-- path: .
-  memory: 256M
-  instances: 1
+- disk_quota: 1024M
+  host: kha-website
+  name: kha-website
+  path: .
   domain: mybluemix.net
-  name: beta-khaweb
-  host: beta-khaweb
-  disk_quota: 1024M
+  instances: 1
+  memory: 256M
