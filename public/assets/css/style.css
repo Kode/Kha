@@ -147,19 +147,13 @@
 
 /* Set fixed menu items to white and smerald theme */
 .ui.menu.fixed .link.item, .ui.menu.fixed a.item:focus {
-    background-color: #338488 !important;
-    color: rgb(255, 255, 255);
+    background-color: #ddd !important;
     outline: 0;
-    -webkit-transition: background-color 0.1s ease;
-    transition: background-color 0.1s ease;
 }
 
 .ui.menu.fixed .link.item, .ui.menu.fixed a.item:active {
-    background-color: #338488 !important;
-    color: rgb(255, 255, 255);
+    background-color: #ddd !important;
     outline: 0;
-    -webkit-transition: background-color 0s ease;
-    transition: background-color 0s ease;
 }
 
 /* Messages */
