@@ -138,25 +138,15 @@
 }
 
 .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:hover {
-    color: rgba(255, 255, 255, 0.7) !important;
-    -webkit-transition: color 0.4s ease;
-    transition: color 0.4s ease;
+    border-bottom-width: 0;
+    border-bottom-color: transparent;
 }
 
-.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:focus {
-    color: #338488 !important;
-    background-color: rgb(255, 255, 255);
+.ui.secondary.inverted.menu .link.item,
+.ui.secondary.inverted.menu .active.item,
+.ui.secondary.inverted.menu a.item:active {
+    border-bottom-color: transparent !important;
     outline: 0;
-    -webkit-transition: background-color 0.1s ease;
-    transition: background-color 0.1s ease;
-}
-
-.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:active {
-    color: #338488 !important;
-    background-color: rgb(255, 255, 255);
-    outline: 0;
-    -webkit-transition: background-color 0s ease;
-    transition: background-color 0s ease;
 }
 
 /* Set fixed menu items to white and smerald theme */
