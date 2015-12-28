@@ -43,13 +43,26 @@
 <script>
 
 	$(document)
-		.ready(function() {
+			.ready(function() {
 
-			// Create sidebar and attach to menu open
-			$('.ui.sidebar')
-				.sidebar('attach events', '.toc.item')
-			;
-		})
+				// Fix menu when passed
+				$('.smallhead')
+						.visibility({
+							once: false,
+							onBottomPassed: function() {
+								$('.fixed.menu').transition('fade in');
+							},
+							onBottomPassedReverse: function() {
+								$('.fixed.menu').transition('fade out');
+							}
+						})
+				;
+
+				// Create sidebar and attach to menu open
+				$('.ui.sidebar')
+						.sidebar('attach events', '.toc.item')
+				;
+			})
 	;
 
 </script>
@@ -57,13 +70,25 @@
 </head>
 <body>
 
+<!-- Following Menu -->
+<div class="ui large top fixed hidden menu">
+	<div class="ui container">
+
+		<a class="active item" href="index.html">Home</a>
+		<a class="item" href="http://api.kha.technology/">APIs</a>
+		<a class="item">Learn</a>
+		<a class="item" href="http://forum.ktxsoftware.com/">Community</a>
+		<a class="item" href="http://tech.ktxsoftware.com/">Blog</a>
+	</div>
+</div>
+
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
 
-	<a class="item" href="../index.html">Home</a>
-	<a class="item">Docs</a>
+	<a class="active item" href="index.html">Home</a>
+	<a class="item" href="http://api.kha.technology/">APIs</a>
 	<a class="item">Learn</a>
-	<a class="item" href="http://forum.ktxsoftware.com/">Forum</a>
+	<a class="item" href="http://forum.ktxsoftware.com/">Community</a>
 	<a class="item" href="http://tech.ktxsoftware.com/">Blog</a>
 
 </div>
@@ -74,7 +99,7 @@
 
 	<!-- Title Segment -->
 	<div class="ui vertical center aligned segment">
-		<div class="smallhead ui text container">
+		<div class="tophead ui text container">
 			<div class="ui header">
 				<b>Kha</b>
 				<p>&lt;Software Development Kit&gt;</p>
@@ -88,16 +113,17 @@
 
 			<!-- Header Menu -->
 			<div class="ui large secondary inverted pointing menu">
+				<div class="ui container">
+					<a class="toc item">
+						<i class="sidebar icon"></i>
+					</a>
 
-				<a class="toc item">
-					<i class="sidebar icon"></i>
-				</a>
-
-				<a class="item" href="../index.html"><i class="home icon"></i> Home</a>
-				<a class="item"><i class="book icon"></i> Docs</a>
-				<a class="item"><i class="student icon"></i> Learn</a>
-				<a class="item" href="http://forum.ktxsoftware.com/"><i class="comments outline icon"></i> Forum</a>
-				<a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i> Blog</a>
+					<a class="active item" href="index.html"><i class="home icon"></i> Home</a>
+					<a class="item" href="http://api.kha.technology/"><i class="book icon"></i> APIs</a>
+					<a class="item"><i class="student icon"></i> Learn</a>
+					<a class="item" href="http://forum.ktxsoftware.com/"><i class="comments outline icon"></i> Community</a>
+					<a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i> Blog</a>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -102,7 +102,7 @@
 /* SEGMENT - Inverted */
 .ui.inverted.segment,
 .ui.primary.inverted.segment {
-    background: #101022;
+    background: rgba(22, 22, 22, 0.95);
     color: rgba(255, 255, 255, 0.9);
 }
 
@@ -173,14 +173,15 @@
 
 /* Warning Message - Change to smerald color */
 .ui.warning.message {
-    box-shadow: 0 0 0 1px #9BFFE5 inset, 0 0 0 0 rgba(0, 0, 0, 0);
-    background-color: rgba(182, 255, 236, 0.35);
+    box-shadow: 0 0 0 1px rgb(255, 85, 85) inset;
+    background-color: rgba(255, 0, 0, 0.63);
     border-radius: 0;
-    color: #5AAAAD;
+    color: rgb(255, 255, 255);
+    width: max-content;
 }
 
 .ui.warning.message .header {
-    color: #338488;
+    color: rgb(255, 255, 255);
 }
 
 /* *
@@ -233,16 +234,18 @@
 
 /* Small HEADER */
 .smallhead.center.aligned.segment {
-    background-color: #00767B !important;
+    background-color: #2185d0 !important;
     padding-bottom: 20px;
 }
 
+.tophead div.ui.header b,
 .smallhead div.ui.header b {
     color: #111;
     font-family: "Arial";
     font-size: 2.5em;
 }
 
+.tophead div.ui.header,
 .smallhead div.ui.header {
     color: rgba(0, 0, 0, 0.6);
     font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
