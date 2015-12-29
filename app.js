@@ -24,28 +24,34 @@ app.use(express.static(__dirname + '/public'));
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-// index page 
+// INDEX page
 app.get('/', function(req, res) {
 
     res.render('pages/index');
 });
 
-// download page 
+// DOWNLOAD page
 app.get('/download', function(req, res) {
 
     res.render('pages/download');
 });
 
-// getstarted -> install page 
+// GETSTARTED -> INSTALL page
 app.get('/getstarted/install', function(req, res) {
 
     res.render('pages/install');
 });
 
-// getstarted -> create page 
+// GETSTARTED -> CREATE page
 app.get('/getstarted/create', function(req, res) {
 
     res.render('pages/create');
+});
+
+// GETSTARTED -> BUILD page
+app.get('/getstarted/build', function(req, res) {
+
+    res.render('pages/build');
 });
 
 // start server on the specified port and binding host

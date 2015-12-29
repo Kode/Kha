@@ -1,5 +1,13 @@
 @import url(http://fonts.googleapis.com/css?family=Inconsolata);
 
+a {
+    color: #78A7B5;
+}
+
+a:hover {
+    color: #488698;
+}
+
 /* * * * * * * *
  *
  * START Semantic Overrides
@@ -342,7 +350,15 @@
 .kha {
     font-family: "Arial";
     font-size: 1em;
-    color: #111;
+}
+
+.support {
+    position: absolute;
+    top: 0;
+}
+
+.ui.addblank {
+    margin-top: 60px;
 }
 
 /* *
