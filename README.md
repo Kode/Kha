@@ -1,8 +1,16 @@
-# Kha Website
+##About
+
+Source of [kha.ktxsoftware.com](http://kha.ktxsoftware.com/). Made with [Node.js](http://https://nodejs.org//).
+Pull requests are welcome.
+
+##Contributing
+
+If you want to contribute and improve our website please work on a
+[fork](https://github.com/opligr/kha.ktxsoftware.com/fork). Only working and tested changes will
+be merged into master. Use the [issue system](https://github.com/opligr/kha.ktxsoftware.com/issues) for developer
+support and approval on your changes.
 
 ## License
-
-Copyright 2015 Otavio Pliger
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
