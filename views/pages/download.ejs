@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('../partials/head') %>
+
+<body>
+
+<%- include('../partials/header') %>
+
+    <!-- Download Segment -->
+    <div class="ui vertical stripe segment end">
+        <div class="ui aligned stackable grid container">
+
+            <!-- Haxelib -->
+            <div class="title row">
+                <div class="sixteen wide column">
+                    <div class="ui huge header">
+                        <div class="content">
+                            Download
+                            <div class="sub header">
+                                <p>Available for Windows, OS X and Linux. You can download either with haxelib or git.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui icon warning message">
+                        <i class="warning icon"></i>
+                        <div class="content">
+                            <div class="header">
+                                You must have Haxe already installed.
+                            </div>
+                            Otherwise go to our instructions page to know how to do that
+                        </div>
+                    </div>
+
+                    <h2 class="ui header">
+                        <div class="content">
+                            Haxelib
+                            <div class="sub header">easier and recommended when getting started</div>
+                        </div>
+                    </h2>
+                    <p>Type the following command in a console or command prompt:</p>
+
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">haxelib install kha</p>
+                        </div>
+                    </div>
+
+                    <p>That's all.</p>
+                </div>
+            </div>
+
+            <div class="ui divider white"></div>
+
+            <!-- Git -->
+            <div class="title row">
+                <div class="twelve wide column">
+
+                    <h2 class="ui header">
+                        <div class="content">
+                            Git
+                            <div class="sub header">more robust and recommended when starting an actual project</div>
+                        </div>
+                    </h2>
+
+                    <p>This workflow needs git and node (v4.0+) already installed on your computer. <b class="kha">Kha</b> projects are usually handled using git submodules so that every dependency is properly versioned. Even the Haxe compiler itself is just a submodule.</p>
+
+                    <p>You can start a <b>new project</b> by cloning the <a href="https://github.com/KTXSoftware/Empty">Empty</a> template:</p>
+
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">git clone --recursive https://github.com/KTXSoftware/Empty.git</p>
+                        </div>
+                    </div>
+
+
+                    <p>If you <b>already have a git project</b>, to add <b class="kha">Kha</b> as submodule, go to the project directory in a console or command prompt and type:</p>
+
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">git submodule add https://github.com/KTXSoftware/Kha</p>
+                        </div>
+                    </div>
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">git submodule update --init --recursive</p>
+                        </div>
+                    </div>
+
+
+                    <p>Then to <b>update the submodules</b> in your project you can do it with:</p>
+
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">git submodule foreach --recursive git pull origin master</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<%- include('../partials/footer') %>
+
+</body>
+</html>
