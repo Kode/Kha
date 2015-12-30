@@ -19,6 +19,25 @@ a:active {
     background-color: #E2B708;
 }
 
+.ui.help a {
+    color: #2185D0;
+}
+
+.ui.help a:hover {
+    color: #fff;
+    background-color: #2185D0;
+}
+
+.ui.help a:focus {
+    color: #fff;
+    background-color: #2185D0;
+}
+
+.ui.help a:active {
+    color: #fff;
+    background-color: #2185D0;
+}
+
 /* * * * * * * *
  *
  * START Semantic Overrides
@@ -119,6 +138,16 @@ a:active {
 .ui.primary.inverted.segment {
     background: rgba(22, 22, 22, 0.95);
     color: rgba(255, 255, 255, 0.9);
+}
+
+/* MESSAGE - Info - Help */
+.ui.info.message,
+.ui.attached.info.message {
+    box-shadow: 0px 0px 0px 1px hsla(205,54%,81%,1) inset, 0px 0px 0px 0px rgba(0, 0, 0, 0);
+}
+.ui.info.message {
+    background-color: #f8ffff;
+    color: hsla(207,55%,58%,1);
 }
 
 /* *
