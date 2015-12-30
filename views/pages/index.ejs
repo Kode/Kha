@@ -6,31 +6,10 @@
 <body>
 
 <!-- Following Menu -->
-<div class="ui large top fixed hidden menu">
-    <div class="ui container">
-
-        <a class="active item" href="/">Home</a>
-        <a class="item" href="http://api.kha.technology/">APIs</a>
-        <a class="item">Learn</a>
-        <a class="item" href="http://forum.ktxsoftware.com/category/2/kha">Community</a>
-        <a class="item" href="http://tech.ktxsoftware.com/">Blog</a>
-
-        <div class="right menu">
-            <a class="item" href="/download">DOWNLOAD</a>
-        </div>
-    </div>
-</div>
+<%- include('../partials/menu-following') %>
 
 <!-- Sidebar Menu -->
-<div class="ui vertical inverted sidebar menu">
-
-    <a class="active item" href="/">Home</a>
-    <a class="item" href="http://api.kha.technology/">APIs</a>
-    <a class="item">Learn</a>
-    <a class="item" href="http://forum.ktxsoftware.com/category/2/kha">Community</a>
-    <a class="item" href="http://tech.ktxsoftware.com/">Blog</a>
-
-</div>
+<%- include('../partials/menu-sidebar') %>
 
 <!-- Page Contents -->
 <div class="pusher">
@@ -49,7 +28,7 @@
 
                     <a class="active item" href="/"><i class="home icon"></i> Home</a>
                     <a class="item" href="http://api.kha.technology/"><i class="book icon"></i> APIs</a>
-                    <a class="item"><i class="student icon"></i> Learn</a>
+                    <a class="item"><i class="student icon"></i> Tutorials</a>
                     <a class="item" href="http://forum.ktxsoftware.com/category/2/kha"><i class="comments outline icon"></i> Community</a>
                     <a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i> Blog</a>
                 </div>

@@ -5,48 +5,59 @@
 
 <body>
 
-<%- include('../partials/header') %>
+<!-- Following Menu -->
+<%- include('../partials/menu-following') %>
 
-<!-- Create Segment -->
-<div class="ui vertical stripe segment end">
-    <div class="ui aligned stackable grid container">
+<!-- Sidebar Menu -->
+<%- include('../partials/menu-sidebar') %>
 
-        <div class="title row">
-            <div class="twelve wide column">
-                <div class="ui huge header">
-                    <div class="content">
-                        Build
-                        <div class="sub header">
-                            <p>to any supported target and spread to all.</p>
+<!-- Page Contents -->
+<div class="pusher">
+
+    <!-- Header -->
+    <%- include('../partials/header') %>
+
+    <!-- Build Segment -->
+    <div class="ui vertical stripe segment end">
+        <div class="ui aligned stackable grid container">
+
+            <div class="title row">
+                <div class="twelve wide column">
+                    <div class="ui huge header">
+                        <div class="content">
+                            Build
+                            <div class="sub header">
+                                <p>to any supported target and spread to all.</p>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="ui addblank">
+                        <p><b class="kha">Kha</b> doesn't try to directly compile projects completely. Instead it creates project files for the most popular IDEs, allowing you to debug, profile, tweak, develop or just compile the project. This is a little less convenient but much more flexible.</p>
+                        <p>Therefore, by running the following command:</p>
+
+                        <div class="ui large compact message squared">
+                            <div class="content">
+                                <p class="console">haxelib run kha</p>
+                            </div>
+                        </div>
+                        <p>it will build the project files to the system you're currently running: a <a href="https://www.visualstudio.com/">Visual Studio</a> project for Windows and a <a href="https://developer.apple.com/xcode/">Xcode</a> project for OS X.</p>
+                        <p>To build for other systems simply add the target at the end of the previous command, for example, for a HTML5 project type:</p>
+
+                        <div class="ui large compact message squared">
+                            <div class="content">
+                                <p class="console">haxelib run kha html5</p>
+                            </div>
+                        </div>
+
+                        <p>Project files are by default created inside of a build subdirectory. When using Windows you will eventually have to install Microsoft's dxwebsetup.exe. This is included in Kha's Kore/Tools/krafix subdirectory.</p>
                     </div>
                 </div>
+                <div class="four wide column">
 
-                <div class="ui addblank">
-                    <p><b class="kha">Kha</b> doesn't try to directly compile projects completely. Instead it creates project files for the most popular IDEs, allowing you to debug, profile, tweak, develop or just compile the project. This is a little less convenient but much more flexible.</p>
-                    <p>Therefore, by running the following command:</p>
+                    <%- include('../partials/help') %>
 
-                    <div class="ui large compact message squared">
-                        <div class="content">
-                            <p class="console">haxelib run kha</p>
-                        </div>
-                    </div>
-                    <p>it will build the project files to the system you're currently running: a <a href="https://www.visualstudio.com/">Visual Studio</a> project for Windows and a <a href="https://developer.apple.com/xcode/">Xcode</a> project for OS X.</p>
-                    <p>To build for other systems simply add the target at the end of the previous command, for example, for a HTML5 project type:</p>
-
-                    <div class="ui large compact message squared">
-                        <div class="content">
-                            <p class="console">haxelib run kha html5</p>
-                        </div>
-                    </div>
-
-                    <p>Project files are by default created inside of a build subdirectory. When using Windows you will eventually have to install Microsoft's dxwebsetup.exe. This is included in Kha's Kore/Tools/krafix subdirectory.</p>
                 </div>
-            </div>
-            <div class="four wide column">
-
-                <%- include('../partials/help') %>
-
             </div>
         </div>
     </div>
