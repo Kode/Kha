@@ -1,11 +1,22 @@
 @import url(http://fonts.googleapis.com/css?family=Inconsolata);
 
 a {
-    color: #78A7B5;
+    color: #E2B708;
 }
 
 a:hover {
-    color: #488698;
+    color: #fff;
+    background-color: #E2B708;
+}
+
+a:focus {
+    color: #fff;
+    background-color: #E2B708;
+}
+
+a:active {
+    color: #fff;
+    background-color: #E2B708;
 }
 
 /* * * * * * * *
