@@ -3,6 +3,9 @@
 Source of [kha.ktxsoftware.com](http://kha.ktxsoftware.com/). Made with [Node.js](http://https://nodejs.org//).
 Pull requests are welcome.
 
+##Roadmap
+You can view the roadmap [here](https://trello.com/b/gkydhRsY/kha-website).
+
 ##Contributing
 
 If you want to contribute and improve our website please work on a
