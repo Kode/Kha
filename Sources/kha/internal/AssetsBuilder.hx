@@ -18,6 +18,9 @@ class AssetsBuilder {
 		}
 		output = output.replace("\\", "/");
 		output = output.substring(0, output.lastIndexOf("/"));
+		if (output.endsWith("/Assets")) { // For Unity
+			output = output.substring(0, output.lastIndexOf("/"));
+		}
 		if (output.lastIndexOf("/") >= 0) {
 			var system = output.substring(output.lastIndexOf("/") + 1);
 			if (system.endsWith("-build")) system = system.substr(0, system.length - "-build".length);

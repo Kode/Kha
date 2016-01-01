@@ -47,6 +47,8 @@ class VertexBuffer {
 				myStride += 3;
 			case VertexData.Float4:
 				myStride += 4;
+			case VertexData.Float4x4:
+				myStride += 4 * 4;
 			}
 		}
 		array = new Float32Array(vertexCount * myStride);
@@ -135,6 +137,8 @@ class VertexBuffer {
 				}
 				mesh.tangents = tangents;
 				offset += 4;
+			case Float4x4:
+				offset += 4 * 4;
 			}
 		}
 		//mesh.UploadMeshData(true);

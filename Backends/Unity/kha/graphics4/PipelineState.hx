@@ -3,24 +3,14 @@ package kha.graphics4;
 import unityEngine.Material;
 import unityEngine.Shader;
 
-class Program {
-	private var vertexShader: VertexShader;
-	public var fragmentShader: FragmentShader;
+class PipelineState extends PipelineStateBase {
 	public var material: Material;
 	
 	public function new() {
-		
+		super();
 	}
 	
-	public function setVertexShader(shader: VertexShader): Void {
-		this.vertexShader = shader;
-	}
-
-	public function setFragmentShader(shader: FragmentShader): Void {
-		this.fragmentShader = shader;
-	}
-
-	public function link(structure: VertexStructure): Void {
+	public function compile(): Void {
 		material = new Material(Shader.Find("Custom/" + vertexShader.name + "." + fragmentShader.name));
 	}
 	
