@@ -92,6 +92,7 @@ class SystemImpl {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		Scheduler.init();
+		Shaders.init();
 		var g4 = new kha.unity.Graphics(null);
 		frame = new Framebuffer(null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);

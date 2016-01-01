@@ -103,6 +103,7 @@ class SystemImpl {
 		LoaderImpl.init(KhaActivity.the().getApplicationContext());
 		Scheduler.init();
 		
+		Shaders.init();
 		var graphics = new Graphics();
 		framebuffer = new Framebuffer(null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
