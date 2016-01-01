@@ -13,6 +13,7 @@ import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
+import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
@@ -23,6 +24,10 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
 import kha.Image;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
+import kha.math.FastVector4;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -37,13 +42,13 @@ class Graphics implements kha.graphics4.Graphics {
 		this.renderTarget = renderTarget;
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		GLES20.glViewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
+		GLES20.glViewport(0, 0, System.pixelWidth, System.pixelHeight);
 	}
 
-	public function begin(): Void {
+	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (renderTarget == null) {
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-			GLES20.glViewport(0, 0, Sys.pixelWidth, Sys.pixelHeight);
+			GLES20.glViewport(0, 0, System.pixelWidth, System.pixelHeight);
 		}
 		else {
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, renderTarget.framebuffer);
@@ -249,8 +254,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setProgram(program: kha.graphics4.Program): Void {
-		program.set();
+	public function setPipeline(pipeline: PipelineState): Void {
+		pipeline.set();
 	}
 	
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
@@ -279,28 +284,28 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	private var valuesCache = new NativeArray<Single>(128);
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
 		for (i in 0...values.length) {
 			valuesCache[i] = values[i];
 		}
 		GLES20.glUniform1fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
 	}
 	
-	public function setVector2(location: kha.graphics4.ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		GLES20.glUniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}
 	
-	public function setVector3(location: kha.graphics4.ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		GLES20.glUniform3f(cast(location, ConstantLocation).value, value.x, value.y, value.z);
 	}
 	
-	public function setVector4(location: kha.graphics4.ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		GLES20.glUniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 	
 	private var matrixCache = new NativeArray<Single>(16);
 	
-	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
+	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
 		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
@@ -324,7 +329,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setScissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
 

@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManagerLayoutParams;
 import java.lang.Object;
 import java.lang.Runnable;
-import kha.Starter;
+import kha.SystemImpl;
 
 /*
 import android.content.Intent;
@@ -41,7 +41,7 @@ class OnStartRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		Starter.foreground();
+		SystemImpl.foreground();
 	}
 }
 
@@ -51,7 +51,7 @@ class OnPauseRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		Starter.pause();
+		SystemImpl.pause();
 	}
 }
 
@@ -61,7 +61,7 @@ class OnResumeRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		Starter.resume();
+		SystemImpl.resume();
 	}
 }
 
@@ -71,7 +71,7 @@ class OnStopRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		Starter.background();
+		SystemImpl.background();
 	}
 }
 
@@ -91,7 +91,7 @@ class OnDestroyRunner implements Runnable {
 	}
 	
 	public function run(): Void {
-		Starter.shutdown();
+		SystemImpl.shutdown();
 	}
 }
 

@@ -1,4 +1,4 @@
-package kha.android;
+package kha;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -13,31 +13,38 @@ import kha.Blob;
 import kha.FontStyle;
 import kha.Kravur;
 
-class Loader extends kha.Loader {
-	var assetManager: AssetManager;
+class LoaderImpl {
+	private static var assetManager: AssetManager;
 	
-	public function new(context: Context) {
-		super();
-		this.assetManager = context.getAssets();
+	public static function init(context: Context) {
+		assetManager = context.getAssets();
 		Image.assets = assetManager;
 	}
 	
-	override public function loadImage(desc: Dynamic, done: kha.Image->Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image->Void) {
 		done(Image.createFromFile(desc.files[0]));
 	}
+	
+	public static function getImageFormats(): Array<String> {
+		return ["png", "jpg"];
+	}
 
-	override public function loadSound(desc: Dynamic, done: kha.Sound->Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void) {
 		var sound: kha.Sound = null;
 		try {
-			sound = new Sound(assetManager.openFd(desc.files[0]));
+			sound = new kha.android.Sound(assetManager.openFd(desc.files[0]));
 		}
 		catch (ex: IOException) {
 			ex.printStackTrace();
 		}
 		done(sound);
 	}
+	
+	public static function getSoundFormats(): Array<String> {
+		return ["wav"];
+	}
 
-	override public function loadMusic(desc: Dynamic, done: kha.Music->Void) {
+	/*public function loadMusicFromDescription(desc: Dynamic, done: kha.Music->Void) {
 		var music: kha.Music = null;
 		try {
 			music = new Music(assetManager.openFd(desc.files[0]));
@@ -46,12 +53,12 @@ class Loader extends kha.Loader {
 			ex.printStackTrace();
 		}
 		done(music);
-	}
+	}*/
 	
-	override public function loadVideo(desc: Dynamic, done: kha.Video->Void) {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void) {
 		var video: kha.Video = null;
 		try {
-			video = new Video(assetManager.openFd(desc.files[0]));
+			video = new kha.android.Video(assetManager.openFd(desc.files[0]));
 		}
 		catch (ex: IOException) {
 			ex.printStackTrace();
@@ -59,11 +66,15 @@ class Loader extends kha.Loader {
 		done(video);
 	}
 	
-	override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return Kravur.get(name, style, size);
+	public static function getVideoFormats(): Array<String> {
+		return ["ts"];
 	}
 	
-	override public function loadBlob(desc: Dynamic, done: kha.Blob->Void): Void {
+	/*function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
+		return Kravur.get(name, style, size);
+	}*/
+	
+	public static function loadBlobFromDescription(desc: Dynamic, done: kha.Blob->Void): Void {
 		var bytes: Array<Int> = new Array<Int>();
 		try {
 			var stream: java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(desc.files[0]));
@@ -82,11 +93,17 @@ class Loader extends kha.Loader {
 		done(new kha.Blob(hbytes));
 	}
 	
-	override public function showKeyboard(): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void): Void {
+		loadBlobFromDescription(desc, function (blob: Blob) {
+			done(new Kravur(blob));
+		});
+	}
+	
+	/*override public function showKeyboard(): Void {
 		Starter.showKeyboard = true;
 	}
 	
 	override public function hideKeyboard(): Void {
 		Starter.showKeyboard = false;
-	}
+	}*/
 }

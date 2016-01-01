@@ -65,7 +65,7 @@ class Image implements Canvas implements Resource {
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 	}
 	
-	@:allow(kha.android.Loader)
+	@:allow(kha.LoaderImpl)
 	private static function createFromFile(filename: String): Image {
 		try {
 			var b = BitmapFactory.decodeStream(assets.open(filename));

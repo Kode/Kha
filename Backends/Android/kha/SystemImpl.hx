@@ -1,68 +1,107 @@
 package kha;
-
 import com.ktxsoftware.kha.KhaActivity;
-import kha.graphics4.Graphics2;
 import kha.android.Graphics;
+import kha.graphics4.Graphics2;
 import kha.input.Keyboard;
+import kha.input.Mouse;
 import kha.input.Surface;
 
-/*class Starter {
-	//static var instance : Starter;
-	//static var game : Game;
-	//static var painter : kha.android.Painter;
+class SystemImpl {
+	public static var w: Int = 640;
+	public static var h: Int = 480;
+	private static var startTime: Float;
 	
-	public function new() {
-		//instance = this;
-		//kha.Loader.init(new kha.android.Loader());
+	public static function getPixelWidth(): Int {
+		return w;
 	}
 	
-	public function start(game : Game) {
-		//Starter.game = game;
-		//Loader.getInstance().load();
+	public static function getPixelHeight(): Int {
+		return h;
 	}
 	
-	public static function loadFinished() {
-		//game.loadFinished();
+	public static function getScreenRotation(): ScreenRotation {
+		return ScreenRotation.RotationNone;
 	}
 	
-	public static var mouseX: Int;
-	public static var mouseY: Int;
-}*/
+	public static function getFrequency(): Int {
+		return 1000;
+	}
+	
+	@:functionCode('
+		return java.lang.System.currentTimeMillis();
+	')
+	public static function getTimestamp(): Float {
+		return 0;
+	}
+	
+	public static function getTime(): Float {
+		return (getTimestamp() - startTime) / getFrequency();
+	}
+	
+	public static function getVsync(): Bool {
+		return true;
+	}
+	
+	public static function getRefreshRate(): Int {
+		return 60;
+	}
+	
+	public static function getSystemId(): String {
+		return "Android";
+	}
+	
+	public static function requestShutdown(): Void {
+		
+	}
+	
+	public static function changeResolution(width: Int, height: Int): Void {
+		
+	}
 
-class Starter {
-	public static var game: Game;
+	public static function canSwitchFullscreen() : Bool{
+		return false;
+	}
+
+	public static function isFullscreen() : Bool{
+		return false;
+	}
+
+	public static function requestFullscreen(): Void {
+		
+	}
+
+	public static function exitFullscreen(): Void {
+		
+  	}
+
+	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+	
 	private static var framebuffer: Framebuffer;
-	private static var w: Int;
-	private static var h: Int;
 	public static var mouseX: Int = 0;
 	public static var mouseY: Int = 0;
 	private static var keyboard: Keyboard;
 	private static var shift = false;
-	private static var mouse: kha.input.Mouse;
+	private static var mouse: Mouse;
 	private static var surface: Surface;
 	
-	public function new() {
+	public static function init(title: String, width: Int, height: Int, done: Void->Void) {
+		w = width;
+		h = height;
 		KhaActivity.the();
-		new Keyboard();
-		mouse = new kha.input.Mouse();
+		keyboard = new Keyboard();
+		mouse = new Mouse();
 		//gamepad = new Gamepad();
 		surface = new Surface();
 		
-		Loader.init(new kha.android.Loader(KhaActivity.the().getApplicationContext()));
+		LoaderImpl.init(KhaActivity.the().getApplicationContext());
 		Scheduler.init();
-	}
-	
-	public function start(game: Game) {
-		Starter.game = game;
-		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Loader.the.loadProject(loadFinished);
-	}
-	
-	public function loadFinished(): Void {
-		Loader.the.initProject();
-		game.width = Loader.the.width;
-		game.height = Loader.the.height;
-		Sys.init(w, h);
 		
 		var graphics = new Graphics();
 		framebuffer = new Framebuffer(null, null, graphics);
@@ -71,9 +110,18 @@ class Starter {
 		framebuffer.init(g1, g2, graphics);
 		
 		Scheduler.start();
-		Configuration.setScreen(game);
-		Configuration.screen().setInstance();
-		game.loadFinished();
+		
+		done();
+	}
+	
+	public static function getKeyboard(num: Int = 0): Keyboard {
+		if (num == 0) return keyboard;
+		else return null;
+	}
+	
+	public static function getMouse(num: Int = 0): Mouse {
+		if (num == 0) return mouse;
+		else return null;
 	}
 
 	public static function lockMouse(): Void {
@@ -100,23 +148,21 @@ class Starter {
 		
 	}
 	
-	public static function init(width: Int, height: Int): Void {
+	public static function preinit(width: Int, height: Int): Void {
 		w = width;
 		h = height;
-		Sys.initTime();
+		startTime = getTimestamp();
 		Main.main();
 	}
 	
 	public static function setWidthHeight(width: Int, height: Int): Void {
 		w = width;
 		h = height;
-		Sys.w = w;
-		Sys.h = h;
 	}
 	
 	public static function step(): Void {
 		Scheduler.executeFrame();
-		Configuration.screen().render(framebuffer);
+		System.render(framebuffer);
 	}
 
 	private static function setMousePosition(x : Int, y : Int){
@@ -131,7 +177,6 @@ class Starter {
 			if (index == 0) {
 				setMousePosition(x,y);
 				mouse.sendDownEvent(0, x, y);
-				if (Game.the != null) Game.the.mouseDown(x, y);
 			}
 			surface.sendTouchStartEvent(index, x, y);
 		case 1: //MOVE
@@ -140,14 +185,12 @@ class Starter {
 				var movementY = y - mouseY;
 				setMousePosition(x,y);
 				mouse.sendMoveEvent(x, y, movementX, movementY);
-				if (Game.the != null) Game.the.mouseMove(x, y);
 			}
 			surface.sendMoveEvent(index, x, y);
 		case 2: //UP
 			if (index == 0) {
 				setMousePosition(x,y);
 				mouse.sendUpEvent(0, x, y);
-				if (Game.the != null) Game.the.mouseUp(x, y);
 			}
 			surface.sendTouchEndEvent(index, x, y);
 		}
@@ -158,13 +201,10 @@ class Starter {
 		case 0x00000120:
 			shift = true;
 			keyboard.sendDownEvent(Key.SHIFT, " ");
-			if (Game.the != null) Game.the.keyDown(Key.SHIFT, " ");
 		case 0x00000103:
 			keyboard.sendDownEvent(Key.BACKSPACE, " ");
-			if (Game.the != null) Game.the.keyDown(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendDownEvent(Key.ENTER, " ");
-			if (Game.the != null) Game.the.keyDown(Key.ENTER, " ");
 		default:
 			var char: String;
 			if (shift) {
@@ -174,7 +214,6 @@ class Starter {
 				char = String.fromCharCode(code + "a".charCodeAt(0) - "A".charCodeAt(0));
 			}
 			keyboard.sendDownEvent(Key.CHAR, char);
-			if (Game.the != null) Game.the.keyDown(Key.CHAR, char);
 		}
 	}
 	
@@ -183,13 +222,10 @@ class Starter {
 		case 0x00000120:
 			shift = false;
 			keyboard.sendUpEvent(Key.SHIFT, " ");
-			if (Game.the != null) Game.the.keyUp(Key.SHIFT, " ");
 		case 0x00000103:
 			keyboard.sendUpEvent(Key.BACKSPACE, " ");
-			if (Game.the != null) Game.the.keyUp(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendUpEvent(Key.ENTER, " ");
-			if (Game.the != null) Game.the.keyUp(Key.ENTER, " ");
 		default:
 			var char: String;
 			if (shift) {
@@ -199,7 +235,6 @@ class Starter {
 				char = String.fromCharCode(code + "a".charCodeAt(0) - "A".charCodeAt(0));
 			}
 			keyboard.sendUpEvent(Key.CHAR, char);
-			if (Game.the != null) Game.the.keyUp(Key.CHAR, char);
 		}
 	}
 	
@@ -210,22 +245,22 @@ class Starter {
 	}
 	
 	public static function foreground(): Void {
-		if (Game.the != null) Game.the.onForeground();
+		System.foreground();
 	}
 
 	public static function resume(): Void {
-		if (Game.the != null) Game.the.onResume();
+		System.resume();
 	}
 
 	public static function pause(): Void {
-		if (Game.the != null) Game.the.onPause();
+		System.pause();
 	}
 
 	public static function background(): Void {
-		if (Game.the != null) Game.the.onBackground();
+		System.background();
 	}
 
 	public static function shutdown(): Void {
-		if (Game.the != null) Game.the.onShutdown();
+		System.shutdown();
 	}
 }

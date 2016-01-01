@@ -7,35 +7,26 @@ import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
-class Program {
+class PipelineState extends PipelineStateBase {
 	private var program: Int;
-	private var vertexShader: VertexShader;
-	private var fragmentShader: FragmentShader;
 	private var textures: Array<String>;
 	private var textureValues: Array<Dynamic>;
 	
 	public function new() {
+		super();
 		program = GLES20.glCreateProgram();
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
 	}
 	
-	public function setVertexShader(vertexShader: VertexShader): Void {
-		this.vertexShader = vertexShader;
-	}
-	
-	public function setFragmentShader(fragmentShader: FragmentShader): Void {
-		this.fragmentShader = fragmentShader;
-	}
-	
-	public function link(structure: VertexStructure): Void {
+	public function compile(): Void {
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
 		GLES20.glAttachShader(program, vertexShader.shader);
 		GLES20.glAttachShader(program, fragmentShader.shader);
 		
 		var index = 0;
-		for (element in structure.elements) {
+		for (element in inputLayout[0].elements) {
 			GLES20.glBindAttribLocation(program, index, element.name);
 			++index;
 		}
