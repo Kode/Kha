@@ -14,6 +14,9 @@ class AssetsBuilder {
 		if (output == "Nothing__") { // For Haxe background compilation
 			#if kha_output
 			output = Compiler.getDefine("kha_output");
+			if (output.startsWith('"')) {
+				output = output.substr(1, output.length - 2);
+			}
 			#end
 		}
 		output = output.replace("\\", "/");
