@@ -7,8 +7,10 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	private var myVolume: Float;
 	private var myPosition: Int;
 	private var paused: Bool = false;
+	private var looping: Bool;
 	
-	public function new() {
+	public function new(looping: Bool) {
+		this.looping = looping;
 		myVolume = 1;
 		myPosition = 0;
 	}
@@ -22,6 +24,9 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		}
 		
 		for (i in 0...length) {
+			if (myPosition >= data.length && looping) {
+				myPosition = 0;
+			}
 			samples[i] = myPosition < data.length ? data[myPosition] : 0;
 			++myPosition;
 		}

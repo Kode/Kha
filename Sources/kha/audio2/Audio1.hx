@@ -93,7 +93,7 @@ class Audio1 {
 		var channel: kha.audio2.AudioChannel = null;
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
-				channel = new AudioChannel();
+				channel = new AudioChannel(loop);
 				channel.data = sound.data;
 				soundChannels[i] = channel;
 				break;
