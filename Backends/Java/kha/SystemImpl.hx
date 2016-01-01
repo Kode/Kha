@@ -1,8 +1,8 @@
 package kha;
 
-import kha.Game;
-import kha.java.Painter;
-import kha.Key;
+import kha.input.Keyboard;
+import kha.input.Mouse;
+import kha.java.Graphics;
 
 @:classCode('
 	class Window extends javax.swing.JFrame implements java.awt.event.KeyListener, java.awt.event.MouseListener, java.awt.event.MouseMotionListener, java.awt.event.MouseWheelListener {
@@ -289,59 +289,141 @@ import kha.Key;
 
 	private Window window;
 ')
-class Starter {
-	static var instance: Starter;
-	static var game: Game;
+class SystemImpl {
+	private static var keyboard: Keyboard;
+	private static var mouse: Mouse;
+	public static var graphics(default, null): Graphics;
+	
+	private static var startTime : Float;
+	
+	public static function init2(): Void {
+		graphics = new Graphics();
+		startTime = getTimestamp();
+		mouse = new Mouse();
+		keyboard = new Keyboard();
+	}
+	
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num == 0) return keyboard;
+		else return null;
+	}
+	
+	public static function getMouse(num: Int): Mouse {
+		if (num == 0) return mouse;
+		else return null;
+	}
+	
+	public static function getFrequency(): Int {
+		return 1000;
+	}
+	
+	@:functionCode('
+		return System.currentTimeMillis();
+	')
+	public static function getTimestamp(): Float {
+		return 0;
+	}
+	
+	public static function getTime(): Float {
+		return (getTimestamp() - startTime) / getFrequency();
+	}
+	
+	public static function getScreenRotation(): ScreenRotation {
+		return ScreenRotation.RotationNone;
+	}
+	
+	public static function getVsync(): Bool {
+		return true;
+	}
+	
+	public static function getRefreshRate(): Int {
+		return 60;
+	}
+	
+	public static function getSystemId(): String {
+		return "java";
+	}
+	
+	private static var myPixelWidth: Int = 640;
+	private static var myPixelHeight: Int = 480;
+	
+	public static function getPixelWidth(): Int {
+		return myPixelWidth;
+	}
+	
+	public static function getPixelHeight(): Int {
+		return myPixelHeight;
+	}
+	
+	public static function changeResolution(width: Int, height: Int): Void {
+		
+	}
+	
+	public static function requestShutdown(): Void {
+		
+	}
+
+	public static function canSwitchFullscreen() : Bool{
+		return false;
+	}
+
+	public static function isFullscreen() : Bool{
+		return false;
+	}
+
+	public static function requestFullscreen(): Void {
+		
+	}
+
+	public static function exitFullscreen(): Void {
+		
+  	}
+
+	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+
+
+	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+		
+	}
+	
 	static var painter: kha.java.Painter;
 	
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
-	public function new() {
-		instance = this;
-		kha.Loader.init(new kha.java.Loader());
-		Sys.init();
+	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+		init2();
 		Scheduler.init();
-	}
-	
-	public function start(game: Game): Void {
-		Starter.game = game;
-		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-		Loader.the.loadProject(loadFinished);
-	}
-	
-	public function loadFinished(): Void {
-		Loader.the.initProject();
-		Sys.pixelWidth = game.width = Loader.the.width;
-		Sys.pixelHeight = game.height = Loader.the.height;
-		Configuration.setScreen(game);
-		Configuration.screen().setInstance();
-		game.loadFinished();
+		myPixelWidth = width;
+		myPixelHeight = height;
+		callback();
 		startMainLoop();
 	}
 
-	public function lockMouse() : Void{
+	public function lockMouse(): Void {
 		
 	}
 	
-	public function unlockMouse() : Void{
+	public function unlockMouse(): Void {
 		
 	}
 
-	public function canLockMouse() : Bool{
+	public function canLockMouse(): Bool {
 		return false;
 	}
 
-	public function isMouseLocked() : Bool{
+	public function isMouseLocked(): Bool {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
 
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 

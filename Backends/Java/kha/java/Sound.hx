@@ -1,6 +1,6 @@
 package kha.java;
 
-import kha.SoundChannel;
+import kha.audio1.AudioChannel;
 
 @:classCode('
 	class SoundThread implements Runnable {
@@ -123,7 +123,7 @@ class Sound extends kha.Sound {
 		thread.play(index);
 		return null;
 	')
-	public function play(): SoundChannel {
+	public function play(): AudioChannel {
 		return null;
 	}
 	

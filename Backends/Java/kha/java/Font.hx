@@ -12,12 +12,11 @@ import kha.FontStyle;
 	}
 ')
 class Font implements kha.Font {
-	
 	public var myName: String;
 	public var myStyle: FontStyle;
 	public var mySize: Float;
 	
-	public function new(name : String, style : FontStyle, size : Float) {
+	public function new(name: String, style: FontStyle, size: Float) {
 		init(name, style, size);
 	}
 	
@@ -45,42 +44,35 @@ class Font implements kha.Font {
 		myStyle = style;
 		mySize = size;
 	')
-	function init(name : String, style : FontStyle, size : Float) {
+	function init(name: String, style: FontStyle, size: Float) {
 		
 	}
 	
 	@:functionCode('
 		return testGraphics.getFontMetrics(font).getHeight();
 	')
-	public function getHeight() : Float {
-		return 0;
-	}
-	
-	@:functionCode('
-		return testGraphics.getFontMetrics(font).charWidth(ch.charAt(0));
-	')
-	public function charWidth(ch : String) : Float {
-		return 0;
-	}
-	
-	@:functionCode('
-		return stringWidth(ch.substring(offset, offset + length));
-	')
-	public function charsWidth(ch : String, offset : Int, length : Int) : Float {
+	public function height(fontSize: Int): Float {
 		return 0;
 	}
 	
 	@:functionCode('
 		return testGraphics.getFontMetrics(font).stringWidth(str);
 	')
-	public function stringWidth(str : String) : Float {
+	public function width(fontSize: Int, str: String): Float {
 		return 0;
 	}
 	
 	@:functionCode('
 		return testGraphics.getFontMetrics(font).getHeight() - testGraphics.getFontMetrics(font).getLeading();
 	')
-	public function getBaselinePosition() : Float {
+	public function baseline(fontSize: Int): Float {
 		return 0;
+	}
+	
+	@:functionCode('
+		font = null;
+	')
+	public function unload(): Void {
+		
 	}
 }

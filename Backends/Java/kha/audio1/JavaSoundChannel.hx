@@ -1,6 +1,6 @@
 package kha.audio1;
 
-class JavaSoundChannel implements kha.audio1.SoundChannel {
+class JavaSoundChannel implements kha.audio1.AudioChannel {
 	private var sound: kha.java.Sound;
 	
 	public function new(sound: kha.java.Sound) {
@@ -20,15 +20,15 @@ class JavaSoundChannel implements kha.audio1.SoundChannel {
 		sound.stop();
 	}
 
-	public var length(get, null): Int;
+	public var length(get, null): Float;
 	
-	private function get_length(): Int {
+	private function get_length(): Float {
 		return 0;
 	}
 
-	public var position(get, null): Int;
+	public var position(get, null): Float;
 	
-	private function get_position(): Int {
+	private function get_position(): Float {
 		return 0;
 	}
 
