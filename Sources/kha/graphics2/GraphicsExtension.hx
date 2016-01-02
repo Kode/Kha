@@ -16,6 +16,16 @@ class GraphicsExtension
 	 */
 	public static function drawCircle(g2:Graphics, cx:Float, cy:Float, radius:Float, strength:Float = 1, segments:Int = 0):Void
 	{
+		#if js
+			if (!kha.SystemImpl.gl)
+			{
+				var g:kha.js.CanvasGraphics = cast g2;
+				radius -= strength/2; // reduce radius to fit the line thickness within image width/height
+				g.drawCircle(cx, cy, radius, strength);
+				return;
+			}
+		#end
+
 		if (segments <= 0)
 			segments = Math.floor(10 * Math.sqrt(radius));
 			
@@ -44,7 +54,16 @@ class GraphicsExtension
 	 * @param	segments (optional) The amount of lines that should be used to draw the circle. 
 	 */
 	public static function fillCircle(g2:Graphics, cx:Float, cy:Float, radius:Float, segments:Int = 0):Void
-	{	
+	{
+		#if js
+			if (!kha.SystemImpl.gl)
+			{
+				var g:kha.js.CanvasGraphics = cast g2;
+				g.fillCircle(cx, cy, radius);
+				return;
+			}
+		#end
+
 		if (segments <= 0)
 			segments = Math.floor(10 * Math.sqrt(radius));
 			
