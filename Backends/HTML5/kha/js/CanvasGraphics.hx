@@ -44,10 +44,13 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function clear(color: Color = null): Void {
-		if (color == null) color = Color.Black;
-		canvas.strokeStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
-		canvas.fillStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
-		canvas.fillRect(0, 0, width, height);
+		if (color == null) color = 0x00000000;
+		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
+		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
+		if (color.A == 0) // if color is transparent, clear the screen. Note: in Canvas, transparent colors will overlay, not overwrite.
+			canvas.clearRect(0, 0, width, height);
+		else
+			canvas.fillRect(0, 0, width, height);
 		this.color = myColor;
 	}
 	
@@ -97,8 +100,8 @@ class CanvasGraphics extends Graphics {
 	
 	override public function set_color(color: Color): Color {
 		myColor = color;
-		canvas.strokeStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
-		canvas.fillStyle = "rgb(" + color.Rb + "," + color.Gb + "," + color.Bb + ")";
+		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
+		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		return color;
 	}
 	
@@ -139,6 +142,21 @@ class CanvasGraphics extends Graphics {
 		canvas.globalAlpha = opacity * myColor.A;
 		canvas.fillRect(x, y, width, height);
 		canvas.globalAlpha = opacity;
+	}
+
+	public function drawCircle(cx: Float, cy: Float, radius: Float, strength: Float = 1.0) {
+		canvas.beginPath();
+		var oldStrength = canvas.lineWidth;
+		canvas.lineWidth = Math.round(strength);
+		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+		canvas.stroke();
+		canvas.lineWidth = oldStrength;
+	}
+
+	public function fillCircle(cx: Float, cy: Float, radius: Float) {
+		canvas.beginPath();
+		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+		canvas.fill();
 	}
 	
 	override public function drawString(text: String, x: Float, y: Float) {
