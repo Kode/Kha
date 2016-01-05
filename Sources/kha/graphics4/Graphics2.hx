@@ -525,6 +525,7 @@ class TextShaderPainter {
 	private var myPipeline: PipelineState = null;
 	public var pipeline(get, set): PipelineState;
 	public var fontSize: Int;
+	private var bilinear: Bool = false;
 	
 	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
 	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
@@ -660,6 +661,7 @@ class TextShaderPainter {
 		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
 		g.setTexture(textureLocation, lastTexture);
 		g.setMatrix(projectionLocation, projectionMatrix);
+		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
 		//	g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		//}
@@ -672,6 +674,11 @@ class TextShaderPainter {
 		g.setTexture(textureLocation, null);
 		bufferIndex = 0;
 		rectVertices = rectVertexBuffer.lock();
+	}
+	
+	public function setBilinearFilter(bilinear: Bool): Void {
+		end();
+		this.bilinear = bilinear;
 	}
 	
 	public function setFont(font: Font): Void {
@@ -974,6 +981,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	
 	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
 		imagePainter.setBilinearFilter(value == ImageScaleQuality.High);
+		textPainter.setBilinearFilter(value == ImageScaleQuality.High);
 		return myImageScaleQuality = value;
 	}
 	
