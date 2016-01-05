@@ -37,16 +37,27 @@ class Image implements Canvas implements Resource {
 	private function new(readable: Bool) {
 		this.readable = readable;
 	}
+
+	private static function getRenderTargetFormat(format: TextureFormat): Int {
+		switch (format) {
+		case RGBA32:	// Target32Bit
+			return 0;
+		case RGBA128:	// Target32BitFloat
+			return 3;
+		default:
+			return 0;
+		}
+	}
 	
 	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthBuffer: Bool): Image {
 		var image = new Image(readable);
 		image.format = format;
-		if (renderTarget) image.initRenderTarget(width, height, format == TextureFormat.RGBA32 ? 0 : 1, depthBuffer);
+		if (renderTarget) image.initRenderTarget(width, height, getRenderTargetFormat(format), depthBuffer);
 		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
 	}
 	
-	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBuffer, false, Kore::Target32Bit); texture = nullptr;')
+	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBuffer, false, (Kore::RenderTargetFormat)format); texture = nullptr;')
 	private function initRenderTarget(width: Int, height: Int, format: Int, depthBuffer: Bool): Void {
 		
 	}
