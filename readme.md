@@ -19,7 +19,7 @@ Kha is a low level SDK for building games and media applications in a portable w
 
 Based on the Haxe programming language and the Krafix shader-compiler it can cross-compile your code and optimize
 your assets for even the most obscure systems.
-
+shaders in GLSL - cross-compiles
 Kha is so portable, it can in fact run on top of other game engines and its generational graphics and audio API design
 gets the best out of every target, supporting super fast 2D graphics just as well as high end 3D graphics.
 
@@ -40,7 +40,7 @@ Things you can do now:
 * Support super fast 2D graphics
 * Support high end 3D graphics
 * Can run on top of other game engines
-* Write shaders in GLSL - cross-compiles to other shading-lanugages
+* Write shaders in GLSL - cross-compiles to other shading-languages
 
 
 ***Even more Features***
