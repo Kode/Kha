@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "description": "Kha Portable Multimedia Framework Website",
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "cfenv": "1.0.x",
     "ejs": "^2.3.4",
     "express": "4.12.x"
   },
