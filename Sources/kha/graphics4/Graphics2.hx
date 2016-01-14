@@ -210,7 +210,7 @@ class ImageShaderPainter {
 		var tex = img;
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
-		setRectColor(color.R, color.G, color.B, opacity);
+		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 		
@@ -228,7 +228,7 @@ class ImageShaderPainter {
 		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
 		
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
-		setRectColor(color.R, color.G, color.B, opacity);
+		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 		
 		++bufferIndex;
@@ -373,27 +373,28 @@ class ColoredShaderPainter {
 		rectVertices.set(baseIndex + 23, -5.0);
 	}
 	
-	public function setRectColors(color: Color): Void {
+	public function setRectColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
+		var a: FastFloat = opacity * color.A;
 		rectVertices.set(baseIndex +  3, color.R);
 		rectVertices.set(baseIndex +  4, color.G);
 		rectVertices.set(baseIndex +  5, color.B);
-		rectVertices.set(baseIndex +  6, color.A);
+		rectVertices.set(baseIndex +  6, a);
 		
 		rectVertices.set(baseIndex + 10, color.R);
 		rectVertices.set(baseIndex + 11, color.G);
 		rectVertices.set(baseIndex + 12, color.B);
-		rectVertices.set(baseIndex + 13, color.A);
+		rectVertices.set(baseIndex + 13, a);
 		
 		rectVertices.set(baseIndex + 17, color.R);
 		rectVertices.set(baseIndex + 18, color.G);
 		rectVertices.set(baseIndex + 19, color.B);
-		rectVertices.set(baseIndex + 20, color.A);
+		rectVertices.set(baseIndex + 20, a);
 		
 		rectVertices.set(baseIndex + 24, color.R);
 		rectVertices.set(baseIndex + 25, color.G);
 		rectVertices.set(baseIndex + 26, color.B);
-		rectVertices.set(baseIndex + 27, color.A);
+		rectVertices.set(baseIndex + 27, a);
 	}
 	
 	private function setTriVertices(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
@@ -411,22 +412,23 @@ class ColoredShaderPainter {
 		triangleVertices.set(baseIndex + 16, -5.0);
 	}
 	
-	private function setTriColors(color: Color): Void {
+	private function setTriColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+		var a: FastFloat = opacity * color.A;
 		triangleVertices.set(baseIndex +  3, color.R);
 		triangleVertices.set(baseIndex +  4, color.G);
 		triangleVertices.set(baseIndex +  5, color.B);
-		triangleVertices.set(baseIndex +  6, color.A);
+		triangleVertices.set(baseIndex +  6, a);
 		
 		triangleVertices.set(baseIndex + 10, color.R);
 		triangleVertices.set(baseIndex + 11, color.G);
 		triangleVertices.set(baseIndex + 12, color.B);
-		triangleVertices.set(baseIndex + 13, color.A);
+		triangleVertices.set(baseIndex + 13, a);
 		
 		triangleVertices.set(baseIndex + 17, color.R);
 		triangleVertices.set(baseIndex + 18, color.G);
 		triangleVertices.set(baseIndex + 19, color.B);
-		triangleVertices.set(baseIndex + 20, color.A);
+		triangleVertices.set(baseIndex + 20, a);
 	}
 
 	private function drawBuffer(trisDone: Bool): Void {
@@ -471,22 +473,22 @@ class ColoredShaderPainter {
 		triangleVertices = triangleVertexBuffer.lock();
 	}
 	
-	public function fillRect(color: Color,
+	public function fillRect(opacity: FastFloat, color: Color,
 		bottomleftx: Float, bottomlefty: Float,
 		topleftx: Float, toplefty: Float,
 		toprightx: Float, toprighty: Float,
 		bottomrightx: Float, bottomrighty: Float): Void {
 		if (bufferIndex + 1 >= bufferSize) drawBuffer(false);
 				
-		setRectColors(color);
+		setRectColors(opacity, color);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 		++bufferIndex;
 	}
 	
-	public function fillTriangle(color: Color, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
+	public function fillTriangle(opacity: FastFloat, color: Color, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
 		if (triangleBufferIndex + 1 >= triangleBufferSize) drawTriBuffer(false);
 		
-		setTriColors(color);
+		setTriColors(opacity, color);
 		setTriVertices(x1, y1, x2, y2, x3, y3);
 		++triangleBufferIndex;
 	}
@@ -631,27 +633,28 @@ class TextShaderPainter {
 		rectVertices.set(baseIndex + 31, bottom);
 	}
 	
-	private function setRectColors(color: Color): Void {
+	private function setRectColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = bufferIndex * 9 * 4;
+		var a: FastFloat = opacity * color.A;
 		rectVertices.set(baseIndex +  5, color.R);
 		rectVertices.set(baseIndex +  6, color.G);
 		rectVertices.set(baseIndex +  7, color.B);
-		rectVertices.set(baseIndex +  8, color.A);
+		rectVertices.set(baseIndex +  8, a);
 		
 		rectVertices.set(baseIndex + 14, color.R);
 		rectVertices.set(baseIndex + 15, color.G);
 		rectVertices.set(baseIndex + 16, color.B);
-		rectVertices.set(baseIndex + 17, color.A);
+		rectVertices.set(baseIndex + 17, a);
 		
 		rectVertices.set(baseIndex + 23, color.R);
 		rectVertices.set(baseIndex + 24, color.G);
 		rectVertices.set(baseIndex + 25, color.B);
-		rectVertices.set(baseIndex + 26, color.A);
+		rectVertices.set(baseIndex + 26, a);
 		
 		rectVertices.set(baseIndex + 32, color.R);
 		rectVertices.set(baseIndex + 33, color.G);
 		rectVertices.set(baseIndex + 34, color.B);
-		rectVertices.set(baseIndex + 35, color.A);
+		rectVertices.set(baseIndex + 35, a);
 	}
 	
 	private function drawBuffer(): Void {
@@ -723,7 +726,7 @@ class TextShaderPainter {
 		text = null;
 	}
 	
-	public function drawString(text: String, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
+	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
 		var font = this.font._get(fontSize);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
@@ -736,7 +739,7 @@ class TextShaderPainter {
 			var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
-				setRectColors(color);
+				setRectColors(opacity, color);
 				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
 				var p0 = transformation.multvec(new FastVector2(q.x0, q.y1)); //bottom-left
 				var p1 = transformation.multvec(new FastVector2(q.x0, q.y0)); //top-left
@@ -891,23 +894,23 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p2 = transformation.multvec(new FastVector2(x - strength / 2, y - strength / 2)); //top-left
 		var p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y - strength / 2)); //top-right
 		var p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)); //bottom-right
-		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
+		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
 		
 		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2));
 		p3 = transformation.multvec(new FastVector2(x + strength / 2, y - strength / 2));
 		p4 = transformation.multvec(new FastVector2(x + strength / 2, y + height + strength / 2));
-		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
+		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
 		
 		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
 		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
 		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
-		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
+		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
 		
 		p1 = transformation.multvec(new FastVector2(x + width - strength / 2, y + height + strength / 2));
 		p2 = transformation.multvec(new FastVector2(x + width - strength / 2, y - strength / 2));
 		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y - strength / 2));
 		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
-		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
+		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
 	}
 	
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
@@ -918,14 +921,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p2 = transformation.multvec(new FastVector2(x, y));
 		var p3 = transformation.multvec(new FastVector2(x + width, y));
 		var p4 = transformation.multvec(new FastVector2(x + width, y + height));
-		coloredPainter.fillRect(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 	}
 
 	public override function drawString(text: String, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, color, x, y, transformation);
+		textPainter.drawString(text, opacity, color, x, y, transformation);
 	}
 
 	override public function get_font(): Font {
@@ -959,8 +962,8 @@ class Graphics2 extends kha.graphics2.Graphics {
 		p3 = transformation.multvec(p3);
 		p4 = transformation.multvec(p4);
 		
-		coloredPainter.fillTriangle(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
-		coloredPainter.fillTriangle(color, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);		
+		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		coloredPainter.fillTriangle(opacity, color, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);		
 	}
 
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
@@ -970,7 +973,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p1 = transformation.multvec(new FastVector2(x1, y1));
 		var p2 = transformation.multvec(new FastVector2(x2, y2));
 		var p3 = transformation.multvec(new FastVector2(x3, y3));
-		coloredPainter.fillTriangle(color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 	
 	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
