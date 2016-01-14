@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import js.html.webgl.GL;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
@@ -21,12 +22,12 @@ class IndexBuffer {
 	}
 	
 	public function unlock(): Void {
-		SystemImpl.gl.bindBuffer(SystemImpl.gl.ELEMENT_ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(SystemImpl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), usage == Usage.DynamicUsage ? SystemImpl.gl.DYNAMIC_DRAW : SystemImpl.gl.STATIC_DRAW);
+		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, cast new Uint16Array(data), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
 	public function set(): Void {
-		SystemImpl.gl.bindBuffer(SystemImpl.gl.ELEMENT_ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 	}
 	
 	public function count(): Int {

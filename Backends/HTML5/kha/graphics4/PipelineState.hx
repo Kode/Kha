@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import js.html.webgl.GL;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
@@ -37,7 +38,7 @@ class PipelineState extends PipelineStateBase {
 		}
 		
 		SystemImpl.gl.linkProgram(program);
-		if (!SystemImpl.gl.getProgramParameter(program, SystemImpl.gl.LINK_STATUS)) {
+		if (!SystemImpl.gl.getProgramParameter(program, GL.LINK_STATUS)) {
 			throw "Could not link the shader program.";
 		}
 	}
@@ -52,7 +53,7 @@ class PipelineState extends PipelineStateBase {
 		var s = SystemImpl.gl.createShader(shader.type);
 		SystemImpl.gl.shaderSource(s, shader.source);
 		SystemImpl.gl.compileShader(s);
-		if (!SystemImpl.gl.getShaderParameter(s, SystemImpl.gl.COMPILE_STATUS)) {
+		if (!SystemImpl.gl.getShaderParameter(s, GL.COMPILE_STATUS)) {
 			throw "Could not compile shader:\n" + SystemImpl.gl.getShaderInfoLog(s);
 		}
 		shader.shader = s;

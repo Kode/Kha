@@ -2,6 +2,7 @@ package kha;
 
 import haxe.io.Bytes;
 import js.html.ImageElement;
+import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
@@ -52,7 +53,7 @@ class Image implements Canvas implements Resource {
 	public static var maxSize(get, null): Int;
 	
 	public static function get_maxSize(): Int {
-		return SystemImpl.gl == null ? 1024 * 8 : SystemImpl.gl.getParameter(SystemImpl.gl.MAX_TEXTURE_SIZE);
+		return SystemImpl.gl == null ? 1024 * 8 : SystemImpl.gl.getParameter(GL.MAX_TEXTURE_SIZE);
 	}
 	
 	public static var nonPow2Supported(get, null): Bool;

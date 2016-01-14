@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import js.html.webgl.GL;
 import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
@@ -82,8 +83,8 @@ class VertexBuffer {
 	}
 	
 	public function unlock(): Void {
-		SystemImpl.gl.bindBuffer(SystemImpl.gl.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(SystemImpl.gl.ARRAY_BUFFER, data, usage == Usage.DynamicUsage ? SystemImpl.gl.DYNAMIC_DRAW : SystemImpl.gl.STATIC_DRAW);
+		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
@@ -96,7 +97,7 @@ class VertexBuffer {
 	
 	public function set(offset: Int): Int {
 		var ext: Dynamic = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
-		SystemImpl.gl.bindBuffer(SystemImpl.gl.ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		var attributesOffset = 0;
 		for (i in 0...sizes.length) {
 			if (sizes[i] > 4) {
@@ -104,7 +105,7 @@ class VertexBuffer {
 				var addonOffset = 0;
 				while (size > 0) {
 					SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
-					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, SystemImpl.gl.FLOAT, false, myStride, offsets[i] + addonOffset);
+					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, GL.FLOAT, false, myStride, offsets[i] + addonOffset);
 					if (ext) {
 						ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
 					}
@@ -115,7 +116,7 @@ class VertexBuffer {
 			}
 			else {
 				SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
-				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], SystemImpl.gl.FLOAT, false, myStride, offsets[i]);
+				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], GL.FLOAT, false, myStride, offsets[i]);
 				if (ext) {
 					ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
 				}

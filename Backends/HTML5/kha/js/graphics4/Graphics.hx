@@ -1,6 +1,7 @@
 package kha.js.graphics4;
 
 import haxe.ds.Vector;
+import js.html.webgl.GL;
 import kha.Blob;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
@@ -42,19 +43,19 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-		SystemImpl.gl.enable(SystemImpl.gl.BLEND);
-		SystemImpl.gl.blendFunc(SystemImpl.gl.SRC_ALPHA, SystemImpl.gl.ONE_MINUS_SRC_ALPHA);
+		SystemImpl.gl.enable(GL.BLEND);
+		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		if (renderTarget == null) {
-			SystemImpl.gl.bindFramebuffer(SystemImpl.gl.FRAMEBUFFER, null);
+			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 			SystemImpl.gl.viewport(0, 0, System.pixelWidth, System.pixelHeight);
 		}
 		else {
-			SystemImpl.gl.bindFramebuffer(SystemImpl.gl.FRAMEBUFFER, renderTarget.frameBuffer);
+			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTarget.frameBuffer);
 			SystemImpl.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
 			if (additionalRenderTargets != null) {
-				SystemImpl.gl.framebufferTexture2D(SystemImpl.gl.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, SystemImpl.gl.TEXTURE_2D, renderTarget.texture, 0);
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, GL.TEXTURE_2D, renderTarget.texture, 0);
 				for (i in 0...additionalRenderTargets.length) {
-					SystemImpl.gl.framebufferTexture2D(SystemImpl.gl.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, SystemImpl.gl.TEXTURE_2D, cast(additionalRenderTargets[i], WebGLImage).texture, 0);
+					SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, GL.TEXTURE_2D, cast(additionalRenderTargets[i], WebGLImage).texture, 0);
 				}
 				var attachments = [SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL];
 				for (i in 0...additionalRenderTargets.length) {
@@ -84,15 +85,15 @@ class Graphics implements kha.graphics4.Graphics {
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var clearMask: Int = 0;
 		if (color != null) {
-			clearMask |= SystemImpl.gl.COLOR_BUFFER_BIT;
+			clearMask |= GL.COLOR_BUFFER_BIT;
 			SystemImpl.gl.clearColor(color.R, color.G, color.B, color.A);
 		}
 		if (depth != null) {
-			clearMask |= SystemImpl.gl.DEPTH_BUFFER_BIT;
+			clearMask |= GL.DEPTH_BUFFER_BIT;
 			SystemImpl.gl.clearDepth(depth);
 		}
 		if (stencil != null) {
-			clearMask |= SystemImpl.gl.STENCIL_BUFFER_BIT;
+			clearMask |= GL.STENCIL_BUFFER_BIT;
 		}
 		SystemImpl.gl.clear(clearMask);
 	}
@@ -104,29 +105,29 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
-			SystemImpl.gl.disable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.ALWAYS);
+			SystemImpl.gl.disable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.ALWAYS);
 		case Never:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.NEVER);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.NEVER);
 		case Equal:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.EQUAL);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.EQUAL);
 		case NotEqual:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.NOTEQUAL);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.NOTEQUAL);
 		case Less:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.LESS);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.LESS);
 		case LessEqual:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.LEQUAL);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.LEQUAL);
 		case Greater:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.GREATER);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.GREATER);
 		case GreaterEqual:
-			SystemImpl.gl.enable(SystemImpl.gl.DEPTH_TEST);
-			SystemImpl.gl.depthFunc(SystemImpl.gl.GEQUAL);
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthFunc(GL.GEQUAL);
 		}
 		SystemImpl.gl.depthMask(write);
 	}
@@ -134,26 +135,26 @@ class Graphics implements kha.graphics4.Graphics {
 	private function getBlendFunc(op: BlendingOperation): Int {
 		switch (op) {
 		case BlendZero, Undefined:
-			return SystemImpl.gl.ZERO;
+			return GL.ZERO;
 		case BlendOne:
-			return SystemImpl.gl.ONE;
+			return GL.ONE;
 		case SourceAlpha:
-			return SystemImpl.gl.SRC_ALPHA;
+			return GL.SRC_ALPHA;
 		case DestinationAlpha:
-			return SystemImpl.gl.DST_ALPHA;
+			return GL.DST_ALPHA;
 		case InverseSourceAlpha:
-			return SystemImpl.gl.ONE_MINUS_SRC_ALPHA;
+			return GL.ONE_MINUS_SRC_ALPHA;
 		case InverseDestinationAlpha:
-			return SystemImpl.gl.ONE_MINUS_DST_ALPHA;
+			return GL.ONE_MINUS_DST_ALPHA;
 		}
 	}
 	
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
-			SystemImpl.gl.disable(SystemImpl.gl.BLEND);
+			SystemImpl.gl.disable(GL.BLEND);
 		}
 		else {
-			SystemImpl.gl.enable(SystemImpl.gl.BLEND);
+			SystemImpl.gl.enable(GL.BLEND);
 			SystemImpl.gl.blendFunc(getBlendFunc(source), getBlendFunc(destination));
 		}
 	}
@@ -196,8 +197,8 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
-			SystemImpl.gl.activeTexture(SystemImpl.gl.TEXTURE0 + cast(stage, TextureUnit).value);
-			SystemImpl.gl.bindTexture(SystemImpl.gl.TEXTURE_2D, null);
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(stage, TextureUnit).value);
+			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 		}
 		else {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
@@ -206,8 +207,8 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) {
-			SystemImpl.gl.activeTexture(SystemImpl.gl.TEXTURE0 + cast(unit, TextureUnit).value);
-			SystemImpl.gl.bindTexture(SystemImpl.gl.TEXTURE_2D, null);
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(unit, TextureUnit).value);
+			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 		}
 		else {
 			cast(cast(texture, kha.js.Video).texture, WebGLImage).set(cast(unit, TextureUnit).value);
@@ -215,65 +216,65 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		SystemImpl.gl.activeTexture(SystemImpl.gl.TEXTURE0 + cast(texunit, TextureUnit).value);
+		SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(texunit, TextureUnit).value);
 		
 		switch (uAddressing) {
 		case Clamp:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_S, SystemImpl.gl.CLAMP_TO_EDGE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 		case Repeat:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_S, SystemImpl.gl.REPEAT);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.REPEAT);
 		case Mirror:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_S, SystemImpl.gl.MIRRORED_REPEAT);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.MIRRORED_REPEAT);
 		}
 		
 		switch (vAddressing) {
 		case Clamp:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_T, SystemImpl.gl.CLAMP_TO_EDGE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 		case Repeat:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_T, SystemImpl.gl.REPEAT);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.REPEAT);
 		case Mirror:
-			SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_WRAP_T, SystemImpl.gl.MIRRORED_REPEAT);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.MIRRORED_REPEAT);
 		}
 	
 		switch (minificationFilter) {
 		case PointFilter:
 			switch (mipmapFilter) {
 			case NoMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			case PointMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.NEAREST_MIPMAP_NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_NEAREST);
 			case LinearMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.NEAREST_MIPMAP_LINEAR);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
 			}
 		case LinearFilter, AnisotropicFilter:
 			switch (mipmapFilter) {
 			case NoMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.LINEAR);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
 			case PointMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.LINEAR_MIPMAP_NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_NEAREST);
 			case LinearMipFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MIN_FILTER, SystemImpl.gl.LINEAR_MIPMAP_LINEAR);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
 			}
 		}
 		
 		switch (magnificationFilter) {
 			case PointFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MAG_FILTER, SystemImpl.gl.NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			case LinearFilter, AnisotropicFilter:
-				SystemImpl.gl.texParameteri(SystemImpl.gl.TEXTURE_2D, SystemImpl.gl.TEXTURE_MAG_FILTER, SystemImpl.gl.LINEAR);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		}
 	}
 	
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:
-			SystemImpl.gl.disable(SystemImpl.gl.CULL_FACE);
+			SystemImpl.gl.disable(GL.CULL_FACE);
 		case Clockwise:
-			SystemImpl.gl.enable(SystemImpl.gl.CULL_FACE);
-			SystemImpl.gl.cullFace(SystemImpl.gl.FRONT);
+			SystemImpl.gl.enable(GL.CULL_FACE);
+			SystemImpl.gl.cullFace(GL.FRONT);
 		case CounterClockwise:
-			SystemImpl.gl.enable(SystemImpl.gl.CULL_FACE);
-			SystemImpl.gl.cullFace(SystemImpl.gl.BACK);
+			SystemImpl.gl.enable(GL.CULL_FACE);
+			SystemImpl.gl.cullFace(GL.BACK);
 		}
 	}
 
@@ -310,7 +311,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		SystemImpl.gl.uniform1fv(cast(location, ConstantLocation).value, values);
+		SystemImpl.gl.uniform1fv(cast(location, ConstantLocation).value, cast values);
 	}
 	
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
@@ -336,7 +337,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		SystemImpl.gl.drawElements(SystemImpl.gl.TRIANGLES, count == -1 ? indicesCount : count, SystemImpl.gl.UNSIGNED_SHORT, start * 2);
+		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2);
 	}
 	
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
@@ -344,13 +345,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		SystemImpl.gl.enable(SystemImpl.gl.SCISSOR_TEST);
+		SystemImpl.gl.enable(GL.SCISSOR_TEST);
 		var h: Int = renderTarget == null ? System.pixelHeight : renderTarget.height;
 		SystemImpl.gl.scissor(x, h - y - height, width, height);
 	}
 	
 	public function disableScissor(): Void {
-		SystemImpl.gl.disable(SystemImpl.gl.SCISSOR_TEST);
+		SystemImpl.gl.disable(GL.SCISSOR_TEST);
 	}
 	
 	public function renderTargetsInvertedY(): Bool {
@@ -359,7 +360,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
-			instancedExtension.drawElementsInstancedANGLE(SystemImpl.gl.TRIANGLES, count == -1 ? indicesCount : count, SystemImpl.gl.UNSIGNED_SHORT, start * 2, instanceCount);
+			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2, instanceCount);
 		}
 	}
 	

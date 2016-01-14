@@ -1,5 +1,6 @@
 package kha;
 
+import js.html.webgl.GL;
 import js.html.WheelEvent;
 import js.Browser;
 import js.html.CanvasElement;
@@ -27,7 +28,7 @@ class GamepadStates {
 }
 
 class SystemImpl {
-	public static var gl: Dynamic;
+	public static var gl: GL;
 	public static var drawBuffers: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
@@ -184,7 +185,7 @@ class SystemImpl {
 		try {
 			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
-				SystemImpl.gl.pixelStorei(SystemImpl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
 				gl = true;
@@ -274,7 +275,7 @@ class SystemImpl {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
 					SystemImpl.gl.colorMask(false, false, false, true);
-					SystemImpl.gl.clear(SystemImpl.gl.COLOR_BUFFER_BIT);
+					SystemImpl.gl.clear(GL.COLOR_BUFFER_BIT);
 					SystemImpl.gl.colorMask(true, true, true, true);
 				}
 			}

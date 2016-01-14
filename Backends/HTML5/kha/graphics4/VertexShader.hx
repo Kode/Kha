@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-import kha.Blob;
+import js.html.webgl.GL;
 
 class VertexShader {
 	public var source: String;
@@ -9,7 +9,7 @@ class VertexShader {
 	
 	public function new(source: Blob) {
 		this.source = source.toString();
-		this.type = SystemImpl.gl.VERTEX_SHADER;
+		this.type = GL.VERTEX_SHADER;
 		this.shader = null;
 	}
 }
