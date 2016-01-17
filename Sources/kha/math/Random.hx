@@ -29,12 +29,16 @@ class Random {
 		return y;
 	}
 	
+	public function GetFloat(): Float {
+		return Get() / 0x7ffffffe;
+	}
+	
 	public function GetUpTo(max: Int): Int {
-		return get() % (max + 1);
+		return Get() % (max + 1);
 	}
 	
 	public function GetIn(min: Int, max: Int): Int {
-		return get() % (max + 1 - min) + min;
+		return Get() % (max + 1 - min) + min;
 	}
 	
 	private var MT: Array<Int>;
@@ -56,6 +60,10 @@ class Random {
 	
 	public static function get(): Int {
 		return Default.Get();
+	}
+	
+	public static function getFloat(): Float {
+		return Default.GetFloat();
 	}
 	
 	public static function getUpTo(max: Int): Int {
