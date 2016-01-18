@@ -56,6 +56,15 @@ class LoaderImpl {
 	}
 	
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
+		#if sys_debug_html5
+		var fs = untyped __js__("require('fs')");
+		fs.readFile(desc.files[0], function (err, data) {
+			var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
+			var bytes = Bytes.alloc(byteArray.byteLength);
+			for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
+			done(new Blob(bytes));
+		});
+		#else
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
@@ -87,6 +96,7 @@ class LoaderImpl {
 			}
 		};
 		request.send(null);
+		#end
 	}
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
