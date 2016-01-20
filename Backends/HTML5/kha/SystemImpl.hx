@@ -45,9 +45,16 @@ class SystemImpl {
 	}
 	
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+        #if sys_debug_html5
+        // Wait a second so the debugger can attach
+        Browser.window.setTimeout(function () {
+            init2();
+            callback();   
+        }, 1000);
+        #else
 		init2();
-		//MouseImpl.init();
 		callback();
+        #end
 	}
 	
 	public static function setCanvas(canvas: CanvasElement): Void {
