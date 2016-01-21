@@ -54,8 +54,19 @@ class LoaderImpl {
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
 		var video = new kha.js.Video(desc.files, done);
 	}
-	
+    
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
+		#if sys_debug_html5
+		var fs = untyped __js__("require('fs')");
+        var path = untyped __js__("require('path')");
+        var app = untyped __js__("require('remote').require('app')");
+        fs.readFile(path.join(app.getAppPath(), desc.files[0]), function (err, data) {
+			var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
+            var bytes = Bytes.alloc(byteArray.byteLength);
+            for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
+            done(new Blob(bytes));
+		});
+		#else
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
@@ -87,6 +98,7 @@ class LoaderImpl {
 			}
 		};
 		request.send(null);
+		#end
 	}
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
