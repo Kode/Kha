@@ -304,6 +304,8 @@ class SystemImpl {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
+		canvas.onblur = onBlur;
+		canvas.onfocus = onFocus;
 		untyped if (canvas.onwheel) canvas.onwheel = mouseWheel;
 		else if (canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
@@ -478,6 +480,16 @@ class SystemImpl {
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);
 			index++;
 		}
+	}
+
+	private static function onBlur() {
+		// System.pause();
+		System.background();
+	}
+
+	private static function onFocus() {
+		// System.resume();
+		System.foreground();
 	}
 	
 	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
