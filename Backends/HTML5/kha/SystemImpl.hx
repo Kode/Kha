@@ -47,6 +47,7 @@ class SystemImpl {
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
         #if sys_debug_html5
         // Wait a second so the debugger can attach
+		untyped require('web-frame').setZoomLevelLimits(1, 1);
         Browser.window.setTimeout(function () {
             init2();
             callback();   
