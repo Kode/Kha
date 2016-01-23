@@ -362,23 +362,23 @@ class SystemImpl {
 	}
 
 	public static function foreground(): Void {
-		
+		System.foreground();
 	}
 
 	public static function resume(): Void {
-		
+		System.resume();
 	}
 
 	public static function pause(): Void {
-		
+		System.pause();
 	}
 
 	public static function background(): Void {
-		
+		System.background();
 	}
 
 	public static function shutdown(): Void {
-		
+		System.shutdown();
 	}
 	
 	@:functionCode('init_kore(name, width, height);')
