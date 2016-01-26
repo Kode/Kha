@@ -93,6 +93,7 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	
 	public function onTouch(view: View, event: MotionEvent): Bool {
 		var index = event.getActionIndex();
+		var id = event.getPointerId(index);
 		var maskedAction = event.getActionMasked();
 		var ACTION_DOWN = 0;
 		var ACTION_MOVE = 1;
@@ -102,8 +103,32 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 		action = (action == -1 && maskedAction == MotionEvent.ACTION_MOVE) ? ACTION_MOVE : action;
 		action = (action == -1 && (maskedAction == MotionEvent.ACTION_UP || maskedAction == MotionEvent.ACTION_POINTER_UP || maskedAction == MotionEvent.ACTION_CANCEL))
 				? ACTION_UP : action;
+				
+		switch action {
+			
+			case 1: //ACTION_MOVE
+			
+				var pointerCount = event.getPointerCount();
+				for(i in 0...pointerCount) {
+					queueEvent(new OnTouchRunner(renderer, event.getPointerId(i), event.getX(i), event.getY(i), action));
+				}
+				
+			default: 
+			queueEvent(new OnTouchRunner(renderer, event.getPointerId(index), event.getX(index), event.getY(index), action));
+		}
+		return true;
+		/*
+		if(action == ACTION_MOVE)
+		{
+			var pointerCount = event.getPointerCount();
+			for(i in 0...pointerCount)
+			{
+				queueEvent(new OnTouchRunner(renderer, event.getPointerId(i), event.getX(i), event.getY(i), action));
+			}
+		}
 		queueEvent(new OnTouchRunner(renderer, event.getPointerId(index), event.getX(index), event.getY(index), action));
 		return true;
+		*/
 	}
 	
 	public function onKeyDown(keyCode: Int, event: KeyEvent): Bool {
