@@ -93,7 +93,6 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	
 	public function onTouch(view: View, event: MotionEvent): Bool {
 		var index = event.getActionIndex();
-		var id = event.getPointerId(index);
 		var maskedAction = event.getActionMasked();
 		var ACTION_DOWN = 0;
 		var ACTION_MOVE = 1;
