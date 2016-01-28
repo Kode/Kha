@@ -29,6 +29,12 @@ app.get('/download', function(req, res) {
     res.render('pages/download');
 });
 
+// GETSTARTED page
+app.get('/getstarted', function(req, res) {
+
+    res.render('pages/getstarted');
+});
+
 // GETSTARTED -> INSTALL page
 app.get('/getstarted/install', function(req, res) {
 

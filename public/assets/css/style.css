@@ -1,22 +1,22 @@
 @import url(http://fonts.googleapis.com/css?family=Inconsolata);
 
 a {
-    color: #E2B708;
+    color: #2185D0;
 }
 
 a:hover {
     color: #fff;
-    background-color: #E2B708;
+    background-color: #2185D0;
 }
 
 a:focus {
     color: #fff;
-    background-color: #E2B708;
+    background-color: #2185D0;
 }
 
 a:active {
     color: #fff;
-    background-color: #E2B708;
+    background-color: #2185D0;
 }
 
 .ui.help a {
@@ -46,8 +46,8 @@ a:active {
 
 /* LABEL - Black */
 .ui.black.labels .label, .ui.black.label {
-    background-color: rgba(0, 0, 0, 0.4) !important;
-    border-color: rgba(0, 0, 0, 0.9) !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
@@ -133,10 +133,19 @@ a:active {
     outline: 0;
 }
 
+/* STEP - Header Style */
+.ui.header .step-number {
+    font-size: 1em;
+}
+
+.ui.header > .icon + .content {
+    font-size: 0.8em;
+}
+
 /* SEGMENT - Inverted */
 .ui.inverted.segment,
 .ui.primary.inverted.segment {
-    background: rgba(22, 22, 22, 0.95);
+    background: #000015;
     color: rgba(255, 255, 255, 0.9);
 }
 
@@ -161,7 +170,7 @@ a:active {
 /* GitHub Corner Label */
 .ui.corner .github {
     top: 0.2em !important;
-    padding-right: 0.5em;
+    padding-right: 0.8em;
     font-size: 1.7em !important;
 }
 
@@ -232,7 +241,7 @@ a:active {
 
 /* Homepage HEADER Content */
 .homehead.center.aligned.segment {
-    background-image: url("../../assets/images/lowpoly.jpg");
+    background: url("../../assets/images/head.png") center;
     background-size: cover;
     padding: 0;
 }
@@ -256,7 +265,7 @@ a:active {
     color: white;
     font-size: 1.7em;
     font-weight: bold;
-    text-shadow: 0 0 6px rgba(50, 50, 50, 0.7);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .homehead p {
@@ -264,10 +273,6 @@ a:active {
     font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     font-size: 1.33em;
     font-weight: normal;
-}
-
-.black.layer {
-    background: rgba(0, 0, 0, 0.25) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHElEQVQIW2NkYGCoZ2BgaGSAAkYYAyYBEsCvAgCC3gQFmrZRQgAAAABJRU5ErkJggg==);
 }
 
 /* Small HEADER */
@@ -304,7 +309,7 @@ a:active {
 
 /* Stripes Segments */
 .ui.vertical.stripe {
-    padding: 6em 0;
+    padding: 3em 0;
 }
 
 .ui.vertical.stripe h3 {
@@ -317,6 +322,11 @@ a:active {
 
 .ui.vertical.stripe.segment.end {
     margin-bottom: 6em !important;
+    padding: 6em 0 !important;
+}
+
+.ui.vertical.stripe.segment.main {
+    padding: 6em 0 !important;
 }
 
 /* Squarify Components */
@@ -347,13 +357,14 @@ a:active {
 /* Engines Segment */
 .ui.vertical.stripe.engines {
     background-color: #2185D0 !important;
+    padding: 6em 0 !important;
 }
 
 .ui.vertical.stripe.engines h3 {
     font-size: 3.5em;
 }
 
-.engines p {
+.ui.vertical.stripe.engines p {
     font-size: 2.5em !important;
 }
 
@@ -363,7 +374,7 @@ a:active {
 }
 
 .title.row {
-    margin-top: 50px;
+    margin: 40px 0;
 }
 
 .toc.item {
@@ -397,8 +408,8 @@ a:active {
     top: 0;
 }
 
-.ui.addblank {
-    margin-top: 60px;
+.addblank {
+    margin: 20px !important;
 }
 
 /* *

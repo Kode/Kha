@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('../partials/head') %>
+
+<body>
+
+<!-- Following Menu -->
+<%- include('../partials/menu-following') %>
+
+<!-- Sidebar Menu -->
+<%- include('../partials/menu-sidebar') %>
+
+<!-- Page Contents -->
+<div class="pusher">
+
+    <!-- Header -->
+    <%- include('../partials/header') %>
+
+    <!-- Install Segment -->
+    <div class="ui vertical stripe segment">
+        <div class="ui aligned stackable grid container">
+
+            <div class="title row">
+                <div class="twelve wide column">
+                    <div class="ui huge header">
+                        <div class="content">
+                            Install
+                            <div class="sub header">
+                                <p>everything you need is easy. Follow these steps!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui large header addblank">
+                        <i class="step-number icon">1</i>
+                        <div class="content">
+                            Haxe
+                            <div class="sub header">Cross-Platform Toolkit</div>
+                        </div>
+                    </div>
+
+                    <p>Download and install the latest version from the official site (<a href="http://haxe.org/download/">haxe.org/download</a>). If you need assistance, the community is always ready to help. Visit the official page at: <a href="http://haxe.org/community/community-support.html">haxe.org/community/community-support.html</a>.</p>
+
+                    <div class="ui large header">
+                        <i class="step-number icon">2</i>
+                        <div class="content">
+                            Kha
+                            <div class="sub header">Portable Multimedia Framework</div>
+                        </div>
+                    </div>
+
+                    <p>We support Haxelib, the package manager for the Haxe Toolkit. To install <b class="kha">Kha</b>, inside a command prompt or terminal, type the following command:</p>
+
+                    <div class="ui large compact message squared">
+                        <div class="content">
+                            <p class="console">haxelib install kha</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="four wide column">
+
+                    <%- include('../partials/help') %>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="ui divider"></div>
+
+        <div class="ui aligned stackable grid container">
+            <div class="title row">
+                <div class="twelve wide column">
+                    <div class="ui huge header">
+                        <div class="content">
+                            Create
+                            <div class="sub header">
+                                <p>your project and conquer the world!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui addblank">
+                        <p>You can easily start a new project skeleton for <b class="kha">Kha</b>. Create a new directory and from inside it run the command:</p>
+
+                        <div class="ui large compact message squared">
+                            <div class="content">
+                                <p class="console">haxelib run kha --init</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui divider"></div>
+
+        <div class="ui aligned stackable grid container">
+
+            <div class="title row">
+                <div class="twelve wide column">
+                    <div class="ui huge header">
+                        <div class="content">
+                            Build
+                            <div class="sub header">
+                                <p>to any supported target and spread to all.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui addblank">
+                        <p><b class="kha">Kha</b> doesn't try to directly compile projects completely. Instead it creates project files for the most popular IDEs, allowing you to debug, profile, tweak, develop or just compile the project. This is a little less convenient but much more flexible.</p>
+                        <p>Therefore, by running the following command:</p>
+
+                        <div class="ui large compact message squared">
+                            <div class="content">
+                                <p class="console">haxelib run kha</p>
+                            </div>
+                        </div>
+                        <p>it will build the project files to the system you're currently running, a project to Visual Studio if Windows and a project to Xcode if OS X.</p>
+                        <p>To build for other systems simply add the target at the end of the previous command, for example, for a HTML5 project type:</p>
+
+                        <div class="ui large compact message squared">
+                            <div class="content">
+                                <p class="console">haxelib run kha html5</p>
+                            </div>
+                        </div>
+
+                        <p>Project files are by default created inside of a build subdirectory. When using Windows you will eventually have to install Microsoft's dxwebsetup.exe. This is included in Kha's Kore/Tools/krafix subdirectory.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+</body>
+</html>
