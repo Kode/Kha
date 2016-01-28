@@ -11,7 +11,6 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
-#include "jsmn.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <kha/SystemImpl.h>
