@@ -90,7 +90,10 @@ class SystemImpl {
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
-	private static var gamepad: Gamepad;
+	private static var gamepad1: Gamepad;
+	private static var gamepad2: Gamepad;
+	private static var gamepad3: Gamepad;
+	private static var gamepad4: Gamepad;
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
 	
@@ -102,7 +105,10 @@ class SystemImpl {
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.Mouse();
-		gamepad = new Gamepad();
+		gamepad1 = new Gamepad(0);
+		gamepad1 = new Gamepad(1);
+		gamepad1 = new Gamepad(2);
+		gamepad1 = new Gamepad(3);
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
@@ -341,12 +347,36 @@ class SystemImpl {
 		mouse.sendWheelEvent(delta);
 	}
 	
-	public static function gamepadAxis(axis: Int, value: Float): Void {
-		gamepad.sendAxisEvent(axis, value);
+	public static function gamepad1Axis(axis: Int, value: Float): Void {
+		gamepad1.sendAxisEvent(axis, value);
 	}
 	
-	public static function gamepadButton(button: Int, value: Float): Void {
-		gamepad.sendButtonEvent(button, value);
+	public static function gamepad1Button(button: Int, value: Float): Void {
+		gamepad1.sendButtonEvent(button, value);
+	}
+	
+	public static function gamepad2Axis(axis: Int, value: Float): Void {
+		gamepad2.sendAxisEvent(axis, value);
+	}
+	
+	public static function gamepad2Button(button: Int, value: Float): Void {
+		gamepad2.sendButtonEvent(button, value);
+	}
+	
+	public static function gamepad3Axis(axis: Int, value: Float): Void {
+		gamepad3.sendAxisEvent(axis, value);
+	}
+	
+	public static function gamepad3Button(button: Int, value: Float): Void {
+		gamepad3.sendButtonEvent(button, value);
+	}
+	
+	public static function gamepad4Axis(axis: Int, value: Float): Void {
+		gamepad4.sendAxisEvent(axis, value);
+	}
+	
+	public static function gamepad4Button(button: Int, value: Float): Void {
+		gamepad4.sendButtonEvent(button, value);
 	}
 	
 	public static function touchStart(index: Int, x: Int, y: Int): Void {
