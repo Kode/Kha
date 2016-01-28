@@ -106,9 +106,9 @@ class SystemImpl {
 		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad1 = new Gamepad(0);
-		gamepad1 = new Gamepad(1);
-		gamepad1 = new Gamepad(2);
-		gamepad1 = new Gamepad(3);
+		gamepad2 = new Gamepad(1);
+		gamepad3 = new Gamepad(2);
+		gamepad4 = new Gamepad(3);
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
