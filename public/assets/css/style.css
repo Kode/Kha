@@ -1,7 +1,6 @@
-@import url(http://fonts.googleapis.com/css?family=Inconsolata);
-
 a {
     color: #2185D0;
+    opacity: 1 !important;
 }
 
 a:hover {
@@ -38,17 +37,13 @@ a:active {
     background-color: #2185D0;
 }
 
-/* * * * * * * *
- *
- * START Semantic Overrides
- *
- * */
-
 /* LABEL - Black */
 .ui.black.labels .label, .ui.black.label {
     background-color: transparent !important;
     border-color: transparent !important;
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: white !important;
+    font-family: "PT Sans Narrow";
+    font-size: 1.25em;
 }
 
 /* BUTTON - Inverted */
@@ -135,11 +130,12 @@ a:active {
 
 /* STEP - Header Style */
 .ui.header .step-number {
-    font-size: 1em;
+    font-size: 1.2em;
+    font-family: "Open Sans";
 }
 
 .ui.header > .icon + .content {
-    font-size: 0.8em;
+    font-family: "Open Sans";
 }
 
 /* SEGMENT - Inverted */
@@ -158,14 +154,6 @@ a:active {
     background-color: #f8ffff;
     color: hsla(207,55%,58%,1);
 }
-
-/* *
- *
- * END Semantic Overrides
- *
- * START Semantic Customization
- *
- * */
 
 /* GitHub Corner Label */
 .ui.corner .github {
@@ -188,6 +176,8 @@ a:active {
 /* Set menu items to white and smerald theme */
 .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
     color: rgb(255, 255, 255) !important;
+    font-family: "PT Sans Narrow";
+    font-size: 1.33em;
 }
 
 .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:hover {
@@ -220,24 +210,17 @@ a:active {
 
 /* Warning Message - Change to smerald color */
 .ui.warning.message {
-    box-shadow: 0 0 0 1px rgb(255, 85, 85) inset;
-    background-color: rgba(255, 0, 0, 0.63);
+    box-shadow: 0 0 0 1px rgba(191, 62, 62, 0.6) inset;
+    background-color: rgba(206, 22, 22, 0.61);
     border-radius: 0;
     color: rgb(255, 255, 255);
     width: max-content;
+    margin: 40px 0 !important;
 }
 
 .ui.warning.message .header {
     color: rgb(255, 255, 255);
 }
-
-/* *
- *
- * END Semantic Customization
- *
- * START Site Customization
- *
- * */
 
 /* Homepage HEADER Content */
 .homehead.center.aligned.segment {
@@ -247,11 +230,11 @@ a:active {
 }
 
 .homehead h1.ui.header {
-    margin-top: 1.60em;
+    margin-top: 0.8em;
     margin-bottom: 0;
     color: white;
     font-family: "Arial";
-    font-size: 4.5em;
+    font-size: 6.5em;
     font-weight: bold;
     text-shadow: 0 1px 0 #999,
     0 2px 0 #909090,
@@ -263,14 +246,15 @@ a:active {
 
 .homehead h2 {
     color: white;
-    font-size: 1.7em;
+    font-size: 2.1em;
     font-weight: bold;
+    font-family: "PT Sans Narrow";
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .homehead p {
     color: rgb(255, 255, 255);
-    font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-family: "Open Sans";
     font-size: 1.33em;
     font-weight: normal;
 }
@@ -278,23 +262,24 @@ a:active {
 /* Small HEADER */
 .smallhead.center.aligned.segment {
     background-color: #2185d0 !important;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .tophead div.ui.header b,
 .smallhead div.ui.header b {
     color: #111;
     font-family: "Arial";
-    font-size: 2.5em;
+    font-size: 4.5em;
 }
 
 .tophead div.ui.header,
 .smallhead div.ui.header {
     color: rgba(0, 0, 0, 0.6);
-    font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-family: "Open Sans";
     font-size: 1.33em;
     font-weight: normal;
-    padding: 20px;
+    padding-top: 30px !important;
+    margin: 0 !important;
 }
 
 /* GET STARTED and DOWNLOAD buttons */
@@ -313,14 +298,15 @@ a:active {
 }
 
 .ui.vertical.stripe h3 {
-    font-size: 3em;
+    font-size: 3.5em;
+    font-family: "PT Sans Narrow";
 }
 
 .ui.vertical.stripe p {
     font-size: 1.33em;
 }
 
-.ui.vertical.stripe.segment.end {
+.ui.vertical.stripe.segment.expand {
     margin-bottom: 6em !important;
     padding: 6em 0 !important;
 }
@@ -344,13 +330,13 @@ a:active {
 
 /* Steps Icons Number */
 .ui.header .step-number {
-    font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-family: "Open Sans";
     font-weight: bold;
 }
 
 /* White Divider */
-.ui.divider.white {
-    margin: 0 !important;
+.ui.divider.addblank {
+    margin: 50px 0 !important;
     border: 0 !important;
 }
 
@@ -361,20 +347,35 @@ a:active {
 }
 
 .ui.vertical.stripe.engines h3 {
-    font-size: 3.5em;
+    font-size: 4.5em;
 }
 
 .ui.vertical.stripe.engines p {
-    font-size: 2.5em !important;
+    font-family: "PT Sans Narrow";
+    font-size: 3.5em !important;
+}
+
+.ui.vertical.stripe p {
+    font-family: "Open Sans";
 }
 
 /* Others Customizations */
+.ui.huge.header {
+    font-size: 3em !important;
+    font-family: "Open Sans";
+}
+
+h2.ui.header {
+    font-size: 2.1em;
+    font-family: "Open Sans";
+}
+
 .hidden.menu {
     display: none;
 }
 
 .title.row {
-    margin: 40px 0;
+    margin: 20px 0;
 }
 
 .toc.item {
@@ -389,8 +390,17 @@ a:active {
     margin-top: 120px !important;
 }
 
+.gametag a {
+    padding: 4px !important;
+}
+
+.gametag a:hover {
+    background-color: white;
+    color: black;
+}
+
 .console {
-    font-family: "Inconsolata";
+    font-family: "Inconsolata" !important;
     font-size: 1.2em !important;
 }
 
@@ -409,14 +419,8 @@ a:active {
 }
 
 .addblank {
-    margin: 20px !important;
+    margin: 25px 0 !important;
 }
-
-/* *
- *
- * END Site Customization
- *
- * * * * * * * */
 
 @media only screen and (max-width: 450px) {
 
