@@ -22,7 +22,7 @@
 }
 
 /* Mobile */
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 795px) {
   .ui.container {
     width: auto;
     margin-left: 1em !important;
@@ -34,7 +34,7 @@
 }
 
 /* Tablet */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
+@media only screen and (min-width: 796px) and (max-width: 991px) {
   .ui.container {
     width: 723px;
     margin-left: auto !important;
