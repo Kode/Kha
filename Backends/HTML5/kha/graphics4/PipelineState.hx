@@ -39,7 +39,7 @@ class PipelineState extends PipelineStateBase {
 		
 		SystemImpl.gl.linkProgram(program);
 		if (!SystemImpl.gl.getProgramParameter(program, GL.LINK_STATUS)) {
-			throw "Could not link the shader program.";
+			throw "Could not link the shader program:\n" + SystemImpl.gl.getProgramInfoLog(program);
 		}
 	}
 	
