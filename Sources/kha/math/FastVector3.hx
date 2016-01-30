@@ -7,6 +7,10 @@ class FastVector3 {
 		this.z = z;
 	}
 	
+	public static function fromVector3(v: Vector3): FastVector3 {
+		return new FastVector3(v.x, v.y, v.z);
+	}
+	
 	public var x: FastFloat;
 	public var y: FastFloat;
 	public var z: FastFloat;
