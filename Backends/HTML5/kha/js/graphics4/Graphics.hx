@@ -102,7 +102,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void{
-		SystemImpl.gl.viewport(x, y, width, height);
+		var h: Int = renderTarget == null ? System.pixelHeight : renderTarget.height;
+		SystemImpl.gl.viewport(x, h - y - height, width, height);
 	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
