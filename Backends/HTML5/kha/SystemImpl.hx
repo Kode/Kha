@@ -179,6 +179,13 @@ class SystemImpl {
 				}
 			}
 		}
+		if (pad.axes.length <= 4 && pad.buttons.length > 7) {
+			// Fix for the triggers not being axis in html5
+			gamepadStates[pad.index].axes[4] = pad.buttons[6].value;
+			gamepads[pad.index].sendAxisEvent(4, pad.buttons[6].value);			
+			gamepadStates[pad.index].axes[5] = pad.buttons[7].value;
+			gamepads[pad.index].sendAxisEvent(5, pad.buttons[7].value);
+		}
 	}
 	
 	//public function start(game: Game): Void {
