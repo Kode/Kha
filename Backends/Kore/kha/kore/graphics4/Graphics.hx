@@ -221,11 +221,17 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
 		
 	}
-
+	
+	@:functionCode('
+		Kore::Graphics::scissor(x,y,width,height);
+	')
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
-
+	
+	@:functionCode('
+		Kore::Graphics::disableScissor();
+	')
 	public function disableScissor(): Void {
 		
 	}
