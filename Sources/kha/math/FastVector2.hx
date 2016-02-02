@@ -6,6 +6,10 @@ class FastVector2 {
 		this.y = y;
 	}
 	
+	public static function fromVector2(v: Vector2): FastVector2 {
+		return new FastVector2(v.x, v.y);
+	}
+	
 	public var x: FastFloat;
 	public var y: FastFloat;
 	public var length(get, set): FastFloat;

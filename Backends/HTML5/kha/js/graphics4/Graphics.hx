@@ -94,12 +94,16 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		if (stencil != null) {
 			clearMask |= GL.STENCIL_BUFFER_BIT;
+			SystemImpl.gl.enable(GL.STENCIL_TEST);
+			SystemImpl.gl.stencilMask(0xff);
+			SystemImpl.gl.clearStencil(stencil);
 		}
 		SystemImpl.gl.clear(clearMask);
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void{
-		SystemImpl.gl.viewport(x,y,width,height);
+		var h: Int = renderTarget == null ? System.pixelHeight : renderTarget.height;
+		SystemImpl.gl.viewport(x, h - y - height, width, height);
 	}
 	
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
@@ -281,7 +285,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
-		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReferenceValue, pipe.stencilWriteMask);
+		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination);
 		pipe.set();
 	}
@@ -340,8 +344,57 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2);
 	}
 	
+	private function convertStencilAction(action: StencilAction) {
+		switch (action) {
+			case StencilAction.Decrement:
+				return GL.DECR;
+			case StencilAction.DecrementWrap:
+				return GL.DECR_WRAP;
+			case StencilAction.Increment:
+				return GL.INCR;
+			case StencilAction.IncrementWrap:
+				return GL.INCR_WRAP;
+			case StencilAction.Invert:
+				return GL.INVERT;
+			case StencilAction.Keep:
+				return GL.KEEP;
+			case StencilAction.Replace:
+				return GL.REPLACE;
+			case StencilAction.Zero:
+				return GL.ZERO;
+		}
+	}
+	
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		
+		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep
+			&& depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
+				SystemImpl.gl.disable(GL.STENCIL_TEST);
+			}
+		else {
+			SystemImpl.gl.enable(GL.STENCIL_TEST);
+			var stencilFunc = 0;
+			switch (compareMode) {
+				case CompareMode.Always:
+					stencilFunc = GL.ALWAYS;
+				case CompareMode.Equal:
+					stencilFunc = GL.EQUAL;
+				case CompareMode.Greater:
+					stencilFunc = GL.GREATER;
+				case CompareMode.GreaterEqual:
+					stencilFunc = GL.GEQUAL;
+				case CompareMode.Less:
+					stencilFunc = GL.LESS;
+				case CompareMode.LessEqual:
+					stencilFunc = GL.LEQUAL;
+				case CompareMode.Never:
+					stencilFunc = GL.NEVER;
+				case CompareMode.NotEqual:
+					stencilFunc = GL.NOTEQUAL;
+			}
+			SystemImpl.gl.stencilMask(writeMask);
+			SystemImpl.gl.stencilOp(convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
+			SystemImpl.gl.stencilFunc(stencilFunc, referenceValue, readMask);
+		}
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

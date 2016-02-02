@@ -10,6 +10,7 @@ extern class MotionEvent {
 	public function getAction(): Int;
 	public function getX(pointerIndex: Int): Single;
 	public function getY(pointerIndex: Int): Single;
+	public function getPointerCount(): Int;
 	public function getPointerId(pointerIndex: Int): Int;
 	public function getActionIndex(): Int;
 	public function getActionMasked(): Int;

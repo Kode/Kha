@@ -164,8 +164,10 @@ class SystemImpl {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
 				if (gamepadStates[pad.index].axes[i] != pad.axes[i]) {
-					gamepadStates[pad.index].axes[i] = pad.axes[i];
-					gamepads[pad.index].sendAxisEvent(i, pad.axes[i]);
+					var axis = pad.axes[i];
+					if (i % 2 == 1) axis = -axis;
+					gamepadStates[pad.index].axes[i] = axis;
+					gamepads[pad.index].sendAxisEvent(i, axis);
 				}
 			}
 		}
@@ -176,6 +178,13 @@ class SystemImpl {
 					gamepads[pad.index].sendButtonEvent(i, pad.buttons[i].value);
 				}
 			}
+		}
+		if (pad.axes.length <= 4 && pad.buttons.length > 7) {
+			// Fix for the triggers not being axis in html5
+			gamepadStates[pad.index].axes[4] = pad.buttons[6].value;
+			gamepads[pad.index].sendAxisEvent(4, pad.buttons[6].value);			
+			gamepadStates[pad.index].axes[5] = pad.buttons[7].value;
+			gamepads[pad.index].sendAxisEvent(5, pad.buttons[7].value);
 		}
 	}
 	
@@ -191,7 +200,7 @@ class SystemImpl {
 		var gl: Bool = false;
 		
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");

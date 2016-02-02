@@ -41,6 +41,10 @@ class Random {
 		return Get() % (max + 1 - min) + min;
 	}
 	
+	public function GetFloatIn(min: Float, max: Float): Float {
+		return min + GetFloat() * (max - min);
+	}
+	
 	private var MT: Array<Int>;
 	private var index: Int = 0;
 	
@@ -72,5 +76,9 @@ class Random {
 	
 	public static function getIn(min: Int, max: Int): Int {
 		return Default.GetIn(min, max);
+	}
+	
+	public static function getFloatIn(min: Float, max: Float): Float {
+		return min + Default.GetFloat() * (max - min);
 	}
 }

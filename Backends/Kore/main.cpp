@@ -11,7 +11,6 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
-#include "jsmn.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <kha/SystemImpl.h>
@@ -162,12 +161,36 @@ namespace {
 		Sensor_obj::_changed(1, x, y, z);
 	}
 
-	void gamepadAxis(int axis, float value) {
-		SystemImpl_obj::gamepadAxis(axis, value);
+	void gamepad1Axis(int axis, float value) {
+		SystemImpl_obj::gamepad1Axis(axis, value);
 	}
 
-	void gamepadButton(int button, float value) {
-		SystemImpl_obj::gamepadButton(button, value);
+	void gamepad1Button(int button, float value) {
+		SystemImpl_obj::gamepad1Button(button, value);
+	}
+
+	void gamepad2Axis(int axis, float value) {
+		SystemImpl_obj::gamepad2Axis(axis, value);
+	}
+
+	void gamepad2Button(int button, float value) {
+		SystemImpl_obj::gamepad2Button(button, value);
+	}
+
+	void gamepad3Axis(int axis, float value) {
+		SystemImpl_obj::gamepad3Axis(axis, value);
+	}
+
+	void gamepad3Button(int button, float value) {
+		SystemImpl_obj::gamepad3Button(button, value);
+	}
+
+	void gamepad4Axis(int axis, float value) {
+		SystemImpl_obj::gamepad4Axis(axis, value);
+	}
+
+	void gamepad4Button(int button, float value) {
+		SystemImpl_obj::gamepad4Button(button, value);
 	}
 
 	void touchStart(int index, int x, int y) {
@@ -314,8 +337,14 @@ void init_kore(const char* name, int width, int height) {
 	Kore::Mouse::the()->Release = mouseUp;
 	Kore::Mouse::the()->Move = mouseMove;
 	Kore::Mouse::the()->Scroll = mouseWheel;
-	Kore::Gamepad::get(0)->Axis = gamepadAxis;
-	Kore::Gamepad::get(0)->Button = gamepadButton;
+	Kore::Gamepad::get(0)->Axis = gamepad1Axis;
+	Kore::Gamepad::get(0)->Button = gamepad1Button;
+	Kore::Gamepad::get(1)->Axis = gamepad2Axis;
+	Kore::Gamepad::get(1)->Button = gamepad2Button;
+	Kore::Gamepad::get(2)->Axis = gamepad3Axis;
+	Kore::Gamepad::get(2)->Button = gamepad3Button;
+	Kore::Gamepad::get(3)->Axis = gamepad4Axis;
+	Kore::Gamepad::get(3)->Button = gamepad4Button;
 	Kore::Surface::the()->TouchStart = touchStart;
 	Kore::Surface::the()->TouchEnd = touchEnd;
 	Kore::Surface::the()->Move = touchMove;

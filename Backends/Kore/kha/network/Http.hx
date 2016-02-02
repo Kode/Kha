@@ -10,12 +10,17 @@ import haxe.io.Bytes;
 @:headerClassCode('
 	static void internalCallback(int error, int response, const char* body, void* data) {
 		int callbackindex = (int)(Kore::spint)data;
-		size_t length = strlen(body);
-		HX_CHAR* chars = hx::NewString(length);
-		for (int i = 0; i < length; ++i) {
-			chars[i] = body[i];
+		if (error == 0) {
+			size_t length = strlen(body);
+			HX_CHAR* chars = hx::NewString(length);
+			for (int i = 0; i < length; ++i) {
+				chars[i] = body[i];
+			}
+			internalCallback2(error, response, String(chars, length), callbackindex);
 		}
-		internalCallback2(error, response, String(chars, length), callbackindex);
+		else {
+			internalCallback2(error, response, null(), callbackindex);
+		}
 	}
 ')
 class Http {

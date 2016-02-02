@@ -8,6 +8,10 @@ class FastVector4 {
 		this.w = w;
 	}
 	
+	public static function fromVector4(v: Vector4): FastVector4 {
+		return new FastVector4(v.x, v.y, v.z, v.w);
+	}
+	
 	public var x: FastFloat;
 	public var y: FastFloat;
 	public var z: FastFloat;

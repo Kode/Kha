@@ -18,6 +18,13 @@ class FastMatrix4 {
 		this._02 = _02; this._12 = _12; this._22 = _22; this._32 = _32;
 		this._03 = _03; this._13 = _13; this._23 = _23; this._33 = _33;
 	}
+	
+	public static function fromMatrix4(m: Matrix4): FastMatrix4 {
+		return new FastMatrix4(m._00, m._10, m._20, m._30,
+								m._01, m._11, m._21, m._31,
+								m._02, m._12, m._22, m._32,
+								m._03, m._13, m._23, m._33);
+	}
 
 	@:extern public static inline function translation(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
 		return new FastMatrix4(
