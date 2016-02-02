@@ -53,6 +53,7 @@ Kore::ZCompareMode convertCompareMode(int mode) {
 	case 6:
 		return Kore::ZCompareGreater;
 	case 7:
+	default:
 		return Kore::ZCompareGreaterEqual;
 	}
 }
@@ -74,6 +75,7 @@ Kore::StencilAction convertStencilAction(int action) {
 	case 6:
 		return Kore::DecrementWrap;
 	case 7:
+	default:
 		return Kore::Invert;	
 	}
 }
