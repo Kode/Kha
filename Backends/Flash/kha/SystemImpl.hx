@@ -60,7 +60,7 @@ class SystemImpl {
 	
 	private static function onReady(_): Void {
 		context = stage3D.context3D;
-		context.configureBackBuffer(width, height, 0, false);
+		context.configureBackBuffer(width, height, 0, true);
 		keyboard = new Keyboard();
 		mouse = new MouseImpl();
 
@@ -244,7 +244,7 @@ class SystemImpl {
 	
 	private static function resizeHandler(event: Event): Void {
 		if (frame != null && stage.stageWidth >= 32 && stage.stageHeight >= 32) {
-			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, false);
+			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, true);
 		}
 	}
 	
