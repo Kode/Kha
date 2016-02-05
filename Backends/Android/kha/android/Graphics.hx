@@ -255,6 +255,10 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setPipeline(pipeline: PipelineState): Void {
+		setCullMode(pipeline.cullMode);
+		setDepthMode(pipeline.depthWrite, pipeline.depthMode);
+		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, pipeline.stencilReferenceValue, pipeline.stencilReadMask, pipeline.stencilWriteMask);
+		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
 		pipeline.set();
 	}
 	
