@@ -11,15 +11,15 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, false);
-		else return new WebGLImage(width, height, format, false);
+		else return new WebGLImage(width, height, format, false, false, false);
 	}
-	
+
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, true);
-		else return new WebGLImage(width, height, format, true);
+		else return new WebGLImage(width, height, format, true, depthStencil, depthStencil);
 	}
-	
+
 	public static function fromImage(image: ImageElement, readable: Bool): Image {
 		if (SystemImpl.gl == null) {
 			var img = new CanvasImage(image.width, image.height, TextureFormat.RGBA32, false);
@@ -28,13 +28,13 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false);
+			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false, false, false);
 			img.image = image;
 			img.createTexture();
 			return img;
 		}
 	}
-	
+
 	public static function fromVideo(video: kha.js.Video): Image {
 		if (SystemImpl.gl == null) {
 			var img = new CanvasImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
@@ -43,25 +43,25 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
+			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false, false, false);
 			img.video = video.element;
 			img.createTexture();
 			return img;
 		}
 	}
-	
+
 	public static var maxSize(get, null): Int;
-	
+
 	public static function get_maxSize(): Int {
 		return SystemImpl.gl == null ? 1024 * 8 : SystemImpl.gl.getParameter(GL.MAX_TEXTURE_SIZE);
 	}
-	
+
 	public static var nonPow2Supported(get, null): Bool;
-	
+
 	public static function get_nonPow2Supported(): Bool {
 		return SystemImpl.gl != null;
 	}
-	
+
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }
 	public function unload(): Void { }
