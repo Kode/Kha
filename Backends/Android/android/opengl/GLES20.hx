@@ -36,7 +36,11 @@ extern class GLES20 {
 	public static var GL_RGBA: Int;
 	public static var GL_UNSIGNED_BYTE: Int;
 	public static var GL_FRAMEBUFFER: Int;
+	public static var GL_RENDERBUFFER: Int;
 	public static var GL_COLOR_ATTACHMENT0: Int;
+	public static var GL_DEPTH_ATTACHMENT: Int;
+	public static var GL_STENCIL_ATTACHMENT: Int;
+	public static var GL_DEPTH_COMPONENT16: Int;
 	public static var GL_LUMINANCE: Int;
 	public static var GL_DEPTH_BUFFER_BIT: Int;
 	public static var GL_STENCIL_BUFFER_BIT: Int;
@@ -62,7 +66,31 @@ extern class GLES20 {
 	public static var GL_NEAREST_MIPMAP_LINEAR: Int;
 	public static var GL_LINEAR_MIPMAP_NEAREST: Int;
 	public static var GL_LINEAR_MIPMAP_LINEAR: Int;
-	
+
+	public static var GL_STENCIL_TEST : Int;
+	public static var GL_STENCIL_FUNC : Int;
+	public static var GL_STENCIL_FAIL : Int;
+	public static var GL_STENCIL_PASS_DEPTH_FAIL : Int;
+	public static var GL_STENCIL_PASS_DEPTH_PASS : Int;
+	public static var GL_STENCIL_REF : Int;
+	public static var GL_STENCIL_VALUE_MASK : Int;
+	public static var GL_STENCIL_WRITEMASK : Int;
+	public static var GL_STENCIL_INDEX8 : Int;
+
+	public static var GL_KEEP : Int;
+	public static var GL_REPLACE : Int;
+	public static var GL_INCR : Int;
+	public static var GL_DECR : Int;
+	public static var GL_INVERT : Int;
+	public static var GL_INCR_WRAP : Int;
+	public static var GL_DECR_WRAP : Int;
+
+	public static var GL_FRAMEBUFFER_COMPLETE : Int;
+	public static var GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT : Int;
+	public static var GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT : Int;
+	public static var GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS : Int;
+	public static var GL_FRAMEBUFFER_UNSUPPORTED : Int;
+
 	public static function glClear(bits: Int): Void;
 	public static function glGetError(): Int;
 	public static function glBindBuffer(type : Int, buffer : Int) : Void;
@@ -113,4 +141,19 @@ extern class GLES20 {
 	public static function glDepthFunc(func: Int): Void;
 	public static function glDepthMask(flag: Bool): Void;
 	public static function glCullFace(mode: Int): Void;
+
+	public static function glStencilFunc(func: Int, ref: Int,  mask: Int): Void;
+	public static function glStencilOp(fail: Int, zfail: Int, zpass: Int): Void;
+	public static function glStencilMask(mask: Int) : Void;
+	public static function glClearStencil(s: Int) : Void;
+
+	public static function glGenRenderbuffers(n : Int, buffers: NativeArray<Int>, offset : Int) : Void;
+	public static function glBindRenderbuffer(target: Int, renderBuffer: Int): Void;
+	public static function glRenderbufferStorage(target: Int, internalFormat: Int, width: Int, height: Int): Void;
+	public static function glFramebufferRenderbuffer(target: Int, attachment: Int, renderBufferTarget: Int, renderBuffer: Int): Void;
+	public static function glCheckFramebufferStatus(target: Int): Int;
+	public static function glDeleteRenderbuffers(n: Int, renderBuffers: NativeArray<Int>, offset: Int): Void;
+
+	//public static var GL_EXTENSIONS : Int;
+	//public static function glGetString(name: Int): String;
 }
