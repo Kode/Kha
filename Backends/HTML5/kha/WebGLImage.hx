@@ -29,8 +29,7 @@ class WebGLImage extends Image {
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 
-	private var useDepthBuffer : Bool;
-	private var useStencilBuffer : Bool;
+	var depthStencilFormat: DepthStencilFormat;
 
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -42,15 +41,14 @@ class WebGLImage extends Image {
 		}
 	}
 
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, useDepthBuffer: Bool, useStencilBuffer: Bool) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat) {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
 		this.renderTarget = renderTarget;
 		image = null;
 		video = null;
-		this.useStencilBuffer = useStencilBuffer;
-		this.useDepthBuffer = useDepthBuffer;
+		this.depthStencilFormat = depthStencilFormat;
 		if (renderTarget) createTexture();
 	}
 
@@ -143,25 +141,27 @@ class WebGLImage extends Image {
 			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, null);
 			SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 
-			if (useDepthBuffer && useStencilBuffer) {
-				renderBuffer = SystemImpl.gl.createRenderbuffer();
-				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_STENCIL, realWidth, realHeight);
-				SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
-			} else if (useDepthBuffer) {
-				// For depth tests
-				renderBuffer = SystemImpl.gl.createRenderbuffer();
-				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
-				SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
-			} else {
-				// (DK) this was always executed, so we leave it in as default to not break existing code?
-
-				// For depth tests
-				renderBuffer = SystemImpl.gl.createRenderbuffer();
-				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
-				SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
+			switch (depthStencilFormat) {
+				case NoDepthAndStencil: {}
+				case DepthOnly: {
+					renderBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
+					SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
+				}
+				case DepthAutoStencilAuto: createDepthStencilBuffer();
+				case Depth24Stencil8: {
+					#if debug
+					trace('DepthStencilFormat "Depth24Stencil8" is not (yet?) supported on webgl, using target defaults');
+					#end
+					createDepthStencilBuffer();
+				}
+				case Depth32Stencil8: {
+					#if debug
+					trace('DepthStencilFormat "Depth32Stencil8" is not (yet?) supported on webgl, using target defaults');
+					#end
+					createDepthStencilBuffer();
+				}
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
@@ -171,6 +171,13 @@ class WebGLImage extends Image {
 		else SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, image);
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
+	}
+
+	function createDepthStencilBuffer() {
+		renderBuffer = SystemImpl.gl.createRenderbuffer();
+		SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
+		SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_STENCIL, realWidth, realHeight);
+		SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 	}
 
 	public function set(stage: Int): Void {
