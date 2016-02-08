@@ -31,7 +31,7 @@ class Image implements Canvas implements Resource {
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthAndStencil : Bool) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthAndStencil: DepthStencilFormat) {
 		myWidth = width;
 		myHeight = height;
 		myRealWidth = upperPowerOfTwo(width);
@@ -52,29 +52,21 @@ class Image implements Canvas implements Resource {
 			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, format == TextureFormat.RGBA128 ? GLES20.GL_FLOAT : GLES20.GL_UNSIGNED_BYTE, null);
 			GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, tex, 0);
 
-			if (depthAndStencil) {
-				var setupModes = [setup_oesExtension, setup_separateBuffers];
-				var succeeded = false;
-
-				for (setup in setupModes) {
-					var result = setup();
-					logFramebufferStatus(result);
-
-					switch (result) {
-						case GLES20.GL_FRAMEBUFFER_COMPLETE: {
-							succeeded = true;
-							trace('working depth/stencil combination found');
-							break;
-						}
-						default: {
-							trace('trying next setup');
-							continue;
-						}
-					}
+			switch (depthAndStencil) {
+				case NoDepthAndStencil: { }
+				case DepthOnly: setupDepthBufferOnly();
+				case DepthAutoStencilAuto: runDepthAndStencilSetupChain();
+				case Depth24Stencil8: {
+					#if debug
+					trace('DepthAndStencilFormat "Depth24Stencil8" not (yet?) supported on android, using target defaults');
+					#end
+					runDepthAndStencilSetupChain();
 				}
-
-				if (!succeeded) {
-					trace('no valid depth/stencil combination found');
+				case Depth32Stencil8: {
+					#if debug
+					trace('DepthAndStencilFormat "Depth32Stencil8" not (yet?) supported on android, using target defaults');
+					#end
+					runDepthAndStencilSetupChain();
 				}
 			}
 
@@ -92,6 +84,55 @@ class Image implements Canvas implements Resource {
 		}
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+	}
+
+	function runDepthAndStencilSetupChain() {
+		var setupModes = [setup_oesExtension, setup_separateBuffers];
+		var succeeded = false;
+
+		for (setup in setupModes) {
+			var result = setup();
+			logFramebufferStatus(result);
+
+			switch (result) {
+				case GLES20.GL_FRAMEBUFFER_COMPLETE: {
+					succeeded = true;
+					trace('working depth/stencil combination found');
+					break;
+				}
+				default: {
+					trace('trying next setup');
+					continue;
+				}
+			}
+		}
+
+		if (!succeeded) {
+			trace('no valid depth/stencil combination found');
+		}
+	}
+
+	function setupDepthBufferOnly() : Int {
+		trace('GL_DEPTH_COMPONENT16 setup');
+
+		depthStencilBuffers = new NativeArray<Int>(1);
+		GLES20.glGenRenderbuffers(1, depthStencilBuffers, 0);
+
+		var depthBuffer = depthStencilBuffers[0];
+
+		GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, depthBuffer);
+		GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, realWidth, realHeight);
+		GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, depthBuffer);
+
+		GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, 0);
+
+		var result = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER);
+
+		if (result != GLES20.GL_FRAMEBUFFER_COMPLETE) {
+			GLES20.glDeleteRenderbuffers(depthStencilBuffers.length, depthStencilBuffers, 0);
+		}
+
+		return result;
 	}
 
 	function setup_oesExtension() : Int {
@@ -168,7 +209,7 @@ class Image implements Canvas implements Resource {
 	private static function createFromFile(filename: String): Image {
 		try {
 			var b = BitmapFactory.decodeStream(assets.open(filename));
-			var image = new Image(b.getWidth(), b.getHeight(), TextureFormat.RGBA32, false, false);
+			var image = new Image(b.getWidth(), b.getHeight(), TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, image.tex);
 
 			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, image.realWidth, image.realHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
@@ -193,10 +234,10 @@ class Image implements Canvas implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
-		return new Image(width, height, format, false, false);
+		return new Image(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		return new Image(width, height, format, true, depthStencil);
 	}
