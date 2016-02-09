@@ -11,13 +11,13 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, false);
-		else return new WebGLImage(width, height, format, false, false, false);
+		else return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, true);
-		else return new WebGLImage(width, height, format, true, depthStencil, depthStencil);
+		else return new WebGLImage(width, height, format, true, depthStencil);
 	}
 
 	public static function fromImage(image: ImageElement, readable: Bool): Image {
@@ -28,7 +28,7 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false, false, false);
+			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil);
 			img.image = image;
 			img.createTexture();
 			return img;
@@ -43,7 +43,7 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false, false, false);
+			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil);
 			img.video = video.element;
 			img.createTexture();
 			return img;
