@@ -36,7 +36,7 @@ class SystemImpl {
 	private static var mouse: Mouse;
 	private static var callback: Void -> Void;
 	public static var context: Context3D;
-	
+
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
 		SystemImpl.callback = callback;
 		SystemImpl.width = width;
@@ -51,13 +51,17 @@ class SystemImpl {
 		stage.addEventListener(Event.RESIZE, resizeHandler);
 		stage3D = stage.stage3Ds[0];
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
-		
+
 		stage3D.requestContext3D(Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
-		
+
 		// TODO: Move?
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
-	
+
+	public static function initEx( options : SystemOptions, callback : Void -> Void ) {
+		init(options.title, options.width, options.height, callback);
+	}
+
 	private static function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, true);
@@ -67,21 +71,21 @@ class SystemImpl {
 		#if debug
 		context.enableErrorChecking = true;
 		#end
-		
+
 		Shaders.init();
 		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		kha.flash.graphics4.Graphics.initContext(context);
 		var g4 = new kha.flash.graphics4.Graphics();
 		frame = new Framebuffer(null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new kha.flash.graphics4.Graphics2(frame), g4);
-		
+
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
-		
+
 		Scheduler.start();
-		
+
 		callback();
-		
+
 		resizeHandler(null);
 
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -94,17 +98,17 @@ class SystemImpl {
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, middleMouseDownHandler);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, middleMouseUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
-		
+
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
-	
+
 	private static function update(_): Void {
 		Scheduler.executeFrame();
 		context.clear(0, 0, 0, 0);
 		System.render(frame);
 		context.present();
 	}
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -114,7 +118,7 @@ class SystemImpl {
 		if (num != 0) return null;
 		return keyboard;
 	}
-	
+
 	private static function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
@@ -191,45 +195,45 @@ class SystemImpl {
 			}
 		}
 	}
-	
+
 	private static var mouseX: Int;
 	private static var mouseY: Int;
-	
+
 	private static function setMousePosition(event: MouseEvent): Void {
 		mouseX = Std.int(event.stageX);
 		mouseY = Std.int(event.stageY);
 	}
-	
+
 	private static function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, mouseX, mouseY);
 	}
-	
+
 	private static function mouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(0, mouseX, mouseY);
 	}
-	
+
 	private static function rightMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(1, mouseX, mouseY);
 	}
-	
+
 	private static function rightMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(1, mouseX, mouseY);
 	}
-	
+
 	private static function middleMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(2, mouseX, mouseY);
 	}
-	
+
 	private static function middleMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(2, mouseX, mouseY);
 	}
-	
+
 	private static function mouseMoveHandler(event: MouseEvent): Void {
 		var movementX = Std.int(event.stageY) - mouseX;
 		var movementY = Std.int(event.stageY) - mouseY;
@@ -241,41 +245,41 @@ class SystemImpl {
 		setMousePosition(event);
 		mouse.sendWheelEvent(event.delta);
 	}
-	
+
 	private static function resizeHandler(event: Event): Void {
 		if (frame != null && stage.stageWidth >= 32 && stage.stageHeight >= 32) {
 			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, true);
 		}
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
-	
+
 	public static function getTime(): Float {
 		return Lib.getTimer() / 1000;
 	}
-	
+
 	public static function getPixelWidth(): Int {
 		return Lib.current.stage.stageWidth;
 	}
-	
+
 	public static function getPixelHeight(): Int {
 		return Lib.current.stage.stageHeight;
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getSystemId(): String {
 		return "Flash";
 	}
-	
+
 	public static function requestShutdown(): Void {
 		System.pause();
 		System.background();
@@ -292,23 +296,23 @@ class SystemImpl {
 	}
 
 	public static function requestFullscreen(): Void {
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
-		
+
   	}
 
 	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 
 	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+
 	}
 }

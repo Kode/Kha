@@ -307,15 +307,19 @@ namespace {
 }
 
 void init_kore(const char* name, int width, int height) {
+	init_kore_ex(name, width, height, -1, -1, -1, 0);
+}
+
+void init_kore_ex(const char* name, int width, int height, int x, int y, int display, int windowMode) {
 	Kore::log(Kore::Info, "Starting Kore");
 
-	bool fullscreen = false;
+	//bool fullscreen = windowMode == 2;
 	int antialiasing = 1;
 
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());
 
-	app = new Kore::Application(0, 0, width, height, antialiasing, fullscreen, name);
+	app = new Kore::Application(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
 	//Kore::Mixer::init();
 	mutex.Create();
 #ifndef VR_RIFT

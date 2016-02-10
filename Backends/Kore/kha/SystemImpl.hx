@@ -7,8 +7,11 @@ import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
+import kha.SystemOptions.TargetDisplay;
+import kha.SystemOptions.WindowMode;
+import kha.SystemOptions.WindowPosition;
 
-#if ANDROID 
+#if ANDROID
 	#if VR_CARDBOARD
 		import kha.kore.vr.CardboardVrInterface;
 	#end
@@ -33,11 +36,12 @@ import kha.input.Surface;
 
 void init_kore(const char* name, int width, int height);
 void run_kore();
+void init_kore_ex(const char* name, int width, int height, int x, int y, int display, int windowMode);
 ')
 
 class SystemImpl {
 	public static var needs3d: Bool = false;
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -47,32 +51,32 @@ class SystemImpl {
 		if (num != 0) return null;
 		return keyboard;
 	}
-	
+
 	@:functionCode('
 		return Kore::System::time();
 	')
 	public static function getTime(): Float {
 		return 0;
 	}
-	
+
 	@:functionCode('return Kore::System::screenWidth();')
 	public static function getPixelWidth(): Int {
 		return 0;
 	}
-	
+
 	@:functionCode('return Kore::System::screenHeight();')
 	public static function getPixelHeight(): Int {
 		return 0;
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
@@ -81,12 +85,12 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return '';
 	}
-	
+
 	@:functionCode('Kore::Application::the()->stop();')
 	public static function requestShutdown(): Void {
-		
+
 	}
-	
+
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
@@ -96,7 +100,7 @@ class SystemImpl {
 	private static var gamepad4: Gamepad;
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
-	
+
 	//public function new(?backbufferFormat: TextureFormat) {
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
 		initKore(title, width, height);
@@ -117,10 +121,58 @@ class SystemImpl {
 		callback();
 		runKore();
 	}
-	
+
+	public static function initEx( options : SystemOptions, callback : Void -> Void ) {
+		initKoreEx(
+			options.title, options.width, options.height,
+			translatePosition(options.x), translatePosition(options.y),
+			translateDisplay(options.targetDisplay),
+			translateWindowMode(options.windowMode)
+		);
+
+		mouseLockListeners = new Array();
+		haxe.Timer.stamp();
+		Sensor.get(SensorType.Accelerometer); // force compilation
+		keyboard = new kha.kore.Keyboard();
+		mouse = new kha.input.Mouse();
+		gamepad1 = new Gamepad(0);
+		gamepad2 = new Gamepad(1);
+		gamepad3 = new Gamepad(2);
+		gamepad4 = new Gamepad(3);
+		surface = new Surface();
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		Scheduler.init();
+		loadFinished();
+		callback();
+		runKore();
+	}
+
+	static function translatePosition( value : WindowPosition ) : Int {
+		return switch (value) {
+			case Center: -1;
+			case Fixed(v): v;
+		}
+	}
+
+	static function translateDisplay( value : TargetDisplay ) : Int {
+		return switch (value) {
+			case Main: -1;
+			case Custom(v): v;
+		}
+	}
+
+	static function translateWindowMode( value : WindowMode ) : Int {
+		return switch (value) {
+			case Windowed: 0;
+			case BorderlessWindow: 1;
+			case Fullscreen: 2;
+		}
+	}
+
 	private static function loadFinished() {
 		Scheduler.start();
-		
+
 		/*
 		#if ANDROID
 			#if VR_GEAR_VR
@@ -153,16 +205,16 @@ class SystemImpl {
 			untyped __cpp__("Kore::Mouse::the()->lock();");
 			for (listener in mouseLockListeners) {
 				listener();
-			}	
+			}
 		}
 	}
-	
+
 	public static function unlockMouse(): Void {
 		if(isMouseLocked()){
-			untyped __cpp__("Kore::Mouse::the()->unlock();");	
+			untyped __cpp__("Kore::Mouse::the()->unlock();");
 			for (listener in mouseLockListeners) {
 				listener();
-			}	
+			}
 		}
 	}
 
@@ -196,22 +248,22 @@ class SystemImpl {
 			var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
 			vrInterface.framebuffer = framebuffer;
 		#end
-		#else 
+		#else
 			#if VR_CARDBOARD
 				var vrInterface: CardboardVrInterface = cast(VrInterface.instance, CardboardVrInterface);
 				vrInterface.framebuffer = framebuffer;
 			#end
 		#end
 		*/
-		
+
 		Scheduler.executeFrame();
 		System.render(framebuffer);
 	}
-	
+
 	public static function pushUp(): Void {
 		keyboard.sendDownEvent(Key.UP, null);
 	}
-	
+
 	public static function pushDown(): Void {
 		keyboard.sendDownEvent(Key.DOWN, null);
 	}
@@ -223,7 +275,7 @@ class SystemImpl {
 	public static function pushRight(): Void {
 		keyboard.sendDownEvent(Key.RIGHT, null);
 	}
-	
+
 	public static function releaseUp(): Void {
 		keyboard.sendUpEvent(Key.UP, null);
 	}
@@ -235,39 +287,39 @@ class SystemImpl {
 	public static function releaseLeft(): Void {
 		keyboard.sendUpEvent(Key.LEFT, null);
 	}
-	
+
 	public static function releaseRight(): Void {
 		keyboard.sendUpEvent(Key.RIGHT, null);
 	}
-	
+
 	public static function pushChar(charCode: Int): Void {
 		keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
-	
+
 	public static function releaseChar(charCode: Int): Void {
 		keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
-	
+
 	public static function pushShift(): Void {
 		keyboard.sendDownEvent(Key.SHIFT, null);
 	}
-	
+
 	public static function releaseShift(): Void {
 		keyboard.sendUpEvent(Key.SHIFT, null);
 	}
-	
+
 	public static function pushBackspace(): Void {
 		keyboard.sendDownEvent(Key.BACKSPACE, null);
 	}
-	
+
 	public static function releaseBackspace(): Void {
 		keyboard.sendUpEvent(Key.BACKSPACE, null);
 	}
-	
+
 	public static function pushTab(): Void {
 		keyboard.sendDownEvent(Key.TAB, null);
 	}
-	
+
 	public static function releaseTab(): Void {
 		keyboard.sendUpEvent(Key.TAB, null);
 	}
@@ -275,54 +327,54 @@ class SystemImpl {
 	public static function pushEnter(): Void {
 		keyboard.sendDownEvent(Key.ENTER, null);
 	}
-	
+
 	public static function releaseEnter(): Void {
 		keyboard.sendUpEvent(Key.ENTER, null);
 	}
-	
+
 	public static function pushControl(): Void {
 		keyboard.sendDownEvent(Key.CTRL, null);
 	}
-	
+
 	public static function releaseControl(): Void {
 		keyboard.sendUpEvent(Key.CTRL, null);
 	}
-	
+
 	public static function pushAlt(): Void {
 		keyboard.sendDownEvent(Key.ALT, null);
 	}
-	
+
 	public static function releaseAlt(): Void {
 		keyboard.sendUpEvent(Key.ALT, null);
 	}
-	
+
 	public static function pushEscape(): Void {
 		keyboard.sendDownEvent(Key.ESC, null);
 	}
-	
+
 	public static function releaseEscape(): Void {
 		keyboard.sendUpEvent(Key.ESC, null);
 	}
-	
+
 	public static function pushDelete(): Void {
 		keyboard.sendDownEvent(Key.DEL, null);
 	}
-	
+
 	public static function releaseDelete(): Void {
 		keyboard.sendUpEvent(Key.DEL, null);
 	}
-	
+
 	public static function pushBack(): Void {
 		keyboard.sendDownEvent(Key.BACK, null);
 	}
-	
+
 	public static function releaseBack(): Void {
 		keyboard.sendUpEvent(Key.BACK, null);
 	}
-	
+
 	public static var mouseX: Int;
 	public static var mouseY: Int;
-	
+
 	public static function mouseDown(button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
@@ -334,7 +386,7 @@ class SystemImpl {
 		mouseY = y;
 		mouse.sendUpEvent(button, x, y);
 	}
-	
+
 	public static function mouseMove(x: Int, y: Int, movementX : Int, movementY : Int): Void {
 		// var movementX = x - mouseX;
 		// var movementY = y - mouseY;
@@ -346,47 +398,47 @@ class SystemImpl {
 	public static function mouseWheel(delta: Int): Void {
 		mouse.sendWheelEvent(delta);
 	}
-	
+
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
 		gamepad1.sendAxisEvent(axis, value);
 	}
-	
+
 	public static function gamepad1Button(button: Int, value: Float): Void {
 		gamepad1.sendButtonEvent(button, value);
 	}
-	
+
 	public static function gamepad2Axis(axis: Int, value: Float): Void {
 		gamepad2.sendAxisEvent(axis, value);
 	}
-	
+
 	public static function gamepad2Button(button: Int, value: Float): Void {
 		gamepad2.sendButtonEvent(button, value);
 	}
-	
+
 	public static function gamepad3Axis(axis: Int, value: Float): Void {
 		gamepad3.sendAxisEvent(axis, value);
 	}
-	
+
 	public static function gamepad3Button(button: Int, value: Float): Void {
 		gamepad3.sendButtonEvent(button, value);
 	}
-	
+
 	public static function gamepad4Axis(axis: Int, value: Float): Void {
 		gamepad4.sendAxisEvent(axis, value);
 	}
-	
+
 	public static function gamepad4Button(button: Int, value: Float): Void {
 		gamepad4.sendButtonEvent(button, value);
 	}
-	
+
 	public static function touchStart(index: Int, x: Int, y: Int): Void {
 		surface.sendTouchStartEvent(index, x, y);
 	}
-	
+
 	public static function touchEnd(index: Int, x: Int, y: Int): Void {
 		surface.sendTouchEndEvent(index, x, y);
 	}
-	
+
 	public static function touchMove(index: Int, x: Int, y: Int): Void {
 		surface.sendMoveEvent(index, x, y);
 	}
@@ -410,15 +462,20 @@ class SystemImpl {
 	public static function shutdown(): Void {
 		System.shutdown();
 	}
-	
+
 	@:functionCode('init_kore(name, width, height);')
 	private static function initKore(name: String, width: Int, height: Int): Void {
-		
+
 	}
-	
+
 	@:functionCode('run_kore();')
 	private static function runKore(): Void {
-		
+
+	}
+
+	@:functionCode('init_kore_ex(name, width, height, x, y, display, windowMode);')
+	private static function initKoreEx(name: String, width: Int, height: Int, x : Int, y : Int, display : Int, windowMode : Int ): Void {
+
 	}
 
 	private static var fullscreenListeners: Array<Void->Void> = new Array();
@@ -443,7 +500,7 @@ class SystemImpl {
 				listener();
 			}
 		}
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
@@ -469,10 +526,10 @@ class SystemImpl {
 	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.remove(func);
-		}	
+		}
 	}
-	
+
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+
 	}
 }
