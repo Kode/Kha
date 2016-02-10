@@ -10,7 +10,7 @@ import kha.graphics4.Usage;
 extern class Image implements Canvas implements Resource {
 	/**
 	 * Create a new image instance.
-	 * 
+	 *
 	 * @param width		The image width.
  	 * @param height	The image height.
  	 * @param format	The image format, from TextureFormat, default = RGBA32.
@@ -20,14 +20,14 @@ extern class Image implements Canvas implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage, levels: Int = 1): Image;
 	/**
 	 * Create a new image instance and sets things up so you can render to the image.
-	 * 
+	 *
 	 * @param width					The image width.
  	 * @param height				The image height.
  	 * @param format				The image format, from TextureFormat, default = RGBA32.
- 	 * @param depthStencil			default = false
+ 	 * @param depthStencil			default = NoDepthAndStencil
 	 * @param antiAliasingSamples	The number of antialiasing samples, default = 1.
 	 */
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image;
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1): Image;
 	/**
 	 * The max image size.
 	 */

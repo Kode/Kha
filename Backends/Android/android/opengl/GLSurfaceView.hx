@@ -13,5 +13,6 @@ extern class GLSurfaceView extends View {
 	public function onResume(): Void;
 	public function setPreserveEGLContextOnPause(preserveOnPause: Bool): Void;
 	public function setEGLContextClientVersion(version: Int): Void;
+	public function setEGLConfigChooser(redSize: Int, greenSize: Int, blueSize: Int, alphaSize: Int, depthSize: Int, stencilSize: Int): Void;
 	public function setRenderer(renderer: GLSurfaceViewRenderer): Void;
 }

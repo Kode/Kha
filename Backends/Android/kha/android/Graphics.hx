@@ -37,7 +37,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var framebuffer: Dynamic;
 	private var indexBuffer: IndexBuffer;
 	private var renderTarget: Image;
-	
+
 	public function new(renderTarget: Image = null) {
 		this.renderTarget = renderTarget;
 		GLES20.glEnable(GLES20.GL_BLEND);
@@ -55,25 +55,25 @@ class Graphics implements kha.graphics4.Graphics {
 			GLES20.glViewport(0, 0, renderTarget.realWidth, renderTarget.realHeight);
 		}
 	}
-	
+
 	public function end(): Void {
 		/*if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
 			trace('GL Error.');
 		}*/
 	}
-	
+
 	public function flush(): Void {
-		
+
 	}
-	
+
 	public function vsynced(): Bool {
 		return true;
 	}
-	
+
 	public function refreshRate(): Int {
 		return 60;
 	}
-	
+
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var clearMask: Int = 0;
 		if (color != null) {
@@ -86,14 +86,18 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		if (stencil != null) {
 			clearMask |= GLES20.GL_STENCIL_BUFFER_BIT;
+			GLES20.glClearStencil(stencil);
+
+			// (DK) see: http://stackoverflow.com/questions/29042106/android-opengl-2-0-stencil-buffer-not-working
+			GLES20.glStencilMask(0xff);
 		}
 		GLES20.glClear(clearMask);
 	}
-	
+
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
 		GLES20.glViewport(x, y, width, height);
 	}
-	
+
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
@@ -123,7 +127,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		GLES20.glDepthMask(write);
 	}
-	
+
 	private static function getBlendFunc(op: BlendingOperation): Int {
 		switch (op) {
 		case BlendZero, Undefined:
@@ -140,7 +144,7 @@ class Graphics implements kha.graphics4.Graphics {
 			return GLES20.GL_ONE_MINUS_DST_ALPHA;
 		}
 	}
-	
+
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
 			GLES20.glDisable(GLES20.GL_BLEND);
@@ -150,33 +154,33 @@ class Graphics implements kha.graphics4.Graphics {
 			GLES20.glBlendFunc(getBlendFunc(source), getBlendFunc(destination));
 		}
 	}
-	
+
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
 		return new VertexBuffer(vertexCount, structure, usage);
 	}
-	
+
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
-	
+
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		
+
 	}
-	
+
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
 		return new IndexBuffer(indexCount, usage);
 	}
-	
+
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		//indicesCount = indexBuffer.count();
 		//cast(indexBuffer, IndexBuffer).set();
 		this.indexBuffer = indexBuffer;
 	}
-	
+
 	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
 		return null;
 	}
-	
+
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
 			GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(stage, TextureUnit).value);
@@ -190,10 +194,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 
 	}
-	
+
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(texunit, TextureUnit).value);
-		
+
 		switch (uAddressing) {
 		case Clamp:
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
@@ -202,7 +206,7 @@ class Graphics implements kha.graphics4.Graphics {
 		case Mirror:
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
 		}
-		
+
 		switch (vAddressing) {
 		case Clamp:
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
@@ -211,7 +215,7 @@ class Graphics implements kha.graphics4.Graphics {
 		case Mirror:
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
 		}
-	
+
 		switch (minificationFilter) {
 		case PointFilter:
 			switch (mipmapFilter) {
@@ -232,7 +236,7 @@ class Graphics implements kha.graphics4.Graphics {
 				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
 			}
 		}
-		
+
 		switch (magnificationFilter) {
 			case PointFilter:
 				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
@@ -240,7 +244,7 @@ class Graphics implements kha.graphics4.Graphics {
 				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 		}
 	}
-	
+
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:
@@ -261,54 +265,54 @@ class Graphics implements kha.graphics4.Graphics {
 		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
 		pipeline.set();
 	}
-	
+
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		GLES20.glUniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
 	}
-	
+
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
 		GLES20.glUniform1i(cast(location, ConstantLocation).value, value);
 	}
-	
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
 		GLES20.glUniform1f(cast(location, ConstantLocation).value, value);
 	}
-	
+
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
 		GLES20.glUniform2f(cast(location, ConstantLocation).value, value1, value2);
 	}
-	
+
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
 		GLES20.glUniform3f(cast(location, ConstantLocation).value, value1, value2, value3);
 	}
-	
+
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
 		GLES20.glUniform4f(cast(location, ConstantLocation).value, value1, value2, value3, value4);
 	}
-	
+
 	private var valuesCache = new NativeArray<Single>(128);
-	
+
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
 		for (i in 0...values.length) {
 			valuesCache[i] = values[i];
 		}
 		GLES20.glUniform1fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
 	}
-	
+
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		GLES20.glUniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}
-	
+
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		GLES20.glUniform3f(cast(location, ConstantLocation).value, value.x, value.y, value.z);
 	}
-	
+
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		GLES20.glUniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
-	
+
 	private var matrixCache = new NativeArray<Single>(16);
-	
+
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
 		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
@@ -320,27 +324,63 @@ class Graphics implements kha.graphics4.Graphics {
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indexBuffer.count() : count, GLES20.GL_UNSIGNED_SHORT, indexBuffer.data);
 	}
-	
+
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-		
+
 	}
-	
+
 	public function instancedRenderingAvailable(): Bool {
 		return false;
 	}
-	
+
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		
+		if (	compareMode == CompareMode.Always
+			&&	bothPass == StencilAction.Keep
+			&&	depthFail == StencilAction.Keep
+			&&	stencilFail == StencilAction.Keep)
+		{
+			GLES20.glDisable(GLES20.GL_STENCIL_TEST);
+		} else {
+			GLES20.glEnable(GLES20.GL_STENCIL_TEST);
+
+			var stencilFunc = switch (compareMode) {
+				case CompareMode.Always: GLES20.GL_ALWAYS;
+				case CompareMode.Equal: GLES20.GL_EQUAL;
+				case CompareMode.Greater: GLES20.GL_GREATER;
+				case CompareMode.GreaterEqual: GLES20.GL_GEQUAL;
+				case CompareMode.Less: GLES20.GL_LESS;
+				case CompareMode.LessEqual: GLES20.GL_LEQUAL;
+				case CompareMode.Never: GLES20.GL_NEVER;
+				case CompareMode.NotEqual: GLES20.GL_NOTEQUAL;
+			}
+
+			GLES20.glStencilMask(writeMask);
+			GLES20.glStencilOp(convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
+			GLES20.glStencilFunc(stencilFunc, referenceValue, readMask);
+		}
+	}
+
+	inline function convertStencilAction(action: StencilAction) {
+		return switch (action) {
+			case StencilAction.Decrement: GLES20.GL_DECR;
+			case StencilAction.DecrementWrap: GLES20.GL_DECR_WRAP;
+			case StencilAction.Increment: GLES20.GL_INCR;
+			case StencilAction.IncrementWrap: GLES20.GL_INCR_WRAP;
+			case StencilAction.Invert: GLES20.GL_INVERT;
+			case StencilAction.Keep: GLES20.GL_KEEP;
+			case StencilAction.Replace: GLES20.GL_REPLACE;
+			case StencilAction.Zero: GLES20.GL_ZERO;
+		}
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		
+
 	}
 
 	public function disableScissor(): Void {
-		
+
 	}
-	
+
 	public function renderTargetsInvertedY(): Bool {
 		return true;
 	}
