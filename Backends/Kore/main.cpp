@@ -332,6 +332,8 @@ void init_kore_ex( const char * name ) {
 }
 
 void post_kore_init() {
+	Kore::Graphics::begin(0); // TODO (DK) make main window current
+
 #ifndef VR_RIFT
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 #endif
@@ -362,7 +364,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		height = Kore::min(height, Kore::System::desktopHeight());
 
 		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode);
-		Kore::Graphics::init(windowId);
+		Kore::Graphics::init(windowId, 16, 8);
 	}
 
 	//Kore::Mixer::init();
