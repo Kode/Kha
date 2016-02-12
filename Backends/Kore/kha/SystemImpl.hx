@@ -34,7 +34,7 @@ import kha.input.Surface;
 
 void init_kore(const char* name, int width, int height);
 void run_kore();
-void init_kore_ex();
+void init_kore_ex(const char* name);
 void post_kore_init();
 int init_window( Kore::WindowOptions windowOptions );
 ')
@@ -106,6 +106,19 @@ class SystemImpl {
 
 		Shaders.init();
 
+		untyped __cpp__('post_kore_init()');
+
+#if (!VR_GEAR_VR && !VR_RIFT)
+		var g4 = new kha.kore.graphics4.Graphics();
+		var framebuffer = new Framebuffer(null, null, g4);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		framebuffers.push(framebuffer);
+
+		//g4 = new kha.kore.graphics4.Graphics();
+		//framebuffers.push(new Framebuffer(null, null, g4));
+		//framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
+#end
+
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -125,8 +138,8 @@ class SystemImpl {
 		untyped __cpp__('run_kore()');
 	}
 
-	public static function initEx( options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
-		untyped __cpp__('init_kore_ex()');
+	public static function initEx( title: String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		untyped __cpp__('init_kore_ex(title)');
 
 		Shaders.init();
 

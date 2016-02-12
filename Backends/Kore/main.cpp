@@ -213,9 +213,9 @@ namespace {
 		if (paused) return;
 		Kore::Audio::update();
 
-		int windowsCount = 3; // TODO (DK) has to be dynamic ofc
+		int windowCount = Kore::System::windowCount();
 
-		for (int windowIndex = 0; windowIndex < windowsCount; ++windowIndex) {
+		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
 				#ifndef VR_RIFT
 				Kore::Graphics::begin(windowIndex); // TODO (DK) windowId
@@ -324,11 +324,11 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 void init_kore(const char* name, int width, int height) {
 	init_kore_impl(false, name, width, height, -1, -1, -1, 0);
-	post_kore_init();
+	//post_kore_init();
 }
 
-void init_kore_ex() {
-	init_kore_impl(true, "", -1, -1, -1, -1, -1, -1);
+void init_kore_ex( const char * name ) {
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, -1);
 }
 
 void post_kore_init() {
@@ -353,32 +353,26 @@ init_window( Kore::WindowOptions options ) {
 void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode) {
 	Kore::log(Kore::Info, "Starting Kore");
 
-	//bool fullscreen = windowMode == 2;
-	int antialiasing = 1;
-
-	width = Kore::min(width, Kore::System::desktopWidth());
-	height = Kore::min(height, Kore::System::desktopHeight());
-
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
+	Kore::System::setName(name);
 
-	if (!ex) {
+	if (ex) {
+	} else {
+		width = Kore::min(width, Kore::System::desktopWidth());
+		height = Kore::min(height, Kore::System::desktopHeight());
+
 		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode);
 		Kore::Graphics::init(windowId);
 	}
 
-	//app = ex
-	//	? Kore::Application::initEx()
-	//	: Kore::Application::initDefault(0, nullptr, width, height, antialiasing, windowMode, name, true, x, y)
-	//	;
-
-	//app = new Kore::Application(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
-	//app == Kore::Application::standard(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
-
 	//Kore::Mixer::init();
 	mutex.Create();
+
+	// (DK) moved to post_kore_init
 //#ifndef VR_RIFT
 //	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 //#endif
+
 	Kore::System::setOrientationCallback(orientation);
 	Kore::System::setForegroundCallback(foreground);
 	Kore::System::setResumeCallback(resume);
@@ -407,6 +401,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
+	// (DK) moved to post_kore_init
 //#ifdef VR_GEAR_VR
 //	// Enter VR mode
 //	Kore::VrInterface::Initialize();

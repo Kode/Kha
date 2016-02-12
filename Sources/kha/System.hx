@@ -15,8 +15,8 @@ class System {
 		SystemImpl.init(title, width, height, callback);
 	}
 
-	public static function initEx( options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
-		SystemImpl.initEx(options, windowCallback, callback);
+	public static function initEx( title  : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		SystemImpl.initEx(title, options, windowCallback, callback);
 	}
 
 	//public static function initEx( options : SystemOptions, callback : Void -> Void ) {
