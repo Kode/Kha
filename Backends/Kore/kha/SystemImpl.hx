@@ -7,9 +7,6 @@ import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
-import kha.SystemOptions.TargetDisplay;
-import kha.SystemOptions.WindowMode;
-import kha.SystemOptions.WindowPosition;
 
 #if ANDROID
 	#if VR_CARDBOARD
@@ -33,10 +30,13 @@ import kha.SystemOptions.WindowPosition;
 #include <Kore/Application.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
+#include <Kore/Window.h>
 
 void init_kore(const char* name, int width, int height);
 void run_kore();
-void init_kore_ex(const char* name, int width, int height, int x, int y, int display, int windowMode);
+void init_kore_ex();
+void post_kore_init();
+int init_window( Kore::WindowOptions windowOptions );
 ')
 
 class SystemImpl {
@@ -91,7 +91,7 @@ class SystemImpl {
 
 	}
 
-	private static var framebuffer: Framebuffer;
+	private static var framebuffers: Array<Framebuffer> = new Array();
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad1: Gamepad;
@@ -103,32 +103,9 @@ class SystemImpl {
 
 	//public function new(?backbufferFormat: TextureFormat) {
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
-		initKore(title, width, height);
-		mouseLockListeners = new Array();
-		haxe.Timer.stamp();
-		Sensor.get(SensorType.Accelerometer); // force compilation
-		keyboard = new kha.kore.Keyboard();
-		mouse = new kha.input.Mouse();
-		gamepad1 = new Gamepad(0);
-		gamepad2 = new Gamepad(1);
-		gamepad3 = new Gamepad(2);
-		gamepad4 = new Gamepad(3);
-		surface = new Surface();
-		kha.audio2.Audio._init();
-		kha.audio1.Audio._init();
-		Scheduler.init();
-		loadFinished();
-		callback();
-		runKore();
-	}
+		untyped __cpp__('init_kore(title, width, height)');
 
-	public static function initEx( options : SystemOptions, callback : Void -> Void ) {
-		initKoreEx(
-			options.title, options.width, options.height,
-			translatePosition(options.x), translatePosition(options.y),
-			translateDisplay(options.targetDisplay),
-			translateWindowMode(options.windowMode)
-		);
+		Shaders.init();
 
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
@@ -145,29 +122,44 @@ class SystemImpl {
 		Scheduler.init();
 		loadFinished();
 		callback();
-		runKore();
+
+		untyped __cpp__('run_kore()');
 	}
 
-	static function translatePosition( value : WindowPosition ) : Int {
-		return switch (value) {
-			case Center: -1;
-			case Fixed(v): v;
-		}
-	}
+	public static function initEx( options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		untyped __cpp__('init_kore_ex()');
 
-	static function translateDisplay( value : TargetDisplay ) : Int {
-		return switch (value) {
-			case Main: -1;
-			case Custom(v): v;
-		}
-	}
+		Shaders.init();
 
-	static function translateWindowMode( value : WindowMode ) : Int {
-		return switch (value) {
-			case Windowed: 0;
-			case BorderlessWindow: 1;
-			case Fullscreen: 2;
-		}
+		Lambda.iter(options, initWindow.bind(_, windowCallback));
+
+		//for (option in options) {
+			//initKoreEx(options
+				//options.title, options.width, options.height,
+				//translatePosition(options.x), translatePosition(options.y),
+				//translateDisplay(options.targetDisplay),
+				//translateWindowMode(options.windowMode)
+			//);
+		//}
+
+		untyped __cpp__('post_kore_init()');
+
+		mouseLockListeners = new Array();
+		haxe.Timer.stamp();
+		Sensor.get(SensorType.Accelerometer); // force compilation
+		keyboard = new kha.kore.Keyboard();
+		mouse = new kha.input.Mouse();
+		gamepad1 = new Gamepad(0);
+		gamepad2 = new Gamepad(1);
+		gamepad3 = new Gamepad(2);
+		gamepad4 = new Gamepad(3);
+		surface = new Surface();
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		Scheduler.init();
+		loadFinished();
+		callback();
+		untyped __cpp__('run_kore()');
 	}
 
 	private static function loadFinished() {
@@ -192,13 +184,20 @@ class SystemImpl {
 		#end
 		*/
 
-		Shaders.init();
+
+		// DK
+/*		Shaders.init();
+
 		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-		framebuffer = new Framebuffer(null, null, g4);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		framebuffers.push(new Framebuffer(null, null, g4));
+		framebuffers[0].init(new kha.graphics2.Graphics1(framebuffers[0]), new kha.kore.graphics4.Graphics2(framebuffers[0]), g4);
+
+		g4 = new kha.kore.graphics4.Graphics();
+		framebuffers.push(new Framebuffer(null, null, g4));
+		framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
 		#end
-	}
+*/	}
 
 	public static function lockMouse(): Void {
 		if(!isMouseLocked()){
@@ -240,7 +239,7 @@ class SystemImpl {
 		}
 	}
 
-	public static function frame() {
+	public static function frame(id: Int) {
 		/*
 		#if !ANDROID
 		#if !VR_RIFT
@@ -256,8 +255,11 @@ class SystemImpl {
 		#end
 		*/
 
-		Scheduler.executeFrame();
-		System.render(framebuffer);
+		if (id == 0) {
+			Scheduler.executeFrame();
+		}
+
+		System.render(id, framebuffers[id]);
 	}
 
 	public static function pushUp(): Void {
@@ -463,19 +465,98 @@ class SystemImpl {
 		System.shutdown();
 	}
 
-	@:functionCode('init_kore(name, width, height);')
-	private static function initKore(name: String, width: Int, height: Int): Void {
-
+	static function translatePosition( value : kha.WindowOptions.Position ) : Int {
+		return switch (value) {
+			case Center: -1;
+			case Fixed(v): v;
+		}
 	}
 
-	@:functionCode('run_kore();')
-	private static function runKore(): Void {
-
+	static function translateDisplay( value : kha.WindowOptions.TargetDisplay ) : Int {
+		return switch (value) {
+			case Main: -1;
+			case Custom(v): v;
+		}
 	}
 
-	@:functionCode('init_kore_ex(name, width, height, x, y, display, windowMode);')
-	private static function initKoreEx(name: String, width: Int, height: Int, x : Int, y : Int, display : Int, windowMode : Int ): Void {
+	static function translateWindowMode( value : kha.WindowOptions.Mode ) : Int {
+		return switch (value) {
+			case Windowed: 0;
+			case BorderlessWindow: 1;
+			case Fullscreen: 2;
+		}
+	}
 
+	static function translateDepthBufferFormat( value : DepthStencilFormat ) : Int {
+		return switch (value) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: 16;
+			case DepthAutoStencilAuto: 16;
+			case Depth24Stencil8: 24;
+			case Depth32Stencil8: 32;
+		}
+	}
+
+	static function translateStencilBufferFormat( value : DepthStencilFormat ) : Int {
+		return switch (value) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: -1;
+			case DepthAutoStencilAuto: 8;
+			case Depth24Stencil8: 8;
+			case Depth32Stencil8: 8;
+		}
+	}
+
+	static function translateTextureFormat( value : TextureFormat ) : Int {
+		return switch(value) {
+			case RGBA32: 0;
+			case L8: 1;
+			case RGBA128: 2;
+		}
+	}
+
+	private static function initWindow( option : WindowOptions, callback : Int -> Void ) {
+		var x = translatePosition(option.x);
+		var y = translatePosition(option.y);
+		var mode = translateWindowMode(option.mode);
+		var targetDisplay = translateDisplay(option.targetDisplay);
+		var depthBufferBits = translateDepthBufferFormat(option.rendererOptions.depthStencilFormat);
+		var stencilBufferBits = translateStencilBufferFormat(option.rendererOptions.depthStencilFormat);
+		var textureFormat = translateTextureFormat(option.rendererOptions.textureFormat);
+		var windowId : Int = -1;
+
+		untyped __cpp__('
+			Kore::WindowOptions wo;
+			wo.title = option->title;
+			wo.x = x;
+			wo.y = y;
+			wo.width = option->width;
+			wo.height = option->height;
+			wo.mode = mode;
+			wo.targetDisplay = targetDisplay;
+			wo.rendererOptions.width = option->width;
+			wo.rendererOptions.height = option->height;
+			wo.rendererOptions.textureFormat = textureFormat;
+			wo.rendererOptions.depthBufferBits = depthBufferBits;
+			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
+
+			windowId = init_window(wo);
+		');
+
+#if (!VR_GEAR_VR && !VR_RIFT)
+		var g4 = new kha.kore.graphics4.Graphics();
+		var framebuffer = new Framebuffer(null, null, g4);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		framebuffers[windowId] = framebuffer;
+
+		//g4 = new kha.kore.graphics4.Graphics();
+		//framebuffers.push(new Framebuffer(null, null, g4));
+		//framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
+#end
+
+		if (callback != null) {
+			callback(windowId);
+		}
 	}
 
 	private static var fullscreenListeners: Array<Void->Void> = new Array();

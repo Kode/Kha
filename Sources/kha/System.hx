@@ -1,10 +1,10 @@
 package kha;
 
-import kha.SystemOptions.SystemOptions;
+import kha.WindowOptions;
 
 @:allow(kha.SystemImpl)
 class System {
-	private static var renderListeners: Array<Framebuffer -> Void> = new Array();
+	private static var renderListeners: Array<Array<Framebuffer -> Void>> = new Array();
 	private static var foregroundListeners: Array<Void -> Void> = new Array();
 	private static var resumeListeners: Array<Void -> Void> = new Array();
 	private static var pauseListeners: Array<Void -> Void> = new Array();
@@ -15,12 +15,24 @@ class System {
 		SystemImpl.init(title, width, height, callback);
 	}
 
-	public static function initEx( options : SystemOptions, callback : Void -> Void ) {
-		SystemImpl.initEx(options, callback);
+	public static function initEx( options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		SystemImpl.initEx(options, windowCallback, callback);
 	}
 
-	public static function notifyOnRender(listener: Framebuffer -> Void): Void {
-		renderListeners.push(listener);
+	//public static function initEx( options : SystemOptions, callback : Void -> Void ) {
+		//SystemImpl.initEx(options, callback);
+	//}
+
+	public static function notifyOnRender(id: Int, listener: Framebuffer -> Void): Void {
+		trace('notifyOnRender ${id}');
+
+		while (id >= renderListeners.length) {
+			trace('notifyOnRender ${id}/${renderListeners.length} pushing');
+			renderListeners.push(new Array());
+		}
+
+		trace('notifyOnRender ${id} done');
+		renderListeners[id].push(listener);
 	}
 
 	public static function notifyOnApplicationState(foregroundListener: Void -> Void, resumeListener: Void -> Void,
@@ -32,8 +44,8 @@ class System {
 		shutdownListeners.push(shutdownListener);
 	}
 
-	private static function render(framebuffer: Framebuffer): Void {
-		for (listener in renderListeners) {
+	private static function render(id: Int, framebuffer: Framebuffer): Void {
+		for (listener in renderListeners[id]) {
 			listener(framebuffer);
 		}
 	}

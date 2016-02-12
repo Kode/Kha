@@ -211,30 +211,35 @@ namespace {
 	void update() {
 		if (paused) return;
 		Kore::Audio::update();
-		if (visible) {
-			#ifndef VR_RIFT
-			Kore::Graphics::begin();
-			#endif
+
+		int windowsCount = 3; // TODO (DK) has to be dynamic ofc
+
+		for (int windowIndex = 0; windowIndex < windowsCount; ++windowIndex) {
+			if (visible) {
+				#ifndef VR_RIFT
+				Kore::Graphics::begin(windowIndex); // TODO (DK) windowId
+				#endif
 			
-			// Google Cardboard: Update the Distortion mesh
-			#ifdef VR_CARDBOARD
-			//	Kore::VrInterface::DistortionBefore();
-			#endif
+				// Google Cardboard: Update the Distortion mesh
+				#ifdef VR_CARDBOARD
+				//	Kore::VrInterface::DistortionBefore();
+				#endif
 
-			SystemImpl_obj::frame();
+				SystemImpl_obj::frame(windowIndex); // TODO (DK) windowId?
 
-			#ifndef VR_RIFT
-			Kore::Graphics::end();
-			#endif
+				#ifndef VR_RIFT
+				Kore::Graphics::end(windowIndex); // TODO (DK) windowId
+				#endif
 			
-			// Google Cardboard: Call the DistortionMesh Renderer
-			#ifdef VR_CARDBOARD
-			//	Kore::VrInterface::DistortionAfter();
-			#endif
+				// Google Cardboard: Call the DistortionMesh Renderer
+				#ifdef VR_CARDBOARD
+				//	Kore::VrInterface::DistortionAfter();
+				#endif
 
-			#ifndef VR_RIFT
-			Kore::Graphics::swapBuffers();
-			#endif
+				#ifndef VR_RIFT
+				Kore::Graphics::swapBuffers(windowIndex); // TODO (DK) windowId?
+				#endif
+			}
 		}
 	}
 	
@@ -306,11 +311,45 @@ namespace {
 	Kore::Application* app;
 }
 
-void init_kore(const char* name, int width, int height) {
-	init_kore_ex(name, width, height, -1, -1, -1, 0);
+int kore_window_width( int id ) {
+	return 0;
 }
 
-void init_kore_ex(const char* name, int width, int height, int x, int y, int display, int windowMode) {
+int kore_window_height( int id ) {
+	return 0;
+}
+
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode);
+
+void init_kore(const char* name, int width, int height) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, 0);
+	post_kore_init();
+}
+
+void init_kore_ex() {
+	init_kore_impl(true, "", -1, -1, -1, -1, -1, -1);
+}
+
+void post_kore_init() {
+#ifndef VR_RIFT
+	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+#endif
+
+	Kore::Audio::audioCallback = mix;
+	Kore::Audio::init();
+
+#ifdef VR_GEAR_VR
+	// Enter VR mode
+	Kore::VrInterface::Initialize();
+#endif
+}
+
+int
+init_window( Kore::WindowOptions options ) {
+	return Kore::Application::initWindow(options);
+}
+
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	//bool fullscreen = windowMode == 2;
@@ -319,12 +358,19 @@ void init_kore_ex(const char* name, int width, int height, int x, int y, int dis
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());
 
-	app = new Kore::Application(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
+	app = ex
+		? Kore::Application::initEx()
+		: Kore::Application::initDefault(0, nullptr, width, height, antialiasing, windowMode, name, true, x, y)
+		;
+
+	//app = new Kore::Application(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
+	//app == Kore::Application::standard(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
+
 	//Kore::Mixer::init();
 	mutex.Create();
-#ifndef VR_RIFT
-	Kore::Graphics::setRenderState(Kore::DepthTest, false);
-#endif
+//#ifndef VR_RIFT
+//	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+//#endif
 	app->orientationCallback = orientation;
 	app->foregroundCallback = foreground;
 	app->resumeCallback = resume;
@@ -333,8 +379,6 @@ void init_kore_ex(const char* name, int width, int height, int x, int y, int dis
 	app->shutdownCallback = shutdown;
 	app->setCallback(update);
 
-	Kore::Audio::audioCallback = mix;
-	Kore::Audio::init();
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
 	Kore::Mouse::the()->Press = mouseDown;
@@ -355,10 +399,10 @@ void init_kore_ex(const char* name, int width, int height, int x, int y, int dis
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
-#ifdef VR_GEAR_VR
-	// Enter VR mode
-	Kore::VrInterface::Initialize();
-#endif
+//#ifdef VR_GEAR_VR
+//	// Enter VR mode
+//	Kore::VrInterface::Initialize();
+//#endif
 }
 
 void run_kore() {
