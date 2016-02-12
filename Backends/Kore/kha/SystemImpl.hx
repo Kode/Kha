@@ -27,7 +27,7 @@ import kha.input.Surface;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Application.h>
+//#include <Kore/Application.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Window.h>
@@ -86,9 +86,8 @@ class SystemImpl {
 		return '';
 	}
 
-	@:functionCode('Kore::Application::the()->stop();')
-	public static function requestShutdown(): Void {
-
+	public static function requestShutdown() {
+		untyped __cpp__('Kore::System::stop()');
 	}
 
 	private static var framebuffers: Array<Framebuffer> = new Array();
@@ -185,7 +184,7 @@ class SystemImpl {
 		*/
 
 
-		// DK
+		// (DK) moved
 /*		Shaders.init();
 
 		#if (!VR_GEAR_VR && !VR_RIFT)
@@ -567,16 +566,15 @@ class SystemImpl {
 		return true;
 	}
 
-	@:functionCode('return Kore::Application::the()->fullscreen();')
 	public static function isFullscreen(): Bool {
-		return false;
+		return untyped __cpp__('Kore::System::isFullscreen()');
 	}
 
 	public static function requestFullscreen(): Void {
 		if(!isFullscreen()){
-			previousWidth = untyped __cpp__("Kore::Application::the()->width();");
-			previousHeight = untyped __cpp__("Kore::Application::the()->height();");
-			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(),Kore::System::desktopHeight(), true);");
+			previousWidth = untyped __cpp__("Kore::System::screenWidth();");
+			previousHeight = untyped __cpp__("Kore::System::screenHeight();");
+			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true);");
 			for (listener in fullscreenListeners) {
 				listener();
 			}
@@ -587,10 +585,10 @@ class SystemImpl {
 	public static function exitFullscreen(): Void {
 		if (isFullscreen()) {
 			if (previousWidth == 0 || previousHeight == 0){
-				previousWidth = untyped __cpp__("Kore::Application::the()->width();");
-				previousHeight = untyped __cpp__("Kore::Application::the()->height();");
+				previousWidth = untyped __cpp__("Kore::System::screenWidth();");
+				previousHeight = untyped __cpp__("Kore::System::screenHeight();");
 			}
-			untyped __cpp__("Kore::System::changeResolution(previousWidth,previousHeight, false);");
+			untyped __cpp__("Kore::System::changeResolution(previousWidth, previousHeight, false);");
 			for (listener in fullscreenListeners) {
 				listener();
 			}

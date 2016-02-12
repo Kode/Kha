@@ -1,5 +1,5 @@
 #include <Kore/pch.h>
-#include <Kore/Application.h>
+//#include <Kore/Application.h>
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
@@ -11,6 +11,7 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
+#include <Kore/Math/Random.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <kha/SystemImpl.h>
@@ -308,7 +309,7 @@ namespace {
 		}
 	}
 
-	Kore::Application* app;
+	//Kore::Application* app;
 }
 
 int kore_window_width( int id ) {
@@ -346,7 +347,7 @@ void post_kore_init() {
 
 int
 init_window( Kore::WindowOptions options ) {
-	return Kore::Application::initWindow(options);
+	return Kore::System::initWindow(options);
 }
 
 void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode) {
@@ -358,10 +359,17 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());
 
-	app = ex
-		? Kore::Application::initEx()
-		: Kore::Application::initDefault(0, nullptr, width, height, antialiasing, windowMode, name, true, x, y)
-		;
+	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
+
+	if (!ex) {
+		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode);
+		Kore::Graphics::init(windowId);
+	}
+
+	//app = ex
+	//	? Kore::Application::initEx()
+	//	: Kore::Application::initDefault(0, nullptr, width, height, antialiasing, windowMode, name, true, x, y)
+	//	;
 
 	//app = new Kore::Application(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
 	//app == Kore::Application::standard(0, 0, width, height, antialiasing, windowMode, name, true, x, y);
@@ -371,13 +379,13 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 //#ifndef VR_RIFT
 //	Kore::Graphics::setRenderState(Kore::DepthTest, false);
 //#endif
-	app->orientationCallback = orientation;
-	app->foregroundCallback = foreground;
-	app->resumeCallback = resume;
-	app->pauseCallback = pause;
-	app->backgroundCallback = background;
-	app->shutdownCallback = shutdown;
-	app->setCallback(update);
+	Kore::System::setOrientationCallback(orientation);
+	Kore::System::setForegroundCallback(foreground);
+	Kore::System::setResumeCallback(resume);
+	Kore::System::setPauseCallback(pause);
+	Kore::System::setBackgroundCallback(background);
+	Kore::System::setShutdownCallback(shutdown);
+	Kore::System::setCallback(update);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
@@ -407,7 +415,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
-	app->start();
+	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 }
 

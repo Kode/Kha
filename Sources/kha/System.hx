@@ -24,19 +24,14 @@ class System {
 	//}
 
 	public static function notifyOnRender(id: Int, listener: Framebuffer -> Void): Void {
-		trace('notifyOnRender ${id}');
-
 		while (id >= renderListeners.length) {
-			trace('notifyOnRender ${id}/${renderListeners.length} pushing');
 			renderListeners.push(new Array());
 		}
 
-		trace('notifyOnRender ${id} done');
 		renderListeners[id].push(listener);
 	}
 
-	public static function notifyOnApplicationState(foregroundListener: Void -> Void, resumeListener: Void -> Void,
-	pauseListener: Void -> Void, backgroundListener: Void-> Void, shutdownListener: Void -> Void): Void {
+	public static function notifyOnApplicationState(foregroundListener: Void -> Void, resumeListener: Void -> Void,	pauseListener: Void -> Void, backgroundListener: Void-> Void, shutdownListener: Void -> Void): Void {
 		foregroundListeners.push(foregroundListener);
 		resumeListeners.push(resumeListener);
 		pauseListeners.push(pauseListener);
