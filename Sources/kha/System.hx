@@ -40,6 +40,10 @@ class System {
 	}
 
 	private static function render(id: Int, framebuffer: Framebuffer): Void {
+		if (renderListeners.length == 0) {
+			return;
+		}
+
 		for (listener in renderListeners[id]) {
 			listener(framebuffer);
 		}

@@ -58,8 +58,13 @@ class SystemImpl {
 		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
 
-	public static function initEx( options : SystemOptions, callback : Void -> Void ) {
-		init(options.title, options.width, options.height, callback);
+	public static function initEx( title  : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		trace('initEx is not supported on the flash-target, running init() with first window options');
+		init(title, options[0].width, options[0].height, callback);
+
+		if (windowCallback != null) {
+			windowCallback(0);
+		}
 	}
 
 	private static function onReady(_): Void {
@@ -105,7 +110,7 @@ class SystemImpl {
 	private static function update(_): Void {
 		Scheduler.executeFrame();
 		context.clear(0, 0, 0, 0);
-		System.render(frame);
+		System.render(0, frame);
 		context.present();
 	}
 
