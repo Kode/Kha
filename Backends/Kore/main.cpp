@@ -306,11 +306,10 @@ namespace {
 	Kore::Application* app;
 }
 
-void init_kore(const char* name, int width, int height) {
+void init_kore(const char* name, int width, int height, int antialiasing) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	bool fullscreen = false;
-	int antialiasing = 1;
 
 	width = Kore::min(width, Kore::System::desktopWidth());
 	height = Kore::min(height, Kore::System::desktopHeight());

@@ -1,5 +1,12 @@
 package kha;
 
+typedef SystemOptions = {
+	?title: String,
+	?width: Int,
+	?height: Int,
+	?samplesPerPixel: Int
+}
+
 @:allow(kha.SystemImpl)
 class System {
 	private static var renderListeners: Array<Framebuffer -> Void> = new Array();
@@ -9,8 +16,12 @@ class System {
 	private static var backgroundListeners: Array<Void -> Void> = new Array();
 	private static var shutdownListeners: Array<Void -> Void> = new Array();
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
-		SystemImpl.init(title, width, height, callback);
+	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		if (options.title == null) options.title = "Kha";
+		if (options.width == null) options.width = 800;
+		if (options.height == null) options.height = 600;
+		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
+		SystemImpl.init(options, callback);
 	}
 	
 	public static function notifyOnRender(listener: Framebuffer -> Void): Void {

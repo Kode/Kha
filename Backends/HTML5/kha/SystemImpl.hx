@@ -16,6 +16,7 @@ import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
+import kha.System;
 
 class GamepadStates {
 	public var axes: Array<Float>;
@@ -34,6 +35,7 @@ class SystemImpl {
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
 	private static var performance: Dynamic;
+	private static var options: SystemOptions;
 	
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null) {
@@ -44,7 +46,8 @@ class SystemImpl {
 		}
 	}
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
+		SystemImpl.options = options;
         #if sys_debug_html5
         // Wait a second so the debugger can attach
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
@@ -200,7 +203,7 @@ class SystemImpl {
 		var gl: Bool = false;
 		
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");

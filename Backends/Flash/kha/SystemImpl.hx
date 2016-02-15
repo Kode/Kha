@@ -24,6 +24,7 @@ import flash.Lib;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.Vector;
+import kha.System;
 
 class SystemImpl {
 	private static var width: Int;
@@ -37,10 +38,10 @@ class SystemImpl {
 	private static var callback: Void -> Void;
 	public static var context: Context3D;
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
 		SystemImpl.callback = callback;
-		SystemImpl.width = width;
-		SystemImpl.height = height;
+		SystemImpl.width = options.width;
+		SystemImpl.height = options.height;
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		//Loader.init(new kha.flash.Loader(this));

@@ -1,10 +1,12 @@
 package kha;
+
 import com.ktxsoftware.kha.KhaActivity;
 import kha.android.Graphics;
 import kha.graphics4.Graphics2;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Surface;
+import kha.System;
 
 class SystemImpl {
 	public static var w: Int = 640;
@@ -91,9 +93,9 @@ class SystemImpl {
 	private static var mouse: Mouse;
 	private static var surface: Surface;
 	
-	public static function init(title: String, width: Int, height: Int, done: Void->Void) {
-		w = width;
-		h = height;
+	public static function init(options: SystemOptions, done: Void->Void) {
+		w = options.width;
+		h = options.height;
 		KhaActivity.the();
 		keyboard = new Keyboard();
 		mouse = new Mouse();

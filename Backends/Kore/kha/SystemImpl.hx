@@ -7,6 +7,7 @@ import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
+import kha.System;
 
 #if ANDROID 
 	#if VR_CARDBOARD
@@ -31,7 +32,7 @@ import kha.input.Surface;
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
 
-void init_kore(const char* name, int width, int height);
+void init_kore(const char* name, int width, int height, int antialiasing);
 void run_kore();
 ')
 
@@ -98,8 +99,8 @@ class SystemImpl {
 	private static var mouseLockListeners: Array<Void->Void>;
 	
 	//public function new(?backbufferFormat: TextureFormat) {
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
-		initKore(title, width, height);
+	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		initKore(options.title, options.width, options.height, options.samplesPerPixel);
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -411,8 +412,8 @@ class SystemImpl {
 		System.shutdown();
 	}
 	
-	@:functionCode('init_kore(name, width, height);')
-	private static function initKore(name: String, width: Int, height: Int): Void {
+	@:functionCode('init_kore(name, width, height, antialiasing);')
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int): Void {
 		
 	}
 	
