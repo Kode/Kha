@@ -357,13 +357,14 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
 	Kore::System::setName(name);
+	Kore::System::setup();
 
 	if (ex) {
 	} else {
 		width = Kore::min(width, Kore::System::desktopWidth());
 		height = Kore::min(height, Kore::System::desktopHeight());
 
-		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode);
+		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode, -1);
 		Kore::Graphics::init(windowId, 16, 8);
 	}
 
