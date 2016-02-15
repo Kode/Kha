@@ -29,14 +29,14 @@ enum WindowedFlags {
 }
 
 class RendererOptions {
-	public var width : Int;
-	public var height : Int;
+	//public var width : Int;
+	//public var height : Int;
 	public var textureFormat : TextureFormat = TextureFormat.RGBA32;
 	public var depthStencilFormat : DepthStencilFormat = DepthStencilFormat.DepthOnly;
 
-	public function new( width : Int, height : Int ) {
-		this.width = width;
-		this.height = height;
+	public function new( /*width : Int, height : Int*/ ) {
+		//this.width = width;
+		//this.height = height;
 	}
 
 	public function setTextureFormat( format : TextureFormat ) : RendererOptions {
@@ -73,7 +73,7 @@ class WindowOptions {
 		this.title = title;
 		this.width = width;
 		this.height = height;
-		this.rendererOptions = new RendererOptions(width, height);
+		this.rendererOptions = new RendererOptions(/*width, height*/);
     }
 
 	public function setMode( mode : Mode ) : WindowOptions {
@@ -92,7 +92,7 @@ class WindowOptions {
 		return this;
 	}
 
-	public function setWindowedFlags( flag : WindowedFlags, value : Bool ) : WindowOptions {
+	public function setWindowedFlag( flag : WindowedFlags, value : Bool ) : WindowOptions {
 		switch (flag) {
 			case Resizable: resizable = value;
 			case Minimizable: minimizable = value;
@@ -101,13 +101,6 @@ class WindowOptions {
 
 		return this;
 	}
-
-	//public function setWindowFlags( resizable : Bool, minimizable : Bool, maximizable : Bool ) : WindowOptions {
-		//this.resizable = resizable;
-		//this.minimizable = minimizable;
-		//this.maximizable = maximizable;
-		//return this;
-	//}
 }
 
 /*class Main {

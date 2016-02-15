@@ -546,8 +546,8 @@ class SystemImpl {
 			wo.height = option->height;
 			wo.mode = mode;
 			wo.targetDisplay = targetDisplay;
-			wo.rendererOptions.width = option->width;
-			wo.rendererOptions.height = option->height;
+			//wo.rendererOptions.width = option->width;
+			//wo.rendererOptions.height = option->height;
 			wo.rendererOptions.textureFormat = textureFormat;
 			wo.rendererOptions.depthBufferBits = depthBufferBits;
 			wo.rendererOptions.stencilBufferBits = stencilBufferBits;

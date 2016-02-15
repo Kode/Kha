@@ -364,8 +364,22 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		width = Kore::min(width, Kore::System::desktopWidth());
 		height = Kore::min(height, Kore::System::desktopHeight());
 
-		int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode, -1);
-		Kore::Graphics::init(windowId, 16, 8);
+		//int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode, -1);
+		Kore::WindowOptions options;
+		options.title = "";
+		options.width = width;
+		options.height = height;
+		options.x = x;
+		options.y = y;
+		options.targetDisplay = display;
+		options.mode = windowMode;
+		options.rendererOptions.depthBufferBits = 16;
+		options.rendererOptions.stencilBufferBits = 8;
+		options.rendererOptions.textureFormat = 0;
+		options.rendererOptions.antialiasing = 0;
+
+		int windowId = Kore::System::initWindow(options);
+		//Kore::Graphics::init(windowId, 16, 8);
 	}
 
 	//Kore::Mixer::init();
