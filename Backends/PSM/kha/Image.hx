@@ -64,6 +64,10 @@ class Image {
 	public function unlock(): Void {
 		
 	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		
+	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
 	
