@@ -235,4 +235,12 @@ class WebGLImage extends Image {
 	override public function unload(): Void {
 
 	}
+
+	override public function setMipmaps(mipmaps: Array<Image>): Void {
+		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
+		for (i in 0...mipmaps.length) {
+			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, cast(mipmaps[i], WebGLImage).image);
+		}
+		SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
+	}
 }
