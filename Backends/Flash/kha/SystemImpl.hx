@@ -24,6 +24,7 @@ import flash.Lib;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.Vector;
+import kha.System;
 
 class SystemImpl {
 	private static var width: Int;
@@ -37,10 +38,10 @@ class SystemImpl {
 	private static var callback: Void -> Void;
 	public static var context: Context3D;
 
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
 		SystemImpl.callback = callback;
-		SystemImpl.width = width;
-		SystemImpl.height = height;
+		SystemImpl.width = options.width;
+		SystemImpl.height = options.height;
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		//Loader.init(new kha.flash.Loader(this));
@@ -60,7 +61,7 @@ class SystemImpl {
 
 	public static function initEx( title  : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
 		trace('initEx is not supported on the flash-target, running init() with first window options');
-		init(title, options[0].width, options[0].height, callback);
+		init({ title : title, width : options[0].width, height : options[0].height}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);
