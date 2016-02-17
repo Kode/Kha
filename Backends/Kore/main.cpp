@@ -312,47 +312,7 @@ namespace {
 	//Kore::Application* app;
 }
 
-int kore_window_width( int id ) {
-	return 0;
-}
-
-int kore_window_height( int id ) {
-	return 0;
-}
-
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode);
-
-void init_kore(const char* name, int width, int height) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, 0);
-	//post_kore_init();
-}
-
-void init_kore_ex( const char * name ) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, -1);
-}
-
-void post_kore_init() {
-	Kore::Graphics::begin(0); // TODO (DK) make main window current
-
-#ifndef VR_RIFT
-	Kore::Graphics::setRenderState(Kore::DepthTest, false);
-#endif
-
-	Kore::Audio::audioCallback = mix;
-	Kore::Audio::init();
-
-#ifdef VR_GEAR_VR
-	// Enter VR mode
-	Kore::VrInterface::Initialize();
-#endif
-}
-
-int
-init_window( Kore::WindowOptions options ) {
-	return Kore::System::initWindow(options);
-}
-
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode) {
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode, int antialiasing) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
@@ -376,7 +336,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		options.rendererOptions.depthBufferBits = 16;
 		options.rendererOptions.stencilBufferBits = 8;
 		options.rendererOptions.textureFormat = 0;
-		options.rendererOptions.antialiasing = 0;
+		options.rendererOptions.antialiasing = antialiasing;
 
 		int windowId = Kore::System::initWindow(options);
 		//Kore::Graphics::init(windowId, 16, 8);
@@ -423,6 +383,36 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 //	// Enter VR mode
 //	Kore::VrInterface::Initialize();
 //#endif
+}
+
+void init_kore(const char* name, int width, int height, int antialiasing) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, 0, antialiasing);
+	//post_kore_init();
+}
+
+void init_kore_ex( const char * name ) {
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, -1, 0);
+}
+
+void post_kore_init() {
+	Kore::Graphics::begin(0); // TODO (DK) make main window current
+
+#ifndef VR_RIFT
+	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+#endif
+
+	Kore::Audio::audioCallback = mix;
+	Kore::Audio::init();
+
+#ifdef VR_GEAR_VR
+	// Enter VR mode
+	Kore::VrInterface::Initialize();
+#endif
+}
+
+int
+init_window( Kore::WindowOptions options ) {
+	return Kore::System::initWindow(options);
 }
 
 void run_kore() {

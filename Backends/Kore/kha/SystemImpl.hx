@@ -7,6 +7,7 @@ import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
+import kha.System;
 
 #if ANDROID
 	#if VR_CARDBOARD
@@ -27,15 +28,14 @@ import kha.input.Surface;
 
 @:headerCode('
 #include <Kore/pch.h>
-//#include <Kore/Application.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Window.h>
 
-void init_kore(const char* name, int width, int height);
-void run_kore();
+void init_kore(const char* name, int width, int height, int antialiasing);
 void init_kore_ex(const char* name);
 void post_kore_init();
+void run_kore();
 int init_window( Kore::WindowOptions windowOptions );
 ')
 
@@ -100,9 +100,8 @@ class SystemImpl {
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
 
-	//public function new(?backbufferFormat: TextureFormat) {
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
-		untyped __cpp__('init_kore(title, width, height)');
+	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		initKore(options.title, options.width, options.height, options.samplesPerPixel);
 
 		Shaders.init();
 
@@ -475,6 +474,10 @@ class SystemImpl {
 
 	public static function shutdown(): Void {
 		System.shutdown();
+	}
+
+	@:functionCode('init_kore(name, width, height, antialiasing);')
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int): Void {
 	}
 
 	static function translatePosition( value : kha.WindowOptions.Position ) : Int {
