@@ -205,4 +205,8 @@ class Image implements Canvas implements Resource {
 	public function unlock(): Void {
 		bytes = null;
 	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		
+	}
 }

@@ -136,6 +136,10 @@ class Image implements Resource {
 	public function unlock(): Void {
 		
 	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		
+	}
 	
 	public static var maxSize(get, null): Int;
 	

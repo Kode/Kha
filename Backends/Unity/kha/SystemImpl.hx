@@ -3,6 +3,7 @@ package kha;
 import kha.graphics4.Graphics2;
 import kha.input.Keyboard;
 import system.diagnostics.Stopwatch;
+import kha.System;
 
 class SystemImpl {
 	private static var watch: Stopwatch;
@@ -86,7 +87,7 @@ class SystemImpl {
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
 		init2();
 		Scheduler.init();
 		keyboard = new Keyboard();

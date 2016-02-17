@@ -1,61 +1,63 @@
 package kha;
+
 import com.ktxsoftware.kha.KhaActivity;
 import kha.android.Graphics;
 import kha.graphics4.Graphics2;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Surface;
+import kha.System;
 
 class SystemImpl {
 	public static var w: Int = 640;
 	public static var h: Int = 480;
 	private static var startTime: Float;
-	
+
 	public static function getPixelWidth(): Int {
 		return w;
 	}
-	
+
 	public static function getPixelHeight(): Int {
 		return h;
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
-	
+
 	public static function getFrequency(): Int {
 		return 1000;
 	}
-	
+
 	@:functionCode('
 		return java.lang.System.currentTimeMillis();
 	')
 	public static function getTimestamp(): Float {
 		return 0;
 	}
-	
+
 	public static function getTime(): Float {
 		return (getTimestamp() - startTime) / getFrequency();
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getSystemId(): String {
 		return "Android";
 	}
-	
+
 	public static function requestShutdown(): Void {
-		
+
 	}
-	
+
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+
 	}
 
 	public static function canSwitchFullscreen() : Bool{
@@ -67,22 +69,22 @@ class SystemImpl {
 	}
 
 	public static function requestFullscreen(): Void {
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
-		
+
   	}
 
 	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+
 	}
 
 
 	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+
 	}
-	
+
 	private static var framebuffer: Framebuffer;
 	public static var mouseX: Int = 0;
 	public static var mouseY: Int = 0;
@@ -90,47 +92,56 @@ class SystemImpl {
 	private static var shift = false;
 	private static var mouse: Mouse;
 	private static var surface: Surface;
-	
-	public static function init(title: String, width: Int, height: Int, done: Void->Void) {
-		w = width;
-		h = height;
+
+	public static function init(options: SystemOptions, done: Void->Void) {
+		w = options.width;
+		h = options.height;
 		KhaActivity.the();
 		keyboard = new Keyboard();
 		mouse = new Mouse();
 		//gamepad = new Gamepad();
 		surface = new Surface();
-		
+
 		LoaderImpl.init(KhaActivity.the().getApplicationContext());
 		Scheduler.init();
-		
+
 		Shaders.init();
 		var graphics = new Graphics();
 		framebuffer = new Framebuffer(null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);
-		
+
 		Scheduler.start();
-		
+
 		done();
 	}
-	
+
+	public static function initEx( title : String, options : Array<kha.WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+		trace('initEx is not supported on android target, falling back to init() with first window options');
+		init( { title: title, width: options[0].width, height : options[0].height, samplesPerPixel : options[0].rendererOptions.samplesPerPixel }, callback);
+
+		if (windowCallback != null) {
+			windowCallback(0);
+		}
+	}
+
 	public static function getKeyboard(num: Int = 0): Keyboard {
 		if (num == 0) return keyboard;
 		else return null;
 	}
-	
+
 	public static function getMouse(num: Int = 0): Mouse {
 		if (num == 0) return mouse;
 		else return null;
 	}
 
 	public static function lockMouse(): Void {
-		
+
 	}
-	
+
 	public static function unlockMouse(): Void {
-		
+
 	}
 
 	public static function canLockMouse(): Bool {
@@ -142,37 +153,37 @@ class SystemImpl {
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
-	
+
 	public static function preinit(width: Int, height: Int): Void {
 		w = width;
 		h = height;
 		startTime = getTimestamp();
 		Main.main();
 	}
-	
+
 	public static function setWidthHeight(width: Int, height: Int): Void {
 		w = width;
 		h = height;
 	}
-	
+
 	public static function step(): Void {
 		Scheduler.executeFrame();
-		System.render(framebuffer);
+		System.render(0, framebuffer);
 	}
 
 	private static function setMousePosition(x : Int, y : Int){
 		mouseX = x;
 		mouseY = y;
 	}
-	
+
 	public static function touch(index: Int, x: Int, y: Int, action: Int): Void {
-		
+
 		switch (action) {
 		case 0: //DOWN
 			if (index == 0) {
@@ -196,7 +207,7 @@ class SystemImpl {
 			surface.sendTouchEndEvent(index, x, y);
 		}
 	}
-	
+
 	public static function keyDown(code: Int): Void {
 		switch (code) {
 		case 0x00000120:
@@ -217,7 +228,7 @@ class SystemImpl {
 			keyboard.sendDownEvent(Key.CHAR, char);
 		}
 	}
-	
+
 	public static function keyUp(code: Int): Void {
 		switch (code) {
 		case 0x00000120:
@@ -238,13 +249,13 @@ class SystemImpl {
 			keyboard.sendUpEvent(Key.CHAR, char);
 		}
 	}
-	
+
 	public static var showKeyboard: Bool;
-	
+
 	public static function keyboardShown(): Bool {
 		return showKeyboard;
 	}
-	
+
 	public static function foreground(): Void {
 		System.foreground();
 	}

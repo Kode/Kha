@@ -33,6 +33,7 @@ class RendererOptions {
 	//public var height : Int;
 	public var textureFormat : TextureFormat = TextureFormat.RGBA32;
 	public var depthStencilFormat : DepthStencilFormat = DepthStencilFormat.DepthOnly;
+	public var samplesPerPixel : Int = 0;
 
 	public function new( /*width : Int, height : Int*/ ) {
 		//this.width = width;
