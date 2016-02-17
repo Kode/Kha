@@ -16,6 +16,7 @@ import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
+import kha.System;
 
 class GamepadStates {
 	public var axes: Array<Float>;
@@ -29,11 +30,13 @@ class GamepadStates {
 
 class SystemImpl {
 	public static var gl: GL;
+	public static var anisotropicFilter: Dynamic;
 	public static var drawBuffers: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
 	private static var performance: Dynamic;
+	private static var options: SystemOptions;
 
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null) {
@@ -44,7 +47,8 @@ class SystemImpl {
 		}
 	}
 
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
+		SystemImpl.options = options;
         #if sys_debug_html5
         // Wait a second so the debugger can attach
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
@@ -65,7 +69,7 @@ class SystemImpl {
 		trace('initEx is not supported on the html5, running init() with first window options');
 #end
 
-		init(title, options[0].width, options[0].height, callback);
+		init({ title : title, width : options[0].width, height : options[0].height}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);
@@ -214,10 +218,15 @@ class SystemImpl {
 		var gl: Bool = false;
 
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
+				SystemImpl.gl.getExtension("OES_texture_float_linear");
+				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
+				SystemImpl.gl.getExtension("OES_standard_derivatives");
+				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
+				if (anisotropicFilter == null) SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
 				gl = true;
 				Shaders.init();
