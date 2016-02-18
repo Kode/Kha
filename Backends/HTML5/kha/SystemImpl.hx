@@ -420,7 +420,7 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Void{
-		mouse.sendWheelEvent(Std.int(event.deltaY));
+		mouse.sendWheelEvent(0, Std.int(event.deltaY));
 	}
 
 	private static function mouseDown(event: MouseEvent): Void {
@@ -429,18 +429,18 @@ class SystemImpl {
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
-				mouse.sendDownEvent(1, mouseX, mouseY);
+				mouse.sendDownEvent(0, 1, mouseX, mouseY);
 			}
 			else {
 				leftMouseCtrlDown = false;
-				mouse.sendDownEvent(0, mouseX, mouseY);
+				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 		}
 		else if(event.which == 2){ //middle button
-			mouse.sendDownEvent(2, mouseX, mouseY);
+			mouse.sendDownEvent(0, 2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
-			mouse.sendDownEvent(1, mouseX, mouseY);
+			mouse.sendDownEvent(0, 1, mouseX, mouseY);
 		}
 	}
 
@@ -449,18 +449,18 @@ class SystemImpl {
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (leftMouseCtrlDown) {
-				mouse.sendUpEvent(1, mouseX, mouseY);
+				mouse.sendUpEvent(0, 1, mouseX, mouseY);
 			}
 			else {
-				mouse.sendUpEvent(0, mouseX, mouseY);
+				mouse.sendUpEvent(0, 0, mouseX, mouseY);
 			}
 			leftMouseCtrlDown = false;
 		}
 		else if(event.which == 2){ //middle button
-			mouse.sendUpEvent(2, mouseX, mouseY);
+			mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
-			mouse.sendUpEvent(1, mouseX, mouseY);
+			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
 	}
 
@@ -470,7 +470,7 @@ class SystemImpl {
 		setMouseXY(event);
 		var movementX = untyped event.movementX || event.mozMovementX || event.webkitMovementX || mouseX - lastMouseX;
 		var movementY = untyped event.movementY || event.mozMovementY || event.webkitMovementY || mouseY - lastMouseY;
-		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementY);
+		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 	}
 
 	private static function setTouchXY(touch: Touch): Void {
@@ -484,7 +484,7 @@ class SystemImpl {
 	private static function touchDown(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			mouse.sendDownEvent(0, touchX, touchY);
+			mouse.sendDownEvent(0, 0, touchX, touchY);
 			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
 		}
 	}
@@ -492,7 +492,7 @@ class SystemImpl {
 	private static function touchUp(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			mouse.sendUpEvent(0, touchX, touchY);
+			mouse.sendUpEvent(0, 0, touchX, touchY);
 			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
 		}
 	}
@@ -507,7 +507,7 @@ class SystemImpl {
 				lastFirstTouchX = touchX;
 				lastFirstTouchY = touchY;
 
-				mouse.sendMoveEvent(touchX, touchY, movementX, movementY);
+				mouse.sendMoveEvent(0, touchX, touchY, movementX, movementY);
 			}
 
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);

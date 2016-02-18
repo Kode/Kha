@@ -12,12 +12,14 @@
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
 #include <Kore/Math/Random.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
 #include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
+
+#include <limits>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef ANDROID
 	#include <Kore/Vr/VrInterface.h>
@@ -138,20 +140,20 @@ namespace {
 		}
 	}
 
-	void mouseDown(int button, int x, int y) {
-		SystemImpl_obj::mouseDown(button, x, y);
+	void mouseDown(int windowId, int button, int x, int y) {
+		SystemImpl_obj::mouseDown(windowId, button, x, y);
 	}
 
-	void mouseUp(int button, int x, int y) {
-		SystemImpl_obj::mouseUp(button, x, y);
+	void mouseUp(int windowId, int button, int x, int y) {
+		SystemImpl_obj::mouseUp(windowId, button, x, y);
 	}
 
-	void mouseMove(int x, int y, int movementX, int movementY) {
-		SystemImpl_obj::mouseMove(x, y, movementX, movementY);
+	void mouseMove(int windowId, int x, int y, int movementX, int movementY) {
+		SystemImpl_obj::mouseMove(windowId, x, y, movementX, movementY);
 	}
 
-	void mouseWheel(int delta) {
-		SystemImpl_obj::mouseWheel(delta);
+	void mouseWheel(int windowId, int delta) {
+		SystemImpl_obj::mouseWheel(windowId, delta);
 	}
 
 	void accelerometerChanged(float x, float y, float z) {

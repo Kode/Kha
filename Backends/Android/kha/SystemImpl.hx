@@ -188,7 +188,7 @@ class SystemImpl {
 		case 0: //DOWN
 			if (index == 0) {
 				setMousePosition(x,y);
-				mouse.sendDownEvent(0, x, y);
+				mouse.sendDownEvent(0, 0, x, y);
 			}
 			surface.sendTouchStartEvent(index, x, y);
 		case 1: //MOVE
@@ -196,13 +196,13 @@ class SystemImpl {
 				var movementX = x - mouseX;
 				var movementY = y - mouseY;
 				setMousePosition(x,y);
-				mouse.sendMoveEvent(x, y, movementX, movementY);
+				mouse.sendMoveEvent(0, x, y, movementX, movementY);
 			}
 			surface.sendMoveEvent(index, x, y);
 		case 2: //UP
 			if (index == 0) {
 				setMousePosition(x,y);
-				mouse.sendUpEvent(0, x, y);
+				mouse.sendUpEvent(0, 0, x, y);
 			}
 			surface.sendTouchEndEvent(index, x, y);
 		}
