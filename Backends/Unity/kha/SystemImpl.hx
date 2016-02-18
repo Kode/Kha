@@ -179,11 +179,11 @@ class SystemImpl {
 	}
 
 	public static function mouseDown(button: Int, x: Int, y: Int): Void {
-		kha.input.Mouse.get().sendDownEvent(button, x, y);
+		kha.input.Mouse.get().sendDownEvent(0, button, x, y);
 	}
 
 	public static function mouseUp(button: Int, x: Int, y: Int): Void {
-		kha.input.Mouse.get().sendUpEvent(button, x, y);
+		kha.input.Mouse.get().sendUpEvent(0, button, x, y);
 	}
 
 	public static function update(): Void {
