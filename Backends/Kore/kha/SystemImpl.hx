@@ -98,7 +98,7 @@ class SystemImpl {
 	private static var gamepad3: Gamepad;
 	private static var gamepad4: Gamepad;
 	private static var surface: Surface;
-	private static var mouseLockListeners: Array<Void->Void>;
+	private static var mouseLockListeners: Array<Int->Void>;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		initKore(options.title, options.width, options.height, options.samplesPerPixel);
@@ -210,42 +210,40 @@ class SystemImpl {
 		#end
 */	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(windowId : Int = 0): Void {
 		if(!isMouseLocked()){
-			untyped __cpp__("Kore::Mouse::the()->lock();");
+			untyped __cpp__("Kore::Mouse::the()->lock(windowId);");
 			for (listener in mouseLockListeners) {
-				listener();
+				listener(windowId);
 			}
 		}
 	}
 
-	public static function unlockMouse(): Void {
+	public static function unlockMouse(windowId : Int = 0): Void {
 		if(isMouseLocked()){
-			untyped __cpp__("Kore::Mouse::the()->unlock();");
+			untyped __cpp__("Kore::Mouse::the()->unlock(windowId);");
 			for (listener in mouseLockListeners) {
-				listener();
+				listener(windowId);
 			}
 		}
 	}
 
-	@:functionCode('return Kore::Mouse::the()->canLock();')
-	public static function canLockMouse(): Bool {
-		return false;
+	public static function canLockMouse(windowId : Int = 0): Bool {
+		return untyped __cpp__('Kore::Mouse::the()->canLock(windowId)');
 	}
 
-	@:functionCode('return Kore::Mouse::the()->isLocked();')
-	public static function isMouseLocked(): Bool {
-		return false;
+	public static function isMouseLocked(windowId : Int = 0): Bool {
+		return untyped __cpp__('Kore::Mouse::the()->isLocked(windowId)');
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		if (canLockMouse() && func != null) {
+	public static function notifyOfMouseLockChange(func: Int -> Void, error: Int -> Void, windowId : Int = 0): Void {
+		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		if (canLockMouse() && func != null) {
+	public static function removeFromMouseLockChange(func : Int -> Void, error: Void -> Void, windowId : Int = 0): Void {
+		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.remove(func);
 		}
 	}
@@ -388,28 +386,28 @@ class SystemImpl {
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 
-	public static function mouseDown(button: Int, x: Int, y: Int): Void {
+	public static function mouseDown(windowId: Int, button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendDownEvent(button, x, y);
+		mouse.sendDownEvent(windowId, button, x, y);
 	}
 
-	public static function mouseUp(button: Int, x: Int, y: Int): Void {
+	public static function mouseUp(windowId: Int, button: Int, x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendUpEvent(button, x, y);
+		mouse.sendUpEvent(windowId, button, x, y);
 	}
 
-	public static function mouseMove(x: Int, y: Int, movementX : Int, movementY : Int): Void {
+	public static function mouseMove(windowId: Int, x: Int, y: Int, movementX : Int, movementY : Int): Void {
 		// var movementX = x - mouseX;
 		// var movementY = y - mouseY;
 		mouseX = x;
 		mouseY = y;
-		mouse.sendMoveEvent(x, y, movementX, movementY);
+		mouse.sendMoveEvent(windowId, x, y, movementX, movementY);
 	}
 
-	public static function mouseWheel(delta: Int): Void {
-		mouse.sendWheelEvent(delta);
+	public static function mouseWheel(windowId: Int, delta: Int): Void {
+		mouse.sendWheelEvent(windowId, delta);
 	}
 
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
