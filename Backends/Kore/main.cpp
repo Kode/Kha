@@ -220,18 +220,18 @@ namespace {
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
 				#ifndef VR_RIFT
-				Kore::Graphics::begin(windowIndex); // TODO (DK) windowId
-				#endif
+				Kore::Graphics::begin(windowIndex);
+                #endif
 			
 				// Google Cardboard: Update the Distortion mesh
 				#ifdef VR_CARDBOARD
 				//	Kore::VrInterface::DistortionBefore();
 				#endif
 
-				SystemImpl_obj::frame(windowIndex); // TODO (DK) windowId?
+                SystemImpl_obj::frame(windowIndex);
 
 				#ifndef VR_RIFT
-				Kore::Graphics::end(windowIndex); // TODO (DK) windowId
+                Kore::Graphics::end(windowIndex);
 				#endif
 			
 				// Google Cardboard: Call the DistortionMesh Renderer
@@ -240,7 +240,7 @@ namespace {
 				#endif
 
 				#ifndef VR_RIFT
-				Kore::Graphics::swapBuffers(windowIndex); // TODO (DK) windowId?
+				Kore::Graphics::swapBuffers(windowIndex);
 				#endif
 			}
 		}
