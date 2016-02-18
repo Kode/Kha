@@ -212,7 +212,7 @@ class SystemImpl {
 				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
 				SystemImpl.gl.getExtension("OES_standard_derivatives");
 				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
-				if (anisotropicFilter == null) SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
 				gl = true;
 				Shaders.init();
