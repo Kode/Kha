@@ -212,44 +212,44 @@ class SystemImpl {
 
 	private static function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendDownEvent(0, mouseX, mouseY);
+		mouse.sendDownEvent(0, 0, mouseX, mouseY);
 	}
 
 	private static function mouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendUpEvent(0, mouseX, mouseY);
+		mouse.sendUpEvent(0, 0, mouseX, mouseY);
 	}
 
 	private static function rightMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendDownEvent(1, mouseX, mouseY);
+		mouse.sendDownEvent(0, 1, mouseX, mouseY);
 	}
 
 	private static function rightMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendUpEvent(1, mouseX, mouseY);
+		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 	}
 
 	private static function middleMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendDownEvent(2, mouseX, mouseY);
+		mouse.sendDownEvent(0, 2, mouseX, mouseY);
 	}
 
 	private static function middleMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendUpEvent(2, mouseX, mouseY);
+		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 	}
 
 	private static function mouseMoveHandler(event: MouseEvent): Void {
 		var movementX = Std.int(event.stageY) - mouseX;
 		var movementY = Std.int(event.stageY) - mouseY;
 		setMousePosition(event);
-		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementX);
+		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementX);
 	}
 
 	private static function mouseWheelHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendWheelEvent(event.delta);
+		mouse.sendWheelEvent(0, event.delta);
 	}
 
 	private static function resizeHandler(event: Event): Void {
