@@ -58,6 +58,12 @@ extern class Image implements Canvas implements Resource {
 	 */
 	public function unlock(): Void;
 	/**
+	 * Set custom texture mipmaps.
+	 *
+	 * @param mipmaps 	Array of images to be used for mipmap levels, starting at level 1.
+	 */
+	public function setMipmaps(mipmaps: Array<Image>): Void;
+	/**
 	 * The width of the image in pixels.
 	 */
 	public var width(get, null): Int;

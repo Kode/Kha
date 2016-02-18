@@ -361,6 +361,10 @@ class Image implements Canvas implements Resource {
 		bytes = null;
 	}
 
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		
+	}
+
 	public static var maxSize(get, null): Int;
 
 	public static function get_maxSize(): Int {
