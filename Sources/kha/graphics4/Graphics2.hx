@@ -31,8 +31,8 @@ import kha.simd.Float32x4;
 
 class ImageShaderPainter {
 	private var projectionMatrix: FastMatrix4;
-	private var shaderPipeline: PipelineState;
-	private var structure: VertexStructure;
+	private static var shaderPipeline: PipelineState = null;
+	private static var structure: VertexStructure = null;
 	private var projectionLocation: ConstantLocation;
 	private var textureLocation: TextureUnit;
 	private static var bufferSize: Int = 1500;
@@ -79,7 +79,9 @@ class ImageShaderPainter {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
-	private function initShaders(): Void {
+	private static function initShaders(): Void {
+		if (shaderPipeline != null) return;
+		
 		shaderPipeline = new PipelineState();
 		shaderPipeline.fragmentShader = Shaders.painter_image_frag;
 		shaderPipeline.vertexShader = Shaders.painter_image_vert;
@@ -255,8 +257,8 @@ class ImageShaderPainter {
 
 class ColoredShaderPainter {
 	private var projectionMatrix: FastMatrix4;
-	private var shaderPipeline: PipelineState;
-	private var structure: VertexStructure;
+	private static var shaderPipeline: PipelineState = null;
+	private static var structure: VertexStructure = null;
 	private var projectionLocation: ConstantLocation;
 	
 	private static var bufferSize: Int = 100;
@@ -305,7 +307,9 @@ class ColoredShaderPainter {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
-	private function initShaders(): Void {
+	private static function initShaders(): Void {
+		if (shaderPipeline != null) return;
+		
 		shaderPipeline = new PipelineState();
 		shaderPipeline.fragmentShader = Shaders.painter_colored_frag;
 		shaderPipeline.vertexShader = Shaders.painter_colored_vert;
@@ -512,8 +516,8 @@ class ColoredShaderPainter {
 #end
 class TextShaderPainter {
 	private var projectionMatrix: FastMatrix4;
-	private var shaderPipeline: PipelineState;
-	private var structure: VertexStructure;
+	private static var shaderPipeline: PipelineState = null;
+	private static var structure: VertexStructure = null;
 	private var projectionLocation: ConstantLocation;
 	private var textureLocation: TextureUnit;
 	private static var bufferSize: Int = 100;
@@ -561,7 +565,9 @@ class TextShaderPainter {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
-	private function initShaders(): Void {
+	private static function initShaders(): Void {
+		if (shaderPipeline != null) return;
+		
 		shaderPipeline = new PipelineState();
 		shaderPipeline.fragmentShader = Shaders.painter_text_frag;
 		shaderPipeline.vertexShader = Shaders.painter_text_vert;
@@ -766,7 +772,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public var imagePainter: ImageShaderPainter;
 	private var coloredPainter: ColoredShaderPainter;
 	private var textPainter: TextShaderPainter;
-	private var videoPipeline: PipelineState;
+	private static var videoPipeline: PipelineState;
 	private var canvas: Canvas;
 	private var g: Graphics;
 
@@ -781,17 +787,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.fontSize = fontSize;
 		setProjection();
 		
-		videoPipeline = new PipelineState();
-		videoPipeline.fragmentShader = Shaders.painter_video_frag;
-		videoPipeline.vertexShader = Shaders.painter_video_vert;
+		if (videoPipeline == null) {
+			videoPipeline = new PipelineState();
+			videoPipeline.fragmentShader = Shaders.painter_video_frag;
+			videoPipeline.vertexShader = Shaders.painter_video_vert;
 
-		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("texPosition", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
-		videoPipeline.inputLayout = [structure];
-		
-		videoPipeline.compile();
+			var structure = new VertexStructure();
+			structure.add("vertexPosition", VertexData.Float3);
+			structure.add("texPosition", VertexData.Float2);
+			structure.add("vertexColor", VertexData.Float4);
+			videoPipeline.inputLayout = [structure];
+			
+			videoPipeline.compile();
+		}
 	}
 	
 	private static function upperPowerOfTwo(v: Int): Int {
