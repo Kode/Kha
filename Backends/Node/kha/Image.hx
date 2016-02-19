@@ -26,7 +26,7 @@ class Image implements Canvas implements Resource {
 		graphics4 = new EmptyGraphics4(w, h);
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format);
 	}
 	

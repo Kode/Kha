@@ -231,7 +231,7 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
 		return new Image(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
