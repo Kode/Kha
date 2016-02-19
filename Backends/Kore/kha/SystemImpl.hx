@@ -478,29 +478,45 @@ class SystemImpl {
 	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int): Void {
 	}
 
-	static function translatePosition( value : kha.WindowOptions.Position ) : Int {
+	static function translatePosition( value : Null<WindowOptions.Position> ) : Int {
+		if (value == null) {
+			return -1;
+		}
+
 		return switch (value) {
 			case Center: -1;
 			case Fixed(v): v;
 		}
 	}
 
-	static function translateDisplay( value : kha.WindowOptions.TargetDisplay ) : Int {
+	static function translateDisplay( value : Null<WindowOptions.TargetDisplay> ) : Int {
+		if (value == null) {
+			return -1;
+		}
+
 		return switch (value) {
-			case Main: -1;
-			case Custom(v): v;
+			case Primary: -1;
+			case ById(id): id;
 		}
 	}
 
-	static function translateWindowMode( value : kha.WindowOptions.Mode ) : Int {
+	static function translateWindowMode( value : Null<WindowOptions.Mode> ) : Int {
+		if (value == null) {
+			return 0;
+		}
+
 		return switch (value) {
-			case Windowed: 0;
+			case Window: 0;
 			case BorderlessWindow: 1;
 			case Fullscreen: 2;
 		}
 	}
 
-	static function translateDepthBufferFormat( value : DepthStencilFormat ) : Int {
+	static function translateDepthBufferFormat( value : Null<DepthStencilFormat> ) : Int {
+		if (value == null) {
+			return 16;
+		}
+
 		return switch (value) {
 			case NoDepthAndStencil: -1;
 			case DepthOnly: 16;
@@ -510,7 +526,11 @@ class SystemImpl {
 		}
 	}
 
-	static function translateStencilBufferFormat( value : DepthStencilFormat ) : Int {
+	static function translateStencilBufferFormat( value : Null<DepthStencilFormat> ) : Int {
+		if (value == null) {
+			return -1;
+		}
+
 		return switch (value) {
 			case NoDepthAndStencil: -1;
 			case DepthOnly: -1;
@@ -520,7 +540,11 @@ class SystemImpl {
 		}
 	}
 
-	static function translateTextureFormat( value : TextureFormat ) : Int {
+	static function translateTextureFormat( value : Null<TextureFormat> ) : Int {
+		if (value == null) {
+			return 0;
+		}
+
 		return switch(value) {
 			case RGBA32: 0;
 			case L8: 1;
@@ -528,27 +552,28 @@ class SystemImpl {
 		}
 	}
 
-	private static function initWindow( option : WindowOptions, callback : Int -> Void ) {
-		var x = translatePosition(option.x);
-		var y = translatePosition(option.y);
-		var mode = translateWindowMode(option.mode);
-		var targetDisplay = translateDisplay(option.targetDisplay);
-		var depthBufferBits = translateDepthBufferFormat(option.rendererOptions.depthStencilFormat);
-		var stencilBufferBits = translateStencilBufferFormat(option.rendererOptions.depthStencilFormat);
-		var textureFormat = translateTextureFormat(option.rendererOptions.textureFormat);
+	private static function initWindow( options : WindowOptions, callback : Int -> Void ) {
+		var x = translatePosition(options.x);
+		var y = translatePosition(options.y);
+		var mode = translateWindowMode(options.mode != null ? options.mode : WindowOptions.Mode.Window);
+		var targetDisplay = translateDisplay(options.targetDisplay != null ? options.targetDisplay : WindowOptions.TargetDisplay.Primary);
+		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
+		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
+		var textureFormat = translateTextureFormat(options.rendererOptions != null ? options.rendererOptions.textureFormat : TextureFormat.RGBA32);
 		var windowId : Int = -1;
+		var title = options.title;
+		var width = options.width;
+		var height = options.height;
 
 		untyped __cpp__('
 			Kore::WindowOptions wo;
-			wo.title = option->title;
+			wo.title = title;
 			wo.x = x;
 			wo.y = y;
-			wo.width = option->width;
-			wo.height = option->height;
+			wo.width = width;
+			wo.height = height;
 			wo.mode = mode;
 			wo.targetDisplay = targetDisplay;
-			//wo.rendererOptions.width = option->width;
-			//wo.rendererOptions.height = option->height;
 			wo.rendererOptions.textureFormat = textureFormat;
 			wo.rendererOptions.depthBufferBits = depthBufferBits;
 			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
@@ -561,10 +586,6 @@ class SystemImpl {
 		var framebuffer = new Framebuffer(null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers[windowId] = framebuffer;
-
-		//g4 = new kha.kore.graphics4.Graphics();
-		//framebuffers.push(new Framebuffer(null, null, g4));
-		//framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
 #end
 
 		if (callback != null) {
