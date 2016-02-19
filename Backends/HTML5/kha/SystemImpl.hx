@@ -76,6 +76,14 @@ class SystemImpl {
 		}
 	}
 
+	public static function windowWidth( windowId : Int = 0 ) : Int {
+		return khanvas.width;
+	}
+
+	public static function windowHeight( windowId : Int = 0 ) : Int {
+		return khanvas.height;
+	}
+
 	public static function setCanvas(canvas: CanvasElement): Void {
 		khanvas = canvas;
 	}
@@ -88,13 +96,13 @@ class SystemImpl {
 		return performance.now() / 1000;
 	}
 
-	public static function getPixelWidth(): Int {
-		return khanvas.width;
-	}
-
-	public static function getPixelHeight(): Int {
-		return khanvas.height;
-	}
+	//public static function getPixelWidth(): Int {
+		//return khanvas.width;
+	//}
+//
+	//public static function getPixelHeight(): Int {
+		//return khanvas.height;
+	//}
 
 	public static function getVsync(): Bool {
 		return true;
@@ -242,12 +250,12 @@ class SystemImpl {
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
-			frame = new Framebuffer(null, null, g4);
+			frame = new Framebuffer(System.windowWidth(), System.windowHeight(), null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
 		}
 		else {
 			var g2 = new CanvasGraphics(canvas.getContext("2d"), 640, 480); // Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
-			frame = new Framebuffer(null, g2, null);
+			frame = new Framebuffer(System.windowWidth(), System.windowHeight(), null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
 		}
 		//canvas.getContext("2d").scale(transform, transform);

@@ -5,13 +5,13 @@ import haxe.macro.Expr.Field;
 
 class ControllerBuilder {
 	public static var nextId: Int = 0;
-	
+
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
-		
+
 		// macros failing everywhere but in JavaScript?
 		#if (!sys_server && sys_html5)
-		
+
 		{
 			var funcindex = 0;
 			for (field in fields) {
@@ -23,7 +23,7 @@ class ControllerBuilder {
 					}
 				}
 				if (!input) continue;
-				
+
 				switch (field.kind) {
 				case FFun(f):
 					var size = 26;
@@ -45,14 +45,14 @@ class ControllerBuilder {
 						default:
 						}
 					}
-					
+
 					var expr = macro @:mergeBlock {
 						var bytes = haxe.io.Bytes.alloc($v { size } );
 						bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 						bytes.setInt32(1, _id());
 						bytes.setDouble(5, Scheduler.realTime());
-						bytes.setInt32(13, System.pixelWidth);
-						bytes.setInt32(17, System.pixelHeight);
+						bytes.setInt32(13, System.windowWidth(0));
+						bytes.setInt32(17, System.windowHeight(0));
 						bytes.set(21, System.screenRotation.getIndex());
 						bytes.setInt32(22, $v { funcindex } );
 					};
@@ -114,12 +114,12 @@ class ControllerBuilder {
 				++funcindex;
 			}
 		}
-		
+
 		#end
-		
+
 		// macros failing everywhere but in JavaScript?
 		#if (sys_server || sys_html5)
-		
+
 		var receive = macro @:mergeBlock {
 			var funcindex = bytes.getInt32(offset + 0);
 		};
@@ -134,7 +134,7 @@ class ControllerBuilder {
 					}
 				}
 				if (!input) continue;
-				
+
 				switch (field.kind) {
 				case FFun(f):
 					var expr = macro { };
@@ -226,7 +226,7 @@ class ControllerBuilder {
 				++funcindex;
 			}
 		}
-		
+
 		fields.push({
 			name: "_receive",
 			doc: null,
@@ -249,9 +249,9 @@ class ControllerBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-		
+
 		#else
-		
+
 		fields.push({
 			name: "_receive",
 			doc: null,
@@ -274,9 +274,9 @@ class ControllerBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-		
+
 		#end
-		
+
 		return fields;
 	}
 }

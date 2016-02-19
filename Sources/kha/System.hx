@@ -92,16 +92,13 @@ class System {
 		return SystemImpl.getTime();
 	}
 
-	//public static var pixelWidth(get, null): Int;
-	//public static var pixelHeight(get, null): Int;
+	public static function windowWidth( windowId : Int = 0 ) : Int {
+		return SystemImpl.windowWidth(windowId);
+	}
 
-	//private static function get_pixelWidth(): Int {
-		//return SystemImpl.getPixelWidth();
-	//}
-//
-	//private static function get_pixelHeight(): Int {
-		//return SystemImpl.getPixelHeight();
-	//}
+	public static function windowHeight( windowId : Int = 0 ) : Int {
+		return SystemImpl.windowHeight(windowId);
+	}
 
 	public static var screenRotation(get, null): ScreenRotation;
 
