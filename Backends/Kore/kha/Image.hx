@@ -27,11 +27,11 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
-		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil);
+		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, 0);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
-		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil);
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
 
 	private function new(readable: Bool) {
@@ -69,16 +69,16 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat): Image {
+	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): Image {
 		var image = new Image(readable);
 		image.format = format;
-		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil));
+		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
 	}
 
-	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBufferBits, false, (Kore::RenderTargetFormat)format, stencilBufferBits); texture = nullptr;')
-	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int): Void {
+	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBufferBits, false, (Kore::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
+	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
 
 	}
 
@@ -207,6 +207,6 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
-		
+
 	}
 }

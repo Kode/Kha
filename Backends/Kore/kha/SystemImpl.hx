@@ -59,15 +59,15 @@ class SystemImpl {
 		return 0;
 	}
 
-	@:functionCode('return Kore::System::screenWidth();')
-	public static function getPixelWidth(): Int {
-		return 0;
-	}
-
-	@:functionCode('return Kore::System::screenHeight();')
-	public static function getPixelHeight(): Int {
-		return 0;
-	}
+	//@:functionCode('return Kore::System::screenWidth();')
+	//public static function getPixelWidth(): Int {
+		//return 0;
+	//}
+//
+	//@:functionCode('return Kore::System::screenHeight();')
+	//public static function getPixelHeight(): Int {
+		//return 0;
+	//}
 
 	public static function getVsync(): Bool {
 		return true;
@@ -109,7 +109,7 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-		var framebuffer = new Framebuffer(null, null, g4);
+		var framebuffer = new Framebuffer(options.width, options.height, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers.push(framebuffer);
 
@@ -583,7 +583,7 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-		var framebuffer = new Framebuffer(null, null, g4);
+		var framebuffer = new Framebuffer(width, height, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers[windowId] = framebuffer;
 #end
@@ -607,9 +607,9 @@ class SystemImpl {
 
 	public static function requestFullscreen(): Void {
 		if(!isFullscreen()){
-			previousWidth = untyped __cpp__("Kore::System::screenWidth();");
-			previousHeight = untyped __cpp__("Kore::System::screenHeight();");
-			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true);");
+			previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
+			previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
+			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true)");
 			for (listener in fullscreenListeners) {
 				listener();
 			}
@@ -620,10 +620,10 @@ class SystemImpl {
 	public static function exitFullscreen(): Void {
 		if (isFullscreen()) {
 			if (previousWidth == 0 || previousHeight == 0){
-				previousWidth = untyped __cpp__("Kore::System::screenWidth();");
-				previousHeight = untyped __cpp__("Kore::System::screenHeight();");
+				previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
+				previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
 			}
-			untyped __cpp__("Kore::System::changeResolution(previousWidth, previousHeight, false);");
+			untyped __cpp__("Kore::System::changeResolution(previousWidth, previousHeight, false)");
 			for (listener in fullscreenListeners) {
 				listener();
 			}

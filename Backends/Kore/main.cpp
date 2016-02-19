@@ -310,8 +310,6 @@ namespace {
 			if (Audio::buffer.writeLocation >= Audio::buffer.dataSize) Audio::buffer.writeLocation = 0;
 		}
 	}
-
-	//Kore::Application* app;
 }
 
 void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode, int antialiasing) {
@@ -326,7 +324,6 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		width = Kore::min(width, Kore::System::desktopWidth());
 		height = Kore::min(height, Kore::System::desktopHeight());
 
-		//int windowId = Kore::System::createWindow(name, x, y, width, height, windowMode, -1);
 		Kore::WindowOptions options;
 		options.title = "";
 		options.width = width;
@@ -340,8 +337,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		options.rendererOptions.textureFormat = 0;
 		options.rendererOptions.antialiasing = antialiasing;
 
-		int windowId = Kore::System::initWindow(options);
-		//Kore::Graphics::init(windowId, 16, 8);
+		/*int windowId =*/ Kore::System::initWindow(options); // TODO (DK) save window id anywhere?
 	}
 
 	//Kore::Mixer::init();
@@ -389,7 +385,6 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 void init_kore(const char* name, int width, int height, int antialiasing) {
 	init_kore_impl(false, name, width, height, -1, -1, -1, 0, antialiasing);
-	//post_kore_init();
 }
 
 void init_kore_ex( const char * name ) {
@@ -397,7 +392,8 @@ void init_kore_ex( const char * name ) {
 }
 
 void post_kore_init() {
-	Kore::Graphics::begin(0); // TODO (DK) make main window current
+	// (DK) make main window context current, all assets bind to it and are shared
+	Kore::System::makeCurrent(0);
 
 #ifndef VR_RIFT
 	Kore::Graphics::setRenderState(Kore::DepthTest, false);
