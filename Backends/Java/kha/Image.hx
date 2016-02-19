@@ -23,7 +23,7 @@ class Image implements Canvas implements Resource {
 		
 	}
 	
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var img = new Image(null);
 		create2(img, width, height, format == TextureFormat.L8 ? 0 : 1);
 		return img;
