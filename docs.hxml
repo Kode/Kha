@@ -1,4 +1,0 @@
--cp Sources
--cp Backends/Empty
--xml docs.xml
---macro include('kha')
