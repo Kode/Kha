@@ -236,11 +236,17 @@ class WebGLImage extends Image {
 
 	}
 
+	override public function generateMipmaps(levels: Int): Void {
+		// WebGL requires to generate all mipmaps down to 1x1 size, ignoring levels for now
+		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
+		SystemImpl.gl.generateMipmap(GL.TEXTURE_2D);
+	}
+
 	override public function setMipmaps(mipmaps: Array<Image>): Void {
+		// Similar to generateMipmaps, specify all the levels down to 1x1 size
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
 		for (i in 0...mipmaps.length) {
 			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, cast(mipmaps[i], WebGLImage).image);
 		}
-		SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
 	}
 }

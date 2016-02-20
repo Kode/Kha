@@ -14,7 +14,7 @@ class Image implements Resource {
 	private var painter: Painter;
 	public var image: BitmapSource;
 	
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
 	}
 	
@@ -134,6 +134,10 @@ class Image implements Resource {
 		image = global::System.Windows.Media.Imaging.BitmapSource.Create(myWidth, myHeight, 96, 96, pf, null, bgra, rawStride);
 	')
 	public function unlock(): Void {
+		
+	}
+
+	public function generateMipmaps(levels: Int): Void {
 		
 	}
 

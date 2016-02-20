@@ -15,9 +15,8 @@ extern class Image implements Canvas implements Resource {
  	 * @param height	The image height.
  	 * @param format	The image format, from TextureFormat, default = RGBA32.
  	 * @param usage		If you plan to change the vertex after or not, from Usage, default = StaticUsage.
-	 * @param levels	TODO, default = 1.
 	 */
-	public static function create(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage, levels: Int = 1): Image;
+	public static function create(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage): Image;
 	/**
 	 * Create a new image instance and sets things up so you can render to the image.
 	 *
@@ -57,6 +56,12 @@ extern class Image implements Canvas implements Resource {
 	 * Release the bytes and upload them to the GPU.
 	 */
 	public function unlock(): Void;
+	/**
+	 * Generate texture mipmaps.
+	 *
+	 * @param levels 	Number of mipmap levels to generate.
+	 */
+	public function generateMipmaps(levels: Int): Void;
 	/**
 	 * Set custom texture mipmaps.
 	 *
