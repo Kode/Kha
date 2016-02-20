@@ -46,13 +46,11 @@ class SystemImpl {
 	}
 	
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
-		return mouse;
+		return null;
 	}
 	
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
-		return keyboard;
+		return null;
 	}
 		
 	public static function lockMouse(): Void {

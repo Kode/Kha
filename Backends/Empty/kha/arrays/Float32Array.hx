@@ -20,7 +20,7 @@ class Float32Array {
 	}
 	
 	public inline function set(index: Int, value: FastFloat): FastFloat {
-		return t0;
+		return 0;
 	}
 	
 	public inline function get(index: Int): FastFloat {
