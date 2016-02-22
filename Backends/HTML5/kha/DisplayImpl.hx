@@ -6,10 +6,12 @@ class DisplayImpl {
 	}
 
 	public static function width( id : Int ) : Int {
-		throw 'TODO (DK) implement me';
+		trace('TODO (DK) implement me');
+        return -1;
 	}
 
 	public static function height( id : Int ) : Int {
-		throw 'TODO (DK) implement me';
+		trace('TODO (DK) implement me');
+        return -1;
 	}
 }
