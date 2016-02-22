@@ -266,11 +266,11 @@ class SystemImpl {
 		return Lib.getTimer() / 1000;
 	}
 
-	public static function getPixelWidth(): Int {
+	public static function windowWidth( windowId : Int = 0 ): Int {
 		return Lib.current.stage.stageWidth;
 	}
 
-	public static function getPixelHeight(): Int {
+	public static function windowHeight( windowId : Int = 0 ): Int {
 		return Lib.current.stage.stageHeight;
 	}
 
