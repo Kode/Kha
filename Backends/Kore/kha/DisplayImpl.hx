@@ -1,8 +1,11 @@
 package kha;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Display.h>
+namespace Kore { namespace Display {
+	int count();
+	int width(int);
+	int height(int);
+}}
 ')
 class DisplayImpl {
     public static function count() : Int {
