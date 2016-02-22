@@ -570,12 +570,18 @@ class SystemImpl {
 			wo.y = y;
 			wo.width = width;
 			wo.height = height;
-			wo.mode = mode;
+			//wo.mode = mode;
 			wo.targetDisplay = targetDisplay;
 			wo.rendererOptions.textureFormat = textureFormat;
 			wo.rendererOptions.depthBufferBits = depthBufferBits;
 			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
 
+			switch (mode) {
+				default: // fall through
+				case 0: wo.mode = Kore::WindowMode::Window; break;
+				case 1: wo.mode = Kore::WindowMode::Borderless; break;
+				case 2: wo.mode = Kore::WindowMode::Fullscreen; break;
+			}
 			windowId = init_window(wo);
 		');
 

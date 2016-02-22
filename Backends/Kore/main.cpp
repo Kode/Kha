@@ -312,7 +312,7 @@ namespace {
 	}
 }
 
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, int windowMode, int antialiasing) {
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
@@ -384,11 +384,11 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 }
 
 void init_kore(const char* name, int width, int height, int antialiasing) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, 0, antialiasing);
+	init_kore_impl(false, name, width, height, -1, -1, -1, Kore::WindowMode::Window, antialiasing);
 }
 
 void init_kore_ex( const char * name ) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, -1, 0);
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowMode::Window, 0);
 }
 
 void post_kore_init() {
