@@ -59,15 +59,13 @@ class SystemImpl {
 		return 0;
 	}
 
-	//@:functionCode('return Kore::System::screenWidth();')
-	//public static function getPixelWidth(): Int {
-		//return 0;
-	//}
-//
-	//@:functionCode('return Kore::System::screenHeight();')
-	//public static function getPixelHeight(): Int {
-		//return 0;
-	//}
+	public static function windowWidth( windowId : Int) : Int {
+		return untyped __cpp__('Kore::System::windowWidth(windowId)');
+	}
+
+	public static function windowHeight( windowId : Int ) : Int {
+		return untyped __cpp__('Kore::System::windowHeight(windowId)');
+	}
 
 	public static function getVsync(): Bool {
 		return true;

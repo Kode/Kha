@@ -13,11 +13,11 @@ class SystemImpl {
 	public static var h: Int = 480;
 	private static var startTime: Float;
 
-	public static function getPixelWidth(): Int {
+	public static function windowWidth( windowId : Int = 0 ): Int {
 		return w;
 	}
 
-	public static function getPixelHeight(): Int {
+	public static function windowHeight( windowId : Int = 0 ): Int {
 		return h;
 	}
 
@@ -107,7 +107,7 @@ class SystemImpl {
 
 		Shaders.init();
 		var graphics = new Graphics();
-		framebuffer = new Framebuffer(null, null, graphics);
+		framebuffer = new Framebuffer(options.width, options.height, null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);
@@ -119,7 +119,7 @@ class SystemImpl {
 
 	public static function initEx( title : String, options : Array<kha.WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
 		trace('initEx is not supported on android target, falling back to init() with first window options');
-		init( { title: title, width: options[0].width, height : options[0].height, samplesPerPixel : options[0].rendererOptions.samplesPerPixel }, callback);
+		init( { title: title, width: options[0].width, height : options[0].height, samplesPerPixel : options[0].rendererOptions != null ? options[0].rendererOptions.samplesPerPixel : 0}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);

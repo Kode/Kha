@@ -42,13 +42,13 @@ class Graphics implements kha.graphics4.Graphics {
 		this.renderTarget = renderTarget;
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		GLES20.glViewport(0, 0, System.pixelWidth, System.pixelHeight);
+		GLES20.glViewport(0, 0, System.windowWidth(), System.windowHeight());
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (renderTarget == null) {
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-			GLES20.glViewport(0, 0, System.pixelWidth, System.pixelHeight);
+			GLES20.glViewport(0, 0, System.windowWidth(), System.windowHeight());
 		}
 		else {
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, renderTarget.framebuffer);
