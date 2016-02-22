@@ -27,11 +27,11 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 
-	public static function getPixelWidth(): Int {
+	public static function windowWidth( windowId : Int = 0 ): Int {
 		return unityEngine.Screen.width;
 	}
 
-	public static function getPixelHeight(): Int {
+	public static function windowHeight( windowId : Int = 0 ): Int {
 		return unityEngine.Screen.height;
 	}
 
@@ -95,7 +95,7 @@ class SystemImpl {
 		Scheduler.init();
 		Shaders.init();
 		var g4 = new kha.unity.Graphics(null);
-		frame = new Framebuffer(null, null, g4);
+		frame = new Framebuffer(options.width, options.height, null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);
 		Scheduler.start();
 		callback();
