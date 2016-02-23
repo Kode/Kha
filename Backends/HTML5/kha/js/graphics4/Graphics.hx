@@ -259,6 +259,9 @@ class Graphics implements kha.graphics4.Graphics {
 			case LinearMipFilter:
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
 			}
+			if (minificationFilter == AnisotropicFilter) {
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, SystemImpl.anisotropicFilter.TEXTURE_MAX_ANISOTROPY_EXT, 4);
+			}
 		}
 
 		switch (magnificationFilter) {

@@ -7,7 +7,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, false);
@@ -67,7 +67,8 @@ class Image implements Canvas implements Resource {
 	public function unload(): Void { }
 	public function lock(level: Int = 0): Bytes { return null; }
 	public function unlock(): Void { }
-	public function setMipmaps(mipmaps: Array<Image>): Void { };
+	public function generateMipmaps(levels: Int): Void { }
+	public function setMipmaps(mipmaps: Array<Image>): Void { }
 	public var width(get, null): Int;
 	private function get_width(): Int { return 0; }
 	public var height(get, null): Int;

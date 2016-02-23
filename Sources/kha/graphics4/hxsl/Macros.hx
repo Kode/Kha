@@ -6,6 +6,7 @@ using kha.graphics4.hxsl.Ast;
 class Macros {
 
 	static function makeType( t : Type ) : ComplexType {
+		#if macro
 		return switch( t ) {
 		case TVoid: macro : Void;
 		case TVec(_, t):
@@ -39,6 +40,9 @@ class Macros {
 		case TFun(_):
 			throw "assert";
 		}
+		#else
+		return null;
+		#end
 	}
 
 	static function makeDef( t : Type, pos : Position ) : haxe.macro.Expr {
@@ -84,6 +88,7 @@ class Macros {
 	}
 
 	static function buildFields( shader : ShaderData, pos : Position ) {
+		#if macro
 		var fields = new Array<Field>();
 		var globals = [], consts = [], params = [];
 		for( v in shader.vars ) {
@@ -236,9 +241,13 @@ class Macros {
 		});
 
 		return fields;
+		#else
+		return null;
+		#end
 	}
 
 	static function loadShader( path : String ) {
+		#if macro
 		var m = Context.follow(Context.getType(path));
 		switch( m ) {
 		case TInst(c, _):
@@ -249,10 +258,12 @@ class Macros {
 		default:
 		}
 		throw path + " is not a shader";
+		#end
 		return null;
 	}
 
 	public static function buildShader() {
+		#if macro
 		var fields = Context.getBuildFields();
 		for( f in fields )
 			if( f.name == "SRC" ) {
@@ -313,9 +324,13 @@ class Macros {
 				}
 			}
 		return fields;
+		#else
+		return null;
+		#end
 	}
 
 	public static function buildGlobals() {
+		#if macro
 		var fields = Context.getBuildFields();
 		var globals = [];
 		var sets = [];
@@ -380,6 +395,9 @@ class Macros {
 			pos : p,
 		});
 		return fields;
+		#else
+		return null;
+		#end
 	}
 
 }

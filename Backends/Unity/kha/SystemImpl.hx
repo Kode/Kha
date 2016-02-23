@@ -1,6 +1,7 @@
 package kha;
 
 import kha.graphics4.Graphics2;
+import kha.input.Gamepad;
 import kha.input.Keyboard;
 import system.diagnostics.Stopwatch;
 import kha.System;
@@ -86,12 +87,20 @@ class SystemImpl {
 	public static var mouseY: Int = 0;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
-
+	private static var gamepad1: Gamepad;
+	private static var gamepad2: Gamepad;
+	private static var gamepad3: Gamepad;
+	private static var gamepad4: Gamepad;
+	
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		init2();
 		Scheduler.init();
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
+		gamepad1 = new Gamepad(0);
+		gamepad2 = new Gamepad(1);
+		gamepad3 = new Gamepad(2);
+		gamepad4 = new Gamepad(3);
 		Scheduler.init();
 		Shaders.init();
 		var g4 = new kha.unity.Graphics(null);
@@ -184,6 +193,38 @@ class SystemImpl {
 
 	public static function mouseUp(button: Int, x: Int, y: Int): Void {
 		kha.input.Mouse.get().sendUpEvent(0, button, x, y);
+	}
+	
+	public static function gamepad1Axis(axis: Int, value: Float): Void {
+		gamepad1.sendAxisEvent(axis, value);
+	}
+
+	public static function gamepad1Button(button: Int, value: Float): Void {
+		gamepad1.sendButtonEvent(button, value);
+	}
+
+	public static function gamepad2Axis(axis: Int, value: Float): Void {
+		gamepad2.sendAxisEvent(axis, value);
+	}
+
+	public static function gamepad2Button(button: Int, value: Float): Void {
+		gamepad2.sendButtonEvent(button, value);
+	}
+
+	public static function gamepad3Axis(axis: Int, value: Float): Void {
+		gamepad3.sendAxisEvent(axis, value);
+	}
+
+	public static function gamepad3Button(button: Int, value: Float): Void {
+		gamepad3.sendButtonEvent(button, value);
+	}
+
+	public static function gamepad4Axis(axis: Int, value: Float): Void {
+		gamepad4.sendAxisEvent(axis, value);
+	}
+
+	public static function gamepad4Button(button: Int, value: Float): Void {
+		gamepad4.sendButtonEvent(button, value);
 	}
 
 	public static function update(): Void {
