@@ -101,58 +101,54 @@ class SystemImpl {
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		initKore(options.title, options.width, options.height, options.samplesPerPixel);
 
-		Shaders.init();
+		//Shaders.init();
 
 		untyped __cpp__('post_kore_init()');
+
+		Shaders.init();
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		var framebuffer = new Framebuffer(options.width, options.height, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers.push(framebuffer);
-
-		//g4 = new kha.kore.graphics4.Graphics();
-		//framebuffers.push(new Framebuffer(null, null, g4));
-		//framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
 #end
 
-		mouseLockListeners = new Array();
-		haxe.Timer.stamp();
-		Sensor.get(SensorType.Accelerometer); // force compilation
-		keyboard = new kha.kore.Keyboard();
-		mouse = new kha.input.Mouse();
-		gamepad1 = new Gamepad(0);
-		gamepad2 = new Gamepad(1);
-		gamepad3 = new Gamepad(2);
-		gamepad4 = new Gamepad(3);
-		surface = new Surface();
-		kha.audio2.Audio._init();
-		kha.audio1.Audio._init();
-		Scheduler.init();
-		loadFinished();
-		callback();
-
-		untyped __cpp__('run_kore()');
+		postInit(callback);
 	}
 
 	public static function initEx( title: String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
 		untyped __cpp__('init_kore_ex(title)');
 
+		//Shaders.init();
+		var windowIds : Array<Int> = [];
+
+		Lambda.iter(options, initWindow.bind(_, function( windowId : Int ) {
+			windowIds.push(windowId);
+			windowCallback(windowId);
+		}));
+
 		Shaders.init();
 
-		Lambda.iter(options, initWindow.bind(_, windowCallback));
+#if (!VR_GEAR_VR && !VR_RIFT)
+		for (index in 0 ... windowIds.length) {
+			var windowId = windowIds[index];
+			var width = options[index].width;
+			var height = options[index].height;
 
-		//for (option in options) {
-			//initKoreEx(options
-				//options.title, options.width, options.height,
-				//translatePosition(options.x), translatePosition(options.y),
-				//translateDisplay(options.targetDisplay),
-				//translateWindowMode(options.windowMode)
-			//);
-		//}
+			var g4 = new kha.kore.graphics4.Graphics();
+			var framebuffer = new Framebuffer(width, height, null, null, g4);
+			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+			framebuffers[windowId] = framebuffer;
+		}
+#end
 
 		untyped __cpp__('post_kore_init()');
 
+		postInit(callback);
+	}
+
+	static function postInit( callback : Void -> Void ) {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -168,6 +164,7 @@ class SystemImpl {
 		Scheduler.init();
 		loadFinished();
 		callback();
+
 		untyped __cpp__('run_kore()');
 	}
 
@@ -551,6 +548,7 @@ class SystemImpl {
 	}
 
 	private static function initWindow( options : WindowOptions, callback : Int -> Void ) {
+		// TODO (DK) find a better way to call the cpp code
 		var x = translatePosition(options.x);
 		var y = translatePosition(options.y);
 		var mode = translateWindowMode(options.mode != null ? options.mode : WindowOptions.Mode.Window);
@@ -582,15 +580,16 @@ class SystemImpl {
 				case 1: wo.mode = Kore::WindowMode::Borderless; break;
 				case 2: wo.mode = Kore::WindowMode::Fullscreen; break;
 			}
+
 			windowId = init_window(wo);
 		');
 
-#if (!VR_GEAR_VR && !VR_RIFT)
-		var g4 = new kha.kore.graphics4.Graphics();
-		var framebuffer = new Framebuffer(width, height, null, null, g4);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-		framebuffers[windowId] = framebuffer;
-#end
+//#if (!VR_GEAR_VR && !VR_RIFT)
+		//var g4 = new kha.kore.graphics4.Graphics();
+		//var framebuffer = new Framebuffer(width, height, null, null, g4);
+		//framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		//framebuffers[windowId] = framebuffer;
+//#end
 
 		if (callback != null) {
 			callback(windowId);
