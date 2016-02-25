@@ -23,14 +23,19 @@ class Framebuffer implements Canvas {
 	 */
 	private var graphics4: kha.graphics4.Graphics;
 
+	var _width : Int;
+	var _height : Int;
+
 	/**
 	 * Create a new frame buffer object instance.
-	 * 
+	 *
 	 * @param g1		The Graphics1 object.
  	 * @param g2		The Graphics2 object.
 	 * @param g4		The Graphics4 object.
 	 */
-	public function new(g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics) {
+	public function new(width : Int, height : Int, g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics) {
+		_width = width;
+		_height = height;
 		this.graphics1 = g1;
 		this.graphics2 = g2;
 		this.graphics4 = g4;
@@ -38,7 +43,7 @@ class Framebuffer implements Canvas {
 
 	/**
 	 * Initialize a new frame buffer object instance.
-	 * 
+	 *
 	 * @param g1		The Graphics1 object.
  	 * @param g2		The Graphics2 object.
 	 * @param g4		The Graphics4 object.
@@ -48,7 +53,7 @@ class Framebuffer implements Canvas {
 		this.graphics2 = g2;
 		this.graphics4 = g4;
 	}
-	
+
 	/**
 	 * The Graphics1 interface object.<br>
 	 * Basic setPixel operation.
@@ -86,7 +91,7 @@ class Framebuffer implements Canvas {
 	/**
 	 * Return the Graphics4 interface object.<br>
 	 * Use this for 3D operations.
-	 */	
+	 */
 	private function get_g4(): kha.graphics4.Graphics {
 		return graphics4;
 	}
@@ -100,7 +105,7 @@ class Framebuffer implements Canvas {
 	 * Return the width of the buffer in pixels.
 	 */
 	private function get_width(): Int {
-		return System.pixelWidth;
+		return _width;// System.pixelWidth;
 	}
 
 	/**
@@ -112,6 +117,6 @@ class Framebuffer implements Canvas {
 	 * Return the height of the buffer in pixels.
 	 */
 	private function get_height(): Int {
-		return System.pixelHeight;
+		return _height;// System.pixelHeight;
 	}
 }
