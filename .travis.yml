@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
       - libasound2-dev
+      - lesstif2-dev
 language: cpp
 compiler:
   - gcc
