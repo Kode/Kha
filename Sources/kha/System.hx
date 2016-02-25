@@ -30,7 +30,7 @@ class System {
 		SystemImpl.initEx(title, options, windowCallback, callback);
 	}
 
-	public static function notifyOnRender(id: Int, listener: Framebuffer -> Void): Void {
+	public static function notifyOnRender(listener: Framebuffer -> Void, id: Int = 0): Void {
 		while (id >= renderListeners.length) {
 			renderListeners.push(new Array());
 		}
@@ -92,11 +92,11 @@ class System {
 		return SystemImpl.getTime();
 	}
 
-	public static function windowWidth( windowId : Int = 0 ) : Int {
+	public static function windowWidth(windowId: Int = 0): Int {
 		return SystemImpl.windowWidth(windowId);
 	}
 
-	public static function windowHeight( windowId : Int = 0 ) : Int {
+	public static function windowHeight(windowId: Int = 0): Int {
 		return SystemImpl.windowHeight(windowId);
 	}
 
