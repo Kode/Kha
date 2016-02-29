@@ -62,12 +62,8 @@ class SystemImpl {
         #end
 	}
 
-	public static function initEx( title : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
-#if sys_debug_html5
-		trace('initEx is not supported on the debug-html5 target, running init() with first window options');
-#elif sys_html5
-		trace('initEx is not supported on the html5, running init() with first window options');
-#end
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		trace('initEx is not supported on the html5 target, running init() with first window options');
 
 		init({ title : title, width : options[0].width, height : options[0].height}, callback);
 
@@ -76,11 +72,11 @@ class SystemImpl {
 		}
 	}
 
-	public static function windowWidth( windowId : Int = 0 ) : Int {
+	public static function windowWidth(windowId: Int = 0): Int {
 		return khanvas.width;
 	}
 
-	public static function windowHeight( windowId : Int = 0 ) : Int {
+	public static function windowHeight(windowId: Int = 0): Int {
 		return khanvas.height;
 	}
 
