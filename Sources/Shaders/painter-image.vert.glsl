@@ -13,7 +13,9 @@ layout(std140, binding = 0) uniform _k_global_uniform_buffer_type {
 } _k_global_uniform_buffer;
 
 void kore() {
-	gl_Position = _k_global_uniform_buffer.projectionMatrix * vec4(vertexPosition, 1.0);
+	vec4 temp = _k_global_uniform_buffer.projectionMatrix * vec4(vertexPosition, 1.0);
+	temp.z = 0.5;
+	gl_Position = temp;
 	texCoord = texPosition;
 	color = vertexColor;
 }
