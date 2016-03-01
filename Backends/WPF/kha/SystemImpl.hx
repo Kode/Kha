@@ -16,7 +16,7 @@ import system.windows.FrameworkElement;
 			if (kha.SystemImpl.painter != null) {
 				kha.SystemImpl.painter.context = drawingContext;
 				//Starter.painter.begin();
-				System.render(SystemImpl.framebuffer);
+				System.render(0, SystemImpl.framebuffer);
 				//if (drawMousePos) {
 				//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
 				//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
@@ -43,8 +43,8 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key> pressedKeys = new global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, global::System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth / kha.System.get_pixelWidth();
-		double heightTransform = canvas.ActualHeight / kha.System.get_pixelHeight();
+		double widthTransform = canvas.ActualWidth / kha.System.windowWidth(new global::haxe.lang.Null<int>(0, true));
+		double heightTransform = canvas.ActualHeight / kha.System.windowHeight(new global::haxe.lang.Null<int>(0, true));
 		double transform = global::System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new global::System.Windows.Media.ScaleTransform(transform, transform);
 		Scheduler.executeFrame(); // Main loop
