@@ -108,7 +108,7 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//private var accelerometer: Sensor;
 	//private var gyro: Sensor;
 
-	private var activityResults:Array<ActivityResult>;
+	private var extensions:Array<KhaExtension>;
 	
 	private static var instance: KhaActivity;
 		
@@ -145,6 +145,11 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		//audio.pause();
 		//audio.flush();
 		view.queueEvent(new OnPauseRunner());
+
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onPause();
+		}
 	}
 	
 	override public function onResume(): Void {
@@ -183,11 +188,21 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		audioThread.start();*/
 		
 		view.queueEvent(new OnResumeRunner());
+
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onResume();
+		}
 	}
 	
 	override public function onStop(): Void {
 		super.onStop();
 		view.queueEvent(new OnStopRunner());
+
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onStop();
+		}
 	}
 	
 	
@@ -197,8 +212,13 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	}
 	
 	override public function onDestroy(): Void {
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onDestroy();
+		}
+
 		super.onDestroy();
-		view.queueEvent(new OnDestroyRunner());
+		view.queueEvent(new OnDestroyRunner());		
 	}
 	
 	override public function onConfigurationChanged(newConfig: Configuration): Void {
@@ -228,18 +248,18 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//	}
 	//}	
 
-	public function registerActivityResult(actResult:ActivityResult):Void {
-		if (activityResults == null)
-			activityResults = new Array<ActivityResult>();
+	public function registerExtension(ext:KhaExtension):Void {
+		if (extensions == null)
+			extensions = new Array<KhaExtension>();
 
-		activityResults.push(actResult);
+		extensions.push(ext);
 	}
 
 	@:protected
-	override function onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
-		if (activityResults != null) {
-			for (actResult in activityResults)
-				actResult.onResult(requestCode, resultCode, data);
+	override function onActivityResult(requestCode:Int, resultCode:Int, data:Intent):Void {
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 }
