@@ -2,6 +2,7 @@ package com.ktxsoftware.kha;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Window;
@@ -106,6 +107,8 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//private var sensorManager: SensorManager;
 	//private var accelerometer: Sensor;
 	//private var gyro: Sensor;
+
+	private var activityResults:Array<ActivityResult>;
 	
 	private static var instance: KhaActivity;
 		
@@ -224,4 +227,19 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//		view.gyro(e.values[0], e.values[1], e.values[2]);
 	//	}
 	//}	
+
+	public function registerActivityResult(actResult:ActivityResult):Void {
+		if (activityResults == null)
+			activityResults = new Array<ActivityResult>();
+
+		activityResults.push(actResult);
+	}
+
+	@:protected
+	override function onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
+		if (activityResults != null) {
+			for (actResult in activityResults)
+				actResult.onResult(requestCode, resultCode, data);
+		}
+	}
 }
