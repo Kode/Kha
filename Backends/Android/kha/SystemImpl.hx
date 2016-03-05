@@ -13,12 +13,22 @@ class SystemImpl {
 	public static var h: Int = 480;
 	private static var startTime: Float;
 
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return metrics.widthPixels;
+	')
 	public static function windowWidth( windowId : Int = 0 ): Int {
-		return w;
+		return 0;		
 	}
 
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return metrics.heightPixels;
+	')
 	public static function windowHeight( windowId : Int = 0 ): Int {
-		return h;
+		return 0;		
 	}
 
 	public static function getScreenRotation(): ScreenRotation {
