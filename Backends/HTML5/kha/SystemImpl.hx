@@ -246,12 +246,12 @@ class SystemImpl {
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
-			frame = new Framebuffer(System.windowWidth(), System.windowHeight(), null, null, g4);
+			frame = new Framebuffer(0, null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
 		}
 		else {
-			var g2 = new CanvasGraphics(canvas.getContext("2d"), 640, 480); // Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
-			frame = new Framebuffer(System.windowWidth(), System.windowHeight(), null, g2, null);
+			var g2 = new CanvasGraphics(canvas.getContext("2d"), System.windowWidth(), System.windowHeight());
+			frame = new Framebuffer(0, null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
 		}
 		//canvas.getContext("2d").scale(transform, transform);

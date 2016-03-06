@@ -107,7 +107,7 @@ class SystemImpl {
 
 		Shaders.init();
 		var graphics = new Graphics();
-		framebuffer = new Framebuffer(options.width, options.height, null, null, graphics);
+		framebuffer = new Framebuffer(0, null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);
