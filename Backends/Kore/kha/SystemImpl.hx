@@ -109,7 +109,7 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-		var framebuffer = new Framebuffer(options.width, options.height, null, null, g4);
+		var framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers.push(framebuffer);
 #end
@@ -133,11 +133,8 @@ class SystemImpl {
 #if (!VR_GEAR_VR && !VR_RIFT)
 		for (index in 0 ... windowIds.length) {
 			var windowId = windowIds[index];
-			var width = options[index].width;
-			var height = options[index].height;
-
 			var g4 = new kha.kore.graphics4.Graphics();
-			var framebuffer = new Framebuffer(width, height, null, null, g4);
+			var framebuffer = new Framebuffer(index, null, null, g4);
 			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 			framebuffers[windowId] = framebuffer;
 		}
