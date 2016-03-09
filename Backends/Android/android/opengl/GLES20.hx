@@ -154,6 +154,5 @@ extern class GLES20 {
 	public static function glCheckFramebufferStatus(target: Int): Int;
 	public static function glDeleteRenderbuffers(n: Int, renderBuffers: NativeArray<Int>, offset: Int): Void;
 
-	//public static var GL_EXTENSIONS : Int;
-	//public static function glGetString(name: Int): String;
+	public static function glColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
 }
