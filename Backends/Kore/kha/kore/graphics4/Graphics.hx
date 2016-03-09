@@ -401,6 +401,10 @@ class Graphics implements kha.graphics4.Graphics {
 		pipe.set();
 	}
 	
+	@:functionCode('Kore::Graphics::setColorMask(red, green, blue, alpha);')
+	function setColorMask(red : Bool, green : Bool, blue : Bool, alpha : Bool) {
+	}
+
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		setBoolPrivate(cast location, value);
 	}
