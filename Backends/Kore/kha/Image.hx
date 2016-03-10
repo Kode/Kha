@@ -207,10 +207,14 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		
+		untyped __cpp__("texture->generateMipmaps(levels)");
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
-
+		for (i in 0...mipmaps.length) {
+			var image = mipmaps[i];
+			var level = i + 1;
+			untyped __cpp__("texture->setMipmap(image->texture, level)");
+		}
 	}
 }
