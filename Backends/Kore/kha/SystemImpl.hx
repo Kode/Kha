@@ -541,6 +541,7 @@ class SystemImpl {
 			case RGBA32: 0;
 			case L8: 1;
 			case RGBA128: 2;
+			case DEPTH16: 3;
 		}
 	}
 
