@@ -76,10 +76,11 @@ class Image implements Canvas implements Resource {
 			switch (format) {
 			case L8:
 				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, realWidth, realHeight, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, null);
-			case RGBA32:
-				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 			case RGBA128:
 				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, GLES20.GL_FLOAT, null);
+			case RGBA32:
+			default:
+				GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, realWidth, realHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 			}
 		}
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
@@ -350,10 +351,11 @@ class Image implements Canvas implements Resource {
 		switch (format) {
 		case L8:
 			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
-		case RGBA32:
-			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
 		case RGBA128:
 			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_FLOAT, ByteBuffer.wrap(bytes.getData()));
+		case RGBA32:
+		default:
+			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
 		}
 
 		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);

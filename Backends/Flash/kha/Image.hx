@@ -181,8 +181,6 @@ class Image implements Canvas implements Resource {
 
 	public function unlock(): Void {
 		switch (format) {
-			case RGBA32:
-				tex.uploadFromByteArray(bytes.getData(), 0);
 			case L8:
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
 				for (y in 0...texHeight) for (x in 0...texWidth) {
@@ -206,6 +204,9 @@ class Image implements Canvas implements Resource {
 					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 6, value4);
 				}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
+			case RGBA32:
+			default:
+				tex.uploadFromByteArray(bytes.getData(), 0);
 		}
 
 		if (!readable) bytes = null;
