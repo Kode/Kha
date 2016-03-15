@@ -4,7 +4,7 @@ import kha.Sound;
 
 class Audio {
 	private static var buffer: Buffer;
-	
+
 	@:noCompletion
 	public static function _init() {
 		var bufferSize = 1024 * 2;
@@ -40,8 +40,8 @@ class Audio {
 	}
 
 	public static var audioCallback: Int->Buffer->Void;
-	
-	public static function playMusic(sound: Sound, loop: Bool = false): AudioChannel {
+
+	public static function play(sound: Sound, loop: Bool = false): AudioChannel {
 		return null;
 	}
 }
