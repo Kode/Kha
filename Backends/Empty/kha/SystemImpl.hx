@@ -9,8 +9,12 @@ import kha.input.Surface;
 import kha.System;
 
 class SystemImpl {
-	public static function init(options: SystemOptions, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		
+	}
+
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
+
 	}
 	
 	public static function getScreenRotation(): ScreenRotation {
@@ -21,11 +25,11 @@ class SystemImpl {
 		return 0;
 	}
 	
-	public static function getPixelWidth(): Int {
+	public static function windowWidth(id: Int): Int {
 		return 640;
 	}
 	
-	public static function getPixelHeight(): Int {
+	public static function windowHeight(id: Int): Int {
 		return 480;
 	}
 	
@@ -77,7 +81,7 @@ class SystemImpl {
 		
 	}
 
-	static function unload(_): Void {
+	static function unload(): Void {
 		
 	}
 	

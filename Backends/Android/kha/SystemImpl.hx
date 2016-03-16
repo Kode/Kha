@@ -13,12 +13,22 @@ class SystemImpl {
 	public static var h: Int = 480;
 	private static var startTime: Float;
 
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return metrics.widthPixels;
+	')
 	public static function windowWidth( windowId : Int = 0 ): Int {
-		return w;
+		return 0;		
 	}
 
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return metrics.heightPixels;
+	')
 	public static function windowHeight( windowId : Int = 0 ): Int {
-		return h;
+		return 0;		
 	}
 
 	public static function getScreenRotation(): ScreenRotation {
@@ -107,7 +117,7 @@ class SystemImpl {
 
 		Shaders.init();
 		var graphics = new Graphics();
-		framebuffer = new Framebuffer(options.width, options.height, null, null, graphics);
+		framebuffer = new Framebuffer(0, null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);

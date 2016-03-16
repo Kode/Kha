@@ -285,7 +285,7 @@ class SystemImpl {
 			frameworkElement = mainWindow.canvas;
 		}
 		painter = new kha.wpf.Painter(options.width, options.height);
-		framebuffer = new Framebuffer(options.width, options.height, null, painter, null);
+		framebuffer = new Framebuffer(0, null, painter, null);
 		Scheduler.start();
 		//if (autostartGame) gameToStart.loadFinished();
 		

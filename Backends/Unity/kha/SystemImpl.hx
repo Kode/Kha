@@ -104,7 +104,7 @@ class SystemImpl {
 		Scheduler.init();
 		Shaders.init();
 		var g4 = new kha.unity.Graphics(null);
-		frame = new Framebuffer(options.width, options.height, null, null, g4);
+		frame = new Framebuffer(0, null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new Graphics2(frame), g4);
 		Scheduler.start();
 		callback();
