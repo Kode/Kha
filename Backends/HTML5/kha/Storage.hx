@@ -26,6 +26,7 @@ class LocalStorageFile extends StorageFile {
 	
 	override public function read(): Blob {
 		var storage: WebStorage = untyped __js__("window.localStorage");
+		if (storage == null) return null;
 		var value: String = storage.getItem(name);
 		if (value == null) return null;
 		else return Blob.fromBytes(decode(value));
@@ -33,6 +34,7 @@ class LocalStorageFile extends StorageFile {
 	
 	override public function write(data: Blob): Void {
 		var storage: WebStorage = untyped __js__("window.localStorage");
+		if (storage == null) return;
 		storage.setItem(name, encode(data.bytes.getData()));
 	}
 	
