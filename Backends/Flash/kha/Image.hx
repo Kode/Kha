@@ -174,6 +174,8 @@ class Image implements Canvas implements Resource {
 					bytes = Bytes.alloc(texWidth * texHeight);
 				case RGBA128:
 					bytes = Bytes.alloc(texWidth * texHeight * 16);
+				case DEPTH16:
+					bytes = Bytes.alloc(texWidth * texHeight * 2);
 			}
 		}
 		return bytes;
@@ -213,7 +215,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		
+
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
