@@ -1,5 +1,5 @@
 #include <Kore/pch.h>
-#include <Kore/Application.h>
+//#include <Kore/Application.h>
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
@@ -11,12 +11,15 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <Kore/Math/Random.h>
 #include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
 #include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
+
+#include <limits>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef ANDROID
 	#include <Kore/Vr/VrInterface.h>
@@ -137,20 +140,20 @@ namespace {
 		}
 	}
 
-	void mouseDown(int button, int x, int y) {
-		SystemImpl_obj::mouseDown(button, x, y);
+	void mouseDown(int windowId, int button, int x, int y) {
+		SystemImpl_obj::mouseDown(windowId, button, x, y);
 	}
 
-	void mouseUp(int button, int x, int y) {
-		SystemImpl_obj::mouseUp(button, x, y);
+	void mouseUp(int windowId, int button, int x, int y) {
+		SystemImpl_obj::mouseUp(windowId, button, x, y);
 	}
 
-	void mouseMove(int x, int y, int movementX, int movementY) {
-		SystemImpl_obj::mouseMove(x, y, movementX, movementY);
+	void mouseMove(int windowId, int x, int y, int movementX, int movementY) {
+		SystemImpl_obj::mouseMove(windowId, x, y, movementX, movementY);
 	}
 
-	void mouseWheel(int delta) {
-		SystemImpl_obj::mouseWheel(delta);
+	void mouseWheel(int windowId, int delta) {
+		SystemImpl_obj::mouseWheel(windowId, delta);
 	}
 
 	void accelerometerChanged(float x, float y, float z) {
@@ -211,30 +214,35 @@ namespace {
 	void update() {
 		if (paused) return;
 		Kore::Audio::update();
-		if (visible) {
-			#ifndef VR_RIFT
-			Kore::Graphics::begin();
-			#endif
+
+		int windowCount = Kore::System::windowCount();
+
+		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
+			if (visible) {
+				#ifndef VR_RIFT
+				Kore::Graphics::begin(windowIndex);
+                #endif
 			
-			// Google Cardboard: Update the Distortion mesh
-			#ifdef VR_CARDBOARD
-			//	Kore::VrInterface::DistortionBefore();
-			#endif
+				// Google Cardboard: Update the Distortion mesh
+				#ifdef VR_CARDBOARD
+				//	Kore::VrInterface::DistortionBefore();
+				#endif
 
-			SystemImpl_obj::frame();
+                SystemImpl_obj::frame(windowIndex);
 
-			#ifndef VR_RIFT
-			Kore::Graphics::end();
-			#endif
+				#ifndef VR_RIFT
+                Kore::Graphics::end(windowIndex);
+				#endif
 			
-			// Google Cardboard: Call the DistortionMesh Renderer
-			#ifdef VR_CARDBOARD
-			//	Kore::VrInterface::DistortionAfter();
-			#endif
+				// Google Cardboard: Call the DistortionMesh Renderer
+				#ifdef VR_CARDBOARD
+				//	Kore::VrInterface::DistortionAfter();
+				#endif
 
-			#ifndef VR_RIFT
-			Kore::Graphics::swapBuffers();
-			#endif
+				#ifndef VR_RIFT
+				Kore::Graphics::swapBuffers(windowIndex);
+				#endif
+			}
 		}
 	}
 	
@@ -302,35 +310,52 @@ namespace {
 			if (Audio::buffer.writeLocation >= Audio::buffer.dataSize) Audio::buffer.writeLocation = 0;
 		}
 	}
-
-	Kore::Application* app;
 }
 
-void init_kore(const char* name, int width, int height) {
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing) {
 	Kore::log(Kore::Info, "Starting Kore");
 
-	bool fullscreen = false;
-	int antialiasing = 1;
+	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
+	Kore::System::setName(name);
+	Kore::System::setup();
 
-	width = Kore::min(width, Kore::System::desktopWidth());
-	height = Kore::min(height, Kore::System::desktopHeight());
+	if (ex) {
+	} else {
+		width = Kore::min(width, Kore::System::desktopWidth());
+		height = Kore::min(height, Kore::System::desktopHeight());
 
-	app = new Kore::Application(0, 0, width, height, antialiasing, fullscreen, name);
+		Kore::WindowOptions options;
+		options.title = "";
+		options.width = width;
+		options.height = height;
+		options.x = x;
+		options.y = y;
+		options.targetDisplay = display;
+		options.mode = windowMode;
+		options.rendererOptions.depthBufferBits = 16;
+		options.rendererOptions.stencilBufferBits = 8;
+		options.rendererOptions.textureFormat = 0;
+		options.rendererOptions.antialiasing = antialiasing;
+
+		/*int windowId =*/ Kore::System::initWindow(options); // TODO (DK) save window id anywhere?
+	}
+
 	//Kore::Mixer::init();
 	mutex.Create();
-#ifndef VR_RIFT
-	Kore::Graphics::setRenderState(Kore::DepthTest, false);
-#endif
-	app->orientationCallback = orientation;
-	app->foregroundCallback = foreground;
-	app->resumeCallback = resume;
-	app->pauseCallback = pause;
-	app->backgroundCallback = background;
-	app->shutdownCallback = shutdown;
-	app->setCallback(update);
 
-	Kore::Audio::audioCallback = mix;
-	Kore::Audio::init();
+	// (DK) moved to post_kore_init
+//#ifndef VR_RIFT
+//	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+//#endif
+
+	Kore::System::setOrientationCallback(orientation);
+	Kore::System::setForegroundCallback(foreground);
+	Kore::System::setResumeCallback(resume);
+	Kore::System::setPauseCallback(pause);
+	Kore::System::setBackgroundCallback(background);
+	Kore::System::setShutdownCallback(shutdown);
+	Kore::System::setCallback(update);
+
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
 	Kore::Mouse::the()->Press = mouseDown;
@@ -351,15 +376,46 @@ void init_kore(const char* name, int width, int height) {
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
 
+	// (DK) moved to post_kore_init
+//#ifdef VR_GEAR_VR
+//	// Enter VR mode
+//	Kore::VrInterface::Initialize();
+//#endif
+}
+
+void init_kore(const char* name, int width, int height, int antialiasing) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, Kore::WindowMode::Window, antialiasing);
+}
+
+void init_kore_ex( const char * name ) {
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowMode::Window, 0);
+}
+
+void post_kore_init() {
+	// (DK) make main window context current, all assets bind to it and are shared
+	Kore::System::makeCurrent(0);
+
+#ifndef VR_RIFT
+	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+#endif
+
+	Kore::Audio::audioCallback = mix;
+	Kore::Audio::init();
+
 #ifdef VR_GEAR_VR
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
 #endif
 }
 
+int
+init_window( Kore::WindowOptions options ) {
+	return Kore::System::initWindow(options);
+}
+
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
-	app->start();
+	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 }
 

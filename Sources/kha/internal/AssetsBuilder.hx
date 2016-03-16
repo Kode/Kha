@@ -10,6 +10,7 @@ using StringTools;
 
 class AssetsBuilder {
 	public static function findResources(): String {
+		#if macro
 		var output = Compiler.getOutput();
 		if (output == "Nothing__") { // For Haxe background compilation
 			#if kha_output
@@ -32,8 +33,12 @@ class AssetsBuilder {
 		}
 		else {
 			if (output.endsWith("-build")) output = output.substr(0, output.length - "-build".length);
+			if (output == "") output = "empty";
 			return output + "-resources/";
 		}
+		#else
+		return "";
+		#end
 	}
 	
 	macro static public function build(type: String): Array<Field> {

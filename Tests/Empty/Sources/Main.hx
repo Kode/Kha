@@ -5,7 +5,7 @@ import kha.System;
 
 class Main {
 	public static function main() {
-		System.init("Empty", 640, 480, init);
+		System.init({title: "Empty", width: 640, height: 480}, init);
 	}
 	
 	private static function init(): Void {

@@ -22,11 +22,11 @@ class LoaderImpl {
 	}
 	
 	public static function loadSoundFromDescription(desc: Dynamic, done: Sound -> Void): Void {
-		done(new Sound());
+		done(new kha.unity.Sound(desc.files[0]));
 	}
 	
 	public static function getSoundFormats(): Array<String> {
-		return ["wav"];
+		return ["wav", "ogg"];
 	}
 	
 	public static function loadVideoFromDescription(desc: Dynamic, done: Video -> Void): Void {

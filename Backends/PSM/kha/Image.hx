@@ -11,7 +11,7 @@ class Image {
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 	
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		//return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, false);
 		return null;
 	}
@@ -62,6 +62,14 @@ class Image {
 	}
 	
 	public function unlock(): Void {
+		
+	}
+
+	public function generateMipmaps(levels: Int): Void {
+		
+	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
 		
 	}
 	

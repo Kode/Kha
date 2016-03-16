@@ -29,11 +29,11 @@ class Image implements Canvas implements Resource {
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, NoDepthAndStencil, usage == Usage.ReadableUsage);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true, depthStencil, false);
 	}
 
@@ -181,8 +181,6 @@ class Image implements Canvas implements Resource {
 
 	public function unlock(): Void {
 		switch (format) {
-			case RGBA32:
-				tex.uploadFromByteArray(bytes.getData(), 0);
 			case L8:
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
 				for (y in 0...texHeight) for (x in 0...texWidth) {
@@ -206,8 +204,19 @@ class Image implements Canvas implements Resource {
 					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 6, value4);
 				}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
+			case RGBA32:
+			default:
+				tex.uploadFromByteArray(bytes.getData(), 0);
 		}
 
 		if (!readable) bytes = null;
+	}
+
+	public function generateMipmaps(levels: Int): Void {
+		
+	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+
 	}
 }

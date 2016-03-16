@@ -1,5 +1,6 @@
 package kha;
 
+import kha.System.SystemOptions;
 import kha.input.Mouse;
 import kha.wpf.Graphics;
 import system.diagnostics.Stopwatch;
@@ -15,7 +16,7 @@ import system.windows.FrameworkElement;
 			if (kha.SystemImpl.painter != null) {
 				kha.SystemImpl.painter.context = drawingContext;
 				//Starter.painter.begin();
-				System.render(SystemImpl.framebuffer);
+				System.render(0, SystemImpl.framebuffer);
 				//if (drawMousePos) {
 				//	Starter.painter.setColor(unchecked((int)0xFFFFFFFF));
 				//	Starter.painter.fillRect(mousePosX - 5, mousePosY - 5, 10, 10);
@@ -42,8 +43,8 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key> pressedKeys = new global::System.Collections.Generic.HashSet<global::System.Windows.Input.Key>();
 
 	void CompositionTarget_Rendering(object sender, global::System.EventArgs e) {
-		double widthTransform = canvas.ActualWidth / kha.System.get_pixelWidth();
-		double heightTransform = canvas.ActualHeight / kha.System.get_pixelHeight();
+		double widthTransform = canvas.ActualWidth / kha.System.windowWidth(new global::haxe.lang.Null<int>(0, true));
+		double heightTransform = canvas.ActualHeight / kha.System.windowHeight(new global::haxe.lang.Null<int>(0, true));
 		double transform = global::System.Math.Min(widthTransform, heightTransform);
 		canvas.RenderTransform = new global::System.Windows.Media.ScaleTransform(transform, transform);
 		Scheduler.executeFrame(); // Main loop
@@ -269,8 +270,8 @@ class SystemImpl {
 	private static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
-		SystemImpl.title = title;
+	public static function init(options: SystemOptions, callback: Void -> Void) {
+		title = options.title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		init2();
@@ -280,11 +281,11 @@ class SystemImpl {
 		//Sys.pixelHeight = gameToStart.height = Loader.the.height;
 		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
-			mainWindow = new MainWindow(title, width, height);
+			mainWindow = new MainWindow(title, options.width, options.height);
 			frameworkElement = mainWindow.canvas;
 		}
-		painter = new kha.wpf.Painter(width, height);
-		framebuffer = new Framebuffer(null, painter, null);
+		painter = new kha.wpf.Painter(options.width, options.height);
+		framebuffer = new Framebuffer(0, null, painter, null);
 		Scheduler.start();
 		//if (autostartGame) gameToStart.loadFinished();
 		
@@ -295,6 +296,16 @@ class SystemImpl {
 		}
 		else if (frameworkElement != null) {
 			frameworkElement.drawMousePos = SystemImpl.showMousePos;
+		}
+	}
+	
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		trace('initEx is not supported on the WPF target, running init() with first window options');
+
+		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+
+		if (windowCallback != null) {
+			windowCallback(0);
 		}
 	}
 	
@@ -350,28 +361,28 @@ class SystemImpl {
 	public static function mouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendDownEvent(0, x, y);
+		mouse.sendDownEvent(0, 0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 
 	public static function mouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendUpEvent(0, x, y);
+		mouse.sendUpEvent(0, 0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
 	public static function rightMouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendDownEvent(1, x, y);
+		mouse.sendDownEvent(0, 1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
 	public static function rightMouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendUpEvent(1, x, y);
+		mouse.sendUpEvent(0, 1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -380,14 +391,14 @@ class SystemImpl {
 		var movementY = y - mouseY;
 		mouseX = x;
 		mouseY = y;
-		mouse.sendMoveEvent(x, y, movementX, movementY);
+		mouse.sendMoveEvent(0, x, y, movementX, movementY);
 		frameworkElement.setMousePos(x, y);
 	}
 	
 	public static function mouseWheel(x: Int, y: Int, delta: Int): Void {
 		mouseX = x;
 		mouseY = y;
-		mouse.sendWheelEvent(delta);
+		mouse.sendWheelEvent(0, delta);
 		frameworkElement.setMousePos(x, y);
 	}
 	
@@ -411,12 +422,12 @@ class SystemImpl {
 	}
 	
 	@:functionCode('return (int)mainWindow.canvas.ActualWidth;')
-	public static function getPixelWidth(): Int {
+	public static function windowWidth(windowId: Int = 0): Int {
 		return 0;
 	}
 	
 	@:functionCode('return (int)mainWindow.canvas.ActualHeight;')
-	public static function getPixelHeight(): Int {
+	public static function windowHeight(windowId: Int = 0): Int {
 		return 0;
 	}
 	

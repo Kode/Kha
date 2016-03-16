@@ -3,8 +3,10 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.graphics4.hxsl.Globals;
 import kha.wpf.Painter;
 import system.windows.media.DrawingVisual;
+import system.windows.media.ImageBrush;
 import system.windows.media.imaging.BitmapSource;
 
 class Image implements Resource {
@@ -13,8 +15,9 @@ class Image implements Resource {
 	private var format: TextureFormat;
 	private var painter: Painter;
 	public var image: BitmapSource;
+	public var brush: ImageBrush;
 	
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, levels: Int = 1): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
 	}
 	
@@ -43,6 +46,7 @@ class Image implements Resource {
 	public static function fromImage(image: Dynamic, width: Int, height: Int): Image {
 		var img = new Image(width, height, TextureFormat.RGBA32);
 		img.image = image;
+		img.brush = new ImageBrush(image);
 		return img;
 	}
 	
@@ -132,8 +136,17 @@ class Image implements Resource {
 			}
 		}
 		image = global::System.Windows.Media.Imaging.BitmapSource.Create(myWidth, myHeight, 96, 96, pf, null, bgra, rawStride);
+		brush = new global::System.Windows.Media.ImageBrush(image);
 	')
 	public function unlock(): Void {
+		
+	}
+
+	public function generateMipmaps(levels: Int): Void {
+		
+	}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {
 		
 	}
 	

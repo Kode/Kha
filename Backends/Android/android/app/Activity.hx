@@ -1,6 +1,7 @@
 package android.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,7 @@ extern class Activity extends Context {
 	function onStop(): Void;
 	function onDestroy(): Void;
 	function onRestart(): Void;
+	@:protected function onActivityResult(requestCode:Int, resultCode:Int, data:Intent): Void;
 	function requestWindowFeature(feature: Int): Void;
 	function setContentView(view: View): Void;
 	function finish(): Void;

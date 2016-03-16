@@ -16,11 +16,12 @@ import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
+import kha.System;
 
 class GamepadStates {
 	public var axes: Array<Float>;
 	public var buttons: Array<Float>;
-	
+
 	public function new() {
 		axes = new Array<Float>();
 		buttons = new Array<Float>();
@@ -29,12 +30,14 @@ class GamepadStates {
 
 class SystemImpl {
 	public static var gl: GL;
+	public static var anisotropicFilter: Dynamic;
 	public static var drawBuffers: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
 	private static var performance: Dynamic;
-	
+	private static var options: SystemOptions;
+
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null) {
 			performance = Browser.window.performance;
@@ -43,57 +46,76 @@ class SystemImpl {
 			performance = untyped __js__("window.Date");
 		}
 	}
-	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+
+	public static function init(options: SystemOptions, callback: Void -> Void) {
+		SystemImpl.options = options;
         #if sys_debug_html5
         // Wait a second so the debugger can attach
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
         Browser.window.setTimeout(function () {
             init2();
-            callback();   
+            callback();
         }, 1000);
         #else
 		init2();
 		callback();
         #end
 	}
-	
+
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		trace('initEx is not supported on the html5 target, running init() with first window options');
+
+		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+
+		if (windowCallback != null) {
+			windowCallback(0);
+		}
+	}
+
+	public static function windowWidth(windowId: Int = 0): Int {
+		return khanvas.width;
+	}
+
+	public static function windowHeight(windowId: Int = 0): Int {
+		return khanvas.height;
+	}
+
 	public static function setCanvas(canvas: CanvasElement): Void {
 		khanvas = canvas;
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
-	
+
 	public static function getTime(): Float {
 		return performance.now() / 1000;
 	}
-	
-	public static function getPixelWidth(): Int {
-		return khanvas.width;
-	}
-	
-	public static function getPixelHeight(): Int {
-		return khanvas.height;
-	}
-	
+
+	//public static function getPixelWidth(): Int {
+		//return khanvas.width;
+	//}
+//
+	//public static function getPixelHeight(): Int {
+		//return khanvas.height;
+	//}
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getSystemId(): String {
 		return "HTML5";
 	}
-	
+
 	public static function requestShutdown(): Void {
 		Browser.window.close();
 	}
-	
+
 	private static var maxGamepads : Int = 4;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
@@ -104,7 +126,7 @@ class SystemImpl {
 	private static var surface: Surface;
 	private static var gamepads: Array<Gamepad>;
 	private static var gamepadStates: Array<GamepadStates>;
-	
+
 	private static var mouseX: Int;
 	private static var mouseY: Int;
 	private static var touchX: Int;
@@ -132,21 +154,21 @@ class SystemImpl {
 		//Loader.init(new kha.js.Loader());
 		SystemImpl.initPerformanceTimer();
 		Scheduler.init();
-		
+
 		loadFinished();
 		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
 	}
-	
+
 	public static function getKeyboard(num: Int): Keyboard {
 		if (num != 0) return null;
 		return keyboard;
 	}
-	
+
 	static function checkGamepadButton(pad: Dynamic, num: Int) {
 		if (buttonspressed[num]) {
 			if (pad.buttons[num] < 0.5) {
@@ -159,7 +181,7 @@ class SystemImpl {
 			}
 		}
 	}
-	
+
 	static function checkGamepad(pad: Dynamic) {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
@@ -182,28 +204,33 @@ class SystemImpl {
 		if (pad.axes.length <= 4 && pad.buttons.length > 7) {
 			// Fix for the triggers not being axis in html5
 			gamepadStates[pad.index].axes[4] = pad.buttons[6].value;
-			gamepads[pad.index].sendAxisEvent(4, pad.buttons[6].value);			
+			gamepads[pad.index].sendAxisEvent(4, pad.buttons[6].value);
 			gamepadStates[pad.index].axes[5] = pad.buttons[7].value;
 			gamepads[pad.index].sendAxisEvent(5, pad.buttons[7].value);
 		}
 	}
-	
+
 	//public function start(game: Game): Void {
 	//	gameToStart = game;
 	//	Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 	//	Loader.the.loadProject(loadFinished);
 	//}
-	
+
 	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
-		
+
 		var gl: Bool = false;
-		
+
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: false, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
+				SystemImpl.gl.getExtension("OES_texture_float_linear");
+				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
+				SystemImpl.gl.getExtension("OES_standard_derivatives");
+				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
+				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
 				gl = true;
 				Shaders.init();
@@ -212,19 +239,19 @@ class SystemImpl {
 		catch (e: Dynamic) {
 			trace(e);
 		}
-		
+
 		setCanvas(canvas);
 		//var widthTransform: Float = canvas.width / Loader.the.width;
 		//var heightTransform: Float = canvas.height / Loader.the.height;
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
-			frame = new Framebuffer(null, null, g4);
+			frame = new Framebuffer(0, null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
 		}
 		else {
-			var g2 = new CanvasGraphics(canvas.getContext("2d"), 640, 480); // Math.round(Loader.the.width * transform), Math.round(Loader.the.height * transform));
-			frame = new Framebuffer(null, g2, null);
+			var g2 = new CanvasGraphics(canvas.getContext("2d"), System.windowWidth(), System.windowHeight());
+			frame = new Framebuffer(0, null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
 		}
 		//canvas.getContext("2d").scale(transform, transform);
@@ -240,18 +267,18 @@ class SystemImpl {
 		}
 
 		Scheduler.start();
-		
+
 		var window: Dynamic = Browser.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
-		
+
 		function animate(timestamp) {
 			var window : Dynamic = Browser.window;
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
-			
+
 			var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
 			if (sysGamepads != null) {
 				for (i in 0...sysGamepads.length) {
@@ -263,14 +290,14 @@ class SystemImpl {
 						checkGamepadButton(pad, 13);
 						checkGamepadButton(pad, 14);
 						checkGamepadButton(pad, 15);
-						
+
 						checkGamepad(pad);
-					}					
+					}
 				}
 			}
-			
+
 			Scheduler.executeFrame();
-			
+
 			if (canvas.getContext) {
 
 				// Lookup the size the browser is displaying the canvas.
@@ -287,7 +314,7 @@ class SystemImpl {
 					canvas.height = displayHeight;
 				}
 
-				System.render(frame);
+				System.render(0, frame);
 				if (SystemImpl.gl != null) {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
@@ -297,19 +324,19 @@ class SystemImpl {
 				}
 			}
 		}
-		
+
 		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 		else requestAnimationFrame(animate);
-		
+
 		// Autofocus
 		if (canvas.getAttribute("tabindex") == null) {
 			canvas.setAttribute("tabindex", "0"); // needed for keypress events
 		}
 		canvas.focus();
-		
+
 		// disable context menu
 		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
-		
+
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
@@ -322,7 +349,7 @@ class SystemImpl {
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
-		
+
 		Browser.window.addEventListener("unload", unload);
 	}
 
@@ -337,7 +364,7 @@ class SystemImpl {
         	SystemImpl.khanvas.webkitRequestPointerLock();
         }
 	}
-	
+
 	public static function unlockMouse(): Void {
 		untyped if (document.exitPointerLock) {
 			document.exitPointerLock();
@@ -387,7 +414,7 @@ class SystemImpl {
 		//Game.the.onBackground();
 		//Game.the.onShutdown();
 	}
-	
+
 	private static function setMouseXY(event: MouseEvent): Void {
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
@@ -397,59 +424,59 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Void{
-		mouse.sendWheelEvent(Std.int(event.deltaY));
+		mouse.sendWheelEvent(0, Std.int(event.deltaY));
 	}
-	
+
 	private static function mouseDown(event: MouseEvent): Void {
 		Browser.document.addEventListener('mouseup', mouseUp);
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
 				leftMouseCtrlDown = true;
-				mouse.sendDownEvent(1, mouseX, mouseY);
+				mouse.sendDownEvent(0, 1, mouseX, mouseY);
 			}
 			else {
 				leftMouseCtrlDown = false;
-				mouse.sendDownEvent(0, mouseX, mouseY);
+				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 		}
 		else if(event.which == 2){ //middle button
-			mouse.sendDownEvent(2, mouseX, mouseY);
+			mouse.sendDownEvent(0, 2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
-			mouse.sendDownEvent(1, mouseX, mouseY);
+			mouse.sendDownEvent(0, 1, mouseX, mouseY);
 		}
 	}
-	
+
 	private static function mouseUp(event: MouseEvent): Void {
 		Browser.document.removeEventListener('mouseup', mouseUp);
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (leftMouseCtrlDown) {
-				mouse.sendUpEvent(1, mouseX, mouseY);
+				mouse.sendUpEvent(0, 1, mouseX, mouseY);
 			}
 			else {
-				mouse.sendUpEvent(0, mouseX, mouseY);
+				mouse.sendUpEvent(0, 0, mouseX, mouseY);
 			}
 			leftMouseCtrlDown = false;
 		}
 		else if(event.which == 2){ //middle button
-			mouse.sendUpEvent(2, mouseX, mouseY);
+			mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		}
 		else if(event.which == 3){ //right button
-			mouse.sendUpEvent(1, mouseX, mouseY);
+			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
 	}
-	
+
 	private static function mouseMove(event: MouseEvent): Void {
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
 		setMouseXY(event);
 		var movementX = untyped event.movementX || event.mozMovementX || event.webkitMovementX || mouseX - lastMouseX;
 		var movementY = untyped event.movementY || event.mozMovementY || event.webkitMovementY || mouseY - lastMouseY;
-		mouse.sendMoveEvent(mouseX, mouseY, movementX, movementY);
+		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 	}
-	
+
 	private static function setTouchXY(touch: Touch): Void {
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
@@ -457,23 +484,23 @@ class SystemImpl {
 		touchX = Std.int((touch.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
 		touchY = Std.int((touch.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
-	
+
 	private static function touchDown(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			mouse.sendDownEvent(0, touchX, touchY);
+			mouse.sendDownEvent(0, 0, touchX, touchY);
 			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
 		}
 	}
-	
+
 	private static function touchUp(event: TouchEvent): Void {
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
-			mouse.sendUpEvent(0, touchX, touchY);
+			mouse.sendUpEvent(0, 0, touchX, touchY);
 			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
 		}
 	}
-	
+
 	private static function touchMove(event: TouchEvent): Void {
 		var index = 0;
 		for (touch in event.changedTouches) {
@@ -483,10 +510,10 @@ class SystemImpl {
 				var movementY = touchY - lastFirstTouchY;
 				lastFirstTouchX = touchX;
 				lastFirstTouchY = touchY;
-				
-				mouse.sendMoveEvent(touchX, touchY, movementX, movementY);
+
+				mouse.sendMoveEvent(0, touchX, touchY, movementX, movementY);
 			}
-			
+
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);
 			index++;
 		}
@@ -501,7 +528,7 @@ class SystemImpl {
 		// System.resume();
 		System.foreground();
 	}
-	
+
 	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
 		if (key != null) {
 			if (key.length == 1) return key;
@@ -589,16 +616,16 @@ class SystemImpl {
 		}
 		return String.fromCharCode(keycode);
 	}
-	
+
 	private static function keyDown(event: KeyboardEvent): Void {
 		event.stopPropagation();
-		
+
 		// prevent key repeat
 		if (pressedKeys[event.keyCode]) {
 			event.preventDefault();
 			return;
 		}
-		
+
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
 		case 8:
@@ -651,9 +678,9 @@ class SystemImpl {
 	private static function keyUp(event: KeyboardEvent): Void {
 		event.preventDefault();
 		event.stopPropagation();
-		
+
 		pressedKeys[event.keyCode] = false;
-		
+
 		switch (event.keyCode) {
 		case 8:
 			keyboard.sendUpEvent(Key.BACKSPACE, "");
@@ -754,6 +781,6 @@ class SystemImpl {
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
-		
+
 	}
 }

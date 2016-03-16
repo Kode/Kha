@@ -34,11 +34,11 @@ class Graphics implements kha.graphics4.Graphics {
 	private var indexBuffer: IndexBuffer;
 	private var pipeline: PipelineState;
 	private var target: Image;
-	
+
 	public function new(target: Image) {
 		this.target = target;
 	}
-	
+
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) {
 			RenderTexture.active = null;
@@ -48,28 +48,28 @@ class Graphics implements kha.graphics4.Graphics {
 			//setViewport(target.width, target.height);
 		}
 	}
-	
+
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(0, 0, w, h));')
 	private function setViewport(w: Int, h: Int): Void {
-		
+
 	}
-	
+
 	public function end(): Void {
 		RenderTexture.active = null;
 	}
-	
+
 	public function flush(): Void {
-		
+
 	}
-	
+
 	public function vsynced(): Bool {
 		return true;
 	}
-	
+
 	public function refreshRate(): Int {
 		return 60;
 	}
-	
+
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var c = new unityEngine.Color(0, 0, 0, 0);
 		if (color != null) c = new unityEngine.Color(color.R, color.G, color.B, color.A);
@@ -78,70 +78,70 @@ class Graphics implements kha.graphics4.Graphics {
 
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, width, height));')
 	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
-		
+
 	}
-	
+
 	public function setCullMode(mode: CullMode): Void {
-		
+
 	}
-	
+
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
-		
+
 	}
-	
+
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
+
 	}
-	
+
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		
+
 	}
-	
+
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		
+
 	}
 
 	public function disableScissor(): Void {
-		
+
 	}
-	
+
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
 		this.vertexBuffer = vertexBuffer;
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		
+
 	}
 
 	public function setIndexBuffer(indexBuffer: IndexBuffer): Void {
 		this.indexBuffer = indexBuffer;
 	}
-	
+
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
 		if (texture == null) return;
 		pipeline.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
-	
+
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 
 	}
-	
+
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		
+
 	}
-	
+
 	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
 		return null;
 	}
-	
+
 	public function renderTargetsInvertedY(): Bool {
 		return !UnityBackend.uvStartsAtTop();
 	}
-	
+
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
-		var w = System.pixelWidth;
-		var h = System.pixelHeight;
+		var w = System.windowWidth();
+		var h = System.windowHeight();
 		if (target != null) {
 			w = target.width;
 			h = target.height;
@@ -150,56 +150,56 @@ class Graphics implements kha.graphics4.Graphics {
 		var y = 1.0 / h;
 		pipeline.material.SetVector("dx_ViewAdjust", new unityEngine.Vector4(x, y, x, y));
 	}
-	
+
 	public function setBool(location: ConstantLocation, value: Bool): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetInt(loc.name, value ? 1 : 0);
 	}
-	
+
 	public function setInt(location: ConstantLocation, value: Int): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetInt(loc.name, value);
 	}
-	
+
 	public function setFloat(location: ConstantLocation, value: Float): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetFloat(loc.name, value);
 	}
-	
+
 	public function setFloat2(location: ConstantLocation, value1: Float, value2: Float): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value1, value2, 0.0, 1.0));
 	}
-	
+
 	public function setFloat3(location: ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value1, value2, value3, 1.0));
 	}
-	
+
 	public function setFloat4(location: ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value1, value2, value3, value4));
 	}
-	
+
 	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
-		
+
 	}
-	
+
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value.x, value.y, 0.0, 1.0));
 	}
-	
+
 	public function setVector3(location: ConstantLocation, value: FastVector3): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value.x, value.y, value.z, 1.0));
 	}
-	
+
 	public function setVector4(location: ConstantLocation, value: FastVector4): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value.x, value.y, value.z, value.w));
 	}
-	
+
 	public function setMatrix(location: ConstantLocation, value: FastMatrix4): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		var m = unityEngine.Matrix4x4.zero;
@@ -209,7 +209,7 @@ class Graphics implements kha.graphics4.Graphics {
 		m.SetRow(3, new unityEngine.Vector4(value._30, value._31, value._32, value._33));
 		pipeline.material.SetMatrix(loc.name, m);
 	}
-	
+
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		if (count < 0) {
 			vertexBuffer.mesh.triangles = indexBuffer.nativeIndices;
@@ -229,11 +229,11 @@ class Graphics implements kha.graphics4.Graphics {
 			}
 		}
 	}
-	
+
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-		
+
 	}
-	
+
 	public function instancedRenderingAvailable(): Bool {
 		return false;
 	}

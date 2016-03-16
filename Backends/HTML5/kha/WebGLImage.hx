@@ -220,10 +220,11 @@ class WebGLImage extends Image {
 					}
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
 				}
-			case RGBA32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 			case RGBA128:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, new Uint8Array(bytes.getData()));
+			case RGBA32:
+			default:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 			}
 
 			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
@@ -234,5 +235,19 @@ class WebGLImage extends Image {
 
 	override public function unload(): Void {
 
+	}
+
+	override public function generateMipmaps(levels: Int): Void {
+		// WebGL requires to generate all mipmaps down to 1x1 size, ignoring levels for now
+		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
+		SystemImpl.gl.generateMipmap(GL.TEXTURE_2D);
+	}
+
+	override public function setMipmaps(mipmaps: Array<Image>): Void {
+		// Similar to generateMipmaps, specify all the levels down to 1x1 size
+		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
+		for (i in 0...mipmaps.length) {
+			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, cast(mipmaps[i], WebGLImage).image);
+		}
 	}
 }

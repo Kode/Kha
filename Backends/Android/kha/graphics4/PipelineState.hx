@@ -44,6 +44,7 @@ class PipelineState extends PipelineStateBase {
 		for (index in 0...textureValues.length) {
 			GLES20.glUniform1i(textureValues[index], index);
 		}
+		GLES20.glColorMask(colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha);
 	}
 	
 	private function compileShader(shader: Dynamic): Void {
