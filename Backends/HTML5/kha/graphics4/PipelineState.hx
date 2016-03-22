@@ -46,6 +46,7 @@ class PipelineState extends PipelineStateBase {
 	public function set(): Void {
 		SystemImpl.gl.useProgram(program);
 		for (index in 0...textureValues.length) SystemImpl.gl.uniform1i(textureValues[index], index);
+		SystemImpl.gl.colorMask(colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha);
 	}
 	
 	private function compileShader(shader: Dynamic): Void {
