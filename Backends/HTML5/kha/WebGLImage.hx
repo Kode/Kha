@@ -30,6 +30,8 @@ class WebGLImage extends Image {
 	private var graphics4: kha.graphics4.Graphics;
 
 	var depthStencilFormat: DepthStencilFormat;
+	
+	public var bytes: Bytes;
 
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -138,8 +140,30 @@ class WebGLImage extends Image {
 		if (renderTarget) {
 			frameBuffer = SystemImpl.gl.createFramebuffer();
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, null);
-			SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+			switch (format) {
+			case DEPTH16:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
+			case RGBA128:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.FLOAT, null);
+			case RGBA32:
+			default:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+			}
+			
+			if (format == DEPTH16) {
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, texture, 0);
+				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
+				if (untyped __js__('navigator.appVersion.indexOf("Win")') == -1) {
+					var colortex = SystemImpl.gl.createTexture();
+					SystemImpl.gl.bindTexture(GL.TEXTURE_2D, colortex);
+					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+					SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, colortex, 0);
+					SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
+				}
+			}
+			else {
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+			}
 
 			switch (depthStencilFormat) {
 				case NoDepthAndStencil: {}
@@ -149,17 +173,9 @@ class WebGLImage extends Image {
 					SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
 					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 				}
-				case DepthAutoStencilAuto: createDepthStencilBuffer();
-				case Depth24Stencil8: {
-					#if debug
-					trace('DepthStencilFormat "Depth24Stencil8" is not (yet?) supported on webgl, using target defaults');
-					#end
-					createDepthStencilBuffer();
-				}
+				case DepthAutoStencilAuto: 
+				case Depth24Stencil8:
 				case Depth32Stencil8: {
-					#if debug
-					trace('DepthStencilFormat "Depth32Stencil8" is not (yet?) supported on webgl, using target defaults');
-					#end
 					createDepthStencilBuffer();
 				}
 			}
@@ -169,7 +185,6 @@ class WebGLImage extends Image {
 		}
 		else if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 		else SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, image);
-		//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 	}
 
@@ -185,8 +200,6 @@ class WebGLImage extends Image {
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 	}
-
-	public var bytes: Bytes;
 
 	override public function lock(level: Int = 0): Bytes {
 		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
@@ -227,7 +240,6 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 			}
 
-			//Sys.gl.generateMipmap(Sys.gl.TEXTURE_2D);
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 			bytes = null;
 		}
