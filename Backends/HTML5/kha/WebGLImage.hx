@@ -30,8 +30,6 @@ class WebGLImage extends Image {
 	private var graphics4: kha.graphics4.Graphics;
 
 	var depthStencilFormat: DepthStencilFormat;
-	
-	public var bytes: Bytes;
 
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -146,6 +144,7 @@ class WebGLImage extends Image {
 			case RGBA128:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.FLOAT, null);
 			case RGBA32:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
@@ -174,10 +173,11 @@ class WebGLImage extends Image {
 					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 				}
 				case DepthAutoStencilAuto: 
-				case Depth24Stencil8:
-				case Depth32Stencil8: {
 					createDepthStencilBuffer();
-				}
+				case Depth24Stencil8:
+					createDepthStencilBuffer();
+				case Depth32Stencil8:
+					createDepthStencilBuffer();
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
@@ -200,6 +200,8 @@ class WebGLImage extends Image {
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 	}
+
+	public var bytes: Bytes;
 
 	override public function lock(level: Int = 0): Bytes {
 		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
