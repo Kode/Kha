@@ -30,6 +30,7 @@ class GamepadStates {
 
 class SystemImpl {
 	public static var gl: GL;
+	public static var halfFloat: Dynamic;
 	public static var anisotropicFilter: Dynamic;
 	public static var depthTexture: Dynamic;
 	public static var drawBuffers: Dynamic;
@@ -228,6 +229,8 @@ class SystemImpl {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
 				SystemImpl.gl.getExtension("OES_texture_float_linear");
+				halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");
+				SystemImpl.gl.getExtension("OES_texture_half_float_linear");
 				depthTexture = SystemImpl.gl.getExtension("WEBGL_depth_texture");
 				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
 				SystemImpl.gl.getExtension("OES_standard_derivatives");
