@@ -207,6 +207,7 @@ class Image implements Canvas implements Resource {
 				}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 			case RGBA32:
+				tex.uploadFromByteArray(bytes.getData(), 0);
 			default:
 				tex.uploadFromByteArray(bytes.getData(), 0);
 		}
