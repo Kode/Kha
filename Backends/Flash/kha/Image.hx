@@ -174,8 +174,8 @@ class Image implements Canvas implements Resource {
 					bytes = Bytes.alloc(texWidth * texHeight);
 				case RGBA128:
 					bytes = Bytes.alloc(texWidth * texHeight * 16);
-				case DEPTH16:
-					bytes = Bytes.alloc(texWidth * texHeight * 2);
+				default:
+					bytes = Bytes.alloc(texWidth * texHeight * 4);
 			}
 		}
 		return bytes;
