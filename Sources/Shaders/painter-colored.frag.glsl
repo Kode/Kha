@@ -1,10 +1,11 @@
-#version 400
-#extension GL_ARB_separate_shader_objects : enable
-#extension GL_ARB_shading_language_420pack : enable
+#version 100
 
-layout(location = 0) in vec4 fragmentColor;
-layout(location = 0) out vec4 outColor;
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec4 fragmentColor;
 
 void kore() {
-	outColor = fragmentColor;
+	gl_FragColor = fragmentColor;
 }
