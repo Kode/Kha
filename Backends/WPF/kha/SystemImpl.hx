@@ -469,4 +469,8 @@ class SystemImpl {
 		painter.width = width;
 		painter.height = height;
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }

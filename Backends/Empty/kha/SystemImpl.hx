@@ -113,4 +113,8 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {
 		
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }

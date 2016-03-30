@@ -231,4 +231,8 @@ class SystemImpl {
 		Scheduler.executeFrame();
 		System.render(0, frame);
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }

@@ -285,4 +285,8 @@ class SystemImpl {
 	public static function shutdown(): Void {
 		System.shutdown();
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }
