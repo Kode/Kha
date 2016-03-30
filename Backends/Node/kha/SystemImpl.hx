@@ -155,4 +155,8 @@ class SystemImpl {
 	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
 		
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }

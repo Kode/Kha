@@ -436,4 +436,8 @@ class SystemImpl {
 	private static function startMainLoop(): Void {
 		
 	}
+	
+	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
 }
