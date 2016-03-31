@@ -1,23 +1,263 @@
 ---
-layout: default
 ---
+<!DOCTYPE html>
+<html>
 
-<div class="home">
+{% include head.html %}
 
-  <h1 class="page-heading">Posts</h1>
+<body>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+<!-- Following Menu -->
+{% include menu-following.html %}
 
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+<!-- Sidebar Menu -->
+{% include menu-sidebar.html %}
 
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+<!-- Page Contents -->
+<div class="pusher">
 
+    <!-- Header Segment -->
+    <div class="ui inverted vertical homehead center aligned segment">
+        <div class="black layer">
+            <div class="ui container">
+
+                <!-- Header Menu -->
+                <div class="ui large secondary inverted pointing menu">
+
+                    <a class="toc item">
+                        <i class="sidebar icon"></i>
+                    </a>
+
+                    <a class="active item" href="/"><i class="home icon"></i> Home</a>
+                    <a class="item" href="http://api.kha.technology/"><i class="book icon"></i> APIs</a>
+                    <a class="item" href="https://github.com/KTXSoftware/Kha/wiki/Tutorials"><i class="student icon"></i> Tutorials</a>
+                    <a class="item" href="http://forum.ktxsoftware.com/category/2/kha"><i class="comments outline icon"></i> Community</a>
+                    <a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i> Blog</a>
+                </div>
+
+                <!-- GitHub Corner Label -->
+                <a href="https://github.com/KTXSoftware/Kha">
+                    <div class="ui black right corner huge label">
+                        <i class="github icon"></i>
+                    </div>
+                </a>
+            </div>
+
+            <div class="ui text container">
+
+                <!-- Title and Subtitle -->
+                <h1 class="ui inverted header">Kha</h1>
+                <p>&lt;Portable Multimedia Framework&gt;</p>
+                <h2>The coolest way to develop your software application, 2D or 3D game for desktop, iOS, Android, web and consoles.</h2>
+
+                <!-- Buttons -->
+                <a class="ui vertical animated large inverted secondary button squared" href="/getstarted">
+                    <div class="visible content">GET STARTED</div>
+                    <div class="hidden content">IT'S EASY</div>
+                </a>
+                <a class="ui vertical animated large inverted button squared" href="/download">
+                    <div class="visible content">DOWNLOAD</div>
+                    <div class="hidden content">IT'S FREE</div>
+                </a>
+
+            </div>
+
+            <!-- Showcase Mini Label -->
+            <div class="ui grid container gametag">
+                <div class="wide column">
+                    <div class="ui small black bottom right attached label squared">
+                        <a href="http://luboslenco.com/spiralride/">Game: Spiral Ride</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platorms Features Segment -->
+    <div class="ui vertical stripe segment main">
+        <div class="ui aligned grid container">
+            <div class="row under550">
+
+                <!-- Platforms Column -->
+                <div class="eight wide column">
+
+                    <h3 class="ui header">True Cross-Platform</h3>
+                    <p>Build your games natively to desktops, tablets, phones and consoles. Implement once, run everywhere: Windows, Mac, Linux, iOS, Android, HTML5, Flash, Tizen, PlayStation Vita, Xbox 360 and even Unity 3D.</p>
+                    <div class="platforms under700"><img class="ui large image" src="/assets/images/platforms.png"></div>
+                    <p>Powered by Haxe and the Krafix shader-compiler <b class="kha">Kha</b> can cross-compile your code and optimize your assets for even the most obscure systems.</p>
+                    <p>It can even run on top of other game engines and it's generational graphics and audio API design will get the best out of every target, supporting super fast 2D graphics as well as high end 3D graphics.</p>
+
+                </div>
+
+                <!-- Features Column -->
+                <div class="seven wide right floated column">
+
+                    <h3 class="ui header">Features</h3>
+
+                    <div class="ui big list">
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Great performance on each platform.
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Generational graphical/audio API design.
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Hardware accelerated 2D and high-end 3D graphics.
+                                Fallback support (i.e. html5 canvas).
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Can run on top of other game engines (i.e. Unity3D).
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Write shaders in GLSL and cross-compile to target specific shaders.
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Kha apps can also be compiled to C# or Java libraries
+                            </div>
+                        </div>
+                         <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Flexible and robust backend system.
+                                Adding your own takes little effort and is straight forward.
+                            </div>
+                        </div>
+                         <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                One API for all platforms!
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Support for VR technology (W.I.P).
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Networking multiplayer support (W.I.P).
+                            </div>
+                        </div>
+                        <div class="item">
+                            <i class="angle right icon"></i>
+                            <div class="content">
+                                Dedicated IDE : Kode Studio.
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Engines Segment -->
+    <div class="ui vertical inverted stripe segment engines">
+        <div class="ui middle aligned grid container">
+            <div class="row">
+
+                <div class="sixteen wide centered column">
+
+                    <h3 class="ui centered inverted header">Frameworks built on top of Kha</h3>
+                    <p class="txt-centre">
+                        Lue3D - Komponent2D - Kha2D - Khapunk and more...
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Open Source Segment -->
+    <div class="ui vertical stripe segment main">
+        <div class="ui middle aligned grid container">
+            <div class="row under700">
+
+                <!-- Open Source Logo -->
+                <div class="three wide column">
+
+                    <img class="ui centered small image" src="/assets/images/opensource.png">
+
+                </div>
+
+                <div class="twelve wide right floated column">
+
+                    <h3 class="ui header">We're Open</h3>
+                    <p><b class="kha">Kha</b> is completely open source and can be customized and readily adapted to meet specific needs by anyone with the requisite skill. Being open source makes it an excellent resource from which to learn and an environment in which to test your skills. If you choose to submit code back to the community, it will be checked and commented on by others experienced programmers helping both sides to improve.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Get Started Segment -->
+    <div class="ui vertical stripe segment expand">
+        <div class="ui middle aligned grid container">
+            <div class="row under700">
+
+                <!-- Haxe Logo -->
+                <div class="three wide column">
+                    <img class="ui centered small image" src="/assets/images/haxe.png">
+                </div>
+
+                <!-- Get Started Steps -->
+                <div class="twelve wide right floated column">
+
+                    <h3 class="ui header">Get Started</h3>
+                    <p><b class="kha">Kha</b> supports a haxelib based workflow and a git based workflow. Using haxelib is easier and recommended when getting started.</p>
+
+                    <div class="ui ordered steps squared">
+                        <a class="step" href="/install">
+                            <div class="content">
+                                <div class="title"><i class="thumbs outline up icon"></i> Install</div>
+                                <div class="description">everything you need</div>
+                            </div>
+                        </a>
+                        <a class="step" href="/create">
+                            <div class="content">
+                                <div class="title"><i class="write icon"></i> Create</div>
+                                <div class="description">your game/app project</div>
+                            </div>
+                        </a>
+                        <a class="step" href="/build">
+                            <div class="content">
+                                <div class="title"><i class="cube icon"></i> Build</div>
+                                <div class="description">to any supported target</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <a class="ui vertical animated large inverted secondary button squared under992" href="/getstarted">
+                        <div class="visible content">GET STARTED</div>
+                        <div class="hidden content">IT'S EASY</div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+{% include footer.html %}
+
+</body>
+</html>

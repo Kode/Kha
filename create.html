@@ -1,21 +1,23 @@
+---
+---
 <!DOCTYPE html>
 <html>
 
-<%- include('../partials/head') %>
+{% include head.html %}
 
 <body>
 
 <!-- Following Menu -->
-<%- include('../partials/menu-following') %>
+{% include menu-following.html %}
 
 <!-- Sidebar Menu -->
-<%- include('../partials/menu-sidebar') %>
+{% include menu-sidebar.html %}
 
 <!-- Page Contents -->
 <div class="pusher">
 
     <!-- Header -->
-    <%- include('../partials/header') %>
+    {% include header.html %}
 
     <!-- Create Segment -->
     <div class="ui vertical stripe segment">
@@ -45,7 +47,7 @@
                 </div>
                 <div class="four wide column">
 
-                    <%- include('../partials/help') %>
+                    {% include help.html %}
 
                 </div>
             </div>
@@ -53,7 +55,7 @@
     </div>
 </div>
 
-<%- include('../partials/footer') %>
+{% include footer.html %}
 
 </body>
 </html>

@@ -1,12 +1,85 @@
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <!-- Standard Meta -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+    <!-- Site Properities -->
+    <title>Kha | Portable Multimedia Framework</title>
+
+    <!-- Scripts -->
+    <script src="/assets/lib/jquery.min.js"></script>
+
+    <!-- Semantic CSS -->
+    <link rel="stylesheet" type="text/css" href="/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/site.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/step.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/menu.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/message.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/label.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/semantic/components/transition.css">
+
+    <link href='https://fonts.googleapis.com/css?family=PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+    <!-- Semantic Scripts -->
+    <script src="/semantic/components/visibility.js"></script>
+    <script src="/semantic/components/sidebar.js"></script>
+    <script src="/semantic/components/transition.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+
+    <script>
+
+        $(document)
+                .ready(function() {
+
+                    // Fix menu when passed
+                    $('.homehead')
+                            .visibility({
+                                once: false,
+                                onBottomPassed: function() {
+                                    $('.fixed.menu').transition('fade in');
+                                },
+                                onBottomPassedReverse: function() {
+                                    $('.fixed.menu').transition('fade out');
+                                }
+                            })
+                    ;
+
+                    // Fix menu when passed
+                    $('.smallhead')
+                            .visibility({
+                                once: false,
+                                onBottomPassed: function() {
+                                    $('.fixed.menu').transition('fade in');
+                                },
+                                onBottomPassedReverse: function() {
+                                    $('.fixed.menu').transition('fade out');
+                                }
+                            })
+                    ;
+
+                    // Create sidebar and attach to menu open
+                    $('.ui.sidebar')
+                            .sidebar('attach events', '.toc.item')
+                    ;
+                })
+        ;
+
+    </script>
+
 </head>
