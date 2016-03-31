@@ -9,7 +9,7 @@ class AnalogPadDisplay {
 	var available = false;
 
 	var axis = [for (i in 0...6) 0.0];
-	var buttons = [for (i in 0...32) false];
+	var buttons = [for (i in 0...36) false];
 
 	var dz = 0.2;
 
