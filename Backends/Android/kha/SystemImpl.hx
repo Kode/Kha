@@ -2,8 +2,8 @@ package kha;
 
 import com.ktxsoftware.kha.KhaActivity;
 import kha.android.Graphics;
+import kha.android.Keyboard;
 import kha.graphics4.Graphics2;
-import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Surface;
 import kha.System;
@@ -19,7 +19,7 @@ class SystemImpl {
 		return metrics.widthPixels;
 	')
 	public static function windowWidth( windowId : Int = 0 ): Int {
-		return 0;		
+		return 0;
 	}
 
 	@:functionCode('
@@ -28,7 +28,7 @@ class SystemImpl {
 		return metrics.heightPixels;
 	')
 	public static function windowHeight( windowId : Int = 0 ): Int {
-		return 0;		
+		return 0;
 	}
 
 	public static function getScreenRotation(): ScreenRotation {
@@ -285,8 +285,8 @@ class SystemImpl {
 	public static function shutdown(): Void {
 		System.shutdown();
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 }
