@@ -12,6 +12,8 @@ import js.Lib;
 import kha.audio2.Audio;
 import kha.audio2.ogg.vorbis.Reader;
 
+using StringTools;
+
 /*
 class WebAudioChannel extends kha.SoundChannel {
 	private var buffer: Dynamic;
@@ -64,48 +66,49 @@ class WebAudioChannel extends kha.SoundChannel {
 */
 
 class WebAudioSound extends kha.Sound {
-	private var done: kha.Sound -> Void;
-	private var buffer: AudioBuffer;
-	
 	public function new(filename: String, done: kha.Sound -> Void) {
 		super();
-		this.done = done;
-		
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
 		request.responseType = "arraybuffer";
 		
 		request.onerror = function() {
 			trace("Error loading " + filename);
-			Browser.console.log("loadSound failed");
 		};
+		
 		request.onload = function() {
-			var arrayBuffer: ArrayBuffer = request.response;
-			
-			var output = new BytesOutput();
-			var header = Reader.readAll(Bytes.ofData(arrayBuffer), output, true);
-			var soundBytes = output.getBytes();
-			var count = Std.int(soundBytes.length / 4);
-			if (header.channel == 1) {
-				data = new Vector<Float>(count * 2);
-				for (i in 0...count) {
-					data[i * 2 + 0] = soundBytes.getFloat(i * 4);
-					data[i * 2 + 1] = soundBytes.getFloat(i * 4);
-				}
-			}
-			else {
-				data = new Vector<Float>(count);
-				for (i in 0...count) {
-					data[i] = soundBytes.getFloat(i * 4);
-				}
-			}
-			
+			compressedData = Bytes.ofData(request.response);
+			uncompressedData = null;
 			done(this);
 		};
 		request.send(null);
 	}
 	
-	//override public function play(): kha.SoundChannel {
-	//	return new WebAudioChannel(buffer);
-	//}
+	private function superUncompress(done: Void->Void): Void {
+		super.uncompress(done);
+	}
+	
+	override public function uncompress(done: Void->Void): Void {
+		Audio._context.decodeAudioData(compressedData.getData(),
+		function (buffer) {
+			uncompressedData = new Vector<Float>(buffer.getChannelData(0).length * 2);
+			if (buffer.numberOfChannels == 1) {
+				for (i in 0...buffer.getChannelData(0).length) {
+					uncompressedData[i * 2 + 0] = buffer.getChannelData(0)[i];
+					uncompressedData[i * 2 + 1] = buffer.getChannelData(0)[i];
+				}
+			}
+			else {
+				for (i in 0...buffer.getChannelData(0).length) {
+					uncompressedData[i * 2 + 0] = buffer.getChannelData(0)[i];
+					uncompressedData[i * 2 + 1] = buffer.getChannelData(1)[i];
+				}
+			}
+			compressedData = null;
+			done();
+		},
+		function () {
+			superUncompress(done);
+		});
+	}
 }

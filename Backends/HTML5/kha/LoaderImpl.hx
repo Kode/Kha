@@ -30,17 +30,30 @@ class LoaderImpl {
 	}
 	
 	public static function getSoundFormats(): Array<String> {
-		if (SystemImpl._hasWebAudio) return ["ogg"];
-		else return ["mp4", "ogg"];
+		var element = Browser.document.createAudioElement();
+		var formats = new Array<String>();
+		if (element.canPlayType("audio/mp4") != "") formats.push("mp4");
+		if (SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
+		return formats;
 	}
 	
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
 		if (SystemImpl._hasWebAudio) {
+			var element = Browser.document.createAudioElement();
+			if (element.canPlayType("audio/mp4") != "") {
+				for (i in 0...desc.files.length) {
+					var file: String = desc.files[i];
+					if (file.endsWith(".mp4")) {
+						new WebAudioSound(file, done);
+						return;
+					}
+				}
+			}
 			for (i in 0...desc.files.length) {
 				var file: String = desc.files[i];
 				if (file.endsWith(".ogg")) {
 					new WebAudioSound(file, done);
-					break;
+					return;
 				}
 			}
 		}

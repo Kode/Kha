@@ -1,6 +1,7 @@
 package kha.audio2;
 
 import js.Browser;
+import js.html.URL;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ScriptProcessorNode;
@@ -71,10 +72,15 @@ class Audio {
 
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
-		//var channel = new AEAudioChannel(cast(sound, WebAudioSound).aemusic, loop);
-		//channel.play();
-		//return channel;
-		return null;
+	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		//var source = _context.createMediaStreamSource(cast sound.compressedData.getData());
+		//source.connect(_context.destination);
+		var element = Browser.document.createAudioElement();
+		var blob = new js.html.Blob([sound.compressedData.getData()], {type: "audio/mp4"});
+		element.src = URL.createObjectURL(blob);
+		element.loop = loop;
+		var channel = new AEAudioChannel(element);
+		channel.play();
+		return channel;
 	}
 }

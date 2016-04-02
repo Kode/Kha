@@ -6,8 +6,8 @@ import kha.audio1.AudioChannel;
 class AEAudioChannel implements kha.audio1.AudioChannel {
 	private var element: AudioElement;
 	
-	public function new(sound: Sound) {
-		this.element = sound.element;
+	public function new(element: AudioElement) {
+		this.element = element;
 	}
 	
 	public function play(): Void {

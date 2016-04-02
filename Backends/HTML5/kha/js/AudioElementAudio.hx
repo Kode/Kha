@@ -7,6 +7,6 @@ class AudioElementAudio {
 	public static function play(sound: Sound, loop: Bool = false, stream: Bool = false): kha.audio1.AudioChannel {
 		sound.element.loop = loop;
 		sound.element.play();
-		return cast new AEAudioChannel(sound);
+		return cast new AEAudioChannel(sound.element);
 	}
 }
