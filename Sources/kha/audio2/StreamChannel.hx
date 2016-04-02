@@ -5,7 +5,57 @@ import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import kha.audio2.ogg.vorbis.Reader;
 
-#if !cpp
+#if cpp
+class StreamChannel implements kha.audio1.AudioChannel {
+	public function new(data: Bytes, loop: Bool) {
+		
+	}
+
+	public function nextSamples(samples: Vector<FastFloat>, length: Int, sampleRate: Int): Void {
+		
+	}
+	
+	public function play(): Void {
+		
+	}
+
+	public function pause(): Void {
+		
+	}
+
+	public function stop(): Void {
+		
+	}
+
+	public var length(get, null): Float; // Seconds
+	
+	private function get_length(): Float {
+		return 0;
+	}
+
+	public var position(get, null): Float; // Seconds
+	
+	private function get_position(): Float {
+		return 0;
+	}
+	
+	public var volume(get, set): Float;
+	
+	private function get_volume(): Float {
+		return 1;
+	}
+
+	private function set_volume(value: Float): Float {
+		return 1;
+	}
+
+	public var finished(get, null): Bool;
+
+	private function get_finished(): Bool {
+		return true;
+	}
+}
+#else
 class StreamChannel implements kha.audio1.AudioChannel {
 	private var reader: Reader;
 	private var atend: Bool = false;
