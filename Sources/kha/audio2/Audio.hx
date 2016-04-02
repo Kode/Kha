@@ -9,11 +9,11 @@ extern class Audio {
 	public static var audioCallback: Int->Buffer->Void;
 	
 	/**
-	 * Similar to kha.audio1.Audio.play, but only for hardware accelerated audio playback.
+	 * Similar to kha.audio1.Audio.stream, but only for hardware accelerated audio playback.
 	 * Expect this to return null and provide a pure software alternative.
 	 * @param music The music we want to play.
 	 * @param loop  If we want the music to loop, default = false.
 	 * @return On success returns a valid MusicChannel object. Otherwise returns null.
 	 */
-	public static function play(sound: Sound, loop: Bool = false): AudioChannel;
+	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel;
 }

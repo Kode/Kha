@@ -131,16 +131,21 @@ class LoaderImpl {
 		
 		#else
 		
-		/*var urlRequest = new URLRequest(desc.file + ".mp3");
-		var sound = new flash.media.Sound();
-		sound.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e: flash.events.ErrorEvent) {
-			trace ("Couldn't load " + desc.file + ".mp3");
-			done(new Sound(sound));
-		});
-		sound.addEventListener(Event.COMPLETE, function(e : Event) {
-			done(new Sound(sound));
-		});
-		sound.load(urlRequest);*/
+		for (i in 0...desc.files.length) {
+			var file: String = desc.files[i];
+			if (file.endsWith(".mp3")) {
+				var urlRequest = new URLRequest(file);
+				var urlLoader = new URLLoader();
+				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
+					var sound = new kha.flash.Sound(Bytes.ofData(urlLoader.data));
+					sound._mp3format = true;
+					done(sound);
+				});
+				urlLoader.load(urlRequest);
+				return;
+			}
+		}
 		
 		for (i in 0...desc.files.length) {
 			var file: String = desc.files[i];
@@ -149,9 +154,12 @@ class LoaderImpl {
 				var urlLoader = new URLLoader();
 				urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 				urlLoader.addEventListener(Event.COMPLETE, function(e: Event) {
-					done(new kha.flash.Sound(Bytes.ofData(urlLoader.data)));
+					var sound = new kha.flash.Sound(Bytes.ofData(urlLoader.data));
+					sound._mp3format = false;
+					done(sound);
 				});
 				urlLoader.load(urlRequest);
+				return;
 			}
 		}
 		
@@ -159,7 +167,7 @@ class LoaderImpl {
 	}
 	
 	public static function getSoundFormats(): Array<String> {
-		return ["ogg"];
+		return ["mp3", "ogg"];
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void) {

@@ -3,7 +3,7 @@ package kha.audio2;
 import flash.events.Event;
 import flash.events.SampleDataEvent;
 
-/*class HardwareMusicChannel implements kha.audio1.MusicChannel {
+class HardwareAudioChannel implements kha.audio1.AudioChannel {
 	private var music: flash.media.Sound;
 	private var channel: flash.media.SoundChannel;
 	private var running: Bool;
@@ -32,16 +32,16 @@ import flash.events.SampleDataEvent;
 		if (channel != null) channel.stop();
 	}
 	
-	public var length(get, null): Int;
+	public var length(get, null): Float;
 	
-	private function get_length(): Int {
-		return Std.int(music.length * 10) * 10; // FIXME! there seems to be a timing issue.
+	private function get_length(): Float {
+		return music.length / 1000.0;
 	}
 	
-	public var position(get, null): Int;
+	public var position(get, null): Float;
 	
-	private function get_position(): Int {
-		return Std.int(channel.position * 10) * 10; // FIXME! there seems to be a timing issue.
+	private function get_position(): Float {
+		return channel.position / 1000.0;
 	}
 	
 	public var volume(get, set): Float;
@@ -59,7 +59,7 @@ import flash.events.SampleDataEvent;
 	private function get_finished(): Bool {
 		return !running;
 	}
-}*/
+}
 
 class Audio {
 	private static var buffer: Buffer;
@@ -97,12 +97,15 @@ class Audio {
 	
 	public static var audioCallback: Int->Buffer->Void;
 	
-	public static function play(sound: Sound, loop: Bool = false): AudioChannel {
-		/*if (music._nativemusic != null) {
-			var channel = new HardwareMusicChannel(cast music._nativemusic, loop);
+	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		var flashSound: kha.flash.Sound = cast sound;
+		if (flashSound._prepareMp3()) {
+			var channel = new HardwareAudioChannel(flashSound._mp3, loop);
 			channel.play();
 			return channel;
-		}*/
-		return null;
+		}
+		else {
+			return null;
+		}
 	}
 }

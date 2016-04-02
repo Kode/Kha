@@ -99,8 +99,11 @@ class Assets {
 		for (sound in Type.getInstanceFields(SoundList)) {
 			if (sound.endsWith("Load")) {
 				Reflect.field(sounds, sound)(function () {
-					--filesLeft;
-					if (filesLeft == 0) callback();
+					var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
+					sound.uncompress(function () {
+						--filesLeft;
+						if (filesLeft == 0) callback();
+					});
 				});
 			}
 		}

@@ -8,10 +8,10 @@ import haxe.ds.Vector;
 class Audio1 {
 	private static inline var channelCount: Int = 16;
 	private static var soundChannels: Vector<AudioChannel>;
-	//private static var musicChannels: Vector<MusicChannel>;
+	private static var streamChannels: Vector<StreamChannel>;
 	
 	private static var internalSoundChannels: Vector<AudioChannel>;
-	//private static var internalMusicChannels: Vector<MusicChannel>;
+	private static var internalStreamChannels: Vector<StreamChannel>;
 	private static var sampleCache1: Vector<FastFloat>;
 	private static var sampleCache2: Vector<FastFloat>;
 	#if cpp
@@ -24,9 +24,9 @@ class Audio1 {
 		mutex = new Mutex();
 		#end
 		soundChannels = new Vector<AudioChannel>(channelCount);
-		//musicChannels = new Vector<MusicChannel>(channelCount);
+		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
-		//internalMusicChannels = new Vector<MusicChannel>(channelCount);
+		internalStreamChannels = new Vector<StreamChannel>(channelCount);
 		sampleCache1 = new Vector<FastFloat>(512);
 		sampleCache2 = new Vector<FastFloat>(512);
 		Audio.audioCallback = _mix;
@@ -55,9 +55,9 @@ class Audio1 {
 		for (i in 0...channelCount) {
 			internalSoundChannels[i] = soundChannels[i];
 		}
-		//for (i in 0...channelCount) {
-		//	internalMusicChannels[i] = musicChannels[i];
-		//}
+		for (i in 0...channelCount) {
+			internalStreamChannels[i] = streamChannels[i];
+		}
 		#if cpp
 		mutex.release();
 		#end
@@ -69,13 +69,13 @@ class Audio1 {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
-		//for (channel in internalMusicChannels) {
-		//	if (channel == null || channel.finished) continue;
-		//	channel.nextSamples(sampleCache1, samples, buffer.samplesPerSecond);
-		//	for (i in 0...samples) {
-		//		sampleCache2[i] += sampleCache1[i] * channel.volume;
-		//	}
-		//}
+		for (channel in internalStreamChannels) {
+			if (channel == null || channel.finished) continue;
+			channel.nextSamples(sampleCache1, samples, buffer.samplesPerSecond);
+			for (i in 0...samples) {
+				sampleCache2[i] += sampleCache1[i] * channel.volume;
+			}
+		}
 
 		for (i in 0...samples) {
 			buffer.data.set(buffer.writeLocation, max(min(sampleCache2[i], 1.0), -1.0));
@@ -86,7 +86,7 @@ class Audio1 {
 		}
 	}
 	
-	public static function play(sound: Sound, loop: Bool = false, stream: Bool = false): kha.audio1.AudioChannel {
+	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		#if cpp
 		mutex.acquire();
 		#end
@@ -94,7 +94,7 @@ class Audio1 {
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
 				channel = new AudioChannel(loop);
-				channel.data = sound.data;
+				channel.data = sound.uncompressedData;
 				soundChannels[i] = channel;
 				break;
 			}
@@ -105,29 +105,27 @@ class Audio1 {
 		return channel;
 	}
 	
-	//public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
-	//	{
-	//		// try to use hardware accelerated audio decoding
-	//		var hardwareChannel = Audio.playMusic(music, loop);
-	//		if (hardwareChannel != null) return hardwareChannel;
-	//	}
-	//	
-	//	if (music.data == null) return null;
-	//	
-	//	#if cpp
-	//	mutex.acquire();
-	//	#end
-	//	var channel: kha.audio2.MusicChannel = null;
-	//	for (i in 0...channelCount) {
-	//		if (musicChannels[i] == null || musicChannels[i].finished) {
-	//			channel = new MusicChannel(music.data, loop);
-	//			musicChannels[i] = channel;
-	//			break;
-	//		}
-	//	}
-	//	#if cpp
-	//	mutex.release();
-	//	#end
-	//	return channel;
-	//}
+	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		{
+			// try to use hardware accelerated audio decoding
+			var hardwareChannel = Audio.stream(sound, loop);
+			if (hardwareChannel != null) return hardwareChannel;
+		}
+	
+		#if cpp
+		mutex.acquire();
+		#end
+		var channel: StreamChannel = null;
+		for (i in 0...channelCount) {
+			if (streamChannels[i] == null || streamChannels[i].finished) {
+				channel = new StreamChannel(sound.compressedData, loop);
+				streamChannels[i] = channel;
+				break;
+			}
+		}
+		#if cpp
+		mutex.release();
+		#end
+		return channel;
+	}
 }
