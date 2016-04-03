@@ -37,7 +37,7 @@ void init_kore(const char* name, int width, int height, int antialiasing);
 void init_kore_ex(const char* name);
 void post_kore_init();
 void run_kore();
-int init_window( Kore::WindowOptions windowOptions );
+int init_window(Kore::WindowOptions windowOptions);
 ')
 
 class SystemImpl {
@@ -64,7 +64,7 @@ class SystemImpl {
 		return untyped __cpp__('Kore::System::windowWidth(windowId)');
 	}
 
-	public static function windowHeight(windowId: Int ): Int {
+	public static function windowHeight(windowId: Int): Int {
 		return untyped __cpp__('Kore::System::windowHeight(windowId)');
 	}
 
@@ -124,7 +124,7 @@ class SystemImpl {
 		//Shaders.init();
 		var windowIds: Array<Int> = [];
 
-		Lambda.iter(options, initWindow.bind(_, function(windowId: Int ) {
+		Lambda.iter(options, initWindow.bind(_, function(windowId: Int) {
 			windowIds.push(windowId);
 			windowCallback(windowId);
 		}));
