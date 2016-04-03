@@ -13,6 +13,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
@@ -25,7 +26,7 @@ class Image implements Canvas implements Resource {
 	private var format: TextureFormat;
 	public var tex: Int = -1;
 	public var framebuffer: Int = -1;
-	private var depthStencilBuffers : NativeArray<Int>;
+	private var depthStencilBuffers: NativeArray<Int>;
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -114,7 +115,7 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	function setupDepthBufferOnly() : Int {
+	function setupDepthBufferOnly(): Int {
 		trace('GL_DEPTH_COMPONENT16 setup');
 
 		depthStencilBuffers = new NativeArray<Int>(1);
@@ -137,7 +138,7 @@ class Image implements Canvas implements Resource {
 		return result;
 	}
 
-	function setup_oesExtension() : Int {
+	function setup_oesExtension(): Int {
 		trace('GL_DEPTH_STENCIL_OES setup');
 
 		depthStencilBuffers = new NativeArray<Int>(1);
@@ -165,7 +166,7 @@ class Image implements Canvas implements Resource {
 	// TODO (DK)
 	//	-doesn't fail, but doesn't work on my htc desire x -.-
 	//	-fails on galaxy s4 at work
-	function setup_separateBuffers() : Int {
+	function setup_separateBuffers(): Int {
 		trace('GL_DEPTH_COMPONENT16 / GL_STENCIL_INDEX8 setup');
 
 		depthStencilBuffers = new NativeArray<Int>(2);
@@ -194,7 +195,7 @@ class Image implements Canvas implements Resource {
 		return result;
 	}
 
-	function logFramebufferStatus( status : Int ) {
+	function logFramebufferStatus(status: Int) {
 		var message = switch (status) {
 			case GLES20.GL_FRAMEBUFFER_COMPLETE: 'complete';
 			case GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: 'incomplete attachments';
@@ -239,7 +240,7 @@ class Image implements Canvas implements Resource {
 		return new Image(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId : Int = 0): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId :Int = 0): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		return new Image(width, height, format, true, depthStencil);
 	}

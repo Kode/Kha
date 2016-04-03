@@ -7,6 +7,7 @@ import js.html.Uint8Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.js.CanvasGraphics;
 import kha.js.graphics4.Graphics;
 
