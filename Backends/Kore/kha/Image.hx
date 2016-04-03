@@ -3,6 +3,7 @@ package kha;
 import haxe.io.Bytes;
 import kha.kore.graphics4.TextureUnit;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 @:headerCode('

@@ -1,10 +1,10 @@
 package kha;
 
-import flash.utils.ByteArray;
-import haxe.io.Bytes;
-import kha.DepthStencilFormat;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
+import haxe.io.Bytes;
+import flash.utils.ByteArray;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;

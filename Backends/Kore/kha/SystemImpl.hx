@@ -1,6 +1,5 @@
 package kha;
 
-import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
@@ -8,6 +7,8 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
 import kha.System;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 
 #if ANDROID
 	#if VR_CARDBOARD
@@ -36,7 +37,7 @@ void init_kore(const char* name, int width, int height, int antialiasing);
 void init_kore_ex(const char* name);
 void post_kore_init();
 void run_kore();
-int init_window( Kore::WindowOptions windowOptions );
+int init_window(Kore::WindowOptions windowOptions);
 ')
 
 class SystemImpl {
@@ -59,11 +60,11 @@ class SystemImpl {
 		return 0;
 	}
 
-	public static function windowWidth( windowId : Int) : Int {
+	public static function windowWidth(windowId: Int): Int {
 		return untyped __cpp__('Kore::System::windowWidth(windowId)');
 	}
 
-	public static function windowHeight( windowId : Int ) : Int {
+	public static function windowHeight(windowId: Int): Int {
 		return untyped __cpp__('Kore::System::windowHeight(windowId)');
 	}
 
@@ -117,13 +118,13 @@ class SystemImpl {
 		postInit(callback);
 	}
 
-	public static function initEx( title: String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		untyped __cpp__('init_kore_ex(title)');
 
 		//Shaders.init();
-		var windowIds : Array<Int> = [];
+		var windowIds: Array<Int> = [];
 
-		Lambda.iter(options, initWindow.bind(_, function( windowId : Int ) {
+		Lambda.iter(options, initWindow.bind(_, function(windowId: Int) {
 			windowIds.push(windowId);
 			windowCallback(windowId);
 		}));
@@ -145,7 +146,7 @@ class SystemImpl {
 		postInit(callback);
 	}
 
-	static function postInit( callback : Void -> Void ) {
+	static function postInit(callback: Void -> Void) {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -202,7 +203,7 @@ class SystemImpl {
 		#end
 */	}
 
-	public static function lockMouse(windowId : Int = 0): Void {
+	public static function lockMouse(windowId: Int = 0): Void {
 		if(!isMouseLocked()){
 			untyped __cpp__("Kore::Mouse::the()->lock(windowId);");
 			for (listener in mouseLockListeners) {
@@ -211,7 +212,7 @@ class SystemImpl {
 		}
 	}
 
-	public static function unlockMouse(windowId : Int = 0): Void {
+	public static function unlockMouse(windowId: Int = 0): Void {
 		if(isMouseLocked()){
 			untyped __cpp__("Kore::Mouse::the()->unlock(windowId);");
 			for (listener in mouseLockListeners) {
@@ -220,21 +221,21 @@ class SystemImpl {
 		}
 	}
 
-	public static function canLockMouse(windowId : Int = 0): Bool {
+	public static function canLockMouse(windowId: Int = 0): Bool {
 		return untyped __cpp__('Kore::Mouse::the()->canLock(windowId)');
 	}
 
-	public static function isMouseLocked(windowId : Int = 0): Bool {
+	public static function isMouseLocked(windowId: Int = 0): Bool {
 		return untyped __cpp__('Kore::Mouse::the()->isLocked(windowId)');
 	}
 
-	public static function notifyOfMouseLockChange(func: Int -> Void, error: Int -> Void, windowId : Int = 0): Void {
+	public static function notifyOfMouseLockChange(func: Int -> Void, error: Int -> Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-	public static function removeFromMouseLockChange(func : Int -> Void, error: Void -> Void, windowId : Int = 0): Void {
+	public static function removeFromMouseLockChange(func: Int -> Void, error: Void -> Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.remove(func);
 		}
@@ -390,7 +391,7 @@ class SystemImpl {
 		mouse.sendUpEvent(windowId, button, x, y);
 	}
 
-	public static function mouseMove(windowId: Int, x: Int, y: Int, movementX : Int, movementY : Int): Void {
+	public static function mouseMove(windowId: Int, x: Int, y: Int, movementX: Int, movementY: Int): Void {
 		// var movementX = x - mouseX;
 		// var movementY = y - mouseY;
 		mouseX = x;
@@ -470,7 +471,7 @@ class SystemImpl {
 	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int): Void {
 	}
 
-	static function translatePosition( value : Null<WindowOptions.Position> ) : Int {
+	static function translatePosition(value: Null<WindowOptions.Position>): Int {
 		if (value == null) {
 			return -1;
 		}
@@ -481,7 +482,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateDisplay( value : Null<WindowOptions.TargetDisplay> ) : Int {
+	static function translateDisplay(value: Null<WindowOptions.TargetDisplay>): Int {
 		if (value == null) {
 			return -1;
 		}
@@ -492,7 +493,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateWindowMode( value : Null<WindowOptions.Mode> ) : Int {
+	static function translateWindowMode(value: Null<WindowOptions.Mode>): Int {
 		if (value == null) {
 			return 0;
 		}
@@ -504,7 +505,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateDepthBufferFormat( value : Null<DepthStencilFormat> ) : Int {
+	static function translateDepthBufferFormat(value: Null<DepthStencilFormat>): Int {
 		if (value == null) {
 			return 16;
 		}
@@ -518,7 +519,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateStencilBufferFormat( value : Null<DepthStencilFormat> ) : Int {
+	static function translateStencilBufferFormat(value: Null<DepthStencilFormat>): Int {
 		if (value == null) {
 			return -1;
 		}
@@ -532,7 +533,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateTextureFormat( value : Null<TextureFormat> ) : Int {
+	static function translateTextureFormat(value: Null<TextureFormat>): Int {
 		if (value == null) {
 			return 0;
 		}
@@ -546,7 +547,7 @@ class SystemImpl {
 		}
 	}
 
-	private static function initWindow( options : WindowOptions, callback : Int -> Void ) {
+	private static function initWindow(options: WindowOptions, callback: Int -> Void) {
 		// TODO (DK) find a better way to call the cpp code
 		var x = translatePosition(options.x);
 		var y = translatePosition(options.y);
@@ -555,7 +556,7 @@ class SystemImpl {
 		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var textureFormat = translateTextureFormat(options.rendererOptions != null ? options.rendererOptions.textureFormat : TextureFormat.RGBA32);
-		var windowId : Int = -1;
+		var windowId: Int = -1;
 		var title = options.title;
 		var width = options.width;
 		var height = options.height;
@@ -596,8 +597,8 @@ class SystemImpl {
 	}
 
 	private static var fullscreenListeners: Array<Void->Void> = new Array();
-	private static var previousWidth : Int = 0;
-	private static var previousHeight : Int = 0;
+	private static var previousWidth: Int = 0;
+	private static var previousHeight: Int = 0;
 
 	public static function canSwitchFullscreen(): Bool {
 		return true;

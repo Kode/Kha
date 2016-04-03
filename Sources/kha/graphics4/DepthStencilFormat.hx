@@ -1,4 +1,4 @@
-package kha;
+package kha.graphics4;
 
 // normal 'enum DepthStencilFormat' declaration can't be used as default parameter
 @:enum abstract DepthStencilFormat(Int) {

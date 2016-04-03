@@ -4,6 +4,7 @@ import haxe.io.Bytes;
 import js.html.ImageElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
@@ -14,7 +15,7 @@ class Image implements Canvas implements Resource {
 		else return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId : Int = 0): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (SystemImpl.gl == null) return new CanvasImage(width, height, format, true);
 		else return new WebGLImage(width, height, format, true, depthStencil);
