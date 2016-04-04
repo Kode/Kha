@@ -121,4 +121,8 @@ class Sound extends kha.Sound {
 		done(this);
 		loading.remove(this);
 	}
+	
+	override public function uncompress(done: Void->Void): Void {
+		done();
+	}
 }
