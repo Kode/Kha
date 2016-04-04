@@ -63,6 +63,26 @@ class BytesBlob implements Resource {
 		return second * 256 + first;
 	}
 	
+	public function readU32LE(position: Int): Int {
+		var fourth = bytes.get(position + 0);
+		var third  = bytes.get(position + 1);
+		var second = bytes.get(position + 2);
+		var first  = bytes.get(position + 3);
+		position += 4;
+
+		return fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
+	}
+
+	public function readU32BE(position: Int): Int {
+		var fourth = bytes.get(position + 0);
+		var third  = bytes.get(position + 1);
+		var second = bytes.get(position + 2);
+		var first  = bytes.get(position + 3);
+		position += 4;
+		
+		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
+	}
+	
 	public function readS16BE(position: Int): Int {
 		var first = bytes.get(position + 0);
 		var second  = bytes.get(position + 1);

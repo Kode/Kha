@@ -3,6 +3,7 @@ package kha.flash.graphics4;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import kha.Canvas;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Graphics;
 import kha.graphics4.Graphics2;
 import kha.graphics4.TextureFormat;

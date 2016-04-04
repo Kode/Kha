@@ -18,7 +18,7 @@ import flash.geom.Matrix3D;
 import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
-import kha.DepthStencilFormat;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
