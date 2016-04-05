@@ -35,6 +35,16 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 	}
+	
+	public static function fromFloats(data: haxe.io.Float32Array, width: Int, height: Int, readable: Bool, halfFloat: Bool = false): Image {
+		if (SystemImpl.gl != null) {
+			var img = new WebGLImage(width, height, halfFloat ? TextureFormat.RGBA64 : TextureFormat.RGBA128, false, DepthStencilFormat.NoDepthAndStencil);
+			img.image = data.view;
+			img.createTexture();
+			return img;
+		}
+		return null;
+	}
 
 	public static function fromVideo(video: kha.js.Video): Image {
 		if (SystemImpl.gl == null) {

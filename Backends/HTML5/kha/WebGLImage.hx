@@ -186,8 +186,21 @@ class WebGLImage extends Image {
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 		}
-		else if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
-		else SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : GL.UNSIGNED_BYTE, image);
+		else if (video != null) {
+			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
+		}
+		else {
+			switch (format) {
+			case RGBA128:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, image);
+			case RGBA64:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
+			case RGBA32:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+			default:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+			}
+		}
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 	}
 
