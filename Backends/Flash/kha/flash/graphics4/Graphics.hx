@@ -19,6 +19,7 @@ import flash.utils.ByteArray;
 import flash.Vector;
 import kha.Blob;
 import kha.graphics4.DepthStencilFormat;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
@@ -200,7 +201,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setSamplerStateAt(cast(texunit, TextureUnit).unit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
 	}
 
-	private function getBlendFactor(op: BlendingOperation): Context3DBlendFactor {
+	private function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
 		switch (op) {
 			case BlendZero, Undefined:
 				return Context3DBlendFactor.ZERO;
@@ -217,7 +218,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
 		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 

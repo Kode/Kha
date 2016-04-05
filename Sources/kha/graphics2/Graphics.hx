@@ -169,10 +169,6 @@ class Graphics {
 	}
 	#end
 	
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		
-	}
-	
 	private var transformations: Array<FastMatrix3>;
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;

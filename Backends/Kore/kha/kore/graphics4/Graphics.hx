@@ -6,6 +6,7 @@ import kha.Color;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.MipMapFilter;
@@ -162,7 +163,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	
-	private function getBlendingMode(op: BlendingOperation): Int {
+	private function getBlendingMode(op: BlendingFactor): Int {
 		switch (op) {
 		case BlendOne, Undefined:
 			return 0;
@@ -192,7 +193,7 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
 		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
 	}
 	
