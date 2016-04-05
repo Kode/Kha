@@ -110,6 +110,7 @@ class SystemImpl {
 
 	private static function update(_): Void {
 		Scheduler.executeFrame();
+		context.setRenderToBackBuffer();
 		context.clear(0, 0, 0, 0);
 		System.render(0, frame);
 		context.present();
