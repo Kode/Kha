@@ -43,7 +43,9 @@ class Image implements Canvas implements Resource {
 		switch (format) {
 		case RGBA32:	// Target32Bit
 			return 0;
-		case RGBA128:	// Target32BitFloat
+		case RGBA64:	// Target64BitFloat
+			return 1;
+		case RGBA128:	// Target128BitFloat
 			return 3;
 		case DEPTH16:	// Target16BitDepth
 			return 4;
