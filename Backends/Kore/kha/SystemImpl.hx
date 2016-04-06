@@ -576,9 +576,9 @@ class SystemImpl {
 
 			switch (mode) {
 				default: // fall through
-				case 0: wo.mode = Kore::WindowMode::Window; break;
-				case 1: wo.mode = Kore::WindowMode::Borderless; break;
-				case 2: wo.mode = Kore::WindowMode::Fullscreen; break;
+				case 0: wo.mode = Kore::WindowModeWindow; break;
+				case 1: wo.mode = Kore::WindowModeBorderless; break;
+				case 2: wo.mode = Kore::WindowModeFullscreen; break;
 			}
 
 			windowId = init_window(wo);
