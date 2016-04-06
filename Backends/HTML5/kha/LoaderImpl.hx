@@ -17,16 +17,24 @@ using StringTools;
 
 class LoaderImpl {
 	public static function getImageFormats(): Array<String> {
-		return ["png", "jpg"];
+		return ["png", "jpg", "hdr"];
 	}
 	
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
-		var img: ImageElement = cast Browser.document.createElement("img");
-		img.src = desc.files[0];
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		img.onload = function(event: Dynamic) {
-			done(Image.fromImage(img, readable));
-		};
+		if (StringTools.endsWith(desc.files[0], ".hdr")) {
+			loadBlobFromDescription(desc, function(blob) {
+				var hdrImage = kha.internal.HdrFormat.parse(blob.toBytes());
+				done(Image.fromFloats(hdrImage.data, hdrImage.width, hdrImage.height, readable));
+			});
+		}
+		else {
+			var img: ImageElement = cast Browser.document.createElement("img");
+			img.src = desc.files[0];
+			img.onload = function(event: Dynamic) {
+				done(Image.fromImage(img, readable));
+			};
+		}
 	}
 	
 	public static function getSoundFormats(): Array<String> {
