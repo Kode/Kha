@@ -25,7 +25,7 @@ class LoaderImpl {
 	}
 	
 	public static function getImageFormats(): Array<String> {
-		return ["png", "jpg"];
+		return ["png", "jpg", "hdr"];
 	}
 	
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
