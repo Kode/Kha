@@ -116,6 +116,26 @@ class Blob {
 	
 	@:functionCode('
 		Kore::u8* data = (Kore::u8*)&bytes->b->Pointer()[position];
+		Kore::u32 i = (data[0] << 0) | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+		position += 4;
+		return i;
+	')
+	public function readU32LE(position: Int): UInt {
+		return 0;
+	}
+	
+	@:functionCode('
+		Kore::u8* data = (Kore::u8*)&bytes->b->Pointer()[position];
+		Kore::u32 i = (data[3] << 0) | (data[2] << 8) | (data[1] << 16) | (data[0] << 24);
+		position += 4;
+		return i;
+	')
+	public function readU32BE(position: Int): UInt {
+		return 0;
+	}
+	
+	@:functionCode('
+		Kore::u8* data = (Kore::u8*)&bytes->b->Pointer()[position];
 		int i = (data[0] << 0) | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 		position += 4;
 		return *(float*)&i;
