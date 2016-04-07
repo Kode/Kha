@@ -13,6 +13,11 @@ typedef Stbtt_int32  = Int;
 //typedef char stbtt__check_size32[sizeof(stbtt_int32)==4 ? 1 : -1];
 //typedef char stbtt__check_size16[sizeof(stbtt_int16)==2 ? 1 : -1];
 
+class VectorOfIntPointer {
+	public function new() { }
+	public var value: Vector<Int>;
+}
+
 class Stbtt_temp_rect {
 	public function new() { }
 	public var x0: Int;
@@ -1418,7 +1423,7 @@ class StbTruetype {
 	}
 
 	// returns number of contours
-	private static function stbtt_FlattenCurves(vertices: Vector<Stbtt_vertex>, num_verts: Int, objspace_flatness: Float, contour_lengths: { value: Vector<Int> }, num_contours: { value: Int }): Vector<Stbtt__point> {
+	private static function stbtt_FlattenCurves(vertices: Vector<Stbtt_vertex>, num_verts: Int, objspace_flatness: Float, contour_lengths: VectorOfIntPointer, num_contours: { value: Int }): Vector<Stbtt__point> {
 		var points: Vector<Stbtt__point>=null;
 		var num_points: Int = 0;
 
@@ -1493,7 +1498,7 @@ class StbTruetype {
 		var winding_count: Int = 0;
 		var winding_lengths: Vector<Int> = null;
 		var winding_count_reference = { value: winding_count };
-		var winding_lengths_reference = { value: winding_lengths };
+		var winding_lengths_reference = new VectorOfIntPointer();
 		var windings: Vector<Stbtt__point> = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, winding_lengths_reference, winding_count_reference);
 		winding_count = winding_count_reference.value;
 		winding_lengths = winding_lengths_reference.value;

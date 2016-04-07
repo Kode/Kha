@@ -97,7 +97,8 @@ class Image implements Canvas implements Resource {
 
 	public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
-		image.format = TextureFormat.RGBA32;
+		var isFloat = StringTools.endsWith(filename, ".hdr");
+		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromFile(filename);
 		return image;
 	}

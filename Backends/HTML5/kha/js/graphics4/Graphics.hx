@@ -3,6 +3,7 @@ package kha.js.graphics4;
 import haxe.ds.Vector;
 import js.html.webgl.GL;
 import kha.Blob;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
@@ -36,10 +37,12 @@ class Graphics implements kha.graphics4.Graphics {
 	private var indicesCount: Int;
 	private var renderTarget: WebGLImage;
 	private var instancedExtension: Dynamic;
+	private var blendMinMaxExtension: Dynamic;
 
 	public function new(renderTarget: WebGLImage = null) {
 		this.renderTarget = renderTarget;
 		instancedExtension = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
+		blendMinMaxExtension = SystemImpl.gl.getExtension("EXT_blend_minmax");
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
@@ -136,8 +139,8 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.depthMask(write);
 	}
 
-	private function getBlendFunc(op: BlendingOperation): Int {
-		switch (op) {
+	private static function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
 		case BlendZero, Undefined:
 			return GL.ZERO;
 		case BlendOne:
@@ -153,13 +156,30 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+	private static function getBlendOp(op: BlendingOperation): Int {
+		switch (op) {
+		case Add:
+			return GL.FUNC_ADD;
+		case Subtract:
+			return GL.FUNC_SUBTRACT;
+		case ReverseSubtract:
+			return GL.FUNC_SUBTRACT;
+		case Min:
+			return 0x8007;
+		case Max:
+			return 0x8008;
+		}
+	}
+	
+	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation,
+		alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
 			SystemImpl.gl.disable(GL.BLEND);
 		}
 		else {
 			SystemImpl.gl.enable(GL.BLEND);
-			SystemImpl.gl.blendFunc(getBlendFunc(source), getBlendFunc(destination));
+			SystemImpl.gl.blendFuncSeparate(getBlendFunc(source), getBlendFunc(alphaSource), getBlendFunc(destination), getBlendFunc(alphaDestination));
+			SystemImpl.gl.blendEquationSeparate(getBlendOp(operation), getBlendOp(alphaOperation));
 		}
 	}
 
@@ -289,7 +309,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setBlendingMode(pipe.blendSource, pipe.blendDestination);
+		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
 		pipe.set();
 	}
 

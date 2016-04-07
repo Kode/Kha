@@ -47,8 +47,8 @@ class ImageShaderPainter {
 	private var myPipeline: PipelineState = null;
 	public var pipeline(get, set): PipelineState;
 	
-	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
-	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
+	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -92,8 +92,10 @@ class ImageShaderPainter {
 		structure.add("vertexColor", VertexData.Float4);
 		shaderPipeline.inputLayout = [structure];
 		
-		shaderPipeline.blendSource = BlendingOperation.BlendOne;
-		shaderPipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		shaderPipeline.blendSource = BlendingFactor.BlendOne;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 		
 		shaderPipeline.compile();
 	}
@@ -277,8 +279,8 @@ class ColoredShaderPainter {
 	private var myPipeline: PipelineState = null;
 	public var pipeline(get, set): PipelineState;
 	
-	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
-	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
+	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -319,8 +321,10 @@ class ColoredShaderPainter {
 		structure.add("vertexColor", VertexData.Float4);
 		shaderPipeline.inputLayout = [structure];
 		
-		shaderPipeline.blendSource = BlendingOperation.SourceAlpha;
-		shaderPipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 			
 		shaderPipeline.compile();
 	}
@@ -533,8 +537,8 @@ class TextShaderPainter {
 	public var fontSize: Int;
 	private var bilinear: Bool = false;
 	
-	public var sourceBlend: BlendingOperation = BlendingOperation.Undefined;
-	public var destinationBlend: BlendingOperation = BlendingOperation.Undefined;
+	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
+	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
 	
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -578,8 +582,10 @@ class TextShaderPainter {
 		structure.add("vertexColor", VertexData.Float4);
 		shaderPipeline.inputLayout = [structure];
 		
-		shaderPipeline.blendSource = BlendingOperation.SourceAlpha;
-		shaderPipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 		
 		shaderPipeline.compile();
 	}
@@ -1002,16 +1008,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.pipeline = pipeline;
 		textPainter.pipeline = pipeline;
 		if (pipeline != null) g.setPipeline(pipeline);
-	}
-	
-	override public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-		flush();
-		imagePainter.sourceBlend = source;
-		imagePainter.destinationBlend = destination;
-		coloredPainter.sourceBlend = source;
-		coloredPainter.destinationBlend = destination;
-		textPainter.sourceBlend = source;
-		textPainter.destinationBlend = destination;
 	}
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

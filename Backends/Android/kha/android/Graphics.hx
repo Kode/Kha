@@ -6,6 +6,7 @@ import java.NativeArray;
 import kha.android.graphics4.ConstantLocation;
 import kha.android.graphics4.TextureUnit;
 import kha.Blob;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
@@ -128,7 +129,7 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glDepthMask(write);
 	}
 
-	private static function getBlendFunc(op: BlendingOperation): Int {
+	private static function getBlendFunc(op: BlendingFactor): Int {
 		switch (op) {
 		case BlendZero, Undefined:
 			return GLES20.GL_ZERO;
@@ -145,7 +146,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
+	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
 		if (source == BlendOne && destination == BlendZero) {
 			GLES20.glDisable(GLES20.GL_BLEND);
 		}
