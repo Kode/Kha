@@ -163,7 +163,7 @@ class Graphics implements kha.graphics4.Graphics {
 		case Subtract:
 			return GL.FUNC_SUBTRACT;
 		case ReverseSubtract:
-			return GL.FUNC_SUBTRACT;
+			return GL.FUNC_REVERSE_SUBTRACT;
 		case Min:
 			return 0x8007;
 		case Max:
@@ -178,7 +178,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			SystemImpl.gl.enable(GL.BLEND);
-			SystemImpl.gl.blendFuncSeparate(getBlendFunc(source), getBlendFunc(alphaSource), getBlendFunc(destination), getBlendFunc(alphaDestination));
+			SystemImpl.gl.blendFuncSeparate(getBlendFunc(source), getBlendFunc(destination), getBlendFunc(alphaSource), getBlendFunc(alphaDestination));
 			SystemImpl.gl.blendEquationSeparate(getBlendOp(operation), getBlendOp(alphaOperation));
 		}
 	}
