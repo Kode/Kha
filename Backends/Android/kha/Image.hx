@@ -96,18 +96,12 @@ class Image implements Canvas implements Resource {
 		for (setup in setupModes) {
 			var result = setup();
 			logFramebufferStatus(result);
-
-			switch (result) {
-				case GLES20.GL_FRAMEBUFFER_COMPLETE: {
-					succeeded = true;
-					trace('working depth/stencil combination found');
-					break;
-				}
-				default: {
-					trace('trying next setup');
-					continue;
-				}
+			if (result == GLES20.GL_FRAMEBUFFER_COMPLETE) {
+				succeeded = true;
+				trace('working depth/stencil combination found');
+				break;
 			}
+			trace('trying next setup');
 		}
 
 		if (!succeeded) {
@@ -194,17 +188,18 @@ class Image implements Canvas implements Resource {
 
 		return result;
 	}
+	
+	private static function convertFramebufferStatus(status: Int): String {
+		if (status == GLES20.GL_FRAMEBUFFER_COMPLETE) return "complete";
+		else if (status == GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) return "incomplete attachments";
+		else if (status == GLES20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) return "incomplete missing attachments";
+		else if (status == GLES20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS) return "incomplete dimensions";
+		else if (status == GLES20.GL_FRAMEBUFFER_UNSUPPORTED) return "invalid combination of attachments";
+		else return "unknown";
+	}
 
-	function logFramebufferStatus(status: Int) {
-		var message = switch (status) {
-			case GLES20.GL_FRAMEBUFFER_COMPLETE: 'complete';
-			case GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: 'incomplete attachments';
-			case GLES20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: 'incomplete missing attachments';
-			case GLES20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: 'incomplete dimensions';
-			case GLES20.GL_FRAMEBUFFER_UNSUPPORTED: 'invalid combination of attachments';
-			default: 'unknown';
-		}
-
+	private static function logFramebufferStatus(status: Int) {
+		var message = convertFramebufferStatus(status);
 		trace('framebuffer status "${message}"');
 	}
 

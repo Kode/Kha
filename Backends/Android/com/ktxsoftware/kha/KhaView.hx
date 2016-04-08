@@ -118,11 +118,10 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	}
 
 	public function onKeyDown(keyCode: Int, event: KeyEvent): Bool {
-		switch (event.getKeyCode()) {
-		case KeyEvent.KEYCODE_VOLUME_DOWN:
-		case KeyEvent.KEYCODE_VOLUME_MUTE:
-		case KeyEvent.KEYCODE_VOLUME_UP:
-		case KeyEvent.KEYCODE_BACK:
+		if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN
+			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_MUTE
+			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP
+			|| event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			return false;
 		}
 		this.queueEvent(new OnKeyDownRunner(renderer, keyCode));
@@ -130,11 +129,10 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	}
 
 	public function onKeyUp(keyCode: Int, event: KeyEvent): Bool {
-		switch (event.getKeyCode()) {
-		case KeyEvent.KEYCODE_VOLUME_DOWN:
-		case KeyEvent.KEYCODE_VOLUME_MUTE:
-		case KeyEvent.KEYCODE_VOLUME_UP:
-		case KeyEvent.KEYCODE_BACK:
+		if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN
+			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_MUTE
+			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP
+			|| event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			return false;
 		}
 		this.queueEvent(new OnKeyUpRunner(renderer, keyCode));
