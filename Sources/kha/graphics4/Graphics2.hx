@@ -95,7 +95,7 @@ class ImageShaderPainter {
 		shaderPipeline.blendSource = BlendingFactor.BlendOne;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
 		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.BlendZero;
 		
 		shaderPipeline.compile();
 	}
@@ -323,8 +323,8 @@ class ColoredShaderPainter {
 		
 		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.BlendZero;
 			
 		shaderPipeline.compile();
 	}
@@ -584,8 +584,8 @@ class TextShaderPainter {
 		
 		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.BlendZero;
 		
 		shaderPipeline.compile();
 	}
