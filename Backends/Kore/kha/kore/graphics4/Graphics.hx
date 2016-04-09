@@ -568,9 +568,19 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	@:functionCode('Kore::Graphics::setRenderTarget(target->renderTarget, 0);')
-	private function renderToTexture(): Void {
-		
+	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
+		if (additionalRenderTargets != null) {
+			var len = additionalRenderTargets.length;
+			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, len)");
+			for (i in 0...len) {
+				var image = cast(additionalRenderTargets[i], Image);
+				var num = i + 1;
+				untyped __cpp__("Kore::Graphics::setRenderTarget(image->renderTarget, num, len)");
+			}
+		}
+		else {
+			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, 0)");
+		}
 	}
 	
 	@:functionCode('Kore::Graphics::restoreRenderTarget();')
@@ -580,7 +590,7 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) renderToBackbuffer();
-		else renderToTexture();
+		else renderToTexture(additionalRenderTargets);
 	}
 	
 	public function end(): Void {
