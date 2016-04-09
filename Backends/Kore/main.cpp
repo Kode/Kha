@@ -384,11 +384,11 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 }
 
 void init_kore(const char* name, int width, int height, int antialiasing) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, Kore::WindowModeWindow, antialiasing);
+	init_kore_impl(false, name, width, height, -1, -1, -1, Kore::WindowMode::Window, antialiasing);
 }
 
 void init_kore_ex( const char * name ) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0);
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowMode::Window, 0);
 }
 
 void post_kore_init() {
