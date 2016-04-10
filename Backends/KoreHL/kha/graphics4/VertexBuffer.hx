@@ -6,7 +6,7 @@ import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
 
 class VertexBuffer {
-	private var buffer: Pointer;
+	public var _buffer: Pointer;
 	private var data: Float32Array;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
@@ -33,25 +33,25 @@ class VertexBuffer {
 			}
 			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);
 		}
-		buffer = kore_create_vertexbuffer(vertexCount, structure2, instanceDataStepRate);
+		_buffer = kore_create_vertexbuffer(vertexCount, structure2, instanceDataStepRate);
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		data._data.getData().b = kore_vertexbuffer_lock(buffer);
+		data._data.getData().b = kore_vertexbuffer_lock(_buffer);
 		data._data.getData().length = this.count() * Std.int(stride() / 4);
 		return data;
 	}
 	
 	public function unlock(): Void {
-		kore_vertexbuffer_unlock(buffer);
+		kore_vertexbuffer_unlock(_buffer);
 	}
 	
 	public function stride(): Int {
-		return kore_vertexbuffer_stride(buffer);
+		return kore_vertexbuffer_stride(_buffer);
 	}
 	
 	public function count(): Int {
-		return kore_vertexbuffer_count(buffer);
+		return kore_vertexbuffer_count(_buffer);
 	}
 	
 	@:hlNative("std", "kore_create_vertexstructure") public static function kore_create_vertexstructure(): Pointer { return 0; }

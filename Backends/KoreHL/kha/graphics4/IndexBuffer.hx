@@ -4,7 +4,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 
 class IndexBuffer {
-	private var buffer: Pointer;
+	public var _buffer: Pointer;
 	private var data: Array<Int>;
 	private var myCount: Int;
 	
@@ -16,7 +16,7 @@ class IndexBuffer {
 	}
 	
 	private function init(count: Int) {
-		buffer = kore_create_indexbuffer(count);
+		_buffer = kore_create_indexbuffer(count);
 	}
 	
 	public function lock(): Array<Int> {
@@ -24,11 +24,11 @@ class IndexBuffer {
 	}
 	
 	public function unlock(): Void {
-		var bytes = Bytes.ofData(new BytesData(kore_indexbuffer_lock(buffer), myCount * 4));
+		var bytes = Bytes.ofData(new BytesData(kore_indexbuffer_lock(_buffer), myCount * 4));
 		for (i in 0...myCount) {
 			bytes.setInt32(i * 4, data[i]);
 		}
-		kore_indexbuffer_unlock(buffer);
+		kore_indexbuffer_unlock(_buffer);
 	}
 	
 	public function count(): Int {

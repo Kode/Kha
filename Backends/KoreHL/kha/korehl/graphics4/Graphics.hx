@@ -38,14 +38,12 @@ class Graphics implements kha.graphics4.Graphics {
 		this.target = target;
 	}
 	
-	//@:functionCode('return Kore::Graphics::vsynced();')
 	public function vsynced(): Bool {
-		return true;
+		return kore_graphics_vsynced();
 	}
 
-	//@:functionCode('return (Int)Kore::Graphics::refreshRate();')
 	public function refreshRate(): Int {
-		return 0;
+		return kore_graphics_refreshrate();
 	}
 	
 	public function clear(?color: Color, ?z: Float, ?stencil: Int): Void {
@@ -56,9 +54,8 @@ class Graphics implements kha.graphics4.Graphics {
 		clear2(flags, color == null ? 0 : color.value, z, stencil);
 	}
 
-	//@:functionCode('Kore::Graphics::viewport(x,y,width,height);')
-	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
-	
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
+		kore_graphics_viewport(x, y, width, height);
 	}
 	
 	/*@:functionCode('
@@ -146,9 +143,8 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	//@:functionCode('Kore::Graphics::setVertexBuffer(*vertexBuffer->buffer);')
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		
+		kore_graphics_set_vertexbuffer(vertexBuffer._buffer);
 	}
 	
 	/*@:functionCode('
@@ -173,9 +169,8 @@ class Graphics implements kha.graphics4.Graphics {
 			vertexBuffers.length);
 	}
 	
-	//@:functionCode('Kore::Graphics::setIndexBuffer(*indexBuffer->buffer);')
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		
+		kore_graphics_set_indexbuffer(indexBuffer._buffer);
 	}	
 	
 	public function maxTextureSize(): Int {
@@ -317,81 +312,72 @@ class Graphics implements kha.graphics4.Graphics {
 		setBoolPrivate(cast location, value);
 	}
 	
-	//@:functionCode('Kore::Graphics::setBool(location->location, value);')
 	private function setBoolPrivate(location: kha.korehl.graphics4.ConstantLocation, value: Bool): Void {
-		
+		kore_graphics_set_bool(location._location, value);
 	}
 	
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
 		setIntPrivate(cast location, value);
 	}
 	
-	//@:functionCode('Kore::Graphics::setInt(location->location, value);')
 	private function setIntPrivate(location: ConstantLocation, value: Int): Void {
-		
+		kore_graphics_set_int(location._location, value);
 	}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		setFloatPrivate(cast location, value);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat(location->location, value);')
 	private function setFloatPrivate(location: ConstantLocation, value: FastFloat): Void {
-		
+		kore_graphics_set_float(location._location, value);
 	}
 	
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		setFloat2Private(cast location, value1, value2);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat2(location->location, value1, value2);')
 	private function setFloat2Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
-		
+		kore_graphics_set_float2(location._location, value1, value2);
 	}
 	
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		setFloat3Private(cast location, value1, value2, value3);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat3(location->location, value1, value2, value3);')
 	private function setFloat3Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
-		
+		kore_graphics_set_float3(location._location, value1, value2, value3);
 	}
 	
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		setFloat4Private(cast location, value1, value2, value3, value4);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat4(location->location, value1, value2, value3, value4);')
 	private function setFloat4Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
-		
+		kore_graphics_set_float4(location._location, value1, value2, value3, value4);
 	}
 	
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		setVector2Private(cast location, value.x, value.y);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat2(location->location, x, y);')
 	private function setVector2Private(location: ConstantLocation, x: FastFloat, y: FastFloat): Void {
-		
+		kore_graphics_set_float2(location._location, x, y);
 	}
 	
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		setVector3Private(cast location, value.x, value.y, value.z);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat3(location->location, x, y, z);')
 	private function setVector3Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat): Void {
-		
+		kore_graphics_set_float3(location._location, x, y, z);
 	}
 	
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		setVector4Private(cast location, value.x, value.y, value.z, value.w);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat4(location->location, x, y, z, w);')
 	private function setVector4Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat, w: FastFloat): Void {
-		
+		kore_graphics_set_float4(location._location, x, y, z, w);
 	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
@@ -403,17 +389,12 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	/*@:functionCode('
-		Kore::mat4 value;
-		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20); value.Set(0, 3, matrix->_30);
-		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21); value.Set(1, 3, matrix->_31);
-		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22); value.Set(2, 3, matrix->_32);
-		value.Set(3, 0, matrix->_03); value.Set(3, 1, matrix->_13); value.Set(3, 2, matrix->_23); value.Set(3, 3, matrix->_33);
-		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
-		Kore::Graphics::setMatrix(loc->location, value);
-	')*/
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		
+		kore_graphics_set_matrix(cast(location, ConstantLocation)._location,
+			matrix._00, matrix._10, matrix._20, matrix._30,
+			matrix._01, matrix._11, matrix._21, matrix._31,
+			matrix._02, matrix._12, matrix._22, matrix._32,
+			matrix._03, matrix._13, matrix._23, matrix._33);
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
@@ -421,14 +402,12 @@ class Graphics implements kha.graphics4.Graphics {
 		else drawSomeIndexedVertices(start, count);
 	}
 	
-	//@:functionCode('Kore::Graphics::drawIndexedVertices();')
 	private function drawAllIndexedVertices(): Void {
-		
+		kore_graphics_draw_all_indexed_vertices();
 	}
 	
-	//@:functionCode('Kore::Graphics::drawIndexedVertices(start, count);')
 	public function drawSomeIndexedVertices(start: Int, count: Int): Void {
-		
+		kore_graphics_draw_indexed_vertices(start, count);
 	}
 	
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
@@ -479,4 +458,23 @@ class Graphics implements kha.graphics4.Graphics {
 	public function flush(): Void {
 		
 	}
+	
+	@:hlNative("std", "kore_graphics_vsynced") static function kore_graphics_vsynced(): Bool { return false; }
+	@:hlNative("std", "kore_graphics_refreshrate") static function kore_graphics_refreshrate(): Int { return 0; }
+	@:hlNative("std", "kore_graphics_viewport") static function kore_graphics_viewport(x: Int, y: Int, width: Int, height: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_vertexbuffer") static function kore_graphics_set_vertexbuffer(buffer: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void { }
+	@:hlNative("std", "kore_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: Float): Void { }
+	@:hlNative("std", "kore_graphics_set_float2") static function kore_graphics_set_float2(location: Pointer, value1: Float, value2: Float): Void { }
+	@:hlNative("std", "kore_graphics_set_float3") static function kore_graphics_set_float3(location: Pointer, value1: Float, value2: Float, value3: Float): Void { }
+	@:hlNative("std", "kore_graphics_set_float4") static function kore_graphics_set_float4(location: Pointer, value1: Float, value2: Float, value3: Float, value4: Float): Void { }
+	@:hlNative("std", "kore_graphics_set_matrix") static function kore_graphics_set_matrix(location: Pointer,
+		_00: Float, _10: Float, _20: Float, _30: Float,
+		_01: Float, _11: Float, _21: Float, _31: Float,
+		_02: Float, _12: Float, _22: Float, _32: Float,
+		_03: Float, _13: Float, _23: Float, _33: Float): Void { }
+	@:hlNative("std", "kore_graphics_draw_all_indexed_vertices") static function kore_graphics_draw_all_indexed_vertices(): Void { }
+	@:hlNative("std", "kore_graphics_draw_indexed_vertices") static function kore_graphics_draw_indexed_vertices(start: Int, count: Int): Void { }
 }
