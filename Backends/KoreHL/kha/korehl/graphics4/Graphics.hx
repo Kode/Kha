@@ -282,7 +282,7 @@ class Graphics implements kha.graphics4.Graphics {
 		else texture->renderTarget->useColorAsTexture(unit->unit);
 	')*/
 	private function setTextureInternal(unit: kha.korehl.graphics4.TextureUnit, texture: kha.Image): Void {
-		
+		kore_graphics_set_texture(unit._unit, texture._texture);
 	}
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
@@ -464,6 +464,7 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_viewport") static function kore_graphics_viewport(x: Int, y: Int, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_vertexbuffer") static function kore_graphics_set_vertexbuffer(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_texture") static function kore_graphics_set_texture(unit: Pointer, texture: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void { }
 	@:hlNative("std", "kore_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: Float): Void { }

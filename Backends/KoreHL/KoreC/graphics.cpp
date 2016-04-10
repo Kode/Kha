@@ -24,6 +24,12 @@ extern "C" void hl_kore_graphics_set_indexbuffer(int buffer) {
 	Kore::Graphics::setIndexBuffer(*buf);
 }
 
+extern "C" void hl_kore_graphics_set_texture(int unit, int texture) {
+	Kore::TextureUnit* u = (Kore::TextureUnit*)unit;
+	Kore::Texture* tex = (Kore::Texture*)texture;
+	Kore::Graphics::setTexture(*u, tex);
+}
+
 extern "C" void hl_kore_graphics_set_bool(int location, bool value) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setBool(*loc, value);
@@ -65,7 +71,7 @@ extern "C" void hl_kore_graphics_set_matrix(int location,
 	value.Set(1, 0, _10); value.Set(1, 1, _11); value.Set(1, 2, _12); value.Set(1, 3, _13);
 	value.Set(2, 0, _20); value.Set(2, 1, _21); value.Set(2, 2, _22); value.Set(2, 3, _23);
 	value.Set(3, 0, _30); value.Set(3, 1, _31); value.Set(3, 2, _32); value.Set(3, 3, _33);
-	Kore::Graphics::setMatrix(*loc, value);
+	Kore::Graphics::setMatrix(*loc, value); // .Transpose());
 }
 
 extern "C" void hl_kore_graphics_draw_all_indexed_vertices() {
