@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
