@@ -1,8 +1,9 @@
 package kha.korehl.graphics4;
 
-//@:headerClassCode("Kore::TextureUnit unit;")
 class TextureUnit implements kha.graphics4.TextureUnit {
-	public function new() {
-		
+	public var _unit: Pointer;
+	
+	public function new(unit: Pointer) {
+		_unit = unit;
 	}
 }

@@ -3,18 +3,20 @@ package kha.graphics4;
 import haxe.io.Bytes;
 import kha.Blob;
 
-//@:headerClassCode("Kore::Shader* shader;")
 class FragmentShader {
+	public var _shader: Pointer;
+	
 	public function new(source: Blob) {
 		initFragmentShader(source);
 	}
 	
-	//@:functionCode("shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::FragmentShader);")
 	private function initFragmentShader(source: Blob): Void {
-		
+		_shader = kore_create_fragmentshader(source.bytes.getData().b, source.bytes.getData().length); 
 	}
 	
 	public function unused(): Void {
 		var include: Bytes = Bytes.ofString("");
 	}
+	
+	@:hlNative("std", "kore_create_fragmentshader") static function kore_create_fragmentshader(data: hl.types.Bytes, length: Int): Pointer { return 0; }
 }

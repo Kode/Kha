@@ -3,18 +3,20 @@ package kha.graphics4;
 import haxe.io.Bytes;
 import kha.Blob;
 
-//@:headerClassCode("Kore::Shader* shader;")
 class VertexShader {
+	public var _shader: Pointer;
+	
 	public function new(source: Blob) {
 		initVertexShader(source);
 	}
 	
-	//@:functionCode("shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::VertexShader);")
 	private function initVertexShader(source: Blob): Void {
-		
+		_shader = kore_create_vertexshader(source.bytes.getData().b, source.bytes.getData().length);
 	}
 	
 	public function unused(): Void {
 		var include: Bytes = Bytes.ofString("");
 	}
+	
+	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.types.Bytes, length: Int): Pointer { return 0; }
 }

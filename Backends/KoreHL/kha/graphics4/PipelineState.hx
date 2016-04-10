@@ -6,54 +6,41 @@ import kha.graphics4.VertexElement;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
-//@:headerClassCode("Kore::Program* program;")
 class PipelineState extends PipelineStateBase {
+	private var program: Pointer;
+	
 	public function new() {
 		super();
 		init();
 	}
 	
-	//@:functionCode('program = new Kore::Program();')
 	private function init(): Void {
-		
+		program = kore_create_program();
 	}
 	
-	/*@:functionCode('
-		program->setVertexShader(vertexShader->shader);
-		program->setFragmentShader(fragmentShader->shader);
-		if (geometryShader != null()) program->setGeometryShader(geometryShader->shader);
-		if (tesselationControlShader != null()) program->setTesselationControlShader(tesselationControlShader->shader);
-		if (tesselationEvaluationShader != null()) program->setTesselationEvaluationShader(tesselationEvaluationShader->shader);
-		Kore::VertexStructure s0, s1, s2, s3;
-		Kore::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
-		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
-		for (int i1 = 0; i1 < size; ++i1) {
-			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
-				Kore::VertexData data;
-			switch ((*structures[i1])->get(i2)->data->index) {
-				case 0:
-					data = Kore::Float1VertexData;
-					break;
-				case 1:
-					data = Kore::Float2VertexData;
-					break;
-				case 2:
-					data = Kore::Float3VertexData;
-					break;
-				case 3:
-					data = Kore::Float4VertexData;
-					break;
-				case 4:
-					data = Kore::Float4x4VertexData;
-					break;
-				}
-				structures2[i1]->add((*structures[i1])->get(i2)->name, data);
-			}
-		}
-		program->link(structures2, size);
-	')*/
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
+		kore_program_set_vertex_shader(program, vertexShader._shader);
+		kore_program_set_fragment_shader(program, fragmentShader._shader);
 		
+		var kore_structure = VertexBuffer.kore_create_vertexstructure();
+		for (i in 0...structure0.size()) {
+			var data: Int = 0;
+			switch (structure0.get(i).data.getIndex()) {
+			case 0:
+				data = 1;
+			case 1:
+				data = 2;
+			case 2:
+				data = 3;
+			case 3:
+				data = 4;
+			case 4:
+				data = 5;
+			}
+			VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(structure0.get(i).name), data);
+		}
+		
+		kore_program_link(program, kore_structure);
 	}
 	
 	public function compile(): Void {
@@ -66,30 +53,16 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		var location = new kha.korehl.graphics4.ConstantLocation();
-		initConstantLocation(location, name);
-		return location;
+		return new kha.korehl.graphics4.ConstantLocation(kore_program_get_constantlocation(program, StringHelper.convert(name)));
 	}
 	
-	//@:functionCode('location->location = program->getConstantLocation(name.c_str());')
-	private function initConstantLocation(location: kha.korehl.graphics4.ConstantLocation, name: String): Void {
-		
-	}
-		
+	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		var unit = new kha.korehl.graphics4.TextureUnit();
-		initTextureUnit(unit, name);
-		return unit;
+		return new kha.korehl.graphics4.TextureUnit(kore_program_get_textureunit(program, StringHelper.convert(name)));
 	}
 	
-	//@:functionCode('unit->unit = program->getTextureUnit(name.c_str());')
-	private function initTextureUnit(unit: kha.korehl.graphics4.TextureUnit, name: String): Void {
-		
-	}
-	
-	//@:functionCode('program->set();')
 	public function set(): Void {
-		
+		kore_program_set(program);
 	}
 	
 	public function unused(): Void {
@@ -100,4 +73,12 @@ class PipelineState extends PipelineStateBase {
 		var include5 = new TesselationControlShader(null);
 		var include6 = new TesselationEvaluationShader(null);
 	}
+	
+	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return 0; }
+	@:hlNative("std", "kore_program_set_fragment_shader") static function kore_program_set_fragment_shader(program: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_program_set_vertex_shader") static function kore_program_set_vertex_shader(program: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_program_link") static function kore_program_link(program: Pointer, structure: Pointer): Void { }
+	@:hlNative("std", "kore_program_get_constantlocation") static function kore_program_get_constantlocation(program: Pointer, name: hl.types.Bytes): Pointer { return 0; }
+	@:hlNative("std", "kore_program_get_textureunit") static function kore_program_get_textureunit(program: Pointer, name: hl.types.Bytes): Pointer { return 0; }
+	@:hlNative("std", "kore_program_set") static function kore_program_set(program: Pointer): Void { }
 }
