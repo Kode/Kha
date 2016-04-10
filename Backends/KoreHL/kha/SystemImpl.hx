@@ -24,8 +24,6 @@ class SystemImpl {
 		callback();
 	}
 	
-	@:hlNative("std", "init_kore") static function init_kore(title: hl.types.Bytes, width: Int, height: Int): Void { }
-
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 
 	}
@@ -35,32 +33,33 @@ class SystemImpl {
 		System.render(0, framebuffer);
 	}
 	
-	public static function getScreenRotation(): ScreenRotation {
-		return ScreenRotation.RotationNone;
-	}
-	
 	public static function getTime(): Float {
-		return 0;
+		return kore_get_time();
 	}
-	
-	public static function windowWidth(id: Int): Int {
-		return 640;
+
+	public static function windowWidth(windowId: Int): Int {
+		return kore_get_window_width(windowId);
 	}
-	
-	public static function windowHeight(id: Int): Int {
-		return 480;
+
+	public static function windowHeight(windowId: Int): Int {
+		return kore_get_window_height(windowId);
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
+	public static function getScreenRotation(): ScreenRotation {
+		return ScreenRotation.RotationNone;
+	}
+
+	//@:functionCode('return ::String(Kore::System::systemId());')
 	public static function getSystemId(): String {
-		return "KoreHL";
+		return 'HL';
 	}
 	
 	public static function requestShutdown(): Void {
@@ -135,4 +134,9 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 		
 	}
+	
+	@:hlNative("std", "init_kore") static function init_kore(title: hl.types.Bytes, width: Int, height: Int): Void { }
+	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
+	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
+	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
 }
