@@ -489,22 +489,20 @@ int hl_sys_get_char( bool b ) {
 
 extern void hl_entry_point();
 
-static pchar **sys_args;
+static char **sys_args;
 static int sys_nargs;
 
 varray *hl_sys_args() {
 	varray *a = hl_alloc_array(&hlt_bytes,sys_nargs);
 	int i;
 	for(i=0;i<sys_nargs;i++)
-		hl_aptr(a,pchar*)[i] = sys_args[i];
+		hl_aptr(a,char*)[i] = sys_args[i];
 	return a;
 }
 
-#ifdef HL_WIN
-int wmain( int argc, uchar *argv[] ) {
-#else
-int main( int argc, char *argv[] ) {
-#endif
+extern void run_kore();
+
+int kore( int argc, char **argv ) {
 	hl_trap_ctx ctx;
 	vdynamic *exc;
 	sys_args = argv + 1;
@@ -512,6 +510,7 @@ int main( int argc, char *argv[] ) {
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_DELAY_FREE_MEM_DF /*| _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF*/ );
 	hlc_trap(ctx,exc,on_exception);
 	hl_entry_point();
+	run_kore();
 	return 0;
 on_exception:
 	uprintf(USTR("Uncaught exception: %s\n"),hl_to_string(exc));

@@ -10,10 +10,10 @@ import kha.System;
 
 class SystemImpl {
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		init_kore();
+		init_kore(options.width, options.height);
 	}
 	
-	@:hlNative("std", "init_kore") static function init_kore(): Void { }
+	@:hlNative("std", "init_kore") static function init_kore(width: Int, height: Int): Void { }
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 

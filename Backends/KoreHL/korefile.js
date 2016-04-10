@@ -1,12 +1,14 @@
 var project = new Project('Kha');
 
-project.addFiles('hl/**');
-project.addIncludeDirs('hl/include');
+project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/alloc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
+project.addExcludes('hl/src/std/unicase.c');
+project.addIncludeDirs('hl/src', 'hl/include/pcre');
 
 if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx"');
 if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 project.addDefine('KORE');
+project.addDefine('KOREC');
 project.addDefine('ROTATE90');
 
 if (platform === Platform.Windows || platform === Platform.WindowsApp) {
