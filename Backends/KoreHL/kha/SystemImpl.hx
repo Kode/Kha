@@ -9,14 +9,30 @@ import kha.input.Surface;
 import kha.System;
 
 class SystemImpl {
+	private static var framebuffer: Framebuffer;
+	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		init_kore(options.width, options.height);
+		init_kore(StringHelper.convert(options.title), options.width, options.height);
+		Shaders.init();
+		var g4 = new kha.korehl.graphics4.Graphics();
+		framebuffer = new Framebuffer(0, null, null, g4);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
+		//kha.audio2.Audio._init();
+		//kha.audio1.Audio._init();
+		Scheduler.init();
+		Scheduler.start();
+		callback();
 	}
 	
-	@:hlNative("std", "init_kore") static function init_kore(width: Int, height: Int): Void { }
+	@:hlNative("std", "init_kore") static function init_kore(title: hl.types.Bytes, width: Int, height: Int): Void { }
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 
+	}
+	
+	public static function frame(): Void {
+		Scheduler.executeFrame();
+		System.render(0, framebuffer);
 	}
 	
 	public static function getScreenRotation(): ScreenRotation {

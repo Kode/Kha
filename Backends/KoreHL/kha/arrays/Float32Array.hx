@@ -9,21 +9,24 @@ import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 
 class Float32Array {
+	public var _data: haxe.io.Bytes;
+	
 	public inline function new(elements: Int) {
-		
+		_data = haxe.io.Bytes.alloc(elements * 4);
 	}
 	
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
-		return 0;
+		return Std.int(_data.length / 4);
 	}
 	
 	public inline function set(index: Int, value: FastFloat): FastFloat {
-		return 0;
+		_data.setFloat(index * 4, value);
+		return value;
 	}
 	
 	public inline function get(index: Int): FastFloat {
-		return 0;
+		return _data.getFloat(index * 4);
 	}
 }
