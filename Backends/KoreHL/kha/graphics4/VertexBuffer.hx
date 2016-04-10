@@ -37,12 +37,16 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		data._data.getData().b = kore_vertexbuffer_lock(_buffer);
-		data._data.getData().length = this.count() * Std.int(stride() / 4);
+		//data._data.getData().b = kore_vertexbuffer_lock(_buffer);
+		//data._data.getData().length = this.count() * Std.int(stride() / 4);
 		return data;
 	}
 	
 	public function unlock(): Void {
+		var locked = kore_vertexbuffer_lock(_buffer);
+		for (i in 0...(count() * Std.int(stride() / 4))) {
+			locked.setF32(i * 4, data.get(i));
+		}
 		kore_vertexbuffer_unlock(_buffer);
 	}
 	

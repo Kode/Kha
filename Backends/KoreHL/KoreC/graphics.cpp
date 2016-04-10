@@ -67,11 +67,11 @@ extern "C" void hl_kore_graphics_set_matrix(int location,
 	double _03, double _13, double _23, double _33) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::mat4 value;
-	value.Set(0, 0, _00); value.Set(0, 1, _01); value.Set(0, 2, _02); value.Set(0, 3, _03);
-	value.Set(1, 0, _10); value.Set(1, 1, _11); value.Set(1, 2, _12); value.Set(1, 3, _13);
-	value.Set(2, 0, _20); value.Set(2, 1, _21); value.Set(2, 2, _22); value.Set(2, 3, _23);
-	value.Set(3, 0, _30); value.Set(3, 1, _31); value.Set(3, 2, _32); value.Set(3, 3, _33);
-	Kore::Graphics::setMatrix(*loc, value); // .Transpose());
+	value.Set(0, 0, _00); value.Set(1, 0, _01); value.Set(2, 0, _02); value.Set(3, 0, _03);
+	value.Set(0, 1, _10); value.Set(1, 1, _11); value.Set(2, 1, _12); value.Set(3, 1, _13);
+	value.Set(0, 2, _20); value.Set(1, 2, _21); value.Set(2, 2, _22); value.Set(3, 2, _23);
+	value.Set(0, 3, _30); value.Set(1, 3, _31); value.Set(2, 3, _32); value.Set(3, 3, _33);
+	Kore::Graphics::setMatrix(*loc, value);
 }
 
 extern "C" void hl_kore_graphics_draw_all_indexed_vertices() {
