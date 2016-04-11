@@ -2,36 +2,36 @@
 #include <Kore/Graphics/Graphics.h>
 #include <hl.h>
 
-extern "C" int hl_kore_create_vertexstructure() {
-	return (int)new Kore::VertexStructure();
+extern "C" vbyte *hl_kore_create_vertexstructure() {
+	return (vbyte*)new Kore::VertexStructure();
 }
 
-extern "C" void hl_kore_vertexstructure_add(int structure, vbyte *name, int data) {
+extern "C" void hl_kore_vertexstructure_add(vbyte *structure, vbyte *name, int data) {
 	Kore::VertexStructure* struc = (Kore::VertexStructure*)structure;
 	struc->add((char*)name, (Kore::VertexData)data);
 }
 
-extern "C" int hl_kore_create_vertexbuffer(int vertexCount, int structure, int stepRate) {
+extern "C" vbyte *hl_kore_create_vertexbuffer(int vertexCount, vbyte *structure, int stepRate) {
 	Kore::VertexStructure* struc = (Kore::VertexStructure*)structure;
-	return (int)new Kore::VertexBuffer(vertexCount, *struc, stepRate);
+	return (vbyte*)new Kore::VertexBuffer(vertexCount, *struc, stepRate);
 }
 
-extern "C" void* hl_kore_vertexbuffer_lock(int buffer) {
+extern "C" vbyte *hl_kore_vertexbuffer_lock(vbyte *buffer) {
 	Kore::VertexBuffer* buf = (Kore::VertexBuffer*)buffer;
-	return buf->lock();
+	return (vbyte*)buf->lock();
 }
 
-extern "C" void hl_kore_vertexbuffer_unlock(int buffer) {
+extern "C" void hl_kore_vertexbuffer_unlock(vbyte *buffer) {
 	Kore::VertexBuffer* buf = (Kore::VertexBuffer*)buffer;
 	buf->unlock();
 }
 
-extern "C" int hl_kore_vertexbuffer_count(int buffer) {
+extern "C" int hl_kore_vertexbuffer_count(vbyte *buffer) {
 	Kore::VertexBuffer* buf = (Kore::VertexBuffer*)buffer;
 	return buf->count();
 }
 
-extern "C" int hl_kore_vertexbuffer_stride(int buffer) {
+extern "C" int hl_kore_vertexbuffer_stride(vbyte *buffer) {
 	Kore::VertexBuffer* buf = (Kore::VertexBuffer*)buffer;
 	return buf->stride();
 }

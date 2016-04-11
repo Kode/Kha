@@ -74,11 +74,11 @@ class PipelineState extends PipelineStateBase {
 		var include6 = new TesselationEvaluationShader(null);
 	}
 	
-	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return 0; }
+	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return null; }
 	@:hlNative("std", "kore_program_set_fragment_shader") static function kore_program_set_fragment_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_program_set_vertex_shader") static function kore_program_set_vertex_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_program_link") static function kore_program_link(program: Pointer, structure: Pointer): Void { }
-	@:hlNative("std", "kore_program_get_constantlocation") static function kore_program_get_constantlocation(program: Pointer, name: hl.types.Bytes): Pointer { return 0; }
-	@:hlNative("std", "kore_program_get_textureunit") static function kore_program_get_textureunit(program: Pointer, name: hl.types.Bytes): Pointer { return 0; }
+	@:hlNative("std", "kore_program_get_constantlocation") static function kore_program_get_constantlocation(program: Pointer, name: hl.types.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_program_get_textureunit") static function kore_program_get_textureunit(program: Pointer, name: hl.types.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_program_set") static function kore_program_set(program: Pointer): Void { }
 }

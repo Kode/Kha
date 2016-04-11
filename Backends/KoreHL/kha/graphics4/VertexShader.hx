@@ -18,5 +18,5 @@ class VertexShader {
 		var include: Bytes = Bytes.ofString("");
 	}
 	
-	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.types.Bytes, length: Int): Pointer { return 0; }
+	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.types.Bytes, length: Int): Pointer { return null; }
 }

@@ -18,5 +18,5 @@ class FragmentShader {
 		var include: Bytes = Bytes.ofString("");
 	}
 	
-	@:hlNative("std", "kore_create_fragmentshader") static function kore_create_fragmentshader(data: hl.types.Bytes, length: Int): Pointer { return 0; }
+	@:hlNative("std", "kore_create_fragmentshader") static function kore_create_fragmentshader(data: hl.types.Bytes, length: Int): Pointer { return null; }
 }

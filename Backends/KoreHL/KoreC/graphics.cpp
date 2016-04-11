@@ -14,53 +14,53 @@ extern "C" void hl_kore_graphics_viewport(int x, int y, int width, int height) {
 	Kore::Graphics::viewport(x, y, width, height);
 }
 
-extern "C" void hl_kore_graphics_set_vertexbuffer(int buffer) {
+extern "C" void hl_kore_graphics_set_vertexbuffer(vbyte *buffer) {
 	Kore::VertexBuffer* buf = (Kore::VertexBuffer*)buffer;
 	Kore::Graphics::setVertexBuffer(*buf);
 }
 
-extern "C" void hl_kore_graphics_set_indexbuffer(int buffer) {
+extern "C" void hl_kore_graphics_set_indexbuffer(vbyte *buffer) {
 	Kore::IndexBuffer* buf = (Kore::IndexBuffer*)buffer;
 	Kore::Graphics::setIndexBuffer(*buf);
 }
 
-extern "C" void hl_kore_graphics_set_texture(int unit, int texture) {
+extern "C" void hl_kore_graphics_set_texture(vbyte *unit, int texture) {
 	Kore::TextureUnit* u = (Kore::TextureUnit*)unit;
 	Kore::Texture* tex = (Kore::Texture*)texture;
 	Kore::Graphics::setTexture(*u, tex);
 }
 
-extern "C" void hl_kore_graphics_set_bool(int location, bool value) {
+extern "C" void hl_kore_graphics_set_bool(vbyte *location, bool value) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setBool(*loc, value);
 }
 
-extern "C" void hl_kore_graphics_set_int(int location, int value) {
+extern "C" void hl_kore_graphics_set_int(vbyte *location, int value) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setInt(*loc, value);
 }
 
-extern "C" void hl_kore_graphics_set_float(int location, double value) {
+extern "C" void hl_kore_graphics_set_float(vbyte *location, double value) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setFloat(*loc, value);
 }
 
-extern "C" void hl_kore_graphics_set_float2(int location, double value1, double value2) {
+extern "C" void hl_kore_graphics_set_float2(vbyte *location, double value1, double value2) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setFloat2(*loc, value1, value2);
 }
 
-extern "C" void hl_kore_graphics_set_float3(int location, double value1, double value2, double value3) {
+extern "C" void hl_kore_graphics_set_float3(vbyte *location, double value1, double value2, double value3) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setFloat3(*loc, value1, value2, value3);
 }
 
-extern "C" void hl_kore_graphics_set_float4(int location, double value1, double value2, double value3, double value4) {
+extern "C" void hl_kore_graphics_set_float4(vbyte *location, double value1, double value2, double value3, double value4) {
 	Kore::ConstantLocation* loc = (Kore::ConstantLocation*)location;
 	Kore::Graphics::setFloat4(*loc, value1, value2, value3, value4);
 }
 
-extern "C" void hl_kore_graphics_set_matrix(int location,
+extern "C" void hl_kore_graphics_set_matrix(vbyte *location,
 	double _00, double _10, double _20, double _30,
 	double _01, double _11, double _21, double _31,
 	double _02, double _12, double _22, double _32,

@@ -2,16 +2,16 @@
 #include <Kore/Graphics/Graphics.h>
 #include <hl.h>
 
-extern "C" int hl_kore_create_indexbuffer(int count) {
-	return (int)new Kore::IndexBuffer(count);
+extern "C" vbyte *hl_kore_create_indexbuffer(int count) {
+	return (vbyte*)new Kore::IndexBuffer(count);
 }
 
-extern "C" void* hl_kore_indexbuffer_lock(int buffer) {
+extern "C" vbyte *hl_kore_indexbuffer_lock(vbyte *buffer) {
 	Kore::IndexBuffer* buf = (Kore::IndexBuffer*)buffer;
-	return buf->lock();
+	return (vbyte*)buf->lock();
 }
 
-extern "C" void hl_kore_indexbuffer_unlock(int buffer) {
+extern "C" void hl_kore_indexbuffer_unlock(vbyte *buffer) {
 	Kore::IndexBuffer* buf = (Kore::IndexBuffer*)buffer;
 	buf->unlock();
 }

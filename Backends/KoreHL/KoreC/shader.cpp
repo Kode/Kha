@@ -2,47 +2,47 @@
 #include <Kore/Graphics/Graphics.h>
 #include <hl.h>
 
-extern "C" int hl_kore_create_vertexshader(vbyte *data, int length) {
-	return (int)new Kore::Shader(data, length, Kore::VertexShader);
+extern "C" vbyte *hl_kore_create_vertexshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Shader(data, length, Kore::VertexShader);
 }
 
-extern "C" int hl_kore_create_fragmentshader(vbyte *data, int length) {
-	return (int)new Kore::Shader(data, length, Kore::FragmentShader);
+extern "C" vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Shader(data, length, Kore::FragmentShader);
 }
 
-extern "C" int hl_kore_create_program() {
-	return (int)new Kore::Program();
+extern "C" vbyte *hl_kore_create_program() {
+	return (vbyte*)new Kore::Program();
 }
 
-extern "C" void hl_kore_program_set_vertex_shader(int program, int shader) {
+extern "C" void hl_kore_program_set_vertex_shader(vbyte *program, vbyte *shader) {
 	Kore::Program* prog = (Kore::Program*)program;
 	Kore::Shader* sh = (Kore::Shader*)shader;
 	prog->setVertexShader(sh);
 }
 
-extern "C" void hl_kore_program_set_fragment_shader(int program, int shader) {
+extern "C" void hl_kore_program_set_fragment_shader(vbyte *program, vbyte *shader) {
 	Kore::Program* prog = (Kore::Program*)program;
 	Kore::Shader* sh = (Kore::Shader*)shader;
 	prog->setFragmentShader(sh);
 }
 
-extern "C" void hl_kore_program_link(int program, int structure) {
+extern "C" void hl_kore_program_link(vbyte *program, vbyte *structure) {
 	Kore::Program* prog = (Kore::Program*)program;
 	Kore::VertexStructure* struc = (Kore::VertexStructure*)structure;
 	prog->link(*struc);
 }
 
-extern "C" void hl_kore_program_set(int program) {
+extern "C" void hl_kore_program_set(vbyte *program) {
 	Kore::Program* prog = (Kore::Program*)program;
 	prog->set();
 }
 
-extern "C" int hl_kore_program_get_constantlocation(int program, vbyte *name) {
+extern "C" vbyte *hl_kore_program_get_constantlocation(vbyte *program, vbyte *name) {
 	Kore::Program* prog = (Kore::Program*)program;
-	return (int)new Kore::ConstantLocation(prog->getConstantLocation((char*)name));
+	return (vbyte*)new Kore::ConstantLocation(prog->getConstantLocation((char*)name));
 }
 
-extern "C" int hl_kore_program_get_textureunit(int program, vbyte *name) {
+extern "C" vbyte *hl_kore_program_get_textureunit(vbyte *program, vbyte *name) {
 	Kore::Program* prog = (Kore::Program*)program;
-	return (int)new Kore::TextureUnit(prog->getTextureUnit((char*)name));
+	return (vbyte*)new Kore::TextureUnit(prog->getTextureUnit((char*)name));
 }

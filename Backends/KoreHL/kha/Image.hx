@@ -86,7 +86,7 @@ class Image implements Canvas implements Resource {
 
 	private function init(width: Int, height: Int, format: Int): Void {
 		_texture = kore_texture_create(width, height, format, readable);
-		_renderTarget = 0;
+		_renderTarget = null;
 	}
 
 	//@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
@@ -104,7 +104,7 @@ class Image implements Canvas implements Resource {
 
 	private function initFromFile(filename: String): Void {
 		_texture = kore_texture_create_from_file(StringHelper.convert(filename), readable);
-		_renderTarget = 0;
+		_renderTarget = null;
 	}
 
 	public var g1(get, null): kha.graphics1.Graphics;
@@ -220,8 +220,8 @@ class Image implements Canvas implements Resource {
 		}*/
 	}
 	
-	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return 0; }
-	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.types.Bytes, readable: Bool): Pointer { return 0; }
+	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.types.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool { return false; }
 	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }

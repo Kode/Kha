@@ -58,9 +58,9 @@ class VertexBuffer {
 		return kore_vertexbuffer_count(_buffer);
 	}
 	
-	@:hlNative("std", "kore_create_vertexstructure") public static function kore_create_vertexstructure(): Pointer { return 0; }
+	@:hlNative("std", "kore_create_vertexstructure") public static function kore_create_vertexstructure(): Pointer { return null; }
 	@:hlNative("std", "kore_vertexstructure_add") public static function kore_vertexstructure_add(structure: Pointer, name: hl.types.Bytes, data: Int): Void { }
-	@:hlNative("std", "kore_create_vertexbuffer") static function kore_create_vertexbuffer(vertexCount: Int, structure: Pointer, stepRate: Int): Pointer { return 0; }
+	@:hlNative("std", "kore_create_vertexbuffer") static function kore_create_vertexbuffer(vertexCount: Int, structure: Pointer, stepRate: Int): Pointer { return null; }
 	@:hlNative("std", "kore_vertexbuffer_lock") static function kore_vertexbuffer_lock(buffer: Pointer): hl.types.Bytes { return null; }
 	@:hlNative("std", "kore_vertexbuffer_unlock") static function kore_vertexbuffer_unlock(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_vertexbuffer_stride") static function kore_vertexbuffer_stride(buffer: Pointer): Int { return 0; }

@@ -35,7 +35,7 @@ class IndexBuffer {
 		return myCount;
 	}
 	
-	@:hlNative("std", "kore_create_indexbuffer") static function kore_create_indexbuffer(count: Int): Pointer { return 0; }
+	@:hlNative("std", "kore_create_indexbuffer") static function kore_create_indexbuffer(count: Int): Pointer { return null; }
 	@:hlNative("std", "kore_indexbuffer_lock") static function kore_indexbuffer_lock(buffer: Pointer): hl.types.Bytes { return null; }
 	@:hlNative("std", "kore_indexbuffer_unlock") static function kore_indexbuffer_unlock(buffer: Pointer): Void { }
 }
