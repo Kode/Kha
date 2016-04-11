@@ -24,7 +24,7 @@ extern "C" void hl_kore_graphics_set_indexbuffer(vbyte *buffer) {
 	Kore::Graphics::setIndexBuffer(*buf);
 }
 
-extern "C" void hl_kore_graphics_set_texture(vbyte *unit, int texture) {
+extern "C" void hl_kore_graphics_set_texture(vbyte *unit, vbyte *texture) {
 	Kore::TextureUnit* u = (Kore::TextureUnit*)unit;
 	Kore::Texture* tex = (Kore::Texture*)texture;
 	Kore::Graphics::setTexture(*u, tex);
