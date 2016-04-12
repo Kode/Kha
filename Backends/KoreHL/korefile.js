@@ -4,8 +4,8 @@ project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/alloc.c',
 project.addExcludes('hl/src/std/unicase.c');
 project.addIncludeDirs('hl/src', 'hl/include/pcre');
 
-if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx"');
-if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
+if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx-hl"');
+if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios-hl"');
 
 project.addDefine('KORE');
 project.addDefine('KOREC');

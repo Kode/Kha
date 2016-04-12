@@ -266,7 +266,7 @@ bool hl_socket_set_timeout( hl_socket *s, double t ) {
 	int time = (int)(t * 1000);
 #else
 	struct timeval time;
-	init_timeval(t,&time);
+	//init_timeval(t,&time);
 #endif
 	if( setsockopt(s->sock,SOL_SOCKET,SO_SNDTIMEO,(char*)&time,sizeof(time)) != 0 )
 		return false;
@@ -293,7 +293,7 @@ bool hl_socket_set_blocking( hl_socket *s, bool b ) {
 		rights &= ~O_NONBLOCK;
 	else
 		rights |= O_NONBLOCK;
-	return fcntl(val_sock(o),F_SETFL,rights) != -1;
+	return false;//fcntl(val_sock(o),F_SETFL,rights) != -1;
 #endif
 }
 
