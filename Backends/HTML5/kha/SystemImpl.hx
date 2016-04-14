@@ -346,10 +346,14 @@ class SystemImpl {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
+		
+		canvas.onkeypress = keyPressed;
+		
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		untyped if (canvas.onwheel) canvas.onwheel = mouseWheel;
 		else if (canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
+	
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -621,64 +625,100 @@ class SystemImpl {
 		}
 		return String.fromCharCode(keycode);
 	}
+	
+	private static function keyPressed(event: KeyboardEvent) : Void {
+		event.stopPropagation();
+		
+		// prevent key repeat
+		if (pressedKeys[lastKeyCode]) {
+			event.preventDefault();
+			return;
+		}
+		
+		pressedKeys[lastKeyCode] = true;
+		var char = String.fromCharCode(event.keyCode);
 
+		keyboard.sendDownEvent(Key.CHAR, char);
+	}
+
+	static var lastKeyCode:Int;
 	private static function keyDown(event: KeyboardEvent): Void {
 		event.stopPropagation();
-
+		
+		lastKeyCode = event.keyCode;
+		
 		// prevent key repeat
 		if (pressedKeys[event.keyCode]) {
 			event.preventDefault();
 			return;
 		}
-
-		pressedKeys[event.keyCode] = true;
+		
+		var specialKey = false;
+		
 		switch (event.keyCode) {
 		case 8:
 			keyboard.sendDownEvent(Key.BACKSPACE, "");
 			event.preventDefault();
+			specialKey = true;
+			return;
 		case 9:
 			keyboard.sendDownEvent(Key.TAB, "");
 			event.preventDefault();
+			specialKey = true;
 		case 13:
 			keyboard.sendDownEvent(Key.ENTER, "");
 			event.preventDefault();
+			specialKey = true;
 		case 16:
 			keyboard.sendDownEvent(Key.SHIFT, "");
 			event.preventDefault();
+			specialKey = true;
 		case 17:
 			keyboard.sendDownEvent(Key.CTRL, "");
 			event.preventDefault();
+			specialKey = true;
 		case 18:
 			keyboard.sendDownEvent(Key.ALT, "");
 			event.preventDefault();
+			specialKey = true;
 		case 27:
 			keyboard.sendDownEvent(Key.ESC, "");
 			event.preventDefault();
+			specialKey = true;
 		case 32:
 			keyboard.sendDownEvent(Key.CHAR, " ");
 			event.preventDefault(); // don't scroll down in IE
+			specialKey = true;
 		case 46:
 			keyboard.sendDownEvent(Key.DEL, "");
 			event.preventDefault();
+			specialKey = true;
 		case 38:
 			keyboard.sendDownEvent(Key.UP, "");
 			event.preventDefault();
+			specialKey = true;
 		case 40:
 			keyboard.sendDownEvent(Key.DOWN, "");
 			event.preventDefault();
+			specialKey = true;
 		case 37:
 			keyboard.sendDownEvent(Key.LEFT, "");
 			event.preventDefault();
+			specialKey = true;
 		case 39:
 			keyboard.sendDownEvent(Key.RIGHT, "");
 			event.preventDefault();
+			specialKey = true;
 		default:
-			if (!event.altKey) {
-				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
-				keyboard.sendDownEvent(Key.CHAR, char);
-			}
+			return;
+		}
+		
+		if(specialKey){
+			pressedKeys[event.keyCode] = true;
 		}
 	}
+
+	
 
 	private static function keyUp(event: KeyboardEvent): Void {
 		event.preventDefault();
@@ -714,6 +754,7 @@ class SystemImpl {
 		case 39:
 			keyboard.sendUpEvent(Key.RIGHT, "");
 		default:
+			return;
 			if (!event.altKey) {
 				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
 				keyboard.sendUpEvent(Key.CHAR, char);
