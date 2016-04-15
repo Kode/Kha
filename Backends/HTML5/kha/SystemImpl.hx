@@ -351,9 +351,9 @@ class SystemImpl {
 		
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		untyped if (!canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
-		else if (!canvas.onwheel) canvas.onwheel = mouseWheel;
-	
+
+		canvas.onmousewheel = mouseWheel;
+
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
