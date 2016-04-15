@@ -348,8 +348,8 @@ class SystemImpl {
 		canvas.onkeyup = keyUp;
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		untyped if (canvas.onwheel) canvas.onwheel = mouseWheel;
-		else if (canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
+		canvas.onmousewheel = mouseWheel;
+		
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -428,8 +428,9 @@ class SystemImpl {
 		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
-	private static function mouseWheel(event: WheelEvent): Void{
+	private static function mouseWheel(event: WheelEvent): Bool{
 		mouse.sendWheelEvent(0, Std.int(event.deltaY));
+		return false;
 	}
 
 	private static function mouseDown(event: MouseEvent): Void {
