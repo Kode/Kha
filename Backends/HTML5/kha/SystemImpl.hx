@@ -429,7 +429,6 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Bool{
-		trace("HE");
 		mouse.sendWheelEvent(0, Std.int(event.deltaY));
 		return false;
 	}
