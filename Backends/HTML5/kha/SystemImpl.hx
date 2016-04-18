@@ -348,7 +348,7 @@ class SystemImpl {
 		canvas.onkeyup = keyUp;
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		canvas.onmousewheel = mouseWheel;
+		canvas.onmousewheel = canvas.onwheel = mouseWheel;
 		
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
@@ -429,6 +429,7 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Bool{
+		trace("HE");
 		mouse.sendWheelEvent(0, Std.int(event.deltaY));
 		return false;
 	}
