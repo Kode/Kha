@@ -348,7 +348,7 @@ class SystemImpl {
 		canvas.onkeyup = keyUp;
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		canvas.onmousewheel = mouseWheel;
+		canvas.onmousewheel = canvas.onwheel = mouseWheel;
 		
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
