@@ -8,10 +8,15 @@ import kha.Blob;
 #include <Kore/Graphics/Graphics.h>
 ')
 
+@:cppFileCode('
+#ifndef INCLUDED_haxe_io_Bytes
+#include <haxe/io/Bytes.h>
+#endif
+')
+
 @:headerClassCode("Kore::Shader* shader;")
 class VertexShader {
 	public function new(source: Blob) {
-		unused();
 		initVertexShader(source);
 		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
 	}
@@ -25,9 +30,5 @@ class VertexShader {
 	")
 	private function initVertexShader(source: Blob): Void {
 		
-	}
-	
-	public function unused(): Void {
-		var include: Bytes = Bytes.ofString("");
 	}
 }

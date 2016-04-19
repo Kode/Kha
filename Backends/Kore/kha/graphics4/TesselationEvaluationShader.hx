@@ -8,10 +8,15 @@ import kha.Blob;
 #include <Kore/Graphics/Graphics.h>
 ')
 
+@:cppFileCode('
+#ifndef INCLUDED_haxe_io_Bytes
+#include <haxe/io/Bytes.h>
+#endif
+')
+
 @:headerClassCode("Kore::Shader* shader;")
 class TesselationEvaluationShader {
 	public function new(source: Blob) {
-		unused();
 		initTesselationEvaluationShader(source);
 		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
 	}
@@ -25,9 +30,5 @@ class TesselationEvaluationShader {
 	")
 	private function initTesselationEvaluationShader(source: Blob): Void {
 		
-	}
-	
-	public function unused(): Void {
-		var include: Bytes = Bytes.ofString("");
 	}
 }
