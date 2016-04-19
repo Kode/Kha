@@ -11,6 +11,7 @@ import kha.Blob;
 @:headerClassCode("Kore::Shader* shader;")
 class GeometryShader {
 	public function new(source: Blob) {
+		unused();
 		initGeometryShader(source);
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
 	}

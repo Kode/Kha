@@ -11,6 +11,7 @@ import kha.Blob;
 @:headerClassCode("Kore::Shader* shader;")
 class TesselationEvaluationShader {
 	public function new(source: Blob) {
+		unused();
 		initTesselationEvaluationShader(source);
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
 	}

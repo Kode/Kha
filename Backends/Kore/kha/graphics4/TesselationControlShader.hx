@@ -11,6 +11,7 @@ import kha.Blob;
 @:headerClassCode("Kore::Shader* shader;")
 class TesselationControlShader {
 	public function new(source: Blob) {
+		unused();
 		initTesselationControlShader(source);
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
 	}
