@@ -13,7 +13,7 @@ class VertexShader {
 	public function new(source: Blob) {
 		unused();
 		initVertexShader(source);
-		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
+		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
 	}
 	
 	@:void private static function destroy(shader: VertexShader): Void {

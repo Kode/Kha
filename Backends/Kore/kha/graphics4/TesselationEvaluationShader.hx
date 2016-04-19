@@ -13,7 +13,7 @@ class TesselationEvaluationShader {
 	public function new(source: Blob) {
 		unused();
 		initTesselationEvaluationShader(source);
-		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy));
+		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
 	}
 	
 	@:void private static function destroy(shader: TesselationEvaluationShader): Void {
