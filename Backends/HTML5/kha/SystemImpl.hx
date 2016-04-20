@@ -129,6 +129,7 @@ class SystemImpl {
 	private static var gamepads: Array<Gamepad>;
 	private static var gamepadStates: Array<GamepadStates>;
 
+	private static var minimumScroll:Int = 999;
 	private static var mouseX: Int;
 	private static var mouseY: Int;
 	private static var touchX: Int;
@@ -352,8 +353,8 @@ class SystemImpl {
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 
-		canvas.onmousewheel = mouseWheel;
-
+		canvas.onmousewheel = canvas.onwheel = mouseWheel;
+		
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -433,7 +434,27 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Bool{
-		mouse.sendWheelEvent(0, Std.int(event.deltaY));
+		event.preventDefault();
+		
+		//Deltamode == 0, deltaY is in pixels.
+		if(event.deltaMode == 0){
+			if(event.deltaY < 0){
+				mouse.sendWheelEvent(0, -1);
+			}else if(event.deltaY > 0){
+				mouse.sendWheelEvent(0, 1);
+			}
+			
+			return false;
+		}
+		
+		//Lines
+		if(event.deltaMode == 1) {
+			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
+			
+			mouse.sendWheelEvent(0, Std.int(event.deltaY / minimumScroll));
+			return false;
+		}
+		
 		return false;
 	}
 
