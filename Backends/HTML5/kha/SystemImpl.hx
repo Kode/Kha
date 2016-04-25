@@ -455,7 +455,6 @@ class SystemImpl {
 	}
 
 	private static function mouseDown(event: MouseEvent): Void {
-		Browser.document.addEventListener('mouseup', mouseUp);
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
@@ -466,33 +465,43 @@ class SystemImpl {
 				leftMouseCtrlDown = false;
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
+			
+			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
-		else if(event.which == 2){ //middle button
+		else if(event.which == 2) { //middle button
 			mouse.sendDownEvent(0, 2, mouseX, mouseY);
+			Browser.document.addEventListener('mouseup', mouseMiddleUp);
 		}
-		else if(event.which == 3){ //right button
+		else if(event.which == 3) { //right button
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
+			Browser.document.addEventListener('mouseup', mouseRightUp);
 		}
 	}
-
-	private static function mouseUp(event: MouseEvent): Void {
-		Browser.document.removeEventListener('mouseup', mouseUp);
-		setMouseXY(event);
-		if (event.which == 1) { //left button
-			if (leftMouseCtrlDown) {
-				mouse.sendUpEvent(0, 1, mouseX, mouseY);
-			}
-			else {
-				mouse.sendUpEvent(0, 0, mouseX, mouseY);
-			}
-			leftMouseCtrlDown = false;
-		}
-		else if(event.which == 2){ //middle button
-			mouse.sendUpEvent(0, 2, mouseX, mouseY);
-		}
-		else if(event.which == 3){ //right button
+	
+	private static function mouseLeftUp(event: MouseEvent): Void {
+		if (event.which != 1) return;
+		
+		Browser.document.removeEventListener('mouseup', mouseLeftUp);
+		
+		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
+		else {
+			mouse.sendUpEvent(0, 0, mouseX, mouseY);
+		}
+		leftMouseCtrlDown = false;
+	}
+	
+	private static function mouseMiddleUp(event: MouseEvent): Void {
+		if (event.which != 2) return;
+		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
+		mouse.sendUpEvent(0, 2, mouseX, mouseY);
+	}
+	
+	private static function mouseRightUp(event: MouseEvent): Void {
+		if (event.which != 3) return;
+		Browser.document.removeEventListener('mouseup', mouseRightUp);
+		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 	}
 
 	private static function mouseMove(event: MouseEvent): Void {
