@@ -218,7 +218,9 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		}
 
 		super.onDestroy();
-		view.queueEvent(new OnDestroyRunner());		
+		view.queueEvent(new OnDestroyRunner());	
+		
+		untyped __java__("System.exit(0)");	
 	}
 	
 	override public function onConfigurationChanged(newConfig: Configuration): Void {
