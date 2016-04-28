@@ -86,7 +86,7 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 		case 67: // backspace
 			if (down) SystemImpl.keyDown(0x00000103);
 			else SystemImpl.keyUp(0x00000103);
-		case KeyEvent.KEYCODE_BACK:
+		case 0x00000004: //KeyEvent.KEYCODE_BACK
 			if(down) SystemImpl.keyDown(KeyEvent.KEYCODE_BACK);
 			else SystemImpl.keyUp(KeyEvent.KEYCODE_BACK);
 		default:

@@ -229,7 +229,7 @@ class SystemImpl {
 			keyboard.sendDownEvent(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendDownEvent(Key.ENTER, " ");
-		case KeyEvent.KEYCODE_BACK:
+		case 0x00000004: // KeyEvent.KEYCODE_BACK
 			keyboard.sendDownEvent(Key.BACK, " ");
 		default:
 			var char: String;
@@ -252,7 +252,7 @@ class SystemImpl {
 			keyboard.sendUpEvent(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendUpEvent(Key.ENTER, " ");
-		case KeyEvent.KEYCODE_BACK:
+		case 0x00000004: // KeyEvent.KEYCODE_BACK
 			keyboard.sendUpEvent(Key.BACK, " ");
 		default:
 			var char: String;
