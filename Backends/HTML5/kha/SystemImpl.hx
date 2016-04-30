@@ -12,9 +12,9 @@ import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
-import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
+import kha.js.AEAudioChannel;
 import kha.js.CanvasGraphics;
 import kha.System;
 
@@ -39,6 +39,9 @@ class SystemImpl {
 	public static var khanvas: CanvasElement;
 	private static var performance: Dynamic;
 	private static var options: SystemOptions;
+	public static var mobile: Bool = false;
+	public static var mobileAudioPlaying: Bool = false;
+	public static var insideInputEvent: Bool = false;
 
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null) {
@@ -59,6 +62,7 @@ class SystemImpl {
             callback();
         }, 1000);
         #else
+		mobile = isMobile();
 		init2();
 		callback();
         #end
@@ -71,6 +75,22 @@ class SystemImpl {
 
 		if (windowCallback != null) {
 			windowCallback(0);
+		}
+	}
+	
+	private static function isMobile(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Android") >= 0
+			|| agent.indexOf("webOS") >= 0
+			|| agent.indexOf("iPhone") >= 0
+			|| agent.indexOf("iPad") >= 0
+			|| agent.indexOf("iPod") >= 0
+			|| agent.indexOf("BlackBerry") >= 0
+			|| agent.indexOf("Windows Phone") >= 0) {
+				return true;
+		}
+		else {
+			return false;
 		}
 	}
 
@@ -262,7 +282,7 @@ class SystemImpl {
 		}
 		//canvas.getContext("2d").scale(transform, transform);
 
-		if (kha.audio2.Audio._init()) {
+		if (!mobile && kha.audio2.Audio._init()) {
 			SystemImpl._hasWebAudio = true;
 			kha.audio2.Audio1._init();
 		}
@@ -429,32 +449,39 @@ class SystemImpl {
 		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
-	private static function mouseWheel(event: WheelEvent): Bool{
+	private static function mouseWheel(event: WheelEvent): Bool {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		event.preventDefault();
 		
 		//Deltamode == 0, deltaY is in pixels.
-		if(event.deltaMode == 0){
-			if(event.deltaY < 0){
+		if (event.deltaMode == 0) {
+			if (event.deltaY < 0) {
 				mouse.sendWheelEvent(0, -1);
-			}else if(event.deltaY > 0){
+			}
+			else if (event.deltaY > 0) {
 				mouse.sendWheelEvent(0, 1);
 			}
-			
+			insideInputEvent = false;
 			return false;
 		}
 		
 		//Lines
-		if(event.deltaMode == 1) {
+		if (event.deltaMode == 1) {
 			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
-			
 			mouse.sendWheelEvent(0, Std.int(event.deltaY / minimumScroll));
+			insideInputEvent = false;
 			return false;
 		}
-		
+		insideInputEvent = false;
 		return false;
 	}
 
 	private static function mouseDown(event: MouseEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
@@ -476,9 +503,13 @@ class SystemImpl {
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
 			Browser.document.addEventListener('mouseup', mouseRightUp);
 		}
+		insideInputEvent = false;
 	}
 	
 	private static function mouseLeftUp(event: MouseEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		if (event.which != 1) return;
 		
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
@@ -490,27 +521,40 @@ class SystemImpl {
 			mouse.sendUpEvent(0, 0, mouseX, mouseY);
 		}
 		leftMouseCtrlDown = false;
+		insideInputEvent = false;
 	}
 	
 	private static function mouseMiddleUp(event: MouseEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		if (event.which != 2) return;
 		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
+		insideInputEvent = false;
 	}
 	
 	private static function mouseRightUp(event: MouseEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		if (event.which != 3) return;
 		Browser.document.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
+		insideInputEvent = false;
 	}
 
 	private static function mouseMove(event: MouseEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
 		setMouseXY(event);
 		var movementX = untyped event.movementX || event.mozMovementX || event.webkitMovementX || mouseX - lastMouseX;
 		var movementY = untyped event.movementY || event.mozMovementY || event.webkitMovementY || mouseY - lastMouseY;
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
+		insideInputEvent = false;
 	}
 
 	private static function setTouchXY(touch: Touch): Void {
@@ -522,22 +566,33 @@ class SystemImpl {
 	}
 
 	private static function touchDown(event: TouchEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
 			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
 		}
+		insideInputEvent = false;
 	}
 
 	private static function touchUp(event: TouchEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendUpEvent(0, 0, touchX, touchY);
 			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
 		}
+		insideInputEvent = false;
 	}
 
 	private static function touchMove(event: TouchEvent): Void {
+		insideInputEvent = true;
+		AEAudioChannel.catchUp();
+		
 		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
@@ -553,6 +608,7 @@ class SystemImpl {
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);
 			index++;
 		}
+		insideInputEvent = false;
 	}
 
 	private static function onBlur() {

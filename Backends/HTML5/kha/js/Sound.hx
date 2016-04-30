@@ -58,7 +58,7 @@ using StringTools;
 
 class Sound extends kha.Sound {
 	private var filenames: Array<String>;
-	static var loading : List<Sound> = new List();
+	static var loading: Array<Sound> = new Array();
 	private var done: kha.Sound -> Void;
 	public var element: AudioElement;
 	
@@ -66,7 +66,7 @@ class Sound extends kha.Sound {
 		super();
 		
 		this.done = done;
-		loading.add(this); // prevent gc from removing this
+		loading.push(this); // prevent gc from removing this
 		
 		element = Browser.document.createAudioElement();
 		
