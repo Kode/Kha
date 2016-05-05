@@ -5,13 +5,39 @@ import kha.audio1.AudioChannel;
 
 class AEAudioChannel implements kha.audio1.AudioChannel {
 	private var element: AudioElement;
+	private static var todo: Array<AEAudioChannel> = [];
 	
 	public function new(element: AudioElement) {
 		this.element = element;
 	}
 	
 	public function play(): Void {
-		element.play();
+		if (SystemImpl.mobile) {
+			if (SystemImpl.insideInputEvent) {
+				element.play();
+				SystemImpl.mobileAudioPlaying = true;
+			}
+			else if (SystemImpl.mobileAudioPlaying) {
+				element.play();
+			}
+			else {
+				todo.push(this);
+			}
+		}
+		else {
+			element.play();
+		}
+	}
+	
+	public static function catchUp() {
+		if (!SystemImpl.mobile || SystemImpl.mobileAudioPlaying) return;
+		for (channel in todo) {
+			channel.element.play();
+			SystemImpl.mobileAudioPlaying = true;
+		}
+		if (SystemImpl.mobileAudioPlaying) {
+			todo = null;
+		}
 	}
 
 	public function pause(): Void {

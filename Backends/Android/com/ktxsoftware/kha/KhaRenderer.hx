@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceViewRenderer;
 import android.text.method.MetaKeyKeyListener;
 import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import java.lang.Runnable;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -85,6 +86,9 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 		case 67: // backspace
 			if (down) SystemImpl.keyDown(0x00000103);
 			else SystemImpl.keyUp(0x00000103);
+		case 0x00000004: //KeyEvent.KEYCODE_BACK
+			if(down) SystemImpl.keyDown(KeyEvent.KEYCODE_BACK);
+			else SystemImpl.keyUp(KeyEvent.KEYCODE_BACK);
 		default:
 			var code = keyMap.get(keyCode, MetaKeyKeyListener.META_SHIFT_ON);
 			if (down) SystemImpl.keyDown(code);

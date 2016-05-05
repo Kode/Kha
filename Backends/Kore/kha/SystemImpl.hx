@@ -560,6 +560,9 @@ class SystemImpl {
 		var title = options.title;
 		var width = options.width;
 		var height = options.height;
+		var resizable = options.windowedModeOptions.resizable;
+		var maximizable = options.windowedModeOptions.maximizable;
+		var minimizable = options.windowedModeOptions.minimizable;
 
 		untyped __cpp__('
 			Kore::WindowOptions wo;
@@ -573,6 +576,10 @@ class SystemImpl {
 			wo.rendererOptions.textureFormat = textureFormat;
 			wo.rendererOptions.depthBufferBits = depthBufferBits;
 			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
+			
+			wo.resizable = resizable;
+			wo.maximizable = maximizable;
+			wo.minimizable = minimizable;
 
 			switch (mode) {
 				default: // fall through

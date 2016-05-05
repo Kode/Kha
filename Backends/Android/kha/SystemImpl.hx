@@ -4,6 +4,7 @@ import com.ktxsoftware.kha.KhaActivity;
 import kha.android.Graphics;
 import kha.android.Keyboard;
 import kha.graphics4.Graphics2;
+import android.view.KeyEvent;
 import kha.input.Mouse;
 import kha.input.Surface;
 import kha.System;
@@ -63,7 +64,8 @@ class SystemImpl {
 	}
 
 	public static function requestShutdown(): Void {
-
+		shutdown();
+		untyped __java__("java.lang.System.exit(0)");	
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
@@ -227,6 +229,8 @@ class SystemImpl {
 			keyboard.sendDownEvent(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendDownEvent(Key.ENTER, " ");
+		case 0x00000004: // KeyEvent.KEYCODE_BACK
+			keyboard.sendDownEvent(Key.BACK, " ");
 		default:
 			var char: String;
 			if (shift) {
@@ -248,6 +252,8 @@ class SystemImpl {
 			keyboard.sendUpEvent(Key.BACKSPACE, " ");
 		case 0x00000104:
 			keyboard.sendUpEvent(Key.ENTER, " ");
+		case 0x00000004: // KeyEvent.KEYCODE_BACK
+			keyboard.sendUpEvent(Key.BACK, " ");
 		default:
 			var char: String;
 			if (shift) {
