@@ -4,6 +4,7 @@ import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
 import js.html.Uint8Array;
+import js.html.Float32Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
@@ -30,7 +31,7 @@ class WebGLImage extends Image {
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
 
-	var depthStencilFormat: DepthStencilFormat;
+	private var depthStencilFormat: DepthStencilFormat;
 
 	public static function init() {
 		var canvas: Dynamic = Browser.document.createElement("canvas");
@@ -148,6 +149,10 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			case RGBA32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+			case A32:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, GL.FLOAT, null);
+			case A16:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
@@ -197,6 +202,10 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			case RGBA32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+			case A32:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, image);
+			case A16:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
 			}
@@ -217,10 +226,23 @@ class WebGLImage extends Image {
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 	}
 
-	public var bytes: Bytes;
+	private function formatByteSize(format: TextureFormat): Int {
+		return switch(format) {
+			case RGBA32: 4;
+			case L8: 1;
+			case RGBA128: 16;
+			case DEPTH16: 2;
+			case RGBA64: 8;
+			case A32: 4;
+			case A16: 2;
+			default: 4;
+		}
+	}
 
+	public var bytes: Bytes;
+	
 	override public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
+		bytes = Bytes.alloc(formatByteSize(format) * width * height);
 		return bytes;
 	}
 
@@ -252,7 +274,13 @@ class WebGLImage extends Image {
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
 				}
 			case RGBA128:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, new Uint8Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, new Float32Array(bytes.getData()));
+			case RGBA64:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, new Float32Array(bytes.getData()));
+			case A32:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, GL.FLOAT, new Float32Array(bytes.getData()));
+			case A16:
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, new Float32Array(bytes.getData()));
 			case RGBA32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 			default:
