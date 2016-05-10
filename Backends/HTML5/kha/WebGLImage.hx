@@ -226,7 +226,7 @@ class WebGLImage extends Image {
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 	}
 
-	private function formatByteSize(format: TextureFormat): Int {
+	private static function formatByteSize(format: TextureFormat): Int {
 		return switch(format) {
 			case RGBA32: 4;
 			case L8: 1;
@@ -236,6 +236,17 @@ class WebGLImage extends Image {
 			case A32: 4;
 			case A16: 2;
 			default: 4;
+		}
+	}
+	
+	public function bytesToArray(bytes: Bytes): Dynamic {
+		return switch(format) {
+			case RGBA32, L8:
+				new Uint8Array(bytes.getData());
+			case RGBA128, RGBA64, A32, A16:
+				new Float32Array(bytes.getData());
+			default:
+				new Uint8Array(bytes.getData());
 		}
 	}
 
@@ -260,7 +271,7 @@ class WebGLImage extends Image {
 
 			switch (format) {
 			case L8:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.LUMINANCE, width, height, 0, GL.LUMINANCE, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.LUMINANCE, width, height, 0, GL.LUMINANCE, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 
 				if (SystemImpl.gl.getError() == 1282) { // no LUMINANCE support in IE11
 					var rgbaBytes = Bytes.alloc(width * height * 4);
@@ -271,20 +282,20 @@ class WebGLImage extends Image {
 						rgbaBytes.set(y * width * 4 + x * 4 + 2, value);
 						rgbaBytes.set(y * width * 4 + x * 4 + 3, 255);
 					}
-					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(rgbaBytes.getData()));
+					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytesToArray(rgbaBytes));
 				}
 			case RGBA128:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, new Float32Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, bytesToArray(bytes));
 			case RGBA64:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, new Float32Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
 			case A32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, GL.FLOAT, new Float32Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, GL.FLOAT, bytesToArray(bytes));
 			case A16:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, new Float32Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
 			case RGBA32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 			default:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 			}
 
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);

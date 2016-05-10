@@ -21,6 +21,10 @@ class Image {
 		return null;
 	}
 	
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+	
 	public function new(filename: String) {
 		texture = new Texture2D("/Application/resources/" + filename, false);
 	}
