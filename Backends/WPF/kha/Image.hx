@@ -29,6 +29,10 @@ class Image implements Resource {
 		return null;
 	}
 	
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+	
 	public function new(width: Int, height: Int, format: TextureFormat) {
 		myWidth = width;
 		myHeight = height;

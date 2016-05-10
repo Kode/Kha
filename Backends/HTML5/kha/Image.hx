@@ -36,10 +36,12 @@ class Image implements Canvas implements Resource {
 		}
 	}
 	
-	public static function fromFloats(data: haxe.io.Float32Array, width: Int, height: Int, readable: Bool, halfFloat: Bool = false): Image {
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		if (format == null) format = TextureFormat.RGBA32;
+		if (usage == null) usage = Usage.StaticUsage;
 		if (SystemImpl.gl != null) {
-			var img = new WebGLImage(width, height, halfFloat ? TextureFormat.RGBA64 : TextureFormat.RGBA128, false, DepthStencilFormat.NoDepthAndStencil);
-			img.image = data.view;
+			var img = new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
+			img.image = img.bytesToArray(bytes);
 			img.createTexture();
 			return img;
 		}
