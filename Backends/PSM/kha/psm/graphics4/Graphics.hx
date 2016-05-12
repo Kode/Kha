@@ -117,6 +117,10 @@ class Graphics implements kha.graphics4.Graphics {
 			context.SetTexture(0, texture.texture);
 		}
 	}
+	
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 
