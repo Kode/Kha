@@ -24,8 +24,9 @@ class WebGLImage extends Image {
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
-	public var renderBuffer: Dynamic;
+	// public var renderBuffer: Dynamic;
 	public var texture: Dynamic;
+	public var depthTexture: Dynamic;
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -173,19 +174,28 @@ class WebGLImage extends Image {
 			}
 
 			switch (depthStencilFormat) {
-				case NoDepthAndStencil: {}
-				case DepthOnly: {
-					renderBuffer = SystemImpl.gl.createRenderbuffer();
-					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-					SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
-					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
-				}
-				case DepthAutoStencilAuto: 
-					createDepthStencilBuffer();
-				case Depth24Stencil8:
-					createDepthStencilBuffer();
-				case Depth32Stencil8:
-					createDepthStencilBuffer();
+			case NoDepthAndStencil: {}
+			case DepthOnly: {
+				depthTexture = SystemImpl.gl.createTexture();
+				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
+				// renderBuffer = SystemImpl.gl.createRenderbuffer();
+				// SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
+				// SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
+				// SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
+			}
+			case DepthAutoStencilAuto, Depth24Stencil8, Depth32Stencil8:
+				depthTexture = SystemImpl.gl.createTexture();
+				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_STENCIL, realWidth, realHeight, 0, GL.DEPTH_STENCIL, GL.UNSIGNED_SHORT, null);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0); 
+				// renderBuffer = SystemImpl.gl.createRenderbuffer();
+				// SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
+				// SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_STENCIL, realWidth, realHeight);
+				// SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
@@ -213,17 +223,15 @@ class WebGLImage extends Image {
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 	}
 
-	function createDepthStencilBuffer() {
-		renderBuffer = SystemImpl.gl.createRenderbuffer();
-		SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-		SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_STENCIL, realWidth, realHeight);
-		SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
-	}
-
 	public function set(stage: Int): Void {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + stage);
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
+	}
+	
+	public function setDepth(stage: Int): Void {
+		SystemImpl.gl.activeTexture(GL.TEXTURE0 + stage);
+		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
 	}
 
 	private static function formatByteSize(format: TextureFormat): Int {

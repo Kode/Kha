@@ -29,6 +29,7 @@ interface Graphics {
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
 	
 	function setTexture(unit: TextureUnit, texture: Image): Void;
+	function setTextureDepth(unit: TextureUnit, texture: Image): Void;
 	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	//function maxTextureSize(): Int;
