@@ -8,22 +8,26 @@ import kha.math.FastVector4;
 import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 
-class Float32Array {
+abstract Float32Array(js.html.Float32Array) {
 	public inline function new(elements: Int) {
-		
+		this = new js.html.Float32Array(elements);
 	}
 	
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
-		return 0;
+		return this.length;
 	}
 	
 	public inline function set(index: Int, value: FastFloat): FastFloat {
-		return 0;
+		return this[index] = value;
 	}
 	
 	public inline function get(index: Int): FastFloat {
-		return 0;
+		return this[index];
+	}
+	
+	public inline function data(): js.html.Float32Array {
+		return this;
 	}
 }

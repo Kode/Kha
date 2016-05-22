@@ -9,7 +9,7 @@ extern class Krom {
     static function setIndices(buffer: Dynamic, indices: Array<Int>): Void;
     static function setIndexBuffer(buffer: Dynamic): Void;
     static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>): Dynamic;
-    static function setVertices(buffer: Dynamic, vertices: Array<Float>): Void;
+    static function setVertices(buffer: Dynamic, vertices: kha.arrays.Float32Array): Void;
     static function setVertexBuffer(buffer: Dynamic): Void;
     static function drawIndexedVertices(): Void;
     

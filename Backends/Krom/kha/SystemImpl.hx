@@ -42,11 +42,11 @@ class SystemImpl {
 	}
 	
 	public static function windowWidth(id: Int): Int {
-		return 640;
+		return 1024;
 	}
 	
 	public static function windowHeight(id: Int): Int {
-		return 480;
+		return 768;
 	}
 	
 	public static function getVsync(): Bool {

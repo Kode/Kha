@@ -7,7 +7,7 @@ import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	private var buffer: Dynamic;
-	private var vertices: Array<Float>;
+	private var vertices: Float32Array;
 	private var vertexCount: Int;
 	private var structure: VertexStructure;
 	
@@ -15,11 +15,11 @@ class VertexBuffer {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
 		buffer = Krom.createVertexBuffer(vertexCount, structure.elements);
-		vertices = [];
+		vertices = new Float32Array(vertexCount * Std.int(structure.byteSize() / 4));
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return null;
+		return vertices;
 	}
 	
 	public function unlock(): Void {
