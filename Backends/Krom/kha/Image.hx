@@ -6,6 +6,16 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
+	public var texture_: Dynamic;
+	
+	private function new(texture: Dynamic) {
+		texture_ = texture;
+	}
+	
+	public static function _fromTexture(texture: Dynamic): Image {
+		return new Image(texture);
+	}
+	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
@@ -17,13 +27,13 @@ class Image implements Canvas implements Resource {
 	public static var maxSize(get, null): Int;
 
 	public static function get_maxSize(): Int {
-		return 0;
+		return 4096;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
 	public static function get_nonPow2Supported(): Bool {
-		return false;
+		return true;
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
@@ -34,13 +44,13 @@ class Image implements Canvas implements Resource {
 	public function generateMipmaps(levels: Int): Void { }
 	public function setMipmaps(mipmaps: Array<Image>): Void { }
 	public var width(get, null): Int;
-	private function get_width(): Int { return 0; }
+	private function get_width(): Int { return texture_.width; }
 	public var height(get, null): Int;
-	private function get_height(): Int { return 0; }
+	private function get_height(): Int { return texture_.height; }
 	public var realWidth(get, null): Int;
-	private function get_realWidth(): Int { return 0; }
+	private function get_realWidth(): Int { return texture_.realWidth; }
 	public var realHeight(get, null): Int;
-	private function get_realHeight(): Int { return 0; }
+	private function get_realHeight(): Int { return texture_.realHeight; }
 	public var g1(get, null): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
 	public var g2(get, null): kha.graphics2.Graphics;

@@ -9,13 +9,58 @@ import kha.input.Surface;
 import kha.System;
 
 class SystemImpl {
+	private static var start: Float;
 	private static var framebuffer: Framebuffer;
+	private static var keyboard: Keyboard;
+	private static var mouse: Mouse;
 	
 	private static function renderCallback(): Void {
+		Scheduler.executeFrame();
 		System.render(0, framebuffer);
 	}
 	
+	private static function convertCode(code: Int): Key {
+		switch (code) {
+			case 0x00000112:
+				return Key.LEFT;
+			case 0x00000113:
+				return Key.UP;
+			case 0x00000114:
+				return Key.RIGHT;
+			case 0x00000115:
+				return Key.DOWN;
+			case 0x00000104, 0x00000105:
+				return Key.ENTER;
+			default:
+				return null;
+		}
+	}
+	
+	private static function keyboardDownCallback(code: Int): Void {
+		var key = convertCode(code);
+		if (key != null) keyboard.sendDownEvent(key, " ");
+	}
+	
+	private static function keyboardUpCallback(code: Int): Void {
+		var key = convertCode(code);
+		if (key != null) keyboard.sendUpEvent(key, " ");
+	}
+	
+	private static function mouseDownCallback(button: Int, x: Int, y: Int): Void {
+		mouse.sendDownEvent(0, button, x, y);
+	}
+	
+	private static function mouseUpCallback(button: Int, x: Int, y: Int): Void {
+		mouse.sendUpEvent(0, button, x, y);
+	}
+	
+	private static function mouseMoveCallback(x: Int, y: Int): Void {
+		mouse.sendMoveEvent(0, x, y, 0, 0);
+	}
+	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		start = Krom.getTime();
+		
 		Scheduler.init();
 		Shaders.init();
 		
@@ -23,6 +68,15 @@ class SystemImpl {
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.graphics4.Graphics2(framebuffer), g4);
 		Krom.setCallback(renderCallback);
+		
+		keyboard = new Keyboard();
+		mouse = new Mouse();
+		
+		Krom.setKeyboardDownCallback(keyboardDownCallback);
+		Krom.setKeyboardUpCallback(keyboardUpCallback);
+		Krom.setMouseDownCallback(mouseDownCallback);
+		Krom.setMouseUpCallback(mouseUpCallback);
+		Krom.setMouseMoveCallback(mouseMoveCallback);
 		
 		Scheduler.start();
 		
@@ -38,7 +92,7 @@ class SystemImpl {
 	}
 	
 	public static function getTime(): Float {
-		return 0;
+		return Krom.getTime() - start;
 	}
 	
 	public static function windowWidth(id: Int): Int {
@@ -66,11 +120,11 @@ class SystemImpl {
 	}
 	
 	public static function getMouse(num: Int): Mouse {
-		return null;
+		return mouse;
 	}
 	
 	public static function getKeyboard(num: Int): Keyboard {
-		return null;
+		return keyboard;
 	}
 		
 	public static function lockMouse(): Void {

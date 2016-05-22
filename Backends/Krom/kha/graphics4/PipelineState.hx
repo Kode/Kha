@@ -22,10 +22,10 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return null;
+		return Krom.getConstantLocation(program, name);
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		return null;
+		return Krom.getTextureUnit(program, name);
 	}
 }

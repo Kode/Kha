@@ -92,7 +92,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-
+		if (texture != null) {
+			Krom.setTexture(stage, texture.texture_);
+		}
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -112,27 +114,27 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
-
+		Krom.setBool(location, value);
 	}
 
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
-
+		Krom.setInt(location, value);
 	}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
-
+		Krom.setFloat(location, value);
 	}
 
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void {
-
+		Krom.setFloat2(location, value1, value2);
 	}
 
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void {
-
+		Krom.setFloat3(location, value1, value2, value3);
 	}
 
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void {
-
+		Krom.setFloat4(location, value1, value2, value3, value4);
 	}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
@@ -140,19 +142,19 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
-
+		Krom.setFloat2(location, value.x, value.y);
 	}
 
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
-
+		Krom.setFloat3(location, value.x, value.y, value.z);
 	}
 
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
-
+		Krom.setFloat4(location, value.x, value.y, value.z, value.w);
 	}
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-
+		Krom.setMatrix(location, matrix);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
