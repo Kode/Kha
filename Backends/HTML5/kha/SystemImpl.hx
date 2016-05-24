@@ -273,7 +273,7 @@ class SystemImpl {
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
 			frame = new Framebuffer(0, null, null, g4);
-			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
+			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), new kha.graphics1.Graphics4(frame));
 		}
 		else {
 			var g2 = new CanvasGraphics(canvas.getContext("2d"), System.windowWidth(), System.windowHeight());
