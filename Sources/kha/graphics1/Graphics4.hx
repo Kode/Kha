@@ -169,10 +169,14 @@ class Graphics4 implements kha.graphics4.Graphics {
 			var _2offset = _2index * vertexStride;
 			var _3offset = _3index * vertexStride;
 			
-			var _1: FastVector3 = new FastVector3(vertexBuffer._data.get(_1offset + 0), vertexBuffer._data.get(_1offset + 1), vertexBuffer._data.get(_1offset + 2));
-			var _2: FastVector3 = new FastVector3(vertexBuffer._data.get(_2offset + 0), vertexBuffer._data.get(_2offset + 1), vertexBuffer._data.get(_2offset + 2));
-			var _3: FastVector3 = new FastVector3(vertexBuffer._data.get(_3offset + 0), vertexBuffer._data.get(_3offset + 1), vertexBuffer._data.get(_3offset + 2));
+			var pos_1: FastVector3 = new FastVector3(vertexBuffer._data.get(_1offset + 0), vertexBuffer._data.get(_1offset + 1), vertexBuffer._data.get(_1offset + 2));
+			var pos_2: FastVector3 = new FastVector3(vertexBuffer._data.get(_2offset + 0), vertexBuffer._data.get(_2offset + 1), vertexBuffer._data.get(_2offset + 2));
+			var pos_3: FastVector3 = new FastVector3(vertexBuffer._data.get(_3offset + 0), vertexBuffer._data.get(_3offset + 1), vertexBuffer._data.get(_3offset + 2));
 
+			var _1 = vertexShader(pos_1);
+			var _2 = vertexShader(pos_2);
+			var _3 = vertexShader(pos_3);
+			
 			var minx = min(_1.x, _2.x, _3.x);
 			var maxx = max(_1.x, _2.x, _3.x);
 			var miny = min(_1.y, _2.y, _3.y);
@@ -189,7 +193,8 @@ class Graphics4 implements kha.graphics4.Graphics {
 			for (y in minyp...maxyp) for (x in minxp...maxxp) {
 				var bc_screen: FastVector3 = barycentric(xtopixel(_1.x), ytopixel(_1.y), xtopixel(_2.x), ytopixel(_2.y), xtopixel(_3.x), ytopixel(_3.y), x, y);
 				if (bc_screen.x < 0 || bc_screen.y < 0 || bc_screen.z < 0) continue;
-				g1.setPixel(x, y, Color.Red);
+				var floatcolor = fragmentShader();
+				g1.setPixel(x, y, Color.fromFloats(floatcolor.z, floatcolor.y, floatcolor.x, floatcolor.w));
 			}
 			
 			index += 3;
@@ -202,6 +207,22 @@ class Graphics4 implements kha.graphics4.Graphics {
 		var u: FastVector3 = a.cross(b);
 		if (Math.abs(u.z) < 1) return new FastVector3(-1, 1, 1); // degenerate 
 		return new FastVector3(1.0 - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z); 
+	}
+
+	private static function vertexShader(pos: FastVector3): FastVector4 {
+		var gl_Position: FastVector4;
+		
+		gl_Position = new FastVector4(pos.x, pos.y, 0.5, 1.0);
+		
+		return gl_Position;
+	}
+
+	private static function fragmentShader(): FastVector4 {
+		var gl_FragColor: FastVector4;
+		
+		gl_FragColor = new FastVector4(1.0, 0.0, 0.0, 1.0);
+		
+		return gl_FragColor;
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
