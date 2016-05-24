@@ -31,16 +31,18 @@ import kha.math.Vector3;
 import kha.math.Vector4;
 
 class Graphics implements kha.graphics4.Graphics {
+	private var renderTarget: Image;
+	
 	public function new(renderTarget: Image = null) {
-
+		this.renderTarget = renderTarget;
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-
+		Krom.begin(renderTarget);
 	}
 
 	public function end(): Void {
-
+		Krom.end();
 	}
 
 	public function flush(): Void {
@@ -94,6 +96,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture != null) {
 			Krom.setTexture(stage, texture.texture_);
+			//TODO: Set render target
 		}
 	}
 
@@ -158,7 +161,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-        Krom.drawIndexedVertices();
+        Krom.drawIndexedVertices(start, count);
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
