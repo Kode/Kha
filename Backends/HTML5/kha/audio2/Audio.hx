@@ -1,10 +1,18 @@
 package kha.audio2;
 
 import js.Browser;
+import js.html.Document;
 import js.html.URL;
+import js.html.Window;
+import js.html.audio.AudioBuffer;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
+import js.html.audio.ConvolverNode;
+import js.html.audio.GainNode;
 import js.html.audio.ScriptProcessorNode;
+import kha.Blob;
+import kha.audio2.hrtf.Container;
+import kha.audio2.hrtf.Panner;
 import kha.js.AEAudioChannel;
 import kha.js.WebAudioSound;
 import kha.Sound;
@@ -14,9 +22,21 @@ class Audio {
 	@:noCompletion public static var _context: AudioContext;
 	private static var processingNode: ScriptProcessorNode;
 	
+	private static function initHrtf(): Void {
+		var hrtfContainer = new Container();
+		hrtfContainer.loadHrir(Blob.alloc(0));
+		var sourceNode = _context.createMediaElementSource(cast Browser.document.getElementById("player"));
+		var gain = _context.createGain();
+		gain.gain.value = 0.3;
+		sourceNode.connect(gain);
+		var panner = new Panner(_context, gain, hrtfContainer);
+		panner.connect(_context.destination);
+	}
+	
 	private static function initContext(): Void {
 		try {
 			_context = new AudioContext();
+			initHrtf();
 			return;
 		}
 		catch (e: Dynamic) {
@@ -24,6 +44,7 @@ class Audio {
 		}
 		try {
 			untyped __js__('this._context = new webkitAudioContext();');
+			initHrtf();
 			return;
 		}
 		catch (e: Dynamic) {
