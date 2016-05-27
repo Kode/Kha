@@ -1,5 +1,6 @@
 package kha.audio2;
 
+import haxe.io.Float32Array;
 import js.Browser;
 import js.html.Document;
 import js.html.URL;
@@ -25,24 +26,161 @@ class AudioTrack {
 	public var position: Vector3; // used if speaker != -1
 	public var speaker: Int = -1;
 	
-	public function new() { }
+	private var buffer: Buffer;
+	private var processingNode: ScriptProcessorNode;
+	private var panner: Panner;
+	
+	public function new() {
+		var bufferSize = 1024 * 2;
+		buffer = new Buffer(bufferSize * 4, 2, Std.int(Audio._context.sampleRate));
+		
+		processingNode = Audio._context.createScriptProcessor(bufferSize, 0, 1);
+		processingNode.onaudioprocess = function (e: AudioProcessingEvent) {
+			if (callback == null) {
+				var output: Array<js.html.Float32Array> = [];
+				for (channel in 0...e.outputBuffer.numberOfChannels) {
+					output[channel] = e.outputBuffer.getChannelData(channel);
+				}
+
+				for (i in 0...e.outputBuffer.length) {
+					for (channel in 0...e.outputBuffer.numberOfChannels) {
+						output[channel][i] = 0;
+					}
+				}
+				return;
+			}
+			
+			var position: Vector3;
+			if (speaker >= 0) {
+				position = Audio.speakerPositions[speaker];
+			}
+			else {
+				position = this.position;
+			}
+
+			if (Audio.headphones) {
+				var cords = Utils.cartesianToInteraural(position.x, position.y, position.z);
+				panner.update(cords.azm, cords.elv);
+				
+				var output = e.outputBuffer.getChannelData(0);
+				
+				callback(e.outputBuffer.length, buffer);
+				for (i in 0...e.outputBuffer.length) {
+					output[0] = buffer.data.get(buffer.readLocation);
+					buffer.readLocation += 1;
+					buffer.readLocation += 1; // ignore stereo
+					if (buffer.readLocation >= buffer.size) {
+						buffer.readLocation = 0;
+					}
+				}
+			}
+			else {
+				var output: Array<js.html.Float32Array> = [];
+				for (channel in 0...e.outputBuffer.numberOfChannels) {
+					output[channel] = e.outputBuffer.getChannelData(channel);
+				}
+				
+				var closestLeftIndex = -1;
+				var closestLeft: Float = Math.NEGATIVE_INFINITY;
+				var closestLeftZ: Float = Math.NEGATIVE_INFINITY;
+				var closestRightIndex = -1;
+				var closestRight: Float = Math.POSITIVE_INFINITY;
+				var closestRightZ: Float = Math.POSITIVE_INFINITY;
+				for (channel in 0...e.outputBuffer.numberOfChannels) {
+					var pos = Audio.speakerPositions[channel];
+					if (pos.x < position.x && (pos.x > closestLeft || (pos.x == closestLeft && Math.abs(position.z - pos.z) < Math.abs(position.z - closestLeftZ)))) {
+						closestLeft = pos.x;
+						closestLeftZ = pos.z;
+						closestLeftIndex = channel;
+					}
+					if (pos.x > position.x && (pos.x < closestRight || (pos.x == closestRight && Math.abs(position.z - pos.z) < Math.abs(position.z - closestRightZ)))) {
+						closestRight = pos.x;
+						closestRightZ = pos.z;
+						closestRightIndex = channel;
+					}
+				}
+				
+				var closestFrontIndex = -1;
+				var closestFront: Float = Math.POSITIVE_INFINITY;
+				var closestFrontX: Float = Math.POSITIVE_INFINITY;
+				var closestBackIndex = -1;
+				var closestBack: Float = Math.NEGATIVE_INFINITY;
+				var closestBackX: Float = Math.NEGATIVE_INFINITY;
+				for (channel in 0...e.outputBuffer.numberOfChannels) {
+					var pos = Audio.speakerPositions[channel];
+					if (pos.z > position.z && (pos.z < closestFront || (pos.z == closestFront && Math.abs(position.x - pos.x) < Math.abs(position.x - closestFrontX)))) {
+						closestFront = pos.z;
+						closestFrontX = pos.x;
+						closestFrontIndex = channel;
+					}
+					if (pos.z < position.z && (pos.z > closestBack || (pos.z == closestBack && Math.abs(position.x - pos.x) < Math.abs(position.x - closestBackX)))) {
+						closestBack = pos.z;
+						closestBackX = pos.x;
+						closestBackIndex = channel;
+					}
+				}
+				
+				var xdistance = closestRight - closestLeft;
+				var left = (position.x - closestRight) / xdistance;
+				var right = (closestRight - position.x) / xdistance;
+				
+				var zdistance = closestFront - closestBack;
+				var front = (position.z - closestBack) / zdistance;
+				var back = (closestFront - position.z) / zdistance;
+				
+				left /= 2;
+				right /= 2;
+				front /= 2;
+				back /= 2;
+				
+				callback(e.outputBuffer.length, buffer);
+				for (channel in 0...e.outputBuffer.numberOfChannels) {
+					for (i in 0...e.outputBuffer.length) {
+						output[channel][i] = 0;
+					}
+				}
+				for (i in 0...e.outputBuffer.length) {
+					output[closestLeftIndex][i] = left * buffer.data.get(buffer.readLocation);
+					output[closestRightIndex][i] = right * buffer.data.get(buffer.readLocation);
+					output[closestFrontIndex][i] = front * buffer.data.get(buffer.readLocation);
+					output[closestBackIndex][i] = back * buffer.data.get(buffer.readLocation);
+					buffer.readLocation += 1;
+					buffer.readLocation += 1; // ignore stereo
+					if (buffer.readLocation >= buffer.size) {
+						buffer.readLocation = 0;
+					}
+				}
+			}
+		}
+		
+		if (Audio.headphones) {
+			var gain = Audio._context.createGain();
+			gain.gain.value = 0.3;
+			processingNode.connect(gain);
+			panner = new Panner(Audio._context, gain, Audio._hrtfContainer);
+			panner.connect(Audio._context.destination);
+		}
+		else processingNode.connect(Audio._context.destination);
+	}
 	
 	public static var callback: Int->Buffer->Void;
 }
 
 class Audio {
+	public static var headphones: Bool = true;
+	public static var speakerPositions: Array<Vector3>;
 	private static var buffer: Buffer;
 	@:noCompletion public static var _context: AudioContext;
+	@:noCompletion public static var _hrtfContainer: Container;
 	private static var processingNode: ScriptProcessorNode;
 	
-	private static function initHrtf(hrir: Blob, sourceNode: Dynamic): Void {
-		var hrtfContainer = new Container();
-		hrtfContainer.loadHrir(hrir);
-		//var sourceNode = _context.createMediaElementSource(cast Browser.document.getElementById("player"));
-		var gain = _context.createGain();
+	public static function _initHrtf(hrir: Blob): Void { //, sourceNode: Dynamic): Void {
+		_hrtfContainer = new Container();
+		_hrtfContainer.loadHrir(hrir);
+		/*var gain = _context.createGain();
 		gain.gain.value = 0.3;
 		sourceNode.connect(gain);
-		var panner = new Panner(_context, gain, hrtfContainer);
+		var panner = new Panner(_context, gain, _hrtfContainer);
 		panner.connect(_context.destination);
 		
 		var t = 0.0;
@@ -54,10 +192,12 @@ class Audio {
 			t += 0.05;
 			var cords = Utils.cartesianToInteraural(x, y, z);
 			panner.update(cords.azm, cords.elv);			
-		}, 0, 0.05);
+		}, 0, 0.05);*/
 	}
 	
 	private static function initContext(): Void {
+		speakerPositions = [new Vector3( -1, 0, 1), new Vector3(1, 0, 1), new Vector3( -1, 0, -1), new Vector3(1, 0, -1), new Vector3(0, 0, 1)];
+
 		try {
 			_context = new AudioContext();
 			return;
@@ -112,7 +252,7 @@ class Audio {
 		//processingNode.connect(_context.destination);
 		
 		Assets.blobs.kemar_L_binLoad(function () {
-			initHrtf(Assets.blobs.kemar_L_bin, processingNode);
+			_initHrtf(Assets.blobs.kemar_L_bin);// , processingNode);
 		});
 		
 		return true;
