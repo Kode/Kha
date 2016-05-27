@@ -1,7 +1,7 @@
 package kha.audio2.hrtf;
 
 class Utils {
-	public static function cartesianToInteraural(x1, x2, x3) {
+	public static function cartesianToInteraural(x1: Float, x2: Float, x3: Float) {
 		var r = Math.sqrt(x1 * x1 + x2 * x2 + x3 * x3);
 		var azm = rad2deg(Math.asin(x1 / r));
 		var elv = rad2deg(Math.atan2(x3, x2));
@@ -19,11 +19,11 @@ class Utils {
 		return { x1: x1, x2: x2, x3: x3 };
 	}
 
-	public static function deg2rad(deg) {
+	public static function deg2rad(deg: Float) {
 		return deg * Math.PI / 180;
 	}
 
-	public static function rad2deg(rad) {
+	public static function rad2deg(rad: Float) {
 		return rad * 180 / Math.PI;
 	}
 }

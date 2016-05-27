@@ -10,33 +10,56 @@ import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ConvolverNode;
 import js.html.audio.GainNode;
 import js.html.audio.ScriptProcessorNode;
+import kha.Assets;
 import kha.Blob;
+import kha.Scheduler;
 import kha.audio2.hrtf.Container;
 import kha.audio2.hrtf.Panner;
+import kha.audio2.hrtf.Utils;
 import kha.js.AEAudioChannel;
 import kha.js.WebAudioSound;
 import kha.Sound;
+import kha.math.Vector3;
+
+class AudioTrack {
+	public var position: Vector3; // used if speaker != -1
+	public var speaker: Int = -1;
+	
+	public function new() { }
+	
+	public static var callback: Int->Buffer->Void;
+}
 
 class Audio {
 	private static var buffer: Buffer;
 	@:noCompletion public static var _context: AudioContext;
 	private static var processingNode: ScriptProcessorNode;
 	
-	private static function initHrtf(): Void {
+	private static function initHrtf(hrir: Blob, sourceNode: Dynamic): Void {
 		var hrtfContainer = new Container();
-		hrtfContainer.loadHrir(Blob.alloc(0));
-		var sourceNode = _context.createMediaElementSource(cast Browser.document.getElementById("player"));
+		hrtfContainer.loadHrir(hrir);
+		//var sourceNode = _context.createMediaElementSource(cast Browser.document.getElementById("player"));
 		var gain = _context.createGain();
 		gain.gain.value = 0.3;
 		sourceNode.connect(gain);
 		var panner = new Panner(_context, gain, hrtfContainer);
 		panner.connect(_context.destination);
+		
+		var t = 0.0;
+		var x, y, z;
+		Scheduler.addTimeTask(function () {
+			x = Math.sin(t);
+			y = Math.cos(t);
+			z = 0;
+			t += 0.05;
+			var cords = Utils.cartesianToInteraural(x, y, z);
+			panner.update(cords.azm, cords.elv);			
+		}, 0, 0.05);
 	}
 	
 	private static function initContext(): Void {
 		try {
 			_context = new AudioContext();
-			initHrtf();
 			return;
 		}
 		catch (e: Dynamic) {
@@ -44,7 +67,6 @@ class Audio {
 		}
 		try {
 			untyped __js__('this._context = new webkitAudioContext();');
-			initHrtf();
 			return;
 		}
 		catch (e: Dynamic) {
@@ -87,11 +109,26 @@ class Audio {
 				}
 			}
 		}
-		processingNode.connect(_context.destination);
+		//processingNode.connect(_context.destination);
+		
+		Assets.blobs.kemar_L_binLoad(function () {
+			initHrtf(Assets.blobs.kemar_L_bin, processingNode);
+		});
+		
 		return true;
 	}
 
 	public static var audioCallback: Int->Buffer->Void;
+	
+	private static var tracks: Array<AudioTrack> = [];
+	
+	public static function addTrack(track: AudioTrack): Void {
+		tracks.push(track);
+	}
+	
+	public static function removeTrack(track: AudioTrack): Void {
+		tracks.remove(track);
+	}
 	
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		//var source = _context.createMediaStreamSource(cast sound.compressedData.getData());
