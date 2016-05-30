@@ -16,7 +16,7 @@ import kha.Blob;
 
 @:headerClassCode("Kore::Shader* shader;")
 class VertexShader {
-	public function new(source: Blob) {
+	public function new(source: Blob, file: String) {
 		initVertexShader(source);
 		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
 	}

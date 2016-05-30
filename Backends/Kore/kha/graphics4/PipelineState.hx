@@ -107,8 +107,8 @@ class PipelineState extends PipelineStateBase {
 	
 	public function unused(): Void {
 		var include1 = new VertexElement("include", VertexData.Float2);
-		var include2 = new VertexShader(null);
-		var include3 = new FragmentShader(null);
+		var include2 = new VertexShader(null, null);
+		var include3 = new FragmentShader(null, null);
 		var include4 = new GeometryShader(null);
 		var include5 = new TesselationControlShader(null);
 		var include6 = new TesselationEvaluationShader(null);

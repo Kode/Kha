@@ -7,7 +7,7 @@ class FragmentShader {
 	public var type: Int;
 	public var shader: Int;
 	
-	public function new(source: Blob) {
+	public function new(source: Blob, file: String) {
 		this.source = source.toString();
 		this.type = GLES20.GL_FRAGMENT_SHADER;
 		this.shader = -1;

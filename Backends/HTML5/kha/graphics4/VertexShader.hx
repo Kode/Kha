@@ -7,7 +7,7 @@ class VertexShader {
 	public var type: Dynamic;
 	public var shader: Dynamic;
 	
-	public function new(source: Blob) {
+	public function new(source: Blob, file: String) {
 		this.source = source.toString();
 		this.type = GL.VERTEX_SHADER;
 		this.shader = null;

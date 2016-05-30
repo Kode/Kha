@@ -295,14 +295,6 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 
-	public function createVertexShader(source: Blob): kha.graphics4.VertexShader {
-		return new VertexShader(source);
-	}
-
-	public function createFragmentShader(source: Blob): kha.graphics4.FragmentShader {
-		return new FragmentShader(source);
-	}
-
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
