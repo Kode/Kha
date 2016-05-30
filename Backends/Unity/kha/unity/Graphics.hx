@@ -121,6 +121,10 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		pipeline.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
+	
+	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {
+	
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 

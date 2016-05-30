@@ -228,6 +228,10 @@ class Graphics implements kha.graphics4.Graphics {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
 		}
 	}
+	
+	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+		cast(texture, WebGLImage).setDepth(cast(stage, TextureUnit).value);
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) {

@@ -274,6 +274,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
+	
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+			
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 

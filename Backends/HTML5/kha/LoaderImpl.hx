@@ -4,14 +4,16 @@ import js.Boot;
 import js.Browser;
 import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
+import js.Lib;
+import js.html.XMLHttpRequest;
+import haxe.io.Bytes;
+import haxe.io.BytesData;
 import kha.FontStyle;
 import kha.Blob;
 import kha.js.WebAudioSound;
 import kha.Kravur;
-import haxe.io.Bytes;
-import haxe.io.BytesData;
-import js.Lib;
-import js.html.XMLHttpRequest;
+import kha.graphics4.TextureFormat;
+import kha.graphics4.Usage;
 
 using StringTools;
 
@@ -25,7 +27,7 @@ class LoaderImpl {
 		if (StringTools.endsWith(desc.files[0], ".hdr")) {
 			loadBlobFromDescription(desc, function(blob) {
 				var hdrImage = kha.internal.HdrFormat.parse(blob.toBytes());
-				done(Image.fromFloats(hdrImage.data, hdrImage.width, hdrImage.height, readable));
+				done(Image.fromBytes(hdrImage.data.view.buffer, hdrImage.width, hdrImage.height, TextureFormat.RGBA128, readable ? Usage.DynamicUsage : Usage.StaticUsage));
 			});
 		}
 		else {

@@ -36,6 +36,10 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true, depthStencil, false);
 	}
+	
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencil: DepthStencilFormat, readable: Bool) {
 		myWidth = width;

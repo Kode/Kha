@@ -17,6 +17,12 @@ extern class Image implements Canvas implements Resource {
  	 * @param usage		If you plan to change the vertex after or not, from Usage, default = StaticUsage.
 	 */
 	public static function create(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage): Image;
+
+	/**
+	 * Create a new image instance from bytes.
+	 */
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage): Image;
+
 	/**
 	 * Create a new image instance and sets things up so you can render to the image.
 	 *
