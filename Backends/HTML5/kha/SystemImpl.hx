@@ -51,11 +51,17 @@ class SystemImpl {
 			performance = untyped __js__("window.Date");
 		}
 	}
+	
+	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
+		Browser.console.error(error.stack);
+		return true;
+	}
 
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		SystemImpl.options = options;
         #if sys_debug_html5
-        // Wait a second so the debugger can attach
+        Browser.window.onerror = cast errorHandler;
+		// Wait a second so the debugger can attach
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
         Browser.window.setTimeout(function () {
             init2();
@@ -301,7 +307,7 @@ class SystemImpl {
 		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
 
 		function animate(timestamp) {
-			var window : Dynamic = Browser.window;
+			var window: Dynamic = Browser.window;
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
