@@ -76,6 +76,10 @@ class Image {
 	public function setMipmaps(mipmaps: Array<Image>): Void {
 		
 	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
 	

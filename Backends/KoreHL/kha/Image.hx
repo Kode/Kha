@@ -223,6 +223,10 @@ class Image implements Canvas implements Resource {
 			untyped __cpp__("texture->setMipmap(image->texture, level)");
 		}*/
 	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
 	
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.types.Bytes, readable: Bool): Pointer { return null; }

@@ -134,6 +134,10 @@ class Image implements Canvas implements Resource {
 
 	}
 
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
+
 	public static var maxSize(get, null): Int;
 
 	public static function get_maxSize(): Int {

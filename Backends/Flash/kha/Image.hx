@@ -226,4 +226,8 @@ class Image implements Canvas implements Resource {
 	public function setMipmaps(mipmaps: Array<Image>): Void {
 
 	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
 }
