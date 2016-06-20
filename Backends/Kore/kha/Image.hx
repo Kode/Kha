@@ -227,4 +227,8 @@ class Image implements Canvas implements Resource {
 			untyped __cpp__("texture->setMipmap(image->texture, level)");
 		}
 	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
 }

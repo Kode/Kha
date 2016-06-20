@@ -253,6 +253,11 @@ class WebGLImage extends Image {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + stage);
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
 	}
+	
+	override public function setDepthStencilFrom(image: Image): Void {
+		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, cast(image, WebGLImage).depthTexture, 0);
+	}
 
 	private static function formatByteSize(format: TextureFormat): Int {
 		return switch(format) {

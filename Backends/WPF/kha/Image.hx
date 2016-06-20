@@ -153,6 +153,10 @@ class Image implements Resource {
 	public function setMipmaps(mipmaps: Array<Image>): Void {
 		
 	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		
+	}
 	
 	public static var maxSize(get, null): Int;
 	
