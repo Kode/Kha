@@ -153,6 +153,14 @@ class Graphics implements kha.graphics4.Graphics {
 			return GL.ONE_MINUS_SRC_ALPHA;
 		case InverseDestinationAlpha:
 			return GL.ONE_MINUS_DST_ALPHA;
+		case SourceColor:
+			return GL.SRC_COLOR;
+		case DestinationColor:
+			return GL.DST_COLOR;
+		case InverseSourceColor:
+			return GL.ONE_MINUS_SRC_COLOR;
+		case InverseDestinationColor:
+			return GL.ONE_MINUS_DST_COLOR;
 		}
 	}
 

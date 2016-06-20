@@ -215,6 +215,8 @@ class Graphics implements kha.graphics4.Graphics {
 				return Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA;
 			case InverseDestinationAlpha:
 				return Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA;
+			default:
+				return Context3DBlendFactor.ZERO;
 		}
 	}
 

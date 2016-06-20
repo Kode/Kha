@@ -8,4 +8,8 @@ enum BlendingFactor {
 	DestinationAlpha;
 	InverseSourceAlpha;
 	InverseDestinationAlpha;
+	SourceColor;
+	DestinationColor;
+	InverseSourceColor;
+	InverseDestinationColor;
 }

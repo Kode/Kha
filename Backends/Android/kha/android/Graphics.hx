@@ -143,6 +143,8 @@ class Graphics implements kha.graphics4.Graphics {
 			return GLES20.GL_ONE_MINUS_SRC_ALPHA;
 		case InverseDestinationAlpha:
 			return GLES20.GL_ONE_MINUS_DST_ALPHA;
+		default:
+			return GLES20.GL_ZERO;
 		}
 	}
 
