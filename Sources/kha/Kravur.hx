@@ -33,7 +33,7 @@ class KravurImage {
 	public var height: Int;
 	private var baseline: Float;
 	
-	public function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector < Stbtt_bakedchar > , pixels: Blob) {
+	public function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector<Stbtt_bakedchar>, pixels: Blob) {
 		mySize = size;
 		this.width = width;
 		this.height = height;
@@ -113,11 +113,18 @@ class Kravur implements Font {
 		this.blob = blob;
 	}
 	
-	public function _get(fontSize: Int): KravurImage {
+	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
 		if (!images.exists(fontSize)) {
+			if (glyphs == null) {
+				glyphs = [];
+				for (i in 32...256) {
+					glyphs.push(i);
+				}
+			}
+			
 			var width: Int = 64;
 			var height: Int = 32;
-			var baked = new Vector<Stbtt_bakedchar>(256 - 32);
+			var baked = new Vector<Stbtt_bakedchar>(glyphs.length);
 			for (i in 0...baked.length) {
 				baked[i] = new Stbtt_bakedchar();
 			}
@@ -129,7 +136,7 @@ class Kravur implements Font {
 				if (height < width) height *= 2;
 				else width *= 2;
 				pixels = Blob.alloc(width * height);
-				status = StbTruetype.stbtt_BakeFontBitmap(blob, 0, fontSize, pixels, width, height, 32, 256 - 32, baked);
+				status = StbTruetype.stbtt_BakeFontBitmap(blob, 0, fontSize, pixels, width, height, glyphs, baked);
 			}
 			
 			// TODO: Scale pixels down if they exceed the supported texture size

@@ -78,6 +78,16 @@ class Graphics {
 		return myFontSize = value;
 	}
 	
+	public var fontGlyphs(get, set): Array<Int>;
+	
+	private function get_fontGlyphs(): Array<Int> {
+		return myFontGlyphs;
+	}
+	
+	private function set_fontGlyphs(value: Array<Int>): Array<Int> {
+		return myFontGlyphs = value;
+	}
+	
 	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
 	
 	public function pushTransformation(transformation: FastMatrix3): Void {
@@ -172,6 +182,7 @@ class Graphics {
 	private var transformations: Array<FastMatrix3>;
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;
+	private var myFontGlyphs: Array<Int>;
 	
 	public function new() {
 		transformations = new Array<FastMatrix3>();
@@ -179,6 +190,10 @@ class Graphics {
 		opacities = new Array<Float>();
 		opacities.push(1);
 		myFontSize = 12;
+		myFontGlyphs = [];
+		for (i in 32...256) {
+			myFontGlyphs.push(i);
+		}
 		#if sys_g4
 		pipe = null;
 		#end

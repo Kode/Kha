@@ -738,8 +738,8 @@ class TextShaderPainter {
 		text = null;
 	}
 	
-	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
-		var font = this.font._get(fontSize);
+	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
+		var font = this.font._get(fontSize, fontGlyphs);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -748,7 +748,7 @@ class TextShaderPainter {
 		var ypos = y;
 		startString(text);
 		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(charCodeAt(i) - 32, xpos, ypos);
+			var q = font.getBakedQuad(fontGlyphs[charCodeAt(i)], xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -942,7 +942,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, opacity, color, x, y, transformation);
+		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs);
 	}
 
 	override public function get_font(): Font {

@@ -1598,7 +1598,7 @@ class StbTruetype {
 	public static function stbtt_BakeFontBitmap(data: Blob, offset: Int, // font location (use offset=0 for plain .ttf)
                                 pixel_height: Float,                      // height of font in pixels
                                 pixels: Blob, pw: Int, ph: Int,          // bitmap to be filled in
-                                first_char: Int, num_chars: Int,          // characters to bake
+                                chars: Array<Int>,          // characters to bake
                                 chardata: Vector<Stbtt_bakedchar>): Int {
 		var scale: Float;
 		var x: Int,y: Int,bottom_y: Int;
@@ -1612,9 +1612,10 @@ class StbTruetype {
 
 		scale = stbtt_ScaleForPixelHeight(f, pixel_height);
 
-		for (i in 0...num_chars) {
+		var i = 0;
+		for (index in chars) {
 			var advance: Int, lsb: Int, x0: Int,y0: Int,x1: Int,y1: Int,gw: Int,gh: Int;
-			var g: Int = stbtt_FindGlyphIndex(f, first_char + i);
+			var g: Int = stbtt_FindGlyphIndex(f, index);
 			var metrics = stbtt_GetGlyphHMetrics(f, g);
 			advance = metrics.advanceWidth;
 			lsb = metrics.leftSideBearing;
@@ -1643,6 +1644,7 @@ class StbTruetype {
 			x = x + gw + 1;
 			if (y+gh+1 > bottom_y)
 				bottom_y = y+gh+1;
+			++i;
 		}
 		return bottom_y;
 	}
