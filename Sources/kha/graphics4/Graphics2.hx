@@ -486,14 +486,18 @@ class ColoredShaderPainter {
 		topleftx: Float, toplefty: Float,
 		toprightx: Float, toprighty: Float,
 		bottomrightx: Float, bottomrighty: Float): Void {
+		if (triangleBufferIndex > 0) drawTriBuffer(true); // Flush other buffer for right render order
+		
 		if (bufferIndex + 1 >= bufferSize) drawBuffer(false);
-				
+		
 		setRectColors(opacity, color);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 		++bufferIndex;
 	}
 	
 	public function fillTriangle(opacity: FastFloat, color: Color, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
+		if (bufferIndex > 0) drawBuffer(true); // Flush other buffer for right render order
+		
 		if (triangleBufferIndex + 1 >= triangleBufferSize) drawTriBuffer(false);
 		
 		setTriColors(opacity, color);
