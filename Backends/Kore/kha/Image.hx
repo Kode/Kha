@@ -229,6 +229,6 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
-		
+		untyped __cpp__("renderTarget->setDepthStencilFrom(image->renderTarget)");
 	}
 }
