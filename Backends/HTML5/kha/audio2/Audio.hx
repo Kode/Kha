@@ -33,10 +33,6 @@ class Audio {
 	
 	@:noCompletion
 	public static function _init(): Bool {
-		#if sys_debug_html5
-		return false;
-		#end
-		
 		initContext();
 		if (_context == null) return false;
 		
