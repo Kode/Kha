@@ -59,19 +59,19 @@ class SystemImpl {
 
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		SystemImpl.options = options;
-        #if sys_debug_html5
-        Browser.window.onerror = cast errorHandler;
-		// Wait a second so the debugger can attach
+		#if sys_debug_html5
+		Browser.window.onerror = cast errorHandler;
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
-        Browser.window.setTimeout(function () {
-            init2();
-            callback();
-        }, 1000);
-        #else
+		// Wait a second so the debugger can attach
+		Browser.window.setTimeout(function () {
+			init2();
+			callback();
+		}, 1000);
+		#else
 		mobile = isMobile();
 		init2();
 		callback();
-        #end
+		#end
 	}
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
@@ -387,38 +387,38 @@ class SystemImpl {
 
 	public static function lockMouse(): Void {
 		untyped if (SystemImpl.khanvas.requestPointerLock) {
-        	SystemImpl.khanvas.requestPointerLock();
-        }
+			SystemImpl.khanvas.requestPointerLock();
+		}
 		else if (canvas.mozRequestPointerLock) {
-        	SystemImpl.khanvas.mozRequestPointerLock();
-        }
+			SystemImpl.khanvas.mozRequestPointerLock();
+		}
 		else if (canvas.webkitRequestPointerLock) {
-        	SystemImpl.khanvas.webkitRequestPointerLock();
-        }
+			SystemImpl.khanvas.webkitRequestPointerLock();
+		}
 	}
 
 	public static function unlockMouse(): Void {
 		untyped if (document.exitPointerLock) {
 			document.exitPointerLock();
-        }
+		}
 		else if (document.mozExitPointerLock) {
-         	document.mozExitPointerLock();
-        }
+			document.mozExitPointerLock();
+		}
 		else if (document.webkitExitPointerLock) {
-        	document.webkitExitPointerLock();
-        }
+			document.webkitExitPointerLock();
+		}
 	}
 
 	public static function canLockMouse(): Bool {
 		return untyped __js__("'pointerLockElement' in document ||
-        'mozPointerLockElement' in document ||
-        'webkitPointerLockElement' in document");
+		'mozPointerLockElement' in document ||
+		'webkitPointerLockElement' in document");
 	}
 
 	public static function isMouseLocked(): Bool {
 		return untyped __js__("document.pointerLockElement === kha_Sys.khanvas ||
-  			document.mozPointerLockElement === kha_Sys.khanvas ||
-  			document.webkitPointerLockElement === kha_Sys.khanvas");
+			document.mozPointerLockElement === kha_Sys.khanvas ||
+			document.webkitPointerLockElement === kha_Sys.khanvas");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void{
@@ -823,42 +823,48 @@ class SystemImpl {
 
 	public static function canSwitchFullscreen(): Bool {
 		return untyped __js__("'fullscreenElement ' in document ||
-        'mozFullScreenElement' in document ||
-        'webkitFullscreenElement' in document ||
-        'msFullscreenElement' in document
-        ");
+		'mozFullScreenElement' in document ||
+		'webkitFullscreenElement' in document ||
+		'msFullscreenElement' in document
+		");
 	}
 
 	public static function isFullscreen(): Bool {
 		return untyped __js__("document.fullscreenElement === this.khanvas ||
-  			document.mozFullScreenElement === this.khanvas ||
-  			document.webkitFullscreenElement === this.khanvas ||
-  			document.msFullscreenElement === this.khanvas ");
+			document.mozFullScreenElement === this.khanvas ||
+			document.webkitFullscreenElement === this.khanvas ||
+			document.msFullscreenElement === this.khanvas ");
 	}
 
 	public static function requestFullscreen(): Void {
 		untyped if (khanvas.requestFullscreen) {
-        	khanvas.requestFullscreen();
-        } else if (khanvas.msRequestFullscreen) {
-        	khanvas.msRequestFullscreen();
-        } else if (khanvas.mozRequestFullScreen) {
-        	khanvas.mozRequestFullScreen();
-        } else if(khanvas.webkitRequestFullscreen){
-        	khanvas.webkitRequestFullscreen();
-        }
+			khanvas.requestFullscreen();
+		}
+		else if (khanvas.msRequestFullscreen) {
+			khanvas.msRequestFullscreen();
+		}
+		else if (khanvas.mozRequestFullScreen) {
+			khanvas.mozRequestFullScreen();
+		}
+		else if(khanvas.webkitRequestFullscreen){
+			khanvas.webkitRequestFullscreen();
+		}
 	}
 
 	public static function exitFullscreen(): Void {
 		untyped if (document.exitFullscreen) {
-	      document.exitFullscreen();
-	    } else if (document.msExitFullscreen) {
-	      document.msExitFullscreen();
-	    } else if (document.mozCancelFullScreen) {
-	      document.mozCancelFullScreen();
-	    } else if (document.webkitExitFullscreen) {
-	      document.webkitExitFullscreen();
-	    }
-  	}
+			document.exitFullscreen();
+		}
+		else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		}
+		else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		}
+		else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		}
+	}
 
 	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.addEventListener('fullscreenchange', func, false);
