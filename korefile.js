@@ -13,7 +13,7 @@ project.addFiles('Backends/Kore/khacpp/project/thirdparty/pcre-7.8/**.h', 'Backe
 project.addFiles('Backends/Kore/*.cpp', 'Backends/Kore/*.h');
 
 project.addExcludes('Backends/Kore/khacpp/project/thirdparty/pcre-7.8/dftables.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcredemo.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcregrep.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcretest.c');
-project.addExcludes('Backends/Kore/khacpp/src/ExampleMain.cpp', 'Backends/Kore/khacpp/src/hx/Scriptable.cpp', 'Backends/Kore/khacpp/src/hx/cppia/**');
+project.addExcludes('Backends/Kore/khacpp/src/ExampleMain.cpp', 'Backends/Kore/khacpp/src/hx/Scriptable.cpp', 'Backends/Kore/khacpp/src/hx/NoFiles.cpp', 'Backends/Kore/khacpp/src/hx/cppia/**');
 project.addExcludes('Backends/Kore/khacpp/src/hx/NekoAPI.cpp');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/ssl/**');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/sqlite/**');
