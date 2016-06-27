@@ -12,7 +12,7 @@ class AssetsBuilder {
 	public static function findResources(): String {
 		#if macro
 		var output = Compiler.getOutput();
-		if (output == "Nothing__") { // For Haxe background compilation
+		if (output == "Nothing__" || output == "") { // For Haxe background compilation
 			#if kha_output
 			output = Compiler.getDefine("kha_output");
 			if (output.startsWith('"')) {
