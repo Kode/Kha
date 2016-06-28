@@ -63,7 +63,10 @@ if (platform == Platform.Android) {
 	project.addDefine('_ANDROID');
 	project.addDefine('HX_ANDROID');
 }
-if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx"');
+if (platform == Platform.OSX) {
+	project.addDefine('KORE_DEBUGDIR="osx"');
+	project.addLib('Security');
+}
 if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 // project:addDefine('HXCPP_SCRIPTABLE');
