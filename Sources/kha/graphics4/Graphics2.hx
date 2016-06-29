@@ -43,6 +43,7 @@ class ImageShaderPainter {
 	private var indexBuffer: IndexBuffer;
 	private var lastTexture: Image;
 	private var bilinear: Bool = false;
+	private var bilinearMipmaps: Bool = false;    
 	private var g: Graphics;
 	private var myPipeline: PipelineState = null;
 	public var pipeline(get, set): PipelineState;
@@ -184,7 +185,7 @@ class ImageShaderPainter {
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
 		g.setTexture(textureLocation, lastTexture);
-		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
+		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
 		//	g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
@@ -205,6 +206,11 @@ class ImageShaderPainter {
 		this.bilinear = bilinear;
 	}
 	
+	public function setBilinearMipmapFilter(bilinear: Bool): Void {
+		end();
+		this.bilinearMipmaps = bilinear;
+	}
+    
 	public inline function drawImage(img: kha.Image,
 		bottomleftx: FastFloat, bottomlefty: FastFloat,
 		topleftx: FastFloat, toplefty: FastFloat,
@@ -1014,6 +1020,18 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myImageScaleQuality = value;
 	}
 	
+	private var myMipmapScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+
+	override private function get_mipmapScaleQuality(): ImageScaleQuality {
+		return myMipmapScaleQuality;
+	}
+
+	override private function set_mipmapScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		imagePainter.setBilinearMipmapFilter(value == ImageScaleQuality.High);
+		//textPainter.setBilinearMipmapFilter(value == ImageScaleQuality.High); // TODO (DK) implement for fonts as well?
+		return myMipmapScaleQuality = value;
+	}
+    
 	override private function setPipeline(pipeline: PipelineState): Void {
 		flush();
 		imagePainter.pipeline = pipeline;
