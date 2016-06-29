@@ -36,6 +36,7 @@ class Graphics {
 	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
+	public var mipmapScaleQuality(get, set): ImageScaleQuality;
 	
 	private function get_imageScaleQuality(): ImageScaleQuality {
 		return ImageScaleQuality.Low;
@@ -45,6 +46,14 @@ class Graphics {
 		return ImageScaleQuality.High;
 	}
 	
+	private function get_mipmapScaleQuality(): ImageScaleQuality {
+		return ImageScaleQuality.Low;
+	}
+
+	private function set_mipmapScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		return ImageScaleQuality.High;
+	}
+    
 	/**
 	The color value is used for geometric primitives as well as for images. Remember to set it back to white to draw images unaltered.
 	*/
