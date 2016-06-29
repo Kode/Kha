@@ -19,30 +19,33 @@ enum TargetDisplay {
 	ById(id: Int);		// id = the number that shows up on 'identify screen' in your system settings
 }
 
-typedef RendererOptions = {
-	?textureFormat: TextureFormat, // TextureFormat.RGBA32
-	?depthStencilFormat: DepthStencilFormat, // DepthStencilFormat.DepthOnly
-	?samplesPerPixel: Int, // 0
+@:structInit
+class RendererOptions {
+	@:optional public var textureFormat: TextureFormat; // TextureFormat.RGBA32
+	@:optional public var depthStencilFormat: DepthStencilFormat; // DepthStencilFormat.DepthOnly
+	@:optional public var samplesPerPixel: Int; // 0
 }
 
-typedef WindowedModeOptions = {
-	?minimizable: Bool, // true
-	?maximizable: Bool, // false
-	?resizable: Bool, // false
+@:structInit
+class WindowedModeOptions {
+	@:optional public var minimizable: Bool; // true
+	@:optional public var maximizable: Bool; // false
+	@:optional public var resizable: Bool; // false
 }
 
 // These options are hints only, the target may reject or ignore specific settings when not applicable
 // They are pretty much intended for desktop targets only
-typedef WindowOptions = {
-	width: Int,
-	height: Int,
+@:structInit
+class WindowOptions {
+	public var width: Int;
+	public var height: Int;
 
-	?mode: Mode, // Windowed
-	?title: String, // added to applications title
-	?x: Position, // Center
-	?y: Position, // Center
-	?targetDisplay: TargetDisplay, // Primary
+	@:optional public var mode: Mode; // Windowed
+	@:optional public var title: String; // added to applications title
+	@:optional public var x: Position; // Center
+	@:optional public var y: Position; // Center
+	@:optional public var targetDisplay: TargetDisplay; // Primary
 
-	?rendererOptions: RendererOptions,
-	?windowedModeOptions: WindowedModeOptions,
+	@:optional public var rendererOptions: RendererOptions;
+	@:optional public var windowedModeOptions: WindowedModeOptions;
 }

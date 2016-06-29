@@ -562,9 +562,9 @@ class SystemImpl {
 		var title = options.title;
 		var width = options.width;
 		var height = options.height;
-		var resizable = options.windowedModeOptions.resizable;
-		var maximizable = options.windowedModeOptions.maximizable;
-		var minimizable = options.windowedModeOptions.minimizable;
+		var resizable = options.windowedModeOptions != null ? options.windowedModeOptions.resizable : false;
+		var maximizable = options.windowedModeOptions != null ? options.windowedModeOptions.maximizable : false;
+		var minimizable = options.windowedModeOptions != null ? options.windowedModeOptions.minimizable : true;
 
 		untyped __cpp__('
 			Kore::WindowOptions wo;
@@ -578,7 +578,7 @@ class SystemImpl {
 			wo.rendererOptions.textureFormat = textureFormat;
 			wo.rendererOptions.depthBufferBits = depthBufferBits;
 			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
-			
+
 			wo.resizable = resizable;
 			wo.maximizable = maximizable;
 			wo.minimizable = minimizable;
@@ -658,7 +658,7 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {
 
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");
 	}
