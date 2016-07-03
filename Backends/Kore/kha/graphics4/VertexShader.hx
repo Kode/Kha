@@ -21,6 +21,6 @@ class VertexShader {
 	}
 	
 	public function delete(): Void {
-		untyped __cpp__('delete shader->shader; shader->shader = nullptr;');
+		untyped __cpp__('delete shader; shader = nullptr;');
 	}
 }
