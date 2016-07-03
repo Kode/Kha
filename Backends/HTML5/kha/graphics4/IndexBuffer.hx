@@ -17,6 +17,11 @@ class IndexBuffer {
 		data[indexCount - 1] = 0;
 	}
 	
+	public function delete(): Void {
+		data = null;
+		SystemImpl.gl.deleteBuffer(buffer);
+	}
+	
 	public function lock(): Array<Int> {
 		return data;
 	}

@@ -17,18 +17,10 @@ import kha.Blob;
 @:headerClassCode("Kore::Shader* shader;")
 class VertexShader {
 	public function new(source: Blob, file: String) {
-		initVertexShader(source);
-		//cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(destroy)); // TODO
+		untyped __cpp__('shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::VertexShader);');
 	}
 	
-	@:void private static function destroy(shader: VertexShader): Void {
-		untyped __cpp__('delete shader->shader;');
-	}
-	
-	@:functionCode("
-		shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::VertexShader);
-	")
-	private function initVertexShader(source: Blob): Void {
-		
+	public function delete(): Void {
+		untyped __cpp__('delete shader->shader; shader->shader = nullptr;');
 	}
 }

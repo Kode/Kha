@@ -15,14 +15,11 @@ import kha.graphics4.VertexStructure;
 class PipelineState extends PipelineStateBase {
 	public function new() {
 		super();
-		init();
+		untyped __cpp__('program = new Kore::Program;');
 	}
 	
-	@:functionCode('
-		program = new Kore::Program();
-	')
-	private function init(): Void {
-		
+	public function delete(): Void {
+		untyped __cpp__('delete program; program = nullptr;');
 	}
 	
 	@:functionCode('

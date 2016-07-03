@@ -12,4 +12,10 @@ class VertexShader {
 		this.type = GL.VERTEX_SHADER;
 		this.shader = null;
 	}
+	
+	public function delete(): Void {
+		SystemImpl.gl.deleteShader(shader);
+		shader = null;
+		source = null;
+	}
 }

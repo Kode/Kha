@@ -12,4 +12,10 @@ class FragmentShader {
 		this.type = GL.FRAGMENT_SHADER;
 		this.shader = null;
 	}
+	
+	public function delete(): Void {
+		SystemImpl.gl.deleteShader(shader);
+		shader = null;
+		source = null;
+	}
 }

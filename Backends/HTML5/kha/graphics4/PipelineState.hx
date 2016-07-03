@@ -17,6 +17,10 @@ class PipelineState extends PipelineStateBase {
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
 	}
+	
+	public function delete(): Void {
+		SystemImpl.gl.deleteProgram(program);
+	}
 		
 	public function compile(): Void {
 		compileShader(vertexShader);

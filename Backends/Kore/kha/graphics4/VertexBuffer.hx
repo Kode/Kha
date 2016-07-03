@@ -20,6 +20,10 @@ class VertexBuffer {
 		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
 	
+	public function delete(): Void {
+		untyped __cpp__('delete buffer; buffer = nullptr;');
+	}
+	
 	@:functionCode("
 		Kore::VertexStructure structure2;
 		for (int i = 0; i < structure->size(); ++i) {

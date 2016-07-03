@@ -14,14 +14,11 @@ class IndexBuffer {
 		myCount = indexCount;
 		data = new Array<Int>();
 		data[myCount - 1] = 0;
-		init(indexCount);
+		untyped __cpp__('buffer = new Kore::IndexBuffer(indexCount);');
 	}
 	
-	@:functionCode('
-		buffer = new Kore::IndexBuffer(count);
-	')
-	private function init(count: Int) {
-		
+	public function delete(): Void {
+		untyped __cpp__('delete buffer; buffer = nullptr;');
 	}
 	
 	public function lock(): Array<Int> {
