@@ -23,11 +23,11 @@ class Audio {
 			var bufferSize = 1024 * 2;
 			buffer = new Buffer(bufferSize * 4, 2, Std.int(kha.audio2.Audio._context.sampleRate));
 			
-			processingNode = kha.audio2.Audio._context.createScriptProcessor(bufferSize, 0, 2);
+			processingNode = kha.audio2.Audio._context.createScriptProcessor(bufferSize, 1, 0);
 			processingNode.onaudioprocess = function (e: AudioProcessingEvent) {
 				if (audioCallback != null) {
 					var input1 = e.inputBuffer.getChannelData(0);
-					var input2 = e.inputBuffer.getChannelData(1);
+					var input2 = e.inputBuffer.getChannelData(0);
 					for (i in 0...e.inputBuffer.length) {
 						buffer.data.set(buffer.writeLocation, input1[i]);
 						buffer.writeLocation += 1;
@@ -42,6 +42,7 @@ class Audio {
 			}
 			
 			input.connect(processingNode);
+			//input.connect(kha.audio2.Audio._context.destination);
 			initialized();
 		}, function () {
 			error();
