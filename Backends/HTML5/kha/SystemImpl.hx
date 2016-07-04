@@ -386,15 +386,19 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
+        var canvas: Dynamic = Browser.document.getElementById("khanvas");
+
 		untyped if (SystemImpl.khanvas.requestPointerLock) {
 			SystemImpl.khanvas.requestPointerLock();
-		}
-		else if (canvas.mozRequestPointerLock) {
-			SystemImpl.khanvas.mozRequestPointerLock();
-		}
-		else if (canvas.webkitRequestPointerLock) {
-			SystemImpl.khanvas.webkitRequestPointerLock();
-		}
+		} 
+        else if(canvas != null ) {
+            if (canvas.mozRequestPointerLock) {
+                SystemImpl.khanvas.mozRequestPointerLock();
+            }
+            else if (canvas.webkitRequestPointerLock) {
+                SystemImpl.khanvas.webkitRequestPointerLock();
+            }
+        }
 	}
 
 	public static function unlockMouse(): Void {
