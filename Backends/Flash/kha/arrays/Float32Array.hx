@@ -18,7 +18,7 @@ abstract Float32Array(ByteArray) {
 		return this.length >> 2;
 	}
 	
-	public function set(index: Int, value: FastFloat): FastFloat {
+	public inline function set(index: Int, value: FastFloat): FastFloat {
 		this.position = index * elementSize;
 		this.writeFloat(value);
 		return value;
