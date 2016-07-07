@@ -25,6 +25,13 @@ class FastMatrix4 {
 								m._02, m._12, m._22, m._32,
 								m._03, m._13, m._23, m._33);
 	}
+	
+	@:extern public inline function setFrom(m:FastMatrix4):Void {
+		this._00 = m._00; this._10 = m._10; this._20 = m._20; this._30 = m._30;
+		this._01 = m._01; this._11 = m._11; this._21 = m._21; this._31 = m._31;
+		this._02 = m._02; this._12 = m._12; this._22 = m._22; this._32 = m._32;
+		this._03 = m._03; this._13 = m._13; this._23 = m._23; this._33 = m._33;
+	}
 
 	@:extern public static inline function translation(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
 		return new FastMatrix4(
