@@ -389,10 +389,10 @@ class SystemImpl {
 		untyped if (SystemImpl.khanvas.requestPointerLock) {
 			SystemImpl.khanvas.requestPointerLock();
 		}
-		else if (canvas.mozRequestPointerLock) {
+		else if (SystemImpl.khanvas.mozRequestPointerLock) {
 			SystemImpl.khanvas.mozRequestPointerLock();
 		}
-		else if (canvas.webkitRequestPointerLock) {
+		else if (SystemImpl.khanvas.webkitRequestPointerLock) {
 			SystemImpl.khanvas.webkitRequestPointerLock();
 		}
 	}
