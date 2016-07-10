@@ -124,7 +124,7 @@ class FastMatrix4 {
 	}
 
 	public static function perspectiveProjection(fovY: FastFloat, aspect: FastFloat, zn: FastFloat, zf: FastFloat): FastMatrix4 {
-		var uh = 1.0 / Math.tan((fovY / 2) * (Math.PI / 180));
+		var uh = 1.0 / Math.tan(fovY / 2);
 		var uw = uh / aspect;
 		return new FastMatrix4(
 			uw, 0, 0, 0,
