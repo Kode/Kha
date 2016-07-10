@@ -58,6 +58,9 @@ if (platform == Platform.iOS) {
 	project.addDefine('IPHONE');
 	project.addDefine('HX_IPHONE');
 }
+if (platform === Platform.tvOS) {
+	project.addDefine('APPLETV');
+}
 if (platform == Platform.Android) {
 	project.addDefine('ANDROID');
 	project.addDefine('_ANDROID');
