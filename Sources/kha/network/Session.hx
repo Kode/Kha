@@ -32,6 +32,8 @@ class Session {
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
 	private var players: Int;
+	private var address: String;
+	private var port: Int;
 	private var startCallback: Void->Void;
 	#if sys_server
 	private var server: Server;
@@ -54,9 +56,11 @@ class Session {
 		#end
 	}
 	
-	public function new(players: Int) {
+	public function new(players: Int, address: String, port: Int) {
 		instance = this;
 		this.players = players;
+		this.address = address;
+		this.port = port;
 	}
 	
 	public static function the(): Session {
@@ -214,8 +218,8 @@ class Session {
 	public function waitForStart(callback: Void->Void): Void {
 		startCallback = callback;
 		#if sys_server
-		trace("Starting server at 6789.");
-		server = new Server(6789);
+		trace("Starting server at " + port + ".");
+		server = new Server(port);
 		server.onConnection(function (client: Client) {
 			clients.push(client);
 			current = client;
@@ -247,7 +251,7 @@ class Session {
 			}
 		});
 		#else
-		network = new Network("localhost", 6789);
+		network = new Network(address, port);
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
 		#end
 	}
