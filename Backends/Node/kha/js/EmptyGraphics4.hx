@@ -1,5 +1,6 @@
 package kha.js;
 
+import haxe.ds.Vector;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.ConstantLocation;
@@ -8,7 +9,7 @@ import kha.graphics4.CullMode;
 import kha.graphics4.Graphics;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
@@ -16,6 +17,10 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
+import kha.math.FastVector4;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -30,7 +35,7 @@ class EmptyGraphics4 implements Graphics {
 
 	}
 	
-	public function begin(): Void {
+	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		
 	}
 
@@ -74,7 +79,7 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
-	public function setScissor(rect: Rectangle): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
 
@@ -118,7 +123,7 @@ class EmptyGraphics4 implements Graphics {
 		return false;
 	}
 	
-	public function setProgram(program: Program): Void {
+	public function setPipeline(pipeline: PipelineState): Void {
 		
 	}
 	
@@ -146,23 +151,23 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
-	public function setFloats(location: ConstantLocation, floats: Array<Float>): Void {
+	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
 		
 	}
 
-	public function setVector2(location: ConstantLocation, value: Vector2): Void {
+	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		
 	}
 
-	public function setVector3(location: ConstantLocation, value: Vector3): Void {
+	public function setVector3(location: ConstantLocation, value: FastVector3): Void {
 		
 	}
 
-	public function setVector4(location: ConstantLocation, value: Vector4): Void {
+	public function setVector4(location: ConstantLocation, value: FastVector4): Void {
 		
 	}
 
-	public function setMatrix(location: ConstantLocation, value: Matrix4): Void {
+	public function setMatrix(location: ConstantLocation, value: FastMatrix4): Void {
 		
 	}
 	

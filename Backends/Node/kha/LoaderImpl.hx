@@ -19,16 +19,6 @@ import js.Lib;
 import js.html.XMLHttpRequest;
 
 class LoaderImpl {
-	public static function getMusicFormats(): Array<String> {
-		return ["nix"];
-	}
-	
-	public static function loadMusicFromDescription(desc: Dynamic, done: kha.Music -> Void): Void {
-		Node.setTimeout(function () {
-			done(new Music());
-		}, 0);
-	}
-	
 	public static function getSoundFormats(): Array<String> {
 		return ["nix"];
 	}
@@ -61,7 +51,13 @@ class LoaderImpl {
 	
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void): Void {
 		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
-			done(Blob.fromBuffer(data));
+			done(Blob._fromBuffer(data));
+		});
+	}
+	
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
+		loadBlobFromDescription(desc, function (blob: Blob) {
+			done(new Kravur(blob));
 		});
 	}
 }
