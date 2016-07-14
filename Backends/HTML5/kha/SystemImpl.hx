@@ -62,6 +62,8 @@ class SystemImpl {
 		#if sys_debug_html5
 		Browser.window.onerror = cast errorHandler;
 		untyped require('web-frame').setZoomLevelLimits(1, 1);
+		var electron = untyped __js__("require('electron')");
+		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
 			init2();
