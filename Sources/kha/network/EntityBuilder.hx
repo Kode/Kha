@@ -5,6 +5,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 
 class EntityBuilder {
+	public static var nextId: Int = 0;
+	
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
@@ -189,7 +191,7 @@ class EntityBuilder {
 				doc: null,
 				meta: [],
 				access: [APublic],
-				kind: FVar(macro: Int, macro 0),
+				kind: FVar(macro: Int, macro kha.network.EntityBuilder.nextId++),
 				pos: Context.currentPos()
 			});
 		}
