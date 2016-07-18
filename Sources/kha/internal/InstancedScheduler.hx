@@ -1,76 +1,40 @@
-package kha;
+package kha.internal;
 
-import kha.internal.InstancedScheduler;
+import kha.Scheduler.FrameTask;
+import kha.Scheduler.TimeTask;
 
-class TimeTask {
-	public var task: Void -> Bool;
+class InstancedScheduler {
+	private var timeTasks: Array<TimeTask> = [];
+	private var frameTasks: Array<FrameTask> = [];
 	
-	public var start: Float;
-	public var period: Float;
-	public var duration: Float;
-	public var next: Float;
+	private var toDeleteTime : Array<TimeTask> = [];
+	private var toDeleteFrame : Array<FrameTask> = [];
 	
-	public var id: Int;
-	public var groupId: Int;
-	public var active: Bool;
-	public var paused: Bool;
+	private var current: Float;
+	private var lastTime: Float;
+	
+	private var frame_tasks_sorted: Bool;
+	private var stopped: Bool;
+	private var vsync: Bool;
+
+	private var onedifhz: Float;
+
+	private var currentFrameTaskId: Int;
+	private var currentTimeTaskId: Int;
+	private var currentGroupId: Int;
+
+	private static inline var DIF_COUNT = 3;
+	private var maxframetime = 0.5;
+	
+	private var deltas: Array<Float> = [for (i in 0...DIF_COUNT) 0];
+	
+	private var startTime: Float = 0;
+	
+	private var lastNow: Float = 0;
+	
+	private var activeTimeTask: TimeTask = null;
 	
 	public function new() {
-		
-	}
-}
-
-class FrameTask {
-	public var task: Void -> Bool;
-	public var priority: Int;
-	public var id: Int;
-	public var active: Bool;
-	public var paused: Bool;
-	
-	public function new(task: Void -> Bool, priority: Int, id: Int) {
-		this.task = task;
-		this.priority = priority;
-		this.id = id;
-		active = true;
-		paused = false;
-	}
-}
-
-class Scheduler {
-	private static var timeTasks: Array<TimeTask>;
-	private static var frameTasks: Array<FrameTask>;
-	
-	private static var toDeleteTime : Array<TimeTask>;
-	private static var toDeleteFrame : Array<FrameTask>;
-	
-	private static var current: Float;
-	private static var lastTime: Float;
-	
-	private static var frame_tasks_sorted: Bool;
-	private static var stopped: Bool;
-	private static var vsync: Bool;
-
-	private static var onedifhz: Float;
-
-	private static var currentFrameTaskId: Int;
-	private static var currentTimeTaskId: Int;
-	private static var currentGroupId: Int;
-
-	private static var DIF_COUNT = 3;
-	private static var maxframetime = 0.5;
-	
-	private static var deltas: Array<Float>;
-	
-	private static var startTime: Float = 0;
-	
-	private static var lastNow: Float = 0;
-	
-	private static var activeTimeTask: TimeTask = null;
-	
-	public static function init(): Void {
-		deltas = new Array<Float>();
-		for (i in 0...DIF_COUNT) deltas[i] = 0;
-		
 		stopped = true;
 		frame_tasks_sorted = true;
 		current = realTime();
@@ -78,16 +42,11 @@ class Scheduler {
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
-		currentGroupId     = 0;
-		
-		timeTasks = new Array<TimeTask>();
-		frameTasks = new Array<FrameTask>();
-		toDeleteTime = new Array<TimeTask>();
-		toDeleteFrame = new Array<FrameTask>();
+		currentGroupId     = 0;		
 	}
 	
-	public static function start(restartTimers : Bool = false): Void {
-		vsync = System.vsync;
+	public function start(restartTimers : Bool = false): Void {
+		vsync = false; //System.vsync; (DK) hardcoded false for now, seems to work regardless of acual vsync
 		var hz = System.refreshRate;
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;
@@ -108,15 +67,15 @@ class Scheduler {
 		}
 	}
 	
-	public static function stop(): Void {
+	public function stop(): Void {
 		stopped = true;
 	}
 	
-	public static function isStopped(): Bool {
+	public function isStopped(): Bool {
 		return stopped;
 	}
 	
-	public static function back(time: Float): Void {
+	public function back(time: Float): Void {
 		lastTime = time;
 		for (timeTask in timeTasks) {
 			if (timeTask.start >= time) {
@@ -131,7 +90,7 @@ class Scheduler {
 		}
 	}
 	
-	public static function executeFrame(): Void {
+	public function executeFrame(): Void {
 		var now: Float = realTime();
 		var delta = now - lastNow;
 		lastNow = now;
@@ -241,15 +200,15 @@ class Scheduler {
 		}
 	}
 
-	public static function time(): Float {
+	public function time(): Float {
 		return current;
 	}
 	
-	public static function realTime(): Float {
+	public function realTime(): Float {
 		return System.time - startTime;
 	}
 	
-	public static function resetTime(): Void {
+	public function resetTime(): Void {
 		var now = System.time;
 		lastNow = 0;
 		var dif = now - startTime;
@@ -263,17 +222,17 @@ class Scheduler {
 		lastTime = 0;
 	}
 	
-	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
+	public function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
 		frameTasks.push(new FrameTask(task, priority, ++currentFrameTaskId));
 		frame_tasks_sorted = false;
 		return currentFrameTaskId;
 	}
 	
-	public static function addFrameTask(task: Void -> Void, priority: Int): Int {
+	public function addFrameTask(task: Void -> Void, priority: Int): Int {
 		return addBreakableFrameTask(function() { task(); return true; }, priority);
 	}
 	
-	public static function pauseFrameTask(id: Int, paused: Bool): Void {
+	public function pauseFrameTask(id: Int, paused: Bool): Void {
 		for (frameTask in frameTasks) {
 			if (frameTask.id == id) {
 				frameTask.paused = paused;
@@ -282,7 +241,7 @@ class Scheduler {
 		}
 	}
 	
-	public static function removeFrameTask(id: Int): Void {
+	public function removeFrameTask(id: Int): Void {
 		for (frameTask in frameTasks) {
 			if (frameTask.id == id) {
 				frameTask.active = false;
@@ -292,11 +251,11 @@ class Scheduler {
 		}
 	}
 
-	public static function generateGroupId(): Int {
+	public function generateGroupId(): Int {
 		return ++currentGroupId;
 	}
 	
-	public static function addBreakableTimeTaskToGroup(groupId: Int, task: Void -> Bool, start: Float, period: Float = 0, duration: Float = 0): Int {
+	public function addBreakableTimeTaskToGroup(groupId: Int, task: Void -> Bool, start: Float, period: Float = 0, duration: Float = 0): Int {
 		var t = new TimeTask();
 		t.active = true;
 		t.task = task;
@@ -315,19 +274,19 @@ class Scheduler {
 		return t.id;
 	}
 	
-	public static function addTimeTaskToGroup(groupId: Int, task: Void -> Void, start: Float, period: Float = 0, duration: Float = 0): Int {
+	public function addTimeTaskToGroup(groupId: Int, task: Void -> Void, start: Float, period: Float = 0, duration: Float = 0): Int {
 		return addBreakableTimeTaskToGroup(groupId, function() { task(); return true; }, start, period, duration);
 	}
 	
-	public static function addBreakableTimeTask(task: Void -> Bool, start: Float, period: Float = 0, duration: Float = 0): Int {
+	public function addBreakableTimeTask(task: Void -> Bool, start: Float, period: Float = 0, duration: Float = 0): Int {
 		return addBreakableTimeTaskToGroup(0, task, start, period, duration);
 	}
 	
-	public static function addTimeTask(task: Void -> Void, start: Float, period: Float = 0, duration: Float = 0): Int {
+	public function addTimeTask(task: Void -> Void, start: Float, period: Float = 0, duration: Float = 0): Int {
 		return addTimeTaskToGroup(0, task, start, period, duration);
 	}
 
-	private static function getTimeTask(id: Int): TimeTask {
+	private function getTimeTask(id: Int): TimeTask {
 		if (activeTimeTask != null && activeTimeTask.id == id) return activeTimeTask;
 		for (timeTask in timeTasks) {
 			if (timeTask.id == id) {
@@ -337,14 +296,14 @@ class Scheduler {
 		return null;
 	}
 
-	public static function pauseTimeTask(id: Int, paused: Bool): Void {
+	public function pauseTimeTask(id: Int, paused: Bool): Void {
 		var timeTask = getTimeTask(id);
 		if (timeTask != null) {
 			timeTask.paused = paused;
 		}
 	}
 	
-	public static function pauseTimeTasks(groupId: Int, paused: Bool): Void {
+	public function pauseTimeTasks(groupId: Int, paused: Bool): Void {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.paused = paused;
@@ -355,7 +314,7 @@ class Scheduler {
 		}
 	}
 
-	public static function removeTimeTask(id: Int): Void {
+	public function removeTimeTask(id: Int): Void {
 		var timeTask = getTimeTask(id);
 		if (timeTask != null) {
 			timeTask.active = false;
@@ -363,7 +322,7 @@ class Scheduler {
 		}
 	}
 	
-	public static function removeTimeTasks(groupId: Int): Void {
+	public function removeTimeTasks(groupId: Int): Void {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = false;
@@ -379,11 +338,11 @@ class Scheduler {
 		}
 	}
 
-	public static function numTasksInSchedule(): Int {
+	public function numTasksInSchedule(): Int {
 		return timeTasks.length + frameTasks.length;
 	}
 	
-	private static function insertSorted(list: Array<TimeTask>, task: TimeTask) {
+	private function insertSorted(list: Array<TimeTask>, task: TimeTask) {
 		for (i in 0...list.length) {
 			if (list[i].next > task.next) {
 				list.insert(i, task);
@@ -393,16 +352,12 @@ class Scheduler {
 		list.push(task);
 	}
 	
-	private static function sortFrameTasks(): Void {
+	private function sortFrameTasks(): Void {
 		if (frame_tasks_sorted) return;
 		frameTasks.sort(function(a: FrameTask, b: FrameTask): Int { return a.priority > b.priority ? 1 : ((a.priority < b.priority) ? -1 : 0); } );
 		frame_tasks_sorted = true;
 	}
 	
-	public static function getInstance(windowId: Int): InstancedScheduler {
-		return SystemImpl.windowSchedulers[windowId];
-	}
-
 	//private static function get_deltaTime():Float 
 	//{
 	//	return delta;

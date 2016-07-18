@@ -9,6 +9,7 @@ import kha.input.Surface;
 import kha.System;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
+import kha.internal.InstancedScheduler;
 
 #if ANDROID
 	#if VR_CARDBOARD
@@ -89,6 +90,7 @@ class SystemImpl {
 		untyped __cpp__('Kore::System::stop()');
 	}
 
+	@:allow(kha.Scheduler) private static var windowSchedulers: Array<InstancedScheduler> = [];
 	private static var framebuffers: Array<Framebuffer> = new Array();
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
@@ -127,6 +129,8 @@ class SystemImpl {
 		Lambda.iter(options, initWindow.bind(_, function(windowId: Int) {
 			windowIds.push(windowId);
 			windowCallback(windowId);
+
+			windowSchedulers.push(new InstancedScheduler());
 		}));
 
 		Shaders.init();
@@ -168,6 +172,10 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		Scheduler.start();
+
+		for (s in windowSchedulers) {
+			s.start();
+		}
 
 		/*
 		#if ANDROID
@@ -261,6 +269,7 @@ class SystemImpl {
 			Scheduler.executeFrame();
 		}
 
+		windowSchedulers[id].executeFrame();
 		System.render(id, framebuffers[id]);
 	}
 
