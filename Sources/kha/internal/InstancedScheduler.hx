@@ -4,18 +4,18 @@ import kha.Scheduler.FrameTask;
 import kha.Scheduler.TimeTask;
 
 class InstancedScheduler {
-	private var timeTasks: Array<TimeTask> = [];
-	private var frameTasks: Array<FrameTask> = [];
+	private var timeTasks: Array<TimeTask>;
+	private var frameTasks: Array<FrameTask>;
 	
-	private var toDeleteTime : Array<TimeTask> = [];
-	private var toDeleteFrame : Array<FrameTask> = [];
+	private var toDeleteTime : Array<TimeTask>;
+	private var toDeleteFrame : Array<FrameTask>;
 	
 	private var current: Float;
 	private var lastTime: Float;
 	
 	private var frame_tasks_sorted: Bool;
 	private var stopped: Bool;
-	private var vsync: Bool;
+	public var vsync(default, default): Bool;
 
 	private var onedifhz: Float;
 
@@ -23,10 +23,10 @@ class InstancedScheduler {
 	private var currentTimeTaskId: Int;
 	private var currentGroupId: Int;
 
-	private static inline var DIF_COUNT = 3;
+	private var DIF_COUNT = 3;
 	private var maxframetime = 0.5;
 	
-	private var deltas: Array<Float> = [for (i in 0...DIF_COUNT) 0];
+	private var deltas: Array<Float>;
 	
 	private var startTime: Float = 0;
 	
@@ -35,6 +35,10 @@ class InstancedScheduler {
 	private var activeTimeTask: TimeTask = null;
 	
 	public function new() {
+	}
+	
+	public function init() {
+		deltas = [for (i in 0...DIF_COUNT) 0];
 		stopped = true;
 		frame_tasks_sorted = true;
 		current = realTime();
@@ -43,10 +47,15 @@ class InstancedScheduler {
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
 		currentGroupId     = 0;		
+		
+		timeTasks = [];
+		frameTasks = [];
+		toDeleteTime = [];
+		toDeleteFrame = [];
 	}
-	
+		
 	public function start(restartTimers : Bool = false): Void {
-		vsync = false; //System.vsync; (DK) hardcoded false for now, seems to work regardless of acual vsync
+		vsync = System.vsync;
 		var hz = System.refreshRate;
 		if (hz >= 57 && hz <= 63) hz = 60;
 		onedifhz = 1.0 / hz;

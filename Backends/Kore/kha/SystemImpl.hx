@@ -90,7 +90,6 @@ class SystemImpl {
 		untyped __cpp__('Kore::System::stop()');
 	}
 
-	@:allow(kha.Scheduler) private static var windowSchedulers: Array<InstancedScheduler> = [];
 	private static var framebuffers: Array<Framebuffer> = new Array();
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
@@ -129,8 +128,6 @@ class SystemImpl {
 		Lambda.iter(options, initWindow.bind(_, function(windowId: Int) {
 			windowIds.push(windowId);
 			windowCallback(windowId);
-
-			windowSchedulers.push(new InstancedScheduler());
 		}));
 
 		Shaders.init();
@@ -141,7 +138,8 @@ class SystemImpl {
 			var g4 = new kha.kore.graphics4.Graphics();
 			var framebuffer = new Framebuffer(index, null, null, g4);
 			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-			framebuffers[windowId] = framebuffer;
+			framebuffers[windowId] = framebuffer;			
+			kha.Scheduler.addInstance();
 		}
 #end
 
@@ -163,7 +161,7 @@ class SystemImpl {
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
-		Scheduler.init();
+		Scheduler.initAll();
 		loadFinished();
 		callback();
 
@@ -171,11 +169,7 @@ class SystemImpl {
 	}
 
 	private static function loadFinished() {
-		Scheduler.start();
-
-		for (s in windowSchedulers) {
-			s.start();
-		}
+		Scheduler.startAll();
 
 		/*
 		#if ANDROID
@@ -266,10 +260,10 @@ class SystemImpl {
 		*/
 
 		if (id == 0) {
-			Scheduler.executeFrame();
+			kha.Scheduler.executeFrame();
 		}
-
-		windowSchedulers[id].executeFrame();
+		
+		kha.Scheduler.getInstance(id).executeFrame();
 		System.render(id, framebuffers[id]);
 	}
 
