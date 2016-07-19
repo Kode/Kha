@@ -28,6 +28,16 @@ class Graphics {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
 	}
 	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
+	public function drawImageNoTransform(
+		image: Image, 		
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat,
+		tex_bottomleftx: FastFloat, tex_bottomlefty: FastFloat,
+		tex_topleftx: FastFloat, tex_toplefty: FastFloat,
+		tex_toprightx: FastFloat, tex_toprighty: FastFloat,
+		tex_bottomrightx: FastFloat, tex_bottomrighty: FastFloat):Void { }
 	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
 	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
 	public function drawString(text: String, x: Float, y: Float): Void { }
