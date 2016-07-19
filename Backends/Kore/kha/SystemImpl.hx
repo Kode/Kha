@@ -138,7 +138,7 @@ class SystemImpl {
 			var g4 = new kha.kore.graphics4.Graphics();
 			var framebuffer = new Framebuffer(index, null, null, g4);
 			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-			framebuffers[windowId] = framebuffer;			
+			framebuffers[windowId] = framebuffer;
 			kha.Scheduler.addInstance();
 		}
 #end
@@ -262,7 +262,7 @@ class SystemImpl {
 		if (id == 0) {
 			kha.Scheduler.executeFrame();
 		}
-		
+
 		kha.Scheduler.getInstance(id).executeFrame();
 		System.render(id, framebuffers[id]);
 	}

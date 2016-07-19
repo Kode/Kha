@@ -37,13 +37,13 @@ class FrameTask {
 }
 
 class Scheduler {
-	public static var global(default, null) = new InstancedScheduler();
-	static var schedulers : Array<InstancedScheduler> = [new InstancedScheduler()];
+	static var global = new InstancedScheduler();
+	static var schedulers : Array<InstancedScheduler> = [];
 
 	// TODO (DK) fix all backends (SystemImpl) and remove this?
 	// used in non-Kore targets
 	public static function init(): Void {
-		global.init();
+		initAll();
 	}
 
 	// (DK) used in Kore targets
@@ -56,11 +56,11 @@ class Scheduler {
 	}
 
 	public static inline function start(restartTimers : Bool = false): Void {
-		global.start(restartTimers);
+		startAll(restartTimers);
 	}
 
 	public static function startAll(restartTimers: Bool = false) {
-		global.start();
+		global.start(restartTimers);
 		
 		for (s in schedulers) {
 			s.start(restartTimers);
@@ -158,7 +158,15 @@ class Scheduler {
 	}
 
 	public static function getInstance(windowId: Int): InstancedScheduler {
-		return schedulers[windowId];
+		if (schedulers.length == 0) {
+			if (windowId != 0) {
+				// TODO (DK) log error?
+			}
+			
+			return global;
+		} else {		
+			return schedulers[windowId];
+		}
 	}
 
 	//private static function get_deltaTime():Float
