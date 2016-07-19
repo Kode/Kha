@@ -37,7 +37,7 @@ class FrameTask {
 }
 
 class Scheduler {
-	static var global = new InstancedScheduler();
+	public static var global(default, null) = new InstancedScheduler();
 	static var schedulers : Array<InstancedScheduler> = [new InstancedScheduler()];
 
 	// TODO (DK) fix all backends (SystemImpl) and remove this?
