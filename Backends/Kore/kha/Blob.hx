@@ -166,6 +166,10 @@ class Blob {
 		if (bytes.get(0) == 239 && bytes.get(1) == 187 && bytes.get(2) == 191) return bytes.sub(3, bytes.length - 3).toString();
 		else return bytes.toString();
 	}
+
+	public function toBytes(): Bytes {
+		return bytes;
+	}
 		
 	public function unload(): Void {
 		bytes = null;
