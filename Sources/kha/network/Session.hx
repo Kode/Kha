@@ -40,7 +40,7 @@ class Session {
 	private var clients: Array<Client> = new Array();
 	private var current: Client;
 	private var lastStates: Array<State> = new Array();
-	private static inline var stateCount = 5;
+	private static inline var stateCount = 50;
 	#else
 	private var localClient: Client;
 	public var network: Network;
@@ -258,8 +258,9 @@ class Session {
 	
 	public function update(): Void {
 		#if sys_server
+		var bytes = send();
 		for (client in clients) {
-			client.send(send(), false);
+			client.send(bytes, false);
 		}
 		#end
 	}

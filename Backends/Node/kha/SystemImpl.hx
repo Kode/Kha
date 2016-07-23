@@ -16,6 +16,8 @@ class SystemImpl {
 	private static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	private static var width: Int;
 	private static var height: Int;
+
+	private static inline var networkSendRate = 0.05;
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		SystemImpl.width = options.width;
@@ -103,19 +105,24 @@ class SystemImpl {
 		
 		lastTime = Scheduler.time();
 		run();
+		synch();
 	}
 	
 	private static function run() {
 		Scheduler.executeFrame();
-		if (Session.the() != null) {
-			Session.the().update();
-		}
 		var time = Scheduler.time();
 		if (time >= lastTime + 10) {
 			lastTime += 10;
 			Node.console.log(lastTime + " seconds.");
 		}
 		Node.setTimeout(run, 0);
+	}
+	
+	private static function synch() {
+		if (Session.the() != null) {
+			Session.the().update();
+		}
+		Node.setTimeout(synch, networkSendRate * 1000);
 	}
 	
 	public static function getKeyboard(num: Int): Keyboard {

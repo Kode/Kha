@@ -77,6 +77,11 @@ class VertexBuffer {
 			++index;
 		}
 	}
+
+	public function delete(): Void {
+		data = null;
+		SystemImpl.gl.deleteBuffer(buffer);
+	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return data;
