@@ -120,7 +120,7 @@ class Graphics implements kha.graphics4.Graphics {
 	@:functionCode('
 		switch (mode) {
 		case 0:
-			Kore::Graphics::setRenderState(Kore::DepthTest, false);
+			write ? Kore::Graphics::setRenderState(Kore::DepthTest, true) : Kore::Graphics::setRenderState(Kore::DepthTest, false);
 			Kore::Graphics::setRenderState(Kore::DepthTestCompare, Kore::ZCompareAlways);
 			break;
 		case 1:
