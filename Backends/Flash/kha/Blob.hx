@@ -5,11 +5,16 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 
 class Blob implements Resource {
-	public var bytes: BytesData;
+	var bytesData: BytesData;
+	
+	public var bytes(get, never):Bytes;
+	function get_bytes() {
+		return Bytes.ofData(bytesData);
+	}
 	
 	@:allow(kha.LoaderImpl)
 	private function new(bytes: BytesData) {
-		this.bytes = bytes;
+		this.bytesData = bytes;
 	}
 	
 	public static function fromBytes(bytes: Bytes): Blob {
@@ -24,118 +29,118 @@ class Blob implements Resource {
 	
 	public function sub(start: Int, length: Int): Blob {
 		var b = new BytesData();
-		bytes.position = start;
-		bytes.readBytes(b, 0, length);
+		bytesData.position = start;
+		bytesData.readBytes(b, 0, length);
 		return new Blob(b);
 	}
 	
 	public var length(get, null): Int;
 	
 	public function get_length(): Int {
-		return bytes.length;
+		return bytesData.length;
 	}
 	
 	public function writeU8(position: Int, value: Int): Void {
-		bytes[position] = value;
+		bytesData[position] = value;
 	}
 	
 	private function le(): Void {
-		bytes.endian = Endian.LITTLE_ENDIAN;
+		bytesData.endian = Endian.LITTLE_ENDIAN;
 	}
 	
 	private function be(): Void {
-		bytes.endian = Endian.BIG_ENDIAN;
+		bytesData.endian = Endian.BIG_ENDIAN;
 	}
 	
 	public function readS8(position: Int): Int {
-		bytes.position = position;
-		return bytes.readByte();
+		bytesData.position = position;
+		return bytesData.readByte();
 	}
 	
 	public function readU8(position: Int): Int {
-		bytes.position = position;
-		var value = bytes.readUnsignedByte();
+		bytesData.position = position;
+		var value = bytesData.readUnsignedByte();
 		return value;
 	}
 		
 	public function readS16LE(position: Int): Int {
 		le();
-		bytes.position = position;
-		return bytes.readShort();
+		bytesData.position = position;
+		return bytesData.readShort();
 	}
 	
 	public function readS16BE(position: Int): Int {
 		be();
-		bytes.position = position;
-		return bytes.readShort();
+		bytesData.position = position;
+		return bytesData.readShort();
 	}
 	
 	public function readU16LE(position: Int): Int {
 		le();
-		bytes.position = position;
-		return bytes.readUnsignedShort();
+		bytesData.position = position;
+		return bytesData.readUnsignedShort();
 	}
 	
 	public function readU16BE(position: Int): Int {
 		be();
-		bytes.position = position;
-		return bytes.readUnsignedShort();
+		bytesData.position = position;
+		return bytesData.readUnsignedShort();
 	}
 
 	public function readS32LE(position: Int): Int {
 		le();
-		bytes.position = position;
-		return bytes.readInt();
+		bytesData.position = position;
+		return bytesData.readInt();
 	}
 	
 	public function readS32BE(position: Int): Int {
 		be();
-		bytes.position = position;
-		return bytes.readInt();
+		bytesData.position = position;
+		return bytesData.readInt();
 	}
 	
 	public function readU32LE(position: Int): Int {
 		le();
-		bytes.position = position;
-		return bytes.readUnsignedInt();
+		bytesData.position = position;
+		return bytesData.readUnsignedInt();
 	}
 	
 	public function readU32BE(position: Int): Int {
 		be();
-		bytes.position = position;
-		return bytes.readUnsignedInt();
+		bytesData.position = position;
+		return bytesData.readUnsignedInt();
 	}
 	
 	public function readF32LE(position: Int): Float {
 		le();
-		bytes.position = position;
-		return bytes.readFloat();
+		bytesData.position = position;
+		return bytesData.readFloat();
 	}
 	
 	public function readF32BE(position: Int): Float {
 		be();
-		bytes.position = position;
-		return bytes.readFloat();
+		bytesData.position = position;
+		return bytesData.readFloat();
 	}
 	
 	public function readF64LE(position: Int): Float {
 		le();
-		bytes.position = position;
-		return bytes.readDouble();
+		bytesData.position = position;
+		return bytesData.readDouble();
 	}
 	
 	public function readF64BE(position: Int): Float {
 		be();
-		bytes.position = position;
-		return bytes.readDouble();
+		bytesData.position = position;
+		return bytesData.readDouble();
 	}
 	
 	public function toString(): String {
-		bytes.position = 0;
-		return bytes.toString();
+		bytesData.position = 0;
+		return bytesData.toString();
 	}
 		
 	public function unload(): Void {
-		bytes = null;
+		bytesData = null;
 	}
 }
