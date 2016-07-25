@@ -102,7 +102,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
-			GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+			write ? GLES20.glEnable(GLES20.GL_DEPTH_TEST) : GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 			GLES20.glDepthFunc(GLES20.GL_ALWAYS);
 		case Never:
 			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
