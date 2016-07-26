@@ -65,10 +65,10 @@ class SystemImpl {
 		var electron = untyped __js__("require('electron')");
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
-		Browser.window.setTimeout(function () {
+		//Browser.window.setTimeout(function () {
 			init2();
 			callback();
-		}, 1000);
+		//}, 1000);
 		#else
 		mobile = isMobile();
 		init2();
