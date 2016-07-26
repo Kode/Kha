@@ -168,7 +168,7 @@ class SystemImpl {
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.MouseImpl();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
 		gamepadStates = new Array<GamepadStates>();
@@ -249,6 +249,7 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
+		canvas.style.cursor = "default";
 
 		var gl: Bool = false;
 
