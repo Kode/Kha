@@ -37,26 +37,38 @@ a:active {
     background-color: #2185D0;
 }
 
+.ui.inverted.header {
+    color: #969696;
+}
+
 /* LABEL - Black */
+.ui.bottom.right.attached.label {
+    background-color: #292929 !important;
+    color: #fff;
+}
+
+.ui.bottom.right.attached.label:hover {
+    background-color: #292929 !important;
+    color: #fff;
+}
+
 .ui.black.labels .label, .ui.black.label {
-    background-color: transparent !important;
-    border-color: transparent !important;
     color: white !important;
     font-family: "PT Sans Narrow";
-    font-size: 1.25em;
+    font-size: 1em;
 }
 
 /* BUTTON - Inverted */
 .ui.inverted.button {
-    background: rgba(255, 255, 255, 0.1) none;
+    background: rgba(255, 255, 255, 0.74) none;
     box-shadow: 0 0 0 2px #ffffff inset !important;
-    color: #ffffff;
+    color: #292929;
 }
 
 .ui.inverted.button:hover {
-    background: rgba(255, 255, 255, 0.1) none;
+    background: rgba(255, 255, 255, 0.74) none;
     box-shadow: 0 0 0 2px #ffffff inset !important;
-    color: #ffffff;
+    color: #292929;
 }
 
 .ui.inverted.button:focus {
@@ -74,7 +86,7 @@ a:active {
 /* BUTTON - Secondary */
 .ui.secondary.buttons .button,
 .ui.secondary.button {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(41, 41, 41, 0.92);
     color: #ffffff;
     text-shadow: none;
     background-image: none;
@@ -82,7 +94,7 @@ a:active {
 
 .ui.secondary.buttons .button:hover,
 .ui.secondary.button:hover {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(41, 41, 41, 0.92);
     color: #ffffff;
     text-shadow: none;
 }
@@ -128,21 +140,14 @@ a:active {
     outline: 0;
 }
 
-/* STEP - Header Style */
-.ui.header .step-number {
-    font-size: 1.2em;
-    font-family: "Open Sans";
-}
-
 .ui.header > .icon + .content {
-    font-family: "Open Sans";
+    font-family: "Roboto Condensed";
 }
 
 /* SEGMENT - Inverted */
 .ui.inverted.segment,
 .ui.primary.inverted.segment {
-    background: #000015;
-    color: rgba(255, 255, 255, 0.9);
+    background: #fff;
 }
 
 /* MESSAGE - Info - Help */
@@ -157,14 +162,16 @@ a:active {
 
 /* GitHub Corner Label */
 .ui.corner .github {
-    top: 0.2em !important;
-    padding-right: 0.8em;
-    font-size: 1.7em !important;
+    top: 0.25em !important;
+    padding-right: 0.7em;
+    font-size: 1.5em !important;
 }
 
 /* Remove menu border */
 .ui.secondary.inverted.pointing.menu {
     border-width: 0;
+    margin-left: 1em !important;
+    margin-right: 1em !important;
 }
 
 /* Remove shadow frame and fill background */
@@ -176,8 +183,10 @@ a:active {
 /* Set menu items to white and smerald theme */
 .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
     color: rgb(255, 255, 255) !important;
-    font-family: "PT Sans Narrow";
-    font-size: 1.33em;
+    font-family: "Lato";
+    font-size: 1em;
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:hover {
@@ -206,76 +215,60 @@ a:active {
 /* Messages */
 .ui.compact.message {
     display: table;
-}
-
-/* Warning Message - Change to smerald color */
-.ui.warning.message {
-    box-shadow: 0 0 0 1px rgba(191, 62, 62, 0.6) inset;
-    background-color: rgba(206, 22, 22, 0.61);
-    border-radius: 0;
-    color: rgb(255, 255, 255);
-    width: max-content;
-    margin: 40px 0 !important;
-}
-
-.ui.warning.message .header {
-    color: rgb(255, 255, 255);
+    margin: 2em 0 2.5em 0;
 }
 
 /* Homepage HEADER Content */
+.menuhead.center.aligned.segment {
+    background-color: #292929;
+    padding: 0;
+}
+
 .homehead.center.aligned.segment {
     background: url("../../assets/images/head.png") center;
     background-size: cover;
-    padding: 0;
 }
 
 .homehead h1.ui.header {
     margin-top: 0.8em;
     margin-bottom: 0;
     color: white;
-    font-family: "Arial";
-    font-size: 6.5em;
+    font-family: "Tahoma";
+    font-size: 9.5em;
     font-weight: bold;
-    text-shadow: 0 1px 0 #999,
-    0 2px 0 #909090,
-    0 3px 0 #888,
-    0 14px 10px rgba(0, 0, 0, 0.45),
-    0 24px 2px rgba(0, 0, 0, 0.1),
-    0 34px 30px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 .homehead h2 {
     color: white;
-    font-size: 2.1em;
+    font-size: 2.8em;
     font-weight: bold;
     font-family: "PT Sans Narrow";
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-.homehead p {
-    color: rgb(255, 255, 255);
-    font-family: "Open Sans";
-    font-size: 1.33em;
-    font-weight: normal;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.75);
 }
 
 /* Small HEADER */
+.ui[class*="center aligned"].segment {
+    text-align: center;
+    background-color: #292929;
+}
+
 .smallhead.center.aligned.segment {
-    background-color: #2185d0 !important;
+    background-color: #313131 !important;
     padding-bottom: 10px;
 }
 
 .tophead div.ui.header b,
 .smallhead div.ui.header b {
-    color: #111;
-    font-family: "Arial";
+    color: #fff;
+    font-family: "Tahoma";
     font-size: 4.5em;
 }
 
 .tophead div.ui.header,
 .smallhead div.ui.header {
-    color: rgba(0, 0, 0, 0.6);
-    font-family: "Open Sans";
+    color: #fff;
+    font-family: "Roboto Condensed";
     font-size: 1.33em;
     font-weight: normal;
     padding-top: 30px !important;
@@ -284,26 +277,23 @@ a:active {
 
 /* GET STARTED and DOWNLOAD buttons */
 .homehead .ui.button {
-    margin-top: 1.5em;
-}
-
-/* Set mouse cursor on github icon hover */
-.ui.black.right.corner.huge.label > i.github.icon {
-    cursor: pointer;
+    margin-top: 2.5em;
+    font-size: 1.2em;
 }
 
 /* Stripes Segments */
 .ui.vertical.stripe {
-    padding: 3em 0;
+    padding: 4.5em 0;
 }
 
 .ui.vertical.stripe h3 {
-    font-size: 3.5em;
+    font-size: 2.75em;
     font-family: "PT Sans Narrow";
+    text-transform: uppercase;
 }
 
 .ui.vertical.stripe p {
-    font-size: 1.33em;
+    font-size: 2.25em;
 }
 
 .ui.vertical.stripe.segment.expand {
@@ -311,7 +301,7 @@ a:active {
 }
 
 .ui.vertical.stripe.segment.main {
-    padding: 6em 0 !important;
+    padding: 6em 0 12em 0 !important;
 }
 
 /* Squarify Components */
@@ -327,14 +317,13 @@ a:active {
     padding: 3em 0;
 }
 
-/* Steps Icons Number */
-.ui.header .step-number {
-    font-family: "Open Sans";
-    font-weight: bold;
+.ui[class*="footer center aligned"].segment {
+    text-align: center;
+    background-color: #f3f3f3;
 }
 
 /* White Divider */
-.ui.divider.addblank {
+.ui.divider.add-padding {
     margin: 50px 0 !important;
     border: 0 !important;
 }
@@ -355,18 +344,38 @@ a:active {
 }
 
 .ui.vertical.stripe p {
-    font-family: "Open Sans";
+    font-family: "PT Sans Narrow";
 }
 
 /* Others Customizations */
-.ui.huge.header {
-    font-size: 3em !important;
-    font-family: "Open Sans";
+.ui.vertical.segment {
+    border-bottom: 0 !important;
+}
+
+.ui.large.images .image, .ui.large.images img, .ui.large.images svg, .ui.large.image {
+    width: auto !important;
+    margin: 0 auto;
+    padding: 2em 0;
+}
+
+.ui.large.image.kodestudio {
+    width: auto !important;
+    margin: -2rem auto 0 auto;
+    padding: 0 0 2em 0 !important;
 }
 
 h2.ui.header {
     font-size: 2.1em;
-    font-family: "Open Sans";
+    font-family: "Roboto Condensed";
+}
+
+.ui.huge.header {
+    font-size: 3em !important;
+    font-family: "Roboto Condensed";
+}
+
+.sub.header p {
+    font-size: 1.75em !important;
 }
 
 .hidden.menu {
@@ -389,13 +398,9 @@ h2.ui.header {
     margin-top: 120px !important;
 }
 
-.gametag a {
-    padding: 4px !important;
-}
-
 .gametag a:hover {
-    background-color: white;
-    color: black;
+    background-color: #292929;
+    color: #fff;
 }
 
 .console {
@@ -403,26 +408,66 @@ h2.ui.header {
     font-size: 1.2em !important;
 }
 
-.txt-centre {
-    text-align: center;
-}
-
 .kha {
-    font-family: "Arial";
-    font-size: 1em;
+    font-size: 1.1em;
 }
 
-.support {
-    position: absolute;
-    top: 0;
+.uppercase {
+    text-transform: uppercase !important;
 }
 
-.addblank {
-    margin: 25px 0 !important;
+.add-padding {
+    padding: 2em 0 !important;
 }
 
-.under992 {
-    display: none !important;
+.add-top-padding {
+    padding-top: 2em !important;
+}
+
+.add-bottom-padding {
+    padding-bottom: 4em !important;
+}
+
+.add-bottom-padding-plus {
+    padding-bottom: 6em !important;
+}
+
+.ui.container {
+    width: auto !important;
+    padding: 0 2em;
+}
+
+.ui.left.sidebar, .ui.right.sidebar {
+    width: 140px;
+}
+
+@media only screen and (min-width: 1200px) and (min-height: 767px) {
+
+    .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
+        font-size: 1.15em;
+    }
+}
+
+@media only screen and (min-width: 840px) and (max-height: 766px) {
+
+    .homehead.center.aligned.segment {
+        height: 100vh !important;
+    }
+}
+
+@media only screen and (max-height: 766px) {
+
+    .homehead h1.ui.header {
+        font-size: 7.8em;
+    }
+
+    .homehead h2 {
+        font-size: 2em;
+    }
+
+    .homehead .ui.button {
+        font-size: 1em;
+    }
 }
 
 @media only screen and (max-width: 991px) {
@@ -430,17 +475,12 @@ h2.ui.header {
     .ui.ordered.steps.squared {
         display: none;
     }
-
-    .under992 {
-        margin-top: 15px !important;
-        display: inline-block !important;
-    }
 }
 
 @media only screen and (max-width: 840px) {
 
     .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
-        font-size: 1.1em !important;
+        font-size: 1em !important;
     }
 
     .homehead h1.ui.header {
@@ -466,11 +506,11 @@ h2.ui.header {
     }
 
     .ui.vertical.stripe h3 {
-        font-size: 2.5em;
+        font-size: 2em;
     }
 
     .ui.vertical.stripe p {
-        font-size: 1.2em;
+        font-size: 1.5em;
     }
 
     .ui.text.container {
@@ -480,6 +520,14 @@ h2.ui.header {
 
     .ui.inverted.button {
         font-size: 0.9em !important;
+    }
+}
+
+@media only screen and (max-width: 795px) {
+
+    .ui.container {
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 }
 
