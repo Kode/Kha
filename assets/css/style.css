@@ -547,7 +547,7 @@ h2.ui.header {
 
 @media only screen and (max-width: 699px) {
 
-    .ui.grid > .row > [class*="eleven wide"].column {
+    .ui.grid > .row > [class*="ten wide"].column {
         width: 100% !important;
     }
 
