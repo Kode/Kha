@@ -573,6 +573,10 @@ h2.ui.header {
         text-align: center;
     }
 
+    .ui.grid > .row > .column > img.haxe {
+        width: 50%;
+    }
+
     .footer h4 {
         font-size: 0.8em !important;
     }
