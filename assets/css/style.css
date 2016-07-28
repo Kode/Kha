@@ -395,6 +395,10 @@ h2.ui.header {
     padding-top: 2em !important;
 }
 
+.add-top-padding-plus {
+    padding-top: 6.5em !important;
+}
+
 .add-bottom-padding {
     padding-bottom: 4em !important;
 }
