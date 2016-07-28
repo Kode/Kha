@@ -254,7 +254,7 @@ a:active {
 
 /* Stripes Segments */
 .ui.vertical.stripe {
-    padding: 4.5em 0;
+    padding: 0 0 4.5em 0;
 }
 
 .ui.vertical.stripe h3 {
