@@ -258,7 +258,7 @@ a:active {
 }
 
 .ui.vertical.stripe h3 {
-    font-size: 1.5em;
+    font-size: 2em;
     font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     text-transform: uppercase;
     padding: 2.25em 0 1.25em 0;
@@ -358,11 +358,11 @@ h2.ui.header {
 }
 
 .platforms {
-    padding: 4em 0 4.25em 0;
+    padding: 6.5em 0 4.25em 0;
 }
 
 .kodestudio {
-    padding: 1.75em 0 4.25em 0;
+    padding: 3.75em 0 4.25em 0;
 }
 
 .gametag {
