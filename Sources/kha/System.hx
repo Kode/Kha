@@ -26,7 +26,7 @@ class System {
 		SystemImpl.init(options, callback);
 	}
 
-	public static function initEx( title : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		SystemImpl.initEx(title, options, windowCallback, callback);
 	}
 
@@ -34,7 +34,6 @@ class System {
 		while (id >= renderListeners.length) {
 			renderListeners.push(new Array());
 		}
-
 		renderListeners[id].push(listener);
 	}
 
