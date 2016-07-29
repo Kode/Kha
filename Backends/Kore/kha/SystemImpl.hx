@@ -9,6 +9,7 @@ import kha.input.Surface;
 import kha.System;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
+import kha.internal.InstancedScheduler;
 
 #if ANDROID
 	#if VR_CARDBOARD
@@ -138,6 +139,7 @@ class SystemImpl {
 			var framebuffer = new Framebuffer(index, null, null, g4);
 			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 			framebuffers[windowId] = framebuffer;
+			kha.Scheduler.addInstance();
 		}
 #end
 
@@ -159,7 +161,7 @@ class SystemImpl {
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
-		Scheduler.init();
+		Scheduler.initAll();
 		loadFinished();
 		callback();
 
@@ -167,7 +169,7 @@ class SystemImpl {
 	}
 
 	private static function loadFinished() {
-		Scheduler.start();
+		Scheduler.startAll();
 
 		/*
 		#if ANDROID
@@ -258,9 +260,10 @@ class SystemImpl {
 		*/
 
 		if (id == 0) {
-			Scheduler.executeFrame();
+			kha.Scheduler.executeFrame();
 		}
 
+		kha.Scheduler.getInstance(id).executeFrame();
 		System.render(id, framebuffers[id]);
 	}
 

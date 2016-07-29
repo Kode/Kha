@@ -217,8 +217,8 @@ namespace {
 
 		int windowCount = Kore::System::windowCount();
 
-		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
-			if (visible) {
+		if (visible) {
+			for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 				#ifndef VR_RIFT
 				Kore::Graphics::begin(windowIndex);
                 #endif
@@ -239,6 +239,12 @@ namespace {
 				//	Kore::VrInterface::DistortionAfter();
 				#endif
 
+				//#ifndef VR_RIFT
+				//Kore::Graphics::swapBuffers(windowIndex);
+				//#endif
+			}
+
+			for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 				#ifndef VR_RIFT
 				Kore::Graphics::swapBuffers(windowIndex);
 				#endif
