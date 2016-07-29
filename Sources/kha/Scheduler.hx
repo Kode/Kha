@@ -190,13 +190,13 @@ class Scheduler {
 			current = frameEnd;
 		}
 		
-		for (t in timeTasks) {
-			activeTimeTask = t;
+		while (timeTasks.length > 0) {
+			activeTimeTask = timeTasks[0];
 			if (stopped || activeTimeTask.paused) { // Extend endpoint by paused time
 				activeTimeTask.next += delta;
 			}
 			else if (activeTimeTask.next <= frameEnd) {
-				activeTimeTask.next += t.period;
+				activeTimeTask.next += activeTimeTask.period;
 				timeTasks.remove(activeTimeTask);
 				
 				if (activeTimeTask.active && activeTimeTask.task()) {
@@ -207,6 +207,9 @@ class Scheduler {
 				else {
 					activeTimeTask.active = false;
 				}
+			}
+			else {
+				break;
 			}
 		}
 		activeTimeTask = null;
