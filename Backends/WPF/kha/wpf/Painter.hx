@@ -103,11 +103,11 @@ class Painter extends kha.graphics2.Graphics {
 	}*/
 	
 	@:functionCode('
-		var img = (Image)myFont._get(myFontSize).getTexture();
+		var img = (Image)myFont._get(myFontSize, null).getTexture();
 		var xpos = tx + x;
 		var ypos = ty + y;
 		for (int i = 0; i < text.Length; ++i) {
-			var q = myFont._get(myFontSize).getBakedQuad(text[i] - 32, xpos, ypos);
+			var q = myFont._get(myFontSize, null).getBakedQuad(text[i] - 32, xpos, ypos);
 			if (q != null) {
 				var brush = new global::System.Windows.Media.ImageBrush(img.image);
 				brush.Viewbox = new global::System.Windows.Rect(q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0);
