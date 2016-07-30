@@ -352,7 +352,7 @@ class Scheduler {
 			}
 		}
 		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
-			activeTimeTask.paused = true;
+			activeTimeTask.paused = paused;
 		}
 	}
 
