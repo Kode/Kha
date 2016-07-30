@@ -238,7 +238,7 @@ class Scheduler {
 
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
-			if (!stopped && !frameTask.paused) {
+			if (!stopped && !frameTask.paused && frameTask.active) {
 				if (!frameTask.task()) frameTask.active = false;
 			}
 		}
@@ -299,7 +299,6 @@ class Scheduler {
 		for (frameTask in frameTasks) {
 			if (frameTask.id == id) {
 				frameTask.active = false;
-				frameTasks.remove(frameTask);
 				break;
 			}
 		}
