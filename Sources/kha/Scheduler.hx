@@ -287,7 +287,6 @@ class Scheduler {
 		for (frameTask in frameTasks) {
 			if (frameTask.id == id) {
 				frameTask.active = false;
-				frameTasks.remove(frameTask);
 				break;
 			}
 		}
