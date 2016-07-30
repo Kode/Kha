@@ -226,7 +226,7 @@ class Scheduler {
 
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
-			if (!stopped && !frameTask.paused) {
+			if (!stopped && !frameTask.paused && frameTask.active) {
 				if (!frameTask.task()) frameTask.active = false;
 			}
 		}
