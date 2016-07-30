@@ -343,6 +343,9 @@ class Scheduler {
 		if (timeTask != null) {
 			timeTask.paused = paused;
 		}
+		if (activeTimeTask != null && activeTimeTask.id == id) {
+			activeTimeTask.paused = paused;
+		}
 	}
 	
 	public static function pauseTimeTasks(groupId: Int, paused: Bool): Void {
