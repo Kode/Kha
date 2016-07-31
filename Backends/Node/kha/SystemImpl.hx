@@ -122,7 +122,7 @@ class SystemImpl {
 		if (Session.the() != null) {
 			Session.the().update();
 		}
-		Node.setTimeout(synch, networkSendRate * 1000);
+		Node.setTimeout(synch, Std.int(networkSendRate * 1000));
 	}
 	
 	public static function getKeyboard(num: Int): Keyboard {
