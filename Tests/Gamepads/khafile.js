@@ -1,5 +1,5 @@
-var project = new Project('Gamepads');
+let project = new Project('Gamepads');
 
 project.addSources('src');
 
-return project;
+resolve(project);
