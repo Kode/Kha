@@ -104,7 +104,7 @@ class ControllerBuilder {
 					expr = macro {
 						if (kha.network.Session.the() != null) {
 							$expr;
-							kha.network.Session.the().network.send(bytes, false);
+							kha.network.Session.the().sendControllerUpdate(_id(), bytes);
 						}
 						$original;
 					};

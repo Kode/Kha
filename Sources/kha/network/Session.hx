@@ -102,6 +102,14 @@ class Session {
 	}
 	#end
 	
+	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
+		#if !sys_server
+		if (controllers.exists(id)) {
+			network.send(bytes, false);
+		}
+		#end
+	}
+
 	public function receive(bytes: Bytes, client: Client = null): Void {
 		#if sys_server
 		
