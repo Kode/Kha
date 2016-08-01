@@ -23,6 +23,10 @@ class Server {
 		
 		app.use('/', untyped __js__("express.static('../html5')"));
 		
+		app.use(function(err, req, res, next) {
+			Node.console.error(err.stack);
+		});
+
 		app.listen(port);
 		
 		//udpSocket = Dgram.createSocket("udp4", function (error: Error, bytes: Bytes) { });

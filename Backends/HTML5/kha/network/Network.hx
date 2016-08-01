@@ -10,6 +10,9 @@ class Network {
 	
 	public function new(url: String, port: Int) {
 		socket = new WebSocket("ws://" + url + ":" + port);
+		socket.onerror = function (error) {
+			trace("Network error: " + error);
+		}
 		socket.binaryType = BinaryType.ARRAYBUFFER;
 		socket.onopen = function () {
 			open = true;
