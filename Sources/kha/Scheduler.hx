@@ -117,12 +117,14 @@ class Scheduler {
 	}
 	
 	public static function back(time: Float): Void {
+		if (time >= lastTime) return; // No back to the future
+
 		lastTime = time;
 		for (timeTask in timeTasks) {
 			if (timeTask.start >= time) {
 				timeTask.next = timeTask.start;
 			}
-			else {
+			else if (timeTask.period > 0) {
 				timeTask.next = timeTask.start;
 				while (timeTask.next < time) { // TODO: Implement without looping
 					timeTask.next += timeTask.period;
