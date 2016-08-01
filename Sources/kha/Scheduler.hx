@@ -125,10 +125,9 @@ class Scheduler {
 				timeTask.next = timeTask.start;
 			}
 			else if (timeTask.period > 0) {
-				timeTask.next = timeTask.start;
-				while (timeTask.next < time) { // TODO: Implement without looping
-					timeTask.next += timeTask.period;
-				}
+				var sinceStart = time - timeTask.start;
+				var times = Math.ceil(sinceStart / timeTask.period);
+				timeTask.next = timeTask.start + times * timeTask.period;
 			}
 		}
 	}
