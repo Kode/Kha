@@ -35,6 +35,12 @@ class FastMatrix3 {
 		return y * width + x;
 	}*/
 
+	@:extern public inline function setFrom(m:FastMatrix3):Void {
+		this._00 = m._00; this._10 = m._10; this._20 = m._20;
+		this._01 = m._01; this._11 = m._11; this._21 = m._21;
+		this._02 = m._02; this._12 = m._12; this._22 = m._22;
+	}
+	
 	@:extern public static inline function translation(x: FastFloat, y: FastFloat): FastMatrix3 {
 		return new FastMatrix3(
 			1, 0, x,
