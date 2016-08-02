@@ -27,11 +27,13 @@ class Session {
 	public static inline var ENTITY_UPDATES = 1;
 	public static inline var CONTROLLER_UPDATES = 2;
 	public static inline var REMOTE_CALL = 3;
+	public static inline var PING = 4;
 	
 	private static var instance: Session = null;
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
 	private var players: Int;
+	public var ping: Float = 1;
 	private var address: String;
 	private var port: Int;
 	private var startCallback: Void->Void;
@@ -109,6 +111,16 @@ class Session {
 		}
 		#end
 	}
+	
+	private function sendPing() {
+		#if !sys_server
+		var bytes = haxe.io.Bytes.alloc(5);
+		bytes.set(0, kha.network.Session.PING);
+		bytes.setFloat(1, Scheduler.realTime());
+
+		network.send(bytes, false);
+		#end
+	}
 
 	public function receive(bytes: Bytes, client: Client = null): Void {
 		#if sys_server
@@ -146,6 +158,9 @@ class Session {
 					}
 				}
 			}
+		case PING:
+			// PONG, i.e. just return the packet to the client
+			if (client != null) client.send(bytes, false);
 		}
 		
 		#else
@@ -218,6 +233,9 @@ class Session {
 				}
 			}
 			Reflect.callMethod(null, Reflect.field(Type.resolveClass(classname), methodname + "_remotely"), args);
+		case PING:
+			var sendTime = bytes.getFloat(1);
+			ping = Scheduler.realTime() - sendTime;
 		}
 		
 		#end
@@ -261,6 +279,8 @@ class Session {
 		#else
 		network = new Network(address, port);
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
+		ping = 1;
+		Scheduler.addTimeTask(sendPing, 0, 1);
 		#end
 	}
 	
