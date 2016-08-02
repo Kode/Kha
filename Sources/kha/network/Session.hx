@@ -139,7 +139,7 @@ class Session {
 								entity._receive(offset, lastStates[i].data);
 								offset += entity._size();
 							}
-							Scheduler.back(time);
+							Scheduler.back(lastStates[i].time);
 							break;
 						}
 						--i;
