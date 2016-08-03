@@ -37,8 +37,11 @@ class FrameTask {
 class Scheduler {
 	private static var timeTasks: Array<TimeTask>;
 	private static var pausedTimeTasks: Array<TimeTask>;
-	private static var frameTasks: Array<FrameTask>;
-	
+	private static var outdatedTimeTasks: Array<TimeTask>;
+	private static var timeTasksScratchpad: Array<TimeTask>;
+	private static inline var timeWarpSaveTime: Float = 1.0;
+
+	private static var frameTasks: Array<FrameTask>;	
 	private static var toDeleteFrame : Array<FrameTask>;
 	
 	private static var current: Float;
@@ -78,10 +81,12 @@ class Scheduler {
 		currentTimeTaskId  = 0;
 		currentGroupId     = 0;
 		
-		timeTasks = new Array<TimeTask>();
-		pausedTimeTasks = new Array<TimeTask>();
-		frameTasks = new Array<FrameTask>();
-		toDeleteFrame = new Array<FrameTask>();
+		timeTasks = [];
+		pausedTimeTasks = [];
+		outdatedTimeTasks = [];
+		timeTasksScratchpad = [];
+		frameTasks = [];
+		toDeleteFrame = [];
 	}
 	
 	public static function start(restartTimers : Bool = false): Void {
@@ -113,12 +118,9 @@ class Scheduler {
 	public static function isStopped(): Bool {
 		return stopped;
 	}
-	
-	public static function back(time: Float): Void {
-		if (time >= lastTime) return; // No back to the future
 
-		lastTime = time;
-		for (timeTask in timeTasks) {
+	private static function warpTimeTasks(time: Float, tasks: Array<TimeTask>): Void {
+		for (timeTask in tasks) {
 			if (timeTask.start >= time) {
 				timeTask.next = timeTask.start;
 			}
@@ -127,6 +129,41 @@ class Scheduler {
 				var times = Math.ceil(sinceStart / timeTask.period);
 				timeTask.next = timeTask.start + times * timeTask.period;
 			}
+		}
+	}
+	
+	public static function back(time: Float): Void {
+		if (time >= lastTime) return; // No back to the future
+
+		lastTime = time;
+		warpTimeTasks(time, outdatedTimeTasks);
+		warpTimeTasks(time, timeTasks);
+		
+		for (task in outdatedTimeTasks) {
+			if (task.next >= time) {
+				timeTasksScratchpad.push(task);
+			}
+		}
+		for (task in timeTasksScratchpad) {
+			outdatedTimeTasks.remove(task);
+		}
+		for (task in timeTasksScratchpad) {
+			insertSorted(timeTasks, task);
+		}
+		while (timeTasksScratchpad.length > 0) {
+			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+		}
+
+		for (task in outdatedTimeTasks) {
+			if (task.next < time - timeWarpSaveTime) {
+				timeTasksScratchpad.push(task);
+			}
+		}
+		for (task in timeTasksScratchpad) {
+			outdatedTimeTasks.remove(task);
+		}
+		while (timeTasksScratchpad.length > 0) {
+			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
 		}
 	}
 	
@@ -217,6 +254,11 @@ class Scheduler {
 				}
 				else {
 					activeTimeTask.active = false;
+					#if sys_server
+					if (activeTimeTask.next > frameEnd - timeWarpSaveTime) {
+						outdatedTimeTasks.push(activeTimeTask);
+					}
+					#end
 				}
 			}
 			else {
@@ -307,9 +349,8 @@ class Scheduler {
 		t.start = current + start;
 		t.period = 0;
 		if (period != 0) t.period = period;
-		//if (t.period == 0) throw std::exception("The period of a task must not be zero.");
 		t.duration = 0; //infinite
-		if (duration != 0) t.duration = t.start + duration; //-1 ?
+		if (duration != 0) t.duration = t.start + duration;
 
 		t.next = t.start;
 		insertSorted(timeTasks, t);
@@ -393,7 +434,7 @@ class Scheduler {
 		}
 		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
 			activeTimeTask.paused = false;
-		} 
+		}
 	}
 
 	public static function numTasksInSchedule(): Int {
@@ -415,12 +456,4 @@ class Scheduler {
 		frameTasks.sort(function(a: FrameTask, b: FrameTask): Int { return a.priority > b.priority ? 1 : ((a.priority < b.priority) ? -1 : 0); } );
 		frame_tasks_sorted = true;
 	}
-	
-	//private static function get_deltaTime():Float 
-	//{
-	//	return delta;
-	//}
-	
-	/** Delta time between frames*/
-	//static public var deltaTime(get_deltaTime, null):Float;
 }
