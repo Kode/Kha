@@ -39,7 +39,6 @@ class Scheduler {
 	private static var pausedTimeTasks: Array<TimeTask>;
 	private static var frameTasks: Array<FrameTask>;
 	
-	private static var toDeleteTime : Array<TimeTask>;
 	private static var toDeleteFrame : Array<FrameTask>;
 	
 	private static var current: Float;
@@ -82,7 +81,6 @@ class Scheduler {
 		timeTasks = new Array<TimeTask>();
 		pausedTimeTasks = new Array<TimeTask>();
 		frameTasks = new Array<FrameTask>();
-		toDeleteTime = new Array<TimeTask>();
 		toDeleteFrame = new Array<FrameTask>();
 	}
 	
@@ -227,16 +225,6 @@ class Scheduler {
 		}
 		activeTimeTask = null;
 		
-		for (timeTask in timeTasks) {
-			if (!timeTask.active) {
-				toDeleteTime.push(timeTask);
-			}
-		}
-		
-		while (toDeleteTime.length > 0) {
-			timeTasks.remove(toDeleteTime.pop());
-		}
-
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
 			if (!stopped && !frameTask.paused && frameTask.active) {
@@ -400,16 +388,12 @@ class Scheduler {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = false;
-				toDeleteTime.push(timeTask);
+				timeTasks.remove(timeTask);
 			}
 		}
 		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
 			activeTimeTask.paused = false;
 		} 
-		
-		while (toDeleteTime.length > 0) {
-			timeTasks.remove(toDeleteTime.pop());
-		}
 	}
 
 	public static function numTasksInSchedule(): Int {
