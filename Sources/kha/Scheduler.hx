@@ -251,14 +251,13 @@ class Scheduler {
 					if (activeTimeTask.period > 0 && (activeTimeTask.duration == 0 || activeTimeTask.duration >= activeTimeTask.start + activeTimeTask.next)) {
 						insertSorted(timeTasks, activeTimeTask);
 					}
+					else {
+						archiveTimeTask(activeTimeTask);
+					}
 				}
 				else {
 					activeTimeTask.active = false;
-					#if sys_server
-					if (activeTimeTask.next > frameEnd - timeWarpSaveTime) {
-						outdatedTimeTasks.push(activeTimeTask);
-					}
-					#end
+					archiveTimeTask(activeTimeTask);
 				}
 			}
 			else {
@@ -283,6 +282,14 @@ class Scheduler {
 		while (toDeleteFrame.length > 0) {
 			frameTasks.remove(toDeleteFrame.pop());
 		}
+	}
+
+	private static function archiveTimeTask(timeTask: TimeTask) {
+		#if sys_server
+		if (timeTask.next > frameEnd - timeWarpSaveTime) {
+			outdatedTimeTasks.push(timeTask);
+		}
+		#end
 	}
 
 	public static function time(): Float {
