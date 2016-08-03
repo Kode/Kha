@@ -429,11 +429,19 @@ class Scheduler {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = false;
-				timeTasks.remove(timeTask);
+				timeTasksScratchpad.push(timeTask);
+				
 			}
 		}
+		for (timeTask in timeTasksScratchpad) {
+			timeTasks.remove(timeTask);
+		}
+		while (timeTasksScratchpad.length > 0) {
+			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+		}
+
 		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
-			activeTimeTask.paused = false;
+			activeTimeTask.active = false;
 		}
 	}
 
