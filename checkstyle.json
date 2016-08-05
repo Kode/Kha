@@ -1,0 +1,36 @@
+{
+	"defaultSeverity": "INFO",
+	"checks": [
+		{
+			"type": "EmptyLines",
+			"props": {
+				"requireEmptyLineAfterClass": false,
+				"requireEmptyLineAfterInterface": false,
+				"requireEmptyLineAfterAbstract": false,
+				"max": 1
+			}
+		},
+		{
+			"type": "FileLength",
+			"props": {
+				"max": 2000
+			}
+		},
+		{
+			"type": "IndentationCharacter",
+			"props": {
+				"character": "tab"
+			}
+		},
+		{
+			"type": "TrailingWhitespace"
+		},
+		{
+			"type": "LeftCurly",
+			"props": {
+				"option": "eol",
+				"ignoreEmptySingleline": "true"
+			}
+		}
+	]
+}
