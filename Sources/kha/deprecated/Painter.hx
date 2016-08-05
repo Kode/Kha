@@ -75,7 +75,7 @@ class Painter {
 	public function translate(x: Float, y: Float): Void { }
 	
 	public function clear(): Void {
-		fillRect(0, 0, System.pixelWidth, System.pixelHeight);
+		fillRect(0, 0, System.windowWidth(), System.windowHeight());
 	}
 	
 	public function begin(): Void {

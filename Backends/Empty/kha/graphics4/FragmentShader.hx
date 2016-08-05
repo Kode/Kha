@@ -5,7 +5,7 @@ class FragmentShader {
 	public var type: Dynamic;
 	public var shader: Dynamic;
 	
-	public function new(source: Blob) {
+	public function new(source: Blob, file: String) {
 		
 	}
 }
