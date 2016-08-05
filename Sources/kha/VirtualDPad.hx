@@ -1,32 +1,32 @@
 package kha;
 
-//
-// VirtualDPad
-//
-// The VirtualDPad (virtual direction pad) is for systems which do not have
-// normal dpad/buttons. The virtual dpad is displayed on the screen and can
-// be controlled by touch or mouse controls.
-//
+/**
+ # VirtualDPad
 
-//
-// How to use:
-//
-// - Create a new VirtualDPad.
-// - Call mouse handlers (mouseDown(), mouseUp(), mouseMove()), when they are called in your Game-class.
-// - Use the left, right, up, down variables of the VirtualDPad to determine which direction the user presses.
-// - Override the render()-function to make a beautiful virtual dpad.
-// - If your VirtualDPad has another shape than a simple rectangle, override the checkMouseCollision()-function.
-//   You might also want to override isMouseWithinMoveArea(), isMouseWithinDeadAreaX() and isMouseWithinDeadAreaY().
-// - If the interaction should be canceled, for example if your game or a level in your game restarts, or if
-//   the virtual dpad loses focus, because a window has been opened, or in any similar case, call reset().
-//
-// Caution:
-// - Take care that nothing weird happens when the user presses on both real dpad/button or analog stick,
-//   and virtual dpad at the same time. Because this can happen on systems that have both. You can use
-//   user_is_interacting to handle this.
-//
-// Look into the VirtualDPadDemo to see how the VirtualDPad can be used.
-//
+ The VirtualDPad (virtual direction pad) is for systems which do not have
+ normal dpad/buttons. The virtual dpad is displayed on the screen and can
+ be controlled by touch or mouse controls.
+
+
+
+ How to use:
+
+ - Create a new VirtualDPad.
+ - Call mouse handlers (mouseDown(), mouseUp(), mouseMove()), when they are called in your Game-class.
+ - Use the left, right, up, down variables of the VirtualDPad to determine which direction the user presses.
+ - Override the render()-function to make a beautiful virtual dpad.
+ - If your VirtualDPad has another shape than a simple rectangle, override the checkMouseCollision()-function.
+   You might also want to override isMouseWithinMoveArea(), isMouseWithinDeadAreaX() and isMouseWithinDeadAreaY().
+ - If the interaction should be canceled, for example if your game or a level in your game restarts, or if
+   the virtual dpad loses focus, because a window has been opened, or in any similar case, call reset().
+
+ Caution:
+ - Take care that nothing weird happens when the user presses on both real dpad/button or analog stick,
+   and virtual dpad at the same time. Because this can happen on systems that have both. You can use
+   user_is_interacting to handle this.
+
+ Look into the VirtualDPadDemo to see how the VirtualDPad can be used.
+*/
 
 class VirtualDPad {
 	// Direction that the user is pressing:
@@ -35,7 +35,7 @@ class VirtualDPad {
 	public var up   : Bool;
 	public var down : Bool;
 	
-	// To check if the user is currently using the virtual dpad at all:
+	/** To check if the user is currently using the virtual dpad at all:**/
 	public var user_is_interacting: Bool;
 		// Indicates that the user is interacting with the virtual dpad, because he clicked/touched it.
 		// The interaction is continued until the user releases the mouse button or stops touching. It
@@ -48,14 +48,15 @@ class VirtualDPad {
 	public var dead_area: Int; // No reaction inside  the "dead-area"
 	public var move_area: Int; // No reaction outside the "move-area"
 	
-	//
-	// Constructor
-	//
-	// x, y     : Position on screen in pixels
-	// size     : Size in pixels (used for both width and height)
-	// dead_area: Within this area in the center no direction is pressed
-	// move_area: Outside of this area no direction is pressed
-	//
+	/**
+	 Constructor
+	
+	@param x    	: x position on screen in pixels
+	@param y    	: y position on screen in pixels
+	@param size     : Size in pixels (used for both width and height)
+	@param dead_area: Within this area in the center no direction is pressed
+	@param move_area: Outside of this area no direction is pressed
+	*/
 	public function new(x: Int, y: Int, size: Int, dead_area: Int, move_area: Int) {
 		this.x         = x;
 		this.y         = y;
@@ -66,12 +67,11 @@ class VirtualDPad {
 		resetInteraction();
 	}
 	
-	//
-	// reset()
-	//
-	// If the interaction should be canceled, for example if your game or a level in your game restarts,
-	// or if the dpad loses focus, because a window has been opened, or in any similar case, call reset().
-	//
+	
+	/**
+	 If the interaction should be canceled, for example if your game or a level in your game restarts,
+	 or if the dpad loses focus, because a window has been opened, or in any similar case, call reset().
+	*/
 	public function reset() {
 		resetInteraction();
 	}
@@ -109,15 +109,19 @@ class VirtualDPad {
 		}
 	}
 	
-	//
-	// Mouse handlers
-	//
-	// Call these when the mouse handlers in your Game-class are called
-	//
+	/**
+	 * Mouse handlers
+	 * Call these when the mouse handlers in your Game-class are called
+	 */
 	
 	public function mouseMove(mouse_x: Int, mouse_y: Int) {
 		updateDirection(mouse_x, mouse_y);
 	}
+	
+	/**
+	 * Mouse handlers
+	 * Call these when the mouse handlers in your Game-class are called
+	 */
 	
 	public function mouseDown(mouse_x: Int, mouse_y: Int) {
 		if (checkMouseCollision(mouse_x, mouse_y)) {
@@ -130,13 +134,11 @@ class VirtualDPad {
 		user_is_interacting = false;
 	}
 	
-	//
-	// checkMouseCollision()
-	//
-	// Checks if the mouse or touch is on the virtual dpad.
-	// Here, this is just a simple rectangle collision test.
-	// If your dpad has another shape, override this function.
-	//
+	/*
+	 Checks if the mouse or touch is on the virtual dpad.
+	 Here, this is just a simple rectangle collision test.
+	 If your dpad has another shape, override this function.
+	*/
 	public function checkMouseCollision(mouse_x: Int, mouse_y: Int): Bool {
 		if ((mouse_x >= x) && (mouse_y >= y) && (mouse_x < x + size) && (mouse_y < y + size)) return true;
 		return false;
@@ -167,10 +169,10 @@ class VirtualDPad {
 		return false;
 	}
 
-	//
-	// render() function.
-	// Please override this with your own function.
-	//
+	/**
+	 * Please override this with your own function.
+	 * @param	painter : g2 Graphics object
+	 */
 	public function render(painter: kha.graphics2.Graphics) {
 		// Draw the virtual dpad
 		if (user_is_interacting) {
