@@ -252,12 +252,12 @@ class Scheduler {
 						insertSorted(timeTasks, activeTimeTask);
 					}
 					else {
-						archiveTimeTask(activeTimeTask);
+						archiveTimeTask(activeTimeTask, frameEnd);
 					}
 				}
 				else {
 					activeTimeTask.active = false;
-					archiveTimeTask(activeTimeTask);
+					archiveTimeTask(activeTimeTask, frameEnd);
 				}
 			}
 			else {
@@ -284,7 +284,7 @@ class Scheduler {
 		}
 	}
 
-	private static function archiveTimeTask(timeTask: TimeTask) {
+	private static function archiveTimeTask(timeTask: TimeTask, frameEnd: Float) {
 		#if sys_server
 		if (timeTask.next > frameEnd - timeWarpSaveTime) {
 			outdatedTimeTasks.push(timeTask);
