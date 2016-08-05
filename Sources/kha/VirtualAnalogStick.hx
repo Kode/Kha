@@ -1,43 +1,45 @@
 package kha;
 
-//
-// VirtualAnalogStick
-//
-// The VirtualAnalogStick is for systems which do not have a normal
-// analog stick. The virtual analog stick is displayed on the screen and can
-// be controlled by touch or mouse controls.
-//
+/**
+ # VirtualAnalogStick
 
-//
-// How to use:
-//
-// - Create a new VirtualAnalogStick.
-// - Call mouse handlers (mouseDown(), mouseUp(), mouseMove()), when they are called in your Game-class.
-// - Use the angle and strength variables of the VirtualAnalogStick to determine in which direction the user holds it.
-// - Override the render()-function to make a beautiful virtual analog stick.
-// - If your VirtualAnalogStick has another shape than a simple circle, override the checkMouseCollision()-function.
-//   You might also want to override isMouseWithinMoveArea() and isMouseWithinDeadArea().
-// - If the interaction should be canceled, for example if your game or a level in your game restarts, or if
-//   the virtual dpad loses focus, because a window has been opened, or in any similar case, call reset().
-//
-// Caution:
-// - Take care that nothing weird happens when the user presses on both a real analog stick, or dpad, and the
-//   virtual analog stick at the same time. Because this can happen on systems that have both. You can use
-//   user_is_interacting to handle this.
-//
-// Look into the VirtualAnalogStickDemo to see how the VirtualAnalogStick can be used.
-//
+ The VirtualAnalogStick is for systems which do not have a normal
+ analog stick. The virtual analog stick is displayed on the screen and can
+ be controlled by touch or mouse controls.
+
+
+
+ How to use:
+
+ - Create a new VirtualAnalogStick.
+ - Call mouse handlers (mouseDown(), mouseUp(), mouseMove()), when they are called in your Game-class.
+ - Use the angle and strength variables of the VirtualAnalogStick to determine in which direction the user holds it.
+ - Override the render()-function to make a beautiful virtual analog stick.
+ - If your VirtualAnalogStick has another shape than a simple circle, override the checkMouseCollision()-function.
+   You might also want to override isMouseWithinMoveArea() and isMouseWithinDeadArea().
+ - If the interaction should be canceled, for example if your game or a level in your game restarts, or if
+   the virtual dpad loses focus, because a window has been opened, or in any similar case, call reset().
+
+ Caution:
+ - Take care that nothing weird happens when the user presses on both a real analog stick, or dpad, and the
+   virtual analog stick at the same time. Because this can happen on systems that have both. You can use
+   user_is_interacting to handle this.
+
+ Look into the VirtualAnalogStickDemo to see how the VirtualAnalogStick can be used.
+**/
 
 class VirtualAnalogStick {
-	// Direction that the user is pressing:
+	/** Direction that the user is pressing: **/
 	public var angle   : Float;
 	public var strength: Float;
 	
-	// To check if the user is currently using the virtual analog stick at all:
+	/** To check if the user is currently using the virtual analog stick at all:
+	 * Indicates that the user is interacting with the virtual analog stick, because he clicked/touched it.
+	 * The interaction is continued until the user releases the mouse button or stops touching. It
+	 *  is continued even while the mouse/touch position is outside of the virtual analog stick.
+	 **/
 	public var user_is_interacting: Bool;
-		// Indicates that the user is interacting with the virtual analog stick, because he clicked/touched it.
-		// The interaction is continued until the user releases the mouse button or stops touching. It
-		// is continued even while the mouse/touch position is outside of the virtual analog stick.
+
 	
 	// Position and sizes:
 	public var x            : Int;
@@ -47,14 +49,16 @@ class VirtualAnalogStick {
 	public var full_distance: Int; // Full reaction (strength 1.0) at full_distance to the center
 	public var move_distance: Int; // No reaction outside the move_distance to the center
 	
-	//
-	// Constructor
-	//
-	// x, y     : Position on screen in pixels
-	// size     : Size in pixels (used for both width and height)
-	// dead_area: Within this area in the center no direction is pressed
-	// move_area: Outside of this area no direction is pressed
-	//
+	
+	 
+	/**
+	 *  Constructor
+	 * @param x        : x position on screen in pixels
+	 * @param y        : y position on screen in pixels
+	 * @param size     : Size in pixels (used for both width and height)
+	 * @param dead_area: Within this area in the center no direction is pressed
+	 * @param move_area: Outside of this area no direction is pressed
+	 */
 	public function new(x: Int, y: Int, size: Int, dead_distance: Int, full_distance: Int, move_distance: Int) {
 		this.x             = x;
 		this.y             = y;
@@ -66,12 +70,12 @@ class VirtualAnalogStick {
 		resetInteraction();
 	}
 	
-	//
-	// reset()
-	//
-	// If the interaction should be canceled, for example if your game or a level in your game restarts,
-	// or if the stick loses focus, because a window has been opened, or in any similar case, call reset().
-	//
+	
+	 
+	/**
+	 * If the interaction should be canceled, for example if your game or a level in your game restarts,
+	 * or if the stick loses focus, because a window has been opened, or in any similar case, call reset().	 
+	**/
 	public function reset() {
 		resetInteraction();
 	}
@@ -108,16 +112,19 @@ class VirtualAnalogStick {
 		}
 	}
 	
-	//
-	// Mouse handlers
-	//
-	// Call these when the mouse handlers in your Game-class are called
-	//
-	
+	/**
+	 * Mouse handlers
+	 * Call these when the mouse handlers in your Game-class are called
+	 */
+
 	public function mouseMove(mouse_x: Int, mouse_y: Int) {
 		updateDirection(mouse_x, mouse_y);
 	}
 	
+	/**
+	 * Mouse handlers
+	 * Call these when the mouse handlers in your Game-class are called
+	 */
 	public function mouseDown(mouse_x: Int, mouse_y: Int) {
 		if (checkMouseCollision(mouse_x, mouse_y)) {
 			user_is_interacting = true;
@@ -129,13 +136,13 @@ class VirtualAnalogStick {
 		user_is_interacting = false;
 	}
 	
-	//
-	// checkMouseCollision()
-	//
-	// Checks if the mouse or touch is on the virtual analog stick.
-	// Here, this is just a simple circle collision test.
-	// If your stick has another shape, override this function.
-	//
+	
+	/**
+	 * Checks if the mouse or touch is on the virtual analog stick.
+	 * Here, this is just a simple circle collision test.
+	 * If your stick has another shape, override this function.
+	 */
+	
 	public function checkMouseCollision(mouse_x: Int, mouse_y: Int): Bool {
 		if ((mouse_x >= x) && (mouse_y >= y) && (mouse_x < x + size) && (mouse_y < y + size)) return true;
 		return false;
@@ -174,10 +181,11 @@ class VirtualAnalogStick {
 		return false;
 	}
 
-	//
-	// render() function.
-	// Please override this with your own function.
-	//
+	/**
+	 * Please override this with your own function.
+	 * @param	painter : g2 Graphics object
+	 */
+
 	public function render(painter: kha.graphics2.Graphics) {
 		// Draw the virtual analog stick
 		if (user_is_interacting) {
