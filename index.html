@@ -9,66 +9,37 @@ title: "Kha Multimedia Framework"
 <body>
 
 <!-- Following Menu -->
-{% include menu-default.html %}
+<div class="ui large inverted fixed hidden menu">
+
+    <a class="toc item">
+        <i class="sidebar icon"></i>
+    </a>
+
+    {% include menu-list.html %}
+
+    <div class="right menu">
+
+        <a class="item" href="/getstarted"><i class="ellipsis vertical icon"></i>Get Started</a>
+        <a class="item" href="/download"><i class="download icon"></i>Download</a>
+
+    </div>
+</div>
+<!-- End Following -->
 
 <!-- Sidebar Menu -->
-{% include menu-sidebar.html %}
+<div class="ui vertical inverted sidebar menu">
+{% include menu-list.html %}
+</div>
+<!-- End Sidebar -->
 
-<!-- Page Contents -->
 <div class="pusher">
 
     <!-- Header Segment -->
-    <div class="ui inverted vertical menuhead center aligned segment">
-        <div class="black layer">
-            <div class="ui container">
+    {% include menu-default.html %}
+    {% include header.html %}
+    <!-- End Header -->
 
-                <!-- Header Menu -->
-                <div class="ui large inverted menu">
-
-                    <a class="toc item">
-                        <i class="sidebar icon"></i>
-                    </a>
-
-                    <a class="active item" href="/"><i class="home icon"></i>Home</a>
-                    <a class="item" href="http://api.kha.technology/"><i class="book icon"></i>APIs</a>
-                    <a class="item" href="https://github.com/KTXSoftware/Kha/wiki/Tutorials"><i class="student icon"></i>Tutorials</a>
-                    <a class="item" href="http://forum.ktxsoftware.com/category/2/kha"><i class="comments outline icon"></i>Community</a>
-                    <a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i>Blog</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="ui inverted vertical homehead center aligned segment">
-        <div class="black layer">
-            <div class="ui text container">
-
-                <!-- Title and Subtitle -->
-                <h1 class="ui inverted header">Kha</h1>
-                <h2>Ultra-portable, high performance,<br/>open source multimedia framework.</h2>
-
-                <!-- Buttons -->
-                <a class="ui vertical animated large inverted secondary button squared" href="getstarted">
-                    <div class="visible content">GET STARTED</div>
-                    <div class="hidden content">IT'S EASY</div>
-                </a>
-                <a class="ui vertical animated large inverted button squared" href="download">
-                    <div class="visible content">DOWNLOAD</div>
-                    <div class="hidden content">IT'S FREE</div>
-                </a>
-
-            </div>
-
-            <!-- Showcase Mini Label -->
-            <div class="ui grid container gametag">
-                <div class="wide column">
-                    <div class="ui small black bottom right attached label squared">
-                        <a href="http://luboslenco.com/notes/">Screenshot of Armory</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Features Segment -->
     <div class="ui vertical stripe segment main">
         <div class="ui aligned grid container">
             <div class="row under700">
@@ -123,9 +94,11 @@ title: "Kha Multimedia Framework"
                 </div>
             </div>
         </div>
-      </div>
+    </div>
+    <!-- End Features -->
 
-      <div class="ui vertical stripe segment">
+    <!-- Haxe Foundation -->
+    <div class="ui vertical stripe segment">
         <div class="ui aligned grid container">
             <div class="row under700">
                 <div class="column" style="margin: 0 auto; width: auto;">
@@ -136,6 +109,7 @@ title: "Kha Multimedia Framework"
             </div>
         </div>
     </div>
+    <!-- End Haxe -->
 
 </div>
 

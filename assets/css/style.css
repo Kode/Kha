@@ -22,7 +22,6 @@ a:active {
     color: #969696;
 }
 
-/* LABEL - Black */
 .ui.bottom.right.attached.label {
     background-color: #292929 !important;
     color: #fff;
@@ -39,7 +38,6 @@ a:active {
     font-size: 0.75em;
 }
 
-/* BUTTON - Inverted */
 .ui.inverted.button {
     background: rgba(255, 255, 255, 0.74) none;
     box-shadow: 0 0 0 2px #ffffff inset !important;
@@ -64,7 +62,6 @@ a:active {
     color: #111111;
 }
 
-/* BUTTON - Secondary */
 .ui.secondary.buttons .button,
 .ui.secondary.button {
     background-color: rgba(41, 41, 41, 0.92);
@@ -94,19 +91,16 @@ a:active {
     text-shadow: none;
 }
 
-/* SEGMENT - Inverted */
 .ui.inverted.segment,
 .ui.primary.inverted.segment {
     background: #fff;
 }
 
-/* Remove shadow frame and fill background */
 .ui.message {
     background: #EFEFEF;
     box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.05) inset, 0 0 0 0 rgba(0, 0, 0, 0);
 }
 
-/* Set menu items to white and smerald theme */
 .ui.inverted.menu .active.item {
     background: rgba(0, 0, 0, 0.25);
 }
@@ -116,9 +110,9 @@ a:active {
 }
 .ui.inverted.menu {
     background-color: #333;
+    border-radius: 0;
 }
 
-/* - */
 .ui.inverted.menu .item:focus, .ui.menu.fixed .link.item, .ui.menu.fixed a.item:focus {
     background-color: #111 !important;
     outline: 0;
@@ -134,13 +128,11 @@ a:active {
     outline: 0;
 }
 
-/* Messages */
 .ui.compact.message {
     display: table;
     margin: 2em 0 2.5em 0;
 }
 
-/* Homepage HEADER Content */
 .menuhead.center.aligned.segment {
     background-color: #292929;
     padding: 0;
@@ -169,7 +161,6 @@ a:active {
     text-shadow: 0 0 30px rgba(0, 0, 0, 1);
 }
 
-/* Small HEADER */
 .ui[class*="center aligned"].segment {
     text-align: center;
     background-color: #292929;
@@ -197,13 +188,11 @@ a:active {
     margin: 0 !important;
 }
 
-/* GET STARTED and DOWNLOAD buttons */
 .homehead .ui.button {
     margin-top: 2.5em;
     font-size: 1em;
 }
 
-/* Stripes Segments */
 .ui.vertical.stripe {
     padding: 0 0 4.5em 0;
 }
@@ -230,7 +219,6 @@ a:active {
     padding: 6em 0 12em 0 !important;
 }
 
-/* Squarify Components */
 .squared {
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
@@ -238,7 +226,6 @@ a:active {
     border-radius: 0 !important;
 }
 
-/* FOOTER Content */
 .footer.segment {
     padding: 3em 0;
 }
@@ -248,13 +235,11 @@ a:active {
     background-color: #f3f3f3;
 }
 
-/* White Divider */
 .ui.divider.add-padding {
     margin: 50px 0 !important;
     border: 0 !important;
 }
 
-/* Others Customizations */
 .ui.vertical.stripe.engines {
     background-color: #2185D0 !important;
     padding: 6em 0 !important;
@@ -368,7 +353,7 @@ h2.ui.header {
 }
 
 .ui.left.sidebar, .ui.right.sidebar {
-    width: 140px;
+    width: 200px;
 }
 
 @media only screen and (max-width: 795px) {

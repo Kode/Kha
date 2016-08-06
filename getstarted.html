@@ -9,17 +9,23 @@ title: "Kha Multimedia Framework / getstarted"
 <body>
 
 <!-- Sidebar Menu -->
-{% include menu-sidebar.html %}
+<div class="ui vertical inverted sidebar menu">
+{% include menu-list.html %}
+</div>
+<!-- End Sidebar -->
 
-<!-- Page Contents -->
 <div class="pusher">
 
-    <!-- Header -->
+    <!-- Header Segment -->
+    {% include menu-default.html %}
     {% include header.html %}
+    <!-- End Header -->
 
+    <!-- Content Segment -->
     <div class="ui vertical stripe segment">
         <div class="ui aligned stackable grid container add-top-padding-plus">
 
+            <!-- Install Row -->
             <div class="title row">
                 <div class="sixteen wide column">
                     <div class="ui huge header">
@@ -35,9 +41,11 @@ title: "Kha Multimedia Framework / getstarted"
 
                 </div>
             </div>
+            <!-- End Install -->
 
             <div class="ui divider"></div>
 
+            <!-- Create Row -->
             <div class="title row">
                 <div class="sixteen wide column">
                     <div class="ui huge header">
@@ -66,9 +74,11 @@ title: "Kha Multimedia Framework / getstarted"
                     </div>
                 </div>
             </div>
+            <!-- End Create -->
 
             <div class="ui divider"></div>
 
+            <!-- Start Row -->
             <div class="title row">
                 <div class="sixteen wide column">
                     <div class="ui huge header">
@@ -96,9 +106,11 @@ title: "Kha Multimedia Framework / getstarted"
                     </div>
                 </div>
             </div>
+            <!-- End Start :) -->
 
             <div class="ui divider"></div>
 
+            <!-- Build Row -->
             <div class="title row add-bottom-padding-plus">
                 <div class="sixteen wide column">
                     <div class="ui huge header">
@@ -124,6 +136,7 @@ title: "Kha Multimedia Framework / getstarted"
                     <p>Project files are by default created inside of a build subdirectory. When using Windows you will eventually have to install Microsoft's dxwebsetup.exe. This is included in Kha's Kore/Tools/krafix subdirectory.</p>
                 </div>
             </div>
+            <!-- End Build -->
         </div>
     </div>
 </div>

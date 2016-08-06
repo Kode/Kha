@@ -9,18 +9,22 @@ title: "Kha Multimedia Framework / download"
 <body>
 
 <!-- Sidebar Menu -->
-{% include menu-sidebar.html %}
+<div class="ui vertical inverted sidebar menu">
+{% include menu-list.html %}
+</div>
+<!-- End Sidebar -->
 
-<!-- Page Contents -->
 <div class="pusher">
 
-    <!-- Header -->
+    <!-- Header Segment -->
+    {% include menu-default.html %}
     {% include header.html %}
+    <!-- End Header -->
 
-    <!-- Download Segment -->
     <div class="ui vertical stripe segment">
         <div class="ui aligned stackable grid container add-top-padding-plus">
 
+            <!-- Download / Kode Studio Row -->
             <div class="title row">
                 <div class="sixteen wide column">
                     <div class="ui huge header">
@@ -35,7 +39,7 @@ title: "Kha Multimedia Framework / download"
                     <h2 class="ui header">
                         <div class="content uppercase add-top-padding">
                             Kode Studio
-                            <span class="sub header">hightly recommended</span>
+                            <span class="sub header">highly recommended</span>
                         </div>
                     </h2>
                     <p>Downloads for Windows, OSX and Linux are <a href="https://github.com/KTXSoftware/KodeStudio/releases">hosted at GitHub</a>.</p>
@@ -43,9 +47,11 @@ title: "Kha Multimedia Framework / download"
                     <p><a href="/getstarted">More details</a>.</p>
                 </div>
             </div>
+            <!-- End Download / Kode Studio -->
 
             <div class="ui divider"></div>
 
+            <!-- Haxelib Row -->
             <div class="title row">
                 <div class="sixteen wide column">
 
@@ -65,12 +71,12 @@ title: "Kha Multimedia Framework / download"
                     <p>That's all.</p>
                 </div>
             </div>
+            <!-- End Haxelib -->
 
             <div class="ui divider"></div>
 
+            <!-- Git Row -->
             <div class="title row">
-
-                <!-- Git -->
                 <div class="sixteen wide column add-bottom-padding">
 
                     <h2 class="ui header">
@@ -113,6 +119,8 @@ title: "Kha Multimedia Framework / download"
                     </div>
                 </div>
             </div>
+            <!-- End Git -->
+
         </div>
     </div>
 </div>
