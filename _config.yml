@@ -6,14 +6,11 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Kha
+title: Kha Multimedia Framework
 email: your-email@domain.com
-description: > # this means to ignore newlines until "baseurl:"
-  It's Kha.
+description: "It's Kha."
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "http://kha.tech" # the base hostname & protocol for your site
-twitter_username: robdangerous
-github_username:  RobDangerous
 
 # Build settings
 markdown: kramdown

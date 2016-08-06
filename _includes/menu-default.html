@@ -1,17 +1,38 @@
+{% if page.title != "Kha Multimedia Framework" %}
 <div class="ui inverted vertical smallhead center aligned segment">
     <div class="ui container">
 
         <!-- Header Menu -->
         <div class="ui large inverted fixed menu">
+{% else %}
+<div class="ui large inverted fixed hidden menu">
+{% endif %}
+
             <a class="toc item">
                 <i class="sidebar icon"></i>
             </a>
 
-            <a class="item" href="/"><i class="home icon"></i> Home</a>
-            <a class="item" href="http://api.kha.technology/"><i class="book icon"></i> APIs</a>
-            <a class="item" href="https://github.com/KTXSoftware/Kha/wiki/Tutorials"><i class="student icon"></i> Tutorials</a>
-            <a class="item" href="http://forum.ktxsoftware.com/category/2/kha"><i class="comments outline icon"></i> Community</a>
-            <a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i> Blog</a>
+            <a class="item" href="/"><i class="home icon"></i>Home</a>
+            <a class="item" href="http://api.kha.technology/"><i class="book icon"></i>APIs</a>
+            <a class="item" href="https://github.com/KTXSoftware/Kha/wiki/Tutorials"><i class="student icon"></i>Tutorials</a>
+            <a class="item" href="http://forum.ktxsoftware.com/category/2/kha"><i class="comments outline icon"></i>Community</a>
+            <a class="item" href="http://tech.ktxsoftware.com/"><i class="newspaper icon"></i>Blog</a>
+            <div class="right menu">
+
+                {% if page.title == 'Kha Multimedia Framework / getstarted' %}
+                <a class="item" href="/download"><i class="download icon"></i>Download</a>
+
+                {% elsif page.title == 'Kha Multimedia Framework / download' %}
+                <a class="item" href="/getstarted"><i class="student icon"></i>Get Started</a>
+
+                {% else %}
+                <a class="item" href="/getstarted"><i class="ellipsis vertical icon"></i>Get Started</a>
+                <a class="item" href="/download"><i class="download icon"></i>Download</a>
+                {% endif %}
+
+            </div>
+        {% if page.title != "Kha Multimedia Framework" %}
         </div>
     </div>
+    {% endif %}
 </div>
