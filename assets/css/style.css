@@ -94,55 +94,10 @@ a:active {
     text-shadow: none;
 }
 
-/* STEP - Link Hover */
-.ui.steps .link.step:hover::after,
-.ui.steps .link.step:hover,
-.ui.steps a.step:hover::after,
-.ui.steps a.step:hover {
-    background: #eee;
-    border-radius: 0;
-}
-
-.ui.steps .link.step:focus::after,
-.ui.steps .link.step:focus,
-.ui.steps a.step:focus::after,
-.ui.steps a.step:focus {
-    background: #eee;
-    border-radius: 0;
-    outline: 0;
-}
-
-.ui.steps .link.step:active::after,
-.ui.steps .link.step:active,
-.ui.steps a.step:active::after,
-.ui.steps a.step:active {
-    background: #ddd;
-    border-radius: 0;
-    outline: 0;
-}
-
-.ui.header > .icon + .content {
-    font-family: "Open Sans";
-}
-
 /* SEGMENT - Inverted */
 .ui.inverted.segment,
 .ui.primary.inverted.segment {
     background: #fff;
-}
-
-/* GitHub Corner Label */
-.ui.corner .github {
-    top: 0.25em !important;
-    padding-right: 0.7em;
-    font-size: 1.5em !important;
-}
-
-/* Remove menu border */
-.ui.secondary.inverted.pointing.menu {
-    border-width: 0;
-    margin-left: 1em !important;
-    margin-right: 1em !important;
 }
 
 /* Remove shadow frame and fill background */
@@ -152,34 +107,30 @@ a:active {
 }
 
 /* Set menu items to white and smerald theme */
-.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
-    color: rgb(255, 255, 255) !important;
-    font-family: "Lato";
-    font-size: 1em;
+.ui.inverted.menu .active.item {
+    background: rgba(0, 0, 0, 0.25);
+}
+.ui.inverted.menu .item {
+    color: #ffffff !important;
     font-weight: bold;
-    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+.ui.inverted.menu {
+    background-color: #333;
 }
 
-.ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item:hover {
-    border-bottom-width: 0;
-    border-bottom-color: transparent;
-}
-
-.ui.secondary.inverted.menu .link.item,
-.ui.secondary.inverted.menu .active.item,
-.ui.secondary.inverted.menu a.item:active {
-    border-bottom-color: transparent !important;
+/* - */
+.ui.inverted.menu .item:focus, .ui.menu.fixed .link.item, .ui.menu.fixed a.item:focus {
+    background-color: #111 !important;
     outline: 0;
 }
 
-/* Set fixed menu items to white and smerald theme */
-.ui.menu.fixed .link.item, .ui.menu.fixed a.item:focus {
-    background-color: #ddd !important;
+.ui.inverted.menu .item:active, .ui.menu.fixed .link.item, .ui.menu.fixed a.item:active {
+    background-color: #111 !important;
     outline: 0;
 }
 
-.ui.menu.fixed .link.item, .ui.menu.fixed a.item:active {
-    background-color: #ddd !important;
+.ui.inverted.menu .item:hover {
+    background-color: #222 !important;
     outline: 0;
 }
 
@@ -207,7 +158,7 @@ a:active {
     font-family: "Tahoma";
     font-size: 7.8em;
     font-weight: bold;
-    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 35px rgba(0, 0, 0, 0.5);
 }
 
 .homehead h2 {
@@ -215,7 +166,7 @@ a:active {
     font-size: 1.65em;
     font-weight: bold;
     font-family: "Open Sans";
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
+    text-shadow: 0 0 30px rgba(0, 0, 0, 1);
 }
 
 /* Small HEADER */
@@ -225,8 +176,8 @@ a:active {
 }
 
 .smallhead.center.aligned.segment {
-    background-color: #313131 !important;
-    padding-bottom: 10px;
+    background-color: #333333 !important;
+    padding: 0;
 }
 
 .tophead div.ui.header b,
@@ -365,6 +316,11 @@ h2.ui.header {
     padding: 3.75em 0 4.25em 0;
 }
 
+.tophead {
+    padding-top: 4rem;
+    padding-bottom: 0.75rem;
+}
+
 .gametag {
     margin-top: 120px !important;
 }
@@ -476,7 +432,7 @@ h2.ui.header {
 
 @media only screen and (max-width: 840px) {
 
-    .ui.secondary.inverted.menu .link.item, .ui.secondary.inverted.menu a.item {
+    .ui.inverted.menu .link.item, .ui.inverted.menu a.item {
         font-size: 1em !important;
     }
 
@@ -529,9 +485,18 @@ h2.ui.header {
 
 @media only screen and (max-width: 780px) {
 
-    .secondary.pointing.menu .item,
-    .secondary.pointing.menu .menu {
+    .ui.menu .item > i.icon {
+        margin: 0;
+    }
+
+    .ui.inverted.menu .item,
+    .ui.inverted.menu .menu {
         display: none;
+    }
+
+    .ui.sidebar.menu .item,
+    .ui.sidebar.menu .menu {
+        display: block;
     }
 
     .ui.fixed.menu {
