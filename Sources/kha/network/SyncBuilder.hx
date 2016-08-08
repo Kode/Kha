@@ -9,8 +9,21 @@ class SyncBuilder {
 		
 		for (field in fields) {
 			var synced = false;
+			// TODO: Avoid hardcoding the target ids
+			var target = 0;//kha.network.Session.RPC_SERVER;
 			for (meta in field.meta) {
 				if (meta.name == "sync" || meta.name == "synced") {
+					// TODO: Figure out if there is a "nicer" way to do this
+					for (param in meta.params) {
+						if (param.expr.equals(EConst(CString("server")))) {
+							target = 0;//kha.network.Session.RPC_SERVER;
+							break;
+						}
+						else if (param.expr.equals(EConst(CString("all")))) {
+							target = 1;//kha.network.Session.RPC_ALL;
+							break;
+						}
+					}
 					synced = true;
 					break;
 				}
@@ -20,9 +33,8 @@ class SyncBuilder {
 			switch (field.kind) {
 			case FFun(f):
 				var original = f.expr;
-				#if sys_server
 				
-				var size = 1;
+				var size = 2;
 				for (arg in f.args) {
 					switch (arg.type) {
 					case TPath(p):
@@ -66,7 +78,8 @@ class SyncBuilder {
 					size += $v { methodname } .length + 2;
 					var bytes = haxe.io.Bytes.alloc(size);
 					bytes.set(0, kha.network.Session.REMOTE_CALL);
-					var index = 1;
+					bytes.set(1, $v { target });
+					var index = 2;
 					
 					bytes.setUInt16(index, $v { classname } .length);
 					index += 2;
@@ -131,27 +144,34 @@ class SyncBuilder {
 					}
 				}
 				
+				#if sys_server
+
 				expr = macro {
 					if (kha.network.Session.the() != null) {
 						$expr;
-						kha.network.Session.the().sendToEverybody(bytes);
+						kha.network.Session.the().processRPC(bytes);
 					}
-					$original;
 				};
 				
 				#else
 				
-				var expr = macro {
-					if (kha.network.Session.the() == null) {
+				expr = macro {
+					if (kha.network.Session.the() != null) {
+						$expr;
+						kha.network.Session.the().sendToServer(bytes);
+					}
+					else {
 						$original;
 					}
 				};
 				
+				#end
+
 				fields.push({
 					name: field.name + "_remotely",
 					doc: null,
 					meta: [],
-					access: [APublic, AStatic],
+					access: [APublic, AStatic], // TODO: Remove AStatic (find concrete object)
 					kind: FFun({
 						ret: f.ret,
 						params: f.params,
@@ -161,7 +181,6 @@ class SyncBuilder {
 					pos: Context.currentPos()
 				});
 				
-				#end
 				f.expr = expr;
 			default:
 				trace("Warning: Synced property " + field.name + " is not a function.");
