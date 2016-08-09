@@ -213,8 +213,9 @@ class Session {
 
 	private function executeRPC(bytes: Bytes) {
 		var args = new Array<Dynamic>();
-		var index: Int = 2;
-
+		var syncId = bytes.getInt32(2);
+		var index: Int = 6;
+		
 		var classnamelength = bytes.getUInt16(index);
 		index += 2;
 		var classname = "";
@@ -264,7 +265,12 @@ class Session {
 				trace("Unknown argument type.");
 			}
 		}
-		Reflect.callMethod(null, Reflect.field(Type.resolveClass(classname), methodname + "_remotely"), args);
+		if (syncId == -1) {
+			Reflect.callMethod(null, Reflect.field(Type.resolveClass(classname), methodname + "_remotely"), args);
+		}
+		else {
+			Reflect.callMethod(SyncBuilder.objects[syncId], Reflect.field(SyncBuilder.objects[syncId], methodname + "_remotely"), args);
+		}
 	}
 	
 	public function waitForStart(callback: Void->Void): Void {
