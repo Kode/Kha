@@ -177,6 +177,14 @@ class Graphics implements kha.graphics4.Graphics {
 			return 4;
 		case InverseDestinationAlpha:
 			return 5;
+		case SourceColor:
+			return 6;
+		case DestinationColor:
+			return 7;
+		case InverseSourceColor:
+			return 8;
+		case InverseDestinationColor:
+			return 9;
 		default:
 			return 0;
 		}
