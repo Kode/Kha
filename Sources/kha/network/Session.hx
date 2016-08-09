@@ -29,6 +29,9 @@ class Session {
 	public static inline var REMOTE_CALL = 3;
 	public static inline var PING = 4;
 	
+	public static inline var RPC_SERVER = 0;
+	public static inline var RPC_ALL = 1;
+
 	private static var instance: Session = null;
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
@@ -107,7 +110,7 @@ class Session {
 	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
 		#if !sys_server
 		if (controllers.exists(id)) {
-			network.send(bytes, false);
+			sendToServer(bytes);
 		}
 		#end
 	}
@@ -118,7 +121,7 @@ class Session {
 		bytes.set(0, kha.network.Session.PING);
 		bytes.setFloat(1, Scheduler.realTime());
 
-		network.send(bytes, false);
+		sendToServer(bytes);
 		#end
 	}
 
@@ -158,6 +161,8 @@ class Session {
 					}
 				}
 			}
+		case REMOTE_CALL:
+			processRPC(bytes);
 		case PING:
 			// PONG, i.e. just return the packet to the client
 			if (client != null) client.send(bytes, false);
@@ -180,65 +185,92 @@ class Session {
 			}
 			Scheduler.back(time);
 		case REMOTE_CALL:
-			var args = new Array<Dynamic>();
-			var index: Int = 1;
-			
-			var classnamelength = bytes.getUInt16(index);
-			index += 2;
-			var classname = "";
-			for (i in 0...classnamelength) {
-				classname += String.fromCharCode(bytes.get(index));
-				++index;
+			switch (bytes.get(1)) {
+			case RPC_SERVER:
+				// Mainly a safeguard, packets with RPC_SERVER should not be received here
+			case RPC_ALL:
+				executeRPC(bytes);
 			}
-			
-			var methodnamelength = bytes.getUInt16(index);
-			index += 2;
-			var methodname = "";
-			for (i in 0...methodnamelength) {
-				methodname += String.fromCharCode(bytes.get(index));
-				++index;
-			}
-			
-			while (index < bytes.length) {
-				var type = bytes.get(index);
-				++index;
-				switch (type) {
-				case 0x42: // B
-					var value: Bool = bytes.get(index) == 1;
-					++index;
-					trace("Bool: " + value);
-					args.push(value);
-				case 0x46: // F
-					var value: Float = bytes.getDouble(index);
-					index += 8;
-					trace("Float: " + value);
-					args.push(value);
-				case 0x49: // I
-					var value: Int = bytes.getInt32(index);
-					index += 4;
-					trace("Int: " + value);
-					args.push(value);
-				case 0x53: // S
-					var length = bytes.getUInt16(index);
-					index += 2;
-					var str = "";
-					for (i in 0...length) {
-						str += String.fromCharCode(bytes.get(index));
-						++index;
-					}
-					trace("String: " + str);
-					args.push(str);
-				default:
-					trace("Unknown argument type.");
-				}
-			}
-			Reflect.callMethod(null, Reflect.field(Type.resolveClass(classname), methodname + "_remotely"), args);
 		case PING:
 			var sendTime = bytes.getFloat(1);
 			ping = Scheduler.realTime() - sendTime;
 		}
 		
 		#end
+	}
+
+	#if sys_server
+	public function processRPC(bytes: Bytes) {
+		switch (bytes.get(1)) {
+		case RPC_SERVER:
+			executeRPC(bytes);
+		case RPC_ALL:
+			sendToEverybody(bytes);
+			executeRPC(bytes);
+		}
+	}
+	#end
+
+	private function executeRPC(bytes: Bytes) {
+		var args = new Array<Dynamic>();
+		var syncId = bytes.getInt32(2);
+		var index: Int = 6;
+		
+		var classnamelength = bytes.getUInt16(index);
+		index += 2;
+		var classname = "";
+		for (i in 0...classnamelength) {
+			classname += String.fromCharCode(bytes.get(index));
+			++index;
+		}
+		
+		var methodnamelength = bytes.getUInt16(index);
+		index += 2;
+		var methodname = "";
+		for (i in 0...methodnamelength) {
+			methodname += String.fromCharCode(bytes.get(index));
+			++index;
+		}
+		
+		while (index < bytes.length) {
+			var type = bytes.get(index);
+			++index;
+			switch (type) {
+			case 0x42: // B
+				var value: Bool = bytes.get(index) == 1;
+				++index;
+				trace("Bool: " + value);
+				args.push(value);
+			case 0x46: // F
+				var value: Float = bytes.getDouble(index);
+				index += 8;
+				trace("Float: " + value);
+				args.push(value);
+			case 0x49: // I
+				var value: Int = bytes.getInt32(index);
+				index += 4;
+				trace("Int: " + value);
+				args.push(value);
+			case 0x53: // S
+				var length = bytes.getUInt16(index);
+				index += 2;
+				var str = "";
+				for (i in 0...length) {
+					str += String.fromCharCode(bytes.get(index));
+					++index;
+				}
+				trace("String: " + str);
+				args.push(str);
+			default:
+				trace("Unknown argument type.");
+			}
+		}
+		if (syncId == -1) {
+			Reflect.callMethod(null, Reflect.field(Type.resolveClass(classname), methodname + "_remotely"), args);
+		}
+		else {
+			Reflect.callMethod(SyncBuilder.objects[syncId], Reflect.field(SyncBuilder.objects[syncId], methodname + "_remotely"), args);
+		}
 	}
 	
 	public function waitForStart(callback: Void->Void): Void {
@@ -287,9 +319,7 @@ class Session {
 	public function update(): Void {
 		#if sys_server
 		var bytes = send();
-		for (client in clients) {
-			client.send(bytes, false);
-		}
+		sendToEverybody(bytes);
 		#end
 	}
 	
@@ -300,4 +330,11 @@ class Session {
 		}
 	}
 	#end
+	
+	#if !sys_server
+	public function sendToServer(bytes: Bytes): Void {
+		network.send(bytes, false);
+	}
+	#end
+
 }
