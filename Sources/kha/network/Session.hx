@@ -44,6 +44,7 @@ class Session {
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
 	private var current: Client;
+	private var isJoinable: Bool = false;
 	private var lastStates: Array<State> = new Array();
 	private static inline var stateCount = 50;
 	#else
@@ -277,9 +278,15 @@ class Session {
 	public function waitForStart(callback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void): Void {
 		startCallback = callback;
 		#if sys_server
+		isJoinable = true;
 		trace("Starting server at " + port + ".");
 		server = new Server(port);
 		server.onConnection(function (client: Client) {
+			if (!isJoinable) {
+				// TODO: Tell the client... client.send();
+				return;
+			}
+
 			clients.push(client);
 			current = client;
 			
@@ -292,9 +299,11 @@ class Session {
 			client.onClose(function () {
 				Node.console.log("Removing client " + client.id + ".");
 				clients.remove(client);
+				// isJoinable is intentionally not reset here, as late joining is currently unsupported
 			});
 			
 			if (clients.length >= players) {
+				isJoinable = false;
 				Node.console.log("Starting game.");
 				var index = 0;
 				for (c in clients) {
