@@ -50,7 +50,12 @@ class Server {
 		//});
 		#end
 	}
-	
+
+	public function reset(): Void {
+		#if sys_server
+		lastId = -1;
+		#end
+	}
 	#if sys_server
 	private static function compare(buffer: Buffer, message: String): Bool {
 		if (buffer.length != message.length) return false;

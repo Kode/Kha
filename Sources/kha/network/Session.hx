@@ -42,6 +42,7 @@ class Session {
 	private var port: Int;
 	private var startCallback: Void->Void;
 	private var refusedCallback: Void->Void;
+	private var resetCallback: Void->Void;
 	#if sys_server
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
@@ -279,9 +280,10 @@ class Session {
 		}
 	}
 	
-	public function waitForStart(callback: Void->Void, refuseCallback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void): Void {
+	public function waitForStart(callback: Void->Void, refuseCallback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void, resCallback: Void->Void): Void {
 		startCallback = callback;
 		refusedCallback = refuseCallback;
+		resetCallback = resCallback;
 		#if sys_server
 		isJoinable = true;
 		trace("Starting server at " + port + ".");
@@ -306,7 +308,10 @@ class Session {
 			client.onClose(function () {
 				Node.console.log("Removing client " + client.id + ".");
 				clients.remove(client);
-				// isJoinable is intentionally not reset here, as late joining is currently unsupported
+				// isJoinable is intentionally not reset here immediately, as late joining is currently unsupported
+				if (clients.length == 0) {
+					reset();
+				}
 			});
 			
 			if (clients.length >= players) {
@@ -337,9 +342,15 @@ class Session {
 	}
 
 	private function reset() {
-		#if !sys_server
+		#if sys_server
+		isJoinable = true;
+		server.reset();
+		#else
 		Scheduler.removeTimeTask(pingTaskId);
 		#end
+		controllers = new Map();
+		entities = new Map();
+		resetCallback();
 	}
 	
 	public function update(): Void {
