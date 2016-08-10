@@ -110,6 +110,10 @@ class SystemImpl {
 		return khanvas.height;
 	}
 
+	public static function screenDpi(): Int {
+		return 96;
+	}
+
 	public static function setCanvas(canvas: CanvasElement): Void {
 		khanvas = canvas;
 	}
