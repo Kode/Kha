@@ -61,6 +61,10 @@ class SystemImpl {
 	public static function windowHeight(id: Int): Int {
 		return height;
 	}
+
+	public static function screenDpi(): Int {
+		return 0;
+	}
 	
 	public static function getScreenRotation(): ScreenRotation {
 		return screenRotation;

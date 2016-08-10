@@ -2,6 +2,7 @@ package kha;
 
 import flash.display.StageScaleMode;
 import flash.display3D.Context3DProfile;
+import flash.system.Capabilities;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.input.Keyboard;
 import kha.input.Mouse;
@@ -273,6 +274,10 @@ class SystemImpl {
 
 	public static function windowHeight( windowId : Int = 0 ): Int {
 		return Lib.current.stage.stageHeight;
+	}
+	
+	public static function screenDpi(): Int {
+		return Std.int(Capabilities.screenDPI);
 	}
 
 	public static function getVsync(): Bool {
