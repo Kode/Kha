@@ -67,6 +67,10 @@ class SystemImpl {
 	public static function windowHeight(windowId: Int): Int {
 		return untyped __cpp__('Kore::System::windowHeight(windowId)');
 	}
+	
+	public static function screenDpi(): Int {
+		return untyped __cpp__('Kore::System::screenDpi()');
+	}
 
 	public static function getVsync(): Bool {
 		return true;

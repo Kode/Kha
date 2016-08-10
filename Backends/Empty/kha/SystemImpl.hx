@@ -33,6 +33,10 @@ class SystemImpl {
 		return 480;
 	}
 	
+	public static function screenDpi(): Int {
+		return 0;
+	}
+	
 	public static function getVsync(): Bool {
 		return true;
 	}

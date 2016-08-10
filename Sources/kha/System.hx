@@ -98,6 +98,11 @@ class System {
 	public static function windowHeight(windowId: Int = 0): Int {
 		return SystemImpl.windowHeight(windowId);
 	}
+	
+	public static function screenDpi(): Int
+	{
+		return SystemImpl.screenDpi();
+	}
 
 	public static var screenRotation(get, null): ScreenRotation;
 

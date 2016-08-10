@@ -356,6 +356,10 @@ class SystemImpl {
 		return myPixelHeight;
 	}
 	
+	public static function screenDpi(): Int {
+		return 0;
+	}
+	
 	public static function changeResolution(width: Int, height: Int): Void {
 		
 	}
