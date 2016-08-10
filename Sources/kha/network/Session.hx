@@ -28,6 +28,8 @@ class Session {
 	public static inline var CONTROLLER_UPDATES = 2;
 	public static inline var REMOTE_CALL = 3;
 	public static inline var PING = 4;
+	public static inline var ERROR = 5;
+	public static inline var PLAYER_UPDATES = 6;
 	
 	public static inline var RPC_SERVER = 0;
 	public static inline var RPC_ALL = 1;
@@ -35,20 +37,25 @@ class Session {
 	private static var instance: Session = null;
 	private var entities: Map<Int, Entity> = new Map();
 	private var controllers: Map<Int, Controller> = new Map();
-	private var players: Int;
+	public var maxPlayers: Int;
+	public var currentPlayers: Int = 0;
 	public var ping: Float = 1;
 	private var address: String;
 	private var port: Int;
 	private var startCallback: Void->Void;
+	private var refusedCallback: Void->Void;
+	private var resetCallback: Void->Void;
 	#if sys_server
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
 	private var current: Client;
+	private var isJoinable: Bool = false;
 	private var lastStates: Array<State> = new Array();
 	private static inline var stateCount = 50;
 	#else
 	private var localClient: Client;
 	public var network: Network;
+	private var pingTaskId: Int;
 	#end
 	
 	public var me(get, null): Client;
@@ -61,9 +68,9 @@ class Session {
 		#end
 	}
 	
-	public function new(players: Int, address: String, port: Int) {
+	public function new(maxPlayers: Int, address: String, port: Int) {
 		instance = this;
-		this.players = players;
+		this.maxPlayers = maxPlayers;
 		this.address = address;
 		this.port = port;
 	}
@@ -122,6 +129,17 @@ class Session {
 		bytes.setFloat(1, Scheduler.realTime());
 
 		sendToServer(bytes);
+		#end
+	}
+	
+	private function sendPlayerUpdate() {
+		#if sys_server
+		currentPlayers = clients.length;
+		var bytes = haxe.io.Bytes.alloc(5);
+		bytes.set(0, PLAYER_UPDATES);
+		bytes.setInt32(1, currentPlayers);
+
+		sendToEverybody(bytes);
 		#end
 	}
 
@@ -194,6 +212,10 @@ class Session {
 		case PING:
 			var sendTime = bytes.getFloat(1);
 			ping = Scheduler.realTime() - sendTime;
+		case ERROR:
+			refusedCallback();
+		case PLAYER_UPDATES:
+			currentPlayers = bytes.getInt32(1);
 		}
 		
 		#end
@@ -273,16 +295,27 @@ class Session {
 		}
 	}
 	
-	public function waitForStart(callback: Void->Void): Void {
+	public function waitForStart(callback: Void->Void, refuseCallback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void, resCallback: Void->Void): Void {
 		startCallback = callback;
+		refusedCallback = refuseCallback;
+		resetCallback = resCallback;
 		#if sys_server
+		isJoinable = true;
 		trace("Starting server at " + port + ".");
 		server = new Server(port);
 		server.onConnection(function (client: Client) {
+			if (!isJoinable) {
+				var bytes = Bytes.alloc(1);
+				bytes.set(0, ERROR);
+				client.send(bytes, true);
+				return;
+			}
+
 			clients.push(client);
 			current = client;
 			
 			Node.console.log(clients.length + " client" + (clients.length > 1 ? "s " : " ") + "connected.");
+			sendPlayerUpdate();
 			
 			client.receive(function (bytes: Bytes) {
 				receive(bytes, client);
@@ -291,9 +324,15 @@ class Session {
 			client.onClose(function () {
 				Node.console.log("Removing client " + client.id + ".");
 				clients.remove(client);
+				sendPlayerUpdate();
+				// isJoinable is intentionally not reset here immediately, as late joining is currently unsupported
+				if (clients.length == 0) {
+					reset();
+				}
 			});
 			
-			if (clients.length >= players) {
+			if (clients.length >= maxPlayers) {
+				isJoinable = false;
 				Node.console.log("Starting game.");
 				var index = 0;
 				for (c in clients) {
@@ -309,11 +348,28 @@ class Session {
 			}
 		});
 		#else
-		network = new Network(address, port);
+		network = new Network(address, port, errorCallback, function() {
+			closeCallback();
+			reset();
+		});
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
 		ping = 1;
-		Scheduler.addTimeTask(sendPing, 0, 1);
+		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
 		#end
+	}
+
+	private function reset() {
+		#if sys_server
+		isJoinable = true;
+		server.reset();
+		#else
+		Scheduler.removeTimeTask(pingTaskId);
+		#end
+		currentPlayers = 0;
+		ping = 1;
+		controllers = new Map();
+		entities = new Map();
+		resetCallback();
 	}
 	
 	public function update(): Void {
