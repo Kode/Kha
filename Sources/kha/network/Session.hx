@@ -49,6 +49,7 @@ class Session {
 	#else
 	private var localClient: Client;
 	public var network: Network;
+	private var pingTaskId: Int;
 	#end
 	
 	public var me(get, null): Client;
@@ -273,7 +274,7 @@ class Session {
 		}
 	}
 	
-	public function waitForStart(callback: Void->Void): Void {
+	public function waitForStart(callback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void): Void {
 		startCallback = callback;
 		#if sys_server
 		trace("Starting server at " + port + ".");
@@ -309,10 +310,19 @@ class Session {
 			}
 		});
 		#else
-		network = new Network(address, port);
+		network = new Network(address, port, errorCallback, function() {
+			closeCallback();
+			reset();
+		});
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
 		ping = 1;
-		Scheduler.addTimeTask(sendPing, 0, 1);
+		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
+		#end
+	}
+
+	private function reset() {
+		#if !sys_server
+		Scheduler.removeTimeTask(pingTaskId);
 		#end
 	}
 	
