@@ -28,6 +28,7 @@ class Session {
 	public static inline var CONTROLLER_UPDATES = 2;
 	public static inline var REMOTE_CALL = 3;
 	public static inline var PING = 4;
+	public static inline var ERROR = 5;
 	
 	public static inline var RPC_SERVER = 0;
 	public static inline var RPC_ALL = 1;
@@ -40,6 +41,7 @@ class Session {
 	private var address: String;
 	private var port: Int;
 	private var startCallback: Void->Void;
+	private var refusedCallback: Void->Void;
 	#if sys_server
 	private var server: Server;
 	private var clients: Array<Client> = new Array();
@@ -196,6 +198,8 @@ class Session {
 		case PING:
 			var sendTime = bytes.getFloat(1);
 			ping = Scheduler.realTime() - sendTime;
+		case ERROR:
+			refusedCallback();
 		}
 		
 		#end
@@ -275,15 +279,18 @@ class Session {
 		}
 	}
 	
-	public function waitForStart(callback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void): Void {
+	public function waitForStart(callback: Void->Void, refuseCallback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void): Void {
 		startCallback = callback;
+		refusedCallback = refuseCallback;
 		#if sys_server
 		isJoinable = true;
 		trace("Starting server at " + port + ".");
 		server = new Server(port);
 		server.onConnection(function (client: Client) {
 			if (!isJoinable) {
-				// TODO: Tell the client... client.send();
+				var bytes = Bytes.alloc(1);
+				bytes.set(0, ERROR);
+				client.send(bytes, true);
 				return;
 			}
 
