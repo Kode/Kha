@@ -301,7 +301,9 @@ class Session {
 		resetCallback = resCallback;
 		#if sys_server
 		isJoinable = true;
+		#if direct_connection
 		trace("Starting server at " + port + ".");
+		#end
 		server = new Server(port);
 		server.onConnection(function (client: Client) {
 			if (!isJoinable) {
