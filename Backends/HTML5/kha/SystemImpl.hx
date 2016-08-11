@@ -111,7 +111,16 @@ class SystemImpl {
 	}
 
 	public static function screenDpi(): Int {
-		return 96;
+		var dpiElement = Browser.document.createElement('div');
+		dpiElement.style.position = "absolute";
+		dpiElement.style.width = "1in";
+		dpiElement.style.height = "1in";
+		dpiElement.style.left = "-100%";
+		dpiElement.style.top = "-100%";
+		Browser.document.body.appendChild(dpiElement);
+		var dpi:Int = dpiElement.offsetHeight;
+		dpiElement.remove();
+		return dpi;
 	}
 
 	public static function setCanvas(canvas: CanvasElement): Void {
