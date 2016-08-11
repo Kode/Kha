@@ -164,6 +164,7 @@ class Session {
 					current = null;					
 				}, time - Scheduler.time());
 				if (time < Scheduler.time()) {
+					var handeled = false;
 					var i = lastStates.length - 1;
 					while (i >= 0) {
 						if (lastStates[i].time < time) {
@@ -172,10 +173,14 @@ class Session {
 								entity._receive(offset, lastStates[i].data);
 								offset += entity._size();
 							}
+							handeled = true;
 							Scheduler.back(lastStates[i].time);
 							break;
 						}
 						--i;
+					}
+					if (!handeled) {
+						trace("WARNING: Client input ignored");
 					}
 				}
 			}
