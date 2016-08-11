@@ -15,7 +15,7 @@ class Controller {
 		
 	}
 
-	public function _receive(offset: Int, bytes: Bytes): Void {
+	public function _receive(bytes: Bytes): Void {
 		
 	}
 }

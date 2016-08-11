@@ -117,7 +117,20 @@ class Session {
 	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
 		#if !sys_server
 		if (controllers.exists(id)) {
-			sendToServer(bytes);
+
+			var packetBytes = haxe.io.Bytes.alloc(26 + bytes.length);
+			packetBytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
+			packetBytes.setInt32(1, id);
+			packetBytes.setDouble(5, Scheduler.realTime());
+			packetBytes.setInt32(13, System.windowWidth(0));
+			packetBytes.setInt32(17, System.windowHeight(0));
+			packetBytes.set(21, System.screenRotation.getIndex());
+			packetBytes.setInt32(22, bytes.length);
+			for (i in 0...bytes.length) {
+				packetBytes.set(26 + i, bytes.get(i));
+			}
+
+			sendToServer(packetBytes);
 		}
 		#end
 	}
@@ -160,7 +173,7 @@ class Session {
 			if (controllers.exists(id)) {
 				Scheduler.addTimeTask(function () {
 					current = client;
-					controllers[id]._receive(22, bytes);
+					controllers[id]._receive(bytes.sub(26, bytes.getInt32(22)));
 					current = null;					
 				}, time - Scheduler.time());
 				if (time < Scheduler.time()) {
