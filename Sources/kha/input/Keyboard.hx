@@ -42,7 +42,7 @@ class Keyboard extends Controller {
 	@input
 	private function sendDownEvent(key: Key, char: String): Void {
 		#if sys_server
-		js.Node.console.log("Down: " + key + " from " + kha.network.Session.the().me.id);
+		js.Node.console.log(kha.Scheduler.time() + " Down: " + key + " from " + kha.network.Session.the().me.id);
 		#end
 		for (listener in downListeners) {
 			listener(key, char);
@@ -52,7 +52,7 @@ class Keyboard extends Controller {
 	@input
 	private function sendUpEvent(key: Key, char: String): Void {
 		#if sys_server
-		js.Node.console.log("Up: " + key + " from " + kha.network.Session.the().me.id);
+		js.Node.console.log(kha.Scheduler.time() + " Up: " + key + " from " + kha.network.Session.the().me.id);
 		#end
 		for (listener in upListeners) {
 			listener(key, char);
