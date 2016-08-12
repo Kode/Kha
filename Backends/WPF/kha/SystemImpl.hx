@@ -431,6 +431,10 @@ class SystemImpl {
 		return 0;
 	}
 	
+	public static function screenDpi(): Int {
+		return 96;
+	}
+
 	public static function getSystemId(): String {
 		return "WPF";
 	}

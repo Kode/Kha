@@ -45,6 +45,10 @@ class SystemImpl {
 		return kore_get_window_height(windowId);
 	}
 
+	public static function screenDpi(): Int {
+		return 96;
+	}
+	
 	public static function getVsync(): Bool {
 		return true;
 	}

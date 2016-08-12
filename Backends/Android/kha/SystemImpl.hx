@@ -32,6 +32,15 @@ class SystemImpl {
 		return 0;
 	}
 
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return (int)(metrics.density * android.util.DisplayMetrics.DENSITY_DEFAULT);
+	')
+	public static function screenDpi(): Int {
+		return 0;
+	}
+	
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}

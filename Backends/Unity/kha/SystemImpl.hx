@@ -36,6 +36,10 @@ class SystemImpl {
 		return unityEngine.Screen.height;
 	}
 
+	public static function screenDpi(): Int {
+		return 96;
+	}
+	
 	public static function getVsync(): Bool {
 		return true;
 	}
