@@ -35,6 +35,8 @@ class Graphics {
 	public function stroke(color: Color): Void { }
 	public function noStroke(): Void { }
 	public function strokeWeight(size: Float): Void { }
+	// Clockwise or counter-clockwise around the defined shape
+	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void { }
 	public function rect(x: Float, y: Float, width: Float, height: Float): Void { }
 	public function line(x1: Float, y1: Float, x2: Float, y2: Float): Void { }
 	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
@@ -44,10 +46,11 @@ class Graphics {
 
 	private function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
 	private function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
+	private function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+
 	private function drawString(text: String, x: Float, y: Float): Void { }
 	private function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
 	private function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
-	private function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;

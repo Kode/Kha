@@ -14,6 +14,23 @@ class VertexStructure {
 	public function size(): Int {
 		return elements.length;
 	}
+
+	public function dataSize(): Int {
+		var size = 0;
+
+		for (i in 0...elements.length) {
+			size += switch (elements[i].data) {
+				case Float1: 1;
+				case Float2: 2;
+				case Float3: 3;
+				case Float4: 4;
+				case Float4x4: 4 * 4;
+				default: 0;
+			}
+		}
+
+		return size;
+	}
 	
 	public function byteSize(): Int {
 		var byteSize = 0;
