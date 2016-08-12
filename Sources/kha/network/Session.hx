@@ -55,6 +55,7 @@ class Session {
 	#else
 	private var localClient: Client;
 	public var network: Network;
+	private var updateTaskId: Int;
 	private var pingTaskId: Int;
 	#end
 	
@@ -85,6 +86,7 @@ class Session {
 	
 	public function addController(controller: Controller): Void {
 		trace("Adding controller id " + controller._id());
+		controller._inputBufferIndex = 0;
 		controllers.set(controller._id(), controller);
 	}
 	
@@ -117,20 +119,15 @@ class Session {
 	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
 		#if !sys_server
 		if (controllers.exists(id)) {
-
-			var packetBytes = haxe.io.Bytes.alloc(26 + bytes.length);
-			packetBytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
-			packetBytes.setInt32(1, id);
-			packetBytes.setDouble(5, Scheduler.realTime());
-			packetBytes.setInt32(13, System.windowWidth(0));
-			packetBytes.setInt32(17, System.windowHeight(0));
-			packetBytes.set(21, System.screenRotation.getIndex());
-			packetBytes.setInt32(22, bytes.length);
-			for (i in 0...bytes.length) {
-				packetBytes.set(26 + i, bytes.get(i));
+			if (controllers[id]._inputBuffer.length < controllers[id]._inputBufferIndex + 4 + bytes.length) {
+				var newBuffer = Bytes.alloc(controllers[id]._inputBufferIndex + 4 + bytes.length);
+				newBuffer.blit(0, controllers[id]._inputBuffer, 0, controllers[id]._inputBufferIndex);
+				controllers[id]._inputBuffer = newBuffer;
 			}
 
-			sendToServer(packetBytes);
+			controllers[id]._inputBuffer.setInt32(controllers[id]._inputBufferIndex, bytes.length);
+			controllers[id]._inputBuffer.blit(controllers[id]._inputBufferIndex + 4, bytes, 0, bytes.length);
+			controllers[id]._inputBufferIndex += (4 + bytes.length);
 		}
 		#end
 	}
@@ -173,7 +170,12 @@ class Session {
 			if (controllers.exists(id)) {
 				Scheduler.addTimeTask(function () {
 					current = client;
-					controllers[id]._receive(bytes.sub(26, bytes.getInt32(22)));
+					var offset = 22;
+					while (offset < bytes.length) {
+						var length = bytes.getInt32(offset);
+						controllers[id]._receive(bytes.sub(offset + 4, length));
+						offset += (4 + length);
+					}
 					current = null;					
 				}, time - Scheduler.time());
 				if (time < Scheduler.time()) {
@@ -371,6 +373,7 @@ class Session {
 			reset();
 		});
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
+		updateTaskId = Scheduler.addFrameTask(update, 0);
 		ping = 1;
 		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
 		#end
@@ -381,6 +384,7 @@ class Session {
 		isJoinable = true;
 		server.reset();
 		#else
+		Scheduler.removeFrameTask(updateTaskId);
 		Scheduler.removeTimeTask(pingTaskId);
 		#end
 		currentPlayers = 0;
@@ -394,6 +398,23 @@ class Session {
 		#if sys_server
 		var bytes = send();
 		sendToEverybody(bytes);
+		#else
+		for (controller in controllers) {
+			if (controller._inputBufferIndex > 0) {
+				var bytes = haxe.io.Bytes.alloc(22 + controller._inputBufferIndex);
+				bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
+				bytes.setInt32(1, controller._id());
+				bytes.setDouble(5, Scheduler.realTime());
+				bytes.setInt32(13, System.windowWidth(0));
+				bytes.setInt32(17, System.windowHeight(0));
+				bytes.set(21, System.screenRotation.getIndex());
+
+				bytes.blit(22, controller._inputBuffer, 0, controller._inputBufferIndex);
+
+				sendToServer(bytes);
+				controller._inputBufferIndex = 0;
+			}
+		}
 		#end
 	}
 	
