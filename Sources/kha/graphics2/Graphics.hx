@@ -30,11 +30,24 @@ class Graphics {
 	}
 	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
 
-	public function fill(color: Color): Void { }
-	public function noFill(): Void { }
-	public function stroke(color: Color): Void { }
-	public function noStroke(): Void { }
-	public function strokeWeight(size: Float): Void { }
+	public function fill(color: Color): Void {
+		fillColor = color;
+		enableFill = true;
+	}
+	public function noFill(): Void {
+		enableFill = false;
+	}
+	public function stroke(color: Color): Void {
+		strokeColor = color;
+		enableStroke = true;
+	}
+	public function noStroke(): Void {
+		enableStroke = false;
+	}
+	public function strokeWeight(size: Float): Void {
+		strokeSize = size;
+	}
+
 	// Clockwise or counter-clockwise around the defined shape
 	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void { }
 	public function rect(x: Float, y: Float, width: Float, height: Float): Void { }
@@ -44,13 +57,13 @@ class Graphics {
 	public function vertex(x:Float, y:Float, ?color:Color): Void { }
 	public function endShape(close:Bool): Void { }
 
-	private function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
-	private function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
-	private function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
+	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
+	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 
-	private function drawString(text: String, x: Float, y: Float): Void { }
-	private function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
-	private function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
+	public function drawString(text: String, x: Float, y: Float): Void { }
+	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
+	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;
@@ -209,6 +222,13 @@ class Graphics {
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;
 	private var myFontGlyphs: Array<Int>;
+
+	private var enableFill: Bool;
+	private var fillColor: Color;
+	private var enableStroke: Bool;
+	private var strokeColor: Color;
+	private var strokeSize: Float;
+	private var shapeType: Primitive;
 	
 	public function new() {
 		transformations = new Array<FastMatrix3>();
@@ -223,6 +243,13 @@ class Graphics {
 		#if sys_g4
 		pipe = null;
 		#end
+
+		enableFill = true;
+		enableStroke = true;
+		fillColor = Color.White;
+		strokeColor = Color.Black;
+		strokeSize = 1.0;
+		shapeType = Lines;
 	}
 	
 	private function setTransformation(transformation: FastMatrix3): Void {

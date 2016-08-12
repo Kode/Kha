@@ -692,23 +692,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private var canvas: Canvas;
 	private var g: Graphics;
 
-	private var enableFill: Bool;
-	private var fillColor: Color;
-	private var enableStroke: Bool;
-	private var strokeColor: Color;
-	private var strokeSize: Float;
-	private var shapeType: Primitive;
-
 	public function new(canvas: Canvas) {
 		super();
 		color = Color.White;
-
-		enableFill = true;
-		enableStroke = true;
-		fillColor = Color.White;
-		strokeColor = Color.Black;
-		strokeSize = 1.0;
-		shapeType = Lines;
 
 		this.canvas = canvas;
 		g = canvas.g4;
@@ -823,24 +809,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 	
 	override public function set_color(color: Color): Color {
 		return myColor = color;
-	}
-	
-	override public function fill(color: Color): Void {
-		fillColor = color;
-		enableFill = true;
-	}
-	override public function noFill(): Void {
-		enableFill = false;
-	}
-	override public function stroke(color: Color): Void {
-		strokeColor = color;
-		enableStroke = true;
-	}
-	override public function noStroke(): Void {
-		enableStroke = false;
-	}
-	override public function strokeWeight(size: Float): Void {
-		strokeSize = size;
 	}
 
 	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void {

@@ -9,6 +9,7 @@ import kha.Kravur;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.Rotation;
+import kha.graphics2.Primitive;
 
 class CanvasGraphics extends Graphics {
 	private var canvas: Dynamic;
@@ -26,6 +27,7 @@ class CanvasGraphics extends Graphics {
 		this.height = height;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
+
 		canvas.save();
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 		//canvas.globalCompositeOperation = "normal";
@@ -138,6 +140,36 @@ class CanvasGraphics extends Graphics {
 		canvas.lineWidth = oldStrength;
 	}
 	
+	override public function fill(color: Color): Void {
+		fillColor = color;
+		canvas.fillStyle = "rgba(" + fillColor.Rb + "," + fillColor.Gb + "," + fillColor.Bb + "," + fillColor.A + ")";
+		enableFill = true;
+	}
+
+	override public function stroke(color: Color): Void {
+		strokeColor = color;
+		canvas.strokeStyle = "rgba(" + strokeColor.Rb + "," + strokeColor.Gb + "," + strokeColor.Bb + "," + strokeColor.A + ")";
+		enableStroke = true;
+	}
+
+	override public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void {
+		canvas.beginPath();
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
+		canvas.lineTo(x3, y3);
+		canvas.lineTo(x4, y4);
+		canvas.closePath();
+
+		if (enableFill)
+			canvas.fill();
+		if (enableStroke)
+			canvas.stroke();
+	}
+
+	override public function rect(x: Float, y: Float, width: Float, height: Float): Void {
+		quad(x, y, x + width, y, x + width, y + height, x, y + height);
+	}
+
 	override public function fillRect(x: Float, y: Float, width: Float, height: Float) {
 		canvas.globalAlpha = opacity * myColor.A;
 		canvas.fillRect(x, y, width, height);
