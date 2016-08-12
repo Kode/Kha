@@ -8,6 +8,7 @@ import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
+import kha.graphics2.Primitive;
 
 class Graphics {
 	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
@@ -28,12 +29,25 @@ class Graphics {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
 	}
 	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
-	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
-	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
-	public function drawString(text: String, x: Float, y: Float): Void { }
-	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
-	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
-	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+
+	public function fill(color: Color): Void { }
+	public function noFill(): Void { }
+	public function stroke(color: Color): Void { }
+	public function noStroke(): Void { }
+	public function strokeWeight(size: Float): Void { }
+	public function rect(x: Float, y: Float, width: Float, height: Float): Void { }
+	public function line(x1: Float, y1: Float, x2: Float, y2: Float): Void { }
+	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+	public function beginShape(primitive:Primitive): Void { }
+	public function vertex(x:Float, y:Float, ?color:Color): Void { }
+	public function endShape(close:Bool): Void { }
+
+	private function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
+	private function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
+	private function drawString(text: String, x: Float, y: Float): Void { }
+	private function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
+	private function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
+	private function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;

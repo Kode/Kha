@@ -28,6 +28,7 @@ import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
+import kha.graphics2.Primitive;
 
 class ImageShaderPainter {
 	private var projectionMatrix: FastMatrix4;
@@ -800,9 +801,24 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private var canvas: Canvas;
 	private var g: Graphics;
 
+	private var enableFill: Bool;
+	private var fillColor: Color;
+	private var enableStroke: Bool;
+	private var strokeColor: Color;
+	private var strokeSize: Float;
+	private var shapeType: Primitive;
+
 	public function new(canvas: Canvas) {
 		super();
 		color = Color.White;
+
+		enableFill = true;
+		enableStroke = true;
+		fillColor = Color.White;
+		strokeColor = Color.Black;
+		strokeSize = 1.0;
+		shapeType = Lines;
+
 		this.canvas = canvas;
 		g = canvas.g4;
 		imagePainter = new ImageShaderPainter(g);
@@ -918,6 +934,109 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myColor = color;
 	}
 	
+	override public function fill(color: Color): Void {
+		fillColor = color;
+		enableFill = true;
+	}
+	override public function noFill(): Void {
+		enableFill = false;
+	}
+	override public function stroke(color: Color): Void {
+		strokeColor = color;
+		enableStroke = true;
+	}
+	override public function noStroke(): Void {
+		enableStroke = false;
+	}
+	override public function strokeWeight(size: Float): Void {
+		strokeSize = size;
+	}
+
+	override public function rect(x: Float, y: Float, width: Float, height: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+
+		if (enableFill) {
+			var p1 = transformation.multvec(new FastVector2(x, y + height));
+			var p2 = transformation.multvec(new FastVector2(x, y));
+			var p3 = transformation.multvec(new FastVector2(x + width, y));
+			var p4 = transformation.multvec(new FastVector2(x + width, y + height));
+			coloredPainter.fillRect(fillColor.A, fillColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+		}
+		if (enableStroke) {
+			var p1 = transformation.multvec(new FastVector2(x - strokeSize / 2, y + strokeSize / 2)); //bottom-left
+			var p2 = transformation.multvec(new FastVector2(x - strokeSize / 2, y - strokeSize / 2)); //top-left
+			var p3 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y - strokeSize / 2)); //top-right
+			var p4 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y + strokeSize / 2)); //bottom-right
+			coloredPainter.fillRect(strokeColor.A, strokeColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
+			
+			p1 = transformation.multvec(new FastVector2(x - strokeSize / 2, y + height + strokeSize / 2));
+			p3 = transformation.multvec(new FastVector2(x + strokeSize / 2, y - strokeSize / 2));
+			p4 = transformation.multvec(new FastVector2(x + strokeSize / 2, y + height + strokeSize / 2));
+			coloredPainter.fillRect(strokeColor.A, strokeColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
+			
+			p2 = transformation.multvec(new FastVector2(x - strokeSize / 2, y + height - strokeSize / 2));
+			p3 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y + height - strokeSize / 2));
+			p4 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y + height + strokeSize / 2));
+			coloredPainter.fillRect(strokeColor.A, strokeColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
+			
+			p1 = transformation.multvec(new FastVector2(x + width - strokeSize / 2, y + height + strokeSize / 2));
+			p2 = transformation.multvec(new FastVector2(x + width - strokeSize / 2, y - strokeSize / 2));
+			p3 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y - strokeSize / 2));
+			p4 = transformation.multvec(new FastVector2(x + width + strokeSize / 2, y + height + strokeSize / 2));
+			coloredPainter.fillRect(strokeColor.A, strokeColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
+		}
+	}
+
+	override public function line(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+		
+		var vec: FastVector2;
+		if (y2 == y1) vec = new FastVector2(0, -1);
+		else vec = new FastVector2(1, -(x2 - x1) / (y2 - y1));
+		vec.length = strokeSize;
+		var p1 = new FastVector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
+		var p2 = new FastVector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
+		var p3 = p1.sub(vec);
+		var p4 = p2.sub(vec);
+		
+		p1 = transformation.multvec(p1);
+		p2 = transformation.multvec(p2);
+		p3 = transformation.multvec(p3);
+		p4 = transformation.multvec(p4);
+		
+		coloredPainter.fillTriangle(strokeColor.A, strokeColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		coloredPainter.fillTriangle(strokeColor.A, strokeColor, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);
+	}
+
+	override public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+		imagePainter.end();
+		textPainter.end();
+		
+		if (enableFill) {
+			var p1 = transformation.multvec(new FastVector2(x1, y1));
+			var p2 = transformation.multvec(new FastVector2(x2, y2));
+			var p3 = transformation.multvec(new FastVector2(x3, y3));
+			coloredPainter.fillTriangle(fillColor.A, fillColor, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		}
+		if (enableStroke) {
+
+		}
+	}
+
+	override public function beginShape(primitive:kha.graphics2.Primitive): Void {
+		shapeType = primitive;
+	}
+
+	override public function vertex(x:Float, y:Float, ?color:Color): Void {
+		
+	}
+
+	override public function endShape(close:Bool): Void {
+
+	}
+
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
 		imagePainter.end();
 		textPainter.end();
