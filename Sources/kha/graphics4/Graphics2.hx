@@ -29,6 +29,7 @@ import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
 import kha.graphics2.Primitive;
+import kha.graphics2.Style;
 
 class ImageShaderPainter {
 	private var projectionMatrix: FastMatrix4;
@@ -342,11 +343,13 @@ class ColoredShaderPainter {
 		indices = indexBuffer.lock();
 	}
 
-	public function addVertex(x: Float, y: Float, color: Color): Void {
+	public function addVertex(x: Float, y: Float, color: Color, transform: FastMatrix3): Void {
 		var baseIndex = vertexIndex * structure.dataSize();
 
-		vertices.set(baseIndex + 0, x);
-		vertices.set(baseIndex + 1, y);
+		var p = transform.multvec(new FastVector2(x, y));
+
+		vertices.set(baseIndex + 0, p.x);
+		vertices.set(baseIndex + 1, p.y);
 		vertices.set(baseIndex + 2, -5.0);
 		vertices.set(baseIndex + 3, color.R);
 		vertices.set(baseIndex + 4, color.G);
@@ -380,8 +383,7 @@ class ColoredShaderPainter {
 		indices = indexBuffer.lock();
 	}
 
-	public function addQuad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, color: Color): Void {
-
+	public function addQuad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, color: Color, transform: FastMatrix3): Void {
 		if (vertexIndex + 4 >= maxVertexSize)
 			draw();
 
@@ -392,13 +394,13 @@ class ColoredShaderPainter {
 		addIndex(vertexIndex + 2);
 		addIndex(vertexIndex + 3);
 
-		addVertex(x1, y1, color);
-		addVertex(x2, y2, color);
-		addVertex(x3, y3, color);
-		addVertex(x4, y4, color);
+		addVertex(x1, y1, color, transform);
+		addVertex(x2, y2, color, transform);
+		addVertex(x3, y3, color, transform);
+		addVertex(x4, y4, color, transform);
 	}
 
-	public function addTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, color: Color): Void {
+	public function addTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, color: Color, transform: FastMatrix3): Void {
 		if (vertexIndex + 3 >= maxVertexSize)
 			draw();
 		
@@ -406,9 +408,9 @@ class ColoredShaderPainter {
 		addIndex(vertexIndex + 1);
 		addIndex(vertexIndex + 2);
 
-		addVertex(x1, y1, color);
-		addVertex(x2, y2, color);
-		addVertex(x3, y3, color);
+		addVertex(x1, y1, color, transform);
+		addVertex(x2, y2, color, transform);
+		addVertex(x3, y3, color, transform);
 	}
 
 	public inline function end(): Void {
@@ -785,10 +787,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 		textPainter.end();
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
-		var p1 = transformation.multvec(new FastVector2(x, yh));
-		var p2 = transformation.multvec(new FastVector2(x, y));
-		var p3 = transformation.multvec(new FastVector2(xw, y));
-		var p4 = transformation.multvec(new FastVector2(xw, yh));
+		var p1 = transform.multvec(new FastVector2(x, yh));
+		var p2 = transform.multvec(new FastVector2(x, y));
+		var p3 = transform.multvec(new FastVector2(xw, y));
+		var p4 = transform.multvec(new FastVector2(xw, yh));
 		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
 	#end
@@ -796,10 +798,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
-		var p1 = transformation.multvec(new FastVector2(dx, dy + dh));
-		var p2 = transformation.multvec(new FastVector2(dx, dy));
-		var p3 = transformation.multvec(new FastVector2(dx + dw, dy));
-		var p4 = transformation.multvec(new FastVector2(dx + dw, dy + dh));
+		var p1 = transform.multvec(new FastVector2(dx, dy + dh));
+		var p2 = transform.multvec(new FastVector2(dx, dy));
+		var p3 = transform.multvec(new FastVector2(dx + dw, dy));
+		var p4 = transform.multvec(new FastVector2(dx + dw, dy + dh));
 		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
 	
@@ -811,71 +813,70 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myColor = color;
 	}
 
-	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void {
+	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void {
 		imagePainter.end();
 		textPainter.end();
 		
-		if (enableFill) {
-			coloredPainter.addQuad(x1, y1, x2, y2, x3, y3, x4, y4, fillColor);
+		if (style == null)
+			style = this.style;
+
+		if (style.fill) {
+			coloredPainter.addQuad(x1, y1, x2, y2, x3, y3, x4, y4, style.fillColor, transform);
 		}
-		if (enableStroke) {
+		if (style.stroke) {
 			// TODO: Adjust line for corners
-			line(x1, y1, x2, y2);
-			line(x2, y2, x3, y3);
-			line(x3, y3, x4, y4);
-			line(x4, y4, x1, y1);
+			line(x1, y1, x2, y2, style);
+			line(x2, y2, x3, y3, style);
+			line(x3, y3, x4, y4, style);
+			line(x4, y4, x1, y1, style);
 		}
 	}
 
-	override public function rect(x: Float, y: Float, width: Float, height: Float): Void {
+	override public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void {
 		imagePainter.end();
 		textPainter.end();
 
-		var p1 = transformation.multvec(new FastVector2(x, y + height));
-		var p2 = transformation.multvec(new FastVector2(x, y));
-		var p3 = transformation.multvec(new FastVector2(x + width, y));
-		var p4 = transformation.multvec(new FastVector2(x + width, y + height));
-		quad(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+		quad(x, y, x + width, y, x + width, y + height, x, y + height, style);
 	}
 
-	override public function line(x1: Float, y1: Float, x2: Float, y2: Float): Void {
+	override public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void {
 		imagePainter.end();
 		textPainter.end();
+
+		if (style == null)
+			style = this.style;
 		
 		var vec: FastVector2;
 		if (y2 == y1) vec = new FastVector2(0, -1);
 		else vec = new FastVector2(1, -(x2 - x1) / (y2 - y1));
-		vec.length = strokeSize;
+		vec.length = style.strokeWeight;
 		var p1 = new FastVector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
 		var p2 = new FastVector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
 		var p3 = p2.sub(vec);
 		var p4 = p1.sub(vec);
 		
-		p1 = transformation.multvec(p1);
-		p2 = transformation.multvec(p2);
-		p3 = transformation.multvec(p3);
-		p4 = transformation.multvec(p4);
-		
-		coloredPainter.addQuad(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, strokeColor);
+		coloredPainter.addQuad(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.strokeColor, transform);
 	}
 
-	override public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+	override public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void {
 		imagePainter.end();
 		textPainter.end();
 
-		if (enableFill) {
-			coloredPainter.addTriangle(x1, y1, x2, y2, x3, y3, fillColor);
+		if (style == null)
+			style = this.style;
+
+		if (style.fill) {
+			coloredPainter.addTriangle(x1, y1, x2, y2, x3, y3, style.fillColor, transform);
 		}
-		if (enableStroke) {
+		if (style.stroke) {
 			// TODO: Adjust line for corners
-			line(x1, y1, x2, y2);
-			line(x2, y2, x3, y3);
-			line(x3, y3, x1, y1);
+			line(x1, y1, x2, y2, style);
+			line(x2, y2, x3, y3, style);
+			line(x3, y3, x1, y1, style);
 		}
 	}
 
 	override public function beginShape(primitive:kha.graphics2.Primitive): Void {
-		shapeType = primitive;
 	}
 
 	override public function vertex(x:Float, y:Float, ?color:Color): Void {
@@ -890,7 +891,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs);
+		textPainter.drawString(text, opacity, color, x, y, getTransform(), fontGlyphs);
 	}
 
 	override public function get_font(): Font {
@@ -967,6 +968,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	
 	public override function end(): Void {
 		flush();
+		resetTransform();
 		g.end();
 	}
 	

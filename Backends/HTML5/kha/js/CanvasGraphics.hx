@@ -1,15 +1,10 @@
 package kha.js;
 
-import js.Browser;
 import kha.Color;
-import kha.FontStyle;
 import kha.graphics2.Graphics;
 import kha.graphics2.ImageScaleQuality;
-import kha.Kravur;
 import kha.math.FastMatrix3;
-import kha.math.Matrix3;
-import kha.Rotation;
-import kha.graphics2.Primitive;
+import kha.graphics2.Style;
 
 class CanvasGraphics extends Graphics {
 	private var canvas: Dynamic;
@@ -46,9 +41,10 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function clear(color: Color = null): Void {
-		if (color == null) color = 0x00000000;
+		if (color == null) color = 0xff000000;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
+
 		if (color.A == 0) // if color is transparent, clear the screen. Note: in Canvas, transparent colors will overlay, not overwrite.
 			canvas.clearRect(0, 0, width, height);
 		else
@@ -57,13 +53,9 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function end(): Void {
-		
+		resetTransform();
+		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
 	}
-	
-	/*override public function translate(x: Float, y: Float) {
-		tx = x;
-		ty = y;
-	}*/
 	
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
 		canvas.globalAlpha = opacity;
@@ -130,29 +122,23 @@ class CanvasGraphics extends Graphics {
 		}
 		return scaleQuality = value;
 	}
-	
-	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0) {
-		canvas.beginPath();
-		var oldStrength = canvas.lineWidth;
-		canvas.lineWidth = Math.round(strength);
-		canvas.rect(x, y, width, height);
-		canvas.stroke();
-		canvas.lineWidth = oldStrength;
-	}
-	
-	override public function fill(color: Color): Void {
-		fillColor = color;
-		canvas.fillStyle = "rgba(" + fillColor.Rb + "," + fillColor.Gb + "," + fillColor.Bb + "," + fillColor.A + ")";
-		enableFill = true;
+
+	private function apply(style: Style): Style {
+		if (style == null)
+			style = this.style;
+
+		canvas.fillStyle = "rgba(" + style.fillColor.Rb + "," + style.fillColor.Gb + "," + style.fillColor.Bb + "," + style.fillColor.A + ")";
+		canvas.strokeStyle = "rgba(" + style.strokeColor.Rb + "," + style.strokeColor.Gb + "," + style.strokeColor.Bb + "," + style.strokeColor.A + ")";
+		canvas.lineWidth = style.strokeWeight;
+
+		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
+
+		return style;
 	}
 
-	override public function stroke(color: Color): Void {
-		strokeColor = color;
-		canvas.strokeStyle = "rgba(" + strokeColor.Rb + "," + strokeColor.Gb + "," + strokeColor.Bb + "," + strokeColor.A + ")";
-		enableStroke = true;
-	}
+	override public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style: Style): Void {
+		style = apply(style);
 
-	override public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void {
 		canvas.beginPath();
 		canvas.moveTo(x1, y1);
 		canvas.lineTo(x2, y2);
@@ -160,35 +146,40 @@ class CanvasGraphics extends Graphics {
 		canvas.lineTo(x4, y4);
 		canvas.closePath();
 
-		if (enableFill)
+		if (style.fill)
 			canvas.fill();
-		if (enableStroke)
+		if (style.stroke)
 			canvas.stroke();
 	}
 
-	override public function rect(x: Float, y: Float, width: Float, height: Float): Void {
-		quad(x, y, x + width, y, x + width, y + height, x, y + height);
+	override public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void {
+		quad(x, y, x + width, y, x + width, y + height, x, y + height, style);
 	}
 
-	override public function fillRect(x: Float, y: Float, width: Float, height: Float) {
-		canvas.globalAlpha = opacity * myColor.A;
-		canvas.fillRect(x, y, width, height);
-		canvas.globalAlpha = opacity;
-	}
+	override public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void {
+		style = apply(style);
 
-	public function drawCircle(cx: Float, cy: Float, radius: Float, strength: Float = 1.0) {
 		canvas.beginPath();
-		var oldStrength = canvas.lineWidth;
-		canvas.lineWidth = Math.round(strength);
-		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
-		canvas.stroke();
-		canvas.lineWidth = oldStrength;
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
+
+		if (style.stroke)
+			canvas.stroke();
 	}
 
-	public function fillCircle(cx: Float, cy: Float, radius: Float) {
+	override public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void {
+		style = apply(style);
+
 		canvas.beginPath();
-		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
-		canvas.fill();
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
+		canvas.lineTo(x3, y3);
+		canvas.closePath();
+
+		if (style.fill)
+			canvas.fill();
+		if (style.stroke)
+			canvas.stroke();
 	}
 	
 	override public function drawString(text: String, x: Float, y: Float) {
@@ -219,24 +210,6 @@ class CanvasGraphics extends Graphics {
 	
 	override public function get_font(): kha.Font {
 		return webfont;
-	}
-
-	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0) {
-		canvas.beginPath();
-		var oldWith = canvas.lineWidth;
-		canvas.lineWidth = Math.round(strength);
-		canvas.moveTo(x1, y1);
-		canvas.lineTo(x2, y2);
-		canvas.moveTo(0, 0);
-		canvas.stroke();
-		canvas.lineWidth = oldWith;
-	}
-
-	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
-		canvas.beginPath();
-		
-		canvas.closePath();
-		canvas.fill();
 	}
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

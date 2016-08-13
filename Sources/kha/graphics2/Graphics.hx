@@ -11,6 +11,8 @@ import kha.math.Matrix3;
 import kha.graphics2.Primitive;
 
 class Graphics {
+	public var style:Style;
+
 	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
 	public function end(): Void { }
 	public function flush(): Void { }
@@ -30,39 +32,17 @@ class Graphics {
 	}
 	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
 
-	public function fill(color: Color): Void {
-		fillColor = color;
-		enableFill = true;
-	}
-	public function noFill(): Void {
-		enableFill = false;
-	}
-	public function stroke(color: Color): Void {
-		strokeColor = color;
-		enableStroke = true;
-	}
-	public function noStroke(): Void {
-		enableStroke = false;
-	}
-	public function strokeWeight(size: Float): Void {
-		strokeSize = size;
-	}
-
 	// Clockwise or counter-clockwise around the defined shape
-	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Void { }
-	public function rect(x: Float, y: Float, width: Float, height: Float): Void { }
-	public function line(x1: Float, y1: Float, x2: Float, y2: Float): Void { }
-	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void { }
+	public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
+	public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void { }
+	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void { }
+	
 	public function beginShape(primitive:Primitive): Void { }
 	public function vertex(x:Float, y:Float, ?color:Color): Void { }
 	public function endShape(close:Bool): Void { }
 
-	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
-	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
-	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
-
 	public function drawString(text: String, x: Float, y: Float): Void { }
-	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
 	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
@@ -126,51 +106,35 @@ class Graphics {
 	private function set_fontGlyphs(value: Array<Int>): Array<Int> {
 		return myFontGlyphs = value;
 	}
-	
-	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
-	
-	public function pushTransformation(transformation: FastMatrix3): Void {
-		setTransformation(transformation);
-		transformations.push(transformation);
+
+	inline public function getTransform() {
+		return transform;
+	}
+
+	public function resetTransform() {
+		transformStack.splice(0, transformStack.length);
+		transform = FastMatrix3.identity();
 	}
 	
-	public function popTransformation(): FastMatrix3 {
-		var ret = transformations.pop();
-		setTransformation(get_transformation());
-		return ret;
+	public function translate(x: FastFloat, y: FastFloat): Void {
+		transform = transform.multmat(FastMatrix3.translation(x, y));
+	}
+
+	public function scale(x: FastFloat, y: FastFloat): Void {
+		transform = transform.multmat(FastMatrix3.scale(x, y));
 	}
 	
-	private inline function get_transformation(): FastMatrix3 {
-		return transformations[transformations.length - 1];
+	public function rotate(angle: FastFloat): Void {
+		transform = transform.multmat(FastMatrix3.rotation(angle));
 	}
-	
-	private inline function set_transformation(transformation: FastMatrix3): FastMatrix3 {
-		setTransformation(transformation);
-		return transformations[transformations.length - 1] = transformation;
+
+	public function push() {
+		transformStack.push(transform.mult(1));
 	}
-	
-	private inline function translation(tx: FastFloat, ty: FastFloat): FastMatrix3 {
-		return FastMatrix3.translation(tx, ty).multmat(transformation);
-	}
-	
-	public function translate(tx: FastFloat, ty: FastFloat): Void {
-		transformation = translation(tx, ty);
-	}
-	
-	public function pushTranslation(tx: FastFloat, ty: FastFloat): Void {
-		pushTransformation(translation(tx, ty));
-	}
-	
-	private inline function rotation(angle: FastFloat, centerx: FastFloat, centery: FastFloat): FastMatrix3 {
-		return FastMatrix3.translation(centerx, centery).multmat(FastMatrix3.rotation(angle)).multmat(FastMatrix3.translation(-centerx, -centery)).multmat(transformation);
-	}
-	
-	public function rotate(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
-		transformation = rotation(angle, centerx, centery);
-	}
-	
-	public function pushRotation(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
-		pushTransformation(rotation(angle, centerx, centery));
+
+	public function pop() {
+		transform = transformStack.pop();
+		return transform;
 	}
 	
 	public var opacity(get, set): Float; // works on the top of the opacity stack
@@ -218,21 +182,16 @@ class Graphics {
 	}
 	#end
 	
-	private var transformations: Array<FastMatrix3>;
+	private var transformStack: Array<FastMatrix3>;
+	private var transform: FastMatrix3;
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;
 	private var myFontGlyphs: Array<Int>;
-
-	private var enableFill: Bool;
-	private var fillColor: Color;
-	private var enableStroke: Bool;
-	private var strokeColor: Color;
-	private var strokeSize: Float;
-	private var shapeType: Primitive;
 	
 	public function new() {
-		transformations = new Array<FastMatrix3>();
-		transformations.push(FastMatrix3.identity());
+		transformStack = new Array<FastMatrix3>();
+		transform = FastMatrix3.identity();
+
 		opacities = new Array<Float>();
 		opacities.push(1);
 		myFontSize = 12;
@@ -244,12 +203,7 @@ class Graphics {
 		pipe = null;
 		#end
 
-		enableFill = true;
-		enableStroke = true;
-		fillColor = Color.White;
-		strokeColor = Color.Black;
-		strokeSize = 1.0;
-		shapeType = Lines;
+		style = new Style();
 	}
 	
 	private function setTransformation(transformation: FastMatrix3): Void {
