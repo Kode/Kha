@@ -21,16 +21,16 @@ class Graphics {
 	//draw/fillPolygon
 	
 	public function clear(color: Color = null): Void { }
-	public function drawImage(img: Image, x: FastFloat, y: FastFloat): Void {
-		drawSubImage(img, x, y, 0, 0, img.width, img.height);
+	public function drawImage(img: Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
+		drawSubImage(img, x, y, 0, 0, img.width, img.height, style);
 	}
-	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
-		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh);
+	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, ?style: Style): Void {
+		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh, style);
 	}
-	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
-		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
+	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void {
+		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh, style);
 	}
-	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
+	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void { }
 
 	// Clockwise or counter-clockwise around the defined shape
 	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void { }
@@ -42,8 +42,8 @@ class Graphics {
 	public function vertex(x:Float, y:Float, ?color:Color): Void { }
 	public function endShape(close:Bool): Void { }
 
-	public function drawString(text: String, x: Float, y: Float): Void { }
-	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
+	public function drawString(text: String, x: Float, y: Float, ?style: Style): Void { }
+	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;
@@ -67,7 +67,7 @@ class Graphics {
 	/**
 	The color value is used for geometric primitives as well as for images. Remember to set it back to white to draw images unaltered.
 	*/
-	public var color(get, set): Color;
+	/*public var color(get, set): Color;
 	
 	private function get_color(): Color {
 		return Color.Black;
@@ -75,7 +75,7 @@ class Graphics {
 	
 	private function set_color(color: Color): Color {
 		return Color.Black;
-	}
+	}*/
 	
 	public var font(get, set): Font;
 	
@@ -137,7 +137,7 @@ class Graphics {
 		return transform;
 	}
 	
-	public var opacity(get, set): Float; // works on the top of the opacity stack
+	/*public var opacity(get, set): Float; // works on the top of the opacity stack
 	
 	public function pushOpacity(opacity: Float): Void {
 		setOpacity(opacity);
@@ -157,7 +157,7 @@ class Graphics {
 	public function set_opacity(opacity: Float): Float {
 		setOpacity(opacity);
 		return opacities[opacities.length - 1] = opacity;
-	}
+	}*/
 	
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
@@ -184,7 +184,7 @@ class Graphics {
 	
 	private var transformStack: Array<FastMatrix3>;
 	private var transform: FastMatrix3;
-	private var opacities: Array<Float>;
+	//private var opacities: Array<Float>;
 	private var myFontSize: Int;
 	private var myFontGlyphs: Array<Int>;
 	
@@ -192,8 +192,8 @@ class Graphics {
 		transformStack = new Array<FastMatrix3>();
 		transform = FastMatrix3.identity();
 
-		opacities = new Array<Float>();
-		opacities.push(1);
+		//opacities = new Array<Float>();
+		//opacities.push(1);
 		myFontSize = 12;
 		myFontGlyphs = [];
 		for (i in 32...256) {

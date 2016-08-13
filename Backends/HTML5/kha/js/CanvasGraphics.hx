@@ -49,7 +49,6 @@ class CanvasGraphics extends Graphics {
 			canvas.clearRect(0, 0, width, height);
 		else
 			canvas.fillRect(0, 0, width, height);
-		this.color = myColor;
 	}
 	
 	override public function end(): Void {
@@ -57,14 +56,20 @@ class CanvasGraphics extends Graphics {
 		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
 	}
 	
-	override public function drawImage(img: kha.Image, x: Float, y: Float) {
-		canvas.globalAlpha = opacity;
+	override public function drawImage(img: kha.Image, x: Float, y: Float, ?style: Style) {
+		if (style == null)
+			style = this.style;
+		
+		canvas.globalAlpha = style.fillColor.A;
 		canvas.drawImage(cast(img, CanvasImage).image, x, y);
 		canvas.globalAlpha = 1;
 	}
 	
-	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) {
-		canvas.globalAlpha = opacity;
+	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, ?style: Style) {
+		if (style == null)
+			style = this.style;
+
+		canvas.globalAlpha = style.fillColor.A;
 		try {
 			if (dw < 0 || dh < 0) {
 				canvas.save();
@@ -92,7 +97,7 @@ class CanvasGraphics extends Graphics {
 		canvas.globalAlpha = 1;
 	}
 	
-	override public function set_color(color: Color): Color {
+	/*override public function set_color(color: Color): Color {
 		myColor = color;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
@@ -101,7 +106,7 @@ class CanvasGraphics extends Graphics {
 	
 	override public function get_color(): Color {
 		return myColor;
-	}
+	}*/
 	
 	override private function get_imageScaleQuality(): ImageScaleQuality {
 		return scaleQuality;
@@ -182,10 +187,12 @@ class CanvasGraphics extends Graphics {
 			canvas.stroke();
 	}
 	
-	override public function drawString(text: String, x: Float, y: Float) {
+	override public function drawString(text: String, x: Float, y: Float, ?style: Style) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
-		
+
+		style = apply(style);
+
 		var image = webfont.getImage(fontSize, myColor);
 		if (image.width > 0) {
 			// the image created in getImage() is not imediately useable
@@ -222,8 +229,8 @@ class CanvasGraphics extends Graphics {
 		canvas.restore();
 	}
 	
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
-		canvas.drawImage(cast(video, Video).element, x, y, width, height);
+	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
+		canvas.drawImage(cast(video, Video).element, x, y, width, height, style);
 	}
 	
 	override public function setTransformation(transformation: FastMatrix3): Void {

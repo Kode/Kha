@@ -696,7 +696,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public function new(canvas: Canvas) {
 		super();
-		color = Color.White;
 
 		this.canvas = canvas;
 		g = canvas.g4;
@@ -754,24 +753,28 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	#if cpp
-	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
+	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
+
+		if (style == null)
+			style = this.style;
+
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 		
 		var xx = Float32x4.loadFast(x, x, xw, xw);
 		var yy = Float32x4.loadFast(yh, y, y, yh);
 		
-		var _00 = Float32x4.loadAllFast(transformation._00);
-		var _01 = Float32x4.loadAllFast(transformation._01);
-		var _02 = Float32x4.loadAllFast(transformation._02);
-		var _10 = Float32x4.loadAllFast(transformation._10);
-		var _11 = Float32x4.loadAllFast(transformation._11);
-		var _12 = Float32x4.loadAllFast(transformation._12);
-		var _20 = Float32x4.loadAllFast(transformation._20);
-		var _21 = Float32x4.loadAllFast(transformation._21);
-		var _22 = Float32x4.loadAllFast(transformation._22);
+		var _00 = Float32x4.loadAllFast(transform._00);
+		var _01 = Float32x4.loadAllFast(transform._01);
+		var _02 = Float32x4.loadAllFast(transform._02);
+		var _10 = Float32x4.loadAllFast(transform._10);
+		var _11 = Float32x4.loadAllFast(transform._11);
+		var _12 = Float32x4.loadAllFast(transform._12);
+		var _20 = Float32x4.loadAllFast(transform._20);
+		var _21 = Float32x4.loadAllFast(transform._21);
+		var _22 = Float32x4.loadAllFast(transform._22);
 		
 		// matrix multiply
 		var w = Float32x4.add(Float32x4.add(Float32x4.mul(_02, xx), Float32x4.mul(_12, yy)), _22);
@@ -779,39 +782,43 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var py = Float32x4.div(Float32x4.add(Float32x4.add(Float32x4.mul(_01, xx), Float32x4.mul(_11, yy)), _21), w);
 		
 		imagePainter.drawImage(img, Float32x4.get(px, 0), Float32x4.get(py, 0), Float32x4.get(px, 1), Float32x4.get(py, 1),
-			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), opacity, this.color);
+			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), style.fillColor.A, style.fillColor);
 	}
 	#else
-	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
+	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
+
+		if (style == null)
+			style = this.style;
+		
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 		var p1 = transform.multvec(new FastVector2(x, yh));
 		var p2 = transform.multvec(new FastVector2(x, y));
 		var p3 = transform.multvec(new FastVector2(xw, y));
 		var p4 = transform.multvec(new FastVector2(xw, yh));
-		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
+		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
 	}
 	#end
 	
-	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
 		var p1 = transform.multvec(new FastVector2(dx, dy + dh));
 		var p2 = transform.multvec(new FastVector2(dx, dy));
 		var p3 = transform.multvec(new FastVector2(dx + dw, dy));
 		var p4 = transform.multvec(new FastVector2(dx + dw, dy + dh));
-		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
+		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
 	}
 	
-	override public function get_color(): Color {
+	/*override public function get_color(): Color {
 		return myColor;
 	}
 	
 	override public function set_color(color: Color): Color {
 		return myColor = color;
-	}
+	}*/
 
 	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void {
 		imagePainter.end();
@@ -887,11 +894,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	}
 
-	public override function drawString(text: String, x: Float, y: Float): Void {
+	public override function drawString(text: String, x: Float, y: Float, ?style: Style): Void {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, opacity, color, x, y, getTransform(), fontGlyphs);
+		if (style == null)
+			style = this.style;
+
+		textPainter.drawString(text, style.fillColor.A, style.fillColor, x, y, getTransform(), fontGlyphs);
 	}
 
 	override public function get_font(): Font {
@@ -972,13 +982,16 @@ class Graphics2 extends kha.graphics2.Graphics {
 		g.end();
 	}
 	
-	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
 		
 	}
 	
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
+	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
+		if (style == null)
+			style = this.style;
+		
 		setPipeline(videoPipeline);
-		drawVideoInternal(video, x, y, width, height);
+		drawVideoInternal(video, x, y, width, height, style);
 		setPipeline(null);
 	}
 }
