@@ -263,8 +263,6 @@ class SystemImpl {
 	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		canvas.style.cursor = "default";
-		canvas.width = SystemImpl.options.width;
-		canvas.height = SystemImpl.options.height;
 
 		var gl: Bool = false;
 
