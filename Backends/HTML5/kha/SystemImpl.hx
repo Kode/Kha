@@ -266,6 +266,7 @@ class SystemImpl {
 
 		var gl: Bool = false;
 
+		#if webgl
 		try {
 			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
@@ -287,6 +288,7 @@ class SystemImpl {
 		catch (e: Dynamic) {
 			trace(e);
 		}
+		#end
 
 		setCanvas(canvas);
 		//var widthTransform: Float = canvas.width / Loader.the.width;
