@@ -178,7 +178,7 @@ class Session {
 					}
 					current = null;					
 				}, time - Scheduler.time());
-				if (time < Scheduler.time()) {
+				if (time <= Scheduler.time()) {
 					var handeled = false;
 					var i = lastStates.length - 1;
 					while (i >= 0) {
