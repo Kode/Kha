@@ -189,6 +189,10 @@ class Session {
 								offset += entity._size();
 							}
 							handeled = true;
+							// Invalidate states in which the new event is missing
+							if (i < lastStates.length - 1) {
+								lastStates.splice(i + 1, lastStates.length - i - 1);
+							}
 							Scheduler.back(lastStates[i].time);
 							break;
 						}
