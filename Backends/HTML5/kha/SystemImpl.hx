@@ -263,14 +263,12 @@ class SystemImpl {
 	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
 		canvas.style.cursor = "default";
-		canvas.width = SystemImpl.options.width;
-		canvas.height = SystemImpl.options.height;
 
 		var gl: Bool = false;
 
 		#if webgl
 		try {
-			//SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");

@@ -2,12 +2,9 @@ package kha.graphics2;
 
 import kha.Color;
 import kha.FastFloat;
-import kha.Font;
-import kha.graphics4.BlendingOperation;
 import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.math.FastMatrix3;
-import kha.math.Matrix3;
 import kha.graphics2.Primitive;
 
 class Graphics {
@@ -42,7 +39,7 @@ class Graphics {
 	public function vertex(x:Float, y:Float, ?color:Color): Void { }
 	public function endShape(close:Bool): Void { }
 
-	public function drawString(text: String, x: Float, y: Float, ?style: Style): Void { }
+	public function text(text: String, x: Float, y: Float, ?style: Style): Void { }
 	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
@@ -62,49 +59,6 @@ class Graphics {
 
 	private function set_mipmapScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
 		return ImageScaleQuality.High;
-	}
-    
-	/**
-	The color value is used for geometric primitives as well as for images. Remember to set it back to white to draw images unaltered.
-	*/
-	/*public var color(get, set): Color;
-	
-	private function get_color(): Color {
-		return Color.Black;
-	}
-	
-	private function set_color(color: Color): Color {
-		return Color.Black;
-	}*/
-	
-	public var font(get, set): Font;
-	
-	private function get_font(): Font {
-		return null;
-	}
-	
-	private function set_font(font: Font): Font {
-		return null;
-	}
-	
-	public var fontSize(get, set): Int;
-	
-	private function get_fontSize(): Int {
-		return myFontSize;
-	}
-	
-	private function set_fontSize(value: Int): Int {
-		return myFontSize = value;
-	}
-	
-	public var fontGlyphs(get, set): Array<Int>;
-	
-	private function get_fontGlyphs(): Array<Int> {
-		return myFontGlyphs;
-	}
-	
-	private function set_fontGlyphs(value: Array<Int>): Array<Int> {
-		return myFontGlyphs = value;
 	}
 
 	inline public function getTransform() {
@@ -137,28 +91,6 @@ class Graphics {
 		return transform;
 	}
 	
-	/*public var opacity(get, set): Float; // works on the top of the opacity stack
-	
-	public function pushOpacity(opacity: Float): Void {
-		setOpacity(opacity);
-		opacities.push(opacity);
-	}
-	
-	public function popOpacity(): Float {
-		var ret = opacities.pop();
-		setOpacity(get_opacity());
-		return ret;
-	}
-	
-	public function get_opacity(): Float {
-		return opacities[opacities.length - 1];
-	}
-	
-	public function set_opacity(opacity: Float): Float {
-		setOpacity(opacity);
-		return opacities[opacities.length - 1] = opacity;
-	}*/
-	
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
@@ -184,21 +116,11 @@ class Graphics {
 	
 	private var transformStack: Array<FastMatrix3>;
 	private var transform: FastMatrix3;
-	//private var opacities: Array<Float>;
-	private var myFontSize: Int;
-	private var myFontGlyphs: Array<Int>;
 	
 	public function new() {
 		transformStack = new Array<FastMatrix3>();
 		transform = FastMatrix3.identity();
 
-		//opacities = new Array<Float>();
-		//opacities.push(1);
-		myFontSize = 12;
-		myFontGlyphs = [];
-		for (i in 32...256) {
-			myFontGlyphs.push(i);
-		}
 		#if sys_g4
 		pipe = null;
 		#end
@@ -207,10 +129,6 @@ class Graphics {
 	}
 	
 	private function setTransformation(transformation: FastMatrix3): Void {
-		
-	}
-	
-	private function setOpacity(opacity: Float): Void {
 		
 	}
 	

@@ -28,13 +28,13 @@ class CanvasGraphics extends Graphics {
 		//canvas.globalCompositeOperation = "normal";
 	}
 	
-	public static function stringWidth(font: kha.Font, text: String): Float {
+	/*public static function stringWidth(font: kha.Font, text: String): Float {
 		if (instance == null) return 5 * text.length;
 		else {
 			instance.font = font;
 			return instance.canvas.measureText(text).width;
 		}
-	}
+	}*/
 	
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
 		if (clear) this.clear(clearColor);
@@ -97,17 +97,6 @@ class CanvasGraphics extends Graphics {
 		canvas.globalAlpha = 1;
 	}
 	
-	/*override public function set_color(color: Color): Color {
-		myColor = color;
-		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
-		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
-		return color;
-	}
-	
-	override public function get_color(): Color {
-		return myColor;
-	}*/
-	
 	override private function get_imageScaleQuality(): ImageScaleQuality {
 		return scaleQuality;
 	}
@@ -135,6 +124,10 @@ class CanvasGraphics extends Graphics {
 		canvas.fillStyle = "rgba(" + style.fillColor.Rb + "," + style.fillColor.Gb + "," + style.fillColor.Bb + "," + style.fillColor.A + ")";
 		canvas.strokeStyle = "rgba(" + style.strokeColor.Rb + "," + style.strokeColor.Gb + "," + style.strokeColor.Bb + "," + style.strokeColor.A + ")";
 		canvas.lineWidth = style.strokeWeight;
+
+		if (style.font != null) {
+			webfont = cast(style.font, kha.js.Font);
+		}
 
 		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
 
@@ -187,19 +180,19 @@ class CanvasGraphics extends Graphics {
 			canvas.stroke();
 	}
 	
-	override public function drawString(text: String, x: Float, y: Float, ?style: Style) {
+	override public function text(text: String, x: Float, y: Float, ?style: Style) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 
 		style = apply(style);
 
-		var image = webfont.getImage(fontSize, myColor);
+		var image = webfont.getImage(style.fontSize, style.fillColor);
 		if (image.width > 0) {
 			// the image created in getImage() is not imediately useable
 			var xpos = x;
 			var ypos = y;
 			for (i in 0...text.length) {
-				var q = webfont.kravur._get(fontSize).getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+				var q = webfont.kravur._get(style.fontSize).getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
 						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
@@ -209,7 +202,7 @@ class CanvasGraphics extends Graphics {
 		}
 	}
 
-	override public function set_font(font: kha.Font): kha.Font {
+	/*override public function set_font(font: kha.Font): kha.Font {
 		webfont = cast(font, kha.js.Font);
 		//canvas.font = webfont.size + "px " + webfont.name;
 		return webfont;
@@ -217,7 +210,7 @@ class CanvasGraphics extends Graphics {
 	
 	override public function get_font(): kha.Font {
 		return webfont;
-	}
+	}*/
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		canvas.beginPath();

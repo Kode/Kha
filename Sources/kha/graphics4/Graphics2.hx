@@ -7,14 +7,11 @@ import kha.FastFloat;
 import kha.Font;
 import kha.graphics2.ImageScaleQuality;
 import kha.Image;
-import kha.graphics4.BlendingOperation;
 import kha.graphics4.ConstantLocation;
-import kha.graphics4.CullMode;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
-import kha.graphics4.TextureFormat;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
@@ -23,9 +20,6 @@ import kha.graphics4.VertexStructure;
 import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
-import kha.math.Matrix3;
-import kha.math.Matrix4;
-import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
 import kha.graphics2.Primitive;
@@ -702,7 +696,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter = new ImageShaderPainter(g);
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
-		textPainter.fontSize = fontSize;
 		setProjection();
 		
 		if (videoPipeline == null) {
@@ -811,14 +804,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p4 = transform.multvec(new FastVector2(dx + dw, dy + dh));
 		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
 	}
-	
-	/*override public function get_color(): Color {
-		return myColor;
-	}
-	
-	override public function set_color(color: Color): Color {
-		return myColor = color;
-	}*/
 
 	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void {
 		imagePainter.end();
@@ -894,27 +879,17 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	}
 
-	public override function drawString(text: String, x: Float, y: Float, ?style: Style): Void {
+	public override function text(text: String, x: Float, y: Float, ?style: Style): Void {
 		imagePainter.end();
 		coloredPainter.end();
-		
+
 		if (style == null)
 			style = this.style;
+		
+		textPainter.setFont(style.font);
+		textPainter.fontSize = style.fontSize;
 
-		textPainter.drawString(text, style.fillColor.A, style.fillColor, x, y, getTransform(), fontGlyphs);
-	}
-
-	override public function get_font(): Font {
-		return myFont;
-	}
-	
-	override public function set_font(font: Font): Font {
-		textPainter.setFont(font);
-		return myFont = font;
-	}
-	
-	override public function set_fontSize(value: Int): Int {
-		return super.fontSize = textPainter.fontSize = value;
+		textPainter.drawString(text, style.fillColor.A, style.fillColor, x, y, transform, style.fontGlyphs);
 	}
 	
 	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
