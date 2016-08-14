@@ -133,6 +133,7 @@ class Scheduler {
 	public static function back(time: Float): Void {
 		if (time >= lastTime) return; // No back to the future
 
+		current = time;
 		lastTime = time;
 		warpTimeTasks(time, outdatedTimeTasks);
 		warpTimeTasks(time, timeTasks);
