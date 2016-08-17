@@ -11,7 +11,7 @@ class Server {
 	#if sys_server
 	
 	private var app: Dynamic;
-	//private var udpSocket: DgramSocket;
+	private var udpSocket: Dynamic;
 	private var lastId: Int = -1;
 	
 	#if !direct_connection
@@ -40,8 +40,8 @@ class Server {
 
 		app.listen(port);
 		
-		//udpSocket = Dgram.createSocket("udp4", function (error: Error, bytes: Bytes) { });
-		//udpSocket.bind(port + 1);
+		udpSocket = Dgram.createSocket("udp4");
+		udpSocket.bind(port + 1); // TODO: This is somewhat ugly, but necessary to maintain both websocket and UPD connections at the same time (see also kore/network/Network.hx)
 		
 		#else
 		
@@ -83,19 +83,20 @@ class Server {
 			connection(new WebSocketClient(lastId, socket));
 		});
 		
+		udpSocket.on('message', function(message: Buffer, info) {
+			if (compare(message, "JOIN")) {
+				++lastId;
+				connection(new UdpClient(lastId, udpSocket, info.address, info.port));
+			}
+			//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
+		});
+		
 		#else
 		
 		connectionCallback = connection;
 		
 		#end
 		
-		//udpSocket.on('message', function(message: Buffer, info) {
-		//	if (compare(message, "JOIN")) {
-		//		++lastId;
-		//		connection(new UdpClient(lastId, udpSocket, info.address, info.port));
-		//	}
-		//	//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
-		//});
 		#end
 	}
 

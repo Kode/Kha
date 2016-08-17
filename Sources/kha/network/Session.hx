@@ -178,7 +178,7 @@ class Session {
 					}
 					current = null;					
 				}, time - Scheduler.time());
-				if (time < Scheduler.time()) {
+				if (time <= Scheduler.time()) {
 					var handeled = false;
 					var i = lastStates.length - 1;
 					while (i >= 0) {
@@ -189,6 +189,10 @@ class Session {
 								offset += entity._size();
 							}
 							handeled = true;
+							// Invalidate states in which the new event is missing
+							if (i < lastStates.length - 1) {
+								lastStates.splice(i + 1, lastStates.length - i - 1);
+							}
 							Scheduler.back(lastStates[i].time);
 							break;
 						}
