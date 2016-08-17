@@ -1,8 +1,10 @@
 package kha.network;
 
 import haxe.io.Bytes;
+#if js
 import js.Node;
 import js.node.Buffer;
+#end
 
 class NodeProcessClient implements Client {
 	private var myId: Int = -1;
@@ -14,9 +16,11 @@ class NodeProcessClient implements Client {
 	}
 	
 	public function send(bytes: Bytes, mandatory: Bool): Void {
+		#if js
 		var data = bytes.getData();
 		var buffer = untyped __js__("new Buffer(data)");
 		Node.process.send({data: buffer.toString(), id: myId});
+		#end
 	}
 	
 	public function receive(receiver: Bytes->Void): Void {
