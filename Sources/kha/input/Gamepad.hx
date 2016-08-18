@@ -28,12 +28,14 @@ class Gamepad {
 		instances[id] = this;
 	}
 	
+	@input
 	private function sendAxisEvent(axis: Int, value: Float): Void {
 		for (listener in axisListeners) {
 			listener(axis, value);
 		}
 	}
 	
+	@input
 	private function sendButtonEvent(button: Int, value: Float): Void {
 		for (listener in buttonListeners) {
 			listener(button, value);
