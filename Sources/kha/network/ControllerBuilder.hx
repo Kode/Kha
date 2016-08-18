@@ -214,6 +214,26 @@ class ControllerBuilder {
 								return;
 							}
 						};
+					case 4:
+						var funcname = field.name;
+						receive = macro @:mergeBlock {
+							$receive;
+							if (funcindex == $v { funcindex } ) {
+								$expr;
+								$i { funcname }(input0, input1, input2, input3);
+								return;
+							}
+						};
+					case 5:
+						var funcname = field.name;
+						receive = macro @:mergeBlock {
+							$receive;
+							if (funcindex == $v { funcindex } ) {
+								$expr;
+								$i { funcname }(input0, input1, input2, input3, input4);
+								return;
+							}
+						};
 					}
 				default:
 				}
