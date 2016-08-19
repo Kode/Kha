@@ -66,7 +66,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 			return element.duration;
 		}
 		else {
-			return -1;
+			return Math.POSITIVE_INFINITY;
 		}
 	}
 
