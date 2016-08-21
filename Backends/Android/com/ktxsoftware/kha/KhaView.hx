@@ -58,6 +58,7 @@ class OnKeyUpRunner implements Runnable {
 	}
 }
 
+@:keep
 class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	private var renderer: KhaRenderer;
 	private var inputManager: InputMethodManager;
