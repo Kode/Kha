@@ -130,11 +130,19 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		//gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		
 		view.queueEvent(new OnCreateRunner());
+
+		var androidBeforeMain = Reflect.field(Main, "androidBeforeMain");
+		if (androidBeforeMain != null) androidBeforeMain();
 	}
 	
 	override public function onStart(): Void {
 		super.onStart();
 		view.queueEvent(new OnStartRunner());
+
+		if (extensions != null) {
+			for (ext in extensions)
+				ext.onStart();
+		}
 	}
 	
 	override public function onPause(): Void {
