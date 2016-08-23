@@ -61,14 +61,14 @@ class SystemImpl {
 		SystemImpl.options = options;
 		#if sys_debug_html5
 		Browser.window.onerror = cast errorHandler;
-		untyped require('web-frame').setZoomLevelLimits(1, 1);
 		var electron = untyped __js__("require('electron')");
+		electron.webFrame.setZoomLevelLimits(1, 1);
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
-		//Browser.window.setTimeout(function () {
+		Browser.window.setTimeout(function () {
 			init2();
 			callback();
-		//}, 1000);
+		}, 1000);
 		#else
 		mobile = isMobile();
 		init2();
