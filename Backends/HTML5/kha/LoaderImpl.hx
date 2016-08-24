@@ -90,7 +90,7 @@ class LoaderImpl {
 		#if sys_debug_html5
 		var fs = untyped __js__("require('fs')");
         var path = untyped __js__("require('path')");
-        var app = untyped __js__("require('remote').require('app')");
+        var app = untyped __js__("require('electron').remote.require('electron').app");
         fs.readFile(path.join(app.getAppPath(), desc.files[0]), function (err, data) {
 			var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
             var bytes = Bytes.alloc(byteArray.byteLength);
