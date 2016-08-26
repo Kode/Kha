@@ -35,6 +35,7 @@ class KeyboardHideRunner implements Runnable {
 	}
 }
 
+@:keep
 class KhaRenderer implements GLSurfaceViewRenderer {
 	private var context: Context;
 	private var keyboardShown: Bool = false;

@@ -48,7 +48,6 @@ class AndroidStorageFile extends StorageFile {
 			
 			return Blob.fromBytes(Bytes.ofData(output.toByteArray()));
 		} catch (e: IOException) {
-			e.printStackTrace();
 			return null;
 		}
 	}
