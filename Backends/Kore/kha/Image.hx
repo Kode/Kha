@@ -77,12 +77,23 @@ class Image implements Canvas implements Resource {
 			case Depth32Stencil8: 8;
 		}
 	}
+	
+	private static function getTextureFormat(format: TextureFormat): Int {
+		switch (format) {
+			case RGBA32:
+				return 0;
+			case RGBA128:
+				return 3;
+			default:
+				return 1;
+		}
+	}
 
 	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): Image {
 		var image = new Image(readable);
 		image.format = format;
 		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
-		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		else image.init(width, height, getTextureFormat(format));
 		return image;
 	}
 

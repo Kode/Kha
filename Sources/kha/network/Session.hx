@@ -51,10 +51,11 @@ class Session {
 	private var current: Client;
 	private var isJoinable: Bool = false;
 	private var lastStates: Array<State> = new Array();
-	private static inline var stateCount = 50;
+	private static inline var stateCount = 60 * 5; // 5 seconds with 60 fps
 	#else
 	private var localClient: Client;
 	public var network: Network;
+	private var updateTaskId: Int;
 	private var pingTaskId: Int;
 	#end
 	
@@ -85,6 +86,7 @@ class Session {
 	
 	public function addController(controller: Controller): Void {
 		trace("Adding controller id " + controller._id());
+		controller._inputBufferIndex = 0;
 		controllers.set(controller._id(), controller);
 	}
 	
@@ -117,7 +119,15 @@ class Session {
 	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
 		#if !sys_server
 		if (controllers.exists(id)) {
-			sendToServer(bytes);
+			if (controllers[id]._inputBuffer.length < controllers[id]._inputBufferIndex + 4 + bytes.length) {
+				var newBuffer = Bytes.alloc(controllers[id]._inputBufferIndex + 4 + bytes.length);
+				newBuffer.blit(0, controllers[id]._inputBuffer, 0, controllers[id]._inputBufferIndex);
+				controllers[id]._inputBuffer = newBuffer;
+			}
+
+			controllers[id]._inputBuffer.setInt32(controllers[id]._inputBufferIndex, bytes.length);
+			controllers[id]._inputBuffer.blit(controllers[id]._inputBufferIndex + 4, bytes, 0, bytes.length);
+			controllers[id]._inputBufferIndex += (4 + bytes.length);
 		}
 		#end
 	}
@@ -160,10 +170,16 @@ class Session {
 			if (controllers.exists(id)) {
 				Scheduler.addTimeTask(function () {
 					current = client;
-					controllers[id]._receive(22, bytes);
+					var offset = 22;
+					while (offset < bytes.length) {
+						var length = bytes.getInt32(offset);
+						controllers[id]._receive(bytes.sub(offset + 4, length));
+						offset += (4 + length);
+					}
 					current = null;					
 				}, time - Scheduler.time());
-				if (time < Scheduler.time()) {
+				if (time <= Scheduler.time()) {
+					var handeled = false;
 					var i = lastStates.length - 1;
 					while (i >= 0) {
 						if (lastStates[i].time < time) {
@@ -172,10 +188,18 @@ class Session {
 								entity._receive(offset, lastStates[i].data);
 								offset += entity._size();
 							}
+							handeled = true;
+							// Invalidate states in which the new event is missing
+							if (i < lastStates.length - 1) {
+								lastStates.splice(i + 1, lastStates.length - i - 1);
+							}
 							Scheduler.back(lastStates[i].time);
 							break;
 						}
 						--i;
+					}
+					if (!handeled) {
+						trace("WARNING: Client input ignored");
 					}
 				}
 			}
@@ -301,7 +325,9 @@ class Session {
 		resetCallback = resCallback;
 		#if sys_server
 		isJoinable = true;
+		#if direct_connection
 		trace("Starting server at " + port + ".");
+		#end
 		server = new Server(port);
 		server.onConnection(function (client: Client) {
 			if (!isJoinable) {
@@ -353,6 +379,7 @@ class Session {
 			reset();
 		});
 		network.listen(function (bytes: Bytes) { receive(bytes); } );
+		updateTaskId = Scheduler.addFrameTask(update, 0);
 		ping = 1;
 		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
 		#end
@@ -363,6 +390,7 @@ class Session {
 		isJoinable = true;
 		server.reset();
 		#else
+		Scheduler.removeFrameTask(updateTaskId);
 		Scheduler.removeTimeTask(pingTaskId);
 		#end
 		currentPlayers = 0;
@@ -376,6 +404,23 @@ class Session {
 		#if sys_server
 		var bytes = send();
 		sendToEverybody(bytes);
+		#else
+		for (controller in controllers) {
+			if (controller._inputBufferIndex > 0) {
+				var bytes = haxe.io.Bytes.alloc(22 + controller._inputBufferIndex);
+				bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
+				bytes.setInt32(1, controller._id());
+				bytes.setDouble(5, Scheduler.realTime());
+				bytes.setInt32(13, System.windowWidth(0));
+				bytes.setInt32(17, System.windowHeight(0));
+				bytes.set(21, System.screenRotation.getIndex());
+
+				bytes.blit(22, controller._inputBuffer, 0, controller._inputBufferIndex);
+
+				sendToServer(bytes);
+				controller._inputBufferIndex = 0;
+			}
+		}
 		#end
 	}
 	

@@ -64,8 +64,6 @@ class Scheduler {
 	
 	private static var startTime: Float = 0;
 	
-	private static var lastNow: Float = 0;
-	
 	private static var activeTimeTask: TimeTask = null;
 	
 	public static function init(): Void {
@@ -135,6 +133,7 @@ class Scheduler {
 	public static function back(time: Float): Void {
 		if (time >= lastTime) return; // No back to the future
 
+		current = time;
 		lastTime = time;
 		warpTimeTasks(time, outdatedTimeTasks);
 		warpTimeTasks(time, timeTasks);
@@ -169,8 +168,7 @@ class Scheduler {
 	
 	public static function executeFrame(): Void {
 		var now: Float = realTime();
-		var delta = now - lastNow;
-		lastNow = now;
+		var delta = now - lastTime;
 		
 		var frameEnd: Float = current;
 		 
@@ -302,7 +300,6 @@ class Scheduler {
 	
 	public static function resetTime(): Void {
 		var now = System.time;
-		lastNow = 0;
 		var dif = now - startTime;
 		startTime = now;
 		for (timeTask in timeTasks) {

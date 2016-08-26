@@ -184,6 +184,8 @@ class SyncBuilder {
 								bytes.set(index, $i { argname } ? 1 : 0);
 								++index;
 							};
+						default:
+							trace("Warning: type '" + p.name + "' of property '" + arg.name + "' cannot be synced");
 						}
 					default:
 					}

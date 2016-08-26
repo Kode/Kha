@@ -26,7 +26,7 @@ class ControllerBuilder {
 
 				switch (field.kind) {
 				case FFun(f):
-					var size = 26;
+					var size = 4;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):
@@ -48,15 +48,9 @@ class ControllerBuilder {
 
 					var expr = macro @:mergeBlock {
 						var bytes = haxe.io.Bytes.alloc($v { size } );
-						bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
-						bytes.setInt32(1, _id());
-						bytes.setDouble(5, Scheduler.realTime());
-						bytes.setInt32(13, System.windowWidth(0));
-						bytes.setInt32(17, System.windowHeight(0));
-						bytes.set(21, System.screenRotation.getIndex());
-						bytes.setInt32(22, $v { funcindex } );
+						bytes.setInt32(0, $v { funcindex } );
 					};
-					var index: Int = 26;
+					var index: Int = 4;
 					for (arg in f.args) {
 						switch (arg.type) {
 						case TPath(p):
@@ -121,7 +115,7 @@ class ControllerBuilder {
 		#if (sys_server || sys_html5 || sys_debug_html5)
 
 		var receive = macro @:mergeBlock {
-			var funcindex = bytes.getInt32(offset + 0);
+			var funcindex = bytes.getInt32(0);
 		};
 		{
 			var funcindex = 0;
@@ -149,7 +143,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Int = bytes.getInt32(offset + $v { index } );
+									var $varname: Int = bytes.getInt32($v { index } );
 								};
 								index += 4;
 							case "String":
@@ -157,7 +151,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: String = String.fromCharCode(bytes.get(offset + $v { index } ));
+									var $varname: String = String.fromCharCode(bytes.get($v { index } ));
 								};
 								index += 1;
 							case "Float":
@@ -165,7 +159,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Float = bytes.getDouble(offset + $v { index } );
+									var $varname: Float = bytes.getDouble($v { index } );
 								};
 								index += 8;
 							case "Bool":
@@ -173,7 +167,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: Bool = bytes.get(offset + $v { index } ) != 0;
+									var $varname: Bool = bytes.get($v { index } ) != 0;
 								};
 								index += 1;
 							case "Key":
@@ -181,7 +175,7 @@ class ControllerBuilder {
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: kha.Key = kha.Key.createByIndex(bytes.get(offset + $v { index } ));
+									var $varname: kha.Key = kha.Key.createByIndex(bytes.get($v { index } ));
 								};
 								index += 1;
 							}
@@ -220,6 +214,26 @@ class ControllerBuilder {
 								return;
 							}
 						};
+					case 4:
+						var funcname = field.name;
+						receive = macro @:mergeBlock {
+							$receive;
+							if (funcindex == $v { funcindex } ) {
+								$expr;
+								$i { funcname }(input0, input1, input2, input3);
+								return;
+							}
+						};
+					case 5:
+						var funcname = field.name;
+						receive = macro @:mergeBlock {
+							$receive;
+							if (funcindex == $v { funcindex } ) {
+								$expr;
+								$i { funcname }(input0, input1, input2, input3, input4);
+								return;
+							}
+						};
 					}
 				default:
 				}
@@ -237,11 +251,6 @@ class ControllerBuilder {
 				params: null,
 				expr: receive,
 				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
-					{
 					value: null,
 					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
 					opt: null,
@@ -262,11 +271,6 @@ class ControllerBuilder {
 				params: null,
 				expr: macro {},
 				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
-					{
 					value: null,
 					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
 					opt: null,
