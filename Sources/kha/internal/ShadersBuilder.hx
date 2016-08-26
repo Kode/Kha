@@ -34,7 +34,26 @@ class ShadersBuilder {
 					pos: Context.currentPos()
 				});
 				
-				if (name.endsWith("_vert")) {
+				if (name.endsWith("_comp")) {
+					fields.push({
+						name: fixedName,
+						doc: null,
+						meta: [],
+						access: [APublic, AStatic],
+						kind: FVar(macro: kha.compute.Shader, macro null),
+						pos: Context.currentPos()
+					});
+					
+					init = macro {
+						$init;
+						{
+							var data = Reflect.field(Shaders, $v { dataName } );
+							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+							$i { fixedName } = new kha.compute.Shader(kha.Blob.fromBytes(bytes), $v { name });
+						}
+					};
+				}
+				else if (name.endsWith("_vert")) {
 					fields.push({
 						name: fixedName,
 						doc: null,
