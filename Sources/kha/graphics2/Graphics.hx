@@ -38,7 +38,7 @@ class Graphics {
 	public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
 	public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void { }
 	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void { }
-	public function ellipse(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
+	public function ellipse(x: Float, y: Float, radiusX: Float, radiusY: Float, ?style:Style): Void { }
 	
 	public function beginShape(primitive:Primitive, ?style:Style): Void {
 		shapeStyle = style;

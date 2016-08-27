@@ -872,7 +872,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 	}
 
-	override public function ellipse(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void {
+	override public function ellipse(x: Float, y: Float, radiusX: Float, radiusY: Float, ?style:Style): Void {
 		imagePainter.end();
 		textPainter.end();
 
@@ -880,28 +880,37 @@ class Graphics2 extends kha.graphics2.Graphics {
 			style = this.style;
 		
 		var theta = (Math.PI * 2.0) / style.circleSegments;
-		var c = Math.cos(theta);
-		var s = Math.sin(theta);
-		var xx = width;
-		var yy = 0;
 
-		beginShape(Triangles, style);
+		if (style.fill) {
+			beginShape(Triangles, style);
 
-		for (i in 0...style.circleSegments) {
-			
-			var px = c * width;
-			var py = s * height;
+			for (i in 0...style.circleSegments) {
+				var angle = theta * i;
+				var xPos = x + (radiusX * Math.cos(angle));
+				var yPos = y + (radiusY * Math.sin(angle));
+				vertex(xPos, yPos);
 
-			var t = px;
-			x = c * px - s * y;
-			y = c * py + s * t;
+				var angle = theta * (i + 1);
+				xPos = x + (radiusX * Math.cos(angle));
+				yPos = y + (radiusY * Math.sin(angle));
+				vertex(xPos, yPos);
 
-			vertex(px, py);
-			vertex(xx + x, yy + y);
-			vertex(x, y);
+				vertex(x, y);
+			}
+
+			endShape(false);
+		} else if (style.stroke) {
+			beginShape(Lines, style);
+
+			for (i in 0...style.circleSegments) {
+				var angle = theta * i;
+				var xPos = x + (radiusX * Math.cos(angle));
+				var yPos = y + (radiusY * Math.sin(angle));
+				vertex(xPos, yPos);
+			}
+
+			endShape(true);
 		}
-
-		endShape(false);
 	}
 
 	override public function endShape(close:Bool): Void {
@@ -922,7 +931,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 				}
 
 				var i = 0;
-				while (i <= shapeVertices.length) {
+				while (i <= shapeVertices.length - 4) {
 					line(shapeVertices[i], shapeVertices[i+1], shapeVertices[i+2], shapeVertices[i+3], shapeStyle);
 					i += 2;
 				}

@@ -58,7 +58,6 @@ class CanvasGraphics extends Graphics {
 	
 	override public function image(img: kha.Image, x: Float, y: Float, ?style: Style) {
 		style = apply(style);
-		//canvas.scale(20, 20);
 		canvas.globalAlpha = style.fillColor.A;
 		canvas.drawImage(cast(img, CanvasImage).image, x, y);
 		canvas.globalAlpha = 1;
@@ -171,6 +170,31 @@ class CanvasGraphics extends Graphics {
 		canvas.lineTo(x2, y2);
 		canvas.lineTo(x3, y3);
 		canvas.closePath();
+
+		if (style.fill)
+			canvas.fill();
+		if (style.stroke)
+			canvas.stroke();
+	}
+
+	override public function ellipse(x: Float, y: Float, radiusX: Float, radiusY: Float, ?style:Style): Void {
+		style = apply(style);
+
+		var theta = (Math.PI * 2.0) / style.circleSegments;
+		var xPos = x + radiusX;
+		var yPos = y + 0;
+
+		canvas.beginPath();
+		canvas.moveTo(xPos, yPos);
+
+		for (i in 1...style.circleSegments) {
+			var angle = theta * i;
+
+			xPos = x + (radiusX * Math.cos(angle));
+			yPos = y + (radiusY * Math.sin(angle));
+
+			canvas.lineTo(xPos, yPos);
+		}
 
 		if (style.fill)
 			canvas.fill();
