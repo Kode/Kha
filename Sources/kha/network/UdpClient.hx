@@ -8,6 +8,7 @@ import js.node.Dgram;
 
 class UdpClient implements Client {
 	private var myId: Int;
+	public var onReceive: Bytes->Void = null;
 	#if sys_server
 	private var socket: Dynamic;
 	#end
@@ -34,7 +35,7 @@ class UdpClient implements Client {
 	}
 	
 	public function receive(receiver: Bytes->Void): Void {
-		
+		onReceive = receiver;
 	}
 	
 	public function onClose(close: Void->Void): Void {
