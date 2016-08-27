@@ -12,6 +12,7 @@ class Server {
 	
 	private var app: Dynamic;
 	private var udpSocket: Dynamic;
+	private var udpClients: Map<String, UdpClient> = new Map();
 	private var lastId: Int = -1;
 	
 	#if !direct_connection
@@ -87,12 +88,20 @@ class Server {
 			if (compare(message, "JOIN")) {
 				++lastId;
 				var client = new UdpClient(lastId, udpSocket, info.address, info.port);
+				udpClients.set(info.address + info.port, client);
 				connection(client);
-				var content = Bytes.alloc(4);
-				content.setInt32(0, lastId);
-				client.send(content, true);
+				//var content = Bytes.alloc(4);
+				//content.setInt32(0, lastId);
+				//client.send(content, true);
 			}
 			else {
+				var client = udpClients.get(info.address + info.port);
+				if (client != null) {
+					if (client.onReceive != null) {
+						var data: haxe.io.BytesData = cast message;
+						client.onReceive(Bytes.ofData(data));
+					}
+				}
 				// TODO
 				/*var id: Int = message[0];
 				var client = clients[id];
@@ -100,6 +109,7 @@ class Server {
 				content.blit(0, message, 1, message.length);
 				client._message(message.length);*/
 			}
+			// TODO: Timeout for disconnect
 			//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
 		});
 		
