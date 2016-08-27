@@ -135,45 +135,12 @@ class Painter extends kha.graphics2.Graphics {
 		
 	}
 	
-	/*override public function get_color(): kha.Color {
-		return myKhaColor;
-	}
-	
-	override public function set_color(color: kha.Color): kha.Color {
-		setColorInternal(color.Ab, color.Rb, color.Gb, color.Bb);
-		return myKhaColor = color;
-	}
-	
-	override public function get_font(): kha.Font {
-		return myFont;
-	}
-	
-	override public function set_font(font: kha.Font): kha.Font {
-		return this.myFont = cast(font, Kravur);
-	}*/
-	
 	@:functionCode('
 		myColor = global::System.Windows.Media.Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b);
 	')
 	private function setColorInternal(a: Int, r: Int, g: Int, b: Int): Void {
 		
 	}
-
-	/*@:functionCode('
-		if (width < 0.0) {
-			x += width;
-			width = -width;
-		}
-		if (height < 0.0) {
-			y += height;
-			height = -height;
-		}
-		style = apply(this.style);
-		context.DrawRectangle(null, new global::System.Windows.Media.Pen(new global::System.Windows.Media.SolidColorBrush(style.fillColor), strength.value), new global::System.Windows.Rect(tx + x, ty + y, width, height));
-	')
-	override public function rect(x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
-		
-	}*/
 
 	@:functionCode('
 		if (width < 0.0) {

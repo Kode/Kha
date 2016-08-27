@@ -106,8 +106,9 @@ class Graphics {
 	}
 
 	public function pop() {
-		transform = transformStack.pop();
-		return transform;
+		var previous = transform;
+		setTransform(transformStack.pop());
+		return previous;
 	}
 	
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

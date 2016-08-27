@@ -57,18 +57,16 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function image(img: kha.Image, x: Float, y: Float, ?style: Style) {
-		if (style == null)
-			style = this.style;
-		
+		style = apply(style);
+		//canvas.scale(20, 20);
 		canvas.globalAlpha = style.fillColor.A;
 		canvas.drawImage(cast(img, CanvasImage).image, x, y);
 		canvas.globalAlpha = 1;
 	}
 	
 	override public function scaledSubImage(image: kha.Image, x: Float, y: Float, left: Float, top: Float, width: Float, height: Float, finalWidth: Float, finalHeight: Float, ?style: Style) {
-		if (style == null)
-			style = this.style;
-
+		style = apply(style);
+		
 		canvas.globalAlpha = style.fillColor.A;
 		try {
 			if (finalWidth < 0 || finalHeight < 0) {
@@ -258,6 +256,7 @@ class CanvasGraphics extends Graphics {
 	}
 	
 	override public function setTransform(transform: FastMatrix3): Void {
+		this.transform = transform;
 		canvas.setTransform(transform._00, transform._01, transform._10,
 			transform._11, transform._20, transform._21);
 	}
