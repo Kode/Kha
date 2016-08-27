@@ -18,25 +18,26 @@ class Graphics {
 	//draw/fillPolygon
 	
 	public function clear(color: Color = null): Void { }
-	public function drawImage(img: Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
-		drawSubImage(img, x, y, 0, 0, img.width, img.height, style);
+	public function image(img: Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
+		subImage(img, x, y, 0, 0, img.width, img.height, style);
 	}
-	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, ?style: Style): Void {
-		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh, style);
+	public function subImage(img: Image, x: FastFloat, y: FastFloat, left: FastFloat, top: FastFloat, width: FastFloat, height: FastFloat, ?style: Style): Void {
+		scaledSubImage(img, x, y, left, top, width, height, width, height, style);
 	}
-	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void {
-		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh, style);
+	public function scaledImage(img: Image, x: FastFloat, y: FastFloat, finalWidth: FastFloat, finalHeight: FastFloat, ?style: Style): Void {
+		scaledSubImage(img, x, y, 0, 0, img.width, img.height, finalWidth, finalHeight, style);
 	}
-	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void { }
+	public function scaledSubImage(image: Image, x: FastFloat, y: FastFloat, left: FastFloat, top: FastFloat, width: FastFloat, height: FastFloat, finalWidth: FastFloat, finalHeight: FastFloat, ?style: Style): Void { }
 
 	// Clockwise or counter-clockwise around the defined shape
 	public function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void { }
 	public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
 	public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void { }
 	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void { }
+	public function ellipse(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
 	
-	public function beginShape(primitive:Primitive): Void { }
-	public function vertex(x:Float, y:Float, ?color:Color): Void { }
+	public function beginShape(primitive:Primitive, ?style:Style): Void { }
+	public function vertex(x:Float, y:Float): Void { }
 	public function endShape(close:Bool): Void { }
 
 	public function text(text: String, x: Float, y: Float, ?style: Style): Void { }
@@ -63,6 +64,10 @@ class Graphics {
 
 	inline public function getTransform() {
 		return transform;
+	}
+
+	public function setTransform(transform: FastMatrix3): Void {
+		this.transform = transform;
 	}
 
 	public function resetTransform() {
@@ -126,10 +131,6 @@ class Graphics {
 		#end
 
 		style = new Style();
-	}
-	
-	private function setTransformation(transformation: FastMatrix3): Void {
-		
 	}
 	
 	private function setPipeline(pipeline: PipelineState): Void {

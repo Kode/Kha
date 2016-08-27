@@ -53,10 +53,10 @@ class CanvasGraphics extends Graphics {
 	
 	override public function end(): Void {
 		resetTransform();
-		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
+		setTransform(transform);
 	}
 	
-	override public function drawImage(img: kha.Image, x: Float, y: Float, ?style: Style) {
+	override public function image(img: kha.Image, x: Float, y: Float, ?style: Style) {
 		if (style == null)
 			style = this.style;
 		
@@ -65,30 +65,30 @@ class CanvasGraphics extends Graphics {
 		canvas.globalAlpha = 1;
 	}
 	
-	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, ?style: Style) {
+	override public function scaledSubImage(image: kha.Image, x: Float, y: Float, left: Float, top: Float, width: Float, height: Float, finalWidth: Float, finalHeight: Float, ?style: Style) {
 		if (style == null)
 			style = this.style;
 
 		canvas.globalAlpha = style.fillColor.A;
 		try {
-			if (dw < 0 || dh < 0) {
+			if (finalWidth < 0 || finalHeight < 0) {
 				canvas.save();
-				canvas.translate(dx, dy);
+				canvas.translate(x, y);
 				var x = 0.0;
 				var y = 0.0;
-				if (dw < 0) {
+				if (finalWidth < 0) {
 					canvas.scale(-1, 1);
-					x = -dw;
+					x = -finalWidth;
 				}
-				if (dh < 0) {
+				if (finalHeight < 0) {
 					canvas.scale(1, -1);
-					y = -dh;
+					y = -finalHeight;
 				}
-				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, x, y, dw, dh);
+				canvas.drawImage(cast(image, CanvasImage).image, left, top, width, height, x, y, finalWidth, finalHeight);
 				canvas.restore();
 			}
 			else {
-				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, dx, dy, dw, dh);
+				canvas.drawImage(cast(image, CanvasImage).image, left, top, width, height, x, y, finalWidth, finalHeight);
 			}
 		}
 		catch (ex: Dynamic) {
@@ -129,7 +129,7 @@ class CanvasGraphics extends Graphics {
 			webfont = cast(style.font, kha.js.Font);
 		}
 
-		canvas.setTransform(transform._00, transform._01, transform._10, transform._11, transform._20, transform._21);
+		setTransform(transform);
 
 		return style;
 	}
@@ -226,8 +226,8 @@ class CanvasGraphics extends Graphics {
 		canvas.drawImage(cast(video, Video).element, x, y, width, height, style);
 	}
 	
-	override public function setTransformation(transformation: FastMatrix3): Void {
-		canvas.setTransform(transformation._00, transformation._01, transformation._10,
-			transformation._11, transformation._20, transformation._21);
+	override public function setTransform(transform: FastMatrix3): Void {
+		canvas.setTransform(transform._00, transform._01, transform._10,
+			transform._11, transform._20, transform._21);
 	}
 }

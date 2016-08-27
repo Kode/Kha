@@ -59,7 +59,7 @@ class Image implements Resource {
 	private function get_g2(): kha.graphics2.Graphics {
 		if (painter == null) {
 			painter = new Painter(width, height);
-			painter.image = image;
+			painter.imageSource = image;
 			painter.visual = new DrawingVisual();
 		}
 		return painter;

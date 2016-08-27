@@ -18,6 +18,6 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 		style.fillColor = Color.Blue;
 		rect(x, y, width, height);
 		style.fillColor = Color.White;
-		drawScaledSubImage(Image.createFromVideo(video), 0, 0, video.width(), video.height(), x, y, width, height);
+		scaledSubImage(Image.createFromVideo(video), 0, 0, video.width(), video.height(), x, y, width, height);
 	}
 }

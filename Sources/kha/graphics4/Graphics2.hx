@@ -687,6 +687,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private static var videoPipeline: PipelineState;
 	private var canvas: Canvas;
 	private var g: Graphics;
+	private var shapeVertices:Array<Float>;
+	private var primitiveType:Primitive;
+	private var shapeStyle:Style;
 
 	public function new(canvas: Canvas) {
 		super();
@@ -696,6 +699,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter = new ImageShaderPainter(g);
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
+		shapeVertices = [];
 		setProjection();
 		
 		if (videoPipeline == null) {
@@ -746,7 +750,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	#if cpp
-	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
+	public override function image(img: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
 
@@ -778,31 +782,35 @@ class Graphics2 extends kha.graphics2.Graphics {
 			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), style.fillColor.A, style.fillColor);
 	}
 	#else
-	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
+	public override function image(image: kha.Image, x: FastFloat, y: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
 
 		if (style == null)
 			style = this.style;
 		
-		var xw: FastFloat = x + img.width;
-		var yh: FastFloat = y + img.height;
+		var xw: FastFloat = x + image.width;
+		var yh: FastFloat = y + image.height;
 		var p1 = transform.multvec(new FastVector2(x, yh));
 		var p2 = transform.multvec(new FastVector2(x, y));
 		var p3 = transform.multvec(new FastVector2(xw, y));
 		var p4 = transform.multvec(new FastVector2(xw, yh));
-		imagePainter.drawImage(img, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
+		imagePainter.drawImage(image, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
 	}
 	#end
 	
-	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat, ?style: Style): Void {
+	public override function scaledSubImage(image: kha.Image, x: FastFloat, y: FastFloat, left: FastFloat, top: FastFloat, width: FastFloat, height: FastFloat, finalWidth: FastFloat, finalHeight: FastFloat, ?style: Style): Void {
 		coloredPainter.end();
 		textPainter.end();
-		var p1 = transform.multvec(new FastVector2(dx, dy + dh));
-		var p2 = transform.multvec(new FastVector2(dx, dy));
-		var p3 = transform.multvec(new FastVector2(dx + dw, dy));
-		var p4 = transform.multvec(new FastVector2(dx + dw, dy + dh));
-		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
+
+		if (style == null)
+			style = this.style;
+
+		var p1 = transform.multvec(new FastVector2(x, y + finalHeight));
+		var p2 = transform.multvec(new FastVector2(x, y));
+		var p3 = transform.multvec(new FastVector2(x + finalWidth, y));
+		var p4 = transform.multvec(new FastVector2(x + finalWidth, y + finalHeight));
+		imagePainter.drawImage2(image, left, top, width, height, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, style.fillColor.A, style.fillColor);
 	}
 
 	override function quad(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float, ?style:Style): Void {
@@ -868,15 +876,75 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 	}
 
-	override public function beginShape(primitive:kha.graphics2.Primitive): Void {
+	override public function ellipse(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void {
+		imagePainter.end();
+		textPainter.end();
+
+		if (style == null)
+			style = this.style;
+		
+		var theta = (Math.PI * 2.0) / style.circleSegments;
+		var c = Math.cos(theta);
+		var s = Math.sin(theta);
+		var xx = width;
+		var yy = 0;
+
+		beginShape(Triangles, style);
+
+		for (i in 0...style.circleSegments) {
+			
+			var px = c * width;
+			var py = s * height;
+
+			var t = px;
+			x = c * px - s * y;
+			y = c * py + s * t;
+
+			vertex(px, py);
+			vertex(xx + x, yy + y);
+			vertex(x, y);
+		}
+
+		endShape(false);
 	}
 
-	override public function vertex(x:Float, y:Float, ?color:Color): Void {
+	override public function beginShape(primitive:kha.graphics2.Primitive, ?style:Style): Void {
+		shapeStyle = style;
+		if (shapeStyle == null)
+			shapeStyle = this.style;
 		
+		shapeVertices.splice(0, shapeVertices.length);
+		primitiveType = primitive;
+	}
+
+	override public function vertex(x:Float, y:Float): Void {
+		shapeVertices.push(x);
+		shapeVertices.push(y);
 	}
 
 	override public function endShape(close:Bool): Void {
+		switch (primitiveType) {
+			case Triangles:
+				while (shapeVertices.length % 6 != 0) {
+					vertex(shapeVertices[0], shapeVertices[1]);
+				}
+				
+				var i = 0;
+				while (i <= shapeVertices.length) {
+					coloredPainter.addTriangle(shapeVertices[i], shapeVertices[i+1], shapeVertices[i+2], shapeVertices[i+3], shapeVertices[i+4], shapeVertices[i+5], shapeStyle.fillColor, transform);
+					i += 6;
+				}
+			case Lines:
+				if (close) {
+					vertex(shapeVertices[0], shapeVertices[1]);
+				}
 
+				var i = 0;
+				while (i <= shapeVertices.length) {
+					line(shapeVertices[i], shapeVertices[i+1], shapeVertices[i+2], shapeVertices[i+3], shapeStyle);
+					i += 2;
+				}
+		}
 	}
 
 	public override function text(text: String, x: Float, y: Float, ?style: Style): Void {

@@ -17,7 +17,7 @@ import kha.graphics2.Style;
 class Painter extends kha.graphics2.Graphics {
 	public var context: DrawingContext;
 	public var visual: DrawingVisual;
-	public var image: BitmapSource;
+	public var imageSource: BitmapSource;
 	private var myColor: Color;
 	private var myKhaColor: kha.Color;
 	private var myFont: Kravur;
@@ -54,7 +54,7 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		if (visual != null) {
 			context.Close();
-			((global::System.Windows.Media.Imaging.RenderTargetBitmap) image).Render(visual);
+			((global::System.Windows.Media.Imaging.RenderTargetBitmap) imageSource).Render(visual);
 			++garbageCounter;
 			if (garbageCounter > 30) {
 				global::System.GC.Collect(); // Because rendering into an image is a really really bad thing in WPF
@@ -74,28 +74,27 @@ class Painter extends kha.graphics2.Graphics {
 		return style;
 	}
 
-	override public function setTransformation(transformation: FastMatrix3): Void {
+	override public function setTransform(transformation: FastMatrix3): Void {
 		context.Pop();
 		context.PushTransform(new MatrixTransform(transformation._00, transformation._01, transformation._10, transformation._11, transformation._20, transformation._21));
 	}
 
 	@:functionCode('
 		apply(this.style);
-		var img = (Image)image;
+		var img = (Image)imageSource;
 		context.DrawImage(img.image, new global::System.Windows.Rect(tx + x, ty + y, img.get_width(), img.get_height()));
 	')
-	override public function drawImage(image: Image, x: Float, y: Float, ?style: Style): Void {
-		apply(style);
+	override public function image(image: Image, x: Float, y: Float, ?style: Style): Void {
 	}
 
 	@:functionCode('
-		var img = (Image)image;
+		var img = (Image)imageSource;
 		//var cropped = new System.Windows.Media.Imaging.CroppedBitmap(img.image, new System.Windows.Int32Rect((int)sx, (int)sy, (int)sw, (int)sh));
 		//context.DrawImage(cropped, new System.Windows.Rect(tx + dx, ty + dy, dw, dh)); //super slow
 		img.brush.Viewbox = new global::System.Windows.Rect(sx / img.get_width(), sy / img.get_height(), sw / img.get_width(), sh / img.get_height());
 		context.DrawRectangle(img.brush, null, new global::System.Windows.Rect(tx + dx, ty + dy, dw, dh));
 	')
-	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, ?style: Style): Void {
+	override public function scaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float, ?style: Style): Void {
 		
 	}
 

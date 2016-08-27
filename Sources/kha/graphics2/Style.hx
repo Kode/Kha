@@ -11,6 +11,8 @@ class Style {
 	public var strokeColor: Color;
 	public var strokeWeight: Float;
 
+	public var circleSegments: Int;
+
 	public var font: Font;
 	public var fontSize: Int;
 	public var fontGlyphs: Array<Int>;
@@ -25,6 +27,8 @@ class Style {
 		stroke = true;
 		strokeColor = Color.Black;
 		strokeWeight = 1.0;
+
+		circleSegments = 32;
 
 		font = null;
 		fontSize = 12;

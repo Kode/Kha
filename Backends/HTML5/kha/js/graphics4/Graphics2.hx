@@ -14,7 +14,7 @@ class Graphics2 extends kha.graphics4.Graphics2 {
 			style = this.style;
 
 		var v = cast(video, Video);
-		drawScaledSubImage(v.texture, 0, 0, v.texture.width, v.texture.height, x, y, width, height, style);
+		scaledSubImage(v.texture, 0, 0, v.texture.width, v.texture.height, x, y, width, height, style);
 	}
 	
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
