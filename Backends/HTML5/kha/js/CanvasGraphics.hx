@@ -179,6 +179,47 @@ class CanvasGraphics extends Graphics {
 		if (style.stroke)
 			canvas.stroke();
 	}
+
+	override public function endShape(close:Bool): Void {
+		apply(shapeStyle);
+
+		canvas.beginPath();
+
+		switch (primitiveType) {
+			case Triangles:
+				while (shapeVertices.length % 6 != 0) {
+					vertex(shapeVertices[0], shapeVertices[1]);
+				}
+				
+				var i = 0;
+				while (i <= shapeVertices.length) {
+					canvas.moveTo(shapeVertices[i], shapeVertices[i+1]);
+					canvas.lineTo(shapeVertices[i+2], shapeVertices[i+3]);
+					canvas.lineTo(shapeVertices[i+4], shapeVertices[i+5]);
+					canvas.closePath();
+					i += 6;
+				}
+
+				if (shapeStyle.fill)
+					canvas.fill();
+				if (shapeStyle.stroke)
+					canvas.stroke();
+			case Lines:
+				if (close) {
+					vertex(shapeVertices[0], shapeVertices[1]);
+				}
+
+				canvas.moveTo(shapeVertices[0], shapeVertices[1]);
+
+				var i = 2;
+				while (i <= shapeVertices.length) {
+					canvas.lineTo(shapeVertices[i], shapeVertices[i+1]);
+					i += 2;
+				}
+
+				canvas.stroke();
+		}
+	}
 	
 	override public function text(text: String, x: Float, y: Float, ?style: Style) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
@@ -201,16 +242,6 @@ class CanvasGraphics extends Graphics {
 			}
 		}
 	}
-
-	/*override public function set_font(font: kha.Font): kha.Font {
-		webfont = cast(font, kha.js.Font);
-		//canvas.font = webfont.size + "px " + webfont.name;
-		return webfont;
-	}
-	
-	override public function get_font(): kha.Font {
-		return webfont;
-	}*/
 	
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		canvas.beginPath();

@@ -10,6 +10,10 @@ import kha.graphics2.Primitive;
 class Graphics {
 	public var style:Style;
 
+	private var shapeVertices:Array<Float>;
+	private var primitiveType:Primitive;
+	private var shapeStyle:Style;
+
 	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
 	public function end(): Void { }
 	public function flush(): Void { }
@@ -36,8 +40,18 @@ class Graphics {
 	public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void { }
 	public function ellipse(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void { }
 	
-	public function beginShape(primitive:Primitive, ?style:Style): Void { }
-	public function vertex(x:Float, y:Float): Void { }
+	public function beginShape(primitive:Primitive, ?style:Style): Void {
+		shapeStyle = style;
+		if (shapeStyle == null)
+			shapeStyle = this.style;
+		
+		shapeVertices.splice(0, shapeVertices.length);
+		primitiveType = primitive;
+	}
+	public function vertex(x:Float, y:Float): Void {
+		shapeVertices.push(x);
+		shapeVertices.push(y);
+	}
 	public function endShape(close:Bool): Void { }
 
 	public function text(text: String, x: Float, y: Float, ?style: Style): Void { }
@@ -131,6 +145,10 @@ class Graphics {
 		#end
 
 		style = new Style();
+
+		shapeVertices = [];
+		primitiveType = Lines;
+		shapeStyle = style;
 	}
 	
 	private function setPipeline(pipeline: PipelineState): Void {

@@ -687,9 +687,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private static var videoPipeline: PipelineState;
 	private var canvas: Canvas;
 	private var g: Graphics;
-	private var shapeVertices:Array<Float>;
-	private var primitiveType:Primitive;
-	private var shapeStyle:Style;
 
 	public function new(canvas: Canvas) {
 		super();
@@ -699,7 +696,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter = new ImageShaderPainter(g);
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
-		shapeVertices = [];
 		setProjection();
 		
 		if (videoPipeline == null) {
@@ -906,20 +902,6 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 
 		endShape(false);
-	}
-
-	override public function beginShape(primitive:kha.graphics2.Primitive, ?style:Style): Void {
-		shapeStyle = style;
-		if (shapeStyle == null)
-			shapeStyle = this.style;
-		
-		shapeVertices.splice(0, shapeVertices.length);
-		primitiveType = primitive;
-	}
-
-	override public function vertex(x:Float, y:Float): Void {
-		shapeVertices.push(x);
-		shapeVertices.push(y);
 	}
 
 	override public function endShape(close:Bool): Void {
