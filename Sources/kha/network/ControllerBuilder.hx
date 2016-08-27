@@ -8,9 +8,8 @@ class ControllerBuilder {
 
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
-
-		// macros failing everywhere but in JavaScript?
-		#if (!sys_server && (sys_html5 || sys_debug_html5))
+		
+		#if !sys_server
 
 		{
 			var funcindex = 0;
