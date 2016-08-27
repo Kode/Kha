@@ -86,7 +86,19 @@ class Server {
 		udpSocket.on('message', function(message: Buffer, info) {
 			if (compare(message, "JOIN")) {
 				++lastId;
-				connection(new UdpClient(lastId, udpSocket, info.address, info.port));
+				var client = new UdpClient(lastId, udpSocket, info.address, info.port);
+				connection(client);
+				var content = Bytes.alloc(4);
+				content.setInt32(0, lastId);
+				client.send(content, true);
+			}
+			else {
+				// TODO
+				/*var id: Int = message[0];
+				var client = clients[id];
+				var content = Bytes.alloc(message.length - 1);
+				content.blit(0, message, 1, message.length);
+				client._message(message.length);*/
 			}
 			//console.log('Received %d bytes from %s:%d\n', message.length, info.address, info.port);
 		});
