@@ -6,6 +6,7 @@ import kha.Image;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
 import kha.Rotation;
+import kha.graphics2.Style;
 
 @:classCode('
 	public java.awt.Graphics2D graphics;
@@ -46,18 +47,18 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		graphics.drawImage(img.image, round(tx + x), round(ty + y), null);
 	')
-	override public function drawImage(img: Image, x: Float, y: Float): Void {
+	override public function image(img: Image, x: Float, y: Float, ?style:Style): Void {
 		
 	}
 	
 	@:functionCode('
-		graphics.drawImage(image.image, round(tx + dx), round(ty + dy), round(tx + dx + dw), round(ty + dy + dh), round(sx), round(sy), round(sx + sw), round(sy + sh), null);
+		graphics.drawImage(image.image, round(tx + x), round(ty + y), round(tx + x + finalWidth), round(ty + y + finalHeight), round(left), round(top), round(left + width), round(top + height), null);
 	')
-	override public function drawScaledSubImage(image: Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float): Void {
+	override public function scaledSubImage(image: Image, x: Float, y: Float, left: Float, top: Float, width: Float, height: Float, finalWidth: Float, finalHeight: Float, ?style: Style): Void {
 		
 	}
 	
-	override public function get_color(): kha.Color {
+	/*override public function get_color(): kha.Color {
 		return myColor;
 	}
 	
@@ -71,28 +72,28 @@ class Painter extends kha.graphics2.Graphics {
 	override public function set_color(color: kha.Color): kha.Color {
 		setColorInternal(color);
 		return myColor = color;
-	}
+	}*/
 	
 	@:functionCode('
 		java.awt.Stroke oldStroke = graphics.getStroke();
-		graphics.setStroke(new java.awt.BasicStroke((float)strength));
+		graphics.setStroke(new java.awt.BasicStroke((float)style.strokeWeight));
 		graphics.drawRect(round(tx + x), round(ty + y), round(width), round(height));
 		graphics.setStroke(oldStroke);
 	')
-	private function drawRect2(x: Float, y: Float, width: Float, height: Float, strength: Float): Void {
+	private function drawRect2(x: Float, y: Float, width: Float, height: Float, style:Style): Void {
 		
 	}
 	
-	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
-		drawRect2(x, y, width, height, strength);
+	override public function rect(x: Float, y: Float, width: Float, height: Float, ?style:Style): Void {
+		drawRect2(x, y, width, height, style);
 	}
 	
-	@:functionCode('
+	/*@:functionCode('
 		graphics.fillRect(round(tx + x), round(ty + y), round(width), round(height));
 	')
 	override public function fillRect(x: Float, y: Float, width: Float, height: Float) : Void {
 
-	}
+	}*/
 	
 	@:functionCode('
 		graphics.setFont(((kha.java.Font)font).font);
@@ -101,30 +102,30 @@ class Painter extends kha.graphics2.Graphics {
 		
 	}
 	
-	override public function get_font(): kha.Font {
+	/*override public function get_font(): kha.Font {
 		return myFont;
 	}
 	
 	override public function set_font(font: kha.Font): kha.Font {
 		setFontInternal(font);
 		return myFont = font;
-	}
+	}*/
 	
 	@:functionCode('
 		graphics.drawString(text, round(tx + x), round(ty + y));
 	')
-	override public function drawString(text: String, x: Float, y: Float): Void {
+	override public function text(text: String, x: Float, y: Float, ?stlye:Style): Void {
 		
 	}
 	
 	@:functionCode('
 		java.awt.Stroke oldStroke = graphics.getStroke();
-		graphics.setStroke(new java.awt.BasicStroke((Float)strength));
+		graphics.setStroke(new java.awt.BasicStroke((Float)style.strokeWeight));
 		graphics.drawLine(round(tx + x1), round(ty + y1), round(tx + x2), round(ty + y2));
 		graphics.setStroke(oldStroke);
 	')
-	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
-	
+	override public function line(x1: Float, y1: Float, x2: Float, y2: Float, ?style:Style): Void {
+
 	}
 	
 	@:functionCode('
@@ -132,7 +133,7 @@ class Painter extends kha.graphics2.Graphics {
 		int[] yPoints = new int[]{round(ty + y1), round(ty + y2), round(ty + y3)};
 		graphics.fillPolygon(xPoints, yPoints, 3);
 	')
-	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+	override public function triangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, ?style:Style): Void {
 		
 	}
 	
@@ -141,7 +142,7 @@ class Painter extends kha.graphics2.Graphics {
 			((Number)transformation._00).floatValue(), ((Number)transformation._01).floatValue(), ((Number)transformation._10).floatValue(),
 			((Number)transformation._11).floatValue(), ((Number)transformation._20).floatValue(), ((Number)transformation._21).floatValue()));
 	')
-	override function setTransformation(transformation: FastMatrix3): Void {
+	override function setTransform(transformation: FastMatrix3): Void {
 		
 	}
 }
