@@ -13,6 +13,9 @@ import flash.net.URLRequest;
 import flash.ui.Mouse;
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
+#if KHA_EMBEDDED_ASSETS
+import Assets;//include so classes are not excluded from compilation
+#end
 
 using StringTools;
 
@@ -102,7 +105,7 @@ class LoaderImpl {
 		#if KHA_EMBEDDED_ASSETS
 		
 		var file: String = adjustFilename(desc.files[0]);
-		done(new Blob(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
+		done(Blob.fromBytes(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
 		
 		#else
 		
