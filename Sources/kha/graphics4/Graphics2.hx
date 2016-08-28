@@ -882,24 +882,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var theta = (Math.PI * 2.0) / style.circleSegments;
 
 		if (style.fill) {
-			beginShape(Triangles, style);
-
 			for (i in 0...style.circleSegments) {
 				var angle = theta * i;
-				var xPos = x + (radiusX * Math.cos(angle));
-				var yPos = y + (radiusY * Math.sin(angle));
-				vertex(xPos, yPos);
+				var x1 = x + (radiusX * Math.cos(angle));
+				var y1 = y + (radiusY * Math.sin(angle));
 
 				var angle = theta * (i + 1);
-				xPos = x + (radiusX * Math.cos(angle));
-				yPos = y + (radiusY * Math.sin(angle));
-				vertex(xPos, yPos);
+				var x2 = x + (radiusX * Math.cos(angle));
+				var y2 = y + (radiusY * Math.sin(angle));
 
-				vertex(x, y);
+				coloredPainter.addTriangle(x1, y1, x2, y2, x, y, style.fillColor, transform);
 			}
-
-			endShape(false);
-		} else if (style.stroke) {
+		}
+		if (style.stroke) {
 			beginShape(Lines, style);
 
 			for (i in 0...style.circleSegments) {

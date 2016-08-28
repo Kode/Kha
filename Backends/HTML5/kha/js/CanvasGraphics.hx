@@ -185,8 +185,8 @@ class CanvasGraphics extends Graphics {
 		var yPos = y + 0;
 
 		canvas.beginPath();
-		canvas.moveTo(xPos, yPos);
 
+		canvas.moveTo(xPos, yPos);
 		for (i in 1...style.circleSegments) {
 			var angle = theta * i;
 
@@ -195,6 +195,8 @@ class CanvasGraphics extends Graphics {
 
 			canvas.lineTo(xPos, yPos);
 		}
+		
+		canvas.closePath();
 
 		if (style.fill)
 			canvas.fill();
