@@ -55,7 +55,7 @@ class Graphics {
 	public function endShape(close:Bool): Void { }
 
 	public function text(text: String, x: Float, y: Float, ?style: Style): Void { }
-	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void { }
+	public function video(video: Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void { }
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;

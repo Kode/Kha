@@ -1015,7 +1015,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		
 	}
 	
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
+	override public function video(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
 		if (style == null)
 			style = this.style;
 		

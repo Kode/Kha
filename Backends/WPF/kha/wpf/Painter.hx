@@ -169,7 +169,7 @@ class Painter extends kha.graphics2.Graphics {
 	@:functionCode('
 		context.DrawVideo(((Video)video).getPlayer(), new global::System.Windows.Rect(tx + x, ty + y, width, height));
 	')
-	override function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
+	override function video(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
 
 	}
 }

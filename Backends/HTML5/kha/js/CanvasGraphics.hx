@@ -277,8 +277,8 @@ class CanvasGraphics extends Graphics {
 		canvas.restore();
 	}
 	
-	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
-		canvas.drawImage(cast(video, Video).element, x, y, width, height, style);
+	override public function video(video: kha.Video, x: Float, y: Float, width: Float, height: Float, ?style: Style): Void {
+		canvas.drawImage(cast(video, Video).element, x, y, width, height);
 	}
 	
 	override public function setTransform(transform: FastMatrix3): Void {
