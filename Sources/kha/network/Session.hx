@@ -417,7 +417,7 @@ class Session {
 				var bytes = haxe.io.Bytes.alloc(22 + controller._inputBufferIndex);
 				bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 				bytes.setInt32(1, controller._id());
-				bytes.setDouble(5, Scheduler.realTime());
+				bytes.setDouble(5, Scheduler.time());
 				bytes.setInt32(13, System.windowWidth(0));
 				bytes.setInt32(17, System.windowHeight(0));
 				bytes.set(21, System.screenRotation.getIndex());
