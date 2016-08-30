@@ -55,7 +55,9 @@ class Network {
 		
 		// TODO: Handle partial packets, don't choke on garbage
 		if (listener != null && bufferPos > 0) {
-			listener(buffer);
+			var result = Bytes.alloc(bufferPos);
+			result.blit(0, buffer, 0, bufferPos);
+			listener(result);
 			bufferPos = 0;
 		}
 	}
