@@ -164,49 +164,54 @@ class Scheduler {
 			return;
 		}
 		
-		//tdif = 1.0 / 60.0; //force fixed frame rate
-		
-		if (delta > maxframetime) {
-			delta = maxframetime;
-			frameEnd += delta;
-		}
-		else {
-			if (vsync) {
-				// this is optimized not to run at exact speed
-				// but to run as fluid as possible
-				var realdif = onedifhz;
-				while (realdif < delta - onedifhz) {
-					realdif += onedifhz;
-				}
-				
-				delta = realdif;
-				for (i in 0...DIF_COUNT - 2) {
-					delta += deltas[i];
-					deltas[i] = deltas[i + 1];
-				}
-				delta += deltas[DIF_COUNT - 2];
-				delta /= DIF_COUNT;
-				deltas[DIF_COUNT - 2] = realdif;
-				
+		if (kha.network.Session.the() == null) {
+			//tdif = 1.0 / 60.0; //force fixed frame rate
+			
+			if (delta > maxframetime) {
+				delta = maxframetime;
 				frameEnd += delta;
 			}
 			else {
-				for (i in 0...DIF_COUNT - 1) {
-					deltas[i] = deltas[i + 1];
+				if (vsync) {
+					// this is optimized not to run at exact speed
+					// but to run as fluid as possible
+					var realdif = onedifhz;
+					while (realdif < delta - onedifhz) {
+						realdif += onedifhz;
+					}
+					
+					delta = realdif;
+					for (i in 0...DIF_COUNT - 2) {
+						delta += deltas[i];
+						deltas[i] = deltas[i + 1];
+					}
+					delta += deltas[DIF_COUNT - 2];
+					delta /= DIF_COUNT;
+					deltas[DIF_COUNT - 2] = realdif;
+					
+					frameEnd += delta;
 				}
-				deltas[DIF_COUNT - 1] = delta;
-				
-				var next: Float = 0;
-				for (i in 0...DIF_COUNT) {
-					next += deltas[i];
+				else {
+					for (i in 0...DIF_COUNT - 1) {
+						deltas[i] = deltas[i + 1];
+					}
+					deltas[DIF_COUNT - 1] = delta;
+					
+					var next: Float = 0;
+					for (i in 0...DIF_COUNT) {
+						next += deltas[i];
+					}
+					next /= DIF_COUNT;
+					
+					//delta = interpolated_delta; // average the frame end estimation
+					
+					//lastTime = now;
+					frameEnd += next;
 				}
-				next /= DIF_COUNT;
-				
-				//delta = interpolated_delta; // average the frame end estimation
-				
-				//lastTime = now;
-				frameEnd += next;
 			}
+		}
+		else {
+			frameEnd += delta;
 		}
 		
 		lastTime = frameEnd;
