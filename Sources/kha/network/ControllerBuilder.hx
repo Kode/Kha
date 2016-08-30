@@ -110,8 +110,7 @@ class ControllerBuilder {
 
 		#end
 
-		// macros failing everywhere but in JavaScript?
-		#if (sys_server || sys_html5 || sys_debug_html5)
+		#if (sys_server || sys_html5 || sys_debug_html5 || sys_kore)
 
 		var receive = macro @:mergeBlock {
 			var funcindex = bytes.getInt32(0);
