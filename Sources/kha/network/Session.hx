@@ -51,7 +51,7 @@ class Session {
 	private var current: Client;
 	private var isJoinable: Bool = false;
 	private var lastStates: Array<State> = new Array();
-	private static inline var stateCount = 60 * 5; // 5 seconds with 60 fps
+	private static inline var stateCount = 60 * 10; // 10 seconds with 60 fps
 	#else
 	private var localClient: Client;
 	public var network: Network;

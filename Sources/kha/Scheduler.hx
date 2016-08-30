@@ -39,7 +39,7 @@ class Scheduler {
 	private static var pausedTimeTasks: Array<TimeTask>;
 	private static var outdatedTimeTasks: Array<TimeTask>;
 	private static var timeTasksScratchpad: Array<TimeTask>;
-	private static inline var timeWarpSaveTime: Float = 1.0;
+	private static inline var timeWarpSaveTime: Float = 10.0;
 
 	private static var frameTasks: Array<FrameTask>;	
 	private static var toDeleteFrame : Array<FrameTask>;
