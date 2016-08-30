@@ -154,6 +154,16 @@ class Scheduler {
 			}
 		}
 		else if (time > lastTime) {
+			// TODO: Changing startTime line prevents clients from falling into a
+			// warp-forward-then-wait-for-systemtime-to-catch-up-loop that causes
+			// choppy movement (e.g. every 3rd frame forward 3 times).
+			// But it causes backwards jumps in originally constant movements.
+			// And on HTML5 packets are received while no frames are executed,
+			// which causes the client to overtakes the server and then move
+			// farther away with each packet while being unable to synch back
+			// (backwards warping is not allowed to change startTime).
+			startTime -= (time - lastTime);
+			
 			current = time;
 			lastTime = time;
 			
