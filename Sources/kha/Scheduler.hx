@@ -152,18 +152,6 @@ class Scheduler {
 		while (timeTasksScratchpad.length > 0) {
 			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
 		}
-
-		for (task in outdatedTimeTasks) {
-			if (task.next < time - timeWarpSaveTime) {
-				timeTasksScratchpad.push(task);
-			}
-		}
-		for (task in timeTasksScratchpad) {
-			outdatedTimeTasks.remove(task);
-		}
-		while (timeTasksScratchpad.length > 0) {
-			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
-		}
 	}
 	
 	public static function executeFrame(): Void {
@@ -263,7 +251,20 @@ class Scheduler {
 			}
 		}
 		activeTimeTask = null;
-		
+
+		// Maintain outdated task list
+		for (task in outdatedTimeTasks) {
+			if (task.next < frameEnd - timeWarpSaveTime) {
+				timeTasksScratchpad.push(task);
+			}
+		}
+		for (task in timeTasksScratchpad) {
+			outdatedTimeTasks.remove(task);
+		}
+		while (timeTasksScratchpad.length > 0) {
+			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+		}
+
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
 			if (!stopped && !frameTask.paused && frameTask.active) {
