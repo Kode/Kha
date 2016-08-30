@@ -134,7 +134,7 @@ class Scheduler {
 		if (time < lastTime) {
 			current = time;
 			lastTime = time;
-			trace("warping backward");
+			
 			warpTimeTasksBack(time, outdatedTimeTasks);
 			warpTimeTasksBack(time, timeTasks);
 			
@@ -156,8 +156,7 @@ class Scheduler {
 		else if (time > lastTime) {
 			current = time;
 			lastTime = time;
-			//startTime -= (time - lastTime);
-			trace("warping forward");
+			
 			executeTimeTasks(time);
 		}
 	}
