@@ -179,6 +179,7 @@ class Scheduler {
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
 		if (delta > maxframetime) {
+			startTime += delta - maxframetime;
 			delta = maxframetime;
 			frameEnd += delta;
 		}
