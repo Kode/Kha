@@ -117,7 +117,7 @@ class Scheduler {
 		return stopped;
 	}
 
-	private static function warpTimeTasks(time: Float, tasks: Array<TimeTask>): Void {
+	private static function warpTimeTasksBack(time: Float, tasks: Array<TimeTask>): Void {
 		for (timeTask in tasks) {
 			if (timeTask.start >= time) {
 				timeTask.next = timeTask.start;
@@ -129,28 +129,36 @@ class Scheduler {
 			}
 		}
 	}
-	
-	public static function back(time: Float): Void {
-		if (time >= lastTime) return; // No back to the future
 
-		current = time;
-		lastTime = time;
-		warpTimeTasks(time, outdatedTimeTasks);
-		warpTimeTasks(time, timeTasks);
-		
-		for (task in outdatedTimeTasks) {
-			if (task.next >= time) {
-				timeTasksScratchpad.push(task);
+	public static function warp(time: Float): Void {
+		if (time < lastTime) {
+			current = time;
+			lastTime = time;
+			trace("warping backward");
+			warpTimeTasksBack(time, outdatedTimeTasks);
+			warpTimeTasksBack(time, timeTasks);
+			
+			for (task in outdatedTimeTasks) {
+				if (task.next >= time) {
+					timeTasksScratchpad.push(task);
+				}
+			}
+			for (task in timeTasksScratchpad) {
+				outdatedTimeTasks.remove(task);
+			}
+			for (task in timeTasksScratchpad) {
+				insertSorted(timeTasks, task);
+			}
+			while (timeTasksScratchpad.length > 0) {
+				timeTasksScratchpad.remove(timeTasksScratchpad[0]);
 			}
 		}
-		for (task in timeTasksScratchpad) {
-			outdatedTimeTasks.remove(task);
-		}
-		for (task in timeTasksScratchpad) {
-			insertSorted(timeTasks, task);
-		}
-		while (timeTasksScratchpad.length > 0) {
-			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+		else if (time > lastTime) {
+			current = time;
+			lastTime = time;
+			//startTime -= (time - lastTime);
+			trace("warping forward");
+			executeTimeTasks(time);
 		}
 	}
 	
@@ -160,114 +168,88 @@ class Scheduler {
 		
 		var frameEnd: Float = current;
 		 
-		if (delta < 0) {
-			return;
-		}
-		
-		if (kha.network.Session.the() == null) {
-			//tdif = 1.0 / 60.0; //force fixed frame rate
-			
-			if (delta > maxframetime) {
-				delta = maxframetime;
-				frameEnd += delta;
-			}
-			else {
-				if (vsync) {
-					// this is optimized not to run at exact speed
-					// but to run as fluid as possible
-					var realdif = onedifhz;
-					while (realdif < delta - onedifhz) {
-						realdif += onedifhz;
-					}
-					
-					delta = realdif;
-					for (i in 0...DIF_COUNT - 2) {
-						delta += deltas[i];
-						deltas[i] = deltas[i + 1];
-					}
-					delta += deltas[DIF_COUNT - 2];
-					delta /= DIF_COUNT;
-					deltas[DIF_COUNT - 2] = realdif;
-					
+		if (delta >= 0) {
+			if (kha.network.Session.the() == null) {
+				//tdif = 1.0 / 60.0; //force fixed frame rate
+				
+				if (delta > maxframetime) {
+					delta = maxframetime;
 					frameEnd += delta;
 				}
 				else {
-					for (i in 0...DIF_COUNT - 1) {
-						deltas[i] = deltas[i + 1];
-					}
-					deltas[DIF_COUNT - 1] = delta;
-					
-					var next: Float = 0;
-					for (i in 0...DIF_COUNT) {
-						next += deltas[i];
-					}
-					next /= DIF_COUNT;
-					
-					//delta = interpolated_delta; // average the frame end estimation
-					
-					//lastTime = now;
-					frameEnd += next;
-				}
-			}
-		}
-		else {
-			frameEnd += delta;
-		}
-		
-		lastTime = frameEnd;
-		if (!stopped) { // Stop simulation time
-			current = frameEnd;
-		}
-		
-		// Extend endpoint by paused time (individually paused tasks)
-		for (pausedTask in pausedTimeTasks) {
-			pausedTask.next += delta;
-		}
-
-		if (stopped) {
-			// Extend endpoint by paused time (running tasks)
-			for (timeTask in timeTasks) {
-				timeTask.next += delta;
-			}
-		}
-
-		while (timeTasks.length > 0) {
-			activeTimeTask = timeTasks[0];
-			
-			if (activeTimeTask.next <= frameEnd) {
-				activeTimeTask.next += activeTimeTask.period;
-				timeTasks.remove(activeTimeTask);
-				
-				if (activeTimeTask.active && activeTimeTask.task()) {
-					if (activeTimeTask.period > 0 && (activeTimeTask.duration == 0 || activeTimeTask.duration >= activeTimeTask.start + activeTimeTask.next)) {
-						insertSorted(timeTasks, activeTimeTask);
+					if (vsync) {
+						// this is optimized not to run at exact speed
+						// but to run as fluid as possible
+						var realdif = onedifhz;
+						while (realdif < delta - onedifhz) {
+							realdif += onedifhz;
+						}
+						
+						delta = realdif;
+						for (i in 0...DIF_COUNT - 2) {
+							delta += deltas[i];
+							deltas[i] = deltas[i + 1];
+						}
+						delta += deltas[DIF_COUNT - 2];
+						delta /= DIF_COUNT;
+						deltas[DIF_COUNT - 2] = realdif;
+						
+						frameEnd += delta;
 					}
 					else {
-						archiveTimeTask(activeTimeTask, frameEnd);
+						for (i in 0...DIF_COUNT - 1) {
+							deltas[i] = deltas[i + 1];
+						}
+						deltas[DIF_COUNT - 1] = delta;
+						
+						var next: Float = 0;
+						for (i in 0...DIF_COUNT) {
+							next += deltas[i];
+						}
+						next /= DIF_COUNT;
+						
+						//delta = interpolated_delta; // average the frame end estimation
+						
+						//lastTime = now;
+						frameEnd += next;
 					}
-				}
-				else {
-					activeTimeTask.active = false;
-					archiveTimeTask(activeTimeTask, frameEnd);
 				}
 			}
 			else {
-				break;
+				frameEnd += delta;
 			}
-		}
-		activeTimeTask = null;
+			
+			lastTime = frameEnd;
+			if (!stopped) { // Stop simulation time
+				current = frameEnd;
+			}
+			
+			// Extend endpoint by paused time (individually paused tasks)
+			for (pausedTask in pausedTimeTasks) {
+				pausedTask.next += delta;
+			}
 
-		// Maintain outdated task list
-		for (task in outdatedTimeTasks) {
-			if (task.next < frameEnd - timeWarpSaveTime) {
-				timeTasksScratchpad.push(task);
+			if (stopped) {
+				// Extend endpoint by paused time (running tasks)
+				for (timeTask in timeTasks) {
+					timeTask.next += delta;
+				}
 			}
-		}
-		for (task in timeTasksScratchpad) {
-			outdatedTimeTasks.remove(task);
-		}
-		while (timeTasksScratchpad.length > 0) {
-			timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+
+			executeTimeTasks(frameEnd);
+
+			// Maintain outdated task list
+			for (task in outdatedTimeTasks) {
+				if (task.next < frameEnd - timeWarpSaveTime) {
+					timeTasksScratchpad.push(task);
+				}
+			}
+			for (task in timeTasksScratchpad) {
+				outdatedTimeTasks.remove(task);
+			}
+			while (timeTasksScratchpad.length > 0) {
+				timeTasksScratchpad.remove(timeTasksScratchpad[0]);
+			}
 		}
 
 		sortFrameTasks();
@@ -286,6 +268,34 @@ class Scheduler {
 		while (toDeleteFrame.length > 0) {
 			frameTasks.remove(toDeleteFrame.pop());
 		}
+	}
+
+	private static function executeTimeTasks(until: Float) {
+		while (timeTasks.length > 0) {
+			activeTimeTask = timeTasks[0];
+			
+			if (activeTimeTask.next <= until) {
+				activeTimeTask.next += activeTimeTask.period;
+				timeTasks.remove(activeTimeTask);
+				
+				if (activeTimeTask.active && activeTimeTask.task()) {
+					if (activeTimeTask.period > 0 && (activeTimeTask.duration == 0 || activeTimeTask.duration >= activeTimeTask.start + activeTimeTask.next)) {
+						insertSorted(timeTasks, activeTimeTask);
+					}
+					else {
+						archiveTimeTask(activeTimeTask, until);
+					}
+				}
+				else {
+					activeTimeTask.active = false;
+					archiveTimeTask(activeTimeTask, until);
+				}
+			}
+			else {
+				break;
+			}
+		}
+		activeTimeTask = null;
 	}
 
 	private static function archiveTimeTask(timeTask: TimeTask, frameEnd: Float) {
@@ -439,8 +449,7 @@ class Scheduler {
 		for (timeTask in timeTasks) {
 			if (timeTask.groupId == groupId) {
 				timeTask.active = false;
-				timeTasksScratchpad.push(timeTask);
-				
+				timeTasksScratchpad.push(timeTask);				
 			}
 		}
 		for (timeTask in timeTasksScratchpad) {

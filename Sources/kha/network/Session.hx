@@ -201,7 +201,7 @@ class Session {
 				entity._receive(offset, bytes);
 				offset += entity._size();
 			}
-			Scheduler.back(time);
+			Scheduler.warp(time);
 		case REMOTE_CALL:
 			switch (bytes.get(1)) {
 			case RPC_SERVER:
@@ -242,7 +242,7 @@ class Session {
 					if (i < lastStates.length - 1) {
 						lastStates.splice(i + 1, lastStates.length - i - 1);
 					}
-					Scheduler.back(lastStates[i].time);
+					Scheduler.warp(lastStates[i].time);
 					break;
 				}
 				--i;
