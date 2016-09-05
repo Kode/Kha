@@ -1,4 +1,4 @@
-var project = new Project('Kha');
+var project = new Project('Kha', __dirname);
 
 project.addFiles('Backends/Kore/khacpp/src/**.h', 'Backends/Kore/khacpp/src/**.cpp', 'Backends/Kore/khacpp/include/**.h');
 //'Backends/Kore/khacpp/project/libs/nekoapi/**.cpp'
@@ -103,4 +103,4 @@ if (platform === Platform.Windows) {
 	project.addLib('ws2_32');
 }
 
-return project;
+resolve(project);
