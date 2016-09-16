@@ -104,7 +104,8 @@ class LoaderImpl {
 		
 		request.onreadystatechange = function() {
 			if (request.readyState != 4) return;
-			if (request.status >= 200 && request.status < 400) {
+			if ((request.status >= 200 && request.status < 400) ||
+			    (request.status == 0 && request.statusText == '')) { // Blobs loaded using --allow-file-access-from-files
 				var bytes: Bytes = null;
 				var arrayBuffer = request.response;
 				if (arrayBuffer != null) {
