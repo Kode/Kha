@@ -1058,6 +1058,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	
 	override public function clear(color: Color = null): Void {
+		flush();
 		g.clear(color == null ? Color.Black : color);
 	}
 	
