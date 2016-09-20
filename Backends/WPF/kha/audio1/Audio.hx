@@ -5,7 +5,7 @@ class Audio {
 		return new WpfAudioChannel(cast(sound, kha.wpf.Sound).filename);
 	}
 	
-	//public static function playMusic(music: Music, loop: Bool = false): kha.audio1.MusicChannel {
-	//	return new WpfMusicChannel(cast(music, kha.wpf.Music).filename, loop);
-	//}	
+	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		return new WpfAudioChannel(cast(sound, kha.wpf.Sound).filename);
+	}
 }
