@@ -33,6 +33,8 @@ import kha.math.Vector4;
 import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
+	private var depthTest: Bool = false;
+	private var depthMask: Bool = false;
 	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	private var renderTarget: WebGLImage;
@@ -93,6 +95,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		if (depth != null) {
 			clearMask |= GL.DEPTH_BUFFER_BIT;
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthMask(true);
 			SystemImpl.gl.clearDepth(depth);
 		}
 		if (stencil != null) {
@@ -102,6 +106,13 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.clearStencil(stencil);
 		}
 		SystemImpl.gl.clear(clearMask);
+		if (depthTest) {
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+		}
+		else {
+			SystemImpl.gl.disable(GL.DEPTH_TEST);
+		}
+		SystemImpl.gl.depthMask(depthMask);
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void{
@@ -113,30 +124,39 @@ class Graphics implements kha.graphics4.Graphics {
 		switch (mode) {
 		case Always:
 			write ? SystemImpl.gl.enable(GL.DEPTH_TEST) : SystemImpl.gl.disable(GL.DEPTH_TEST);
+			depthTest = write;
 			SystemImpl.gl.depthFunc(GL.ALWAYS);
 		case Never:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.NEVER);
 		case Equal:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.EQUAL);
 		case NotEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.NOTEQUAL);
 		case Less:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.LESS);
 		case LessEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.LEQUAL);
 		case Greater:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.GREATER);
 		case GreaterEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.GEQUAL);
 		}
 		SystemImpl.gl.depthMask(write);
+		depthMask = write;
 	}
 
 	private static function getBlendFunc(factor: BlendingFactor): Int {
