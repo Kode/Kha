@@ -96,6 +96,7 @@ class OnDestroyRunner implements Runnable {
 	}
 }
 
+@:keep
 class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	@:volatile public static var paused: Bool = true;
 	//private var audio: AudioTrack;
