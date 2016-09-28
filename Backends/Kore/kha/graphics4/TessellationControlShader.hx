@@ -15,9 +15,9 @@ import kha.Blob;
 ')
 
 @:headerClassCode("Kore::Shader* shader;")
-class TesselationControlShader {
+class TessellationControlShader {
 	public function new(source: Blob) {
-		untyped __cpp__('shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::TesselationControlShader);');
+		untyped __cpp__('shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::TessellationControlShader);');
 	}
 	
 	public function delete(): Void {
