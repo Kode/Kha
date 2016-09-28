@@ -70,8 +70,8 @@ class PipelineState extends PipelineStateBase {
 		var include2 = new VertexShader(null);
 		var include3 = new FragmentShader(null);
 		var include4 = new GeometryShader(null);
-		var include5 = new TesselationControlShader(null);
-		var include6 = new TesselationEvaluationShader(null);
+		var include5 = new TessellationControlShader(null);
+		var include6 = new TessellationEvaluationShader(null);
 	}
 	
 	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return null; }

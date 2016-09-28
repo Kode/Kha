@@ -3,12 +3,12 @@ package kha.graphics4;
 import kha.Blob;
 
 #if cpp
-extern class TesselationEvaluationShader {
+extern class TessellationControlShader {
 	public function new(source: Blob);
 	public function delete();
 }
 #else
-class TesselationEvaluationShader {
+class TessellationControlShader {
 	public function new(source: Blob) {
 		
 	}

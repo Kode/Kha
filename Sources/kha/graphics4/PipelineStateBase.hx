@@ -6,8 +6,8 @@ class PipelineStateBase {
 		vertexShader = null;
 		fragmentShader = null;
 		geometryShader = null;
-		tesselationControlShader = null;
-		tesselationEvaluationShader = null;
+		tessellationControlShader = null;
+		tessellationEvaluationShader = null;
 
 		cullMode = CullMode.None;
 
@@ -36,8 +36,8 @@ class PipelineStateBase {
 	public var vertexShader: VertexShader;
 	public var fragmentShader: FragmentShader;
 	public var geometryShader: GeometryShader;
-	public var tesselationControlShader: TesselationControlShader;
-	public var tesselationEvaluationShader: TesselationEvaluationShader;
+	public var tessellationControlShader: TessellationControlShader;
+	public var tessellationEvaluationShader: TessellationEvaluationShader;
 
 	public var cullMode: CullMode;
 
