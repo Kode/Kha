@@ -433,7 +433,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function end(): Void {
 		for (reg in textureRegisterUsed) 
 		{
-	//		context.setTextureAt(reg, null);
+			context.setTextureAt(reg, null);
 		}
 		textureRegisterUsed.length = 0;
 	}
