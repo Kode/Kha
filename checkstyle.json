@@ -23,9 +23,6 @@
 			}
 		},
 		{
-			"type": "TrailingWhitespace"
-		},
-		{
 			"type": "LeftCurly",
 			"props": {
 				"option": "eol",
