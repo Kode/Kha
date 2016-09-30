@@ -9,6 +9,7 @@ import haxe.ds.Vector;
 ')
 
 @:headerClassCode("Kore::Sound* sound;")
+@:keep
 class Sound extends kha.Sound {
 	private var filename: String;
 	
