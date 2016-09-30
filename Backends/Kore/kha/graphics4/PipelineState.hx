@@ -12,6 +12,7 @@ import kha.graphics4.VertexStructure;
 ')
 
 @:headerClassCode("Kore::Program* program;")
+@:keep
 class PipelineState extends PipelineStateBase {
 	public function new() {
 		super();

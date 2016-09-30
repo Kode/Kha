@@ -39,7 +39,7 @@ void post_kore_init();
 void run_kore();
 int init_window(Kore::WindowOptions windowOptions);
 ')
-
+@:keep
 class SystemImpl {
 	public static var needs3d: Bool = false;
 

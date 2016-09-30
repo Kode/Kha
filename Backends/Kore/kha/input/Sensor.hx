@@ -1,5 +1,6 @@
 package kha.input;
 
+@:keep
 class Sensor {
 	private static var accelerometer: Sensor = new Sensor();
 	private static var gyroscope: Sensor = new Sensor();
