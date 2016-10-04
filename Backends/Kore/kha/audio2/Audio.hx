@@ -2,6 +2,7 @@ package kha.audio2;
 
 import kha.Sound;
 
+@:keep
 class Audio {
 	private static var buffer: Buffer;
 

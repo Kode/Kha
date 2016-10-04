@@ -12,6 +12,7 @@ import kha.graphics4.VertexStructure;
 ')
 
 @:headerClassCode("Kore::Program* program;")
+@:keep
 class PipelineState extends PipelineStateBase {
 	public function new() {
 		super();
@@ -26,8 +27,8 @@ class PipelineState extends PipelineStateBase {
 		program->setVertexShader(vertexShader->shader);
 		program->setFragmentShader(fragmentShader->shader);
 		if (geometryShader != null()) program->setGeometryShader(geometryShader->shader);
-		if (tesselationControlShader != null()) program->setTesselationControlShader(tesselationControlShader->shader);
-		if (tesselationEvaluationShader != null()) program->setTesselationEvaluationShader(tesselationEvaluationShader->shader);
+		if (tessellationControlShader != null()) program->setTessellationControlShader(tessellationControlShader->shader);
+		if (tessellationEvaluationShader != null()) program->setTessellationEvaluationShader(tessellationEvaluationShader->shader);
 		Kore::VertexStructure s0, s1, s2, s3;
 		Kore::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
 		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
@@ -106,8 +107,8 @@ class PipelineState extends PipelineStateBase {
 		var include1 = new VertexElement("include", VertexData.Float2);
 		var include2 = new VertexShader(null, null);
 		var include3 = new FragmentShader(null, null);
-		var include4 = new GeometryShader(null);
-		var include5 = new TesselationControlShader(null);
-		var include6 = new TesselationEvaluationShader(null);
+		var include4 = new GeometryShader(null, null);
+		var include5 = new TessellationControlShader(null, null);
+		var include6 = new TessellationEvaluationShader(null, null);
 	}
 }

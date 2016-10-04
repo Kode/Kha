@@ -16,7 +16,7 @@ import kha.Blob;
 
 @:headerClassCode("Kore::Shader* shader;")
 class GeometryShader {
-	public function new(source: Blob) {
+	public function new(source: Blob, file: String) {
 		untyped __cpp__('shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::GeometryShader);');
 	}
 	
