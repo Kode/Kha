@@ -270,9 +270,6 @@ class SystemImpl {
 	private static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
 	
-	private static var fallbackWidth: Int;
-	private static var fallbackHeight: Int;
-	
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		title = options.title;
 		keyboard = new Keyboard();
@@ -280,12 +277,13 @@ class SystemImpl {
 		init2();
 		Scheduler.init();
 		
-		fallbackWidth = options.width;
-		fallbackHeight = options.height;
-		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
 			mainWindow = new MainWindow(title, options.width, options.height);
 			frameworkElement = mainWindow.canvas;
+		}
+		else {
+			frameworkElement.Width = options.width;
+			frameworkElement.Height = options.height;
 		}
 		painter = new kha.wpf.Painter(options.width, options.height);
 		framebuffer = new Framebuffer(0, null, painter, null);
@@ -424,12 +422,12 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 	
-	@:functionCode('return mainWindow == null ? fallbackWidth : (int)mainWindow.canvas.ActualWidth;')
+	@:functionCode('return mainWindow == null ? (int)frameworkElement.Width : (int)mainWindow.canvas.ActualWidth;')
 	public static function windowWidth(windowId: Int = 0): Int {
 		return 0;
 	}
 	
-	@:functionCode('return mainWindow == null ? fallbackHeight : (int)mainWindow.canvas.ActualHeight;')
+	@:functionCode('return mainWindow == null ? (int)frameworkElement.Height : (int)mainWindow.canvas.ActualHeight;')
 	public static function windowHeight(windowId: Int = 0): Int {
 		return 0;
 	}
