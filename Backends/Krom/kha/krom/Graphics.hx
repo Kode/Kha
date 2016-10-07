@@ -99,6 +99,10 @@ class Graphics implements kha.graphics4.Graphics {
 			//TODO: Set render target
 		}
 	}
+	
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: Image): Void {
+		
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 
