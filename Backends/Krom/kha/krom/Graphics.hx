@@ -94,10 +94,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		if (texture != null) {
-			Krom.setTexture(stage, texture.texture_);
-			//TODO: Set render target
-		}
+		Krom.setTexture(stage, texture);
 	}
 	
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: Image): Void {

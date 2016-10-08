@@ -8,7 +8,7 @@ extern class Krom {
     static function setProgram(program: Dynamic): Void;
     static function getConstantLocation(program: Dynamic, name: String): Dynamic;
     static function getTextureUnit(program: Dynamic, name: String): Dynamic;
-    static function setTexture(stage: kha.graphics4.TextureUnit, texture: Dynamic): Void;
+    static function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void;
 	static function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void;
 	static function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void;
 	static function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void;
