@@ -186,6 +186,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function renderTargetsInvertedY(): Bool {
-		return true;
+		return Krom.renderTargetsInvertedY();
 	}
 }

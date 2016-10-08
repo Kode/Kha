@@ -20,6 +20,7 @@ extern class Krom {
     
     static function begin(renderTarget: kha.Image): Void;
     static function end(): Void;
+	static function renderTargetsInvertedY(): Bool;
 	static function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	static function setDepthMode(write: Bool, mode: Int): Void;
     static function createRenderTarget(width: Int, height: Int): Dynamic;
