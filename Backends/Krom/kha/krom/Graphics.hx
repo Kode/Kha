@@ -62,11 +62,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
-
+		Krom.viewport(x, y, width, height);
 	}
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
-
+		Krom.setDepthMode(write, mode.getIndex());
 	}
 
 	private static function getBlendFunc(op: BlendingFactor): Int {
@@ -174,10 +174,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-
-	}
-
-	inline function convertStencilAction(action: StencilAction) {
 
 	}
 
