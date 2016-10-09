@@ -28,6 +28,10 @@ class Image implements Canvas implements Resource {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, 0);
 	}
 
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
@@ -152,6 +156,7 @@ class Image implements Canvas implements Resource {
 
 	public var width(get, null): Int;
 	public var height(get, null): Int;
+	public var depth(get, null): Int;
 
 	//@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
 	public function get_width(): Int {
@@ -161,6 +166,10 @@ class Image implements Canvas implements Resource {
 	//@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
 	public function get_height(): Int {
 		return kore_texture_get_height(_texture);
+	}
+
+	public function get_depth(): Int {
+		return 1;
 	}
 
 	public var realWidth(get, null): Int;

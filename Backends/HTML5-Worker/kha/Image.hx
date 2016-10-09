@@ -24,6 +24,10 @@ class Image implements Canvas implements Resource {
 		if (usage == null) usage = Usage.StaticUsage;
 		return null;
 	}
+
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
@@ -57,6 +61,8 @@ class Image implements Canvas implements Resource {
 	private function get_width(): Int { return w; }
 	public var height(get, null): Int;
 	private function get_height(): Int { return h; }
+	public var depth(get, null): Int;
+	private function get_depth(): Int { return 1; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return rw; }
 	public var realHeight(get, null): Int;
