@@ -20,6 +20,10 @@ class Image implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format);
 	}
+
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 	
 	@:functionCode('
 		global::System.Windows.Media.Imaging.RenderTargetBitmap image = new global::System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96, 96, global::System.Windows.Media.PixelFormats.Pbgra32);
@@ -78,6 +82,12 @@ class Image implements Resource {
 	
 	public function get_height(): Int {
 		return myHeight;
+	}
+
+	public var depth(get, null): Int;
+
+	public function get_depth(): Int {
+		return 1;
 	}
 	
 	public var realWidth(get, null): Int;
