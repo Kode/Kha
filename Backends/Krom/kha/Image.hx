@@ -60,7 +60,7 @@ class Image implements Canvas implements Resource {
 	public var height(get, null): Int;
 	private function get_height(): Int { return texture_ == null ? renderTarget_.height : texture_.height; }
 	public var depth(get, null): Int;
-	private function get_depth(): { return 1; }
+	private function get_depth(): Int { return 1; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return texture_ == null ? renderTarget_.width : texture_.realWidth; }
 	public var realHeight(get, null): Int;
