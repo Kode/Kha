@@ -37,6 +37,10 @@ class System {
 		renderListeners[id].push(listener);
 	}
 
+	public static function removeRenderListener(listener: Framebuffer -> Void, id: Int = 0): Void {
+		renderListeners[id].remove(listener);
+	}
+
 	public static function notifyOnApplicationState(foregroundListener: Void -> Void, resumeListener: Void -> Void,	pauseListener: Void -> Void, backgroundListener: Void-> Void, shutdownListener: Void -> Void): Void {
 		if (foregroundListener != null) foregroundListeners.push(foregroundListener);
 		if (resumeListener != null) resumeListeners.push(resumeListener);
