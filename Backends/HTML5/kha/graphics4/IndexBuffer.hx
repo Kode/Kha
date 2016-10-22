@@ -28,7 +28,8 @@ class IndexBuffer {
 	
 	public function unlock(): Void {
 		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, cast new Uint16Array(data), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new Uint16Array(data) : new js.html.Uint32Array(data);
+		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, glData, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
 	public function set(): Void {

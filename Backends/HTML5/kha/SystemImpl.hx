@@ -34,6 +34,7 @@ class SystemImpl {
 	public static var anisotropicFilter: Dynamic;
 	public static var depthTexture: Dynamic;
 	public static var drawBuffers: Dynamic;
+	public static var elementIndexUint: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
@@ -281,6 +282,7 @@ class SystemImpl {
 				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
 				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
+				elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
 				gl = true;
 				Shaders.init();
 			}
