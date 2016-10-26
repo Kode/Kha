@@ -35,4 +35,8 @@ class IndexBuffer {
 	public function set(): Void {
 		current = this;
 	}
+	
+	public function delete(): Void {
+		indexBuffer.dispose();
+	}
 }
