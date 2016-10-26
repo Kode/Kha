@@ -84,4 +84,8 @@ class VertexBuffer {
 		}
 		for (i in index...8) kha.flash.graphics4.Graphics.context.setVertexBufferAt(i, null);
 	}
+	
+	public function delete(): Void {
+		vertexBuffer.dispose();
+	}
 }
