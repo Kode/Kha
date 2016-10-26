@@ -111,4 +111,8 @@ class PipelineState extends PipelineStateBase {
 			}
 		}
 	}
+	
+	public function delete(): Void {
+		program.dispose();
+	}
 }
