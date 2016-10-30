@@ -141,6 +141,6 @@ class System {
 	}
 
 	public static function loadUrl(url: String): Void {
-
+		SystemImpl.loadUrl(url);
 	}
 }
