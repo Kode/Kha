@@ -1,5 +1,7 @@
 package kha;
 
+import android.content.Intent;
+import android.net.Uri;
 import com.ktxsoftware.kha.KhaActivity;
 import kha.android.Graphics;
 import kha.android.Keyboard;
@@ -303,5 +305,10 @@ class SystemImpl {
 
 	public static function setKeepScreenOn(on: Bool): Void {
 
+	}
+		
+	public static function loadUrl(url: String): Void {
+		var i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+		KhaActivity.the().startActivity(i);
 	}
 }
