@@ -138,6 +138,10 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 		
 	}
+
+	public static function loadUrl(url: String): Void {
+		
+	}
 	
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.types.Bytes, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }

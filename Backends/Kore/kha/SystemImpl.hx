@@ -666,4 +666,8 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");
 	}
+	
+	public static function loadUrl(url: String): Void {
+		
+	}
 }

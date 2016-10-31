@@ -121,4 +121,8 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 		
 	}
+
+	public static function loadUrl(url: String): Void {
+		
+	}
 }
