@@ -2,6 +2,7 @@ package kha;
 
 import flash.display.StageScaleMode;
 import flash.display3D.Context3DProfile;
+import flash.net.URLRequest;
 import flash.system.Capabilities;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.input.Keyboard;
@@ -331,4 +332,9 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 		
 	}
+
+	public static function loadUrl(url: String): Void {
+		Lib.getURL(new URLRequest(url), "_blank");
+	}
+	
 }
