@@ -12,6 +12,8 @@ extern class Image implements Canvas implements Resource {
 
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage): Image;
 
+	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void): Void {
+
 	// Create a new image instance and set things up so you can render to the image.
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1): Image;
 	
