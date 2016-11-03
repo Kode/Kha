@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 import kha.kore.graphics4.TextureUnit;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
@@ -44,7 +45,12 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
-		errorCallback('not implemented');
+		var image = new Image(readable);
+		var filename = '_.$fileExtention';
+		var isFloat = StringTools.endsWith(filename, ".hdr");
+		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.initFromBytes(bytes.getData(), filename);
+		doneCallback(image);
 	}	
 
 	private function new(readable: Bool) {
@@ -143,6 +149,10 @@ class Image implements Canvas implements Resource {
 	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 
+	}
+
+	@:functionCode('Kore::Image::setNullFilenameData(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, filename.c_str()); texture = new Kore::Texture(nullptr, readable);')
+	private function initFromBytes(bytes:BytesData, filename:String) {
 	}
 
 	public var g1(get, null): kha.graphics1.Graphics;
