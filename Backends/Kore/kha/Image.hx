@@ -43,7 +43,7 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void): Void {
+	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
 		errorCallback('not implemented');
 	}	
 

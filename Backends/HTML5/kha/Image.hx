@@ -52,10 +52,10 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
-	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void): Void {
+	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
 		var dataUrl = "data:image;base64," + haxe.crypto.Base64.encode(bytes);
 		var imageElement = cast(js.Browser.document.createElement('img'), ImageElement);
-		imageElement.onload = function() doneCallback(fromImage(imageElement, false));
+		imageElement.onload = function() doneCallback(fromImage(imageElement, readable));
 		imageElement.onerror = function() errorCallback("Image was not created");
 		imageElement.src = dataUrl;
 	}
