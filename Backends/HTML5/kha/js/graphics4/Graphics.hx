@@ -469,7 +469,8 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
-			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2, instanceCount);
+			var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
+			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * 2, instanceCount);
 		}
 	}
 
