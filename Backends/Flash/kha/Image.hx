@@ -45,7 +45,7 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
+	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
 		function handleError(e:flash.events.Event) errorCallback(e.toString());
 		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, function(_) doneCallback(Image.fromBitmap(loader.content, readable)));

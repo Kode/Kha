@@ -44,12 +44,12 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public static function fromFileBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
+	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
 		var image = new Image(readable);
 		var filename = '_.$fileExtention';
 		var isFloat = StringTools.endsWith(filename, ".hdr");
 		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
-		var errMsg = image.initFromBytes(bytes.getData(), filename);
+		var errMsg = image.initFromEncodedBytes(bytes.getData(), filename);
 		if(errMsg == null) {
 			doneCallback(image);
 		}
@@ -167,7 +167,7 @@ class Image implements Canvas implements Resource {
 			return ::String(msg);
 		}
 	')
-	private function initFromBytes(bytes:BytesData, filename:String):Null<String> {
+	private function initFromEncodedBytes(bytes:BytesData, filename:String):Null<String> {
 		return null;
 	}
 
