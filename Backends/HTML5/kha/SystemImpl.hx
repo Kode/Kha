@@ -602,6 +602,9 @@ class SystemImpl {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
 		
+		event.stopPropagation();
+		event.preventDefault();
+		
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
