@@ -1,5 +1,5 @@
 extern class Krom {
-    static function clear(): Void;
+    static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
     
     static function createVertexShader(data: haxe.io.BytesData, name: String): Dynamic;
     static function createFragmentShader(data: haxe.io.BytesData, name: String): Dynamic;

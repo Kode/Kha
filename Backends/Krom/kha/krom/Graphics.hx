@@ -58,7 +58,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
-        Krom.clear();
+		var flags: Int = 0;
+		if (color != null) flags |= 1;
+		if (depth != null) flags |= 2;
+		if (stencil != null) flags |= 4;
+        Krom.clear(flags, color == null ? 0 : color.value, depth, stencil);
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
