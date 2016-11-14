@@ -33,6 +33,8 @@ import kha.math.Vector4;
 import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
+	private var depthTest: Bool = false;
+	private var depthMask: Bool = false;
 	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
 	private var renderTarget: WebGLImage;
@@ -93,6 +95,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		if (depth != null) {
 			clearMask |= GL.DEPTH_BUFFER_BIT;
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			SystemImpl.gl.depthMask(true);
 			SystemImpl.gl.clearDepth(depth);
 		}
 		if (stencil != null) {
@@ -102,6 +106,13 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.clearStencil(stencil);
 		}
 		SystemImpl.gl.clear(clearMask);
+		if (depthTest) {
+			SystemImpl.gl.enable(GL.DEPTH_TEST);
+		}
+		else {
+			SystemImpl.gl.disable(GL.DEPTH_TEST);
+		}
+		SystemImpl.gl.depthMask(depthMask);
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void{
@@ -112,31 +123,40 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
-			SystemImpl.gl.disable(GL.DEPTH_TEST);
+			write ? SystemImpl.gl.enable(GL.DEPTH_TEST) : SystemImpl.gl.disable(GL.DEPTH_TEST);
+			depthTest = write;
 			SystemImpl.gl.depthFunc(GL.ALWAYS);
 		case Never:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.NEVER);
 		case Equal:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.EQUAL);
 		case NotEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.NOTEQUAL);
 		case Less:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.LESS);
 		case LessEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.LEQUAL);
 		case Greater:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.GREATER);
 		case GreaterEqual:
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
+			depthTest = true;
 			SystemImpl.gl.depthFunc(GL.GEQUAL);
 		}
 		SystemImpl.gl.depthMask(write);
+		depthMask = write;
 	}
 
 	private static function getBlendFunc(factor: BlendingFactor): Int {
@@ -310,10 +330,10 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.disable(GL.CULL_FACE);
 		case Clockwise:
 			SystemImpl.gl.enable(GL.CULL_FACE);
-			SystemImpl.gl.cullFace(GL.FRONT);
+			SystemImpl.gl.cullFace(GL.BACK);
 		case CounterClockwise:
 			SystemImpl.gl.enable(GL.CULL_FACE);
-			SystemImpl.gl.cullFace(GL.BACK);
+			SystemImpl.gl.cullFace(GL.FRONT);
 		}
 	}
 
@@ -376,7 +396,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2);
+		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
+		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * 2);
 	}
 
 	private function convertStencilAction(action: StencilAction) {
@@ -448,7 +469,8 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
-			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, GL.UNSIGNED_SHORT, start * 2, instanceCount);
+			var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
+			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * 2, instanceCount);
 		}
 	}
 

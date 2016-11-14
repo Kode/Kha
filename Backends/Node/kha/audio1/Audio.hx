@@ -1,14 +1,14 @@
 package kha.audio1;
 
-import kha.Music;
 import kha.Sound;
 
 class Audio {
-	public static function playSound(sound: Sound): SoundChannel {
-		return new NodeSoundChannel();
+	
+	public static function play(sound: Sound, loop: Bool = false): AudioChannel {
+		return new NodeAudioChannel();
 	}
 
-	public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
-		return new NodeMusicChannel();
+	public static function stream(sound: Sound, loop: Bool = false): AudioChannel {
+		return new NodeAudioChannel();
 	}
 }

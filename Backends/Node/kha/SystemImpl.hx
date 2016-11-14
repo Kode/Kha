@@ -3,6 +3,7 @@ package kha;
 import js.Browser;
 import js.html.CanvasElement;
 import js.Node;
+import kha.System.SystemOptions;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
@@ -15,12 +16,28 @@ class SystemImpl {
 	private static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
 	private static var width: Int;
 	private static var height: Int;
+
+	private static inline var networkSendRate = 0.05;
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void): Void {
-		SystemImpl.width = width;
-		SystemImpl.height = height;
+	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		SystemImpl.width = options.width;
+		SystemImpl.height = options.height;
 		init2();
 		callback();
+	}
+	
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		trace('initEx is not supported on the node target, running init() with first window options');
+
+		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+
+		if (windowCallback != null) {
+			windowCallback(0);
+		}
+	}
+	
+	public static function changeResolution(width: Int, height: Int): Void {
+
 	}
 	
 	public static function _updateSize(width: Int, height: Int): Void {
@@ -37,12 +54,16 @@ class SystemImpl {
 		return cast(time[0], Float) + cast(time[1], Float) / 1000000000;
 	}
 	
-	public static function getPixelWidth(): Int {
+	public static function windowWidth(id: Int): Int {
 		return width;
 	}
 	
-	public static function getPixelHeight(): Int {
+	public static function windowHeight(id: Int): Int {
 		return height;
+	}
+
+	public static function screenDpi(): Int {
+		return 96;
 	}
 	
 	public static function getScreenRotation(): ScreenRotation {
@@ -83,18 +104,16 @@ class SystemImpl {
 		Scheduler.init();
 
 		Shaders.init();
-		frame = new Framebuffer(new EmptyGraphics1(width, height), new EmptyGraphics2(width, height), new EmptyGraphics4(width, height));
+		frame = new Framebuffer(0, new EmptyGraphics1(width, height), new EmptyGraphics2(width, height), new EmptyGraphics4(width, height));
 		Scheduler.start();
 		
 		lastTime = Scheduler.time();
 		run();
+		synch();
 	}
 	
 	private static function run() {
 		Scheduler.executeFrame();
-		if (Session.the() != null) {
-			Session.the().update();
-		}
 		var time = Scheduler.time();
 		if (time >= lastTime + 10) {
 			lastTime += 10;
@@ -103,7 +122,20 @@ class SystemImpl {
 		Node.setTimeout(run, 0);
 	}
 	
+	private static function synch() {
+		if (Session.the() != null) {
+			Session.the().update();
+		}
+		Node.setTimeout(synch, Std.int(networkSendRate * 1000));
+	}
+	
+	public static function getKeyboard(num: Int): Keyboard {
+		if (num != 0) return null;
+		return keyboard;
+	}
+	
 	public static function getMouse(num: Int): Mouse {
+		if (num != 0) return null;
 		return mouse;
 	}
 
@@ -157,6 +189,10 @@ class SystemImpl {
 	}
 	
 	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
+
+	public static function loadUrl(url: String): Void {
 		
 	}
 }

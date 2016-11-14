@@ -112,19 +112,19 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		return this;
 	}
 
-	private function get_Rb(): Int {
+	private inline function get_Rb(): Int {
 		return (this & 0x00ff0000) >>> 16;
 	}
 	
-	private function get_Gb(): Int {
+	private inline function get_Gb(): Int {
 		return (this & 0x0000ff00) >>> 8;
 	}
 	
-	private function get_Bb(): Int {
+	private inline function get_Bb(): Int {
 		return this & 0x000000ff;
 	}
 	
-	private function get_Ab(): Int {
+	private inline function get_Ab(): Int {
 		return this >>> 24;
 	}
 

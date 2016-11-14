@@ -8,7 +8,8 @@ extern class Krom {
     static function setProgram(program: Dynamic): Void;
     static function getConstantLocation(program: Dynamic, name: String): Dynamic;
     static function getTextureUnit(program: Dynamic, name: String): Dynamic;
-    static function setTexture(stage: kha.graphics4.TextureUnit, texture: Dynamic): Void;
+    static function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void;
+	static function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
 	static function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void;
 	static function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void;
 	static function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void;
@@ -19,6 +20,9 @@ extern class Krom {
     
     static function begin(renderTarget: kha.Image): Void;
     static function end(): Void;
+	static function renderTargetsInvertedY(): Bool;
+	static function viewport(x: Int, y: Int, width: Int, height: Int): Void;
+	static function setDepthMode(write: Bool, mode: Int): Void;
     static function createRenderTarget(width: Int, height: Int): Dynamic;
     static function createIndexBuffer(count: Int): Dynamic;
     static function setIndices(buffer: Dynamic, indices: Array<Int>): Void;

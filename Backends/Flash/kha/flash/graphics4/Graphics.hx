@@ -47,6 +47,8 @@ import kha.math.Vector4;
 class Graphics implements kha.graphics4.Graphics {
 	public static var context: Context3D;
 	private var target: Image;
+	
+	private var textureRegisterUsed:Vector<Int>;
 
 	public static function initContext(context: Context3D): Void {
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
@@ -55,6 +57,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function new(target: Image = null) {
 		this.target = target;
+		textureRegisterUsed = new Vector();
 	}
 
 	public function flush(): Void {
@@ -274,6 +277,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+		textureRegisterUsed.push(cast(unit, TextureUnit).unit);
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
 	
@@ -427,6 +431,10 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
-
+		for (reg in textureRegisterUsed) 
+		{
+			context.setTextureAt(reg, null);
+		}
+		textureRegisterUsed.length = 0;
 	}
 }

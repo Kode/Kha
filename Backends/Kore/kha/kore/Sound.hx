@@ -9,6 +9,7 @@ import haxe.ds.Vector;
 ')
 
 @:headerClassCode("Kore::Sound* sound;")
+@:keep
 class Sound extends kha.Sound {
 	private var filename: String;
 	
@@ -23,16 +24,16 @@ class Sound extends kha.Sound {
 			if (sound->format.bitsPerSample == 8) {
 				this->_createData(sound->size * 2);
 				for (int i = 0; i < sound->size; ++i) {
-					uncompressedData[i * 2 + 0] = sound->data[i] / 255.0 * 2.0 - 1.0;
-					uncompressedData[i * 2 + 1] = sound->data[i] / 255.0 * 2.0 - 1.0;
+					uncompressedData[i * 2 + 0] = sound->left[i] / 255.0 * 2.0 - 1.0;
+					uncompressedData[i * 2 + 1] = sound->left[i] / 255.0 * 2.0 - 1.0;
 				}
 			}
 			else if (sound->format.bitsPerSample == 16) {
 				this->_createData(sound->size);
-				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
+				Kore::s16* left = (Kore::s16*)&sound->left[0];
 				for (int i = 0; i < sound->size / 2; ++i) {
-					uncompressedData[i * 2 + 0] = sdata[i] / 32767.0;
-					uncompressedData[i * 2 + 1] = sdata[i] / 32767.0;
+					uncompressedData[i * 2 + 0] = left[i] / 32767.0;
+					uncompressedData[i * 2 + 1] = left[i] / 32767.0;
 				}
 			}
 			else {
@@ -42,15 +43,18 @@ class Sound extends kha.Sound {
 		else {
 			if (sound->format.bitsPerSample == 8) {
 				this->_createData(sound->size);
-				for (int i = 0; i < sound->size; ++i) {
-					uncompressedData[i] = sound->data[i] / 255.0 * 2.0 - 1.0;
+				for (int i = 0; i < sound->size; i += 2) {
+					uncompressedData[i] = sound->left[i / 2] / 255.0 * 2.0 - 1.0;
+					uncompressedData[i + 1] = sound->right[i / 2 + 1] / 255.0 * 2.0 - 1.0;
 				}
 			}
 			else if (sound->format.bitsPerSample == 16) {
 				this->_createData(sound->size / 2);
-				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
-				for (int i = 0; i < sound->size / 2; ++i) {
-					uncompressedData[i] = sdata[i] / 32767.0;
+				Kore::s16* left = (Kore::s16*)&sound->right[0];
+				Kore::s16* right = (Kore::s16*)&sound->right[0];
+				for (int i = 0; i < sound->size / 2; i += 2) {
+					uncompressedData[i] = left[i / 2] / 32767.0;
+					uncompressedData[i + 1] = right[i / 2 + 1] / 32767.0;
 				}
 			}
 			else {

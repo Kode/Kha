@@ -277,12 +277,13 @@ class SystemImpl {
 		init2();
 		Scheduler.init();
 		
-		//Sys.pixelWidth = gameToStart.width = Loader.the.width;
-		//Sys.pixelHeight = gameToStart.height = Loader.the.height;
-		// TODO: Clean exit with error message if width and heiht is invalid (e.g. error: width and height must be set in project.kha)
 		if (openWindow) {
 			mainWindow = new MainWindow(title, options.width, options.height);
 			frameworkElement = mainWindow.canvas;
+		}
+		else {
+			frameworkElement.Width = options.width;
+			frameworkElement.Height = options.height;
 		}
 		painter = new kha.wpf.Painter(options.width, options.height);
 		framebuffer = new Framebuffer(0, null, painter, null);
@@ -421,16 +422,20 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 	
-	@:functionCode('return (int)mainWindow.canvas.ActualWidth;')
+	@:functionCode('return mainWindow == null ? (int)frameworkElement.Width : (int)mainWindow.canvas.ActualWidth;')
 	public static function windowWidth(windowId: Int = 0): Int {
 		return 0;
 	}
 	
-	@:functionCode('return (int)mainWindow.canvas.ActualHeight;')
+	@:functionCode('return mainWindow == null ? (int)frameworkElement.Height : (int)mainWindow.canvas.ActualHeight;')
 	public static function windowHeight(windowId: Int = 0): Int {
 		return 0;
 	}
 	
+	public static function screenDpi(): Int {
+		return 96;
+	}
+
 	public static function getSystemId(): String {
 		return "WPF";
 	}
@@ -471,6 +476,10 @@ class SystemImpl {
 	}
 	
 	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
+
+	public static function loadUrl(url: String): Void {
 		
 	}
 }

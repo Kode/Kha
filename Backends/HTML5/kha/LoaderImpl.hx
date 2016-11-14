@@ -42,7 +42,9 @@ class LoaderImpl {
 	public static function getSoundFormats(): Array<String> {
 		var element = Browser.document.createAudioElement();
 		var formats = new Array<String>();
+		#if !sys_debug_html5
 		if (element.canPlayType("audio/mp4") != "") formats.push("mp4");
+		#end
 		if (SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
 		return formats;
 	}
@@ -50,6 +52,7 @@ class LoaderImpl {
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
 		if (SystemImpl._hasWebAudio) {
 			var element = Browser.document.createAudioElement();
+			#if !sys_debug_html5
 			if (element.canPlayType("audio/mp4") != "") {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];
@@ -59,6 +62,7 @@ class LoaderImpl {
 					}
 				}
 			}
+			#end
 			for (i in 0...desc.files.length) {
 				var file: String = desc.files[i];
 				if (file.endsWith(".ogg")) {
@@ -71,7 +75,11 @@ class LoaderImpl {
 	}
 	
 	public static function getVideoFormats(): Array<String> {
+		#if sys_debug_html5
+		return ["webm"];
+		#else
 		return ["mp4", "webm"];
+		#end
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
@@ -82,7 +90,7 @@ class LoaderImpl {
 		#if sys_debug_html5
 		var fs = untyped __js__("require('fs')");
         var path = untyped __js__("require('path')");
-        var app = untyped __js__("require('remote').require('app')");
+        var app = untyped __js__("require('electron').remote.require('electron').app");
         fs.readFile(path.join(app.getAppPath(), desc.files[0]), function (err, data) {
 			var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
             var bytes = Bytes.alloc(byteArray.byteLength);
@@ -96,7 +104,8 @@ class LoaderImpl {
 		
 		request.onreadystatechange = function() {
 			if (request.readyState != 4) return;
-			if (request.status >= 200 && request.status < 400) {
+			if ((request.status >= 200 && request.status < 400) ||
+			    (request.status == 0 && request.statusText == '')) { // Blobs loaded using --allow-file-access-from-files
 				var bytes: Bytes = null;
 				var arrayBuffer = request.response;
 				if (arrayBuffer != null) {

@@ -1,5 +1,5 @@
-var project = new Project('MultiWindow');
+let project = new Project('MultiWindow');
 
 project.addSources('Sources');
 
-return project;
+resolve(project);

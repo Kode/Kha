@@ -28,6 +28,10 @@ class Image implements Canvas implements Resource {
 		create2(img, width, height, format == TextureFormat.L8 ? 0 : 1);
 		return img;
 	}
+
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		var img = new Image(null);
@@ -70,6 +74,7 @@ class Image implements Canvas implements Resource {
 	
 	public var width(get, null): Int;
 	public var height(get, null): Int;
+	public var depth(get, null): Int;
 
 	@:functionCode('
 		return image.getWidth(null);
@@ -83,6 +88,10 @@ class Image implements Canvas implements Resource {
 	')
 	public function get_height(): Int {
 		return 0;
+	}
+
+	public function get_depth(): Int {
+		return 1;
 	}
 	
 	public var realWidth(get, null): Int;

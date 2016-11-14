@@ -1,4 +1,4 @@
-var project = new Project('Kha');
+var project = new Project('Kha', __dirname);
 
 project.addFiles('Backends/Kore/khacpp/src/**.h', 'Backends/Kore/khacpp/src/**.cpp', 'Backends/Kore/khacpp/include/**.h');
 //'Backends/Kore/khacpp/project/libs/nekoapi/**.cpp'
@@ -58,6 +58,9 @@ if (platform == Platform.iOS) {
 	project.addDefine('IPHONE');
 	project.addDefine('HX_IPHONE');
 }
+if (platform === Platform.tvOS) {
+	project.addDefine('APPLETV');
+}
 if (platform == Platform.Android) {
 	project.addDefine('ANDROID');
 	project.addDefine('_ANDROID');
@@ -100,4 +103,4 @@ if (platform === Platform.Windows) {
 	project.addLib('ws2_32');
 }
 
-return project;
+resolve(project);

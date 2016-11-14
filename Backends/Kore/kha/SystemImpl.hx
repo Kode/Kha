@@ -39,7 +39,7 @@ void post_kore_init();
 void run_kore();
 int init_window(Kore::WindowOptions windowOptions);
 ')
-
+@:keep
 class SystemImpl {
 	public static var needs3d: Bool = false;
 
@@ -66,6 +66,10 @@ class SystemImpl {
 
 	public static function windowHeight(windowId: Int): Int {
 		return untyped __cpp__('Kore::System::windowHeight(windowId)');
+	}
+	
+	public static function screenDpi(): Int {
+		return untyped __cpp__('Kore::System::screenDpi()');
 	}
 
 	public static function getVsync(): Bool {
@@ -661,5 +665,9 @@ class SystemImpl {
 
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");
+	}
+	
+	public static function loadUrl(url: String): Void {
+		
 	}
 }

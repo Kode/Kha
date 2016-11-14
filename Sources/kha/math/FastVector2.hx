@@ -50,4 +50,9 @@ class FastVector2 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+	
+	public function toString()
+	{
+		return 'FastVector2($x, $y)';
+	}
 }

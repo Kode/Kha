@@ -3,20 +3,20 @@ package kha.network;
 import haxe.io.Bytes;
 #if sys_server
 import js.node.Buffer;
-import js.node.Dgram.DgramSocket;
-import js.support.Error;
+import js.node.Dgram;
 #end
 
 class UdpClient implements Client {
 	private var myId: Int;
+	public var onReceive: Bytes->Void = null;
 	#if sys_server
-	private var socket: DgramSocket;
+	private var socket: Dynamic;
 	#end
 	private var address: String;
 	private var port: Int;
 
 	#if sys_server
-	public function new(id: Int, socket: DgramSocket, address: String, port: Int) {
+	public function new(id: Int, socket: Dynamic, address: String, port: Int) {
 		myId = id;
 		this.socket = socket;
 		this.address = address;
@@ -30,14 +30,12 @@ class UdpClient implements Client {
 		for (i in 0...bytes.length) {
 			buffer[i] = bytes.get(i);
 		}
-		socket.send(buffer, 0, bytes.length, port, address, function (error: Error) {
-			
-		});
+		socket.send(buffer, 0, bytes.length, port, address);
 		#end
 	}
 	
 	public function receive(receiver: Bytes->Void): Void {
-		
+		onReceive = receiver;
 	}
 	
 	public function onClose(close: Void->Void): Void {

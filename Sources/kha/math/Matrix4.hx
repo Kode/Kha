@@ -117,7 +117,7 @@ class Matrix4 {
 	}
 
 	public static function perspectiveProjection(fovY: Float, aspect: Float, zn: Float, zf: Float): Matrix4 {
-		var uh = 1.0 / Math.tan((fovY / 2) * (Math.PI / 180));
+		var uh = 1.0 / Math.tan(fovY / 2);
 		var uw = uh / aspect;
 		return new Matrix4(
 			uw, 0, 0, 0,

@@ -62,11 +62,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
-
+		Krom.viewport(x, y, width, height);
 	}
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
-
+		Krom.setDepthMode(write, mode.getIndex());
 	}
 
 	private static function getBlendFunc(op: BlendingFactor): Int {
@@ -94,10 +94,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		if (texture != null) {
-			Krom.setTexture(stage, texture.texture_);
-			//TODO: Set render target
-		}
+		Krom.setTexture(stage, texture);
+	}
+	
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: Image): Void {
+		
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -105,7 +106,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-
+		Krom.setTextureParameters(texunit, uAddressing.getIndex(), vAddressing.getIndex(), minificationFilter.getIndex(), magnificationFilter.getIndex(), mipmapFilter.getIndex());
 	}
 
 	public function setCullMode(mode: CullMode): Void {
@@ -176,10 +177,6 @@ class Graphics implements kha.graphics4.Graphics {
 
 	}
 
-	inline function convertStencilAction(action: StencilAction) {
-
-	}
-
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 
 	}
@@ -189,6 +186,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function renderTargetsInvertedY(): Bool {
-		return true;
+		return Krom.renderTargetsInvertedY();
 	}
 }

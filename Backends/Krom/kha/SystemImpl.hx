@@ -103,6 +103,10 @@ class SystemImpl {
 		return 768;
 	}
 	
+	public static function screenDpi(): Int {
+		return 96;
+	}
+	
 	public static function getVsync(): Bool {
 		return true;
 	}
@@ -185,6 +189,10 @@ class SystemImpl {
 	}
 	
 	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
+
+	public static function loadUrl(url: String): Void {
 		
 	}
 }

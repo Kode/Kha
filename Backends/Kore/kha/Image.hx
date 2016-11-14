@@ -31,6 +31,10 @@ class Image implements Canvas implements Resource {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, 0);
 	}
 
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return create3(width, height, depth, format == null ? TextureFormat.RGBA32 : format, false, 0);
+	}
+
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
@@ -77,12 +81,30 @@ class Image implements Canvas implements Resource {
 			case Depth32Stencil8: 8;
 		}
 	}
+	
+	private static function getTextureFormat(format: TextureFormat): Int {
+		switch (format) {
+			case RGBA32:
+				return 0;
+			case RGBA128:
+				return 3;
+			default:
+				return 1;
+		}
+	}
 
 	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): Image {
 		var image = new Image(readable);
 		image.format = format;
 		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
-		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		else image.init(width, height, getTextureFormat(format));
+		return image;
+	}
+
+	public static function create3(width: Int, height: Int, depth: Int, format: TextureFormat, readable: Bool, contextId: Int): Image {
+		var image = new Image(readable);
+		image.format = format;
+		image.init3D(width, height, depth, getTextureFormat(format));
 		return image;
 	}
 
@@ -93,6 +115,11 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format, readable); renderTarget = nullptr;')
 	private function init(width: Int, height: Int, format: Int): Void {
+
+	}
+
+	@:functionCode('texture = new Kore::Texture(width, height, depth, (Kore::Image::Format)format, readable); renderTarget = nullptr;')
+	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
 
 	}
 
@@ -156,6 +183,7 @@ class Image implements Canvas implements Resource {
 
 	public var width(get, null): Int;
 	public var height(get, null): Int;
+	public var depth(get, null): Int;
 
 	@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
 	public function get_width(): Int {
@@ -164,6 +192,11 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
 	public function get_height(): Int {
+		return 0;
+	}
+
+	@:functionCode("if (texture != nullptr) return texture->depth; else return 0;")
+	public function get_depth(): Int {
 		return 0;
 	}
 

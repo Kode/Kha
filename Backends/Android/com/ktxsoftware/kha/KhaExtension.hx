@@ -6,6 +6,9 @@ class KhaExtension {
 	public function new() {
 	}
 
+	public function onStart() {
+	}
+
 	public function onPause() {		
 	}
 

@@ -1,16 +1,57 @@
 package kha.network;
 
 import haxe.macro.Context;
+import haxe.macro.Expr;
 import haxe.macro.Expr.Field;
 
 class SyncBuilder {
+	public static var nextId: Int = 0;
+	public static var objects: Array<Dynamic> = new Array<Dynamic>();
+
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
+		var isBaseEntity = false;
+		for (i in Context.getLocalClass().get().interfaces) {
+			var intf = i.t.get();
+			if (intf.module == "kha.network.Sync") {
+				isBaseEntity = true;
+				break;
+			}
+		}
+		
 		for (field in fields) {
+			if (field.name == "new") {
+				switch (field.kind) {
+				case FFun(f):
+					var cexpr = f.expr;
+					cexpr = macro @:mergeBlock {
+						$cexpr;
+						kha.network.SyncBuilder.objects[_syncId()] = this;
+					}
+					f.expr = cexpr;
+					continue;
+				default:
+				}
+			}
+
 			var synced = false;
+			// TODO: Avoid hardcoding the target ids
+			var target = 0;//kha.network.Session.RPC_SERVER;
+			var isStatic = field.access.lastIndexOf(AStatic) >= 0;
 			for (meta in field.meta) {
 				if (meta.name == "sync" || meta.name == "synced") {
+					// TODO: Figure out if there is a "nicer" way to do this
+					for (param in meta.params) {
+						if (param.expr.equals(EConst(CString("server")))) {
+							target = 0;//kha.network.Session.RPC_SERVER;
+							break;
+						}
+						else if (param.expr.equals(EConst(CString("all")))) {
+							target = 1;//kha.network.Session.RPC_ALL;
+							break;
+						}
+					}
 					synced = true;
 					break;
 				}
@@ -20,9 +61,8 @@ class SyncBuilder {
 			switch (field.kind) {
 			case FFun(f):
 				var original = f.expr;
-				#if sys_server
 				
-				var size = 1;
+				var size = 6;
 				for (arg in f.args) {
 					switch (arg.type) {
 					case TPath(p):
@@ -66,7 +106,25 @@ class SyncBuilder {
 					size += $v { methodname } .length + 2;
 					var bytes = haxe.io.Bytes.alloc(size);
 					bytes.set(0, kha.network.Session.REMOTE_CALL);
-					var index = 1;
+					bytes.set(1, $v { target });
+				}
+
+				if (isStatic) {
+					expr = macro @:mergeBlock {
+						$expr;
+						bytes.setInt32(2, -1);
+					}
+				}
+				else { 
+					expr = macro @:mergeBlock {
+						$expr;
+						bytes.setInt32(2, _syncId());
+					}
+				}
+
+				expr = macro @:mergeBlock {
+					$expr;
+					var index = 6;
 					
 					bytes.setUInt16(index, $v { classname } .length);
 					index += 2;
@@ -126,32 +184,41 @@ class SyncBuilder {
 								bytes.set(index, $i { argname } ? 1 : 0);
 								++index;
 							};
+						default:
+							trace("Warning: type '" + p.name + "' of property '" + arg.name + "' cannot be synced");
 						}
 					default:
 					}
 				}
 				
+				#if sys_server
+
 				expr = macro {
 					if (kha.network.Session.the() != null) {
 						$expr;
-						kha.network.Session.the().sendToEverybody(bytes);
+						kha.network.Session.the().processRPC(bytes);
 					}
-					$original;
 				};
 				
 				#else
 				
-				var expr = macro {
-					if (kha.network.Session.the() == null) {
+				expr = macro {
+					if (kha.network.Session.the() != null) {
+						$expr;
+						kha.network.Session.the().sendToServer(bytes);
+					}
+					else {
 						$original;
 					}
 				};
 				
+				#end
+
 				fields.push({
 					name: field.name + "_remotely",
 					doc: null,
 					meta: [],
-					access: [APublic, AStatic],
+					access: (isStatic ? [APublic, AStatic] : [APublic]),
 					kind: FFun({
 						ret: f.ret,
 						params: f.params,
@@ -161,11 +228,36 @@ class SyncBuilder {
 					pos: Context.currentPos()
 				});
 				
-				#end
 				f.expr = expr;
 			default:
 				trace("Warning: Synced property " + field.name + " is not a function.");
 			}
+		}
+			
+		fields.push({
+			name: "_syncId",
+			doc: null,
+			meta: [],
+			access: isBaseEntity ? [APublic] : [APublic, AOverride],
+			kind: FFun({
+				ret: Context.toComplexType(Context.getType("Int")),
+				params: null,
+				expr: macro { 
+					return __syncId; },
+				args: []
+			}),
+			pos: Context.currentPos()
+		});
+
+		if (isBaseEntity) {
+			fields.push({
+				name: "__syncId",
+				doc: null,
+				meta: [],
+				access: [APublic],
+				kind: FVar(macro: Int, macro kha.network.SyncBuilder.nextId++),
+				pos: Context.currentPos()
+			});
 		}
 		
 		return fields;

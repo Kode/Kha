@@ -235,6 +235,10 @@ class Image implements Canvas implements Resource {
 		return new Image(width, height, format, false, DepthStencilFormat.NoDepthAndStencil);
 	}
 
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		return new Image(width, height, format, true, depthStencil);
@@ -317,6 +321,12 @@ class Image implements Canvas implements Resource {
 		return myHeight;
 	}
 
+	public var depth(get, null): Int;
+
+	private function get_depth(): Int {
+		return 1;
+	}
+
 	public var realWidth(get, null): Int;
 
 	private function get_realWidth(): Int {
@@ -335,7 +345,7 @@ class Image implements Canvas implements Resource {
 
 	public function isOpaque(x: Int, y: Int): Bool {
 		//return (b.getPixel(x, y) >> 24) != 0;
-		return false;
+		return true;
 	}
 
 	private var bytes: Bytes = null;

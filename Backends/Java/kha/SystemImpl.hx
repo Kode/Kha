@@ -1,5 +1,6 @@
 package kha;
 
+import kha.System.SystemOptions;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.java.Graphics;
@@ -347,12 +348,16 @@ class SystemImpl {
 	private static var myPixelWidth: Int = 640;
 	private static var myPixelHeight: Int = 480;
 	
-	public static function getPixelWidth(): Int {
+	public static function windowWidth(id: Int): Int {
 		return myPixelWidth;
 	}
 	
-	public static function getPixelHeight(): Int {
+	public static function windowHeight(id: Int): Int {
 		return myPixelHeight;
+	}
+	
+	public static function screenDpi(): Int {
+		return 96;
 	}
 	
 	public static function changeResolution(width: Int, height: Int): Void {
@@ -393,13 +398,17 @@ class SystemImpl {
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 	
-	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void -> Void) {
 		init2();
 		Scheduler.init();
-		myPixelWidth = width;
-		myPixelHeight = height;
+		if (options.width != null) myPixelWidth = options.width;
+		if (options.height != null) myPixelHeight = options.height;
 		callback();
 		startMainLoop();
+	}
+	
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		init({title: title, width: options[0].width, height: options[0].height}, callback);
 	}
 
 	public function lockMouse(): Void {
@@ -438,6 +447,10 @@ class SystemImpl {
 	}
 	
 	public static function setKeepScreenOn(on: Bool): Void {
+		
+	}
+
+	public static function loadUrl(url: String): Void {
 		
 	}
 }

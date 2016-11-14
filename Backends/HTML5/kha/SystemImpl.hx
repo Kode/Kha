@@ -34,6 +34,7 @@ class SystemImpl {
 	public static var anisotropicFilter: Dynamic;
 	public static var depthTexture: Dynamic;
 	public static var drawBuffers: Dynamic;
+	public static var elementIndexUint: Dynamic;
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
@@ -51,7 +52,7 @@ class SystemImpl {
 			performance = untyped __js__("window.Date");
 		}
 	}
-	
+
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error(error.stack);
 		return true;
@@ -61,7 +62,9 @@ class SystemImpl {
 		SystemImpl.options = options;
 		#if sys_debug_html5
 		Browser.window.onerror = cast errorHandler;
-		untyped require('web-frame').setZoomLevelLimits(1, 1);
+		var electron = untyped __js__("require('electron')");
+		electron.webFrame.setZoomLevelLimits(1, 1);
+		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
 			init2();
@@ -83,7 +86,7 @@ class SystemImpl {
 			windowCallback(0);
 		}
 	}
-	
+
 	private static function isMobile(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Android") >= 0
@@ -106,6 +109,19 @@ class SystemImpl {
 
 	public static function windowHeight(windowId: Int = 0): Int {
 		return khanvas.height;
+	}
+
+	public static function screenDpi(): Int {
+		var dpiElement = Browser.document.createElement('div');
+		dpiElement.style.position = "absolute";
+		dpiElement.style.width = "1in";
+		dpiElement.style.height = "1in";
+		dpiElement.style.left = "-100%";
+		dpiElement.style.top = "-100%";
+		Browser.document.body.appendChild(dpiElement);
+		var dpi:Int = dpiElement.offsetHeight;
+		dpiElement.remove();
+		return dpi;
 	}
 
 	public static function setCanvas(canvas: CanvasElement): Void {
@@ -166,7 +182,7 @@ class SystemImpl {
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		keyboard = new Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.MouseImpl();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
 		gamepadStates = new Array<GamepadStates>();
@@ -247,11 +263,13 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		var canvas: Dynamic = Browser.document.getElementById("khanvas");
+		canvas.style.cursor = "default";
 
 		var gl: Bool = false;
 
+		#if webgl
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true } ); // , preserveDrawingBuffer: true } ); // Firefox 36 does not like the preserveDrawingBuffer option
+			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
 			if (SystemImpl.gl != null) {
 				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
@@ -264,6 +282,7 @@ class SystemImpl {
 				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
 				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
+				elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
 				gl = true;
 				Shaders.init();
 			}
@@ -271,6 +290,7 @@ class SystemImpl {
 		catch (e: Dynamic) {
 			trace(e);
 		}
+		#end
 
 		setCanvas(canvas);
 		//var widthTransform: Float = canvas.width / Loader.the.width;
@@ -376,7 +396,7 @@ class SystemImpl {
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		canvas.onmousewheel = canvas.onwheel = mouseWheel;
-		
+
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -386,19 +406,15 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
-        var canvas: Dynamic = Browser.document.getElementById("khanvas");
-
 		untyped if (SystemImpl.khanvas.requestPointerLock) {
 			SystemImpl.khanvas.requestPointerLock();
-		} 
-        else if(canvas != null ) {
-            if (canvas.mozRequestPointerLock) {
-                SystemImpl.khanvas.mozRequestPointerLock();
-            }
-            else if (canvas.webkitRequestPointerLock) {
-                SystemImpl.khanvas.webkitRequestPointerLock();
-            }
-        }
+		}
+		else if (SystemImpl.khanvas.mozRequestPointerLock) {
+			SystemImpl.khanvas.mozRequestPointerLock();
+		}
+		else if (SystemImpl.khanvas.webkitRequestPointerLock) {
+			SystemImpl.khanvas.webkitRequestPointerLock();
+		}
 	}
 
 	public static function unlockMouse(): Void {
@@ -462,9 +478,9 @@ class SystemImpl {
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		event.preventDefault();
-		
+
 		//Deltamode == 0, deltaY is in pixels.
 		if (event.deltaMode == 0) {
 			if (event.deltaY < 0) {
@@ -476,7 +492,7 @@ class SystemImpl {
 			insideInputEvent = false;
 			return false;
 		}
-		
+
 		//Lines
 		if (event.deltaMode == 1) {
 			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
@@ -491,7 +507,7 @@ class SystemImpl {
 	private static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
@@ -502,7 +518,7 @@ class SystemImpl {
 				leftMouseCtrlDown = false;
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
-			
+
 			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -515,15 +531,15 @@ class SystemImpl {
 		}
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseLeftUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 1) return;
-		
+
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		
+
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -533,21 +549,21 @@ class SystemImpl {
 		leftMouseCtrlDown = false;
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseMiddleUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 2) return;
 		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseRightUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 3) return;
 		Browser.document.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
@@ -557,19 +573,19 @@ class SystemImpl {
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
 		setMouseXY(event);
-		
+
 		var movementX = event.movementX;
 		var movementY = event.movementY;
-		
+
 		if(event.movementX == null){
 			movementX = untyped( event.mozMovementX || event.webkitMovementX || (mouseX  - lastMouseX));
 		 	movementY = untyped( event.mozMovementY || event.webkitMovementY || (mouseY  - lastMouseY));
 		}
-		
+
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 		insideInputEvent = false;
 	}
@@ -585,7 +601,10 @@ class SystemImpl {
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
+		event.stopPropagation();
+		event.preventDefault();
+
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
@@ -597,7 +616,7 @@ class SystemImpl {
 	private static function touchUp(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendUpEvent(0, 0, touchX, touchY);
@@ -609,7 +628,7 @@ class SystemImpl {
 	private static function touchMove(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
@@ -898,8 +917,12 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {
 
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
+	}
+
+	public static function loadUrl(url: String): Void {
+		js.Browser.window.open(url, "_blank");
 	}
 }

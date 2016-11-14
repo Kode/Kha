@@ -66,7 +66,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 			return element.duration;
 		}
 		else {
-			return -1;
+			return Math.POSITIVE_INFINITY;
 		}
 	}
 
@@ -79,11 +79,11 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	public var volume(get, set): Float;
 
 	private function get_volume(): Float {
-		return 1;
+		return element.volume;
 	}
 
 	private function set_volume(value: Float): Float {
-		return 1;
+		return element.volume = value;
 	}
 
 	public var finished(get, null): Bool;

@@ -56,4 +56,9 @@ class FastVector3 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+	
+	public function toString()
+	{
+		return 'FastVector3($x, $y, $z)';
+	}
 }

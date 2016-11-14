@@ -25,7 +25,11 @@ class LocalStorageFile extends StorageFile {
 	}
 	
 	override public function read(): Blob {
-		var storage: WebStorage = untyped __js__("window.localStorage");
+		var storage: WebStorage = null;
+		try {
+			storage = untyped __js__("window.localStorage");
+		}
+		catch (e: Dynamic) { }
 		if (storage == null) return null;
 		var value: String = storage.getItem(name);
 		if (value == null) return null;
@@ -33,7 +37,11 @@ class LocalStorageFile extends StorageFile {
 	}
 	
 	override public function write(data: Blob): Void {
-		var storage: WebStorage = untyped __js__("window.localStorage");
+		var storage: WebStorage = null;
+		try {
+			storage = untyped __js__("window.localStorage");
+		}
+		catch (e: Dynamic) { }
 		if (storage == null) return;
 		storage.setItem(name, encode(data.bytes.getData()));
 	}
