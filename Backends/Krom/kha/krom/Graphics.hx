@@ -62,7 +62,7 @@ class Graphics implements kha.graphics4.Graphics {
 		if (color != null) flags |= 1;
 		if (depth != null) flags |= 2;
 		if (stencil != null) flags |= 4;
-        Krom.clear(flags, color == null ? 0 : color.value, depth, stencil);
+		Krom.clear(flags, color == null ? 0 : color.value, depth, stencil);
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
@@ -74,15 +74,42 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	private static function getBlendFunc(op: BlendingFactor): Int {
-        return 0;
+		return 0;
+	}
+
+	private function getBlendingMode(op: BlendingFactor): Int {
+		switch (op) {
+		case BlendOne, Undefined:
+			return 0;
+		case BlendZero:
+			return 1;
+		case SourceAlpha:
+			return 2;
+		case DestinationAlpha:
+			return 3;
+		case InverseSourceAlpha:
+			return 4;
+		case InverseDestinationAlpha:
+			return 5;
+		case SourceColor:
+			return 6;
+		case DestinationColor:
+			return 7;
+		case InverseSourceColor:
+			return 8;
+		case InverseDestinationColor:
+			return 9;
+		default:
+			return 0;
+		}
 	}
 
 	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
-
+		Krom.setBlendingMode(getBlendingMode(source), getBlendingMode(destination));
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-        vertexBuffer.set(0);
+		vertexBuffer.set(0);
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
@@ -90,7 +117,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-        indexBuffer.set();
+		indexBuffer.set();
 	}
 
 	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
@@ -114,11 +141,20 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setCullMode(mode: CullMode): Void {
-
+		Krom.setCullMode(mode.getIndex());
 	}
 
 	public function setPipeline(pipeline: PipelineState): Void {
-        pipeline.set();
+		setCullMode(pipeline.cullMode);
+		setDepthMode(pipeline.depthWrite, pipeline.depthMode);
+		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, pipeline.stencilReferenceValue, pipeline.stencilReadMask, pipeline.stencilWriteMask);
+		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
+		setColorMask(pipeline.colorWriteMaskRed, pipeline.colorWriteMaskGreen, pipeline.colorWriteMaskBlue, pipeline.colorWriteMaskAlpha);
+		pipeline.set();
+	}
+
+	function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool) {
+		Krom.setColorMask(red, green, blue, alpha);
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
@@ -166,7 +202,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-        Krom.drawIndexedVertices(start, count);
+		Krom.drawIndexedVertices(start, count);
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
@@ -178,7 +214,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-
+		Krom.setStencilParameters(compareMode.getIndex(), bothPass.getIndex(), depthFail.getIndex(), stencilFail.getIndex(), referenceValue, readMask, writeMask);
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
