@@ -33,6 +33,7 @@ class LoaderImpl {
 		else {
 			var img: ImageElement = cast Browser.document.createElement("img");
 			img.src = desc.files[0];
+			img.crossOrigin = "";
 			img.onload = function(event: Dynamic) {
 				done(Image.fromImage(img, readable));
 			};
