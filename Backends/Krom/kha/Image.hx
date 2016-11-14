@@ -20,6 +20,10 @@ class Image implements Canvas implements Resource {
 	public static function _fromTexture(texture: Dynamic): Image {
 		return new Image(texture);
 	}
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;

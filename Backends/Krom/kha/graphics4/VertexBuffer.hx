@@ -17,6 +17,10 @@ class VertexBuffer {
 		buffer = Krom.createVertexBuffer(vertexCount, structure.elements);
 		vertices = new Float32Array(vertexCount * Std.int(structure.byteSize() / 4));
 	}
+
+	public function delete() {
+
+	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return vertices;

@@ -12,7 +12,11 @@ class PipelineState extends PipelineStateBase {
 		super();
 		program = Krom.createProgram();
 	}
+
+	public function delete() {
 		
+	}
+	
 	public function compile(): Void {
 		Krom.compileProgram(program, inputLayout[0].elements, vertexShader.shader, fragmentShader.shader);
 	}

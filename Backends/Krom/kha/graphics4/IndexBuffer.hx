@@ -10,7 +10,12 @@ class IndexBuffer {
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;
 		indices = [];
+		indices[indexCount - 1] = 0;
 		buffer = Krom.createIndexBuffer(indexCount);
+	}
+
+	public function delete() {
+		
 	}
 	
 	public function lock(): Array<Int> {
