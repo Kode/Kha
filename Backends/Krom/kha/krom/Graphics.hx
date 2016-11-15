@@ -182,7 +182,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-
+		var vals = new kha.arrays.Float32Array(values.length);
+		for (i in 0...values.length) vals.set(i, values[i]);
+		Krom.setFloats(location, vals);
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
