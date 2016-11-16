@@ -266,6 +266,12 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		extensions.push(ext);
 	}
 
+	public function removeExtension(ext:KhaExtension):Void {
+		if (extensions != null) {
+			extensions.remove(ext);
+		}
+	}
+
 	@:protected
 	override function onActivityResult(requestCode:Int, resultCode:Int, data:Intent):Void {
 		if (extensions != null) {

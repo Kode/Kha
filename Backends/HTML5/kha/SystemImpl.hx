@@ -52,7 +52,7 @@ class SystemImpl {
 			performance = untyped __js__("window.Date");
 		}
 	}
-	
+
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error(error.stack);
 		return true;
@@ -86,7 +86,7 @@ class SystemImpl {
 			windowCallback(0);
 		}
 	}
-	
+
 	private static function isMobile(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Android") >= 0
@@ -396,7 +396,7 @@ class SystemImpl {
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		canvas.onmousewheel = canvas.onwheel = mouseWheel;
-		
+
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
@@ -478,9 +478,9 @@ class SystemImpl {
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		event.preventDefault();
-		
+
 		//Deltamode == 0, deltaY is in pixels.
 		if (event.deltaMode == 0) {
 			if (event.deltaY < 0) {
@@ -492,7 +492,7 @@ class SystemImpl {
 			insideInputEvent = false;
 			return false;
 		}
-		
+
 		//Lines
 		if (event.deltaMode == 1) {
 			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
@@ -507,7 +507,7 @@ class SystemImpl {
 	private static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		setMouseXY(event);
 		if (event.which == 1) { //left button
 			if (event.ctrlKey) {
@@ -518,7 +518,7 @@ class SystemImpl {
 				leftMouseCtrlDown = false;
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
-			
+
 			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -531,15 +531,15 @@ class SystemImpl {
 		}
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseLeftUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 1) return;
-		
+
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		
+
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -549,21 +549,21 @@ class SystemImpl {
 		leftMouseCtrlDown = false;
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseMiddleUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 2) return;
 		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
-	
+
 	private static function mouseRightUp(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		if (event.which != 3) return;
 		Browser.document.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
@@ -573,19 +573,19 @@ class SystemImpl {
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
 		setMouseXY(event);
-		
+
 		var movementX = event.movementX;
 		var movementY = event.movementY;
-		
+
 		if(event.movementX == null){
 			movementX = untyped( event.mozMovementX || event.webkitMovementX || (mouseX  - lastMouseX));
 		 	movementY = untyped( event.mozMovementY || event.webkitMovementY || (mouseY  - lastMouseY));
 		}
-		
+
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 		insideInputEvent = false;
 	}
@@ -601,7 +601,10 @@ class SystemImpl {
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
+		event.stopPropagation();
+		event.preventDefault();
+
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
@@ -613,7 +616,7 @@ class SystemImpl {
 	private static function touchUp(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
 			mouse.sendUpEvent(0, 0, touchX, touchY);
@@ -625,7 +628,7 @@ class SystemImpl {
 	private static function touchMove(event: TouchEvent): Void {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();
-		
+
 		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
@@ -914,9 +917,9 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {
 
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 
 	public static function loadUrl(url: String): Void {

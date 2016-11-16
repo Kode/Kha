@@ -1,5 +1,6 @@
 package kha.js;
 
+@:keep
 class AudioElementAudio {
 	@:noCompletion
 	public static function _compile(): Void { }
