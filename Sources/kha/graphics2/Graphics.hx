@@ -55,7 +55,7 @@ class Graphics {
 	}
     
 	/**
-	The color value is used for geometric primitives as well as for images. Remember to set it back to white to draw images unaltered.
+	The color value is used for geometric primitives, images, and text. Remember to set it back to white to draw images unaltered.
 	*/
 	public var color(get, set): Color;
 	
