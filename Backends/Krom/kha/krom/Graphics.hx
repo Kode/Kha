@@ -225,11 +225,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-
+		Krom.scissor(x, y, width, height);
 	}
 
 	public function disableScissor(): Void {
-
+		Krom.disableScissor();
 	}
 
 	public function renderTargetsInvertedY(): Bool {

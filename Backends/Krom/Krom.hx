@@ -27,6 +27,8 @@ extern class Krom {
 	static function end(): Void;
 	static function renderTargetsInvertedY(): Bool;
 	static function viewport(x: Int, y: Int, width: Int, height: Int): Void;
+	static function scissor(x: Int, y: Int, width: Int, height: Int): Void;
+	static function disableScissor(): Void;
 	static function setDepthMode(write: Bool, mode: Int): Void;
 	static function setCullMode(mode: Int): Void;
 	static function setStencilParameters(compareMode: Int, bothPass: Int, depthFail: Int, stencilFail: Int, referenceValue: Int, readMask: Int, writeMask: Int): Void;
