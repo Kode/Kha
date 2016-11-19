@@ -6,4 +6,8 @@ class VertexShader {
 	public function new(source: Blob, name: String) {
 		shader = Krom.createVertexShader(source.bytes.getData(), name);
 	}
+
+	public function delete() {
+		
+	}
 }

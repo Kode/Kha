@@ -6,4 +6,8 @@ class FragmentShader {
 	public function new(source: Blob, name: String) {
 		shader = Krom.createFragmentShader(source.bytes.getData(), name);
 	}
+
+	public function delete() {
+		
+	}
 }

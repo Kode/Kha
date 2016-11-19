@@ -8,6 +8,9 @@ import kha.graphics4.Usage;
 class Image implements Canvas implements Resource {
 	public var texture_: Dynamic;
 	public var renderTarget_: Dynamic;
+
+	private var format: TextureFormat;
+	private var readable: Bool;
 	
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -16,22 +19,78 @@ class Image implements Canvas implements Resource {
 	private function new(texture: Dynamic) {
 		texture_ = texture;
 	}
+
+	private static function getRenderTargetFormat(format: TextureFormat): Int {
+		switch (format) {
+		case RGBA32:	// Target32Bit
+			return 0;
+		case RGBA64:	// Target64BitFloat
+			return 1;
+		case RGBA128:	// Target128BitFloat
+			return 3;
+		case DEPTH16:	// Target16BitDepth
+			return 4;
+		default:
+			return 0;
+		}
+	}
+
+	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: 24;
+			case DepthAutoStencilAuto: 24;
+			case Depth24Stencil8: 24;
+			case Depth32Stencil8: 32;
+		}
+	}
+
+	private static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: -1;
+			case DepthAutoStencilAuto: 8;
+			case Depth24Stencil8: 8;
+			case Depth32Stencil8: 8;
+		}
+	}
+
+	private static function getTextureFormat(format: TextureFormat): Int {
+		switch (format) {
+			case RGBA32:
+				return 0;
+			case RGBA128:
+				return 3;
+			default:
+				return 1; // Grey8
+		}
+	}
 	
 	public static function _fromTexture(texture: Dynamic): Image {
 		return new Image(texture);
 	}
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		if (format == null) format = TextureFormat.RGBA32;
+		var image = new Image(null);
+		image.format = format;
+		image.texture_ = Krom.createTexture(width, height, getTextureFormat(format));
+		return image;
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+		if (format == null) format = TextureFormat.RGBA32;
 		var image = new Image(null);
-		image.renderTarget_ = Krom.createRenderTarget(width, height);
+		image.format = format;
+		image.renderTarget_ = Krom.createRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		return image;
 	}
 
@@ -50,11 +109,30 @@ class Image implements Canvas implements Resource {
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }
 	public function unload(): Void { }
-	public function lock(level: Int = 0): Bytes { return null; }
-	public function unlock(): Void { }
-	public function generateMipmaps(levels: Int): Void { }
-	public function setMipmaps(mipmaps: Array<Image>): Void { }
-	public function setDepthStencilFrom(image: Image): Void { }
+
+	private var bytes: Bytes = null;
+
+	public function lock(level: Int = 0): Bytes { 
+		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		return bytes;
+	}
+
+	public function unlock(): Void {
+		Krom.unlockTexture(texture_, bytes.getData());
+	}
+	
+	public function generateMipmaps(levels: Int): Void {
+		Krom.generateMipmaps(texture_, levels);
+	}
+	
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		Krom.setMipmaps(texture_, mipmaps);
+	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		Krom.setDepthStencilFrom(renderTarget_, image.renderTarget_);
+	}
+
 	public var width(get, null): Int;
 	private function get_width(): Int { return texture_ == null ? renderTarget_.width : texture_.width; }
 	public var height(get, null): Int;

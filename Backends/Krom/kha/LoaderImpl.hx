@@ -12,7 +12,8 @@ class LoaderImpl {
 	}
 	
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
-		done(Image._fromTexture(Krom.loadImage(desc.files[0])));
+		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
+		done(Image._fromTexture(Krom.loadImage(desc.files[0], readable)));
 	}
 	
 	public static function getSoundFormats(): Array<String> {

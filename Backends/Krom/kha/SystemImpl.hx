@@ -96,15 +96,15 @@ class SystemImpl {
 	}
 	
 	public static function windowWidth(id: Int): Int {
-		return 1024;
+		return Krom.windowWidth(id);
 	}
 	
 	public static function windowHeight(id: Int): Int {
-		return 768;
+		return Krom.windowHeight(id);
 	}
 	
 	public static function screenDpi(): Int {
-		return 96;
+		return Krom.screenDpi();
 	}
 	
 	public static function getVsync(): Bool {
