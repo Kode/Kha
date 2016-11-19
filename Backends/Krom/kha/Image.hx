@@ -125,8 +125,14 @@ class Image implements Canvas implements Resource {
 		Krom.generateMipmaps(texture_, levels);
 	}
 	
-	public function setMipmaps(mipmaps: Array<Image>): Void { }
-	public function setDepthStencilFrom(image: Image): Void { }
+	public function setMipmaps(mipmaps: Array<Image>): Void {
+		Krom.setMipmaps(texture_, mipmaps);
+	}
+
+	public function setDepthStencilFrom(image: Image): Void {
+		Krom.setDepthStencilFrom(renderTarget_, image.renderTarget_);
+	}
+
 	public var width(get, null): Int;
 	private function get_width(): Int { return texture_ == null ? renderTarget_.width : texture_.width; }
 	public var height(get, null): Int;
