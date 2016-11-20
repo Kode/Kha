@@ -61,6 +61,10 @@ class SystemImpl {
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		start = Krom.getTime();
 		
+		haxe.Log.trace = function(v, ?infos) {
+			Krom.log(v);
+		};
+
 		Scheduler.init();
 		Shaders.init();
 		
