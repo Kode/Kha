@@ -31,6 +31,7 @@ interface Graphics {
 	function setTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureDepth(unit: TextureUnit, texture: Image): Void;
 	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
+	function setImageTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;

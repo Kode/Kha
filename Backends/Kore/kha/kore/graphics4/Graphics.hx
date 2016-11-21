@@ -397,6 +397,18 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		setTextureInternal(cast unit, Image.createFromVideo(texture));
 	}
+
+	@:functionCode('
+		Kore::Graphics::setImageTexture(unit->unit, texture->texture);
+	')
+	private function setImageTextureInternal(unit: kha.kore.graphics4.TextureUnit, texture: kha.Image): Void {
+		
+	}
+
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+		if (texture == null) return;
+		setImageTextureInternal(cast unit, texture);
+	}
 	
 	//public function createVertexShader(source: Blob): VertexShader {
 	//	return new Shader(source, ShaderType.VertexShader);
