@@ -15,7 +15,8 @@ class IndexBuffer {
 	}
 
 	public function delete() {
-		
+		Krom.deleteIndexBuffer(buffer);
+		buffer = null;
 	}
 	
 	public function lock(): Array<Int> {
