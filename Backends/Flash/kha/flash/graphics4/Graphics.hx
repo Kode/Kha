@@ -167,7 +167,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function disableScissor(): Void {
-
+		context.setScissorRectangle(null);
 	}
 
 	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
