@@ -61,11 +61,11 @@ extern class Krom {
 	
 	static function log(string: String): Void;
 	static function setCallback(callback: Void->Void): Void;
-	static function setKeyboardDownCallback(callback: Int->Void): Void;
-	static function setKeyboardUpCallback(callback: Int->Void): Void;
+	static function setKeyboardDownCallback(callback: Int->Int->Void): Void;
+	static function setKeyboardUpCallback(callback: Int->Int->Void): Void;
 	static function setMouseDownCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseUpCallback(callback: Int->Int->Int->Void): Void;
-	static function setMouseMoveCallback(callback: Int->Int->Void): Void;
+	static function setMouseMoveCallback(callback: Int->Int->Int->Int->Void): Void;
 	static function getTime(): Float;
 	static function windowWidth(id: Int): Int;
 	static function windowHeight(id: Int): Int;
