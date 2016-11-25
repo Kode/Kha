@@ -59,6 +59,7 @@ extern class Krom {
 	static function loadSound(file: String): Dynamic;
 	static function loadBlob(file: String): js.html.ArrayBuffer;
 	
+	static function init(title: String, width: Int, height: Int, samplesPerPixel: Int): Void;
 	static function log(string: String): Void;
 	static function setCallback(callback: Void->Void): Void;
 	static function setKeyboardDownCallback(callback: Int->Int->Void): Void;

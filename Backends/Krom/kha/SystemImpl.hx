@@ -33,18 +33,20 @@ class SystemImpl {
 			return Key.ENTER;
 		case 0x00000120:
 			return Key.SHIFT;
+		case 0x00000100:
+			return Key.ESC;
 		default:
 			return null;
 		}
 	}
 	
-	private static function keyboardDownCallback(code: Int): Void {
+	private static function keyboardDownCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
 		if (key != null) keyboard.sendDownEvent(key, " ");
 		else keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
-	private static function keyboardUpCallback(code: Int): Void {
+	private static function keyboardUpCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
 		if (key != null) keyboard.sendUpEvent(key, " ");
 		else keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
@@ -63,6 +65,8 @@ class SystemImpl {
 	}
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		Krom.init(options.title, options.width, options.height, options.samplesPerPixel);
+
 		start = Krom.getTime();
 		
 		haxe.Log.trace = function(v, ?infos) {
