@@ -20,7 +20,6 @@ class CompilerDefinesBuilder {
 		var defines = Context.getDefines();
 
 		for (k in defines.keys()) {
-			trace(k);
 			var key = $v{k};
 			addField(fields, key, $v{Std.string(defines.get(key))});
 		}
