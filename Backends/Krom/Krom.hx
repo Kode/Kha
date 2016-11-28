@@ -6,7 +6,9 @@ extern class Krom {
 	static function createGeometryShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationControlShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationEvaluationShader(data: haxe.io.BytesData, name: String): Dynamic;
+	static function deleteShader(shader: Dynamic): Dynamic;
 	static function createProgram(): Dynamic;
+	static function deleteProgram(program: Dynamic): Dynamic;
 	static function compileProgram(program: Dynamic, structure0: Array<kha.graphics4.VertexElement>, structure1: Array<kha.graphics4.VertexElement>, structure2: Array<kha.graphics4.VertexElement>, structure3: Array<kha.graphics4.VertexElement>, length: Int, vertexShader: Dynamic, fragmentShader: Dynamic, geometryShader: Dynamic, tessellationControlShader: Dynamic, tessellationEvaluationShader: Dynamic): Void;
 	static function setProgram(program: Dynamic): Void;
 	static function getConstantLocation(program: Dynamic, name: String): Dynamic;
@@ -41,9 +43,11 @@ extern class Krom {
 	static function setMipmaps(texture: Dynamic, mipmaps: Array<kha.Image>): Void;
 	static function setDepthStencilFrom(target: Dynamic, source: Dynamic): Void;
 	static function createIndexBuffer(count: Int): Dynamic;
+	static function deleteIndexBuffer(buffer: Dynamic): Dynamic;
 	static function setIndices(buffer: Dynamic, indices: Array<Int>): Void;
 	static function setIndexBuffer(buffer: Dynamic): Void;
 	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, instanceDataStepRate: Int): Dynamic;
+	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
 	static function setVertices(buffer: Dynamic, vertices: kha.arrays.Float32Array): Void;
 	static function setVertexBuffer(buffer: Dynamic): Void;
 	static function setVertexBuffers(vb0: Dynamic, vb1: Dynamic, vb2: Dynamic, vb3: Dynamic, count: Int): Void;
@@ -51,16 +55,18 @@ extern class Krom {
 	static function drawIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void;
 	
 	static function loadImage(file: String, readable: Bool): Dynamic;
+	static function unloadImage(image: kha.Image): Void;
 	static function loadSound(file: String): Dynamic;
 	static function loadBlob(file: String): js.html.ArrayBuffer;
 	
+	static function init(title: String, width: Int, height: Int, samplesPerPixel: Int): Void;
 	static function log(string: String): Void;
 	static function setCallback(callback: Void->Void): Void;
-	static function setKeyboardDownCallback(callback: Int->Void): Void;
-	static function setKeyboardUpCallback(callback: Int->Void): Void;
+	static function setKeyboardDownCallback(callback: Int->Int->Void): Void;
+	static function setKeyboardUpCallback(callback: Int->Int->Void): Void;
 	static function setMouseDownCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseUpCallback(callback: Int->Int->Int->Void): Void;
-	static function setMouseMoveCallback(callback: Int->Int->Void): Void;
+	static function setMouseMoveCallback(callback: Int->Int->Int->Int->Void): Void;
 	static function getTime(): Float;
 	static function windowWidth(id: Int): Int;
 	static function windowHeight(id: Int): Int;

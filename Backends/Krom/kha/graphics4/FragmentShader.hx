@@ -8,6 +8,7 @@ class FragmentShader {
 	}
 
 	public function delete() {
-		
+		Krom.deleteShader(shader);
+		shader = null;
 	}
 }

@@ -8,6 +8,7 @@ class TessellationControlShader {
 	}
 
 	public function delete() {
-		
+		Krom.deleteShader(shader);
+		shader = null;
 	}
 }

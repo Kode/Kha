@@ -14,7 +14,8 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	public function delete() {
-		
+		Krom.deleteProgram(program);
+		program = null;
 	}
 	
 	public function compile(): Void {
