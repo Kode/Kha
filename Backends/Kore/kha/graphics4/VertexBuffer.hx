@@ -17,7 +17,6 @@ class VertexBuffer {
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		init(vertexCount, structure, instanceDataStepRate);
 		data = new Float32Array();
-		var a: VertexElement = new VertexElement("a", VertexData.Float2); //to generate include
 	}
 	
 	public function delete(): Void {
@@ -75,5 +74,15 @@ class VertexBuffer {
 	@:functionCode("return buffer->count();")
 	public function count(): Int {
 		return 0;
+	}
+	
+	@:noCompletion
+	public static function _unused1(): VertexElement {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused2(): VertexData {
+		return null;
 	}
 }

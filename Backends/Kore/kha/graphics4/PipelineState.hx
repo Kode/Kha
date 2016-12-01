@@ -103,12 +103,38 @@ class PipelineState extends PipelineStateBase {
 		
 	}
 	
-	public function unused(): Void {
-		var include1 = new VertexElement("include", VertexData.Float2);
-		var include2 = new VertexShader(null, null);
-		var include3 = new FragmentShader(null, null);
-		var include4 = new GeometryShader(null, null);
-		var include5 = new TessellationControlShader(null, null);
-		var include6 = new TessellationEvaluationShader(null, null);
+	@:noCompletion
+	public static function _unused1(): VertexElement {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused2(): VertexData {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused3(): VertexShader {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused4(): FragmentShader {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused5(): GeometryShader {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused6(): TessellationControlShader {
+		return null;
+	}
+	
+	@:noCompletion
+	public static function _unused7(): TessellationEvaluationShader {
+		return null;
 	}
 }
