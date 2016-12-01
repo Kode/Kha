@@ -8,6 +8,7 @@ class GeometryShader {
 	}
 
 	public function delete() {
-		
+		Krom.deleteShader(shader);
+		shader = null;
 	}
 }

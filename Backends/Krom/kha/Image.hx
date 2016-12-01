@@ -108,7 +108,12 @@ class Image implements Canvas implements Resource {
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }
-	public function unload(): Void { }
+	
+	public function unload(): Void {
+		Krom.unloadImage(this);
+		texture_ = null;
+		renderTarget_ = null;
+	}
 
 	private var bytes: Bytes = null;
 

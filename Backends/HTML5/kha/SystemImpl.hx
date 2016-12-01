@@ -262,7 +262,13 @@ class SystemImpl {
 	//}
 
 	private static function loadFinished() {
-		var canvas: Dynamic = Browser.document.getElementById("khanvas");
+		// Only consider custom canvas ID for release builds
+		var canvas: Dynamic = null;
+		#if (sys_debug_html5 || !canvas_id)
+		canvas = Browser.document.getElementById("khanvas");
+		#else
+		canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		#end
 		canvas.style.cursor = "default";
 
 		var gl: Bool = false;
