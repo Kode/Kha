@@ -52,6 +52,8 @@ extern class Krom {
 	
 	static function loadImage(file: String, readable: Bool): Dynamic;
 	static function loadSound(file: String): Dynamic;
+	static function playSound(buffer: Dynamic, loop: Bool, stream: Bool): Dynamic;
+	static function writeAudioBuffer(bufferValue: Float): Dynamic;
 	static function loadBlob(file: String): js.html.ArrayBuffer;
 	
 	static function log(string: String): Void;
@@ -61,6 +63,7 @@ extern class Krom {
 	static function setMouseDownCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseUpCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseMoveCallback(callback: Int->Int->Void): Void;
+	static function setAudioCallback(callback: Void->Void): Void;
 	static function getTime(): Float;
 	static function windowWidth(id: Int): Int;
 	static function windowHeight(id: Int): Int;

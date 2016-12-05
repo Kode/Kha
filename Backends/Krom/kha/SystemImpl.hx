@@ -57,6 +57,21 @@ class SystemImpl {
 	private static function mouseMoveCallback(x: Int, y: Int): Void {
 		mouse.sendMoveEvent(0, x, y, 0, 0);
 	}
+
+	private static function audioCallback() : Void {
+		var samples = 1024 * 8;
+		// TODO
+		//Krom.log("audio callback: samples " + samples);
+		
+		kha.audio2.Audio._callCallback(samples);
+
+		for (i in 0...samples) {
+			var value: Float = kha.audio2.Audio._readSample();
+			//if (i < 5) Krom.log("§ audio callback: " + value);
+
+			Krom.writeAudioBuffer(value);
+		}
+	}
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		start = Krom.getTime();
@@ -81,6 +96,10 @@ class SystemImpl {
 		Krom.setMouseDownCallback(mouseDownCallback);
 		Krom.setMouseUpCallback(mouseUpCallback);
 		Krom.setMouseMoveCallback(mouseMoveCallback);
+
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		Krom.setAudioCallback(audioCallback);
 		
 		Scheduler.start();
 		
