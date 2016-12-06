@@ -59,7 +59,7 @@ class SystemImpl {
 	}
 
 	private static function audioCallback() : Void {
-		var samples = 1024 * 8;
+		var samples = 1024 * 2 * 4;
 		// TODO
 		//Krom.log("audio callback: samples " + samples);
 		
@@ -67,8 +67,6 @@ class SystemImpl {
 
 		for (i in 0...samples) {
 			var value: Float = kha.audio2.Audio._readSample();
-			//if (i < 5) Krom.log("§ audio callback: " + value);
-
 			Krom.writeAudioBuffer(value);
 		}
 	}

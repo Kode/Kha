@@ -52,7 +52,6 @@ extern class Krom {
 	
 	static function loadImage(file: String, readable: Bool): Dynamic;
 	static function loadSound(file: String): Dynamic;
-	static function playSound(buffer: Dynamic, loop: Bool, stream: Bool): Dynamic;
 	static function writeAudioBuffer(bufferValue: Float): Dynamic;
 	static function loadBlob(file: String): js.html.ArrayBuffer;
 	

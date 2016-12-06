@@ -8,6 +8,14 @@ class Audio {
 	public static function _init() {
 		var bufferSize = 1024 * 2;
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
+
+		for (i in 0...buffer.size) {
+			buffer.data.set(buffer.writeLocation, 0);
+			buffer.writeLocation += 1;
+			if (buffer.writeLocation >= buffer.size) {
+				buffer.writeLocation = 0;
+			}
+		}
 	}
 
 	public static function _callCallback(samples: Int): Void {
@@ -29,7 +37,7 @@ class Audio {
 	public static function _readSample(): Float {
 		if (buffer == null) return 0;
 		var value = buffer.data.get(buffer.readLocation);
-		++buffer.readLocation;
+		buffer.readLocation += 2;
 		if (buffer.readLocation >= buffer.size) {
 			buffer.readLocation = 0;
 		}
