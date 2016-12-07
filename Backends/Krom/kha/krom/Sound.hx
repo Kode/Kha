@@ -12,7 +12,6 @@ class Sound extends kha.Sound {
 	}
 	
 	override public function uncompress(done: Void->Void): Void {
-		// TODO: simply call super class?
 		if (uncompressedData != null) {
 			done();
 			return;
@@ -20,20 +19,11 @@ class Sound extends kha.Sound {
 
 		var soundBytes = compressedData;
 		var count = Std.int(soundBytes.length / 4);
-		if (false) {// TODO: if stereo
-			uncompressedData = new Vector<Float>(count * 2);
-			for (i in 0...count) {
-				uncompressedData[i * 2 + 0] = soundBytes.getFloat(i * 4);
-				uncompressedData[i * 2 + 1] = soundBytes.getFloat(i * 4);
-			}
+		uncompressedData = new Vector<Float>(count);
+		for (i in 0...count) {
+			uncompressedData[i] = soundBytes.getFloat(i * 4);
 		}
-		else {
-			uncompressedData = new Vector<Float>(count);
-			for (i in 0...count) {
-				uncompressedData[i] = soundBytes.getFloat(i * 4);
-				//if (i < 10 || i > soundBytes.length/4 - 10 ) Krom.log(i + " = " + uncompressedData[i]);
-			}
-		}
+		
 		compressedData = null;
 		done();
 	}

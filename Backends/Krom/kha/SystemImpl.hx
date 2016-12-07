@@ -58,13 +58,8 @@ class SystemImpl {
 		mouse.sendMoveEvent(0, x, y, 0, 0);
 	}
 
-	private static function audioCallback() : Void {
-		var samples = 1024 * 2 * 4;
-		// TODO
-		//Krom.log("audio callback: samples " + samples);
-		
+	private static function audioCallback(samples: Int) : Void {
 		kha.audio2.Audio._callCallback(samples);
-
 		for (i in 0...samples) {
 			var value: Float = kha.audio2.Audio._readSample();
 			Krom.writeAudioBuffer(value);

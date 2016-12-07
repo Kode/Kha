@@ -21,7 +21,6 @@ class LoaderImpl {
 	}
 	
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
-		//done(Krom.loadSound(desc.files[0]));
 		done(new kha.krom.Sound(Bytes.ofData(Krom.loadSound(desc.files[0]))));
 	}
 	
