@@ -592,7 +592,6 @@ class SystemImpl {
 		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var textureFormat = translateTextureFormat(options.rendererOptions != null ? options.rendererOptions.textureFormat : TextureFormat.RGBA32);
-		var windowId: Int = -1;
 		var title = options.title;
 		var width = options.width;
 		var height = options.height;
@@ -600,7 +599,7 @@ class SystemImpl {
 		var maximizable = options.windowedModeOptions != null ? options.windowedModeOptions.maximizable : false;
 		var minimizable = options.windowedModeOptions != null ? options.windowedModeOptions.minimizable : true;
 
-		initWindow2(title, x, y, width, height, targetDisplay, textureFormat, depthBufferBits, stencilBufferBits, resizable, maximizable, minimizable, mode);
+		var windowId = initWindow2(title, x, y, width, height, targetDisplay, textureFormat, depthBufferBits, stencilBufferBits, resizable, maximizable, minimizable, mode);
 //#if (!VR_GEAR_VR && !VR_RIFT)
 		//var g4 = new kha.kore.graphics4.Graphics();
 		//var framebuffer = new Framebuffer(width, height, null, null, g4);
