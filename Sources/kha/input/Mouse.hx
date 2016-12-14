@@ -9,15 +9,15 @@ class Mouse extends Controller {
 		return SystemImpl.getMouse(num);
 	}
 
-	public function notify(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {
-		notifyWindowed(0, downListener, upListener, moveListener, wheelListener);
+	public function notify(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
+		notifyWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 
-	public function remove(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {
-		removeWindowed(0, downListener, upListener, moveListener, wheelListener);
+	public function remove(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
+		removeWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 
-	public function notifyWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {
+	public function notifyWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners == null) {
 				windowDownListeners = new Array();
@@ -65,9 +65,21 @@ class Mouse extends Controller {
 
 			windowWheelListeners[windowId].push(wheelListener);
 		}
+		
+		if (leaveListener != null) {
+			if (windowLeaveListeners == null) {
+				windowLeaveListeners = new Array();
+			}
+			
+			while (windowLeaveListeners.length <= windowId) {
+				windowLeaveListeners.push(new Array());
+			}
+			
+			windowLeaveListeners[windowId].push(leaveListener);
+		}
 	}
 
-	public function removeWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void): Void {
+	public function removeWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners != null) {
 				if (windowId < windowDownListeners.length) {
@@ -115,6 +127,18 @@ class Mouse extends Controller {
 				trace('no wheelListeners were ever registered');
 			}
 		}
+		
+		if (leaveListener != null) {
+			if (windowLeaveListeners != null) {
+				if (windowId < windowLeaveListeners.length) {
+					windowLeaveListeners[windowId].remove(leaveListener);
+				} else {
+					trace('no leaveListeners for window "${windowId}" are registered');
+				}
+			} else {
+				trace('no leaveListeners were ever registered');
+			}
+		}
 	}
 
 	public function lock(): Void {
@@ -154,12 +178,22 @@ class Mouse extends Controller {
 	var windowUpListeners: Array<Array<Int->Int->Int->Void>>;
 	var windowMoveListeners: Array<Array<Int->Int->Int->Int->Void>>;
 	var windowWheelListeners: Array<Array<Int->Void>>;
+	var windowLeaveListeners: Array<Array<Void->Void>>;
 
 	private function new() {
 		super();
 		instance = this;
 	}
 
+	@input
+	private function sendLeaveEvent(windowId:Int): Void {
+		if (windowLeaveListeners != null) {
+			for (listener in windowLeaveListeners[windowId]) {
+				listener();
+			}
+		}
+	}
+	
 	@input
 	private function sendDownEvent(windowId: Int, button: Int, x: Int, y: Int): Void {
 		if (windowDownListeners != null) {

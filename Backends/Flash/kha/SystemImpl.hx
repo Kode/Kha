@@ -106,6 +106,7 @@ class SystemImpl {
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, middleMouseDownHandler);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, middleMouseUpHandler);
 		stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
+		stage.addEventListener(Event.MOUSE_LEAVE, mouseLeaveHandler);
 
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -212,7 +213,11 @@ class SystemImpl {
 		mouseX = Std.int(event.stageX);
 		mouseY = Std.int(event.stageY);
 	}
-
+	
+	private static function mouseLeaveHandler(event: Event): Void {
+		mouse.sendLeaveEvent(0);
+	}
+	
 	private static function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, 0, mouseX, mouseY);
