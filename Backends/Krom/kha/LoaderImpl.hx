@@ -17,12 +17,11 @@ class LoaderImpl {
 	}
 	
 	public static function getSoundFormats(): Array<String> {
-		return ["ogg"];
+		return ["wav", "ogg"];
 	}
 	
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
-		//done(Krom.loadSound(desc.files[0]));
-		done(new kha.krom.Sound());
+		done(new kha.krom.Sound(Bytes.ofData(Krom.loadSound(desc.files[0]))));
 	}
 	
 	public static function getVideoFormats(): Array<String> {

@@ -8,6 +8,8 @@ import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.System;
 
+import haxe.ds.Vector;
+
 class SystemImpl {
 	private static var start: Float;
 	private static var framebuffer: Framebuffer;
@@ -63,6 +65,29 @@ class SystemImpl {
 	private static function mouseMoveCallback(x: Int, y: Int, mx: Int, my: Int): Void {
 		mouse.sendMoveEvent(0, x, y, mx, my);
 	}
+
+	private static var audioOutputData: Vector<Float>;
+	private static function audioCallback(samples: Int) : Void {
+		//Krom.log("Samples " + samples);
+		
+		audioOutputData = new Vector<Float>(samples);
+		
+		// lock mutex
+		//Krom.audioThread(true);
+
+		kha.audio2.Audio._callCallback(samples);
+		for (i in 0...samples) {
+			var value: Float = kha.audio2.Audio._readSample();
+			audioOutputData[i] = value;
+		}
+		// unlock mutex
+		//Krom.audioThread(false);
+
+		// write to buffer
+		for (i in 0...samples) {
+			Krom.writeAudioBuffer(audioOutputData[i]);
+		}
+	}
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		Krom.init(options.title, options.width, options.height, options.samplesPerPixel);
@@ -89,6 +114,10 @@ class SystemImpl {
 		Krom.setMouseDownCallback(mouseDownCallback);
 		Krom.setMouseUpCallback(mouseUpCallback);
 		Krom.setMouseMoveCallback(mouseMoveCallback);
+
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		Krom.setAudioCallback(audioCallback);
 		
 		Scheduler.start();
 		
