@@ -19,7 +19,8 @@ class VertexBuffer {
 	}
 
 	public function delete() {
-		
+		Krom.deleteVertexBuffer(buffer);
+		buffer = null;
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {

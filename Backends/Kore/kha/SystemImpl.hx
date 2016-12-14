@@ -552,9 +552,39 @@ class SystemImpl {
 			case A16: 6;
 		}
 	}
+	
+	@:functionCode('
+		Kore::WindowOptions wo;
+		wo.title = title;
+		wo.x = x;
+		wo.y = y;
+		wo.width = width;
+		wo.height = height;
+		//wo.mode = mode;
+		wo.targetDisplay = targetDisplay;
+		wo.rendererOptions.textureFormat = textureFormat;
+		wo.rendererOptions.depthBufferBits = depthBufferBits;
+		wo.rendererOptions.stencilBufferBits = stencilBufferBits;
+
+		wo.resizable = resizable;
+		wo.maximizable = maximizable;
+		wo.minimizable = minimizable;
+
+		switch (mode) {
+			default: // fall through
+			case 0: wo.mode = Kore::WindowModeWindow; break;
+			case 1: wo.mode = Kore::WindowModeBorderless; break;
+			case 2: wo.mode = Kore::WindowModeFullscreen; break;
+		}
+
+		return init_window(wo);
+	')
+	private static function initWindow2(title: String, x: Int, y: Int, width: Int, height: Int, targetDisplay: Int, textureFormat: Int, depthBufferBits: Int, stencilBufferBits: Int,
+		resizable: Bool, maximizable: Bool, minimizable: Bool, mode: Int): Int {
+		return 0;
+	}
 
 	private static function initWindow(options: WindowOptions, callback: Int -> Void) {
-		// TODO (DK) find a better way to call the cpp code
 		var x = translatePosition(options.x);
 		var y = translatePosition(options.y);
 		var mode = translateWindowMode(options.mode != null ? options.mode : WindowOptions.Mode.Window);
@@ -562,7 +592,6 @@ class SystemImpl {
 		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var textureFormat = translateTextureFormat(options.rendererOptions != null ? options.rendererOptions.textureFormat : TextureFormat.RGBA32);
-		var windowId: Int = -1;
 		var title = options.title;
 		var width = options.width;
 		var height = options.height;
@@ -570,33 +599,7 @@ class SystemImpl {
 		var maximizable = options.windowedModeOptions != null ? options.windowedModeOptions.maximizable : false;
 		var minimizable = options.windowedModeOptions != null ? options.windowedModeOptions.minimizable : true;
 
-		untyped __cpp__('
-			Kore::WindowOptions wo;
-			wo.title = title;
-			wo.x = x;
-			wo.y = y;
-			wo.width = width;
-			wo.height = height;
-			//wo.mode = mode;
-			wo.targetDisplay = targetDisplay;
-			wo.rendererOptions.textureFormat = textureFormat;
-			wo.rendererOptions.depthBufferBits = depthBufferBits;
-			wo.rendererOptions.stencilBufferBits = stencilBufferBits;
-
-			wo.resizable = resizable;
-			wo.maximizable = maximizable;
-			wo.minimizable = minimizable;
-
-			switch (mode) {
-				default: // fall through
-				case 0: wo.mode = Kore::WindowModeWindow; break;
-				case 1: wo.mode = Kore::WindowModeBorderless; break;
-				case 2: wo.mode = Kore::WindowModeFullscreen; break;
-			}
-
-			windowId = init_window(wo);
-		');
-
+		var windowId = initWindow2(title, x, y, width, height, targetDisplay, textureFormat, depthBufferBits, stencilBufferBits, resizable, maximizable, minimizable, mode);
 //#if (!VR_GEAR_VR && !VR_RIFT)
 		//var g4 = new kha.kore.graphics4.Graphics();
 		//var framebuffer = new Framebuffer(width, height, null, null, g4);

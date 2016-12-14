@@ -22,6 +22,7 @@ class Sound extends kha.Sound {
 		uncompressedData = new Vector<Float>(count);
 		for (i in 0...count) {
 			uncompressedData[i] = soundBytes.getFloat(i * 4);
+			//if (i < 10) Krom.log(" " + uncompressedData[i]);
 		}
 		
 		compressedData = null;

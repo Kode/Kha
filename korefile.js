@@ -30,6 +30,7 @@ project.addFiles('Backends/Kore/*.cpp', 'Backends/Kore/*.h');
 
 project.addExcludes('Backends/Kore/khacpp/project/thirdparty/pcre-7.8/dftables.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcredemo.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcregrep.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcretest.c');
 project.addExcludes('Backends/Kore/khacpp/src/ExampleMain.cpp', 'Backends/Kore/khacpp/src/hx/Scriptable.cpp', 'Backends/Kore/khacpp/src/hx/NoFiles.cpp', 'Backends/Kore/khacpp/src/hx/cppia/**');
+project.addExcludes('Backends/Kore/khacpp/src/hx/Debugger.cpp', 'Backends/Kore/khacpp/src/hx/Profiler.cpp', 'Backends/Kore/khacpp/src/hx/Telemetry.cpp');
 project.addExcludes('Backends/Kore/khacpp/src/hx/NekoAPI.cpp');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/sqlite/**');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/mysql/**');
@@ -40,37 +41,41 @@ project.addIncludeDirs('Backends/Kore/khacpp/include', 'Backends/Kore/khacpp/pro
 //	out += "project.addIncludeDirs('C:/khaviar/LibOVRKernel/Src/');\n";
 //	out += "project.addIncludeDirs('C:/khaviar/LibOVR/Include/');\n";
 //}
-				
-if (platform == Platform.Windows) project.addDefine('HX_WINDOWS');
-if (platform == Platform.WindowsApp) {
+
+if (platform !== Platform.Android) {
+	project.addExcludes('Backends/Kore/khacpp/src/hx/AndroidCompat.cpp');
+}
+
+if (platform === Platform.Windows) project.addDefine('HX_WINDOWS');
+if (platform === Platform.WindowsApp) {
 	project.addDefine('HX_WINDOWS');
 	project.addDefine('HX_WINRT');
 }
 if (platform !== Platform.Windows) {
 	project.addDefine('KORE_MULTITHREADED_AUDIO');
 }
-if (platform == Platform.OSX) {
+if (platform === Platform.OSX) {
 	project.addDefine('HXCPP_M64');
 	project.addDefine('HX_MACOS');
 }
-if (platform == Platform.Linux) project.addDefine('HX_LINUX');
-if (platform == Platform.iOS) {
+if (platform === Platform.Linux) project.addDefine('HX_LINUX');
+if (platform === Platform.iOS) {
 	project.addDefine('IPHONE');
 	project.addDefine('HX_IPHONE');
 }
 if (platform === Platform.tvOS) {
 	project.addDefine('APPLETV');
 }
-if (platform == Platform.Android) {
+if (platform === Platform.Android) {
 	project.addDefine('ANDROID');
 	project.addDefine('_ANDROID');
 	project.addDefine('HX_ANDROID');
 }
-if (platform == Platform.OSX) {
+if (platform === Platform.OSX) {
 	project.addDefine('KORE_DEBUGDIR="osx"');
 	project.addLib('Security');
 }
-if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
+if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 // project:addDefine('HXCPP_SCRIPTABLE');
 project.addDefine('HXCPP_API_LEVEL=330');

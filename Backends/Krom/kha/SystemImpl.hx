@@ -8,6 +8,8 @@ import kha.input.MouseImpl;
 import kha.input.Surface;
 import kha.System;
 
+import haxe.ds.Vector;
+
 class SystemImpl {
 	private static var start: Float;
 	private static var framebuffer: Framebuffer;
@@ -21,29 +23,35 @@ class SystemImpl {
 	
 	private static function convertCode(code: Int): Key {
 		switch (code) {
-			case 0x00000112:
-				return Key.LEFT;
-			case 0x00000113:
-				return Key.UP;
-			case 0x00000114:
-				return Key.RIGHT;
-			case 0x00000115:
-				return Key.DOWN;
-			case 0x00000104, 0x00000105:
-				return Key.ENTER;
-			default:
-				return null;
+		case 0x00000112:
+			return Key.LEFT;
+		case 0x00000113:
+			return Key.UP;
+		case 0x00000114:
+			return Key.RIGHT;
+		case 0x00000115:
+			return Key.DOWN;
+		case 0x00000104, 0x00000105:
+			return Key.ENTER;
+		case 0x00000120:
+			return Key.SHIFT;
+		case 0x00000100:
+			return Key.ESC;
+		default:
+			return null;
 		}
 	}
 	
-	private static function keyboardDownCallback(code: Int): Void {
+	private static function keyboardDownCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
 		if (key != null) keyboard.sendDownEvent(key, " ");
+		else keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
-	private static function keyboardUpCallback(code: Int): Void {
+	private static function keyboardUpCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
 		if (key != null) keyboard.sendUpEvent(key, " ");
+		else keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	private static function mouseDownCallback(button: Int, x: Int, y: Int): Void {
@@ -54,19 +62,36 @@ class SystemImpl {
 		mouse.sendUpEvent(0, button, x, y);
 	}
 	
-	private static function mouseMoveCallback(x: Int, y: Int): Void {
-		mouse.sendMoveEvent(0, x, y, 0, 0);
+	private static function mouseMoveCallback(x: Int, y: Int, mx: Int, my: Int): Void {
+		mouse.sendMoveEvent(0, x, y, mx, my);
 	}
 
+	private static var audioOutputData: Vector<Float>;
 	private static function audioCallback(samples: Int) : Void {
+		//Krom.log("Samples " + samples);
+		
+		audioOutputData = new Vector<Float>(samples);
+		
+		// lock mutex
+		//Krom.audioThread(true);
+
 		kha.audio2.Audio._callCallback(samples);
 		for (i in 0...samples) {
 			var value: Float = kha.audio2.Audio._readSample();
-			Krom.writeAudioBuffer(value);
+			audioOutputData[i] = value;
+		}
+		// unlock mutex
+		//Krom.audioThread(false);
+
+		// write to buffer
+		for (i in 0...samples) {
+			Krom.writeAudioBuffer(audioOutputData[i]);
 		}
 	}
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		Krom.init(options.title, options.width, options.height, options.samplesPerPixel);
+
 		start = Krom.getTime();
 		
 		haxe.Log.trace = function(v, ?infos) {

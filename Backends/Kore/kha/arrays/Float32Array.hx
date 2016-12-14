@@ -6,7 +6,7 @@ import kha.FastFloat;
 
 @:unreflective
 @:structAccess
-@:include("float32array.h")
+@:include("cpp_float32array.h")
 @:native("float32array")
 extern class Float32ArrayData {
 	@:native("float32array")
