@@ -2,6 +2,7 @@ package kha.audio2;
 
 import flash.events.Event;
 import flash.events.SampleDataEvent;
+import flash.media.SoundTransform;
 
 class HardwareAudioChannel implements kha.audio1.AudioChannel {
 	private var music: flash.media.Sound;
@@ -9,12 +10,14 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 	private var running: Bool;
 	private var loop: Bool;
 	private var myVolume: Float;
+	private var transform: SoundTransform;
 	
 	public function new(music: flash.media.Sound, loop: Bool) {
 		this.music = music;
 		this.loop = loop;
 		running = false;
 		myVolume = 1;
+		transform = new SoundTransform();
 	}
 	
 	public function play(): Void {
@@ -51,6 +54,8 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	private function set_volume(value: Float): Float {
+		transform.volume = value;
+		channel.soundTransform = transform;
 		return myVolume = value;
 	}
 	
