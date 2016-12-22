@@ -157,7 +157,7 @@ class WebGLImage extends Image {
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
-			
+
 			if (format == DEPTH16) {
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, texture, 0);
 				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
@@ -188,18 +188,18 @@ class WebGLImage extends Image {
 			case RGBA64:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			case RGBA32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, image);
 			case A32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, image);
 			case A16:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			default:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, image);
 			}
 		}
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 	}
-	
+
 	private function initDepthStencilBuffer(depthStencilFormat: DepthStencilFormat) {
 		switch (depthStencilFormat) {
 		case NoDepthAndStencil: {}
@@ -239,7 +239,7 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
-			} 
+			}
 		}
 	}
 
@@ -248,12 +248,12 @@ class WebGLImage extends Image {
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
 		if (video != null) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 	}
-	
+
 	public function setDepth(stage: Int): Void {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + stage);
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
 	}
-	
+
 	override public function setDepthStencilFrom(image: Image): Void {
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, cast(image, WebGLImage).depthTexture, 0);
@@ -271,7 +271,7 @@ class WebGLImage extends Image {
 			default: 4;
 		}
 	}
-	
+
 	public function bytesToArray(bytes: Bytes): Dynamic {
 		return switch(format) {
 			case RGBA32, L8:
@@ -284,7 +284,7 @@ class WebGLImage extends Image {
 	}
 
 	public var bytes: Bytes;
-	
+
 	override public function lock(level: Int = 0): Bytes {
 		bytes = Bytes.alloc(formatByteSize(format) * width * height);
 		return bytes;
