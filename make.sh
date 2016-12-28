@@ -1,2 +1,5 @@
+#!/bin/bash
 directory=$(dirname "$BASH_SOURCE")
-node "$directory"/make.js "$@"
+makejs=$directory
+makejs+="/make.js"
+node "$makejs" "$@"
