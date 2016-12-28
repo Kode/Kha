@@ -188,7 +188,7 @@ class WebGLImage extends Image {
 			case RGBA64:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			case RGBA32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
 			case A32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, image);
 			case A16:
