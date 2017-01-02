@@ -402,6 +402,7 @@ class SystemImpl {
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		canvas.onmousewheel = canvas.onwheel = mouseWheel;
+		canvas.onmouseleave = mouseLeave;
 
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
@@ -481,6 +482,10 @@ class SystemImpl {
 		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
+	private static function mouseLeave():Void {
+		mouse.sendLeaveEvent(0);
+	}
+	
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
 		AEAudioChannel.catchUp();

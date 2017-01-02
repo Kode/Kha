@@ -406,6 +406,10 @@ class SystemImpl {
 	public static function mouseWheel(windowId: Int, delta: Int): Void {
 		mouse.sendWheelEvent(windowId, delta);
 	}
+	
+	public static function mouseLeave(windowId: Int): Void {
+		mouse.sendLeaveEvent(windowId);
+	}
 
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
 		gamepad1.sendAxisEvent(axis, value);
