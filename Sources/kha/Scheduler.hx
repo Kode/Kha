@@ -63,6 +63,7 @@ class Scheduler {
 	private static var deltas: Array<Float>;
 	
 	private static var startTime: Float = 0;
+	private static var adjustedStartTime: Float = 0;
 	
 	private static var activeTimeTask: TimeTask = null;
 	
@@ -167,7 +168,7 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		var now: Float = realTime();
+		var now: Float = adjustedRealTime();
 		var delta = now - lastTime;
 		
 		var frameEnd: Float = current;
@@ -179,7 +180,7 @@ class Scheduler {
 		//tdif = 1.0 / 60.0; //force fixed frame rate
 		
 		if (delta > maxframetime) {
-			startTime += delta - maxframetime;
+			adjustedStartTime += delta - maxframetime;
 			delta = maxframetime;
 			frameEnd += delta;
 		}
@@ -298,11 +299,15 @@ class Scheduler {
 	public static function realTime(): Float {
 		return System.time - startTime;
 	}
+
+	private static function adjustedRealTime(): Float {
+		return System.time - adjustedStartTime;
+	}
 	
 	public static function resetTime(): Void {
 		var now = System.time;
-		var dif = now - startTime;
-		startTime = now;
+		var dif = now - adjustedStartTime;
+		adjustedStartTime = now;
 		for (timeTask in timeTasks) {
 			timeTask.start -= dif;
 			timeTask.next -= dif;
