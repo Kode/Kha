@@ -329,7 +329,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		height = Kore::min(height, Kore::System::desktopHeight());
 
 		Kore::WindowOptions options;
-		options.title = "";
+		options.title = name;
 		options.width = width;
 		options.height = height;
 		options.x = x;
