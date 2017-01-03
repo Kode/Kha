@@ -23,10 +23,10 @@ class WebGLImage extends Image {
 	private var myHeight: Int;
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
-	public var frameBuffer: Dynamic;
-	public var renderBuffer: Dynamic;
-	public var texture: Dynamic;
-	public var depthTexture: Dynamic;
+	public var frameBuffer: Dynamic = null;
+	public var renderBuffer: Dynamic = null;
+	public var texture: Dynamic = null;
+	public var depthTexture: Dynamic = null;
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -337,7 +337,10 @@ class WebGLImage extends Image {
 	}
 
 	override public function unload(): Void {
-
+		if (texture != null) SystemImpl.gl.deleteTexture(texture);
+		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
+		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
+		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
 	}
 
 	override public function generateMipmaps(levels: Int): Void {

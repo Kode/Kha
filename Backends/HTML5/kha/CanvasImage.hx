@@ -190,6 +190,8 @@ class CanvasImage extends Image {
 	}
 	
 	override public function unload(): Void {
-		
+		image = null;
+		video = null;
+		data = null;
 	}
 }
