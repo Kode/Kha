@@ -291,8 +291,8 @@ class Scheduler {
 	}
 
 	/**
-	 * The amount of time (in fractional seconds) that elapsed while the game was active.
-	 * Doesn't include time when the game loses focus, until it regains focus.
+	 * An approximation of the amount of time (in fractional seconds) that elapsed while the game was active.
+	 * This value is optimized for achieving smooth framerates.
 	 */
 	public static function time(): Float {
 		return current;
@@ -300,7 +300,6 @@ class Scheduler {
 	
 	/**
 	 * The amount of time (in fractional seconds) that elapsed since the game started.
-	 * This value keeps increasing even when the game loses focus.
 	*/
 	public static function realTime(): Float {
 		return System.time;
