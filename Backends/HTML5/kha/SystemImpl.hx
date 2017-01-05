@@ -64,7 +64,7 @@ class SystemImpl {
 		Browser.window.onerror = cast errorHandler;
 		var electron = untyped __js__("require('electron')");
 		electron.webFrame.setZoomLevelLimits(1, 1);
-		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', width: options.width, height: options.height});
+		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
 			init2();
@@ -80,7 +80,7 @@ class SystemImpl {
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		trace('initEx is not supported on the html5 target, running init() with first window options');
 
-		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+		init({title : title, width : options[0].width, height : options[0].height}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);
