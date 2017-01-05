@@ -104,6 +104,21 @@ class Audio1 {
 		#end
 		return channel;
 	}
+
+	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
+		#if cpp
+		mutex.acquire();
+		#end
+		for (i in 0...channelCount) {
+			if (soundChannels[i] == null || soundChannels[i].finished || soundChannels[i] == channel) {
+				soundChannels[i] = channel;
+				break;
+			}
+		}
+		#if cpp
+		mutex.release();
+		#end
+	}
 	
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		{

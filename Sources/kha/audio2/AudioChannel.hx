@@ -34,6 +34,10 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	
 	public function play(): Void {
 		paused = false;
+		if (finished) {
+			myPosition = 0;
+			kha.audio1.Audio._playAgain(this);
+		}
 	}
 
 	public function pause(): Void {
