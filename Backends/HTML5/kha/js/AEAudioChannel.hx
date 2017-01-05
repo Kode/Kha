@@ -6,12 +6,14 @@ import kha.audio1.AudioChannel;
 class AEAudioChannel implements kha.audio1.AudioChannel {
 	private var element: AudioElement;
 	private static var todo: Array<AEAudioChannel> = [];
+	private var stopped = false;
 	
 	public function new(element: AudioElement) {
 		this.element = element;
 	}
 	
 	public function play(): Void {
+		stopped = false;
 		if (SystemImpl.mobile) {
 			if (SystemImpl.insideInputEvent) {
 				element.play();
@@ -53,6 +55,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 		try {
 			element.pause();
 			element.currentTime = 0;
+			stopped = true;
 		}
 		catch (e: Dynamic) {
 			trace(e);
@@ -89,6 +92,6 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	public var finished(get, null): Bool;
 
 	private function get_finished(): Bool {
-		return position >= length;
+		return stopped || position >= length;
 	}
 }
