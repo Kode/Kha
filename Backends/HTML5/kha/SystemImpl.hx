@@ -45,7 +45,7 @@ class SystemImpl {
 	public static var insideInputEvent: Bool = false;
 
 	public static function initPerformanceTimer(): Void {
-		if (Browser.window.performance != null) {
+		if (Browser.window.performance != null && Browser.window.performance.now != null) {
 			performance = Browser.window.performance;
 		}
 		else {
