@@ -70,7 +70,7 @@ if (platform === Platform.Android) {
 	project.addDefine('ANDROID');
 	project.addDefine('_ANDROID');
 	project.addDefine('HX_ANDROID');
-	project.addDefine('HXCPP_ANDROID_PLATFORM=15');
+	project.addDefine('HXCPP_ANDROID_PLATFORM=24');
 }
 if (platform === Platform.OSX) {
 	project.addDefine('KORE_DEBUGDIR="osx"');
