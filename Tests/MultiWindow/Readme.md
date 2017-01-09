@@ -1,1 +1,1 @@
-node ../../make --kha ../.. --graphics opengl
+node ../../make --graphics opengl

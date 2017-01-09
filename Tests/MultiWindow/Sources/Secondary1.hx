@@ -1,21 +1,10 @@
-package;
-
-import kha.Color;
-import kha.Framebuffer;
-import kha.Scheduler;
-import kha.System;
-
 class Secondary1 {
 	public function new( id : Int ) {
-		System.notifyOnRender(id, render);
-		//Scheduler.addTimeTaskToGroup(id, update, 0, 1 / 60);
+		kha.System.notifyOnRender(render, id);
 	}
 
-	function render( framebuffer : Framebuffer ) {
-		framebuffer.g2.begin(Color.Green);
+	function render( framebuffer : kha.Framebuffer ) {
+		framebuffer.g2.begin(kha.Color.Green);
 		framebuffer.g2.end();
-	}
-
-	function update() {
 	}
 }
