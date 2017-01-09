@@ -10,17 +10,19 @@ package kha;
  */
 @:expose
 abstract Color(Int) from Int from UInt to Int to UInt {
-	public static var Black: Color = fromValue(0xff000000);
-	public static var White: Color = fromValue(0xffffffff);
-	public static var Red: Color = fromValue(0xffff0000);
-	public static var Blue: Color = fromValue(0xff0000ff);
-	public static var Green: Color = fromValue(0xff00ff00);
-	public static var Magenta: Color = fromValue(0xffff00ff);
-	public static var Yellow: Color = fromValue(0xffffff00);
-	public static var Cyan: Color = fromValue(0xff00ffff);
-	public static var Purple: Color = fromValue(0xff800080);
-	public static var Pink: Color = fromValue(0xffffc0cb);
-	public static var Orange: Color = fromValue(0xffffa500);
+	public static inline var Black: Color = 0xff000000;
+	public static inline var White: Color = 0xffffffff;
+	public static inline var Red: Color = 0xffff0000;
+	public static inline var Blue: Color = 0xff0000ff;
+	public static inline var Green: Color = 0xff00ff00;
+	public static inline var Magenta: Color = 0xffff00ff;
+	public static inline var Yellow: Color = 0xffffff00;
+	public static inline var Cyan: Color = 0xff00ffff;
+	public static inline var Purple: Color = 0xff800080;
+	public static inline var Pink: Color = 0xffffc0cb;
+	public static inline var Orange: Color = 0xffffa500;
+	
+	public static inline var Transparent: Color = 0x00000000;
 	
 	private static inline var invMaxChannelValue: FastFloat = 1 / 255;
 	
