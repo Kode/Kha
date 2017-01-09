@@ -100,8 +100,10 @@ class Graphics {
 	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
 	
 	public function pushTransformation(transformation: FastMatrix3): Void {
-		setTransformation(transformation);
-		transformations.push(transformation);
+		var trans = FastMatrix3.identity();
+		trans.setFrom(transformation);
+		setTransformation(trans);
+		transformations.push(trans);
 	}
 	
 	public function popTransformation(): FastMatrix3 {
@@ -116,7 +118,8 @@ class Graphics {
 	
 	private inline function set_transformation(transformation: FastMatrix3): FastMatrix3 {
 		setTransformation(transformation);
-		return transformations[transformations.length - 1] = transformation;
+		transformations[transformations.length - 1].setFrom(transformation);
+		return transformation;
 	}
 	
 	private inline function translation(tx: FastFloat, ty: FastFloat): FastMatrix3 {
@@ -136,7 +139,17 @@ class Graphics {
 	}
 	
 	public function rotate(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
-		transformation = rotation(angle, centerx, centery);
+		var temp = rotation(angle, centerx, centery);
+		// Compiler fails to inline unless we do this
+		transformation._00 = temp._00;
+		transformation._01 = temp._01;
+		transformation._02 = temp._02;
+		transformation._10 = temp._10;
+		transformation._11 = temp._11;
+		transformation._12 = temp._12;
+		transformation._20 = temp._20;
+		transformation._21 = temp._21;
+		transformation._22 = temp._22;
 	}
 	
 	public function pushRotation(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
