@@ -234,9 +234,13 @@ class Image implements Canvas implements Resource {
 
 	private var bytes: Bytes = null;
 
+	@:functionCode('
+		int size = texture-> sizeOf(texture->format) * texture->width * texture->height;
+		this->bytes = ::haxe::io::Bytes_obj::alloc(size);
+		return this->bytes;
+	')
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
-		return bytes;
+		return null;
 	}
 
 	@:functionCode('
