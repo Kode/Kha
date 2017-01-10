@@ -234,15 +234,39 @@ class Image implements Canvas implements Resource {
 
 	private var bytes: Bytes = null;
 
+	@:functionCode('
+		int size = texture-> sizeOf(texture->format) * texture->width * texture->height;
+		this->bytes = ::haxe::io::Bytes_obj::alloc(size);
+		return this->bytes;
+	')
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
-		return bytes;
+		return null;
 	}
 
 	@:functionCode('
 		Kore::u8* b = bytes->b->Pointer();
 		Kore::u8* tex = texture->lock();
-		for (int i = 0; i < ((texture->format == Kore::Image::RGBA32) ? (4 * texture->width * texture->height) : (texture->width * texture->height)); ++i) tex[i] = b[i];
+		int size = texture->sizeOf(texture->format);
+		int stride = texture->stride();
+		for (int y = 0; y < texture->height; ++y) {
+			for (int x = 0; x < texture->width; ++x) {
+#ifdef DIRECT3D
+				if (texture->format == Kore::Image::RGBA32) {
+					//RBGA->BGRA
+					tex[y * stride + x * size + 0] = b[(y * texture->width + x) * size + 2];
+					tex[y * stride + x * size + 1] = b[(y * texture->width + x) * size + 1];
+					tex[y * stride + x * size + 2] = b[(y * texture->width + x) * size + 0];
+					tex[y * stride + x * size + 3] = b[(y * texture->width + x) * size + 3];
+				}
+				else
+#endif
+				{
+					for (int i = 0; i < size; ++i) {
+						tex[y * stride + x * size + i] = b[(y * texture->width + x) * size + i];
+					}
+				}
+			}
+		}
 		texture->unlock();
 	')
 	public function unlock(): Void {
