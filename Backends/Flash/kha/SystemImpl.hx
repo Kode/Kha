@@ -249,10 +249,10 @@ class SystemImpl {
 	}
 
 	private static function mouseMoveHandler(event: MouseEvent): Void {
-		var movementX = Std.int(event.stageY) - mouseX;
+		var movementX = Std.int(event.stageX) - mouseX;
 		var movementY = Std.int(event.stageY) - mouseY;
 		setMousePosition(event);
-		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementX);
+		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 	}
 
 	private static function mouseWheelHandler(event: MouseEvent): Void {
