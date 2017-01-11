@@ -14,11 +14,11 @@ class DisplayImpl {
     }
 
     public static function x(index: Int): Int {
-        return flash.Lib.current.stage.x;
+        return Std.int(flash.Lib.current.stage.x);
     }
 
     public static function y(index: Int): Int {
-        return flash.Lib.current.stage.y;
+        return Std.int(flash.Lib.current.stage.y);
     }
 
     public static function isPrimary(index: Int): Bool {
