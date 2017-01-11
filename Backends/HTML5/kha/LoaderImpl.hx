@@ -11,6 +11,7 @@ import haxe.io.BytesData;
 import kha.FontStyle;
 import kha.Blob;
 import kha.js.WebAudioSound;
+import kha.js.MobileWebAudioSound;
 import kha.Kravur;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
@@ -72,7 +73,28 @@ class LoaderImpl {
 				}
 			}
 		}
-		else new kha.js.Sound(desc.files, done);
+		else if (SystemImpl.mobile) {
+			var element = Browser.document.createAudioElement();
+			if (element.canPlayType("audio/mp4") != "") {
+				for (i in 0...desc.files.length) {
+					var file: String = desc.files[i];
+					if (file.endsWith(".mp4")) {
+						new MobileWebAudioSound(file, done);
+						return;
+					}
+				}
+			}
+			for (i in 0...desc.files.length) {
+				var file: String = desc.files[i];
+				if (file.endsWith(".ogg")) {
+					new MobileWebAudioSound(file, done);
+					return;
+				}
+			}
+		}
+		else {
+			new kha.js.Sound(desc.files, done);
+		}
 	}
 	
 	public static function getVideoFormats(): Array<String> {

@@ -16,6 +16,7 @@ import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.AEAudioChannel;
 import kha.js.CanvasGraphics;
+import kha.js.MobileWebAudio;
 import kha.System;
 
 class GamepadStates {
@@ -317,6 +318,11 @@ class SystemImpl {
 		if (!mobile && kha.audio2.Audio._init()) {
 			SystemImpl._hasWebAudio = true;
 			kha.audio2.Audio1._init();
+		}
+		else if (mobile) {
+			SystemImpl._hasWebAudio = false;
+			MobileWebAudio._compile();
+			untyped __js__ ("kha_audio2_Audio1 = kha_js_MobileWebAudio");
 		}
 		else {
 			SystemImpl._hasWebAudio = false;
