@@ -1,51 +1,79 @@
 package kha.js;
 
 import js.html.audio.AudioBufferSourceNode;
+import js.html.audio.GainNode;
 
 class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 	private var source: AudioBufferSourceNode;
-	
-	public function new(source: AudioBufferSourceNode) {
-		this.source = source;
+	private var gain: GainNode;
+	private var startTime: Float;
+	private var pauseTime: Float;
+	private var paused: Bool = false;
+	private var stopped: Bool = false;
+
+	public function new(sound: MobileWebAudioSound, loop: Bool) {
+		source = MobileWebAudio._context.createBufferSource();
+		source.loop = loop;
+		source.buffer = sound._buffer;
+		source.onended = function () {
+			stopped = true;
+		}
+		gain = MobileWebAudio._context.createGain();
+		source.connect(gain);
+		gain.connect(MobileWebAudio._context.destination);
 	}
 	
 	public function play(): Void {
-		source.start(0);
+		stopped = false;
+		if (paused) {
+			startTime = MobileWebAudio._context.currentTime - pauseTime;
+			source.start(0, pauseTime);
+		}
+		else {
+			startTime = MobileWebAudio._context.currentTime;
+			source.start();
+		}
 	}
 
 	public function pause(): Void {
+		pauseTime = MobileWebAudio._context.currentTime - startTime;
+		paused = true;
 		source.stop();
 	}
 
 	public function stop(): Void {
+		paused = false;
+		stopped = true;
 		source.stop();
 	}
 
 	public var length(get, null): Float; // Seconds
 	
 	private function get_length(): Float {
-		return Math.POSITIVE_INFINITY;
+		return source.buffer.duration;
 	}
 
 	public var position(get, null): Float; // Seconds
 	
 	private function get_position(): Float {
-		return 0;
+		if (stopped) return length;
+		if (paused) return pauseTime;
+		else return MobileWebAudio._context.currentTime - startTime;
 	}
 
 	public var volume(get, set): Float;
 
 	private function get_volume(): Float {
-		return 1;
+		return gain.gain.value;
 	}
 
 	private function set_volume(value: Float): Float {
-		return 1;
+		return gain.gain.value = value;
 	}
 
 	public var finished(get, null): Bool;
 
 	private function get_finished(): Bool {
-		return false;
+		return stopped;
 	}
 }

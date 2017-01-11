@@ -27,15 +27,8 @@ class MobileWebAudio {
 	public static function _compile(): Void { }
 	
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
-		var source = _context.createBufferSource();
-		var mobileSound: MobileWebAudioSound = cast sound;
-		source.buffer = mobileSound._buffer;
-		source.connect(_context.destination);
-		
-		source.loop = loop;
-		var channel = new MobileWebAudioChannel(source);
+		var channel = new MobileWebAudioChannel(cast sound, loop);
 		channel.play();
-		
 		return channel; 
 	}
 
