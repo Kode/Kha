@@ -31,17 +31,6 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 		}
 	}
 	
-	public static function catchUp() {
-		if (!SystemImpl.mobile || SystemImpl.mobileAudioPlaying) return;
-		for (channel in todo) {
-			channel.element.play();
-			SystemImpl.mobileAudioPlaying = true;
-		}
-		if (SystemImpl.mobileAudioPlaying) {
-			todo = null;
-		}
-	}
-
 	public function pause(): Void {
 		try {
 			element.pause();

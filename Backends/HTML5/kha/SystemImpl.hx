@@ -494,7 +494,6 @@ class SystemImpl {
 	
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		event.preventDefault();
 
@@ -523,7 +522,6 @@ class SystemImpl {
 
 	private static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		setMouseXY(event);
 		if (event.which == 1) { //left button
@@ -551,7 +549,6 @@ class SystemImpl {
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		if (event.which != 1) return;
 
@@ -569,7 +566,6 @@ class SystemImpl {
 
 	private static function mouseMiddleUp(event: MouseEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		if (event.which != 2) return;
 		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
@@ -579,7 +575,6 @@ class SystemImpl {
 
 	private static function mouseRightUp(event: MouseEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		if (event.which != 3) return;
 		Browser.document.removeEventListener('mouseup', mouseRightUp);
@@ -589,7 +584,6 @@ class SystemImpl {
 
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
@@ -617,7 +611,6 @@ class SystemImpl {
 
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		event.stopPropagation();
 		event.preventDefault();
@@ -632,7 +625,6 @@ class SystemImpl {
 
 	private static function touchUp(event: TouchEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		for (touch in event.changedTouches)	{
 			setTouchXY(touch);
@@ -644,7 +636,6 @@ class SystemImpl {
 
 	private static function touchMove(event: TouchEvent): Void {
 		insideInputEvent = true;
-		AEAudioChannel.catchUp();
 
 		var index = 0;
 		for (touch in event.changedTouches) {
