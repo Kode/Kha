@@ -9,8 +9,6 @@ import js.html.audio.AudioBuffer;
 import js.html.AudioElement;
 import js.html.XMLHttpRequest;
 import js.Lib;
-import kha.audio2.Audio;
-import kha.audio2.ogg.vorbis.Reader;
 
 using StringTools;
 
@@ -30,7 +28,7 @@ class MobileWebAudioSound extends kha.Sound {
 		request.onload = function() {
 			compressedData = Bytes.ofData(request.response);
 			uncompressedData = null;
-			Audio._context.decodeAudioData(compressedData.getData(),
+			MobileWebAudio._context.decodeAudioData(compressedData.getData(),
 				function (buffer) {
 					_buffer = buffer;
 					done(this);

@@ -321,7 +321,7 @@ class SystemImpl {
 		}
 		else if (mobile) {
 			SystemImpl._hasWebAudio = false;
-			MobileWebAudio._compile();
+			MobileWebAudio._init();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_MobileWebAudio");
 		}
 		else {

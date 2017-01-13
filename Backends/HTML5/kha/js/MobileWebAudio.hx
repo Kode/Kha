@@ -6,7 +6,7 @@ import js.html.audio.AudioContext;
 class MobileWebAudio {
 	@:noCompletion public static var _context: AudioContext;
 
-	private static function initContext(): Void {
+	@:noCompletion public static function _init(): Void {
 		try {
 			_context = new AudioContext();
 			return;
@@ -22,9 +22,6 @@ class MobileWebAudio {
 			
 		}
 	}
-
-	@:noCompletion
-	public static function _compile(): Void { }
 	
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		var channel = new MobileWebAudioChannel(cast sound, loop);
