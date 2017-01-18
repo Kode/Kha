@@ -550,6 +550,7 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
+            khanvas.setCapture();
 			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -568,6 +569,8 @@ class SystemImpl {
 		unlockSoundOnIOS();
 	
 		if (event.which != 1) return;
+		
+        Browser.document.releaseCapture();
 
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
 
