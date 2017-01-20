@@ -44,7 +44,8 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	public static var insideInputEvent: Bool = false;
-
+	private static var loaded: Bool = false;
+	
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null && Browser.window.performance.now != null) {
 			performance = Browser.window.performance;
@@ -105,11 +106,31 @@ class SystemImpl {
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
-		return khanvas.width;
+		if (loaded) {
+			return khanvas.width;
+		}
+		else {
+			if (options.width != null) {
+				return options.width;
+			}
+			else {
+				return khanvas.width;
+			}
+		}
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		return khanvas.height;
+		if (loaded) {
+			return khanvas.height;
+		}
+		else {
+			if (options.height != null) {
+				return options.height;
+			}
+			else {
+				return khanvas.height;
+			}
+		}
 	}
 
 	public static function screenDpi(): Int {
@@ -264,13 +285,17 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		// Only consider custom canvas ID for release builds
-		var canvas: Dynamic = null;
+		var canvas: CanvasElement = null;
 		#if (sys_debug_html5 || !canvas_id)
-		canvas = Browser.document.getElementById("khanvas");
+		canvas = cast Browser.document.getElementById("khanvas");
 		#else
-		canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		canvas = cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
 		#end
 		canvas.style.cursor = "default";
+
+		canvas.onload = function () {
+			loaded = true;
+		};
 
 		var gl: Bool = false;
 
@@ -362,7 +387,7 @@ class SystemImpl {
 
 			Scheduler.executeFrame();
 
-			if (canvas.getContext) {
+			if (untyped canvas.getContext) {
 
 				// Lookup the size the browser is displaying the canvas.
 				//TODO deal with window.devicePixelRatio ?
@@ -407,7 +432,7 @@ class SystemImpl {
 		canvas.onkeyup = keyUp;
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		canvas.onmousewheel = canvas.onwheel = mouseWheel;
+		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
 		canvas.onmouseleave = mouseLeave;
 
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
