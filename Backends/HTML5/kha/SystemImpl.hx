@@ -575,6 +575,7 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
+			khanvas.setCapture();
 			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -589,13 +590,13 @@ class SystemImpl {
 	}
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
-		insideInputEvent = true;
 		unlockSoundOnIOS();
 	
 		if (event.which != 1) return;
-
+		
+		insideInputEvent = true;
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-
+		Browser.document.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -607,20 +608,22 @@ class SystemImpl {
 	}
 
 	private static function mouseMiddleUp(event: MouseEvent): Void {
-		insideInputEvent = true;
 		unlockSoundOnIOS();
 
 		if (event.which != 2) return;
+		
+		insideInputEvent = true;
 		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
 
 	private static function mouseRightUp(event: MouseEvent): Void {
-		insideInputEvent = true;
 		unlockSoundOnIOS();
 
 		if (event.which != 3) return;
+		
+		insideInputEvent = true;
 		Browser.document.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		insideInputEvent = false;
