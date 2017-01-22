@@ -575,7 +575,7 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			khanvas.setCapture();
+			if(Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
 			Browser.document.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -596,7 +596,7 @@ class SystemImpl {
 		
 		insideInputEvent = true;
 		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		Browser.document.releaseCapture();
+		if(Reflect.hasField(Browser.document, 'releaseCapture')) Browser.document.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
