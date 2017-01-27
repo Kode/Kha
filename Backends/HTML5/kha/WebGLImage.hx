@@ -35,12 +35,15 @@ class WebGLImage extends Image {
 	private var depthStencilFormat: DepthStencilFormat;
 
 	public static function init() {
-		var canvas: Dynamic = Browser.document.createElement("canvas");
-		if (canvas != null) {
-			context = canvas.getContext("2d");
-			canvas.width = 2048;
-			canvas.height = 2048;
-			context.globalCompositeOperation = "copy";
+		if (context == null) {
+			// create only once
+			var canvas: Dynamic = Browser.document.createElement("canvas");
+			if (canvas != null) {
+				context = canvas.getContext("2d");
+				canvas.width = 2048;
+				canvas.height = 2048;
+				context.globalCompositeOperation = "copy";
+			}
 		}
 	}
 
@@ -52,6 +55,7 @@ class WebGLImage extends Image {
 		image = null;
 		video = null;
 		this.depthStencilFormat = depthStencilFormat;
+		init();
 		if (renderTarget) createTexture();
 	}
 
