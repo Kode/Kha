@@ -73,10 +73,6 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setDepthMode(write, mode.getIndex());
 	}
 
-	private static function getBlendFunc(op: BlendingFactor): Int {
-		return 0;
-	}
-
 	private function getBlendFunc(factor: BlendingFactor): Int {
 		switch (factor) {
 		case BlendOne, Undefined:
