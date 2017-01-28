@@ -77,8 +77,8 @@ class Graphics implements kha.graphics4.Graphics {
 		return 0;
 	}
 
-	private function getBlendingMode(op: BlendingFactor): Int {
-		switch (op) {
+	private function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
 		case BlendOne, Undefined:
 			return 0;
 		case BlendZero:
@@ -104,8 +104,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
-		Krom.setBlendingMode(getBlendingMode(source), getBlendingMode(destination));
+	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, alphaSource: BlendingFactor, alphaDestination: BlendingFactor): Void {
+		Krom.setBlendingMode(getBlendFunc(source), getBlendFunc(destination), getBlendFunc(alphaSource), getBlendFunc(alphaDestination));
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
@@ -153,7 +153,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullMode(pipeline.cullMode);
 		setDepthMode(pipeline.depthWrite, pipeline.depthMode);
 		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, pipeline.stencilReferenceValue, pipeline.stencilReadMask, pipeline.stencilWriteMask);
-		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
+		setBlendingMode(pipeline.blendSource, pipeline.blendDestination, pipeline.alphaBlendSource, pipeline.alphaBlendDestination);
 		setColorMask(pipeline.colorWriteMaskRed, pipeline.colorWriteMaskGreen, pipeline.colorWriteMaskBlue, pipeline.colorWriteMaskAlpha);
 		pipeline.set();
 	}
