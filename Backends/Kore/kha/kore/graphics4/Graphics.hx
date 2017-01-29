@@ -163,8 +163,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	
-	private function getBlendingMode(op: BlendingFactor): Int {
-		switch (op) {
+	private function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
 		case BlendOne, Undefined:
 			return 0;
 		case BlendZero:
@@ -196,15 +196,15 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			Kore::Graphics::setRenderState(Kore::BlendingState, true);
-			Kore::Graphics::setBlendingMode((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination);
+			Kore::Graphics::setBlendingModeSeparate((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination, (Kore::BlendingOperation)alphaSource, (Kore::BlendingOperation)alphaDestination);
 		}
 	')
-	private function setBlendingModeNative(source: Int, destination: Int): Void {
+	private function setBlendingModeNative(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void {
 		
 	}
 	
-	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
-		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
+	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation, alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
+		setBlendingModeNative(getBlendFunc(source), getBlendFunc(destination), getBlendFunc(alphaSource), getBlendFunc(alphaDestination));
 	}
 	
 	@:functionCode('
@@ -414,7 +414,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setBlendingMode(pipe.blendSource, pipe.blendDestination);
+		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
 		setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);        
 		pipe.set();
 	}
