@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 import kha.kore.graphics4.TextureUnit;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
@@ -42,6 +43,20 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
+	
+	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
+		var image = new Image(readable);
+		var filename = '_.$fileExtention';
+		var isFloat = StringTools.endsWith(filename, ".hdr");
+		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		var errMsg = image.initFromEncodedBytes(bytes.getData(), filename);
+		if(errMsg == null) {
+			doneCallback(image);
+		}
+		else {
+			errorCallback(errMsg);
+		}
+	}	
 
 	private function new(readable: Bool) {
 		this.readable = readable;
@@ -139,6 +154,21 @@ class Image implements Canvas implements Resource {
 	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 
+	}
+
+	// return null if ok or error message otherwise
+	@:functionCode('
+		Kore::Image::setNullFilenameData(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, filename.c_str()); 
+		try {
+			texture = new Kore::Texture(nullptr, readable);
+			return null();
+		} catch (char const * msg) {
+			texture = nullptr;
+			return ::String(msg);
+		}
+	')
+	private function initFromEncodedBytes(bytes:BytesData, filename:String):Null<String> {
+		return null;
 	}
 
 	public var g1(get, null): kha.graphics1.Graphics;
