@@ -142,18 +142,27 @@ class ImageShaderPainter {
 	}
 	
 	private inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
+		setRectTexCoords2(left, bottom, left, top, right, top, right, bottom);
+	}
+	
+	private inline function setRectTexCoords2(
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
+		
 		var baseIndex: Int = bufferIndex * vertexSize * 4;
-		rectVertices.set(baseIndex +  3, left);
-		rectVertices.set(baseIndex +  4, bottom);
+		rectVertices.set(baseIndex +  3, bottomleftx);
+		rectVertices.set(baseIndex +  4, bottomlefty);
 		
-		rectVertices.set(baseIndex + 12, left);
-		rectVertices.set(baseIndex + 13, top);
+		rectVertices.set(baseIndex + 12, topleftx);
+		rectVertices.set(baseIndex + 13, toplefty);
 		
-		rectVertices.set(baseIndex + 21, right);
-		rectVertices.set(baseIndex + 22, top);
+		rectVertices.set(baseIndex + 21, toprightx);
+		rectVertices.set(baseIndex + 22, toprighty);
 		
-		rectVertices.set(baseIndex + 30, right);
-		rectVertices.set(baseIndex + 31, bottom);
+		rectVertices.set(baseIndex + 30, bottomrightx);
+		rectVertices.set(baseIndex + 31, bottomrighty);
 	}
 	
 	private inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
@@ -252,6 +261,33 @@ class ImageShaderPainter {
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, opacity);
 		setRectVertices(left, bottom, left, top, right, top, right, bottom);
+		
+		++bufferIndex;
+		lastTexture = tex;
+	}
+	
+	public inline function drawImageAllCoords(
+		image: Image, 		
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat,
+		tex_bottomleftx: FastFloat, tex_bottomlefty: FastFloat,
+		tex_topleftx: FastFloat, tex_toplefty: FastFloat,
+		tex_toprightx: FastFloat, tex_toprighty: FastFloat,
+		tex_bottomrightx: FastFloat, tex_bottomrighty: FastFloat,
+		opacity: FastFloat, color: Color):Void {
+		
+		var tex = image;
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+		
+		setRectColor(color.R, color.G, color.B, color.A * opacity);
+		setRectTexCoords2(
+			tex_bottomleftx / tex.realWidth, tex_bottomlefty / tex.realHeight, 
+			tex_topleftx / tex.realWidth, tex_toplefty / tex.realHeight, 
+			tex_toprightx / tex.realWidth, tex_toprighty / tex.realHeight, 
+			tex_bottomrightx / tex.realWidth, tex_bottomrighty / tex.realHeight);
+		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 		
 		++bufferIndex;
 		lastTexture = tex;
@@ -909,6 +945,24 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p4 = transformation.multvec(new FastVector2(dx + dw, dy + dh));
 		imagePainter.drawImage2(img, sx, sy, sw, sh, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, opacity, this.color);
 	}
+	
+	public override function drawImageNoTransform(
+		image: Image, 		
+		bottomleftx: FastFloat, bottomlefty: FastFloat,
+		topleftx: FastFloat, toplefty: FastFloat,
+		toprightx: FastFloat, toprighty: FastFloat,
+		bottomrightx: FastFloat, bottomrighty: FastFloat,
+		tex_bottomleftx: FastFloat, tex_bottomlefty: FastFloat,
+		tex_topleftx: FastFloat, tex_toplefty: FastFloat,
+		tex_toprightx: FastFloat, tex_toprighty: FastFloat,
+		tex_bottomrightx: FastFloat, tex_bottomrighty: FastFloat):Void {
+		coloredPainter.end();
+		textPainter.end();
+		imagePainter.drawImageAllCoords(image, bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty, 
+			tex_bottomleftx, tex_bottomlefty, tex_topleftx, tex_toplefty, tex_toprightx, tex_toprighty, tex_bottomrightx, tex_bottomrighty, 
+			this.opacity, this.color);
+	}
+	
 	
 	override public function get_color(): Color {
 		return myColor;
