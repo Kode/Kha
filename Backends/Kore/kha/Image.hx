@@ -44,18 +44,12 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
+	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
-		var filename = '_.$fileExtention';
-		var isFloat = StringTools.endsWith(filename, ".hdr");
+		var isFloat = format == "hdr" || format == "HDR";
 		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
-		var errMsg = image.initFromEncodedBytes(bytes.getData(), filename);
-		if(errMsg == null) {
-			doneCallback(image);
-		}
-		else {
-			errorCallback(errMsg);
-		}
+		image.initFromEncodedBytes(bytes.getData(), format);
+		doneCallback(image);
 	}	
 
 	private function new(readable: Bool) {
@@ -156,19 +150,9 @@ class Image implements Canvas implements Resource {
 
 	}
 
-	// return null if ok or error message otherwise
-	@:functionCode('
-		Kore::Image::setNullFilenameData(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, filename.c_str()); 
-		try {
-			texture = new Kore::Texture(nullptr, readable);
-			return null();
-		} catch (char const * msg) {
-			texture = nullptr;
-			return ::String(msg);
-		}
-	')
-	private function initFromEncodedBytes(bytes:BytesData, filename:String):Null<String> {
-		return null;
+	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
+	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
+		
 	}
 
 	public var g1(get, null): kha.graphics1.Graphics;
