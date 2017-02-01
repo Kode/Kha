@@ -23,7 +23,9 @@ extern class Krom {
 	static function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
 	static function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
+	static function setFloat4s(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
 	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
+	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
 	
 	static function begin(renderTarget: kha.Image, additionalRenderTargets: Array<kha.Canvas>): Void;
 	static function end(): Void;
