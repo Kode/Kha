@@ -6,7 +6,6 @@ addons:
   apt:
     packages:
       - libasound2-dev
-      - libpcre3
 language: cpp
 before_script:
   - git submodule update --init --recursive
