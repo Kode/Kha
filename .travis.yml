@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
       - libasound2-dev
+      - libpcre3
 language: cpp
 compiler:
   - gcc
