@@ -79,7 +79,7 @@ class VertexBuffer {
 	}
 
 	public function delete(): Void {
-		data = null;
+		_data = null;
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	

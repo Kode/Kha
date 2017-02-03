@@ -18,7 +18,7 @@ class IndexBuffer {
 	}
 	
 	public function delete(): Void {
-		data = null;
+		_data = null;
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	
