@@ -22,6 +22,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
