@@ -388,9 +388,17 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
 	}
 
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		
+	}
+
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: haxe.ds.Vector<FastFloat>): Void {
 		var flashLocation: ConstantLocation = cast location;
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, values.toData());
+	}
+
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: haxe.ds.Vector<FastFloat>): Void {
+		setFloats(location, values);
 	}
 
 	//public function renderToBackbuffer(): Void {

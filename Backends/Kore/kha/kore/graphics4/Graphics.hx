@@ -532,6 +532,17 @@ class Graphics implements kha.graphics4.Graphics {
 	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
 		
 	}
+
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		setFloat4sPrivate(cast location, values);
+	}
+	
+	@:functionCode('
+		Kore::Graphics::setFloat4s(location->location, values->Pointer(), values->length);
+	')
+	private function setFloat4sPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+		
+	}
 	
 	@:functionCode('
 		Kore::mat4 value;
@@ -543,6 +554,18 @@ class Graphics implements kha.graphics4.Graphics {
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
+		
+	}
+
+	@:functionCode('
+		Kore::mat3 value;
+		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20);
+		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21);
+		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22);
+		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
+		Kore::Graphics::setMatrix(loc->location, value);
+	')
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
 		
 	}
 	

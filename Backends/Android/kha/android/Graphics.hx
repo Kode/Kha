@@ -306,6 +306,13 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glUniform1fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
 	}
 
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		for (i in 0...values.length) {
+			valuesCache[i] = values[i];
+		}
+		GLES20.glUniform4fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
+	}
+
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		GLES20.glUniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}
@@ -326,6 +333,15 @@ class Graphics implements kha.graphics4.Graphics {
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
 		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
 		GLES20.glUniformMatrix4fv(cast(location, ConstantLocation).value, 1, false, matrixCache, 0);
+	}
+
+	private var matrix3Cache = new NativeArray<Single>(9);
+
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
+		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
+		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
+		GLES20.glUniformMatrix3fv(cast(location, ConstantLocation).value, 1, false, matrix3Cache, 0);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

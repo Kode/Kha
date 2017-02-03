@@ -189,6 +189,10 @@ class Graphics implements kha.graphics4.Graphics {
 
 	}
 
+	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {
+
+	}
+
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value.x, value.y, 0.0, 1.0));
@@ -212,6 +216,10 @@ class Graphics implements kha.graphics4.Graphics {
 		m.SetRow(2, new unityEngine.Vector4(value._20, value._21, value._22, value._23));
 		m.SetRow(3, new unityEngine.Vector4(value._30, value._31, value._32, value._33));
 		pipeline.material.SetMatrix(loc.name, m);
+	}
+
+	public function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {
+		
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
