@@ -17,6 +17,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
+import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
