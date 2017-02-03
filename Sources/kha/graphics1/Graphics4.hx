@@ -6,6 +6,7 @@ import kha.Color;
 import kha.FastFloat;
 import kha.Image;
 import kha.graphics4.*;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -72,6 +73,10 @@ class Graphics4 implements kha.graphics4.Graphics {
 		
 	}
 
+	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {
+
+	}
+
 	public function setVideoTexture(unit: TextureUnit, texture: Video): Void {
 		
 	}
@@ -123,6 +128,10 @@ class Graphics4 implements kha.graphics4.Graphics {
 	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
 		
 	}
+
+	public function setFloat4s(location: ConstantLocation, float4s: Vector<FastFloat>): Void {
+
+	}
 	
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		
@@ -138,6 +147,10 @@ class Graphics4 implements kha.graphics4.Graphics {
 	
 	public function setMatrix(location: ConstantLocation, value: FastMatrix4): Void {
 		
+	}
+
+	public function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {
+
 	}
 	
 	private static inline function min(a: FastFloat, b: FastFloat, c: FastFloat): FastFloat {
