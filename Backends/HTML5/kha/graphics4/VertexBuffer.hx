@@ -8,7 +8,7 @@ import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	private var buffer: Dynamic;
-	private var data: Float32Array;
+	public var _data: Float32Array;
 	private var mySize: Int;
 	private var myStride: Int;
 	private var sizes: Array<Int>;
@@ -37,7 +37,7 @@ class VertexBuffer {
 		}
 	
 		buffer = SystemImpl.gl.createBuffer();
-		data = new Float32Array(Std.int(vertexCount * myStride / 4));
+		_data = new Float32Array(Std.int(vertexCount * myStride / 4));
 		
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
@@ -84,12 +84,12 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return data;
+		return _data;
 	}
 	
 	public function unlock(): Void {
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast _data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
