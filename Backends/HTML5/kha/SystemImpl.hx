@@ -105,11 +105,11 @@ class SystemImpl {
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
-		return khanvas.width;
+		return (khanvas.width == 0 && options.width != null) ? options.width : khanvas.width;
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		return khanvas.height;
+		return (khanvas.height == 0 && options.height != null) ? options.height : khanvas.height;
 	}
 
 	public static function screenDpi(): Int {
