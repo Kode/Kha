@@ -44,8 +44,7 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	public static var insideInputEvent: Bool = false;
-	private static var loaded: Bool = false;
-	
+
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null && Browser.window.performance.now != null) {
 			performance = Browser.window.performance;
@@ -106,31 +105,11 @@ class SystemImpl {
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.width;
-		}
-		else {
-			if (options.width != null) {
-				return options.width;
-			}
-			else {
-				return khanvas.width;
-			}
-		}
+		return khanvas.width;
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.height;
-		}
-		else {
-			if (options.height != null) {
-				return options.height;
-			}
-			else {
-				return khanvas.height;
-			}
-		}
+		return khanvas.height;
 	}
 
 	public static function screenDpi(): Int {
@@ -285,19 +264,15 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		// Only consider custom canvas ID for release builds
-        var canvas: Dynamic = khanvas;
-        if(canvas == null) {
-            #if (sys_debug_html5 || !canvas_id)
-            canvas = Browser.document.getElementById("khanvas");
-            #else
-            canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-            #end
-        }
+		var canvas: Dynamic = khanvas;
+		if (canvas == null) {
+			#if (sys_debug_html5 || !canvas_id)
+			canvas = Browser.document.getElementById("khanvas");
+			#else
+			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+			#end
+		}
 		canvas.style.cursor = "default";
-
-		canvas.onload = function () {
-			loaded = true;
-		};
 
 		var gl: Bool = false;
 
