@@ -2,6 +2,8 @@ package kha.vr;
 
 import js.Browser;
 import js.html.Float32Array;
+import js.html.Event;
+import js.html.KeyboardEvent;
 
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.IndexBuffer;
@@ -16,12 +18,14 @@ import kha.math.FastMatrix4;
 import kha.Image;
 import kha.SystemImpl;
 
+import kha.vr.SensorState;
+
 class VrInterface {
 
 	public var vrEnabled: Bool = false;
 
-	static var vrDisplay;
-	static var frameData;
+	private static var vrDisplay;
+	private static var frameData;
 
 	private var leftProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var rightProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
@@ -29,7 +33,7 @@ class VrInterface {
 	private var rightViewMatrix: FastMatrix4 = FastMatrix4.identity();
 
 	public function new() {
-		var displayEnabled:Bool = untyped __js__('navigator.getVRDisplays');
+		var displayEnabled: Bool = untyped __js__('navigator.getVRDisplays');
 		if (displayEnabled) {
 			getVRDisplays();
 			trace("Display enabled.");
@@ -50,25 +54,56 @@ class VrInterface {
 				var rightEye = vrDisplay.getEyeParameters("right");
 				//SystemImpl.khanvas.width = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
 				//SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
+				//trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 
-				trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
+				// Reset pose button
+				var resetButton = Browser.document.createButtonElement();
+        		resetButton.textContent = "Reset Pose!";
+        		resetButton.onclick = function(event) {
+            		vrDisplay.resetPose();
+        		}
+        		Browser.document.body.appendChild(resetButton);
 
-				vrEnabled = true;
-				try {
-					vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
-						vrDisplay.requestAnimationFrame(onAnimationFrame);
-					});
-				} catch( msg : String ) {
-					trace("Failed to requestPresent.");
+				// Enter VR button
+				if (vrDisplay.capabilities.canPresent) {
+					var vrButton = Browser.document.createButtonElement();
+					vrButton.textContent = "Enter VR";
+					vrButton.onclick = function(event) {
+						onVRRequestPresent();
+					}
+					Browser.document.body.appendChild(vrButton);
 				}
 
+				vrEnabled = true;
 			} else {
 				trace("There are no VR displays connected.");
 			}
 		});
 	}
 
-	private function onAnimationFrame(timestamp): Void {
+	function onVRRequestPresent () {
+		try {
+			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
+				vrDisplay.requestAnimationFrame(onAnimationFrame);
+			});
+		} catch(err: String) {
+			trace("Failed to requestPresent.");
+			trace(err);
+		}
+	}
+
+	function onVRExitPresent () {
+		/*try {
+			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
+				// TODO Exit VR
+			});
+		} catch(err: String) {
+			trace("Failed to exitPresent.");
+			trace(err);
+		}*/
+	}
+
+	private function onAnimationFrame(timestamp: Int): Void {
 		vrDisplay.requestAnimationFrame(onAnimationFrame);
 
         vrDisplay.getFrameData(frameData);
@@ -114,4 +149,5 @@ class VrInterface {
 		matrix._30 = array[12]; matrix._31 = array[13]; matrix._32 = array[14]; matrix._33 = array[15];
 		return matrix;
 	}
+
 }
