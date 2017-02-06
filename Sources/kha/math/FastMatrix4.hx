@@ -84,10 +84,10 @@ class FastMatrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new FastMatrix4(
-			 ca, 0, sa, 0,
-			  0, 1,  0, 0,
+			ca,  0, sa, 0,
+			0,   1,  0, 0,
 			-sa, 0, ca, 0,
-			  0, 0,  0, 1
+			0,   0,  0, 1
 		);
 	}
 
@@ -97,8 +97,8 @@ class FastMatrix4 {
 		return new FastMatrix4(
 			ca, -sa, 0, 0,
 			sa,  ca, 0, 0,
-			 0,   0, 1, 0,
-			 0,   0, 0, 1
+			0,   0, 1, 0,
+			0,   0, 0, 1
 		);
 	}
 
@@ -112,8 +112,8 @@ class FastMatrix4 {
 		return new FastMatrix4(
 			cx * cy, cx * sy * sz - sx * cz, cx * sy * cz + sx * sz, 0,
 			sx * cy, sx * sy * sz + cx * cz, sx * sy * cz - cx * sz, 0,
-				-sy,                cy * sz,                cy * cz, 0,
-				  0,                      0,                      0, 1
+			-sy,     cy * sz,                cy * cz,                0,
+			0,       0,                      0,                      1
 		);
 	}
 
@@ -265,10 +265,10 @@ class FastMatrix4 {
 
 		var invdet: FastFloat = 1.0 / det;
 		return new FastMatrix4(
-			 c00 * invdet, - c01 * invdet,   c02 * invdet, - c03 * invdet,
-			-c10 * invdet,   c11 * invdet, - c12 * invdet,   c13 * invdet,
-			 c20 * invdet, - c21 * invdet,   c22 * invdet, - c23 * invdet,
-			-c30 * invdet,   c31 * invdet, - c32 * invdet,   c33 * invdet
+			c00 * invdet,  -c01 * invdet,  c02 * invdet, -c03 * invdet,
+			-c10 * invdet,  c11 * invdet, -c12 * invdet,  c13 * invdet,
+			c20 * invdet,  -c21 * invdet,  c22 * invdet, -c23 * invdet,
+			-c30 * invdet,  c31 * invdet, -c32 * invdet,  c33 * invdet
 		);
 	}
 }

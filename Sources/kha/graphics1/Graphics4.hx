@@ -23,7 +23,7 @@ class Graphics4 implements kha.graphics4.Graphics {
 	public function new(canvas: Canvas) {
 		this.canvas = canvas;
 	}
-    
+
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		this.g1 = canvas.g1;
 		g1.begin();
