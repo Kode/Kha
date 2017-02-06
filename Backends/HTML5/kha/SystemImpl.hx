@@ -552,16 +552,16 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if(Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
-			Browser.document.addEventListener('mouseup', mouseLeftUp);
+			if (Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
+			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
 			mouse.sendDownEvent(0, 2, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseMiddleUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseMiddleUp);
 		}
 		else if(event.which == 3) { //right button
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseRightUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseRightUp);
 		}
 		insideInputEvent = false;
 	}
@@ -572,8 +572,8 @@ class SystemImpl {
 		if (event.which != 1) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		if(Reflect.hasField(Browser.document, 'releaseCapture')) Browser.document.releaseCapture();
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
+		if(Reflect.hasField(khanvas.ownerDocument, 'releaseCapture')) khanvas.ownerDocument.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -590,7 +590,7 @@ class SystemImpl {
 		if (event.which != 2) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -601,7 +601,7 @@ class SystemImpl {
 		if (event.which != 3) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseRightUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		insideInputEvent = false;
 	}
