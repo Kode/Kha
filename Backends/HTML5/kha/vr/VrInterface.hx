@@ -15,10 +15,10 @@ import kha.graphics4.ConstantLocation;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.math.FastMatrix4;
+import kha.math.Vector3;
+import kha.math.Quaternion;
 import kha.Image;
 import kha.SystemImpl;
-
-import kha.vr.SensorState;
 
 class VrInterface {
 
@@ -74,6 +74,8 @@ class VrInterface {
 					Browser.document.body.appendChild(vrButton);
 				}
 
+				GetSensorState();
+
 				vrEnabled = true;
 			} else {
 				trace("There are no VR displays connected.");
@@ -81,7 +83,7 @@ class VrInterface {
 		});
 	}
 
-	function onVRRequestPresent () {
+	private function onVRRequestPresent () {
 		try {
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				vrDisplay.requestAnimationFrame(onAnimationFrame);
@@ -92,7 +94,7 @@ class VrInterface {
 		}
 	}
 
-	function onVRExitPresent () {
+	private function onVRExitPresent () {
 		/*try {
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				// TODO Exit VR
@@ -141,13 +143,46 @@ class VrInterface {
 		}
 	}
 
+	public function GetSensorState(): SensorState {
+		var result: SensorState = new SensorState();
+
+		var mPose = vrDisplay.getPose();	// predicted pose of the vrDisplay
+
+		result.Predicted = new PoseState();
+		result.Predicted.AngularVelocity = createVectorFromArray(untyped mPose.angularVelocity);
+		result.Predicted.AngularAcceleration = createVectorFromArray(untyped mPose.angularAcceleration);
+		result.Predicted.LinearVelocity = createVectorFromArray(untyped mPose.linearVelocity);
+		result.Predicted.LinearAcceleration = createVectorFromArray(untyped mPose.linearAcceleration);
+		result.Predicted.Pose = new Pose();
+		result.Predicted.Pose.Orientation = createQuaternion(untyped mPose.orientation);
+		result.Predicted.Pose.Position = createVectorFromArray(untyped mPose.position);
+		
+		return result;
+	}
+
 	private function createMatrixFromArray(array: Float32Array): FastMatrix4 {
-		var matrix : FastMatrix4 = FastMatrix4.identity();
+		var matrix: FastMatrix4 = FastMatrix4.identity();
 		matrix._00 = array[0];  matrix._01 = array[1];  matrix._02 = array[2];  matrix._03 = array[3];
 		matrix._10 = array[4];  matrix._11 = array[5];  matrix._12 = array[6];  matrix._13 = array[7];
 		matrix._20 = array[8];  matrix._21 = array[9];  matrix._22 = array[10]; matrix._23 = array[11];
 		matrix._30 = array[12]; matrix._31 = array[13]; matrix._32 = array[14]; matrix._33 = array[15];
 		return matrix;
+	}
+
+	private function createVectorFromArray(array: Float32Array): Vector3 {
+		var vector: Vector3 = new Vector3(0, 0, 0);
+		if (array != null) {
+			vector.x = array[0];	vector.y = array[1];	vector.z = array[2];
+		}
+		return vector;
+	}
+
+	private function createQuaternion(array: Float32Array): Quaternion {
+		var quaternion: Quaternion = new Quaternion(0, 0, 0, 0);
+		if (array != null) {
+			quaternion.x = array[0];	quaternion.y = array[1];	quaternion.z = array[2];	quaternion.w = array[3];
+		}
+		return quaternion;
 	}
 
 }
