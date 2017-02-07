@@ -7,7 +7,7 @@ using StringTools;
 
 @:keep
 @:build(kha.internal.AssetsBuilder.build("image"))
-class ImageList {
+private class ImageList {
 	public function new() {
 		
 	}
@@ -15,7 +15,7 @@ class ImageList {
 
 @:keep
 @:build(kha.internal.AssetsBuilder.build("sound"))
-class SoundList {
+private class SoundList {
 	public function new() {
 		
 	}
@@ -23,7 +23,7 @@ class SoundList {
 
 @:keep
 @:build(kha.internal.AssetsBuilder.build("blob"))
-class BlobList {
+private class BlobList {
 	public function new() {
 		
 	}
@@ -31,7 +31,7 @@ class BlobList {
 
 @:keep
 @:build(kha.internal.AssetsBuilder.build("font"))
-class FontList {
+private class FontList {
 	public function new() {
 		
 	}
@@ -39,7 +39,7 @@ class FontList {
 
 @:keep
 @:build(kha.internal.AssetsBuilder.build("video"))
-class VideoList {
+private class VideoList {
 	public function new() {
 		
 	}
