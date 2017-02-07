@@ -56,6 +56,8 @@ class VrInterface {
 				//SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
 				//trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 
+				onResize();
+
 				// Reset pose button
 				var resetButton = Browser.document.createButtonElement();
         		resetButton.textContent = "Reset Pose!";
@@ -85,6 +87,7 @@ class VrInterface {
 
 	private function onVRRequestPresent () {
 		try {
+			//onResize();
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
@@ -125,6 +128,21 @@ class VrInterface {
 		// Submit the newly rendered layer to be presented by the VRDisplay
 		vrDisplay.submitFrame();
 
+	}
+
+	private function onResize () {
+		if(vrDisplay != null && vrDisplay.isPresenting) {
+			var leftEye = vrDisplay.getEyeParameters("left");
+			var rightEye = vrDisplay.getEyeParameters("right");
+			SystemImpl.khanvas.width = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
+			SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
+		} else {
+			SystemImpl.khanvas.width = SystemImpl.khanvas.offsetWidth * Std.int(Browser.window.devicePixelRatio);
+          	SystemImpl.khanvas.height = SystemImpl.khanvas.offsetHeight * Std.int(Browser.window.devicePixelRatio);
+		}
+
+		trace("onResize [widht, height]");
+		trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 	}
 
 	public function getProjectionMatrix(eye: Int): FastMatrix4 {
