@@ -72,7 +72,9 @@ class Painter {
 		backbuffer.g2.fillTriangle(x1, y1, x2, y2, x3, y3);
 	}
 	
-	public function translate(x: Float, y: Float): Void { }
+	public function translate(x: Float, y: Float): Void {
+		
+	}
 	
 	public function clear(): Void {
 		fillRect(0, 0, System.windowWidth(), System.windowHeight());
