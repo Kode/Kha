@@ -24,8 +24,8 @@ class VrInterface {
 
 	public var vrEnabled: Bool = false;
 
-	private static var vrDisplay;
-	private static var frameData;
+	private static var vrDisplay: Dynamic;
+	private static var frameData: Dynamic;
 
 	private var leftProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var rightProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
@@ -56,7 +56,7 @@ class VrInterface {
 				//SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
 				//trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 
-				onResize();
+				//onResize();
 
 				// Reset pose button
 				var resetButton = Browser.document.createButtonElement();
@@ -76,7 +76,8 @@ class VrInterface {
 					Browser.document.body.appendChild(vrButton);
 				}
 
-				GetSensorState();
+				Browser.window.addEventListener('vrdisplaypresentchange', onVRPresentChange, false);
+				Browser.window.requestAnimationFrame(onAnimationFrame);
 
 				vrEnabled = true;
 			} else {
@@ -85,49 +86,63 @@ class VrInterface {
 		});
 	}
 
+	private function onVRPresentChange () {
+		if (vrDisplay.isPresenting) {
+			if (vrDisplay.capabilities.hasExternalDisplay) {
+				//TODO: "Exit VR" button
+			}
+		} else {
+			if (vrDisplay.capabilities.hasExternalDisplay) {
+            	//TODO: "Enter VR" button
+			}
+		}
+        //onResize();
+      }
+
 	private function onVRRequestPresent () {
 		try {
 			//onResize();
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				vrDisplay.requestAnimationFrame(onAnimationFrame);
+				//vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
-		} catch(err: String) {
+		} catch(err: Dynamic) {
 			trace("Failed to requestPresent.");
 			trace(err);
 		}
 	}
 
 	private function onVRExitPresent () {
-		/*try {
+		try {
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				// TODO Exit VR
 			});
-		} catch(err: String) {
+		} catch(err: Dynamic) {
 			trace("Failed to exitPresent.");
 			trace(err);
-		}*/
+		}
 	}
 
-	private function onAnimationFrame(timestamp: Int): Void {
-		vrDisplay.requestAnimationFrame(onAnimationFrame);
+	private function onAnimationFrame(timestamp: Float): Void {
+		if(vrDisplay != null) {
+			vrDisplay.requestAnimationFrame(onAnimationFrame);
 
-        vrDisplay.getFrameData(frameData);
+			vrDisplay.getFrameData(frameData);
 
-		// Render the left eye
-		//gl.viewport(0, 0, layerSource.width * 0.5, layerSource.height);
-		//render(frameData.leftProjectionMatrix, frameData.leftViewMatrix);
-		leftProjectionMatrix = createMatrixFromArray(untyped frameData.leftProjectionMatrix);
-		leftViewMatrix = createMatrixFromArray(untyped frameData.leftViewMatrix);
+			// Render the left eye
+			//gl.viewport(0, 0, layerSource.width * 0.5, layerSource.height);
+			//render(frameData.leftProjectionMatrix, frameData.leftViewMatrix);
+			leftProjectionMatrix = createMatrixFromArray(untyped frameData.leftProjectionMatrix);
+			leftViewMatrix = createMatrixFromArray(untyped frameData.leftViewMatrix);
 
-		// Render the right eye
-		//gl.viewport(layerSource.width * 0.5, 0, layerSource.width * 0.5, layerSource.height);
-		//render(frameData.rightProjectionMatrix, frameData.rightViewMatrix);
-		rightProjectionMatrix = createMatrixFromArray(untyped frameData.rightProjectionMatrix);
-		rightViewMatrix = createMatrixFromArray(untyped frameData.rightViewMatrix);
+			// Render the right eye
+			//gl.viewport(layerSource.width * 0.5, 0, layerSource.width * 0.5, layerSource.height);
+			//render(frameData.rightProjectionMatrix, frameData.rightViewMatrix);
+			rightProjectionMatrix = createMatrixFromArray(untyped frameData.rightProjectionMatrix);
+			rightViewMatrix = createMatrixFromArray(untyped frameData.rightViewMatrix);
 
-		// Submit the newly rendered layer to be presented by the VRDisplay
-		vrDisplay.submitFrame();
-
+			// Submit the newly rendered layer to be presented by the VRDisplay
+			vrDisplay.submitFrame();
+		}
 	}
 
 	private function onResize () {
