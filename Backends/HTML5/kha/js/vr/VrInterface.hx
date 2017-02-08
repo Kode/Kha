@@ -1,9 +1,12 @@
-package kha.vr;
+package kha.js.vr;
 
 import js.Browser;
 import js.html.Float32Array;
-import js.html.Event;
-import js.html.KeyboardEvent;
+
+import kha.vr.Pose;
+import kha.vr.PoseState;
+import kha.vr.SensorState;
+import kha.vr.TimeWarpParms;
 
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.IndexBuffer;
@@ -20,12 +23,14 @@ import kha.math.Quaternion;
 import kha.Image;
 import kha.SystemImpl;
 
-class VrInterface {
+class VrInterface extends kha.vr.VrInterface {
 
-	public var vrEnabled: Bool = false;
+	private var isPresenting: Bool = false;
 
-	private static var vrDisplay: Dynamic;
-	private static var frameData: Dynamic;
+	private var vrDisplay: Dynamic;
+	private var frameData: Dynamic;
+
+	private var vrButton: Dynamic;
 
 	private var leftProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var rightProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
@@ -33,6 +38,7 @@ class VrInterface {
 	private var rightViewMatrix: FastMatrix4 = FastMatrix4.identity();
 
 	public function new() {
+		super();
 		var displayEnabled: Bool = untyped __js__('navigator.getVRDisplays');
 		if (displayEnabled) {
 			getVRDisplays();
@@ -50,14 +56,6 @@ class VrInterface {
 				frameData = untyped __js__('new VRFrameData()');
 				vrDisplay = untyped __js__('displays[0]');
 
-				var leftEye = vrDisplay.getEyeParameters("left");
-				var rightEye = vrDisplay.getEyeParameters("right");
-				//SystemImpl.khanvas.width = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
-				//SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
-				//trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
-
-				//onResize();
-
 				// Reset pose button
 				var resetButton = Browser.document.createButtonElement();
         		resetButton.textContent = "Reset Pose!";
@@ -68,18 +66,8 @@ class VrInterface {
 
 				// Enter VR button
 				if (vrDisplay.capabilities.canPresent) {
-					var vrButton = Browser.document.createButtonElement();
-					vrButton.textContent = "Enter VR";
-					vrButton.onclick = function(event) {
-						onVRRequestPresent();
-					}
-					Browser.document.body.appendChild(vrButton);
+					createEnterVrButton();
 				}
-
-				Browser.window.addEventListener('vrdisplaypresentchange', onVRPresentChange, false);
-				Browser.window.requestAnimationFrame(onAnimationFrame);
-
-				vrEnabled = true;
 			} else {
 				trace("There are no VR displays connected.");
 			}
@@ -89,11 +77,11 @@ class VrInterface {
 	private function onVRPresentChange () {
 		if (vrDisplay.isPresenting) {
 			if (vrDisplay.capabilities.hasExternalDisplay) {
-				//TODO: "Exit VR" button
+				createExitVrButton();
 			}
 		} else {
 			if (vrDisplay.capabilities.hasExternalDisplay) {
-            	//TODO: "Enter VR" button
+				createEnterVrButton();
 			}
 		}
         //onResize();
@@ -101,9 +89,11 @@ class VrInterface {
 
 	private function onVRRequestPresent () {
 		try {
-			//onResize();
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				//vrDisplay.requestAnimationFrame(onAnimationFrame);
+				trace("Begin presenting to the VRDisplay");
+				isPresenting = true;
+				onVRPresentChange();
+				vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
 		} catch(err: Dynamic) {
 			trace("Failed to requestPresent.");
@@ -113,13 +103,41 @@ class VrInterface {
 
 	private function onVRExitPresent () {
 		try {
+			// Stops presenting to the VRDisplay
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				// TODO Exit VR
+				trace("Stops presenting to the VRDisplay");
+				isPresenting = false;
+				onVRPresentChange();
 			});
 		} catch(err: Dynamic) {
 			trace("Failed to exitPresent.");
 			trace(err);
 		}
+	}
+
+	private function createEnterVrButton(): Void {
+		if (vrButton != null)
+			Browser.document.body.removeChild(vrButton);
+
+		vrButton = Browser.document.createButtonElement();
+		vrButton.textContent = "Enter VR";
+		vrButton.onclick = function(event) {
+			onVRRequestPresent();
+		}
+		Browser.document.body.appendChild(vrButton);
+	}
+
+	private function createExitVrButton(): Void {
+		if (vrButton != null)
+			Browser.document.body.removeChild(vrButton);
+
+		vrButton = Browser.document.createButtonElement();
+		vrButton.textContent = "Exit VR";
+		vrButton.onclick = function(event) {
+			onVRExitPresent();
+		}
+		Browser.document.body.appendChild(vrButton);
+
 	}
 
 	private function onAnimationFrame(timestamp: Float): Void {
@@ -160,7 +178,62 @@ class VrInterface {
 		trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 	}
 
-	public function getProjectionMatrix(eye: Int): FastMatrix4 {
+	public override function GetSensorState(): SensorState {
+		return GetPredictedSensorState(0.0);
+	}
+
+	public override function GetPredictedSensorState(time: Float): SensorState {
+		var result: SensorState = new SensorState();
+
+		result.Predicted = new PoseState();
+		result.Recorded = result.Predicted;
+		
+		result.Predicted.AngularAcceleration = new Vector3();
+		result.Predicted.AngularVelocity = new Vector3();
+		result.Predicted.LinearAcceleration = new Vector3();
+		result.Predicted.LinearVelocity = new Vector3();
+		result.Predicted.TimeInSeconds = time;
+		result.Predicted.Pose = new Pose();
+		result.Predicted.Pose.Orientation = new Quaternion();
+		result.Predicted.Pose.Position = new Vector3();
+
+		var mPose = frameData.pose;	// predicted pose of the vrDisplay
+		if (mPose != null) {
+			result.Predicted.AngularVelocity = createVectorFromArray(untyped mPose.angularVelocity);
+			result.Predicted.AngularAcceleration = createVectorFromArray(untyped mPose.angularAcceleration);
+			result.Predicted.LinearVelocity = createVectorFromArray(untyped mPose.linearVelocity);
+			result.Predicted.LinearAcceleration = createVectorFromArray(untyped mPose.linearAcceleration);
+			result.Predicted.Pose.Orientation = createQuaternion(untyped mPose.orientation);
+			result.Predicted.Pose.Position = createVectorFromArray(untyped mPose.position);
+		}
+		
+		return result;
+	}
+
+	// Sends a black image to the warp swap thread
+	public override function WarpSwapBlack(): Void {
+		// TODO: Implement
+	}
+	
+	// Sends the Oculus loading symbol to the warp swap thread
+	public override function WarpSwapLoadingIcon(): Void {
+		// TODO: Implement
+	}
+	
+	// Sends the set of images to the warp swap thread
+	public override function WarpSwap(parms: TimeWarpParms): Void {
+		// TODO: Implement
+	}
+
+	public override function IsPresenting(): Bool {
+		return isPresenting;
+	}
+
+	public override function GetTimeInSeconds(): Float {
+		return Scheduler.time();
+	}
+
+	public override function GetProjectionMatrix(eye: Int): FastMatrix4 {
 		if (eye == 0) {
 			return leftProjectionMatrix;
 		} else {
@@ -168,29 +241,12 @@ class VrInterface {
 		}
 	}
 
-	public function getViewMatrix(eye: Int): FastMatrix4 {
+	public override function GetViewMatrix(eye: Int): FastMatrix4 {
 		if (eye == 0) {
 			return leftViewMatrix;
 		} else {
 			return rightViewMatrix;
 		}
-	}
-
-	public function GetSensorState(): SensorState {
-		var result: SensorState = new SensorState();
-
-		var mPose = vrDisplay.getPose();	// predicted pose of the vrDisplay
-
-		result.Predicted = new PoseState();
-		result.Predicted.AngularVelocity = createVectorFromArray(untyped mPose.angularVelocity);
-		result.Predicted.AngularAcceleration = createVectorFromArray(untyped mPose.angularAcceleration);
-		result.Predicted.LinearVelocity = createVectorFromArray(untyped mPose.linearVelocity);
-		result.Predicted.LinearAcceleration = createVectorFromArray(untyped mPose.linearAcceleration);
-		result.Predicted.Pose = new Pose();
-		result.Predicted.Pose.Orientation = createQuaternion(untyped mPose.orientation);
-		result.Predicted.Pose.Position = createVectorFromArray(untyped mPose.position);
-		
-		return result;
 	}
 
 	private function createMatrixFromArray(array: Float32Array): FastMatrix4 {
