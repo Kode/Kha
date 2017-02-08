@@ -25,7 +25,7 @@ import kha.SystemImpl;
 
 class VrInterface extends kha.vr.VrInterface {
 
-	private var isPresenting: Bool = false;
+	private var vrEnabled: Bool = false;
 
 	private var vrDisplay: Dynamic;
 	private var frameData: Dynamic;
@@ -41,6 +41,7 @@ class VrInterface extends kha.vr.VrInterface {
 		super();
 		var displayEnabled: Bool = untyped __js__('navigator.getVRDisplays');
 		if (displayEnabled) {
+			vrEnabled = true;
 			getVRDisplays();
 			trace("Display enabled.");
         } else {
@@ -55,6 +56,8 @@ class VrInterface extends kha.vr.VrInterface {
 			if (displays.length > 0) {
 				frameData = untyped __js__('new VRFrameData()');
 				vrDisplay = untyped __js__('displays[0]');
+				vrDisplay.depthNear = 0.1;
+				vrDisplay.depthFar = 1024.0;
 
 				// Reset pose button
 				var resetButton = Browser.document.createButtonElement();
@@ -84,14 +87,13 @@ class VrInterface extends kha.vr.VrInterface {
 				createEnterVrButton();
 			}
 		}
-        //onResize();
+        onResize();
       }
 
 	private function onVRRequestPresent () {
 		try {
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				trace("Begin presenting to the VRDisplay");
-				isPresenting = true;
 				onVRPresentChange();
 				vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
@@ -106,7 +108,6 @@ class VrInterface extends kha.vr.VrInterface {
 			// Stops presenting to the VRDisplay
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
 				trace("Stops presenting to the VRDisplay");
-				isPresenting = false;
 				onVRPresentChange();
 			});
 		} catch(err: Dynamic) {
@@ -141,7 +142,7 @@ class VrInterface extends kha.vr.VrInterface {
 	}
 
 	private function onAnimationFrame(timestamp: Float): Void {
-		if(vrDisplay != null) {
+		if(vrDisplay != null && vrDisplay.isPresenting) {
 			vrDisplay.requestAnimationFrame(onAnimationFrame);
 
 			vrDisplay.getFrameData(frameData);
@@ -170,12 +171,9 @@ class VrInterface extends kha.vr.VrInterface {
 			SystemImpl.khanvas.width = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
 			SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
 		} else {
-			SystemImpl.khanvas.width = SystemImpl.khanvas.offsetWidth * Std.int(Browser.window.devicePixelRatio);
-          	SystemImpl.khanvas.height = SystemImpl.khanvas.offsetHeight * Std.int(Browser.window.devicePixelRatio);
+			SystemImpl.khanvas.width = Browser.window.innerWidth;
+			SystemImpl.khanvas.height = Browser.window.innerHeight;
 		}
-
-		trace("onResize [widht, height]");
-		trace(SystemImpl.khanvas.width + " " + SystemImpl.khanvas.height);
 	}
 
 	public override function GetSensorState(): SensorState {
@@ -226,7 +224,13 @@ class VrInterface extends kha.vr.VrInterface {
 	}
 
 	public override function IsPresenting(): Bool {
-		return isPresenting;
+		if(vrDisplay != null)
+			return vrDisplay.isPresenting;
+		return false;
+	}
+
+	public override function VrEnabled(): Bool {
+		return vrEnabled;
 	}
 
 	public override function GetTimeInSeconds(): Float {

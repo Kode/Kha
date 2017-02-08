@@ -31,8 +31,13 @@ class VrInterface {
 		return null;
 	}
 
-	//
+	// Return true if VR displays are presenting
 	public function IsPresenting(): Bool {
+		return false;
+	}
+
+	// Return true if any VR devices connected to the computer are available
+	public function VrEnabled(): Bool {
 		return false;
 	}
 	
