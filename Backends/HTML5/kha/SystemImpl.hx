@@ -375,7 +375,7 @@ class SystemImpl {
 			else requestAnimationFrame(animate);
 
 			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called before entering VR
-			if (kha.vr.VrInterface.instance.IsEnabled()) {
+			if (kha.vr.VrInterface.instance.IsPresenting()) {
 				var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
 				if (sysGamepads != null) {
 					for (i in 0...sysGamepads.length) {
