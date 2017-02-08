@@ -310,7 +310,7 @@ class SystemImpl {
 		canvas.style.cursor = "default";
 
 		canvas.onload = function () {
-			loaded = true;
+			loaded = true;	// TODO: never called ??
 		};
 
 		var gl: Bool = false;
@@ -381,6 +381,10 @@ class SystemImpl {
 		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
+
+		window.onload = function() {
+			loaded = true;
+		}
 
 		function animate(timestamp) {
 			var window: Dynamic = Browser.window;
