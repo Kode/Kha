@@ -44,6 +44,7 @@ class SystemImpl {
 	private static var options: SystemOptions;
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
+	private static var chrome: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	private static var loaded: Bool = false;
 	
@@ -75,6 +76,7 @@ class SystemImpl {
 		}, 1000);
 		#else
 		mobile = isMobile();
+		chrome = isChrome();
 		init2();
 		callback();
 		#end
@@ -104,6 +106,17 @@ class SystemImpl {
 		else {
 			return false;
 		}
+	}
+
+	private static function isChrome(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Chrome") >= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
@@ -374,8 +387,8 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called before entering VR
-			if (kha.vr.VrInterface.instance.IsPresenting()) {
+			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called when using VR
+			if ((!kha.vr.VrInterface.instance.VrEnabled() && chrome) || !chrome)  {
 				var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
 				if (sysGamepads != null) {
 					for (i in 0...sysGamepads.length) {
