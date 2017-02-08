@@ -17,6 +17,7 @@ import kha.js.AudioElementAudio;
 import kha.js.AEAudioChannel;
 import kha.js.CanvasGraphics;
 import kha.js.MobileWebAudio;
+import kha.js.vr.VrInterface;
 import kha.System;
 
 class GamepadStates {
@@ -357,6 +358,9 @@ class SystemImpl {
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
 
+		//kha.vr.VrInterface.instance = new kha.js.vr.VrInterface();
+		kha.vr.VrInterface.instance = new VrInterface();
+
 		Scheduler.start();
 
 		var window: Dynamic = Browser.window;
@@ -370,19 +374,22 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-			var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
-			if (sysGamepads != null) {
-				for (i in 0...sysGamepads.length) {
-					var pad = sysGamepads[i];
-					if (pad != null) {
-						checkGamepadButton(pad, 0);
-						checkGamepadButton(pad, 1);
-						checkGamepadButton(pad, 12);
-						checkGamepadButton(pad, 13);
-						checkGamepadButton(pad, 14);
-						checkGamepadButton(pad, 15);
+			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called before entering VR
+			if (kha.vr.VrInterface.instance.IsEnabled()) {
+				var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
+				if (sysGamepads != null) {
+					for (i in 0...sysGamepads.length) {
+						var pad = sysGamepads[i];
+						if (pad != null) {
+							checkGamepadButton(pad, 0);
+							checkGamepadButton(pad, 1);
+							checkGamepadButton(pad, 12);
+							checkGamepadButton(pad, 13);
+							checkGamepadButton(pad, 14);
+							checkGamepadButton(pad, 15);
 
-						checkGamepad(pad);
+							checkGamepad(pad);
+						}
 					}
 				}
 			}
