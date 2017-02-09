@@ -642,9 +642,9 @@ class SystemImpl {
 		var movementX = event.movementX;
 		var movementY = event.movementY;
 
-		if(event.movementX == null){
-			movementX = untyped( event.mozMovementX || event.webkitMovementX || (mouseX  - lastMouseX));
-		 	movementY = untyped( event.mozMovementY || event.webkitMovementY || (mouseY  - lastMouseY));
+		if(event.movementX == null) {
+		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
 		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
