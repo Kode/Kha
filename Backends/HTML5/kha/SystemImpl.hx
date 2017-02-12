@@ -166,7 +166,7 @@ class SystemImpl {
 	private static var pressedKeys: Array<Bool>;
 	private static var buttonspressed: Array<Bool>;
 	private static var leftMouseCtrlDown: Bool = false;
-	private static var keyboard: Keyboard;
+	private static var keyboard: Keyboard = null;
 	private static var mouse: kha.input.Mouse;
 	private static var surface: Surface;
 	private static var gamepads: Array<Gamepad>;
@@ -182,7 +182,10 @@ class SystemImpl {
 
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
+		
+		#if !no_keyboard
 		keyboard = new Keyboard();
+		#end
 		mouse = new kha.input.MouseImpl();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
@@ -405,8 +408,10 @@ class SystemImpl {
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
-		canvas.onkeydown = keyDown;
-		canvas.onkeyup = keyUp;
+		if(keyboard != null) {
+			canvas.onkeydown = keyDown;
+			canvas.onkeyup = keyUp;
+		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
