@@ -44,8 +44,7 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	public static var insideInputEvent: Bool = false;
-	private static var loaded: Bool = false;
-	
+
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null && Browser.window.performance.now != null) {
 			performance = Browser.window.performance;
@@ -106,31 +105,11 @@ class SystemImpl {
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.width;
-		}
-		else {
-			if (options.width != null) {
-				return options.width;
-			}
-			else {
-				return khanvas.width;
-			}
-		}
+		return (khanvas.width == 0 && options.width != null) ? options.width : khanvas.width;
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.height;
-		}
-		else {
-			if (options.height != null) {
-				return options.height;
-			}
-			else {
-				return khanvas.height;
-			}
-		}
+		return (khanvas.height == 0 && options.height != null) ? options.height : khanvas.height;
 	}
 
 	public static function screenDpi(): Int {
@@ -285,19 +264,15 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		// Only consider custom canvas ID for release builds
-        var canvas: Dynamic = khanvas;
-        if(canvas == null) {
-            #if (sys_debug_html5 || !canvas_id)
-            canvas = Browser.document.getElementById("khanvas");
-            #else
-            canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-            #end
-        }
+		var canvas: Dynamic = khanvas;
+		if (canvas == null) {
+			#if (sys_debug_html5 || !canvas_id)
+			canvas = Browser.document.getElementById("khanvas");
+			#else
+			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+			#end
+		}
 		canvas.style.cursor = "default";
-
-		canvas.onload = function () {
-			loaded = true;
-		};
 
 		var gl: Bool = false;
 
@@ -333,7 +308,7 @@ class SystemImpl {
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
 			frame = new Framebuffer(0, null, null, g4);
-			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
+			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
 		else {
 			var g2 = new CanvasGraphics(canvas.getContext("2d"), System.windowWidth(), System.windowHeight());
@@ -577,16 +552,16 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if(Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
-			Browser.document.addEventListener('mouseup', mouseLeftUp);
+			if (Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
+			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
 			mouse.sendDownEvent(0, 2, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseMiddleUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseMiddleUp);
 		}
 		else if(event.which == 3) { //right button
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseRightUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseRightUp);
 		}
 		insideInputEvent = false;
 	}
@@ -597,8 +572,8 @@ class SystemImpl {
 		if (event.which != 1) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		if(Reflect.hasField(Browser.document, 'releaseCapture')) Browser.document.releaseCapture();
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
+		if(Reflect.hasField(khanvas.ownerDocument, 'releaseCapture')) khanvas.ownerDocument.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -615,7 +590,7 @@ class SystemImpl {
 		if (event.which != 2) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -626,7 +601,7 @@ class SystemImpl {
 		if (event.which != 3) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseRightUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		insideInputEvent = false;
 	}

@@ -1,4 +1,5 @@
 package kha;
+
 import kha.arrays.Float32Array;
 import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
@@ -7,7 +8,6 @@ import kha.math.FastVector3;
 import kha.math.FastVector4;
 
 class Float32ArrayExtensions {
-	
 	public static inline function setVector2(array: Float32Array, index: Int, vector: FastVector2) {
 		array.set(index +  0, vector.x);
 		array.set(index +  1, vector.y);

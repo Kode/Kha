@@ -23,7 +23,9 @@ extern class Krom {
 	static function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
 	static function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
+	static function setFloat4s(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
 	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
+	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
 	
 	static function begin(renderTarget: kha.Image, additionalRenderTargets: Array<kha.Canvas>): Void;
 	static function end(): Void;
@@ -34,7 +36,7 @@ extern class Krom {
 	static function setDepthMode(write: Bool, mode: Int): Void;
 	static function setCullMode(mode: Int): Void;
 	static function setStencilParameters(compareMode: Int, bothPass: Int, depthFail: Int, stencilFail: Int, referenceValue: Int, readMask: Int, writeMask: Int): Void;
-	static function setBlendingMode(source: Int, destination: Int): Void;
+	static function setBlendingMode(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void;
 	static function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
 	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;

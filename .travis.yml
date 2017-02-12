@@ -7,9 +7,6 @@ addons:
     packages:
       - libasound2-dev
 language: cpp
-compiler:
-  - gcc
-  - clang
 before_script:
   - git submodule update --init --recursive
   - git clone https://github.com/ktxsoftware/nodejs_bin.git

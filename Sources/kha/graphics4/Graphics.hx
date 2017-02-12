@@ -5,6 +5,7 @@ import kha.Blob;
 import kha.Color;
 import kha.FastFloat;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -48,10 +49,12 @@ interface Graphics {
 	function setFloat3(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void;
 	function setFloat4(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void;
 	function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void;
+	function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void;
 	function setVector2(location: ConstantLocation, value: FastVector2): Void;
 	function setVector3(location: ConstantLocation, value: FastVector3): Void;
 	function setVector4(location: ConstantLocation, value: FastVector4): Void;
 	function setMatrix(location: ConstantLocation, value: FastMatrix4): Void;
+	function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void;
 	
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
 	function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void;

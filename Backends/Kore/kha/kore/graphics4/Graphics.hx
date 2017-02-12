@@ -21,6 +21,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -163,8 +164,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	
-	private function getBlendingMode(op: BlendingFactor): Int {
-		switch (op) {
+	private function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
 		case BlendOne, Undefined:
 			return 0;
 		case BlendZero:
@@ -196,15 +197,15 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			Kore::Graphics::setRenderState(Kore::BlendingState, true);
-			Kore::Graphics::setBlendingMode((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination);
+			Kore::Graphics::setBlendingModeSeparate((Kore::BlendingOperation)source, (Kore::BlendingOperation)destination, (Kore::BlendingOperation)alphaSource, (Kore::BlendingOperation)alphaDestination);
 		}
 	')
-	private function setBlendingModeNative(source: Int, destination: Int): Void {
+	private function setBlendingModeNative(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void {
 		
 	}
 	
-	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
-		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
+	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation, alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
+		setBlendingModeNative(getBlendFunc(source), getBlendFunc(destination), getBlendFunc(alphaSource), getBlendFunc(alphaDestination));
 	}
 	
 	@:functionCode('
@@ -414,7 +415,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setBlendingMode(pipe.blendSource, pipe.blendDestination);
+		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
 		setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);        
 		pipe.set();
 	}
@@ -532,6 +533,17 @@ class Graphics implements kha.graphics4.Graphics {
 	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
 		
 	}
+
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		setFloat4sPrivate(cast location, values);
+	}
+	
+	@:functionCode('
+		Kore::Graphics::setFloat4s(location->location, values->Pointer(), values->length);
+	')
+	private function setFloat4sPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+		
+	}
 	
 	@:functionCode('
 		Kore::mat4 value;
@@ -543,6 +555,18 @@ class Graphics implements kha.graphics4.Graphics {
 		Kore::Graphics::setMatrix(loc->location, value);
 	')
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
+		
+	}
+
+	@:functionCode('
+		Kore::mat3 value;
+		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20);
+		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21);
+		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22);
+		::kha::kore::graphics4::ConstantLocation_obj* loc = dynamic_cast< ::kha::kore::graphics4::ConstantLocation_obj*>(location->__GetRealObject());
+		Kore::Graphics::setMatrix(loc->location, value);
+	')
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
 		
 	}
 	

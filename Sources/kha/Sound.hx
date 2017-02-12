@@ -12,7 +12,9 @@ class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: Vector<Float>;
 	
-	public function new() { }
+	public function new() {
+		
+	}
 
 	public function uncompress(done: Void->Void): Void {
 		var output = new BytesOutput();

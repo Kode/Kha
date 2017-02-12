@@ -1,15 +1,11 @@
 package kha.math;
 
-
 import kha.math.Vector3;
 import kha.math.Matrix4;
 
-// TODO: Check for my own changes
-
-class Quaternion
-{
+class Quaternion {
 	private var values: Array<Float>;
-	
+
 	public function new(x: Float = 0, y: Float = 0, z: Float = 0, w: Float = 1): Void {
 		values = new Array<Float>();
 		values.push(x);
@@ -99,8 +95,7 @@ class Quaternion
 			xz - wy, yz + wx, 1 - (xx + yy), 0,
 			0, 0, 0, 1
 		);
-	}
-	
+	}	
 	
 	public function get(index: Int): Float {
 		return values[index];
@@ -168,7 +163,7 @@ class Quaternion
 		var q1: Quaternion = new Quaternion(0, vec.x, vec.y, vec.z);
 	
 		q1 = q1.mult(result);
-        
+
 		result.x += q1.x * 0.5;
 		result.y += q1.y * 0.5;
 		result.z += q1.z * 0.5;
@@ -201,77 +196,62 @@ class Quaternion
 	public function dot(q: Quaternion) {
 		return x * q.x + y * q.y + z * q.z + w * q.w;
 	}
-	
-	
+
 	// GetEulerAngles extracts Euler angles from the quaternion, in the specified order of
-    // axis rotations and the specified coordinate system. Right-handed coordinate system
-    // is the default, with CCW rotations while looking in the negative axis direction.
-    // Here a,b,c, are the Yaw/Pitch/Roll angles to be returned.
-    // rotation a around axis A1
-    // is followed by rotation b around axis A2
-    // is followed by rotation c around axis A3
-    // rotations are CCW or CW (D) in LH or RH coordinate system (S)
-	
+	// axis rotations and the specified coordinate system. Right-handed coordinate system
+	// is the default, with CCW rotations while looking in the negative axis direction.
+	// Here a,b,c, are the Yaw/Pitch/Roll angles to be returned.
+	// rotation a around axis A1
+	// is followed by rotation b around axis A2
+	// is followed by rotation c around axis A3
+	// rotations are CCW or CW (D) in LH or RH coordinate system (S)
 	
 	public static inline var AXIS_X: Int = 0;
 	public static inline var AXIS_Y: Int = 1;
 	public static inline var AXIS_Z: Int = 2;
 	
-	
 	public function getEulerAngles(A1: Int, A2: Int, A3: Int, S: Int = 1, D:Int = 1): Vector3 {
-		
 		var result: Vector3 = new Vector3();
-        
-		
+
 		var Q: Array<Float> = new Array<Float>();
 		Q[0] = x;
 		Q[1] = y;
 		Q[2] = z;
-		
-        var ww: Float = w * w;
-        
-		var Q11: Float = Q[A1]*Q[A1];
-        var Q22: Float = Q[A2]*Q[A2];
-        var Q33: Float = Q[A3]*Q[A3];
 
-        var psign: Float = -1;
+		var ww: Float = w * w;
+
+		var Q11: Float = Q[A1]*Q[A1];
+		var Q22: Float = Q[A2]*Q[A2];
+		var Q33: Float = Q[A3]*Q[A3];
+
+		var psign: Float = -1;
 		
 		var SingularityRadius: Float = 0.0000001;
 		var PiOver2: Float = Math.PI / 2.0;
 		
-        // Determine whether even permutation
-        if (((A1 + 1) % 3 == A2) && ((A2 + 1) % 3 == A3))
-            psign = 1;
-        
-        var s2: Float = psign * 2.0 * (psign*w*Q[A2] + Q[A1]*Q[A3]);
+		// Determine whether even permutation
+		if (((A1 + 1) % 3 == A2) && ((A2 + 1) % 3 == A3)) {
+			psign = 1;
+		}
 
-		
-        if (s2 < -1 + SingularityRadius)
-        { // South pole singularity
-            result.x = 0;
-            result.y = -S*D*PiOver2;
-            result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]),
-		                   ww + Q22 - Q11 - Q33 );
-        }
-        else if (s2 > 1 - SingularityRadius)
-        {  // North pole singularity
-            result.x = 0;
-            result.y = S*D*PiOver2;
-            result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]),
-		                   ww + Q22 - Q11 - Q33);
-        }
-        else
-        {
-            result.x = -S*D*Math.atan2(-2*(w*Q[A1] - psign*Q[A2]*Q[A3]),
-		                    ww + Q33 - Q11 - Q22);
-            result.y = S*D*Math.asin(s2);
-            result.z = S*D*Math.atan2(2*(w*Q[A3] - psign*Q[A1]*Q[A2]),
-		                   ww + Q11 - Q22 - Q33);
-        }      
+		var s2: Float = psign * 2.0 * (psign*w*Q[A2] + Q[A1]*Q[A3]);
+
+		if (s2 < -1 + SingularityRadius) { // South pole singularity
+			result.x = 0;
+			result.y = -S*D*PiOver2;
+			result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]), ww + Q22 - Q11 - Q33 );
+		}
+		else if (s2 > 1 - SingularityRadius) { // North pole singularity
+			result.x = 0;
+			result.y = S*D*PiOver2;
+			result.z = S*D*Math.atan2(2*(psign*Q[A1]*Q[A2] + w*Q[A3]), ww + Q22 - Q11 - Q33);
+		}
+		else {
+			result.x = -S*D*Math.atan2(-2*(w*Q[A1] - psign*Q[A2]*Q[A3]), ww + Q33 - Q11 - Q22);
+			result.y = S*D*Math.asin(s2);
+			result.z = S*D*Math.atan2(2*(w*Q[A3] - psign*Q[A1]*Q[A2]), ww + Q11 - Q22 - Q33);
+		}      
 		
 		return result;
-    }
-	
+	}
 }
-
-

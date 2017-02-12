@@ -378,7 +378,9 @@ class Session {
 			closeCallback();
 			reset();
 		});
-		network.listen(function (bytes: Bytes) { receive(bytes); } );
+		network.listen(function (bytes: Bytes) {
+			receive(bytes);
+		});
 		updateTaskId = Scheduler.addFrameTask(update, 0);
 		ping = 1;
 		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);

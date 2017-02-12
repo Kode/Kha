@@ -17,6 +17,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -155,6 +156,10 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
+	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {
+		
+	}
+
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		
 	}
@@ -168,6 +173,10 @@ class EmptyGraphics4 implements Graphics {
 	}
 
 	public function setMatrix(location: ConstantLocation, value: FastMatrix4): Void {
+		
+	}
+
+	public function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {
 		
 	}
 	
