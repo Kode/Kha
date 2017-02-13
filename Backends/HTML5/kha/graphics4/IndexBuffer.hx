@@ -5,7 +5,7 @@ import kha.graphics4.Usage;
 
 class IndexBuffer {
 	private var buffer: Dynamic;
-	private var data: Array<Int>;
+	public var _data: Array<Int>;
 	private var mySize: Int;
 	private var usage: Usage;
 	
@@ -13,22 +13,22 @@ class IndexBuffer {
 		this.usage = usage;
 		mySize = indexCount;
 		buffer = SystemImpl.gl.createBuffer();
-		data = new Array<Int>();
-		data[indexCount - 1] = 0;
+		_data = new Array<Int>();
+		_data[indexCount - 1] = 0;
 	}
 	
 	public function delete(): Void {
-		data = null;
+		_data = null;
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	
 	public function lock(): Array<Int> {
-		return data;
+		return _data;
 	}
 	
 	public function unlock(): Void {
 		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new Uint16Array(data) : new js.html.Uint32Array(data);
+		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new Uint16Array(_data) : new js.html.Uint32Array(_data);
 		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, glData, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	

@@ -6,9 +6,7 @@ package kha;
  The VirtualAnalogStick is for systems which do not have a normal
  analog stick. The virtual analog stick is displayed on the screen and can
  be controlled by touch or mouse controls.
-
-
-
+ 
  How to use:
 
  - Create a new VirtualAnalogStick.
@@ -40,7 +38,6 @@ class VirtualAnalogStick {
 	 **/
 	public var user_is_interacting: Bool;
 
-	
 	// Position and sizes:
 	public var x            : Int;
 	public var y            : Int;
@@ -48,9 +45,7 @@ class VirtualAnalogStick {
 	public var dead_distance: Int; // No reaction inside the dead_distance to the center
 	public var full_distance: Int; // Full reaction (strength 1.0) at full_distance to the center
 	public var move_distance: Int; // No reaction outside the move_distance to the center
-	
-	
-	 
+
 	/**
 	 *  Constructor
 	 * @param x        : x position on screen in pixels
@@ -70,8 +65,6 @@ class VirtualAnalogStick {
 		resetInteraction();
 	}
 	
-	
-	 
 	/**
 	 * If the interaction should be canceled, for example if your game or a level in your game restarts,
 	 * or if the stick loses focus, because a window has been opened, or in any similar case, call reset().	 
@@ -135,7 +128,6 @@ class VirtualAnalogStick {
 	public function mouseUp(mouse_x: Int, mouse_y: Int) {
 		user_is_interacting = false;
 	}
-	
 	
 	/**
 	 * Checks if the mouse or touch is on the virtual analog stick.

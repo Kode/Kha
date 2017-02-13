@@ -4,9 +4,9 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
 
 enum Mode {
-    Window;				// Window with borders
-    BorderlessWindow;	// Window without borders
-    Fullscreen;			// Exclusive fullscreen mode (switches monitor resolution), (a win32 feature only?)
+	Window;				// Window with borders
+	BorderlessWindow;	// Window without borders
+	Fullscreen;			// Exclusive fullscreen mode (switches monitor resolution), (a win32 feature only?)
 }
 
 enum Position {

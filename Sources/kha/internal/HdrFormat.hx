@@ -15,7 +15,10 @@ class HdrFormat {
 	static var buffer: UInt8Array;
 	static var bufferLength: Int;
 	static var fileOffset: Int;
-	function new() {}
+	
+	function new() {
+
+	}
 
 	static function readBuf(buf: UInt8Array): Int {
 		var bytesRead = 0;

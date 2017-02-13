@@ -3,39 +3,72 @@ package kha.graphics2;
 import kha.Color;
 import kha.FastFloat;
 import kha.Font;
-import kha.graphics4.BlendingOperation;
 import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.math.FastMatrix3;
-import kha.math.Matrix3;
 
 class Graphics {
-	public function begin(clear: Bool = true, clearColor: Color = null): Void { }
-	public function end(): Void { }
-	public function flush(): Void { }
+	public function begin(clear: Bool = true, clearColor: Color = null): Void {
+
+	}
+	
+	public function end(): Void {
+
+	}
+	
+	public function flush(): Void {
+
+	}
 	
 	//scale-filtering
 	//draw/fillPolygon
 	
-	public function clear(color: Color = null): Void { }
+	public function clear(color: Color = null): Void {
+
+	}
+
 	public function drawImage(img: Image, x: FastFloat, y: FastFloat): Void {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
 	}
+
 	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh);
 	}
+
 	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
 	}
-	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void { }
-	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void { }
-	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void { }
-	public function drawString(text: String, x: Float, y: Float): Void { }
-	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void { }
-	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void { }
-	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void { }
+
+	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+
+	}
+
+	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
+
+	}
+
+	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
+
+	}
+
+	public function drawString(text: String, x: Float, y: Float): Void {
+
+	}
+
+	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
+
+	}
+
+	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void {
+
+	}
+
+	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
+
+	}
 	
 	public var imageScaleQuality(get, set): ImageScaleQuality;
+	
 	public var mipmapScaleQuality(get, set): ImageScaleQuality;
 	
 	private function get_imageScaleQuality(): ImageScaleQuality {
@@ -53,7 +86,7 @@ class Graphics {
 	private function set_mipmapScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
 		return ImageScaleQuality.High;
 	}
-    
+
 	/**
 	The color value is used for geometric primitives, images, and text. Remember to set it back to white to draw images unaltered.
 	*/

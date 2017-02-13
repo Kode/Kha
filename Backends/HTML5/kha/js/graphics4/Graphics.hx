@@ -22,6 +22,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -384,6 +385,10 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.uniform1fv(cast(location, ConstantLocation).value, cast values);
 	}
 
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		SystemImpl.gl.uniform4fv(cast(location, ConstantLocation).value, cast values);
+	}
+
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		SystemImpl.gl.uniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}
@@ -404,6 +409,15 @@ class Graphics implements kha.graphics4.Graphics {
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
 		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
 		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrixCache.toData());
+	}
+
+	private var matrix3Cache = new Vector<Float>(9);
+
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
+		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
+		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
+		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, matrix3Cache.toData());
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

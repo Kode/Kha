@@ -39,7 +39,7 @@ class ImageShaderPainter {
 	private static var vertexSize: Int = 9;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;
-    private var rectVertices: Float32Array;
+	private var rectVertices: Float32Array;
 	private var indexBuffer: IndexBuffer;
 	private var lastTexture: Image;
 	private var bilinear: Bool = false;
@@ -210,7 +210,7 @@ class ImageShaderPainter {
 		end();
 		this.bilinearMipmaps = bilinear;
 	}
-    
+
 	public inline function drawImage(img: kha.Image,
 		bottomleftx: FastFloat, bottomlefty: FastFloat,
 		topleftx: FastFloat, toplefty: FastFloat,
@@ -272,13 +272,13 @@ class ColoredShaderPainter {
 	private static var bufferSize: Int = 100;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;
-    private var rectVertices: Float32Array;
+	private var rectVertices: Float32Array;
 	private var indexBuffer: IndexBuffer;
 	
 	private static var triangleBufferSize: Int = 100;
 	private var triangleBufferIndex: Int;
 	private var triangleVertexBuffer: VertexBuffer;
-    private var triangleVertices: Float32Array;
+	private var triangleVertices: Float32Array;
 	private var triangleIndexBuffer: IndexBuffer;
 	
 	private var g: Graphics;
@@ -537,7 +537,7 @@ class TextShaderPainter {
 	private static var bufferSize: Int = 100;
 	private var bufferIndex: Int;
 	private var rectVertexBuffer: VertexBuffer;
-    private var rectVertices: Float32Array;
+	private var rectVertices: Float32Array;
 	private var indexBuffer: IndexBuffer;
 	private var font: Kravur;
 	private var lastTexture: Image;
@@ -1031,7 +1031,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		//textPainter.setBilinearMipmapFilter(value == ImageScaleQuality.High); // TODO (DK) implement for fonts as well?
 		return myMipmapScaleQuality = value;
 	}
-    
+
 	override private function setPipeline(pipeline: PipelineState): Void {
 		flush();
 		imagePainter.pipeline = pipeline;
@@ -1044,8 +1044,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		flush();
 		g.scissor(x, y, width, height);
 	}
-	
-	
+
 	override public function disableScissor(): Void {
 		flush();
 		g.disableScissor();

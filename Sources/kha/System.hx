@@ -103,8 +103,7 @@ class System {
 		return SystemImpl.windowHeight(windowId);
 	}
 	
-	public static function screenDpi(): Int
-	{
+	public static function screenDpi(): Int {
 		return SystemImpl.screenDpi();
 	}
 

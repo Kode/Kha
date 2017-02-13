@@ -49,8 +49,7 @@ class FastVector4 {
 		length = 1;
 	}
 	
-	public function toString()
-	{
+	public function toString() {
 		return 'FastVector4($x, $y, $z, $w)';
 	}
 }

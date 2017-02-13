@@ -121,7 +121,7 @@ class Matrix3 {
 		return new Vector2(x, y);
 	}
 
-    @:extern public inline function cofactor(m0: Float, m1: Float, m2: Float, m3: Float): Float {
+	@:extern public inline function cofactor(m0: Float, m1: Float, m2: Float, m3: Float): Float {
 		return m0 * m3 - m1 * m2;
 	}
 
@@ -152,9 +152,9 @@ class Matrix3 {
 
 		var invdet: Float = 1.0 / det;
 		return new Matrix3(
-			 c00 * invdet, -c01 * invdet,  c02 * invdet,
+			c00 * invdet,  -c01 * invdet,  c02 * invdet,
 			-c10 * invdet,  c11 * invdet, -c12 * invdet,
-			 c20 * invdet, -c21 * invdet,  c22 * invdet
+			c20 * invdet,  -c21 * invdet,  c22 * invdet
 		);
 	}
 }

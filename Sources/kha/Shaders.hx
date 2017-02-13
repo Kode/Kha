@@ -35,6 +35,4 @@ class Shaders {
 	//public static var painter_image_vert: VertexShader;
 	//public static var painter_image_vertAttributes: Attributes;
 	//public static var painter_image_vertUniforms: Uniforms;
-	
-	
 }

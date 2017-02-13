@@ -17,6 +17,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
+import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -192,8 +193,16 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: Matrix4): Void {
 		setMatrix2(cast location, matrix);
 	}
+
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: Matrix3): Void {
+		
+	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
+		
+	}
+
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Array<Float>): Void {
 		
 	}
 		

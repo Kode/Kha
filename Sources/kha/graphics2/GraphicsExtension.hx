@@ -162,7 +162,7 @@ class GraphicsExtension {
 		var uu:Float = u * u;
 		var uuu:Float = uu * u;
 		var ttt:Float = tt * t;
-	 		
+
 		// first term
 		var p:Array<Float> = [uuu * x[0], uuu * y[0]];
 			

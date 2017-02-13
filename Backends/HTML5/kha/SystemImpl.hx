@@ -46,8 +46,7 @@ class SystemImpl {
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
 	public static var insideInputEvent: Bool = false;
-	private static var loaded: Bool = false;
-	
+
 	public static function initPerformanceTimer(): Void {
 		if (Browser.window.performance != null && Browser.window.performance.now != null) {
 			performance = Browser.window.performance;
@@ -120,31 +119,11 @@ class SystemImpl {
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.width;
-		}
-		else {
-			if (options.width != null) {
-				return options.width;
-			}
-			else {
-				return khanvas.width;
-			}
-		}
+		return (khanvas.width == 0 && options.width != null) ? options.width : khanvas.width;
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		if (loaded) {
-			return khanvas.height;
-		}
-		else {
-			if (options.height != null) {
-				return options.height;
-			}
-			else {
-				return khanvas.height;
-			}
-		}
+		return (khanvas.height == 0 && options.height != null) ? options.height : khanvas.height;
 	}
 
 	public static function screenDpi(): Int {
@@ -201,7 +180,7 @@ class SystemImpl {
 	private static var pressedKeys: Array<Bool>;
 	private static var buttonspressed: Array<Bool>;
 	private static var leftMouseCtrlDown: Bool = false;
-	private static var keyboard: Keyboard;
+	private static var keyboard: Keyboard = null;
 	private static var mouse: kha.input.Mouse;
 	private static var surface: Surface;
 	private static var gamepads: Array<Gamepad>;
@@ -217,7 +196,10 @@ class SystemImpl {
 
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
+		
+		#if !no_keyboard
 		keyboard = new Keyboard();
+		#end
 		mouse = new kha.input.MouseImpl();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
@@ -299,19 +281,15 @@ class SystemImpl {
 
 	private static function loadFinished() {
 		// Only consider custom canvas ID for release builds
-        var canvas: Dynamic = khanvas;
-        if(canvas == null) {
-            #if (sys_debug_html5 || !canvas_id)
-            canvas = Browser.document.getElementById("khanvas");
-            #else
-            canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-            #end
-        }
+		var canvas: Dynamic = khanvas;
+		if (canvas == null) {
+			#if (sys_debug_html5 || !canvas_id)
+			canvas = Browser.document.getElementById("khanvas");
+			#else
+			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+			#end
+		}
 		canvas.style.cursor = "default";
-
-		canvas.onload = function () {
-			loaded = true;	// TODO: never called ??
-		};
 
 		var gl: Bool = false;
 
@@ -347,7 +325,7 @@ class SystemImpl {
 		if (gl) {
 			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
 			frame = new Framebuffer(0, null, null, g4);
-			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4);
+			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
 		else {
 			var g2 = new CanvasGraphics(canvas.getContext("2d"), System.windowWidth(), System.windowHeight());
@@ -381,10 +359,6 @@ class SystemImpl {
 		if (requestAnimationFrame == null) requestAnimationFrame = window.mozRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.webkitRequestAnimationFrame;
 		if (requestAnimationFrame == null) requestAnimationFrame = window.msRequestAnimationFrame;
-
-		window.onload = function() {
-			loaded = true;
-		}
 
 		function animate(timestamp) {
 			var window: Dynamic = Browser.window;
@@ -454,8 +428,10 @@ class SystemImpl {
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
-		canvas.onkeydown = keyDown;
-		canvas.onkeyup = keyUp;
+		if(keyboard != null) {
+			canvas.onkeydown = keyDown;
+			canvas.onkeyup = keyUp;
+		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
 		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
@@ -601,16 +577,16 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if(Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
-			Browser.document.addEventListener('mouseup', mouseLeftUp);
+			if (Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
+			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
 			mouse.sendDownEvent(0, 2, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseMiddleUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseMiddleUp);
 		}
 		else if(event.which == 3) { //right button
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
-			Browser.document.addEventListener('mouseup', mouseRightUp);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseRightUp);
 		}
 		insideInputEvent = false;
 	}
@@ -621,8 +597,8 @@ class SystemImpl {
 		if (event.which != 1) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseLeftUp);
-		if(Reflect.hasField(Browser.document, 'releaseCapture')) Browser.document.releaseCapture();
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
+		if(Reflect.hasField(khanvas.ownerDocument, 'releaseCapture')) khanvas.ownerDocument.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -639,7 +615,7 @@ class SystemImpl {
 		if (event.which != 2) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseMiddleUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -650,7 +626,7 @@ class SystemImpl {
 		if (event.which != 3) return;
 		
 		insideInputEvent = true;
-		Browser.document.removeEventListener('mouseup', mouseRightUp);
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -666,9 +642,9 @@ class SystemImpl {
 		var movementX = event.movementX;
 		var movementY = event.movementY;
 
-		if(event.movementX == null){
-			movementX = untyped( event.mozMovementX || event.webkitMovementX || (mouseX  - lastMouseX));
-		 	movementY = untyped( event.mozMovementY || event.webkitMovementY || (mouseY  - lastMouseY));
+		if(event.movementX == null) {
+		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
 		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);

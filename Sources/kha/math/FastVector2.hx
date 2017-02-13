@@ -51,8 +51,7 @@ class FastVector2 {
 		length = 1;
 	}
 	
-	public function toString()
-	{
+	public function toString() {
 		return 'FastVector2($x, $y)';
 	}
 }

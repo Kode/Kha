@@ -7,8 +7,6 @@ package kha;
  normal dpad/buttons. The virtual dpad is displayed on the screen and can
  be controlled by touch or mouse controls.
 
-
-
  How to use:
 
  - Create a new VirtualDPad.
@@ -35,7 +33,7 @@ class VirtualDPad {
 	public var up   : Bool;
 	public var down : Bool;
 	
-	/** To check if the user is currently using the virtual dpad at all:**/
+	// To check if the user is currently using the virtual dpad at all:
 	public var user_is_interacting: Bool;
 		// Indicates that the user is interacting with the virtual dpad, because he clicked/touched it.
 		// The interaction is continued until the user releases the mouse button or stops touching. It
@@ -66,7 +64,6 @@ class VirtualDPad {
 		
 		resetInteraction();
 	}
-	
 	
 	/**
 	 If the interaction should be canceled, for example if your game or a level in your game restarts,
@@ -155,7 +152,9 @@ class VirtualDPad {
 	
 	public function isMouseWithinMoveArea(mouse_x: Int, mouse_y: Int): Bool {
 		if ((mouse_x >= x + Std.int((size - move_area) / 2)) && (mouse_x < x + Std.int((size - move_area) / 2) + move_area) &&
-		   ((mouse_y >= y + Std.int((size - move_area) / 2)) && (mouse_y < y + Std.int((size - move_area) / 2) + move_area))) return true;
+		((mouse_y >= y + Std.int((size - move_area) / 2)) && (mouse_y < y + Std.int((size - move_area) / 2) + move_area))) {
+			return true;
+		}
 		return false;
 	}
 		

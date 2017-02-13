@@ -21,6 +21,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexShader;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -188,6 +189,12 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setFloats(location, vals);
 	}
 
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		var vals = new kha.arrays.Float32Array(values.length);
+		for (i in 0...values.length) vals.set(i, values[i]);
+		Krom.setFloat4s(location, vals);
+	}
+
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		Krom.setFloat2(location, value.x, value.y);
 	}
@@ -202,6 +209,10 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		Krom.setMatrix(location, matrix);
+	}
+
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		Krom.setMatrix3(location, matrix);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

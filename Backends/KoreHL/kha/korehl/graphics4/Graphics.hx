@@ -21,6 +21,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 import kha.Image;
+import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -392,6 +393,15 @@ class Graphics implements kha.graphics4.Graphics {
 	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
 		
 	}
+
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+		setFloat4sPrivate(cast location, values);
+	}
+	
+	//@:functionCode('Kore::Graphics::setFloat4s(location->location, values->Pointer(), values->length);')
+	private function setFloat4sPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+		
+	}
 	
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		kore_graphics_set_matrix(cast(location, ConstantLocation)._location,
@@ -399,6 +409,10 @@ class Graphics implements kha.graphics4.Graphics {
 			matrix._01, matrix._11, matrix._21, matrix._31,
 			matrix._02, matrix._12, matrix._22, matrix._32,
 			matrix._03, matrix._13, matrix._23, matrix._33);
+	}
+
+	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

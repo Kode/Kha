@@ -166,8 +166,8 @@ class Scaler {
 		var rect = targetRect(width, height, destinationWidth, destinationHeight, rotation);
 		var sf = rect.scaleFactor;
 		var transformation = new FastMatrix3(sf,  0, rect.x,
-										   0, sf, rect.y,
-										   0,  0, 1);
+											0, sf, rect.y,
+											0,  0, 1);
 		switch (rotation) {
 		case RotationNone:
 		case Rotation90:
