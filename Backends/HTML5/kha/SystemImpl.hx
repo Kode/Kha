@@ -348,8 +348,7 @@ class SystemImpl {
 			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
-
-		//kha.vr.VrInterface.instance = new kha.js.vr.VrInterface();
+		
 		kha.vr.VrInterface.instance = new VrInterface();
 
 		Scheduler.start();

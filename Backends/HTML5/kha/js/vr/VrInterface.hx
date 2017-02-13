@@ -7,20 +7,9 @@ import kha.vr.Pose;
 import kha.vr.PoseState;
 import kha.vr.SensorState;
 import kha.vr.TimeWarpParms;
-
-import kha.graphics4.VertexBuffer;
-import kha.graphics4.IndexBuffer;
-import kha.graphics4.VertexStructure;
-import kha.graphics4.VertexData;
-import kha.graphics4.PipelineState;
-import kha.graphics4.Graphics;
-import kha.graphics4.ConstantLocation;
-import kha.graphics4.TextureUnit;
-import kha.graphics4.Usage;
 import kha.math.FastMatrix4;
 import kha.math.Vector3;
 import kha.math.Quaternion;
-import kha.Image;
 import kha.SystemImpl;
 
 class VrInterface extends kha.vr.VrInterface {
@@ -93,7 +82,6 @@ class VrInterface extends kha.vr.VrInterface {
 	private function onVRRequestPresent () {
 		try {
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				trace("Begin presenting to the VRDisplay");
 				onVRPresentChange();
 				vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
@@ -105,9 +93,7 @@ class VrInterface extends kha.vr.VrInterface {
 
 	private function onVRExitPresent () {
 		try {
-			// Stops presenting to the VRDisplay
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				trace("Stops presenting to the VRDisplay");
 				onVRPresentChange();
 			});
 		} catch(err: Dynamic) {
@@ -147,15 +133,9 @@ class VrInterface extends kha.vr.VrInterface {
 
 			vrDisplay.getFrameData(frameData);
 
-			// Render the left eye
-			//gl.viewport(0, 0, layerSource.width * 0.5, layerSource.height);
-			//render(frameData.leftProjectionMatrix, frameData.leftViewMatrix);
 			leftProjectionMatrix = createMatrixFromArray(untyped frameData.leftProjectionMatrix);
 			leftViewMatrix = createMatrixFromArray(untyped frameData.leftViewMatrix);
 
-			// Render the right eye
-			//gl.viewport(layerSource.width * 0.5, 0, layerSource.width * 0.5, layerSource.height);
-			//render(frameData.rightProjectionMatrix, frameData.rightViewMatrix);
 			rightProjectionMatrix = createMatrixFromArray(untyped frameData.rightProjectionMatrix);
 			rightViewMatrix = createMatrixFromArray(untyped frameData.rightViewMatrix);
 
