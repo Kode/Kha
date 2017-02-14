@@ -1,8 +1,6 @@
 package kha.js.vr;
 
-import js.Browser;
 import js.html.Float32Array;
-
 import kha.vr.Pose;
 import kha.vr.PoseState;
 import kha.vr.SensorState;
@@ -19,12 +17,15 @@ class VrInterface extends kha.vr.VrInterface {
 	private var vrDisplay: Dynamic;
 	private var frameData: Dynamic;
 
-	private var vrButton: Dynamic;
-
 	private var leftProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var rightProjectionMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var leftViewMatrix: FastMatrix4 = FastMatrix4.identity();
 	private var rightViewMatrix: FastMatrix4 = FastMatrix4.identity();
+
+	private var width: Int = 0;
+	private var height: Int = 0;
+	private var vrWidth: Int = 0;
+	private var vrHeight: Int = 0;
 
 	public function new() {
 		super();
@@ -48,41 +49,22 @@ class VrInterface extends kha.vr.VrInterface {
 				vrDisplay.depthNear = 0.1;
 				vrDisplay.depthFar = 1024.0;
 
-				// Reset pose button
-				var resetButton = Browser.document.createButtonElement();
-        		resetButton.textContent = "Reset Pose!";
-        		resetButton.onclick = function(event) {
-            		vrDisplay.resetPose();
-        		}
-        		Browser.document.body.appendChild(resetButton);
-
-				// Enter VR button
-				if (vrDisplay.capabilities.canPresent) {
-					createEnterVrButton();
-				}
+				var leftEye = vrDisplay.getEyeParameters("left");
+				var rightEye = vrDisplay.getEyeParameters("right");
+				width = SystemImpl.khanvas.width;
+				height = SystemImpl.khanvas.height;
+				vrWidth = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
+				vrHeight = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
 			} else {
 				trace("There are no VR displays connected.");
 			}
 		});
 	}
-
-	private function onVRPresentChange () {
-		if (vrDisplay.isPresenting) {
-			if (vrDisplay.capabilities.hasExternalDisplay) {
-				createExitVrButton();
-			}
-		} else {
-			if (vrDisplay.capabilities.hasExternalDisplay) {
-				createEnterVrButton();
-			}
-		}
-        onResize();
-      }
-
-	private function onVRRequestPresent () {
+	
+	public override function onVRRequestPresent () {
 		try {
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				onVRPresentChange();
+				onResize();
 				vrDisplay.requestAnimationFrame(onAnimationFrame);
 			});
 		} catch(err: Dynamic) {
@@ -91,10 +73,10 @@ class VrInterface extends kha.vr.VrInterface {
 		}
 	}
 
-	private function onVRExitPresent () {
+	public override function onVRExitPresent () {
 		try {
 			vrDisplay.exitPresent([{ source: SystemImpl.khanvas }]).then(function () {
-				onVRPresentChange();
+				onResize();
 			});
 		} catch(err: Dynamic) {
 			trace("Failed to exitPresent.");
@@ -102,29 +84,13 @@ class VrInterface extends kha.vr.VrInterface {
 		}
 	}
 
-	private function createEnterVrButton(): Void {
-		if (vrButton != null)
-			Browser.document.body.removeChild(vrButton);
-
-		vrButton = Browser.document.createButtonElement();
-		vrButton.textContent = "Enter VR";
-		vrButton.onclick = function(event) {
-			onVRRequestPresent();
+	public override function onResetPose() {
+		try {
+			vrDisplay.resetPose();
+		} catch(err: Dynamic) {
+			trace("Failed to resetPose");
+			trace(err);
 		}
-		Browser.document.body.appendChild(vrButton);
-	}
-
-	private function createExitVrButton(): Void {
-		if (vrButton != null)
-			Browser.document.body.removeChild(vrButton);
-
-		vrButton = Browser.document.createButtonElement();
-		vrButton.textContent = "Exit VR";
-		vrButton.onclick = function(event) {
-			onVRExitPresent();
-		}
-		Browser.document.body.appendChild(vrButton);
-
 	}
 
 	private function onAnimationFrame(timestamp: Float): Void {
@@ -146,13 +112,11 @@ class VrInterface extends kha.vr.VrInterface {
 
 	private function onResize () {
 		if(vrDisplay != null && vrDisplay.isPresenting) {
-			var leftEye = vrDisplay.getEyeParameters("left");
-			var rightEye = vrDisplay.getEyeParameters("right");
-			SystemImpl.khanvas.width = Std.int(Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2);
-			SystemImpl.khanvas.height = Std.int(Math.max(leftEye.renderHeight, rightEye.renderHeight));
+			SystemImpl.khanvas.width = vrWidth;
+			SystemImpl.khanvas.height = vrHeight;
 		} else {
-			SystemImpl.khanvas.width = Browser.window.innerWidth;
-			SystemImpl.khanvas.height = Browser.window.innerHeight;
+			SystemImpl.khanvas.width = width;
+			SystemImpl.khanvas.height = height;
 		}
 	}
 
@@ -209,7 +173,7 @@ class VrInterface extends kha.vr.VrInterface {
 		return false;
 	}
 
-	public override function VrEnabled(): Bool {
+	public override function IsVrEnabled(): Bool {
 		return vrEnabled;
 	}
 
