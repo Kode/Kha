@@ -467,6 +467,10 @@ class Graphics implements kha.graphics4.Graphics {
 		if (target == null) renderToBackbuffer();
 		else renderToTexture(additionalRenderTargets);
 	}
+
+	public function beginEye(eye: Int): Void {
+		
+	}
 	
 	public function end(): Void {
 		
