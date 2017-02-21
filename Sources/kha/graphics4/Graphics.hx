@@ -14,6 +14,7 @@ import kha.Video;
 
 interface Graphics {
 	function begin(additionalRenderTargets: Array<Canvas> = null): Void;
+	function beginEye(eye: Int): Void;
 	function end(): Void;
 	
 	function vsynced(): Bool;

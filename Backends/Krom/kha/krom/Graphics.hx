@@ -42,6 +42,10 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.begin(renderTarget, additionalRenderTargets);
 	}
 
+	public function beginEye(eye: Int): Void {
+		
+	}
+
 	public function end(): Void {
 		Krom.end();
 	}

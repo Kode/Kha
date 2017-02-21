@@ -419,6 +419,10 @@ class Graphics implements kha.graphics4.Graphics {
 		else context.setRenderToTexture(target.getFlashTexture(), enableDepthStencil(target.depthStencilFormat()));
 	}
 
+	public function beginEye(eye: Int): Void {
+		
+	}
+
 	function enableDepthStencil( format : DepthStencilFormat ) : Bool {
 		return switch (format) {
 			case NoDepthAndStencil: false;

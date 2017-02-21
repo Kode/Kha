@@ -50,6 +50,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function beginEye(eye: Int): Void {
+		
+	}
+
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(0, 0, w, h));')
 	private function setViewport(w: Int, h: Int): Void {
 

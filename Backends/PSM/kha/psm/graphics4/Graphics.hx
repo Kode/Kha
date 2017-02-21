@@ -213,6 +213,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function begin(): Void {
 		
 	}
+
+	public function beginEye(eye: Int): Void {
+		
+	}
 	
 	public function end(): Void {
 		context.SwapBuffers();
