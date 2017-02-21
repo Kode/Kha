@@ -576,7 +576,7 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if (Reflect.hasField(khanvas, 'setCapture'))  khanvas.setCapture();
+			if (khanvas.setCapture != null)  khanvas.setCapture();
 			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -597,7 +597,7 @@ class SystemImpl {
 		
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
-		if(Reflect.hasField(khanvas.ownerDocument, 'releaseCapture')) khanvas.ownerDocument.releaseCapture();
+		if(khanvas.releaseCapture != null) khanvas.ownerDocument.releaseCapture();
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
