@@ -77,11 +77,13 @@ class VertexBuffer {
 	}
 	
 	@:noCompletion
+	@:keep
 	public static function _unused1(): VertexElement {
 		return null;
 	}
 	
 	@:noCompletion
+	@:keep
 	public static function _unused2(): VertexData {
 		return null;
 	}

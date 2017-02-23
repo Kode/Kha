@@ -11,6 +11,7 @@ class VertexStructure {
 		elements.push(new VertexElement(name, data));
 	}
 	
+	@:keep
 	public function size(): Int {
 		return elements.length;
 	}
@@ -41,6 +42,7 @@ class VertexStructure {
 		return 0;
 	}
 	
+	@:keep
 	public function get(index: Int): VertexElement {
 		return elements[index];
 	}

@@ -25,6 +25,7 @@ extern class Float32ArrayData {
 }
 
 class Float32Array {
+	@:keep
 	private var data: Float32ArrayData;
 	
 	public inline function new() {

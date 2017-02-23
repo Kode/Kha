@@ -28,6 +28,7 @@ class Blob {
 	
 	public var length(get, null): Int;
 	
+	@:keep
 	public function get_length(): Int {
 		return bytes.length;
 	}
