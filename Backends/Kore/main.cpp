@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 #ifdef ANDROID
-	#include <Kore/Vr/VrInterface.h>
+	//#include <Kore/Vr/VrInterface.h>
 #endif
 
 extern "C" const char* hxRunLibrary();
