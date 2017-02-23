@@ -58,6 +58,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function beginEye(eye: Int): Void {
+		
+	}
+
 	public function end(): Void {
 		/*if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
 			trace('GL Error.');

@@ -72,6 +72,17 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function beginEye(eye: Int): Void {
+		SystemImpl.gl.enable(GL.BLEND);
+		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+		if (eye == 0) {
+			SystemImpl.gl.viewport(0, 0, Std.int(System.windowWidth() * 0.5), System.windowHeight());
+		} else {
+			SystemImpl.gl.viewport(Std.int(System.windowWidth() * 0.5), 0, Std.int(System.windowWidth() * 0.5), System.windowHeight());
+		}
+	}
+
 	public function end(): Void {
 
 	}

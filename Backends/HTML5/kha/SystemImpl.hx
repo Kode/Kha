@@ -17,6 +17,7 @@ import kha.js.AudioElementAudio;
 import kha.js.AEAudioChannel;
 import kha.js.CanvasGraphics;
 import kha.js.MobileWebAudio;
+import kha.js.vr.VrInterface;
 import kha.System;
 
 class GamepadStates {
@@ -43,6 +44,7 @@ class SystemImpl {
 	private static var options: SystemOptions;
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
+	private static var chrome: Bool = false;
 	public static var insideInputEvent: Bool = false;
 
 	public static function initPerformanceTimer(): Void {
@@ -73,6 +75,7 @@ class SystemImpl {
 		}, 1000);
 		#else
 		mobile = isMobile();
+		chrome = isChrome();
 		init2();
 		callback();
 		#end
@@ -102,6 +105,17 @@ class SystemImpl {
 		else {
 			return false;
 		}
+	}
+
+	private static function isChrome(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Chrome") >= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
@@ -334,6 +348,8 @@ class SystemImpl {
 			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
+		
+		kha.vr.VrInterface.instance = new VrInterface();
 
 		Scheduler.start();
 
@@ -348,19 +364,22 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-			var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
-			if (sysGamepads != null) {
-				for (i in 0...sysGamepads.length) {
-					var pad = sysGamepads[i];
-					if (pad != null) {
-						checkGamepadButton(pad, 0);
-						checkGamepadButton(pad, 1);
-						checkGamepadButton(pad, 12);
-						checkGamepadButton(pad, 13);
-						checkGamepadButton(pad, 14);
-						checkGamepadButton(pad, 15);
+			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called when using VR
+			if ((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome)  {
+				var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
+				if (sysGamepads != null) {
+					for (i in 0...sysGamepads.length) {
+						var pad = sysGamepads[i];
+						if (pad != null) {
+							checkGamepadButton(pad, 0);
+							checkGamepadButton(pad, 1);
+							checkGamepadButton(pad, 12);
+							checkGamepadButton(pad, 13);
+							checkGamepadButton(pad, 14);
+							checkGamepadButton(pad, 15);
 
-						checkGamepad(pad);
+							checkGamepad(pad);
+						}
 					}
 				}
 			}
