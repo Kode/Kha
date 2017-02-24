@@ -138,6 +138,10 @@ class Image implements Canvas implements Resource {
 		Krom.setDepthStencilFrom(renderTarget_, image.renderTarget_);
 	}
 
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
+		Krom.clearTexture(x, y, z, width, height, depth, color);
+	}
+
 	public var width(get, null): Int;
 	private function get_width(): Int { return texture_ == null ? renderTarget_.width : texture_.width; }
 	public var height(get, null): Int;
