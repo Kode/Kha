@@ -44,6 +44,7 @@ extern class Krom {
 	static function generateMipmaps(texture: Dynamic, levels: Int): Void;
 	static function setMipmaps(texture: Dynamic, mipmaps: Array<kha.Image>): Void;
 	static function setDepthStencilFrom(target: Dynamic, source: Dynamic): Void;
+	static function clearTexture(target: Dynamic, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Int): Void;
 	static function createIndexBuffer(count: Int): Dynamic;
 	static function deleteIndexBuffer(buffer: Dynamic): Dynamic;
 	static function setIndices(buffer: Dynamic, indices: Array<Int>): Void;

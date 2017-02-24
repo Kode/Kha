@@ -236,6 +236,10 @@ class Image implements Canvas implements Resource {
 	public function setDepthStencilFrom(image: Image): Void {
 		
 	}
+
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
+		
+	}
 	
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.types.Bytes, readable: Bool): Pointer { return null; }

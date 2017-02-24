@@ -90,6 +90,10 @@ class Image {
 	public function setDepthStencilFrom(image: Image): Void {
 		
 	}
+
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
+		
+	}
 	
 	public var g2(get, null): kha.graphics2.Graphics;
 	

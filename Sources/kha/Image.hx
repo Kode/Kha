@@ -37,6 +37,8 @@ extern class Image implements Canvas implements Resource {
 	
 	// Use depth buffer attached to different image.
 	public function setDepthStencilFrom(image: Image): Void;
+
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void;
 	
 	public var width(get, null): Int;
 	

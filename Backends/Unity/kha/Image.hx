@@ -148,6 +148,10 @@ class Image implements Canvas implements Resource {
 		
 	}
 
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
+		
+	}
+
 	public static var maxSize(get, null): Int;
 
 	public static function get_maxSize(): Int {
