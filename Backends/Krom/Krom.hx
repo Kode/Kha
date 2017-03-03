@@ -40,6 +40,7 @@ extern class Krom {
 	static function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
 	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
+	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
 	static function unlockTexture(texture: Dynamic, data: haxe.io.BytesData): Void;
 	static function generateMipmaps(texture: Dynamic, levels: Int): Void;
 	static function setMipmaps(texture: Dynamic, mipmaps: Array<kha.Image>): Void;
