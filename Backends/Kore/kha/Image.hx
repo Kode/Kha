@@ -41,7 +41,16 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		var readable = true;
+		var image = new Image(readable);
+		image.format = format;
+		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
+		return image;
+	}
+
+	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), width, height, format, readable);')
+	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
+		
 	}
 	
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
@@ -50,7 +59,12 @@ class Image implements Canvas implements Resource {
 		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromEncodedBytes(bytes.getData(), format);
 		doneCallback(image);
-	}	
+	}
+
+	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
+	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
+		
+	}
 
 	private function new(readable: Bool) {
 		this.readable = readable;
@@ -93,12 +107,16 @@ class Image implements Canvas implements Resource {
 	
 	private static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
-			case RGBA32:
-				return 0;
-			case RGBA128:
-				return 3;
-			default:
-				return 1;
+		case RGBA32:
+			return 0;
+		case RGBA128:
+			return 3;
+		case RGBA64:
+			return 4;
+		case A32:
+			return 5;
+		default:
+			return 1; // Grey 8
 		}
 	}
 
@@ -148,11 +166,6 @@ class Image implements Canvas implements Resource {
 	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 
-	}
-
-	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
-	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
-		
 	}
 
 	public var g1(get, null): kha.graphics1.Graphics;

@@ -57,12 +57,16 @@ class Image implements Canvas implements Resource {
 
 	private static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
-			case RGBA32:
-				return 0;
-			case RGBA128:
-				return 3;
-			default:
-				return 1; // Grey8
+		case RGBA32:
+			return 0;
+		case RGBA128:
+			return 3;
+		case RGBA64:
+			return 4;
+		case A32:
+			return 5;
+		default:
+			return 1; // Grey8
 		}
 	}
 	
@@ -71,7 +75,12 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		if (format == null) format = TextureFormat.RGBA32;
+		var readable = true;
+		var image = new Image(null);
+		image.format = format;
+		image.texture_ = Krom.createTextureFromBytes(bytes.getData(), width, height, getTextureFormat(format), readable);
+		return image;
 	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
