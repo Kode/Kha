@@ -949,7 +949,7 @@ class SystemImpl {
 		}
 	}
 
-	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.addEventListener('fullscreenchange', func, false);
 		js.Browser.document.addEventListener('mozfullscreenchange', func, false);
 		js.Browser.document.addEventListener('webkitfullscreenchange', func, false);
@@ -962,7 +962,7 @@ class SystemImpl {
 	}
 
 
-	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.removeEventListener('fullscreenchange', func, false);
 		js.Browser.document.removeEventListener('mozfullscreenchange', func, false);
 		js.Browser.document.removeEventListener('webkitfullscreenchange', func, false);
