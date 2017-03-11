@@ -119,11 +119,16 @@ class WebGLImage extends Image {
 	}
 
 	function createImageData() {
-		context.strokeStyle = "rgba(0,0,0,0)";
-		context.fillStyle = "rgba(0,0,0,0)";
-		context.fillRect(0, 0, image.width, image.height);
-		context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
-		data = context.getImageData(0, 0, image.width, image.height);
+		if (Std.is(image, Uint8Array)) {
+			data = new js.html.ImageData(new js.html.Uint8ClampedArray(image.buffer), this.width, this.height);
+		} 
+		else {
+			context.strokeStyle = "rgba(0,0,0,0)";
+			context.fillStyle = "rgba(0,0,0,0)";
+			context.fillRect(0, 0, image.width, image.height);
+			context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+			data = context.getImageData(0, 0, image.width, image.height);
+		}
 	}
 
 	private static function upperPowerOfTwo(v: Int): Int {
