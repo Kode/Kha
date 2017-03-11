@@ -120,7 +120,7 @@ class WebGLImage extends Image {
 
 	function createImageData() {
 		if (Std.is(image, Uint8Array)) {
-			data = new js.html.ImageData(new Uint8ClampedArray(image.buffer), this.width, this.height);
+			data = new js.html.ImageData(new js.html.Uint8ClampedArray(image.buffer), this.width, this.height);
 		} 
 		else {
 			context.strokeStyle = "rgba(0,0,0,0)";
