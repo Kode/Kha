@@ -422,7 +422,8 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
-		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * 2);
+		var size = type == GL.UNSIGNED_SHORT ? 2 : 4;
+		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
 	}
 
 	private function convertStencilAction(action: StencilAction) {
