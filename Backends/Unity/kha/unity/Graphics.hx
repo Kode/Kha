@@ -50,6 +50,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function beginFace(face: Int): Void {
+
+	}
+
 	public function beginEye(eye: Int): Void {
 		
 	}
@@ -139,8 +143,12 @@ class Graphics implements kha.graphics4.Graphics {
 
 	}
 
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
+	}
+	
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
 	}
 
 	public function renderTargetsInvertedY(): Bool {

@@ -42,6 +42,10 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.begin(renderTarget, additionalRenderTargets);
 	}
 
+	public function beginFace(face: Int): Void {
+
+	}
+
 	public function beginEye(eye: Int): Void {
 		
 	}
@@ -126,8 +130,12 @@ class Graphics implements kha.graphics4.Graphics {
 		indexBuffer.set();
 	}
 
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
+	}
+	
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {

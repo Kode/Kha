@@ -93,7 +93,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function beginFace(face: Int) {
+	public function beginFace(face: Int): Void {
 		SystemImpl.gl.enable(GL.BLEND);
 		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTargetFrameBuffer);

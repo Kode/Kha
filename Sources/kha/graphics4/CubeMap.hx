@@ -1,9 +1,6 @@
 package kha.graphics4;
 
 import haxe.io.Bytes;
-import kha.graphics4.TextureFormat;
-import kha.graphics4.DepthStencilFormat;
-import kha.graphics4.Usage;
 
 extern class CubeMap implements Canvas implements Resource {
 

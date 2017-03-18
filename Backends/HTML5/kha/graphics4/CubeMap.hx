@@ -1,15 +1,13 @@
 package kha.graphics4;
 
-import haxe.io.Bytes;
 import js.html.webgl.GL;
-import kha.graphics4.TextureFormat;
-import kha.graphics4.DepthStencilFormat;
-import kha.graphics4.Usage;
+import haxe.io.Bytes;
 import kha.js.graphics4.Graphics;
 
 class CubeMap implements Canvas implements Resource {
 
-	private var mySize: Int;
+	private var myWidth: Int;
+	private var myHeight: Int;
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
 	private var depthStencilFormat: DepthStencilFormat;
@@ -21,7 +19,8 @@ class CubeMap implements Canvas implements Resource {
 	public var isDepthAttachment: Bool = false;
 
 	private function new(size: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat) {
-		mySize = size;
+		myWidth = size;
+		myHeight = size;
 		this.format = format;
 		this.renderTarget = renderTarget;
 		this.depthStencilFormat = depthStencilFormat;
@@ -52,19 +51,19 @@ class CubeMap implements Canvas implements Resource {
 
 			switch (format) {
 			case DEPTH16:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.DEPTH_COMPONENT, mySize, mySize, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 			case RGBA128:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, mySize, mySize, 0, GL.RGBA, GL.FLOAT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, null);
 			case RGBA64:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, mySize, mySize, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			case RGBA32:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, mySize, mySize, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			case A32:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, mySize, mySize, 0, GL.ALPHA, GL.FLOAT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, null);
 			case A16:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, mySize, mySize, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			default:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, mySize, mySize, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
 
 			if (format == DEPTH16) {
@@ -74,7 +73,7 @@ class CubeMap implements Canvas implements Resource {
 					var colortex = SystemImpl.gl.createTexture();
 					SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, colortex);
 					for (i in 0...6) {
-						SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, mySize, mySize, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+						SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 						SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, colortex, 0);
 					}
 					SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, texture);
@@ -94,7 +93,7 @@ class CubeMap implements Canvas implements Resource {
 		case DepthOnly: {
 			depthTexture = SystemImpl.gl.createTexture();
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
-			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_COMPONENT, mySize, mySize, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -105,7 +104,7 @@ class CubeMap implements Canvas implements Resource {
 		case DepthAutoStencilAuto, Depth24Stencil8, Depth32Stencil8:
 			depthTexture = SystemImpl.gl.createTexture();
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
-			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_STENCIL, mySize, mySize, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
+			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_STENCIL, myWidth, myHeight, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -129,12 +128,10 @@ class CubeMap implements Canvas implements Resource {
 	public function lock(level: Int = 0): Bytes { return null; }
 	public function unlock(): Void { }
 
-	public var size(get, null): Int;
-	private function get_size(): Int { return mySize; }
 	public var width(get, null): Int;
-	private function get_width(): Int { return mySize; }
+	private function get_width(): Int { return myWidth; }
 	public var height(get, null): Int;
-	private function get_height(): Int { return mySize; }
+	private function get_height(): Int { return myHeight; }
 
 	public var g1(get, null): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
