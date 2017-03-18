@@ -36,16 +36,36 @@ import kha.WebGLImage;
 class Graphics implements kha.graphics4.Graphics {
 	private var depthTest: Bool = false;
 	private var depthMask: Bool = false;
-	private var framebuffer: Dynamic;
 	private var indicesCount: Int;
-	private var renderTarget: WebGLImage;
+	private var renderTarget: Canvas;
+	private var renderTargetFrameBuffer: Dynamic;
+	private var renderTargetTexture: Dynamic;
+	private var isCubeMap: Bool = false;
+	private var isDepthAttachment: Bool = false;
 	private var instancedExtension: Dynamic;
 	private var blendMinMaxExtension: Dynamic;
 
-	public function new(renderTarget: WebGLImage = null) {
+	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
+		init();
 		instancedExtension = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
 		blendMinMaxExtension = SystemImpl.gl.getExtension("EXT_blend_minmax");
+	}
+
+	private function init() {
+		if (renderTarget == null) return;
+		isCubeMap = Std.is(renderTarget, CubeMap);
+		if (isCubeMap) {
+			var cubeMap: CubeMap = cast(renderTarget, CubeMap);
+			renderTargetFrameBuffer = cubeMap.frameBuffer;
+			renderTargetTexture = cubeMap.texture;
+			isDepthAttachment = cubeMap.isDepthAttachment;
+		}
+		else {
+			var image: WebGLImage = cast(renderTarget, WebGLImage);
+			renderTargetFrameBuffer = image.frameBuffer;
+			renderTargetTexture = image.texture;
+		}
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
@@ -56,10 +76,11 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.viewport(0, 0, System.windowWidth(), System.windowHeight());
 		}
 		else {
-			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTarget.frameBuffer);
+			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTargetFrameBuffer);
+			// if (isCubeMap) SystemImpl.gl.framebufferTexture(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_CUBE_MAP, renderTargetTexture, 0); // Layered
 			SystemImpl.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
 			if (additionalRenderTargets != null) {
-				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, GL.TEXTURE_2D, renderTarget.texture, 0);
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, GL.TEXTURE_2D, renderTargetTexture, 0);
 				for (i in 0...additionalRenderTargets.length) {
 					SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, GL.TEXTURE_2D, cast(additionalRenderTargets[i], WebGLImage).texture, 0);
 				}
@@ -70,6 +91,14 @@ class Graphics implements kha.graphics4.Graphics {
 				SystemImpl.drawBuffers.drawBuffersWEBGL(attachments);
 			}
 		}
+	}
+
+	public function beginFace(face: Int) {
+		SystemImpl.gl.enable(GL.BLEND);
+		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTargetFrameBuffer);
+		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, isDepthAttachment ? GL.DEPTH_ATTACHMENT : GL.COLOR_ATTACHMENT0, GL.TEXTURE_CUBE_MAP_POSITIVE_X + face, renderTargetTexture, 0);
+		SystemImpl.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
 	}
 
 	public function beginEye(eye: Int): Void {
@@ -255,10 +284,6 @@ class Graphics implements kha.graphics4.Graphics {
 	//	return false;
 	//}
 
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
-	}
-
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
 			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(stage, TextureUnit).value);
@@ -334,6 +359,20 @@ class Graphics implements kha.graphics4.Graphics {
 			case LinearFilter, AnisotropicFilter:
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		}
+	}
+
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		if (cubeMap == null) {
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(stage, TextureUnit).value);
+			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, null);
+		}
+		else {
+			cubeMap.set(cast(stage, TextureUnit).value);
+		}
+	}
+	
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		cubeMap.setDepth(cast(stage, TextureUnit).value);
 	}
 
 	public function setCullMode(mode: CullMode): Void {
