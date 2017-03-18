@@ -5,7 +5,7 @@ import haxe.io.Bytes;
 class CubeMap implements Canvas implements Resource {
 
 	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null): CubeMap {
-		
+		return null;
 	}
 
 	public function set(stage: Int): Void {
@@ -30,10 +30,5 @@ class CubeMap implements Canvas implements Resource {
 	public var g2(get, null): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return null; }
 	public var g4(get, null): kha.graphics4.Graphics;
-	private function get_g4(): kha.graphics4.Graphics {
-		if (graphics4 == null) {
-			graphics4 = new Graphics(this);
-		}
-		return graphics4;
-	}
+	private function get_g4(): kha.graphics4.Graphics { return null; }
 }
