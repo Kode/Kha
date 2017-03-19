@@ -4,16 +4,8 @@ import haxe.io.Bytes;
 
 class CubeMap implements Canvas implements Resource {
 
-	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null): CubeMap {
+	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
 		return null;
-	}
-
-	public function set(stage: Int): Void {
-
-	}
-
-	public function setDepth(stage: Int): Void {
-
 	}
 
 	public function unload(): Void { }

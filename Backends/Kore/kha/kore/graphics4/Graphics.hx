@@ -82,11 +82,25 @@ Kore::StencilAction convertStencilAction(int action) {
 	}
 }
 ')
+@:headerClassCode("Kore::RenderTarget* renderTarget;")
 class Graphics implements kha.graphics4.Graphics {
-	private var target: Image;
+	private var target: Canvas;
 	
-	public function new(target: Image = null) {
+	public function new(target: Canvas = null) {
 		this.target = target;
+		init();
+	}
+
+	function init() {
+		if (target == null) return;
+		if (Std.is(target, CubeMap)) {
+			var cubeMap = cast(target, CubeMap);
+			untyped __cpp__("renderTarget = cubeMap->renderTarget");
+		}
+		else {
+			var image = cast(target, Image);
+			untyped __cpp__("renderTarget = image->renderTarget");
+		}
 	}
 	
 	@:functionCode('
@@ -271,12 +285,17 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 	
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
+	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		if (cubeMap == null) return;
+		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("if (cubeMap->texture != nullptr) Kore::Graphics::setTexture(koreUnit->unit, cubeMap->texture)");
+		untyped __cpp__("else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)");
 	}
 	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
+	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		if (cubeMap == null) return;
+		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("cubeMap->renderTarget->useDepthAsTexture(koreUnit->unit);");
 	}
 	
 	@:functionCode('
@@ -615,7 +634,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
 		if (additionalRenderTargets != null) {
 			var len = additionalRenderTargets.length;
-			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, len)");
+			untyped __cpp__("Kore::Graphics::setRenderTarget(renderTarget, 0, len)");
 			for (i in 0...len) {
 				var image = cast(additionalRenderTargets[i], Image);
 				var num = i + 1;
@@ -623,7 +642,7 @@ class Graphics implements kha.graphics4.Graphics {
 			}
 		}
 		else {
-			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, 0)");
+			untyped __cpp__("Kore::Graphics::setRenderTarget(renderTarget, 0, 0)");
 		}
 	}
 	
@@ -636,11 +655,11 @@ class Graphics implements kha.graphics4.Graphics {
 		if (target == null) renderToBackbuffer();
 		else renderToTexture(additionalRenderTargets);
 	}
-
+	
 	public function beginFace(face: Int): Void {
-
+		untyped __cpp__("Kore::Graphics::setRenderTargetFace(renderTarget, face)");
 	}
-
+	
 	public function beginEye(eye: Int): Void {
 		
 	}

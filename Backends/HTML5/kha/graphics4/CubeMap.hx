@@ -27,7 +27,7 @@ class CubeMap implements Canvas implements Resource {
 		if (renderTarget) createTexture();
 	}
 
-	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null): CubeMap {
+	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (depthStencil == null) depthStencil = NoDepthAndStencil;
 		return new CubeMap(size, format, true, depthStencil);
