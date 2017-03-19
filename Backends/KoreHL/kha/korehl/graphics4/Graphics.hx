@@ -182,8 +182,12 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 	
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
+	}
+	
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
 	}
 	
 	//@:functionCode('Kore::Graphics::setStencilParameters(convertCompareMode(compareMode), convertStencilAction(bothPass), convertStencilAction(depthFail), convertStencilAction(stencilFail), referenceValue, readMask, writeMask);	')
@@ -466,6 +470,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) renderToBackbuffer();
 		else renderToTexture(additionalRenderTargets);
+	}
+
+	public function beginFace(face: Int): Void {
+
 	}
 
 	public function beginEye(eye: Int): Void {
