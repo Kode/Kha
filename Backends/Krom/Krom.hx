@@ -13,8 +13,8 @@ extern class Krom {
 	static function setProgram(program: Dynamic): Void;
 	static function getConstantLocation(program: Dynamic, name: String): Dynamic;
 	static function getTextureUnit(program: Dynamic, name: String): Dynamic;
-	static function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void;
-	static function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void;
+	static function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
+	static function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
 	static function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
 	static function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void;
 	static function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void;
@@ -27,7 +27,8 @@ extern class Krom {
 	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
 	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
 	
-	static function begin(renderTarget: kha.Image, additionalRenderTargets: Array<kha.Canvas>): Void;
+	static function begin(renderTarget: kha.Canvas, additionalRenderTargets: Array<kha.Canvas>): Void;
+	static function beginFace(renderTarget: kha.Canvas, face: Int): Void;
 	static function end(): Void;
 	static function renderTargetsInvertedY(): Bool;
 	static function viewport(x: Int, y: Int, width: Int, height: Int): Void;
@@ -39,6 +40,7 @@ extern class Krom {
 	static function setBlendingMode(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void;
 	static function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
 	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
+	static function createRenderTargetCubeMap(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
 	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
 	static function unlockTexture(texture: Dynamic, data: haxe.io.BytesData): Void;
