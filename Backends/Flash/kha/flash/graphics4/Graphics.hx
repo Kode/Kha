@@ -133,8 +133,12 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setDepthTest(write, getCompareMode(mode));
 	}
 
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		
+	}
+	
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+
 	}
 
 	private function getStencilAction(action: StencilAction): Context3DStencilAction {
@@ -417,6 +421,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) context.setRenderToBackBuffer();
 		else context.setRenderToTexture(target.getFlashTexture(), enableDepthStencil(target.depthStencilFormat()));
+	}
+
+	public function beginFace(face: Int): Void {
+
 	}
 
 	public function beginEye(eye: Int): Void {

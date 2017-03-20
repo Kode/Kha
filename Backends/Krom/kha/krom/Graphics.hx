@@ -32,14 +32,18 @@ import kha.math.Vector3;
 import kha.math.Vector4;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var renderTarget: Image;
+	private var renderTarget: kha.Canvas;
 	
-	public function new(renderTarget: Image = null) {
+	public function new(renderTarget: kha.Canvas = null) {
 		this.renderTarget = renderTarget;
 	}
 
 	public function begin(additionalRenderTargets: Array<kha.Canvas> = null): Void {
 		Krom.begin(renderTarget, additionalRenderTargets);
+	}
+
+	public function beginFace(face: Int): Void {
+		Krom.beginFace(renderTarget, face);
 	}
 
 	public function beginEye(eye: Int): Void {
@@ -126,12 +130,16 @@ class Graphics implements kha.graphics4.Graphics {
 		indexBuffer.set();
 	}
 
-	public function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap {
-		return null;
+	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		Krom.setTexture(unit, cubeMap);
+	}
+	
+	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		Krom.setTextureDepth(unit, cubeMap);
 	}
 
-	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		Krom.setTexture(stage, texture);
+	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+		Krom.setTexture(unit, texture);
 	}
 	
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {

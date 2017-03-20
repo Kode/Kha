@@ -14,6 +14,7 @@ import kha.Video;
 
 interface Graphics {
 	function begin(additionalRenderTargets: Array<Canvas> = null): Void;
+	function beginFace(face: Int): Void;
 	function beginEye(eye: Int): Void;
 	function end(): Void;
 	
@@ -34,9 +35,10 @@ interface Graphics {
 	function setTextureDepth(unit: TextureUnit, texture: Image): Void;
 	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	function setCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
+	function setCubeMapDepth(unit: TextureUnit, cubeMap: CubeMap): Void;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;
-	function createCubeMap(size: Int, format: TextureFormat, usage: Usage, canRead: Bool = false): CubeMap;
 	
 	function renderTargetsInvertedY(): Bool;
 	function instancedRenderingAvailable(): Bool;
