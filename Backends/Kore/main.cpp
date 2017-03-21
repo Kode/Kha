@@ -244,7 +244,10 @@ namespace {
 				#endif
 
 				#ifndef VR_RIFT
-				Kore::Graphics::swapBuffers(windowIndex);
+				if (!Kore::Graphics::swapBuffers(windowIndex)) {
+					Kore::log(Kore::Error, "Graphics context lost.");
+					break;
+				}
 				#endif
 			}
 		}
