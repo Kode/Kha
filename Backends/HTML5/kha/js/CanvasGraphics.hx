@@ -13,17 +13,13 @@ import kha.Rotation;
 class CanvasGraphics extends Graphics {
 	private var canvas: Dynamic;
 	private var webfont: kha.js.Font;
-	private var width: Int;
-	private var height: Int;
 	private var myColor: Color;
 	private var scaleQuality: ImageScaleQuality;
 	private static var instance: CanvasGraphics;
 	
-	public function new(canvas: Dynamic, width: Int, height: Int) {
+	public function new(canvas: Dynamic) { 
 		super();
 		this.canvas = canvas;
-		this.width = width;
-		this.height = height;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
 		canvas.save();
@@ -48,9 +44,9 @@ class CanvasGraphics extends Graphics {
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		if (color.A == 0) // if color is transparent, clear the screen. Note: in Canvas, transparent colors will overlay, not overwrite.
-			canvas.clearRect(0, 0, width, height);
+			canvas.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
 		else
-			canvas.fillRect(0, 0, width, height);
+			canvas.fillRect(0, 0, canvas.canvas.width, canvas.canvas.height);
 		this.color = myColor;
 	}
 	
