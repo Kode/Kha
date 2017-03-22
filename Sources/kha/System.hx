@@ -1,12 +1,14 @@
 package kha;
 
+import kha.WindowMode;
 import kha.WindowOptions;
 
 typedef SystemOptions = {
 	?title: String,
 	?width: Int,
 	?height: Int,
-	?samplesPerPixel: Int
+	?samplesPerPixel: Int,
+	?windowMode: WindowMode
 }
 
 @:allow(kha.SystemImpl)
@@ -23,6 +25,7 @@ class System {
 		if (options.width == null) options.width = 800;
 		if (options.height == null) options.height = 600;
 		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
+		if (options.windowMode == null) options.windowMode = WindowMode.Window;
 		SystemImpl.init(options, callback);
 	}
 

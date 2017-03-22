@@ -33,7 +33,7 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/Input/Mouse.h>
 #include <Kore/Window.h>
 
-void init_kore(const char* name, int width, int height, int antialiasing);
+void init_kore(const char* name, int width, int height, int antialiasing, int windowMode);
 void init_kore_ex(const char* name);
 void post_kore_init();
 void run_kore();
@@ -104,7 +104,7 @@ class SystemImpl {
 	private static var mouseLockListeners: Array<Int->Void>;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		initKore(options.title, options.width, options.height, options.samplesPerPixel);
+		initKore(options.title, options.width, options.height, options.samplesPerPixel, translateWindowMode(options.windowMode));
 
 		//Shaders.init();
 
@@ -475,8 +475,8 @@ class SystemImpl {
 		System.shutdown();
 	}
 
-	@:functionCode('init_kore(name, width, height, antialiasing);')
-	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int): Void {
+	@:functionCode('init_kore(name, width, height, antialiasing, windowMode);')
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, windowMode: Int): Void {
 	}
 
 	static function translatePosition(value: Null<WindowOptions.Position>): Int {
@@ -501,7 +501,7 @@ class SystemImpl {
 		}
 	}
 
-	static function translateWindowMode(value: Null<WindowOptions.Mode>): Int {
+	static function translateWindowMode(value: Null<WindowMode>): Int {
 		if (value == null) {
 			return 0;
 		}
@@ -591,7 +591,7 @@ class SystemImpl {
 	private static function initWindow(options: WindowOptions, callback: Int -> Void) {
 		var x = translatePosition(options.x);
 		var y = translatePosition(options.y);
-		var mode = translateWindowMode(options.mode != null ? options.mode : WindowOptions.Mode.Window);
+		var mode = translateWindowMode(options.mode != null ? options.mode : WindowMode.Window);
 		var targetDisplay = translateDisplay(options.targetDisplay != null ? options.targetDisplay : WindowOptions.TargetDisplay.Primary);
 		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
 		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);

@@ -3,12 +3,6 @@ package kha;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
 
-enum Mode {
-	Window;				// Window with borders
-	BorderlessWindow;	// Window without borders
-	Fullscreen;			// Exclusive fullscreen mode (switches monitor resolution), (a win32 feature only?)
-}
-
 enum Position {
 	Center;				// Centered on TargetDisplay
 	Fixed(v: Int);		// Fixed position relative to TargetDisplay
@@ -40,7 +34,7 @@ class WindowOptions {
 	public var width: Int;
 	public var height: Int;
 
-	@:optional public var mode: Mode; // Windowed
+	@:optional public var mode: WindowMode; // Windowed
 	@:optional public var title: String; // added to applications title
 	@:optional public var x: Position; // Center
 	@:optional public var y: Position; // Center

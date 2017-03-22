@@ -391,8 +391,8 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 //#endif
 }
 
-void init_kore(const char* name, int width, int height, int antialiasing) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, Kore::WindowModeWindow, antialiasing);
+void init_kore(const char* name, int width, int height, int antialiasing, int windowMode) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing);
 }
 
 void init_kore_ex( const char * name ) {
@@ -424,6 +424,7 @@ void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
+	Kore::System::stop();
 }
 
 int kore(int argc, char** argv) {
