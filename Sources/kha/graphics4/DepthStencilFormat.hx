@@ -9,6 +9,7 @@ package kha.graphics4;
 	// This is platform specific, use with care!
 	var Depth24Stencil8 = 3;
 	var Depth32Stencil8 = 4;
+	var Depth16 = 5;
 
 	//var StencilOnlyIndex1 = 5;
 	//var StencilOnlyIndex4 = 6;

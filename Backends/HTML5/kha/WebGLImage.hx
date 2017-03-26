@@ -223,7 +223,7 @@ class WebGLImage extends Image {
 	private function initDepthStencilBuffer(depthStencilFormat: DepthStencilFormat) {
 		switch (depthStencilFormat) {
 		case NoDepthAndStencil: {}
-		case DepthOnly: {
+		case DepthOnly, Depth16: {
 			if (SystemImpl.depthTexture == null) {
 				renderBuffer = SystemImpl.gl.createRenderbuffer();
 				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
@@ -233,7 +233,8 @@ class WebGLImage extends Image {
 			else {
 				depthTexture = SystemImpl.gl.createTexture();
 				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+				var format = depthStencilFormat == Depth16 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT;
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, format, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);

@@ -69,6 +69,12 @@ class Image implements Canvas implements Resource {
 					#end
 					runDepthAndStencilSetupChain();
 				}
+				case Depth16: {
+					#if debug
+					trace('DepthAndStencilFormat "Depth16" not (yet?) supported on android, using target defaults');
+					#end
+					runDepthAndStencilSetupChain();
+				}
 			}
 
 			GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
