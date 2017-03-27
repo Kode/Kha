@@ -92,6 +92,7 @@ class Image implements Canvas implements Resource {
 			case DepthAutoStencilAuto: 24;
 			case Depth24Stencil8: 24;
 			case Depth32Stencil8: 32;
+			case Depth16: 16;
 		}
 	}
 
@@ -102,6 +103,7 @@ class Image implements Canvas implements Resource {
 			case DepthAutoStencilAuto: 8;
 			case Depth24Stencil8: 8;
 			case Depth32Stencil8: 8;
+			case Depth16: 0;
 		}
 	}
 	

@@ -90,10 +90,11 @@ class CubeMap implements Canvas implements Resource {
 	private function initDepthStencilBuffer(depthStencilFormat: DepthStencilFormat) {
 		switch (depthStencilFormat) {
 		case NoDepthAndStencil: {}
-		case DepthOnly: {
+		case DepthOnly, Depth16: {
 			depthTexture = SystemImpl.gl.createTexture();
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
-			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+			var format = depthStencilFormat == Depth16 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT;
+			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, format, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);

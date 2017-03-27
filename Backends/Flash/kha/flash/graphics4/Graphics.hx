@@ -448,6 +448,12 @@ class Graphics implements kha.graphics4.Graphics {
 				#end
 				true;
 			}
+			case Depth16: {
+				#if debug
+				trace('DepthStencilFormat "Depth16" is not supported, using target defaults');
+				#end
+				true;
+			}
 		}
 	}
 
