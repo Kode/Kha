@@ -294,6 +294,10 @@ class Graphics implements kha.graphics4.Graphics {
 
 	}
 
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+
+	}
+
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}

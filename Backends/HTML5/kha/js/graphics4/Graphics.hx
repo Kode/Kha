@@ -308,6 +308,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+
+	}
+
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(texunit, TextureUnit).value);
 

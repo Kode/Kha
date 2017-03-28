@@ -303,6 +303,10 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		//setTextureInternal(cast unit, Image.createFromVideo(texture));
 	}
+
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+
+	}
 		
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
