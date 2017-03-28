@@ -11,4 +11,6 @@ before_script:
   - git submodule update --init --recursive
   - git clone https://github.com/ktxsoftware/nodejs_bin.git
   - nodejs_bin/copysysbin.sh
-script: nodejs_bin/node make.js --kha . --from Tests/Empty --compile
+script:
+  - nodejs_bin/node make.js html5 --kha . --from Tests/Empty
+  - nodejs_bin/node make.js --kha . --from Tests/Empty --compile
