@@ -107,6 +107,8 @@ extern class GLES20 {
 	public static function glUniform3f(location: Int, x: Single, y: Single, z: Single): Void;
 	public static function glUniform4f(location: Int, x: Single, y: Single, z: Single, w: Single): Void;
 	public static function glUniform1fv(location: Int, count: Int, v: NativeArray<Single>, offset: Int): Void;
+	public static function glUniform4fv(location: Int, count: Int, v: NativeArray<Single>, offset: Int): Void;
+	public static function glUniformMatrix3fv(location: Int, count: Int, transpose: Bool, value: NativeArray<Single>, offset: Int): Void;
 	public static function glUniformMatrix4fv(location: Int, count: Int, transpose: Bool, value: NativeArray<Single>, offset: Int): Void;
 	public static function glLinkProgram(program : Int) : Void;
 	public static function glUseProgram(program : Int) : Void;
