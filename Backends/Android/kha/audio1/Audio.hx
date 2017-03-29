@@ -1,13 +1,12 @@
 package kha.audio1;
 
 class Audio {
-	public static function play(sound: Sound, loop: Bool = false, stream: Bool = false): AudioChannel {
+	public static function play(sound: Sound, loop: Bool = false): AudioChannel {
 		cast(sound, kha.android.Sound).play();
 		return null;
 	}
 
-	/*public static function playMusic(music: Music, loop: Bool = false): MusicChannel {
-		cast(music, kha.android.Music).play(loop);
+	public static function stream(sound: Sound, loop: Bool = false): AudioChannel {
 		return null;
-	}*/
+	}
 }

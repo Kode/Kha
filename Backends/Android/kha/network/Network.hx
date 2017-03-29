@@ -3,10 +3,10 @@ package kha.network;
 import haxe.io.Bytes;
 
 class Network {
-	public function new(url: String, port: Int) {
+	public function new(url: String, port: Int, errorCallback: Void->Void, closeCallback: Void->Void) {
 		
 	}
-
+	
 	public function send(bytes: Bytes, mandatory: Bool): Void {
 		
 	}
