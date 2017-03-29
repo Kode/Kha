@@ -151,7 +151,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-
+		Krom.setImageTexture(unit, texture);
 	}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
