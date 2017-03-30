@@ -7,10 +7,10 @@ import kha.graphics4.VertexStructure;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
-@:headerClassCode("Kore::VertexBuffer* buffer;")
+@:headerClassCode("Kore::Graphics4::VertexBuffer* buffer;")
 class VertexBuffer {
 	private var data: Float32Array;
 	
@@ -24,29 +24,29 @@ class VertexBuffer {
 	}
 	
 	@:functionCode("
-		Kore::VertexStructure structure2;
+		Kore::Graphics4::VertexStructure structure2;
 		for (int i = 0; i < structure->size(); ++i) {
-			Kore::VertexData data;
+			Kore::Graphics4::VertexData data;
 			switch (structure->get(i)->data->index) {
 			case 0:
-				data = Kore::Float1VertexData;
+				data = Kore::Graphics4::Float1VertexData;
 				break;
 			case 1:
-				data = Kore::Float2VertexData;
+				data = Kore::Graphics4::Float2VertexData;
 				break;
 			case 2:
-				data = Kore::Float3VertexData;
+				data = Kore::Graphics4::Float3VertexData;
 				break;
 			case 3:
-				data = Kore::Float4VertexData;
+				data = Kore::Graphics4::Float4VertexData;
 				break;
 			case 4:
-				data = Kore::Float4x4VertexData;
+				data = Kore::Graphics4::Float4x4VertexData;
 				break;
 			}
 			structure2.add(structure->get(i)->name, data);
 		}
-		buffer = new Kore::VertexBuffer(vertexCount, structure2, instanceDataStepRate);
+		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, instanceDataStepRate);
 	")
 	private function init(vertexCount: Int, structure: VertexStructure, instanceDataStepRate: Int) {
 		

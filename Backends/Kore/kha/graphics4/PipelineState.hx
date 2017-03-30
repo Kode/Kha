@@ -8,15 +8,15 @@ import kha.graphics4.VertexStructure;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
-@:headerClassCode("Kore::Program* program;")
+@:headerClassCode("Kore::Graphics4::Program* program;")
 @:keep
 class PipelineState extends PipelineStateBase {
 	public function new() {
 		super();
-		untyped __cpp__('program = new Kore::Program;');
+		untyped __cpp__('program = new Kore::Graphics4::Program;');
 	}
 	
 	public function delete(): Void {
@@ -29,27 +29,27 @@ class PipelineState extends PipelineStateBase {
 		if (geometryShader != null()) program->setGeometryShader(geometryShader->shader);
 		if (tessellationControlShader != null()) program->setTessellationControlShader(tessellationControlShader->shader);
 		if (tessellationEvaluationShader != null()) program->setTessellationEvaluationShader(tessellationEvaluationShader->shader);
-		Kore::VertexStructure s0, s1, s2, s3;
-		Kore::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
+		Kore::Graphics4::VertexStructure s0, s1, s2, s3;
+		Kore::Graphics4::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
 		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
 		for (int i1 = 0; i1 < size; ++i1) {
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
-				Kore::VertexData data;
+				Kore::Graphics4::VertexData data;
 			switch ((*structures[i1])->get(i2)->data->index) {
 				case 0:
-					data = Kore::Float1VertexData;
+					data = Kore::Graphics4::Float1VertexData;
 					break;
 				case 1:
-					data = Kore::Float2VertexData;
+					data = Kore::Graphics4::Float2VertexData;
 					break;
 				case 2:
-					data = Kore::Float3VertexData;
+					data = Kore::Graphics4::Float3VertexData;
 					break;
 				case 3:
-					data = Kore::Float4VertexData;
+					data = Kore::Graphics4::Float4VertexData;
 					break;
 				case 4:
-					data = Kore::Float4x4VertexData;
+					data = Kore::Graphics4::Float4x4VertexData;
 					break;
 				}
 				structures2[i1]->add((*structures[i1])->get(i2)->name, data);

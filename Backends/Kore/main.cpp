@@ -1,6 +1,6 @@
 #include <Kore/pch.h>
 //#include <Kore/Application.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/Mouse.h>
@@ -224,7 +224,7 @@ namespace {
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
 				#ifndef VR_RIFT
-				Kore::Graphics::begin(windowIndex);
+				Kore::Graphics4::begin(windowIndex);
                 #endif
 			
 				// Google Cardboard: Update the Distortion mesh
@@ -235,7 +235,7 @@ namespace {
                 SystemImpl_obj::frame(windowIndex);
 
 				#ifndef VR_RIFT
-                Kore::Graphics::end(windowIndex);
+                Kore::Graphics4::end(windowIndex);
 				#endif
 			
 				// Google Cardboard: Call the DistortionMesh Renderer
@@ -244,7 +244,7 @@ namespace {
 				#endif
 
 				#ifndef VR_RIFT
-				if (!Kore::Graphics::swapBuffers(windowIndex)) {
+				if (!Kore::Graphics4::swapBuffers(windowIndex)) {
 					Kore::log(Kore::Error, "Graphics context lost.");
 					break;
 				}
@@ -404,7 +404,7 @@ void post_kore_init() {
 	Kore::System::makeCurrent(0);
 
 #ifndef VR_RIFT
-	Kore::Graphics::setRenderState(Kore::DepthTest, false);
+	Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, false);
 #endif
 
 	Kore::Audio::audioCallback = mix;

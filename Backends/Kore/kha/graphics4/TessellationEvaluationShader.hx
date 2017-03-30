@@ -5,7 +5,7 @@ import kha.Blob;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
 @:cppFileCode('
@@ -14,10 +14,10 @@ import kha.Blob;
 #endif
 ')
 
-@:headerClassCode("Kore::Shader* shader;")
+@:headerClassCode("Kore::Graphics4::Shader* shader;")
 class TessellationEvaluationShader {
 	public function new(source: Blob, file: String) {
-		untyped __cpp__('shader = new Kore::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::TessellationEvaluationShader);');
+		untyped __cpp__('shader = new Kore::Graphics4::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::Graphics4::TessellationEvaluationShader);');
 	}
 	
 	public function delete(): Void {

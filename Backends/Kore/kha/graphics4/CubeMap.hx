@@ -4,10 +4,10 @@ import haxe.io.Bytes;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
-@:headerClassCode("Kore::Texture* texture; Kore::RenderTarget* renderTarget;")
+@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget;")
 class CubeMap implements Canvas implements Resource {
 
 	private var format: TextureFormat;
@@ -29,7 +29,7 @@ class CubeMap implements Canvas implements Resource {
 		return cubeMap;
 	}
 
-	@:functionCode('renderTarget = new Kore::RenderTarget(cubeMapSize, depthBufferBits, false, (Kore::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
+	@:functionCode('renderTarget = new Kore::Graphics4::RenderTarget(cubeMapSize, depthBufferBits, false, (Kore::Graphics4::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
 	private function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
 
 	}

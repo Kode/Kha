@@ -2,10 +2,10 @@ package kha.graphics4;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
-@:headerClassCode("Kore::IndexBuffer* buffer;")
+@:headerClassCode("Kore::Graphics4::IndexBuffer* buffer;")
 class IndexBuffer {
 	private var data: Array<Int>;
 	private var myCount: Int;
@@ -14,7 +14,7 @@ class IndexBuffer {
 		myCount = indexCount;
 		data = new Array<Int>();
 		data[myCount - 1] = 0;
-		untyped __cpp__('buffer = new Kore::IndexBuffer(indexCount);');
+		untyped __cpp__('buffer = new Kore::Graphics4::IndexBuffer(indexCount);');
 	}
 	
 	public function delete(): Void {

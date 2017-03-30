@@ -9,10 +9,10 @@ import kha.graphics4.Usage;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 ')
 
-@:headerClassCode("Kore::Texture* texture; Kore::RenderTarget* renderTarget;")
+@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget;")
 class Image implements Canvas implements Resource {
 	private var format: TextureFormat;
 	private var readable: Bool;
@@ -48,7 +48,7 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), width, height, format, readable);')
+	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, format, readable);')
 	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
 		
 	}
@@ -61,7 +61,7 @@ class Image implements Canvas implements Resource {
 		doneCallback(image);
 	}
 
-	@:functionCode('texture = new Kore::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
+	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
 	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
 		
 	}
@@ -139,17 +139,17 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBufferBits, false, (Kore::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
+	@:functionCode('renderTarget = new Kore::Graphics4::RenderTarget(width, height, depthBufferBits, false, (Kore::Graphics4::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
 	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
 
 	}
 
-	@:functionCode('texture = new Kore::Texture(width, height, (Kore::Image::Format)format, readable); renderTarget = nullptr;')
+	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
 	private function init(width: Int, height: Int, format: Int): Void {
 
 	}
 
-	@:functionCode('texture = new Kore::Texture(width, height, depth, (Kore::Image::Format)format, readable); renderTarget = nullptr;')
+	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, depth, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
 	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
 
 	}
@@ -167,7 +167,7 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('texture = new Kore::Texture(filename.c_str(), readable);')
+	@:functionCode('texture = new Kore::Graphics4::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 
 	}
@@ -207,7 +207,7 @@ class Image implements Canvas implements Resource {
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	@:functionCode('return Kore::Graphics::nonPow2TexturesSupported();')
+	@:functionCode('return Kore::Graphics4::nonPow2TexturesSupported();')
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
@@ -282,7 +282,7 @@ class Image implements Canvas implements Resource {
 		for (int y = 0; y < texture->height; ++y) {
 			for (int x = 0; x < texture->width; ++x) {
 #ifdef DIRECT3D
-				if (texture->format == Kore::Image::RGBA32) {
+				if (texture->format == Kore::Graphics4::Image::RGBA32) {
 					//RBGA->BGRA
 					tex[y * stride + x * size + 0] = b[(y * texture->width + x) * size + 2];
 					tex[y * stride + x * size + 1] = b[(y * texture->width + x) * size + 1];
