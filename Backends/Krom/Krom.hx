@@ -15,6 +15,7 @@ extern class Krom {
 	static function getTextureUnit(program: Dynamic, name: String): Dynamic;
 	static function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
 	static function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
+	static function setImageTexture(stage: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
 	static function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
 	static function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void;
 	static function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void;
@@ -42,6 +43,7 @@ extern class Krom {
 	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createRenderTargetCubeMap(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
+	static function createTexture3D(width: Int, height: Int, depth: Int, format: Int): Dynamic;
 	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
 	static function unlockTexture(texture: Dynamic, data: haxe.io.BytesData): Void;
 	static function generateMipmaps(texture: Dynamic, levels: Int): Void;

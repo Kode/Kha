@@ -96,7 +96,11 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		if (format == null) format = TextureFormat.RGBA32;
+		var image = new Image(null);
+		image.format = format;
+		image.texture_ = Krom.createTexture3D(width, height, depth, getTextureFormat(format));
+		return image;
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
@@ -160,7 +164,7 @@ class Image implements Canvas implements Resource {
 	public var height(get, null): Int;
 	private function get_height(): Int { return texture_ == null ? renderTarget_.height : texture_.height; }
 	public var depth(get, null): Int;
-	private function get_depth(): Int { return 1; }
+	private function get_depth(): Int { return texture_ != null ? texture_.depth : 1; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return texture_ == null ? renderTarget_.width : texture_.realWidth; }
 	public var realHeight(get, null): Int;
