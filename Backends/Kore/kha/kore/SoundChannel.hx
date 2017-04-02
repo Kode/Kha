@@ -2,8 +2,7 @@ package kha.kore;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Audio/Sound.h>
-#include <Kore/Audio/Mixer.h>
+#include <Kore/Audio1/Sound.h>
 ')
 
 @:headerClassCode("Kore::Sound* sound;")

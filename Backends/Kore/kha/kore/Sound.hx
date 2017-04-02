@@ -4,8 +4,7 @@ import haxe.ds.Vector;
 
 @:headerCode('
 #include <Kore/pch.h>
-#include <Kore/Audio/Sound.h>
-#include <Kore/Audio/Mixer.h>
+#include <Kore/Audio1/Sound.h>
 ')
 
 @:headerClassCode("Kore::Sound* sound;")
@@ -71,17 +70,6 @@ class Sound extends kha.Sound {
 		compressedData = null;
 		done();
 	}
-	
-	//@:functionCode('channel->sound = sound; Kore::Mixer::play(sound);')
-	//private function playInternal(channel: kha.kore.SoundChannel): Void {
-	//	
-	//}
-	
-	//override public function play(): kha.SoundChannel {
-	//	var channel = new kha.kore.SoundChannel();
-	//	playInternal(channel);
-	//	return channel;
-	//}
 	
 	@:functionCode("delete sound; sound = nullptr;")
 	private function unload2(): Void {

@@ -6,8 +6,7 @@
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Sensor.h>
 #include <Kore/Input/Surface.h>
-#include <Kore/Audio/Audio.h>
-#include <Kore/Audio/Mixer.h>
+#include <Kore/Audio2/Audio.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
@@ -217,7 +216,7 @@ namespace {
 
 	void update() {
 		if (paused) return;
-		Kore::Audio::update();
+		Kore::Audio2::update();
 
 		int windowCount = Kore::System::windowCount();
 
@@ -312,9 +311,9 @@ namespace {
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();
-			*(float*)&Audio::buffer.data[Audio::buffer.writeLocation] = value;
-			Audio::buffer.writeLocation += 4;
-			if (Audio::buffer.writeLocation >= Audio::buffer.dataSize) Audio::buffer.writeLocation = 0;
+			*(float*)&Audio2::buffer.data[Audio2::buffer.writeLocation] = value;
+			Audio2::buffer.writeLocation += 4;
+			if (Audio2::buffer.writeLocation >= Audio2::buffer.dataSize) Audio2::buffer.writeLocation = 0;
 		}
 	}
 }
@@ -407,8 +406,8 @@ void post_kore_init() {
 	Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, false);
 #endif
 
-	Kore::Audio::audioCallback = mix;
-	Kore::Audio::init();
+	Kore::Audio2::audioCallback = mix;
+	Kore::Audio2::init();
 
 #ifdef VR_GEAR_VR
 	// Enter VR mode
