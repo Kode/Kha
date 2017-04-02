@@ -158,6 +158,10 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setTextureParameters(texunit, uAddressing.getIndex(), vAddressing.getIndex(), minificationFilter.getIndex(), magnificationFilter.getIndex(), mipmapFilter.getIndex());
 	}
 
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		Krom.setTexture3DParameters(texunit, uAddressing.getIndex(), vAddressing.getIndex(), wAddressing.getIndex(), minificationFilter.getIndex(), magnificationFilter.getIndex(), mipmapFilter.getIndex());
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		Krom.setCullMode(mode.getIndex());
 	}

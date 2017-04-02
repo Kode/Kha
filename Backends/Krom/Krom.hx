@@ -17,6 +17,7 @@ extern class Krom {
 	static function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
 	static function setImageTexture(stage: kha.graphics4.TextureUnit, texture: kha.Canvas): Void;
 	static function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
+	static function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: Int, vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
 	static function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void;
 	static function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void;
 	static function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void;
