@@ -269,6 +269,10 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:
