@@ -16,7 +16,11 @@ import kha.Blob;
 
 @:headerClassCode("Kore::ComputeShader* shader;")
 class Shader {
-	public function new(source: Blob, file: String) {
+	public function new(sources: Array<Blob>, files: Array<String>) {
+		init(sources[0], files[0]);
+	}
+	
+	private function init(source: Blob, file: String): Void {
 		untyped __cpp__('shader = new Kore::ComputeShader(source->bytes->b->Pointer(), source->get_length());');
 	}
 	

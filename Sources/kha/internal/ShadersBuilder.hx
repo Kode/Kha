@@ -52,9 +52,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.compute.Shader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.compute.Shader(blobs, $v { filenames });
 						}
 					};
 				}
@@ -71,9 +75,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.GeometryShader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.graphics4.GeometryShader(blobs, $v { filenames });
 						}
 					};
 				}
@@ -90,9 +98,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.TessellationControlShader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.graphics4.TessellationControlShader(blobs, $v { filenames });
 						}
 					};
 				}
@@ -109,9 +121,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.TessellationEvaluationShader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.graphics4.TessellationEvaluationShader(blobs, $v { filenames });
 						}
 					};
 				}

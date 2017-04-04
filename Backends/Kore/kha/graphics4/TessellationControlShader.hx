@@ -16,7 +16,11 @@ import kha.Blob;
 
 @:headerClassCode("Kore::Graphics4::Shader* shader;")
 class TessellationControlShader {
-	public function new(source: Blob, file: String) {
+	public function new(sources: Array<Blob>, files: Array<String>) {
+		init(sources[0], files[0]);
+	}
+	
+	private function init(source: Blob, file: String): Void {
 		untyped __cpp__('shader = new Kore::Graphics4::Shader(source->bytes->b->Pointer(), source->get_length(), Kore::Graphics4::TessellationControlShader);');
 	}
 	
