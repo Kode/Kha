@@ -56,7 +56,19 @@ class PipelineState extends PipelineStateBase {
 	private function compileShader(shader: Dynamic): Void {
 		if (shader.shader != null) return;
 		var s = SystemImpl.gl.createShader(shader.type);
-		SystemImpl.gl.shaderSource(s, shader.source);
+		var highp = SystemImpl.gl.getShaderPrecisionFormat(GL.FRAGMENT_SHADER, GL.HIGH_FLOAT);
+		var highpSupported = highp.precision != 0;
+		var files: Array<String> = shader.files;
+		for (i in 0...files.length) {
+			if (!highpSupported && files[i].indexOf("-relaxed") >= 0) {
+				SystemImpl.gl.shaderSource(s, shader.sources[i]);
+				break;
+			}
+			if (highpSupported && files[i].indexOf("-relaxed") < 0) {
+				SystemImpl.gl.shaderSource(s, shader.sources[i]);
+				break;
+			}
+		}
 		SystemImpl.gl.compileShader(s);
 		if (!SystemImpl.gl.getShaderParameter(s, GL.COMPILE_STATUS)) {
 			throw "Could not compile shader:\n" + SystemImpl.gl.getShaderInfoLog(s);

@@ -21,18 +21,23 @@ class ShadersBuilder {
 			var name: String = file.name;
 			var fixedName: String = name;
 			var dataName = fixedName + "Data";
-			var filename = file.files[0];
+			var filenames: Array<String> = file.files;
 			
 			if (file.type == "shader") {
-				var serialized = Serializer.run(File.getBytes(AssetsBuilder.findResources() + file.files[0]));
-				fields.push({
-					name: dataName,
-					doc: null,
-					meta: [],
-					access: [APrivate, AStatic],
-					kind: FVar(macro: String, macro $v { serialized } ),
-					pos: Context.currentPos()
-				});
+				var serialized: Array<String> = [];
+				for (filename in filenames) {
+					serialized.push(Serializer.run(File.getBytes(AssetsBuilder.findResources() + filename)));
+				}
+				for (i in 0...filenames.length) {
+					fields.push({
+						name: dataName + i,
+						doc: null,
+						meta: [],
+						access: [APrivate, AStatic],
+						kind: FVar(macro: String, macro $v { serialized[i] } ),
+						pos: Context.currentPos()
+					});
+				}
 				
 				if (name.endsWith("_comp")) {
 					fields.push({
@@ -123,9 +128,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.VertexShader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.graphics4.VertexShader(blobs, $v { filenames });
 						}
 					};
 				}
@@ -142,9 +151,13 @@ class ShadersBuilder {
 					init = macro {
 						$init;
 						{
-							var data = Reflect.field(Shaders, $v { dataName } );
-							var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
-							$i { fixedName } = new kha.graphics4.FragmentShader(kha.Blob.fromBytes(bytes), $v { name });
+							var blobs = new Array<Blob>();
+							for (i in 0...$v{filenames.length}) {
+								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
+								blobs.push(kha.Blob.fromBytes(bytes));
+							}
+							$i { fixedName } = new kha.graphics4.FragmentShader(blobs, $v { filenames });
 						}
 					};
 				}

@@ -3,21 +3,24 @@ package kha.graphics4;
 import js.html.webgl.GL;
 
 class FragmentShader {
-	public var source: String;
+	public var sources: Array<String>;
 	public var type: Dynamic;
 	public var shader: Dynamic;
-	public var file: String;
+	public var files: Array<String>;
 	
-	public function new(source: Blob, file: String) {
-		this.source = source.toString();
+	public function new(sources: Array<Blob>, files: Array<String>) {
+		this.sources = [];
+		for (source in sources) {
+			this.sources.push(source.toString());
+		}
 		this.type = GL.FRAGMENT_SHADER;
 		this.shader = null;
-		this.file = file;
+		this.files = files;
 	}
 	
 	public function delete(): Void {
 		SystemImpl.gl.deleteShader(shader);
 		shader = null;
-		source = null;
+		sources = null;
 	}
 }
