@@ -528,8 +528,12 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		SystemImpl.gl.enable(GL.SCISSOR_TEST);
-		var h: Int = renderTarget == null ? System.windowHeight(0) : renderTarget.height;
-		SystemImpl.gl.scissor(x, h - y - height, width, height);
+		if (renderTarget == null) {
+			SystemImpl.gl.scissor(x, System.windowHeight(0) - y - height, width, height);
+		}
+		else {
+			SystemImpl.gl.scissor(x, y, width, height);
+		}
 	}
 
 	public function disableScissor(): Void {
