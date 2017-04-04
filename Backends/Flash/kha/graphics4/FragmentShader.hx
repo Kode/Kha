@@ -13,8 +13,8 @@ class FragmentShader {
 	public var constants: Dynamic;
 	public var names: Dynamic;
 	
-	public function new(shader: Blob, file: String) {
-		var json = JSON.parse(shader.toString());
+	public function new(shaders: Array<Blob>, files: Array<String>) {
+		var json = JSON.parse(shaders[0].toString());
 		source = json.agalasm;
 		constants = json.consts;
 		names = json.varnames;
