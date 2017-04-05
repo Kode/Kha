@@ -14,8 +14,7 @@ before_script:
 script:
   - nodejs_bin/node make.js html5 --kha . --from Tests/Empty
   - nodejs_bin/node make.js krom --kha . --from Tests/Empty
-  - nodejs_bin/node make.js android --kha . --from Tests/Empty
   - nodejs_bin/node make.js flash --kha . --from Tests/Empty
   - nodejs_bin/node make.js --kha . --from Tests/Empty --compile
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nodejs_bin/node make.js android --kha . --from Tests/Empty; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nodejs_bin/node make.js android-native --kha . --from Tests/Empty; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nodejs_bin/node make.js android --kha . --from Tests/Empty --compile; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nodejs_bin/node make.js android-native --kha . --from Tests/Empty --compile; fi
