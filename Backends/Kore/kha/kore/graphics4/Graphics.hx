@@ -2,6 +2,7 @@ package kha.kore.graphics4;
 
 import haxe.ds.Vector;
 import kha.Blob;
+import kha.Canvas;
 import kha.Color;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
@@ -669,15 +670,19 @@ class Graphics implements kha.graphics4.Graphics {
 	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
 		if (additionalRenderTargets != null) {
 			var len = additionalRenderTargets.length;
-			untyped __cpp__("Kore::Graphics4::setRenderTarget(renderTarget, 0, len)");
-			for (i in 0...len) {
-				var image = cast(additionalRenderTargets[i], Image);
-				var num = i + 1;
-				untyped __cpp__("Kore::Graphics4::setRenderTarget(image->renderTarget, num, len)");
-			}
+
+			var image1 = cast(additionalRenderTargets[0], Image);
+			var image2 = cast(additionalRenderTargets[1], Image);
+			var image3 = cast(additionalRenderTargets[2], Image);
+			var image4 = cast(additionalRenderTargets[3], Image);
+			var image5 = cast(additionalRenderTargets[4], Image);
+			var image6 = cast(additionalRenderTargets[5], Image);
+			var image7 = cast(additionalRenderTargets[6], Image);
+			
+			untyped __cpp__("Kore::Graphics4::RenderTarget* renderTargets[8] = { renderTarget, image1 == null() ? nullptr : image1->renderTarget, image2 == null() ? nullptr : image2->renderTarget, image3 == null() ? nullptr : image3->renderTarget, image4 == null() ? nullptr : image4->renderTarget, image5 == null() ? nullptr : image5->renderTarget, image6 == null() ? nullptr : image6->renderTarget, image7 == null() ? nullptr : image7->renderTarget }; Kore::Graphics4::setRenderTargets(renderTargets, len + 1);");
 		}
 		else {
-			untyped __cpp__("Kore::Graphics4::setRenderTarget(renderTarget, 0, 0)");
+			untyped __cpp__("Kore::Graphics4::setRenderTarget(renderTarget)");
 		}
 	}
 	
