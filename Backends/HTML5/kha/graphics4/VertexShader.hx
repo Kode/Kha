@@ -17,6 +17,12 @@ class VertexShader {
 		this.shader = null;
 		this.files = files;
 	}
+
+	public static function fromSource(source: String): VertexShader {
+		var shader = new VertexShader([], ["runtime-string"]);
+		shader.sources.push(source);
+		return shader;
+	}
 	
 	public function delete(): Void {
 		SystemImpl.gl.deleteShader(shader);

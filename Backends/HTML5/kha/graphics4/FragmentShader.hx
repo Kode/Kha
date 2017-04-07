@@ -17,6 +17,12 @@ class FragmentShader {
 		this.shader = null;
 		this.files = files;
 	}
+
+	public static function fromSource(source: String): FragmentShader {
+		var shader = new FragmentShader([], ["runtime-string"]);
+		shader.sources.push(source);
+		return shader;
+	}
 	
 	public function delete(): Void {
 		SystemImpl.gl.deleteShader(shader);
