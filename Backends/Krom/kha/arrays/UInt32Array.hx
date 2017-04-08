@@ -1,11 +1,8 @@
 package kha.arrays;
-package kha.arrays;
 
-import kha.FastFloat;
-
-abstract Int32Array(js.html.Int32Array) {
+abstract UInt32Array(js.html.UInt32Array) {
 	public inline function new(elements: Int) {
-		this = new js.html.Int32Array(elements);
+		this = new js.html.UInt32Array(elements);
 	}
 	
 	public var length(get, never): Int;
@@ -22,7 +19,7 @@ abstract Int32Array(js.html.Int32Array) {
 		return this[index];
 	}
 	
-	public inline function data(): js.html.Int32Array {
+	public inline function data(): js.html.UInt32Array {
 		return this;
 	}
 }
