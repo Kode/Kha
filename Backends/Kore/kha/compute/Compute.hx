@@ -12,6 +12,10 @@ class Compute {
 		untyped __cpp__('Kore::Compute::setFloat(location->location, value);');
 	}
 
+	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
+		untyped __cpp__('Kore::Compute::setBuffer(buffer->buffer, index);');
+	}
+
 	public static function setTexture(unit: TextureUnit, texture: Image) {
 		untyped __cpp__('Kore::Compute::setTexture(unit->unit, texture->texture);');
 	}
