@@ -176,10 +176,6 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
-	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {
-		
-	}
-
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		
 	}

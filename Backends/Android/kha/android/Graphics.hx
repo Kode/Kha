@@ -327,13 +327,6 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glUniform1fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
 	}
 
-	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		for (i in 0...values.length) {
-			valuesCache[i] = values[i];
-		}
-		GLES20.glUniform4fv(cast(location, ConstantLocation).value, values.length, valuesCache, 0);
-	}
-
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		GLES20.glUniform2f(cast(location, ConstantLocation).value, value.x, value.y);
 	}

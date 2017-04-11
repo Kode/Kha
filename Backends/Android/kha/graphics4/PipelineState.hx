@@ -2,6 +2,7 @@ package kha.graphics4;
 
 import android.opengl.GLES20;
 import java.NativeArray;
+import java.lang.Byte;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
@@ -60,8 +61,31 @@ class PipelineState extends PipelineStateBase {
 		shader.shader = s;
 	}
 	
+	private static function compare(string: String, array: NativeArray<Byte>): Bool {
+		if (string.length != array.length) return false;
+		for (i in 0...string.length) {
+			if (string.charCodeAt(i) != array[i]) return false;
+		}
+		return true;
+	}
+	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return new kha.android.graphics4.ConstantLocation(GLES20.glGetUniformLocation(program, name));
+		var location = GLES20.glGetUniformLocation(program, name);
+		var type = GLES20.GL_FLOAT;
+		var count = new NativeArray<Int>(1);
+		GLES20.glGetProgramiv(program, GLES20.GL_ACTIVE_UNIFORMS, count, 0);
+		for (i in 0...count[0]) {
+			var nameArray = new NativeArray<Byte>(1024);
+			var length = new NativeArray<Int>(1);
+			var size = new NativeArray<Int>(1);
+			var typeArray = new NativeArray<Int>(1);
+			GLES20.glGetActiveUniform(program, i, 1024, length, 0, size, 0, typeArray, 0, nameArray, 0);
+			if (compare(name, nameArray) || compare(name + "[0]", nameArray)) {
+				type = typeArray[0];
+				break;
+			}
+		}
+		return new kha.android.graphics4.ConstantLocation(location, type);
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {

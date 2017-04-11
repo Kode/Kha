@@ -593,10 +593,6 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		setFloatsPrivate(cast location, values);
-	}
-	
 	@:functionCode('
 		Kore::mat4 value;
 		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20); value.Set(0, 3, matrix->_30);

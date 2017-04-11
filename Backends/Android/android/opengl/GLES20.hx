@@ -1,6 +1,7 @@
 package android.opengl;
 
 import java.NativeArray;
+import java.lang.Byte;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
@@ -90,6 +91,8 @@ extern class GLES20 {
 	public static var GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT : Int;
 	public static var GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS : Int;
 	public static var GL_FRAMEBUFFER_UNSUPPORTED : Int;
+	
+	public static var GL_ACTIVE_UNIFORMS: Int;
 
 	public static function glClear(bits: Int): Void;
 	public static function glGetError(): Int;
@@ -157,4 +160,6 @@ extern class GLES20 {
 	public static function glDeleteRenderbuffers(n: Int, renderBuffers: NativeArray<Int>, offset: Int): Void;
 
 	public static function glColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
+	
+	public static function glGetActiveUniform(program: Int, index: Int, bufsize: Int, length: NativeArray<Int>, lengthOffset: Int, size: NativeArray<Int>, sizeOffset: Int, type: NativeArray<Int>, typeOffset: Int, name: NativeArray<Byte>, nameOffset: Int): Void;
 }

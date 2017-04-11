@@ -410,10 +410,6 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, values.toData());
 	}
 
-	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: haxe.ds.Vector<FastFloat>): Void {
-		setFloats(location, values);
-	}
-
 	//public function renderToBackbuffer(): Void {
 	//	context.setRenderToBackBuffer();
 	//}

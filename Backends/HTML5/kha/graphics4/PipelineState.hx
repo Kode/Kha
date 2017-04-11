@@ -77,7 +77,17 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return new kha.js.graphics4.ConstantLocation(SystemImpl.gl.getUniformLocation(program, name));
+		var location = SystemImpl.gl.getUniformLocation(program, name);
+		var type = GL.FLOAT;
+		var count: Int = SystemImpl.gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS);
+		for (i in 0...count) {
+			var info = SystemImpl.gl.getActiveUniform(program, i);
+			if (info.name == name || info.name == name + "[0]") {
+				type = info.type;
+				break;
+			}
+		}
+		return new kha.js.graphics4.ConstantLocation(location, type);
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {

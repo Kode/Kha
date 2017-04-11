@@ -429,11 +429,17 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		SystemImpl.gl.uniform1fv(cast(location, ConstantLocation).value, cast values);
-	}
-
-	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		SystemImpl.gl.uniform4fv(cast(location, ConstantLocation).value, cast values);
+		var webglLocation = cast(location, ConstantLocation);
+		switch (webglLocation.type) {
+			case GL.FLOAT_VEC2:
+				SystemImpl.gl.uniform2fv(webglLocation.value, cast values);
+			case GL.FLOAT_VEC3:
+				SystemImpl.gl.uniform3fv(webglLocation.value, cast values);
+			case GL.FLOAT_VEC4:
+				SystemImpl.gl.uniform4fv(webglLocation.value, cast values);
+			default:
+				SystemImpl.gl.uniform1fv(webglLocation.value, cast values);
+		}
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
