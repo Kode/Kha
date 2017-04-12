@@ -31,6 +31,10 @@ class Graphics1 implements kha.graphics1.Graphics {
 	}
 	
 	public function setPixel(x: Int, y: Int, color: Color): Void {
+		#if (sys_html5 || sys_debug_html5)
+		pixels.setInt32(y * texture.realWidth * 4 + x * 4, Color.fromBytes(color.Bb, color.Gb, color.Rb, color.Ab));
+		#else
 		pixels.setInt32(y * texture.realWidth * 4 + x * 4, color);
+		#end
 	}
 }
