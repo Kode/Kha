@@ -19,6 +19,7 @@ class System {
 	private static var pauseListeners: Array<Void -> Void> = new Array();
 	private static var backgroundListeners: Array<Void -> Void> = new Array();
 	private static var shutdownListeners: Array<Void -> Void> = new Array();
+	private static var theTitle: String;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		if (options.title == null) options.title = "Kha";
@@ -26,11 +27,19 @@ class System {
 		if (options.height == null) options.height = 600;
 		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
 		if (options.windowMode == null) options.windowMode = WindowMode.Window;
+		theTitle = options.title;
 		SystemImpl.init(options, callback);
 	}
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+		theTitle = title;
 		SystemImpl.initEx(title, options, windowCallback, callback);
+	}
+
+	public static var title(get, null): String;
+
+	private static function get_title(): String {
+		return theTitle;
 	}
 
 	public static function notifyOnRender(listener: Framebuffer -> Void, id: Int = 0): Void {

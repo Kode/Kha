@@ -3,7 +3,6 @@ package kha;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import haxe.io.BytesData;
-import kha.Storage.WebStorage;
 
 using StringTools;
 
@@ -31,8 +30,11 @@ class LocalStorageFile extends StorageFile {
 		}
 		catch (e: Dynamic) { }
 		if (storage == null) return null;
-		var value: String = storage.getItem(name);
-		if (value == null) return null;
+		var value: String = storage.getItem(System.title + "_" + name);
+		if (value == null) {
+			value = storage.getItem(name); // For backwards-compatibility. Delete in 2018.
+			return null;
+		}
 		else return Blob.fromBytes(decode(value));
 	}
 	
@@ -43,7 +45,7 @@ class LocalStorageFile extends StorageFile {
 		}
 		catch (e: Dynamic) { }
 		if (storage == null) return;
-		storage.setItem(name, encode(data.bytes.getData()));
+		storage.setItem(System.title + "_" + name, encode(data.bytes.getData()));
 	}
 	
 	/**
