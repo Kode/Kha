@@ -15,6 +15,8 @@ class SystemImpl {
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: Mouse;
+	private static var maxGamepads: Int = 4;
+	private static var gamepads: Array<Gamepad>;
 	
 	private static function renderCallback(): Void {
 		Scheduler.executeFrame();
@@ -66,6 +68,18 @@ class SystemImpl {
 		mouse.sendMoveEvent(0, x, y, mx, my);
 	}
 
+	private static function mouseWheelCallback(delta: Int): Void {
+		mouse.sendWheelEvent(0, delta);
+	}
+
+	private static function gamepadAxisCallback(gamepad: Int, axis: Int, value: Float): Void {
+		gamepads[gamepad].sendAxisEvent(axis, value);
+	}
+
+	public static function gamepadButtonCallback(gamepad: Int, button: Int, value: Float): Void {
+		gamepads[gamepad].sendButtonEvent(button, value);
+	}
+
 	private static var audioOutputData: Vector<Float>;
 	private static function audioCallback(samples: Int) : Void {
 		//Krom.log("Samples " + samples);
@@ -108,12 +122,19 @@ class SystemImpl {
 		
 		keyboard = new Keyboard();
 		mouse = new Mouse();
+		gamepads = new Array<Gamepad>();
+		for (i in 0...maxGamepads) {
+			gamepads[i] = new Gamepad(i);
+		}
 		
 		Krom.setKeyboardDownCallback(keyboardDownCallback);
 		Krom.setKeyboardUpCallback(keyboardUpCallback);
 		Krom.setMouseDownCallback(mouseDownCallback);
 		Krom.setMouseUpCallback(mouseUpCallback);
 		Krom.setMouseMoveCallback(mouseMoveCallback);
+		Krom.setMouseWheelCallback(mouseWheelCallback);
+		Krom.setGamepadAxisCallback(gamepadAxisCallback);
+		Krom.setGamepadButtonCallback(gamepadButtonCallback);
 
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
