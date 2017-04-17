@@ -293,7 +293,7 @@ class SystemImpl {
 
 		var gl: Bool = false;
 
-		#if webgl
+		#if kha_webgl
 		try {
 			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
 			if (SystemImpl.gl != null) {
