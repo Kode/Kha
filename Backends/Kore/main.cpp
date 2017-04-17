@@ -318,7 +318,7 @@ namespace {
 	}
 }
 
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing) {
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
@@ -326,7 +326,9 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::System::setup();
 
 	if (ex) {
-	} else {
+
+	}
+	else {
 		width = Kore::min(width, Kore::System::desktopWidth());
 		height = Kore::min(height, Kore::System::desktopHeight());
 
@@ -336,6 +338,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		options.height = height;
 		options.x = x;
 		options.y = y;
+		options.vSync = vSync;
 		options.targetDisplay = display;
 		options.mode = windowMode;
 		options.rendererOptions.depthBufferBits = 16;
@@ -390,12 +393,12 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 //#endif
 }
 
-void init_kore(const char* name, int width, int height, int antialiasing, int windowMode) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing);
+void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync);
 }
 
-void init_kore_ex( const char * name ) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0);
+void init_kore_ex(const char* name) {
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0, false);
 }
 
 void post_kore_init() {

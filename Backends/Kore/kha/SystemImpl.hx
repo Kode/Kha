@@ -33,7 +33,7 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/Input/Mouse.h>
 #include <Kore/Window.h>
 
-void init_kore(const char* name, int width, int height, int antialiasing, int windowMode);
+void init_kore(const char* name, int width, int height, int antialiasing, bool vsync, int windowMode);
 void init_kore_ex(const char* name);
 void post_kore_init();
 void run_kore();
@@ -104,7 +104,7 @@ class SystemImpl {
 	private static var mouseLockListeners: Array<Int->Void>;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		initKore(options.title, options.width, options.height, options.samplesPerPixel, translateWindowMode(options.windowMode));
+		initKore(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode));
 
 		//Shaders.init();
 
@@ -475,9 +475,8 @@ class SystemImpl {
 		System.shutdown();
 	}
 
-	@:functionCode('init_kore(name, width, height, antialiasing, windowMode);')
-	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, windowMode: Int): Void {
-	}
+	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode);')
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int): Void {}
 
 	static function translatePosition(value: Null<WindowOptions.Position>): Int {
 		if (value == null) {

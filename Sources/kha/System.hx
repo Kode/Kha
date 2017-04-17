@@ -8,6 +8,7 @@ typedef SystemOptions = {
 	?width: Int,
 	?height: Int,
 	?samplesPerPixel: Int,
+	?vSync: Bool,
 	?windowMode: WindowMode
 }
 
@@ -26,6 +27,7 @@ class System {
 		if (options.width == null) options.width = 800;
 		if (options.height == null) options.height = 600;
 		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
+		if (options.vSync == null) options.vSync = true;
 		if (options.windowMode == null) options.windowMode = WindowMode.Window;
 		theTitle = options.title;
 		SystemImpl.init(options, callback);
