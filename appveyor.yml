@@ -1,6 +1,6 @@
 version: 1.0.{build}
 platform:
-  - x86
+  - Win32
   - x64
 before_build:
   - git submodule update --init --recursive
@@ -8,7 +8,5 @@ before_build:
   - nodejs_bin\node.exe make.js --kha . --from Tests/Empty --visualstudio vs2015
   - nodejs_bin\node.exe make.js windowsapp --kha . --from Tests/Empty --visualstudio vs2015
 build:
-  project:
-    - build\windows-build\Empty.sln
-    - build\windowsapp-build\Empty.sln
+  project: build\windows-build\Empty.sln
   verbosity: minimal
