@@ -9,8 +9,7 @@ environment:
 before_build:
   - git submodule update --init --recursive
   - git clone https://github.com/ktxsoftware/nodejs_bin.git
-  - nodejs_bin\node.exe make.js --kha . --from Tests/Empty --visualstudio vs2015
-  - nodejs_bin\node.exe make.js windowsapp --kha . --from Tests/Empty --visualstudio vs2015
+  - nodejs_bin\node.exe make.js %platform_name% --kha . --from Tests/Empty --visualstudio vs2015
 build:
   project: build\%platform_name%-build\Empty.sln
   verbosity: minimal
