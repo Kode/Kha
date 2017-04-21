@@ -196,19 +196,14 @@ class BytesBlob implements Resource {
 		return value;
 	}
 	
-	private function readUtf8Line(position: { value: Int }): String {
+	private function readUtf8Block(position: { value: Int }): String {
 		var bufferindex: Int = 0;
-		var c = readUtf8Char(position);
-		if (c < 0) return "";
-		while (c != '\n'.code && bufferindex < 2000) {
+		if (position.value >= length) return "";
+		while (bufferindex < 2000) {
+			var c = readUtf8Char(position);
+			if (c < 0) break;
 			buffer[bufferindex] = c;
 			++bufferindex;
-			c = readUtf8Char(position);
-			if (position.value >= length) {
-				buffer[bufferindex] = c;
-				++bufferindex;
-				break;
-			}
 		}
 		if (myFirstLine) {
 			myFirstLine = false;
@@ -232,7 +227,7 @@ class BytesBlob implements Resource {
 	public function readUtf8String(): String {
 		var text = "";
 		var position: { value: Int } = { value: 0 };
-		while (position.value < length) text += readUtf8Line(position) + "\n";
+		while (position.value < length) text += readUtf8Block(position);
 		return text;
 	}
 	
