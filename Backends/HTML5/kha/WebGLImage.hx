@@ -233,8 +233,7 @@ class WebGLImage extends Image {
 			else {
 				depthTexture = SystemImpl.gl.createTexture();
 				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
-				var format = depthStencilFormat == Depth16 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT;
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, format, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
