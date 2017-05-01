@@ -2,7 +2,9 @@ extern class Krom {
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
 	
 	static function createVertexShader(data: haxe.io.BytesData, name: String): Dynamic;
+	static function createVertexShaderFromSource(source: String): Dynamic;
 	static function createFragmentShader(data: haxe.io.BytesData, name: String): Dynamic;
+	static function createFragmentShaderFromSource(source: String): Dynamic;
 	static function createGeometryShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationControlShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationEvaluationShader(data: haxe.io.BytesData, name: String): Dynamic;
