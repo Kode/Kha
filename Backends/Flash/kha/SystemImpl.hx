@@ -257,7 +257,7 @@ class SystemImpl {
 
 	private static function mouseWheelHandler(event: MouseEvent): Void {
 		setMousePosition(event);
-		mouse.sendWheelEvent(0, event.delta);
+		mouse.sendWheelEvent(0, -event.delta);
 	}
 
 	private static function resizeHandler(event: Event): Void {
