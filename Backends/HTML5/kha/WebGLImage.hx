@@ -356,6 +356,16 @@ class WebGLImage extends Image {
 		}
 	}
 
+	private var pixels: Uint8Array = null;
+	
+	override public function getPixels(): Bytes {
+		if (frameBuffer == null) return null;
+		if (pixels == null) pixels = new Uint8Array(format == RGBA32 ? 4 * width * height : width * height);
+		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+		SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixels);
+		return Bytes.ofData(pixels.buffer);
+	}
+
 	override public function unload(): Void {
 		if (texture != null) SystemImpl.gl.deleteTexture(texture);
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);

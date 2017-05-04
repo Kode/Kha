@@ -142,6 +142,15 @@ class Image implements Canvas implements Resource {
 	public function unlock(): Void {
 		Krom.unlockTexture(texture_, bytes.getData());
 	}
+
+	private var pixels: Bytes = null;
+
+	public function getPixels(): Bytes {
+		if (renderTarget_ == null) return null;
+		if (pixels == null) pixels = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		Krom.getRenderTargetPixels(renderTarget_, pixels.getData());
+		return pixels;
+	}
 	
 	public function generateMipmaps(levels: Int): Void {
 		Krom.generateMipmaps(texture_, levels);
