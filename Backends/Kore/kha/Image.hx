@@ -304,6 +304,24 @@ class Image implements Canvas implements Resource {
 		bytes = null;
 	}
 
+	private var pixels: Bytes = null;
+	private var pixelsAllocated: Bool = false;
+
+	@:functionCode('
+		if (renderTarget == nullptr) return nullptr;
+		if (!this->pixelsAllocated) {
+			int size = 4 * renderTarget->width * renderTarget->height;
+			this->pixels = ::haxe::io::Bytes_obj::alloc(size);
+			this->pixelsAllocated = true;
+		}
+		Kore::u8* b = this->pixels->b->Pointer();
+		renderTarget->getPixels(b);
+		return this->pixels;
+	')
+	public function getPixels(): Bytes {
+		return null;
+	}
+
 	public function generateMipmaps(levels: Int): Void {
 		untyped __cpp__("texture->generateMipmaps(levels)");
 	}

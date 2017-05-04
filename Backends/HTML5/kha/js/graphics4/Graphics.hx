@@ -36,6 +36,10 @@ import kha.WebGLImage;
 class Graphics implements kha.graphics4.Graphics {
 	private var depthTest: Bool = false;
 	private var depthMask: Bool = false;
+	private var colorMaskRed: Bool = true;
+	private var colorMaskGreen: Bool = true;
+	private var colorMaskBlue: Bool = true;
+	private var colorMaskAlpha: Bool = true;
 	private var indicesCount: Int;
 	private var renderTarget: Canvas;
 	private var renderTargetFrameBuffer: Dynamic;
@@ -132,6 +136,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var clearMask: Int = 0;
 		if (color != null) {
 			clearMask |= GL.COLOR_BUFFER_BIT;
+			SystemImpl.gl.colorMask(true, true, true, true);
 			SystemImpl.gl.clearColor(color.R, color.G, color.B, color.A);
 		}
 		if (depth != null) {
@@ -147,6 +152,7 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.clearStencil(stencil);
 		}
 		SystemImpl.gl.clear(clearMask);
+		SystemImpl.gl.colorMask(colorMaskRed, colorMaskGreen, colorMaskBlue, colorMaskAlpha);
 		if (depthTest) {
 			SystemImpl.gl.enable(GL.DEPTH_TEST);
 		}
@@ -402,6 +408,10 @@ class Graphics implements kha.graphics4.Graphics {
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
 		pipe.set();
+		colorMaskRed = pipe.colorWriteMaskRed;
+		colorMaskGreen = pipe.colorWriteMaskGreen;
+		colorMaskBlue = pipe.colorWriteMaskBlue;
+		colorMaskAlpha = pipe.colorWriteMaskAlpha;
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {

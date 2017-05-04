@@ -2,7 +2,9 @@ extern class Krom {
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
 	
 	static function createVertexShader(data: haxe.io.BytesData, name: String): Dynamic;
+	static function createVertexShaderFromSource(source: String): Dynamic;
 	static function createFragmentShader(data: haxe.io.BytesData, name: String): Dynamic;
+	static function createFragmentShaderFromSource(source: String): Dynamic;
 	static function createGeometryShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationControlShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createTessellationEvaluationShader(data: haxe.io.BytesData, name: String): Dynamic;
@@ -46,6 +48,7 @@ extern class Krom {
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
 	static function createTexture3D(width: Int, height: Int, depth: Int, format: Int): Dynamic;
 	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
+	static function getRenderTargetPixels(renderTarget: Dynamic, data: haxe.io.BytesData): Void;
 	static function unlockTexture(texture: Dynamic, data: haxe.io.BytesData): Void;
 	static function generateMipmaps(texture: Dynamic, levels: Int): Void;
 	static function setMipmaps(texture: Dynamic, mipmaps: Array<kha.Image>): Void;
@@ -86,4 +89,8 @@ extern class Krom {
 	static function windowWidth(id: Int): Int;
 	static function windowHeight(id: Int): Int;
 	static function screenDpi(): Int;
+	static function requestShutdown(): Void;
+
+	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
+	static function sysCommand(cmd: String, ?args: Array<String>): Int;
 }

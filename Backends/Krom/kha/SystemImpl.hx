@@ -182,7 +182,7 @@ class SystemImpl {
 	}
 	
 	public static function requestShutdown(): Void {
-		
+		Krom.requestShutdown();
 	}
 	
 	public static function getMouse(num: Int): Mouse {

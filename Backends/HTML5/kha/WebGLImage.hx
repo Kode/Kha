@@ -233,8 +233,7 @@ class WebGLImage extends Image {
 			else {
 				depthTexture = SystemImpl.gl.createTexture();
 				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
-				var format = depthStencilFormat == Depth16 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT;
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, format, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -355,6 +354,16 @@ class WebGLImage extends Image {
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 			bytes = null;
 		}
+	}
+
+	private var pixels: Uint8Array = null;
+	
+	override public function getPixels(): Bytes {
+		if (frameBuffer == null) return null;
+		if (pixels == null) pixels = new Uint8Array(format == RGBA32 ? 4 * width * height : width * height);
+		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+		SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixels);
+		return Bytes.ofData(pixels.buffer);
 	}
 
 	override public function unload(): Void {
