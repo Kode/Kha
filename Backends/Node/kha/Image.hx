@@ -59,6 +59,7 @@ class Image implements Canvas implements Resource {
 	public function unload(): Void { }
 	public function lock(level: Int = 0): Bytes { return bytes; }
 	public function unlock(): Void { }
+	public function getPixels(): Bytes { return null; }
 	public function generateMipmaps(levels: Int): Void { }
 	public function setMipmaps(mipmaps: Array<Image>): Void { }
 	public function setDepthStencilFrom(image: Image): Void { }

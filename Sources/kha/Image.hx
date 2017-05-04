@@ -29,6 +29,8 @@ extern class Image implements Canvas implements Resource {
 	public function lock(level: Int = 0): Bytes;
 	
 	public function unlock(): Void;
+
+	public function getPixels(): Bytes;
 	
 	public function generateMipmaps(levels: Int): Void;
 	

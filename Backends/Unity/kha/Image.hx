@@ -136,6 +136,10 @@ class Image implements Canvas implements Resource {
 
 	}
 
+	public function getPixels(): Bytes {
+		return null;
+	}
+
 	public function generateMipmaps(levels: Int): Void {
 		
 	}
