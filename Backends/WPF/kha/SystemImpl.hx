@@ -482,4 +482,8 @@ class SystemImpl {
 	public static function loadUrl(url: String): Void {
 		
 	}
+
+	public static function getGamepadId(index: Int): String {
+		return "unkown";
+	}
 }

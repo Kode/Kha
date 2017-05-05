@@ -311,4 +311,8 @@ class SystemImpl {
 		var i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		KhaActivity.the().startActivity(i);
 	}
+
+	public static function getGamepadId(index: Int): String {
+		return "unkown";
+	}
 }

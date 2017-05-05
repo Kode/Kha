@@ -342,4 +342,7 @@ class SystemImpl {
 		Lib.getURL(new URLRequest(url), "_blank");
 	}
 	
+	public static function getGamepadId(index: Int): String {
+		return "unkown";
+	}
 }
