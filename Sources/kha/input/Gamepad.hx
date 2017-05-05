@@ -3,7 +3,7 @@ package kha.input;
 @:allow(kha.SystemImpl)
 @:expose
 class Gamepad {
-	private var myId: String;
+	private var index: Int;
 
 	public static function get(index: Int = 0): Gamepad {
 		if (index >= instances.length) return null;
@@ -25,6 +25,7 @@ class Gamepad {
 	private var buttonListeners: Array<Int->Float->Void>;
 	
 	private function new(index: Int = 0, id: String = "unknown") {
+		this.index = index;
 		axisListeners = new Array<Int->Float->Void>();
 		buttonListeners = new Array<Int->Float->Void>();
 		instances[index] = this;
@@ -33,7 +34,7 @@ class Gamepad {
 	public var id(get, null): String;
 
 	private function get_id(): String {
-		return myId;
+		return SystemImpl.getGamepadId(index);
 	}
 	
 	@input

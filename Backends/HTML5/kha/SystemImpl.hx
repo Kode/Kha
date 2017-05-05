@@ -985,4 +985,19 @@ class SystemImpl {
 	public static function loadUrl(url: String): Void {
 		js.Browser.window.open(url, "_blank");
 	}
+
+	public static function getGamepadId(index: Int): String {
+		if (((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome) && untyped navigator.getGamepads)  {
+			var sysGamepads = js.Browser.navigator.getGamepads();
+			if (sysGamepads != null) {
+				for (i in 0...sysGamepads.length) {
+					var pad = sysGamepads[i];
+					if (pad != null) {
+						return pad.id;
+					}
+				}
+			}
+		}
+		return "unkown";
+	}
 }

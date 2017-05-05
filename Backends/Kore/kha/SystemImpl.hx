@@ -38,6 +38,7 @@ void init_kore_ex(const char* name);
 void post_kore_init();
 void run_kore();
 int init_window(Kore::WindowOptions windowOptions);
+const char* getGamepadId(int index);
 ')
 @:keep
 class SystemImpl {
@@ -660,7 +661,6 @@ class SystemImpl {
 		}
 	}
 
-
 	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.remove(func);
@@ -677,5 +677,10 @@ class SystemImpl {
 	
 	public static function loadUrl(url: String): Void {
 		
+	}
+
+	@:functionCode('return ::String(::getGamepadId(index));')
+	public static function getGamepadId(index: Int): String {
+		return "unknown";
 	}
 }

@@ -393,6 +393,10 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 //#endif
 }
 
+const char* getGamepadId(int index) {
+	return Kore::Gamepad::get(index)->productName;
+}
+
 void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode) {
 	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync);
 }
