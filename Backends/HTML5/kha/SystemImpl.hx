@@ -364,22 +364,20 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called when using VR
-			if (((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome) && untyped navigator.getGamepads)  {
-				var sysGamepads = js.Browser.navigator.getGamepads();
-				if (sysGamepads != null) {
-					for (i in 0...sysGamepads.length) {
-						var pad = sysGamepads[i];
-						if (pad != null) {
-							checkGamepadButton(pad, 0);
-							checkGamepadButton(pad, 1);
-							checkGamepadButton(pad, 12);
-							checkGamepadButton(pad, 13);
-							checkGamepadButton(pad, 14);
-							checkGamepadButton(pad, 15);
 
-							checkGamepad(pad);
-						}
+			var sysGamepads = getGamepads();
+			if (sysGamepads != null) {
+				for (i in 0...sysGamepads.length) {
+					var pad = sysGamepads[i];
+					if (pad != null) {
+						checkGamepadButton(pad, 0);
+						checkGamepadButton(pad, 1);
+						checkGamepadButton(pad, 12);
+						checkGamepadButton(pad, 13);
+						checkGamepadButton(pad, 14);
+						checkGamepadButton(pad, 15);
+
+						checkGamepad(pad);
 					}
 				}
 			}
@@ -987,17 +985,26 @@ class SystemImpl {
 	}
 
 	public static function getGamepadId(index: Int): String {
-		if (((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome) && untyped navigator.getGamepads)  {
-			var sysGamepads = js.Browser.navigator.getGamepads();
-			if (sysGamepads != null) {
-				for (i in 0...sysGamepads.length) {
-					var pad = sysGamepads[i];
-					if (pad != null) {
-						return pad.id;
-					}
+		var sysGamepads = getGamepads();
+		if (sysGamepads != null) {
+			for (i in 0...sysGamepads.length) {
+				var pad = sysGamepads[i];
+				if (pad != null) {
+					return pad.id;
 				}
 			}
 		}
 		return "unkown";
+	}
+
+	private static function getGamepads(): Array<js.html.Gamepad> {
+		if (chrome && kha.vr.VrInterface.instance.IsVrEnabled()) return null; // Chrome crashes if navigator.getGamepads() is called when using VR
+
+		if (untyped navigator.getGamepads) {
+			return js.Browser.navigator.getGamepads();
+		}
+		else {
+			return null;
+		}
 	}
 }
