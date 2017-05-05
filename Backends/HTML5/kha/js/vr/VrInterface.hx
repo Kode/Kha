@@ -34,9 +34,6 @@ class VrInterface extends kha.vr.VrInterface {
 			vrEnabled = true;
 			getVRDisplays();
 			trace("Display enabled.");
-        } else {
-			trace("WebVR is not supported on this browser.");
-			trace("To support progressive enhancement your fallback code should render a normal Canvas based WebGL experience for the user.");
         }
 	}
 

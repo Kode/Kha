@@ -232,20 +232,20 @@ class SystemImpl {
 		return keyboard;
 	}
 
-	static function checkGamepadButton(pad: Dynamic, num: Int) {
+	static function checkGamepadButton(pad: js.html.Gamepad, num: Int) {
 		if (buttonspressed[num]) {
-			if (pad.buttons[num] < 0.5) {
+			if (pad.buttons[num].value < 0.5) {
 				buttonspressed[num] = false;
 			}
 		}
 		else {
-			if (pad.buttons[num] > 0.5) {
+			if (pad.buttons[num].value > 0.5) {
 				buttonspressed[num] = true;
 			}
 		}
 	}
 
-	static function checkGamepad(pad: Dynamic) {
+	static function checkGamepad(pad: js.html.Gamepad) {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
 				if (gamepadStates[pad.index].axes[i] != pad.axes[i]) {
@@ -365,8 +365,8 @@ class SystemImpl {
 			else requestAnimationFrame(animate);
 
 			// Bug in WebVR: Chrome crashes if navigator.getGamepads() is called when using VR
-			if ((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome)  {
-				var sysGamepads: Dynamic = untyped __js__("(navigator.getGamepads && navigator.getGamepads()) || (navigator.webkitGetGamepads && navigator.webkitGetGamepads())");
+			if (((!kha.vr.VrInterface.instance.IsVrEnabled() && chrome) || !chrome) && untyped navigator.getGamepads)  {
+				var sysGamepads = js.Browser.navigator.getGamepads();
 				if (sysGamepads != null) {
 					for (i in 0...sysGamepads.length) {
 						var pad = sysGamepads[i];
