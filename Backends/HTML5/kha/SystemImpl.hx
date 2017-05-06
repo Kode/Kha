@@ -178,7 +178,6 @@ class SystemImpl {
 	private static var maxGamepads : Int = 4;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
-	private static var buttonspressed: Array<Bool>;
 	private static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard = null;
 	private static var mouse: kha.input.Mouse;
@@ -211,8 +210,7 @@ class SystemImpl {
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		for (i in 0...256) pressedKeys.push(null);
-		buttonspressed = new Array<Bool>();
-		for (i in 0...10) buttonspressed.push(false);
+
 		CanvasImage.init();
 		//Loader.init(new kha.js.Loader());
 		SystemImpl.initPerformanceTimer();
@@ -230,19 +228,6 @@ class SystemImpl {
 	public static function getKeyboard(num: Int): Keyboard {
 		if (num != 0) return null;
 		return keyboard;
-	}
-
-	static function checkGamepadButton(pad: js.html.Gamepad, num: Int) {
-		if (buttonspressed[num]) {
-			if (untyped pad.buttons[num] && pad.buttons[num].value < 0.5) {
-				buttonspressed[num] = false;
-			}
-		}
-		else {
-			if (untyped pad.buttons[num] && pad.buttons[num].value > 0.5) {
-				buttonspressed[num] = true;
-			}
-		}
 	}
 
 	static function checkGamepad(pad: js.html.Gamepad) {
@@ -370,9 +355,6 @@ class SystemImpl {
 				for (i in 0...sysGamepads.length) {
 					var pad = sysGamepads[i];
 					if (pad != null) {
-						for (j in 0...pad.buttons.length) {
-							checkGamepadButton(pad, j);
-						}
 						checkGamepad(pad);
 					}
 				}
