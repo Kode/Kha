@@ -370,13 +370,9 @@ class SystemImpl {
 				for (i in 0...sysGamepads.length) {
 					var pad = sysGamepads[i];
 					if (pad != null) {
-						checkGamepadButton(pad, 0);
-						checkGamepadButton(pad, 1);
-						checkGamepadButton(pad, 12);
-						checkGamepadButton(pad, 13);
-						checkGamepadButton(pad, 14);
-						checkGamepadButton(pad, 15);
-
+						for (j in 0...pad.buttons.length) {
+							checkGamepadButton(pad, j);
+						}
 						checkGamepad(pad);
 					}
 				}
@@ -986,14 +982,10 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		var sysGamepads = getGamepads();
-		if (sysGamepads != null) {
-			for (i in 0...sysGamepads.length) {
-				var pad = sysGamepads[i];
-				if (pad != null) {
-					return pad.id;
-				}
-			}
+		if (sysGamepads != null && index < sysGamepads.length) {
+				return sysGamepads[index].id;
 		}
+	
 		return "unkown";
 	}
 
