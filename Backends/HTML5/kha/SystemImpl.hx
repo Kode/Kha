@@ -234,12 +234,12 @@ class SystemImpl {
 
 	static function checkGamepadButton(pad: js.html.Gamepad, num: Int) {
 		if (buttonspressed[num]) {
-			if (pad.buttons[num].value < 0.5) {
+			if (untyped pad.buttons[num] && pad.buttons[num].value < 0.5) {
 				buttonspressed[num] = false;
 			}
 		}
 		else {
-			if (pad.buttons[num].value > 0.5) {
+			if (untyped pad.buttons[num] && pad.buttons[num].value > 0.5) {
 				buttonspressed[num] = true;
 			}
 		}
