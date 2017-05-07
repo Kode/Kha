@@ -964,7 +964,7 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		var sysGamepads = getGamepads();
-		if (sysGamepads != null && index < sysGamepads.length) {
+		if (sysGamepads != null &&  untyped sysGamepads[index]) {
 				return sysGamepads[index].id;
 		}
 	
