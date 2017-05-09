@@ -93,4 +93,5 @@ extern class Krom {
 
 	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
 	static function sysCommand(cmd: String, ?args: Array<String>): Int;
+	static function savePath(): String;
 }
