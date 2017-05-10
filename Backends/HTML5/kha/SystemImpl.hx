@@ -32,6 +32,7 @@ class GamepadStates {
 
 class SystemImpl {
 	public static var gl: GL;
+	public static var gl2: Bool;
 	public static var halfFloat: Dynamic;
 	public static var anisotropicFilter: Dynamic;
 	public static var depthTexture: Dynamic;
@@ -280,26 +281,39 @@ class SystemImpl {
 
 		#if kha_webgl
 		try {
-			SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
-			if (SystemImpl.gl != null) {
-				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-				SystemImpl.gl.getExtension("OES_texture_float");
-				SystemImpl.gl.getExtension("OES_texture_float_linear");
-				halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");
-				SystemImpl.gl.getExtension("OES_texture_half_float_linear");
-				depthTexture = SystemImpl.gl.getExtension("WEBGL_depth_texture");
-				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
-				SystemImpl.gl.getExtension("OES_standard_derivatives");
-				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
-				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
-				elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
-				gl = true;
-				Shaders.init();
-			}
+			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+			gl = true;
+			gl2 = true;
+			Shaders.init();
 		}
 		catch (e: Dynamic) {
-			trace(e);
+			trace("Could not initialize WebGL 2, falling back to WebGL.");
+		}
+
+		if (!gl2) {
+			try {
+				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+				if (SystemImpl.gl != null) {
+					SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+					SystemImpl.gl.getExtension("OES_texture_float");
+					SystemImpl.gl.getExtension("OES_texture_float_linear");
+					halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");
+					SystemImpl.gl.getExtension("OES_texture_half_float_linear");
+					depthTexture = SystemImpl.gl.getExtension("WEBGL_depth_texture");
+					SystemImpl.gl.getExtension("EXT_shader_texture_lod");
+					SystemImpl.gl.getExtension("OES_standard_derivatives");
+					anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
+					if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+					drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
+					elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
+					gl = true;
+					Shaders.init();
+				}
+			}
+			catch (e: Dynamic) {
+				trace("Could not initialize WebGL, falling back to Canvas.");
+			}
 		}
 		#end
 
