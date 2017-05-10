@@ -51,14 +51,20 @@ class VertexBuffer {
 	private function init(vertexCount: Int, structure: VertexStructure, instanceDataStepRate: Int) {
 		
 	}
-	
+
 	@:functionCode('
-		data.data = buffer->lock();
-		data.myLength = buffer->count() * buffer->stride() / 4;
+		data.data = buffer->lock() + start * buffer->stride() / 4;
+		data.myLength = count * buffer->stride() / 4;
 		return data;
 	')
-	public function lock(?start: Int, ?count: Int): Float32Array {
+	private function lock2(start: Int, count: Int): Float32Array {
 		return data;
+	}
+
+	public function lock(?start: Int, ?count: Int): Float32Array {
+		if (start == null) start = 0;
+		if (count == null) count = this.count();
+		return lock2(start, count);
 	}
 	
 	@:functionCode('buffer->unlock();')

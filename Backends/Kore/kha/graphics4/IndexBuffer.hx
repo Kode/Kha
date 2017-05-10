@@ -23,12 +23,18 @@ class IndexBuffer {
 	}
 	
 	@:functionCode('
-		data.data = (unsigned int*)buffer->lock();
-		data.myLength = buffer->count();
+		data.data = (unsigned int*)buffer->lock() + start;
+		data.myLength = count;
 		return data;
 	')
-	public function lock(?start: Int, ?count: Int): Uint32Array {
+	private function lock2(start: Int, count: Int): Uint32Array {
 		return data;
+	}
+
+	public function lock(?start: Int, ?count: Int): Uint32Array {
+		if (start == null) start = 0;
+		if (count == null) count = this.count();
+		return lock2(start, count);
 	}
 	
 	@:functionCode('buffer->unlock();')
