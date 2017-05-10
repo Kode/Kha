@@ -157,4 +157,84 @@ class Matrix3 {
 			c20 * invdet,  -c21 * invdet,  c22 * invdet
 		);
 	}
+	
+	public inline function clone():Matrix3 {
+		return new Matrix3(_00, _10, _20, _01, _11, _21, _02, _12, _22);
+	}
+	
+	public static inline function identity():Matrix3 {
+		return new Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	}
+
+	public inline function set(x:Int, y:Int, value:Float) {
+		switch(x) {
+			case 0:
+				switch(y) {
+					case 0: _00 = value;
+					case 1: _01 = value;
+					case 2: _02 = value;
+				}
+			case 1:
+				switch(y) {
+					case 0: _10 = value;
+					case 1: _11 = value;
+					case 2: _12 = value;
+				}
+			case 2:
+				switch(y) {
+					case 0: _20 = value;
+					case 1: _21 = value;
+					case 2: _22 = value;
+				}
+			default:
+		}
+	}
+
+	public inline function rotate(deg:Float):Matrix3 {
+		var c:Float = Math.cos(deg);
+		var s:Float = Math.sin(deg);
+		return multmat(new Matrix3(c, -s, 0, s, c, 0, 0, 0, 1));
+	}
+
+	public inline function scale(sx:Float = 1, sy:Float = 1):Matrix3 {
+		return multmat(new Matrix3(sx, 0, 0, 0, sy, 0, 0, 0, 1));
+	}
+
+	public inline function scaleX(sx:Float = 1):Matrix3 {
+		return scale(sx, 1);
+	}
+
+	public inline function scaleY(sy:Float = 1):Matrix3 {
+		return scale(1, sy);
+	}
+
+	public inline function skew(dx:Float = 0, dy:Float = 0):Matrix3 {
+		if(dx != 0) dx = Math.tan(dx);
+		if(dy != 0) dy = Math.tan(dy);
+		return multmat(new Matrix3(1, dx, 0, dy, 1, 0, 0, 0, 1));
+	}
+
+	public inline function skewX(dx:Float = 0):Matrix3 {
+		return skew(dx, 0);
+	}
+
+	public inline function skewY(dy:Float = 0):Matrix3 {
+		return skew(0, dy);
+	}
+
+	public inline function translate(tx:Float = 0, ty:Float = 0):Matrix3 {
+		return multmat(new Matrix3(1, 0, tx, 0, 1, ty, 0, 0, 1));
+	}
+
+	public inline function translateX(tx:Float = 0):Matrix3 {
+		return translate(tx, 0);		
+	}
+
+	public inline function translateY(ty:Float = 0):Matrix3 {
+		return translate(0, ty);		
+	}
+
+	public function toFast():FastMatrix3 {
+		return new FastMatrix3(_00, _10, _20, _01, _11, _21, _02, _12, _22);
+	}
 }

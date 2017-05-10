@@ -169,4 +169,84 @@ class FastMatrix3 {
 			c20 * invdet,  -c21 * invdet,  c22 * invdet
 		);
 	}
+	
+	public inline function clone():FastMatrix3 {
+		return new FastMatrix3(_00, _10, _20, _01, _11, _21, _02, _12, _22);
+	}
+	
+	public static inline function identity():FastMatrix3 {
+		return new FastMatrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	}
+
+	public inline function set(x:Int, y:Int, value:FastFloat) {
+		switch(x) {
+			case 0:
+				switch(y) {
+					case 0: _00 = value;
+					case 1: _01 = value;
+					case 2: _02 = value;
+				}
+			case 1:
+				switch(y) {
+					case 0: _10 = value;
+					case 1: _11 = value;
+					case 2: _12 = value;
+				}
+			case 2:
+				switch(y) {
+					case 0: _20 = value;
+					case 1: _21 = value;
+					case 2: _22 = value;
+				}
+			default:
+		}
+	}
+
+	public inline function rotate(deg:FastFloat):FastMatrix3 {
+		var c:FastFloat = Math.cos(deg);
+		var s:FastFloat = Math.sin(deg);
+		return multmat(new FastMatrix3(c, -s, 0, s, c, 0, 0, 0, 1));
+	}
+
+	public inline function scale(sx:FastFloat = 1, sy:FastFloat = 1) {
+		return multmat(new FastMatrix3(sx, 0, 0, 0, sy, 0, 0, 0, 1));
+	}
+
+	public inline function scaleX(sx:FastFloat = 1):FastMatrix3 {
+		return scale(sx, 1);
+	}
+
+	public inline function scaleY(sy:FastFloat = 1):FastMatrix3 {
+		return scale(1, sy);
+	}
+
+	public inline function skew(dx:FastFloat = 0, dy:FastFloat = 0):FastMatrix3 {
+		if(dx != 0) dx = Math.tan(dx);
+		if(dy != 0) dy = Math.tan(dy);
+		return multmat(new FastMatrix3(1, dx, 0, dy, 1, 0, 0, 0, 1));
+	}
+
+	public inline function skewX(dx:FastFloat = 0):FastMatrix3 {
+		return skew(dx, 0);
+	}
+
+	public inline function skewY(dy:FastFloat = 0):FastMatrix3 {
+		return skew(0, dy);
+	}
+
+	public inline function translate(tx:FastFloat = 0, ty:FastFloat = 0):FastMatrix3 {
+		return multmat(new FastMatrix3(1, 0, tx, 0, 1, ty, 0, 0, 1));
+	}
+
+	public inline function translateX(tx:FastFloat = 0):FastMatrix3 {
+		return translate(tx, 0);		
+	}
+
+	public inline function translateY(ty:FastFloat = 0):FastMatrix3 {
+		return translate(0, ty);		
+	}
+
+	public function toNormal():Matrix3 {
+		return new Matrix3(_00, _10, _20, _01, _11, _21, _02, _12, _22);
+	}
 }

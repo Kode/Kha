@@ -51,6 +51,28 @@ class FastVector2 {
 		length = 1;
 	}
 	
+	public inline function clone():FastFloat {
+		return new FastFloat(x, y);
+	}
+	
+	public inline function cross(vec:FastFloat):FastFloat {
+		return new FastFloat(-crossScalar(this, vec), crossScalar(this, vec));
+	}
+	
+	public inline function crossScalar(vec:FastFloat):FastFloat {
+		return x * vec.y - y * vec.x;
+	}
+	
+	public function distance(vec:FastFloat):FastFloat {
+		var w = vec.x - x;
+		var h = vec.y - y;
+		return Math.sqrt(w*w + h*h);
+	}
+
+	public function toFast():kha.math.FastVector2 {
+		return new kha.math.FastVector2(x, y);
+	}
+	
 	public function toString() {
 		return 'FastVector2($x, $y)';
 	}

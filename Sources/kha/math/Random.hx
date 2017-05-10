@@ -45,6 +45,13 @@ class Random {
 		return min + GetFloat() * (max - min);
 	}
 	
+	public function GetString(size:Int, chars:String = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'):String {
+		var str = '';
+		var len = chars.length - 1;
+		for (i in 0...size) str += chars.charAt(GetIn(0, len));
+		return str;
+	}
+	
 	private var MT: Array<Int>;
 	private var index: Int = 0;
 	
@@ -76,6 +83,10 @@ class Random {
 	
 	public static function getIn(min: Int, max: Int): Int {
 		return Default.GetIn(min, max);
+	}
+	
+	public static function getString(size:Int, chars:String = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'): Int {
+		return Default.GetString(size, chars);
 	}
 	
 	public static function getFloatIn(min: Float, max: Float): Float {

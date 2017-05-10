@@ -57,6 +57,22 @@ class FastVector3 {
 		length = 1;
 	}
 	
+	public static inline function clone():FastVector3 {
+		return new FastVector3(x, y, z);
+	}
+	
+	public static inline function cross(vec:FastVector3):FastVector3 {
+		return new FastVector3(
+			y * vec.z - z * vec.y,
+			z * vec.x - x * vec.z,
+			x * vec.y - y * vec.x
+		);
+	}
+	
+	public static function toFast():kha.math.FastVector3 {
+		return new kha.math.FastVector3(x, y, z);
+	}
+	
 	public function toString() {
 		return 'FastVector3($x, $y, $z)';
 	}

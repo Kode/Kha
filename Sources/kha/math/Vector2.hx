@@ -46,4 +46,26 @@ class Vector2 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+	
+	public inline function clone():Vector2 {
+		return new Vector2(x, y);
+	}
+	
+	public inline function cross(vec:Vector2):Vector2 {
+		return new Vector2(-crossScalar(this, vec), crossScalar(this, vec));
+	}
+	
+	public inline function crossScalar(vec:Vector2):Float {
+		return x * vec.y - y * vec.x;
+	}
+	
+	public function distance(vec:Vector2):Float {
+		var w = vec.x - x;
+		var h = vec.y - y;
+		return Math.sqrt(w*w + h*h);
+	}
+
+	public function toFast():kha.math.FastVector2 {
+		return new kha.math.FastVector2(x, y);
+	}
 }

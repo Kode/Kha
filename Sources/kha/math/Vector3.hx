@@ -52,4 +52,20 @@ class Vector3 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+	
+	public static inline function clone():Vector3 {
+		return new Vector3(x, y, z);
+	}
+	
+	public static inline function cross(vec:Vector3):Vector3 {
+		return new Vector3(
+			y * vec.z - z * vec.y,
+			z * vec.x - x * vec.z,
+			x * vec.y - y * vec.x
+		);
+	}
+	
+	public static function toFast():kha.math.FastVector3 {
+		return new kha.math.FastVector3(x, y, z);
+	}
 }
