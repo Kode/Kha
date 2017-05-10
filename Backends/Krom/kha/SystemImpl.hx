@@ -25,20 +25,32 @@ class SystemImpl {
 	
 	private static function convertCode(code: Int): Key {
 		switch (code) {
-		case 0x00000112:
-			return Key.LEFT;
-		case 0x00000113:
-			return Key.UP;
-		case 0x00000114:
-			return Key.RIGHT;
-		case 0x00000115:
-			return Key.DOWN;
+		case 0x00000103:
+			return Key.BACKSPACE;
+		case 0x00000101:
+			return Key.TAB;
 		case 0x00000104, 0x00000105:
 			return Key.ENTER;
 		case 0x00000120:
 			return Key.SHIFT;
+		case 0x00000121:
+			return Key.CTRL;
+		case 0x00000123:
+			return Key.ALT;
 		case 0x00000100:
 			return Key.ESC;
+		case 0x00000107:
+			return Key.DEL;
+		case 0x00000113:
+			return Key.UP;
+		case 0x00000115:
+			return Key.DOWN;
+		case 0x00000112:
+			return Key.LEFT;
+		case 0x00000114:
+			return Key.RIGHT;
+		case 0x01000061:
+			return Key.BACK;
 		default:
 			return null;
 		}
@@ -46,13 +58,13 @@ class SystemImpl {
 	
 	private static function keyboardDownCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
-		if (key != null) keyboard.sendDownEvent(key, " ");
+		if (key != null) keyboard.sendDownEvent(key, "");
 		else keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
 	private static function keyboardUpCallback(code: Int, charCode: Int): Void {
 		var key = convertCode(code);
-		if (key != null) keyboard.sendUpEvent(key, " ");
+		if (key != null) keyboard.sendUpEvent(key, "");
 		else keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
 	}
 	
