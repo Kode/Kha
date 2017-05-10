@@ -291,7 +291,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		vb.unlock();
 		
 		ib = new IndexBuffer(6, Usage.StaticUsage);
-		var indices: Array<Int> = ib.lock();
+		var indices = ib.lock();
 		
 		indices[0] = 0;
 		indices[1] = 1;
@@ -299,8 +299,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		indices[3] = 1;
 		indices[4] = 3;
 		indices[5] = 2;
-		
-		
+				
 		ib.unlock(); 
 		
 		pipeline = new PipelineState();

@@ -53,8 +53,8 @@ class VertexBuffer {
 	}
 	
 	@:functionCode('
-		data->data.data = buffer->lock();
-		data->data.myLength = buffer->count() * buffer->stride() / 4;
+		data.data = buffer->lock();
+		data.myLength = buffer->count() * buffer->stride() / 4;
 		return data;
 	')
 	public function lock(?start: Int, ?count: Int): Float32Array {

@@ -10,7 +10,7 @@ import kha.FastFloat;
 @:native("float32array")
 extern class Float32ArrayData {
 	@:native("float32array")
-	public static function create(): Float32Array;
+	public static function create(): Float32ArrayData;
 	
 	public var length(get, never): Int;
 
@@ -24,25 +24,36 @@ extern class Float32ArrayData {
 	public function set(index: Int, value: FastFloat): FastFloat;
 }
 
-class Float32Array {
-	@:keep
-	private var data: Float32ArrayData;
-	
+abstract Float32Array(Float32ArrayData) {
 	public inline function new() {
-		
+		this = Float32ArrayData.create();
 	}
 	
 	public var length(get, never): Int;
 
-	private inline function get_length(): Int {
-		return data.length;
+	inline function get_length(): Int {
+		return this.length;
 	}
 	
 	public inline function set(index: Int, value: FastFloat): FastFloat {
-		return data.set(index, value);
+		return this.set(index, value);
 	}
 	
 	public inline function get(index: Int): FastFloat {
-		return data.get(index);
+		return this.get(index);
 	}
+	
+	@:arrayAccess
+	public inline function arrayRead(index: Int): FastFloat {
+		return this.get(index);
+	}
+
+	@:arrayAccess
+	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
+		return this.set(index, value);
+	}
+
+	//public inline function subarray(start: Int, ?end: Int): Float32Array {
+	//	return cast this.subarray(start, end);
+	//}
 }

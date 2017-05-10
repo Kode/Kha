@@ -1,5 +1,7 @@
 package kha.graphics4;
 
+import kha.arrays.Uint32Array;
+
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
@@ -7,13 +9,12 @@ package kha.graphics4;
 
 @:headerClassCode("Kore::Graphics4::IndexBuffer* buffer;")
 class IndexBuffer {
-	private var data: Array<Int>;
+	private var data: Uint32Array;
 	private var myCount: Int;
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
-		data = new Array<Int>();
-		data[myCount - 1] = 0;
+		data = new Uint32Array();
 		untyped __cpp__('buffer = new Kore::Graphics4::IndexBuffer(indexCount);');
 	}
 	
@@ -21,17 +22,16 @@ class IndexBuffer {
 		untyped __cpp__('delete buffer; buffer = nullptr;');
 	}
 	
-	public function lock(): Array<Int> {
+	@:functionCode('
+		data.data = (unsigned int*)buffer->lock();
+		data.myLength = buffer->count();
+		return data;
+	')
+	public function lock(?start: Int, ?count: Int): Uint32Array {
 		return data;
 	}
 	
-	@:functionCode("
-		int* indices = buffer->lock();
-		for (int i = 0; i < myCount; ++i) {
-			indices[i] = data[i];
-		}
-		buffer->unlock();
-	")
+	@:functionCode('buffer->unlock();')
 	public function unlock(): Void {
 		
 	}
