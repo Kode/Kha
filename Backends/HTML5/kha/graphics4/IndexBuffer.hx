@@ -1,11 +1,12 @@
 package kha.graphics4;
 
 import js.html.webgl.GL;
+import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
 	private var buffer: Dynamic;
-	public var _data: Array<Int>;
+	public var _data: Uint32Array;
 	private var mySize: Int;
 	private var usage: Usage;
 	
@@ -13,8 +14,7 @@ class IndexBuffer {
 		this.usage = usage;
 		mySize = indexCount;
 		buffer = SystemImpl.gl.createBuffer();
-		_data = new Array<Int>();
-		_data[indexCount - 1] = 0;
+		_data = new Uint32Array(indexCount);
 	}
 	
 	public function delete(): Void {
@@ -22,13 +22,15 @@ class IndexBuffer {
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	
-	public function lock(): Array<Int> {
-		return _data;
+	public function lock(?start: Int, ?count: Int): Uint32Array {
+		if (start == null) start = 0;
+		if (count == null) count = mySize;
+		return _data.subarray(start, start + count);
 	}
 	
 	public function unlock(): Void {
 		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new Uint16Array(_data) : new js.html.Uint32Array(_data);
+		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new js.html.Uint16Array(_data.data().buffer) : _data.data();
 		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, glData, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	

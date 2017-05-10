@@ -84,7 +84,9 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return _data;
+		if (start == null) start = 0;
+		if (count == null) count = mySize;
+		return _data.subarray(start, start + count);
 	}
 	
 	public function unlock(): Void {
