@@ -52,8 +52,13 @@ class Graphics implements kha.graphics4.Graphics {
 	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
 		init();
-		instancedExtension = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
-		blendMinMaxExtension = SystemImpl.gl.getExtension("EXT_blend_minmax");
+		if (SystemImpl.gl2) {
+			instancedExtension = true;
+		}
+		else {
+			instancedExtension = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
+			blendMinMaxExtension = SystemImpl.gl.getExtension("EXT_blend_minmax");
+		}
 	}
 
 	private function init() {
@@ -92,7 +97,7 @@ class Graphics implements kha.graphics4.Graphics {
 				for (i in 0...additionalRenderTargets.length) {
 					attachments.push(SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1);
 				}
-				SystemImpl.drawBuffers.drawBuffersWEBGL(attachments);
+				SystemImpl.gl2 ? untyped SystemImpl.gl.drawBuffers(attachments) : SystemImpl.drawBuffers.drawBuffersWEBGL(attachments);
 			}
 		}
 	}
@@ -581,7 +586,13 @@ class Graphics implements kha.graphics4.Graphics {
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
 			var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
-			instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * 2, instanceCount);
+			var typeSize = SystemImpl.elementIndexUint == null ? 2 : 4;
+			if (SystemImpl.gl2) {
+				untyped SystemImpl.gl.drawElementsInstanced(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * typeSize, instanceCount);
+			}
+			else {
+				instancedExtension.drawElementsInstancedANGLE(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * typeSize, instanceCount);
+			}
 		}
 	}
 

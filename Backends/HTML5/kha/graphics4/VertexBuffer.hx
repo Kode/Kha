@@ -103,7 +103,7 @@ class VertexBuffer {
 	}
 	
 	public function set(offset: Int): Int {
-		var ext: Dynamic = SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
+		var ext: Dynamic = SystemImpl.gl2 ? true : SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		var attributesOffset = 0;
 		for (i in 0...sizes.length) {
@@ -114,7 +114,12 @@ class VertexBuffer {
 					SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
 					SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, 4, GL.FLOAT, false, myStride, offsets[i] + addonOffset);
 					if (ext) {
-						ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+						if (SystemImpl.gl2) {
+							untyped SystemImpl.gl.vertexAttribDivisor(offset + attributesOffset, instanceDataStepRate);
+						}
+						else {
+							ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+						}
 					}
 					size -= 4;
 					addonOffset += 4 * 4;
@@ -125,7 +130,12 @@ class VertexBuffer {
 				SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
 				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], GL.FLOAT, false, myStride, offsets[i]);
 				if (ext) {
-					ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+					if (SystemImpl.gl2) {
+						untyped SystemImpl.gl.vertexAttribDivisor(offset + attributesOffset, instanceDataStepRate);
+					}
+					else {
+						ext.vertexAttribDivisorANGLE(offset + attributesOffset, instanceDataStepRate);
+					}
 				}
 				++attributesOffset;
 			}
