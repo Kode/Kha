@@ -176,7 +176,7 @@ class SystemImpl {
 		Browser.window.close();
 	}
 
-	private static var maxGamepads : Int = 4;
+	private static inline var maxGamepads: Int = 4;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
 	private static var leftMouseCtrlDown: Bool = false;
