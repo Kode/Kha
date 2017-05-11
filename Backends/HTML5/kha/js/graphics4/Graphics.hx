@@ -117,7 +117,25 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
-
+		var error = SystemImpl.gl.getError();
+		switch (error) {
+			case GL.NO_ERROR:
+				
+			case GL.INVALID_ENUM:
+				trace("WebGL error: Invalid enum");
+			case GL.INVALID_VALUE:
+				trace("WebGL error: Invalid value");
+			case GL.INVALID_OPERATION:
+				trace("WebGL error: Invalid operation");
+			case GL.INVALID_FRAMEBUFFER_OPERATION:
+				trace("WebGL error: Invalid framebuffer operation");
+			case GL.OUT_OF_MEMORY:
+				trace("WebGL error: Out of memory");
+			case GL.CONTEXT_LOST_WEBGL:
+				trace("WebGL error: Context lost");
+			default:
+				trace("Unknown WebGL error");
+		}
 	}
 
 	public function flush(): Void {

@@ -283,6 +283,10 @@ class SystemImpl {
 		try {
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+
+			drawBuffers = {COLOR_ATTACHMENT0_WEBGL: GL.COLOR_ATTACHMENT0};
+			elementIndexUint = true;
+			
 			gl = true;
 			gl2 = true;
 			Shaders.init();
