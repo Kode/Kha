@@ -18,6 +18,15 @@ class CubeMap implements Canvas implements Resource {
 	public var depthTexture: Dynamic = null;
 	public var isDepthAttachment: Bool = false;
 
+	// WebGL2 constants
+	private static inline var GL_RGBA16F = 0x881A;
+	private static inline var GL_RGBA32F = 0x8814;
+	private static inline var GL_R16F = 0x822D;
+	private static inline var GL_R32F = 0x822E;
+	private static inline var GL_DEPTH_COMPONENT24 = 0x81A6;
+	private static inline var GL_DEPTH24_STENCIL8 = 0x88F0;
+	private static inline var GL_DEPTH32F_STENCIL8 = 0x8CAD;
+
 	private function new(size: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat) {
 		myWidth = size;
 		myHeight = size;
@@ -51,22 +60,24 @@ class CubeMap implements Canvas implements Resource {
 
 			switch (format) {
 			case DEPTH16:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, SystemImpl.gl2 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 			case RGBA128:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, null);
 			case RGBA64:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			case RGBA32:
 				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			case A32:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, SystemImpl.gl2 ? GL_R32F : GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, null);
 			case A16:
-				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, SystemImpl.gl2 ? GL_R16F : GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			default:
 				for (i in 0...6) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
 
 			if (format == DEPTH16) {
+				SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				isDepthAttachment = true;
 				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
 				if (untyped __js__('navigator.appVersion.indexOf("Win")') == -1) {
@@ -93,8 +104,8 @@ class CubeMap implements Canvas implements Resource {
 		case DepthOnly, Depth16: {
 			depthTexture = SystemImpl.gl.createTexture();
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
-			var format = depthStencilFormat == Depth16 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT;
-			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, format, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+			if (depthStencilFormat == DepthOnly) SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, SystemImpl.gl2 ? GL_DEPTH_COMPONENT24 : GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+			else SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, SystemImpl.gl2 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT, myWidth, myHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -105,7 +116,7 @@ class CubeMap implements Canvas implements Resource {
 		case DepthAutoStencilAuto, Depth24Stencil8, Depth32Stencil8:
 			depthTexture = SystemImpl.gl.createTexture();
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
-			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, GL.DEPTH_STENCIL, myWidth, myHeight, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
+			SystemImpl.gl.texImage2D(GL.TEXTURE_CUBE_MAP, 0, SystemImpl.gl2 ? GL_DEPTH24_STENCIL8 : GL.DEPTH_STENCIL, myWidth, myHeight, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
