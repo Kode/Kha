@@ -34,6 +34,15 @@ class WebGLImage extends Image {
 
 	private var depthStencilFormat: DepthStencilFormat;
 
+	// WebGL2 constants
+	private static inline var GL_RGBA16F = 0x881A;
+	private static inline var GL_RGBA32F = 0x8814;
+	private static inline var GL_R16F = 0x822D;
+	private static inline var GL_R32F = 0x822E;
+	private static inline var GL_DEPTH_COMPONENT24 = 0x81A6;
+	private static inline var GL_DEPTH24_STENCIL8 = 0x88F0;
+	private static inline var GL_DEPTH32F_STENCIL8 = 0x8CAD;
+
 	public static function init() {
 		if (context == null) {
 			// create only once
@@ -158,22 +167,24 @@ class WebGLImage extends Image {
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 			switch (format) {
 			case DEPTH16:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 			case RGBA128:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.FLOAT, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.FLOAT, null);
 			case RGBA64:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, realWidth, realHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			case RGBA32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			case A32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, GL.FLOAT, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R32F : GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, GL.FLOAT, null);
 			case A16:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R16F : GL.ALPHA, realWidth, realHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, null);
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
 
 			if (format == DEPTH16) {
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, texture, 0);
 				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
 				if (untyped __js__('navigator.appVersion.indexOf("Win")') == -1) {
@@ -190,6 +201,10 @@ class WebGLImage extends Image {
 
 			initDepthStencilBuffer(depthStencilFormat);
 
+			if (SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER) != GL.FRAMEBUFFER_COMPLETE) {
+				trace("WebGL error: Framebuffer incomplete");
+			}
+
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 		}
@@ -199,9 +214,9 @@ class WebGLImage extends Image {
 		else {
 			switch (format) {
 			case RGBA128:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, image);
 			case RGBA64:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			case RGBA32:
 				if (Std.is(image, Uint8Array)) {
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, image);
@@ -210,9 +225,9 @@ class WebGLImage extends Image {
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
 				}
 			case A32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R32F : GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, GL.FLOAT, image);
 			case A16:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R16F : GL.ALPHA, myWidth, myHeight, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 			default:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
 			}
@@ -233,7 +248,8 @@ class WebGLImage extends Image {
 			else {
 				depthTexture = SystemImpl.gl.createTexture();
 				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+				if (depthStencilFormat == DepthOnly) SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_DEPTH_COMPONENT24 : GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_INT, null);
+				else SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -252,7 +268,7 @@ class WebGLImage extends Image {
 			else {
 				depthTexture = SystemImpl.gl.createTexture();
 				SystemImpl.gl.bindTexture(GL.TEXTURE_2D, depthTexture);
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.DEPTH_STENCIL, realWidth, realHeight, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_DEPTH24_STENCIL8 : GL.DEPTH_STENCIL, realWidth, realHeight, 0, GL.DEPTH_STENCIL, SystemImpl.depthTexture.UNSIGNED_INT_24_8_WEBGL, null);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
@@ -338,13 +354,13 @@ class WebGLImage extends Image {
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytesToArray(rgbaBytes));
 				}
 			case RGBA128:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, bytesToArray(bytes));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, width, height, 0, GL.RGBA, GL.FLOAT, bytesToArray(bytes));
 			case RGBA64:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, width, height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
 			case A32:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, GL.FLOAT, bytesToArray(bytes));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R32F : GL.ALPHA, width, height, 0, GL.ALPHA, GL.FLOAT, bytesToArray(bytes));
 			case A16:
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, width, height, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_R16F : GL.ALPHA, width, height, 0, GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, bytesToArray(bytes));
 			case RGBA32:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 			default:
@@ -382,9 +398,14 @@ class WebGLImage extends Image {
 	override public function setMipmaps(mipmaps: Array<Image>): Void {
 		// Similar to generateMipmaps, specify all the levels down to 1x1 size
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
-		if (format != TextureFormat.RGBA32) {
+		if (format == TextureFormat.RGBA128) {
 			for (i in 0...mipmaps.length) {
-				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, GL.RGBA, mipmaps[i].width, mipmaps[i].height, 0, GL.RGBA, format == TextureFormat.RGBA128 ? GL.FLOAT : SystemImpl.halfFloat.HALF_FLOAT_OES, cast(mipmaps[i], WebGLImage).image);
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, mipmaps[i].width, mipmaps[i].height, 0, GL.RGBA, GL.FLOAT, cast(mipmaps[i], WebGLImage).image);
+			}
+		}
+		else if (format == TextureFormat.RGBA64) {
+			for (i in 0...mipmaps.length) {
+				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, mipmaps[i].width, mipmaps[i].height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, cast(mipmaps[i], WebGLImage).image);
 			}
 		}
 		else {

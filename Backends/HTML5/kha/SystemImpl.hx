@@ -284,8 +284,15 @@ class SystemImpl {
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
+			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
+			depthTexture = {UNSIGNED_INT_24_8_WEBGL: 0x84FA}; // GL_UNSIGNED_INT_24_8
 			drawBuffers = {COLOR_ATTACHMENT0_WEBGL: GL.COLOR_ATTACHMENT0};
 			elementIndexUint = true;
+			SystemImpl.gl.getExtension("EXT_color_buffer_float");
+			SystemImpl.gl.getExtension("OES_texture_float_linear");
+			SystemImpl.gl.getExtension("OES_texture_half_float_linear");
+			anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
+			if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 			
 			gl = true;
 			gl2 = true;
