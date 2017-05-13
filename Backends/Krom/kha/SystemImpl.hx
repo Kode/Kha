@@ -116,7 +116,7 @@ class SystemImpl {
 	}
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.samplesPerPixel);
+		Krom.init(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode));
 
 		start = Krom.getTime();
 		
@@ -159,6 +159,18 @@ class SystemImpl {
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 
+	}
+
+	static function translateWindowMode(value: Null<WindowMode>): Int {
+		if (value == null) {
+			return 0;
+		}
+
+		return switch (value) {
+			case Window: 0;
+			case BorderlessWindow: 1;
+			case Fullscreen: 2;
+		}
 	}
 	
 	public static function getScreenRotation(): ScreenRotation {
