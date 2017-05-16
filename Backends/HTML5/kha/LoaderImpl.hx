@@ -133,8 +133,7 @@ class LoaderImpl {
 				var arrayBuffer = request.response;
 				if (arrayBuffer != null) {
 					var byteArray: Dynamic = untyped __js__("new Uint8Array(arrayBuffer)");
-					bytes = Bytes.alloc(byteArray.byteLength);
-					for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
+					bytes = Bytes.ofData(byteArray);
 				}
 				else if (request.responseBody != null) {
 					var data: Dynamic = untyped __js__("VBArray(request.responseBody).toArray()");
