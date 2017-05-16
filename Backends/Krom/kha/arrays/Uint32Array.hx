@@ -32,4 +32,8 @@ abstract Uint32Array(js.html.Uint32Array) {
 	public inline function arrayWrite(index: Int, value: Int): Int {
 		return this[index = value];
 	}
+
+	public inline function subarray(start: Int, ?end: Int): Uint32Array {
+		return cast this.subarray(start, end);
+	}
 }
