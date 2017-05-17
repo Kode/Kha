@@ -4,9 +4,9 @@ import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
-	private var indexCount: Int;
-	public var _data: Uint32Array;
 	private var buffer: Dynamic;
+	public var _data: Uint32Array;
+	private var indexCount: Int;
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;
@@ -34,6 +34,6 @@ class IndexBuffer {
 	}
 	
 	public function count(): Int {
-		return 0;
+		return indexCount;
 	}
 }
