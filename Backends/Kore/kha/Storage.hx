@@ -20,7 +20,7 @@ class KoreStorageFile extends StorageFile {
 	@:functionCode('
 		Kore::FileReader reader;
 		if (!reader.open(name, Kore::FileReader::Save)) return null();
-		::kha::Blob blob = createBlob(reader.size());
+		 ::kha::internal::BytesBlob blob = createBlob(reader.size());
 		for (int i = 0; i < reader.size(); ++i) {
 			blob->bytes->b->Pointer()[i] = reader.readU8();
 		}
