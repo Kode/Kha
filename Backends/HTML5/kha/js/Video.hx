@@ -78,6 +78,15 @@ class Video extends kha.Video {
 	override public function getCurrentPos(): Int {
 		return Math.ceil(element.currentTime * 1000);  // Miliseconds
 	}
+
+	override private function get_position(): Int {
+		return Math.ceil(element.currentTime * 1000);
+	}
+
+	override private function set_position(value: Int): Int {
+		element.currentTime = value / 1000;
+		return value;
+	}
 	
 	override public function getLength(): Int {
 		if (Math.isFinite(element.duration)) {

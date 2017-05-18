@@ -57,8 +57,19 @@ class Video implements Resource {
 	
 	/**
 	 * Return the media position, in milliseconds.
+	 * Deprecated.
 	 */
 	public function getCurrentPos() : Int { // Milliseconds
+		return 0;
+	}
+
+	public var position(get, set): Int;
+
+	private function get_position(): Int {
+		return 0;
+	}
+
+	private function set_position(value: Int): Int {
 		return 0;
 	}
 
