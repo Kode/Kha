@@ -1,16 +1,16 @@
 package kha.graphics4;
 
+import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
-	private var indexCount: Int;
-	private var indices: Array<Int>;
 	private var buffer: Dynamic;
+	public var _data: Uint32Array;
+	private var indexCount: Int;
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;
-		indices = [];
-		indices[indexCount - 1] = 0;
+		_data = new Uint32Array(indexCount);
 		buffer = Krom.createIndexBuffer(indexCount);
 	}
 
@@ -19,12 +19,14 @@ class IndexBuffer {
 		buffer = null;
 	}
 	
-	public function lock(): Array<Int> {
-		return indices;
+	public function lock(?start: Int, ?count: Int): Uint32Array {
+		if (start == null) start = 0;
+		if (count == null) count = indexCount;
+		return _data.subarray(start, start + count);
 	}
 	
 	public function unlock(): Void {
-		Krom.setIndices(buffer, indices);
+		Krom.setIndices(buffer, _data);
 	}
 	
 	public function set(): Void {
@@ -32,6 +34,6 @@ class IndexBuffer {
 	}
 	
 	public function count(): Int {
-		return 0;
+		return indexCount;
 	}
 }

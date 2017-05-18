@@ -7,7 +7,7 @@ import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	public var buffer: Dynamic;
-	private var vertices: Float32Array;
+	public var _data: Float32Array;
 	private var vertexCount: Int;
 	private var structure: VertexStructure;
 	
@@ -15,7 +15,7 @@ class VertexBuffer {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
 		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, instanceDataStepRate);
-		vertices = new Float32Array(vertexCount * Std.int(structure.byteSize() / 4));
+		_data = new Float32Array(vertexCount * Std.int(structure.byteSize() / 4));
 	}
 
 	public function delete() {
@@ -24,11 +24,11 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		return vertices;
+		return _data;
 	}
 	
 	public function unlock(): Void {
-		Krom.setVertices(buffer, vertices);
+		Krom.setVertices(buffer, _data);
 	}
 	
 	public function stride(): Int {
