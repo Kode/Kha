@@ -475,12 +475,17 @@ class Graphics implements kha.graphics4.Graphics {
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
-		setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);        
+		setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);
+		setConservativeRasterization(pipe.conservativeRasterization);
 		pipe.set();
 	}
 	
 	@:functionCode('Kore::Graphics4::setColorMask(red, green, blue, alpha);')
-	function setColorMask(red : Bool, green : Bool, blue : Bool, alpha : Bool) {
+	function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool) {
+	}
+
+	@:functionCode('Kore::Graphics4::setConservativeRasterization(on);')
+	function setConservativeRasterization(on: Bool) {
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
