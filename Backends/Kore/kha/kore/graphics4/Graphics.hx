@@ -484,7 +484,7 @@ class Graphics implements kha.graphics4.Graphics {
 	function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool) {
 	}
 
-	@:functionCode('Kore::Graphics4::setConservativeRasterization(on);')
+	@:functionCode('Kore::Graphics4::setRenderState(Kore::Graphics4::ConservativeRasterization, on);')
 	function setConservativeRasterization(on: Bool) {
 	}
 
