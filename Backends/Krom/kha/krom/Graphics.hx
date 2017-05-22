@@ -172,11 +172,16 @@ class Graphics implements kha.graphics4.Graphics {
 		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, pipeline.stencilReferenceValue, pipeline.stencilReadMask, pipeline.stencilWriteMask);
 		setBlendingMode(pipeline.blendSource, pipeline.blendDestination, pipeline.alphaBlendSource, pipeline.alphaBlendDestination);
 		setColorMask(pipeline.colorWriteMaskRed, pipeline.colorWriteMaskGreen, pipeline.colorWriteMaskBlue, pipeline.colorWriteMaskAlpha);
+		setConservativeRasterization(pipeline.conservativeRasterization);
 		pipeline.set();
 	}
 
 	function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool) {
 		Krom.setColorMask(red, green, blue, alpha);
+	}
+
+	function setConservativeRasterization(on: Bool) {
+		Krom.setConservativeRasterization(on);
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {

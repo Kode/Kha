@@ -30,6 +30,8 @@ class PipelineStateBase {
 		alphaBlendOperation = BlendingOperation.Add;
 		
 		colorWriteMask = true;
+
+		conservativeRasterization = false;
 	}
 
 	public var inputLayout: Array<VertexStructure>;
@@ -60,13 +62,15 @@ class PipelineStateBase {
 	public var alphaBlendDestination: BlendingFactor;
 	public var alphaBlendOperation: BlendingOperation;
 	
-	public var colorWriteMask(never, set) : Bool;
-	public var colorWriteMaskRed : Bool;
-	public var colorWriteMaskGreen : Bool;
-	public var colorWriteMaskBlue : Bool;
-	public var colorWriteMaskAlpha : Bool;
+	public var colorWriteMask(never, set): Bool;
+	public var colorWriteMaskRed: Bool;
+	public var colorWriteMaskGreen: Bool;
+	public var colorWriteMaskBlue: Bool;
+	public var colorWriteMaskAlpha: Bool;
 
-	inline function set_colorWriteMask( value : Bool ) : Bool {
+	inline function set_colorWriteMask(value: Bool ): Bool {
 		return colorWriteMaskRed = colorWriteMaskBlue = colorWriteMaskGreen = colorWriteMaskAlpha = value;
 	}
+
+	public var conservativeRasterization: Bool;
 }

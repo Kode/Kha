@@ -43,6 +43,7 @@ extern class Krom {
 	static function setStencilParameters(compareMode: Int, bothPass: Int, depthFail: Int, stencilFail: Int, referenceValue: Int, readMask: Int, writeMask: Int): Void;
 	static function setBlendingMode(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void;
 	static function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
+	static function setConservativeRasterization(on: Bool): Void;
 	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createRenderTargetCubeMap(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
@@ -56,7 +57,7 @@ extern class Krom {
 	static function clearTexture(target: Dynamic, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Int): Void;
 	static function createIndexBuffer(count: Int): Dynamic;
 	static function deleteIndexBuffer(buffer: Dynamic): Dynamic;
-	static function setIndices(buffer: Dynamic, indices: Array<Int>): Void;
+	static function setIndices(buffer: Dynamic, indices: kha.arrays.Uint32Array): Void;
 	static function setIndexBuffer(buffer: Dynamic): Void;
 	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, instanceDataStepRate: Int): Dynamic;
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
