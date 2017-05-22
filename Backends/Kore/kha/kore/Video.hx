@@ -49,10 +49,19 @@ class Video extends kha.Video {
 		return 0;
 	}
 	
-	@functionCode('
-	return scast<int>(video->position * 1000.0);
+	@:functionCode('
+	return static_cast<int>(video->position * 1000.0);
 	')
 	override public function getCurrentPos(): Int { // Miliseconds
+		return 0;
+	}
+	
+	override function get_position(): Int {
+		return getCurrentPos();
+	}
+	
+	@:functionCode('video->update(value / 1000.0); return value;')
+	override function set_position(value: Int): Int {
 		return 0;
 	}
 	
