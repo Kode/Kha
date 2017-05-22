@@ -329,8 +329,8 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 	}
 	else {
-		width = Kore::min(width, Kore::System::desktopWidth()) / 1.5;
-		height = Kore::min(height, Kore::System::desktopHeight()) / 1.5;
+		width = Kore::min(width, Kore::System::desktopWidth());
+		height = Kore::min(height, Kore::System::desktopHeight());
 
 		Kore::WindowOptions options;
 		options.title = name;
