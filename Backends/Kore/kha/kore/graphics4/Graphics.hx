@@ -38,51 +38,6 @@ import kha.Video;
 #include <Kore/Graphics4/Graphics.h>
 ')
 
-@:cppFileCode('
-Kore::Graphics4::ZCompareMode convertCompareMode(int mode) {
-	switch (mode) {
-	case 0:
-		return Kore::Graphics4::ZCompareAlways;
-	case 1:
-		return Kore::Graphics4::ZCompareNever;
-	case 2:
-		return Kore::Graphics4::ZCompareEqual;
-	case 3:
-		return Kore::Graphics4::ZCompareNotEqual;
-	case 4:
-		return Kore::Graphics4::ZCompareLess;
-	case 5:
-		return Kore::Graphics4::ZCompareLessEqual;
-	case 6:
-		return Kore::Graphics4::ZCompareGreater;
-	case 7:
-	default:
-		return Kore::Graphics4::ZCompareGreaterEqual;
-	}
-}
-
-Kore::Graphics4::StencilAction convertStencilAction(int action) {
-	switch (action) {
-	case 0:
-		return Kore::Graphics4::Keep;
-	case 1:
-		return Kore::Graphics4::Zero;
-	case 2:
-		return Kore::Graphics4::Replace;
-	case 3:
-		return Kore::Graphics4::Increment;
-	case 4:
-		return Kore::Graphics4::IncrementWrap;
-	case 5:
-		return Kore::Graphics4::Decrement;
-	case 6:
-		return Kore::Graphics4::DecrementWrap;
-	case 7:
-	default:
-		return Kore::Graphics4::Invert;	
-	}
-}
-')
 @:headerClassCode("Kore::Graphics4::RenderTarget* renderTarget;")
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
@@ -131,96 +86,6 @@ class Graphics implements kha.graphics4.Graphics {
 	')
 	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
 	
-	}
-	
-	@:functionCode('
-		switch (mode) {
-		case 0:
-			write ? Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true) : Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, false);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareAlways);
-			break;
-		case 1:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareNever);
-			break;
-		case 2:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareEqual);
-			break;
-		case 3:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareNotEqual);
-			break;
-		case 4:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareLess);
-			break;
-		case 5:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareLessEqual);
-			break;
-		case 6:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareGreater);
-			break;
-		case 7:
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, true);
-			Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTestCompare, Kore::Graphics4::ZCompareGreaterEqual);
-			break;
-		}
-		Kore::Graphics4::setRenderState(Kore::Graphics4::DepthWrite, write);
-	')
-	private function setDepthMode2(write: Bool, mode: Int): Void {
-		
-	}
-	
-	public function setDepthMode(write: Bool, mode: CompareMode): Void {
-		setDepthMode2(write, mode.getIndex());
-	}
-	
-	
-	private function getBlendFunc(factor: BlendingFactor): Int {
-		switch (factor) {
-		case BlendOne, Undefined:
-			return 0;
-		case BlendZero:
-			return 1;
-		case SourceAlpha:
-			return 2;
-		case DestinationAlpha:
-			return 3;
-		case InverseSourceAlpha:
-			return 4;
-		case InverseDestinationAlpha:
-			return 5;
-		case SourceColor:
-			return 6;
-		case DestinationColor:
-			return 7;
-		case InverseSourceColor:
-			return 8;
-		case InverseDestinationColor:
-			return 9;
-		default:
-			return 0;
-		}
-	}
-	
-	@:functionCode('
-		if (source == 0 && destination == 1) {
-			Kore::Graphics4::setRenderState(Kore::Graphics4::BlendingState, false);
-		}
-		else {
-			Kore::Graphics4::setRenderState(Kore::Graphics4::BlendingState, true);
-			Kore::Graphics4::setBlendingModeSeparate((Kore::Graphics4::BlendingOperation)source, (Kore::Graphics4::BlendingOperation)destination, (Kore::Graphics4::BlendingOperation)alphaSource, (Kore::Graphics4::BlendingOperation)alphaDestination);
-		}
-	')
-	private function setBlendingModeNative(source: Int, destination: Int, alphaSource: Int, alphaDestination: Int): Void {
-		
-	}
-	
-	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation, alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
-		setBlendingModeNative(getBlendFunc(source), getBlendFunc(destination), getBlendFunc(alphaSource), getBlendFunc(alphaDestination));
 	}
 	
 	@:functionCode('
@@ -299,27 +164,12 @@ class Graphics implements kha.graphics4.Graphics {
 		untyped __cpp__("cubeMap->renderTarget->useDepthAsTexture(koreUnit->unit);");
 	}
 	
-	@:functionCode('
-		Kore::Graphics4::setStencilParameters(convertCompareMode(compareMode), convertStencilAction(bothPass), convertStencilAction(depthFail), convertStencilAction(stencilFail), referenceValue, readMask, writeMask);
-	')
-	private function setStencilParameters2(compareMode: Int, bothPass: Int, depthFail: Int, stencilFail: Int, referenceValue: Int, readMask: Int, writeMask: Int): Void {
-		
-	}
-	
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		setStencilParameters2(compareMode.getIndex(), bothPass.getIndex(), depthFail.getIndex(), stencilFail.getIndex(), referenceValue, readMask, writeMask);
-	}
-	
-	@:functionCode('
-		Kore::Graphics4::scissor(x,y,width,height);
-	')
+	@:functionCode('Kore::Graphics4::scissor(x, y, width, height);')
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
 	
-	@:functionCode('
-		Kore::Graphics4::disableScissor();
-	')
+	@:functionCode('Kore::Graphics4::disableScissor();')
 	public function disableScissor(): Void {
 		
 	}
@@ -412,17 +262,6 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		Kore::Graphics4::setRenderState(Kore::Graphics4::BackfaceCulling, value);
-	')
-	private function setCullModeNative(value: Int): Void {
-		
-	}
-	
-	public function setCullMode(mode: CullMode): Void {
-		setCullModeNative(mode.getIndex());
-	}
-	
-	@:functionCode('
 		if (texture->texture != nullptr) Kore::Graphics4::setTexture(unit->unit, texture->texture);
 		else texture->renderTarget->useColorAsTexture(unit->unit);
 	')
@@ -471,23 +310,9 @@ class Graphics implements kha.graphics4.Graphics {
 	//}
 	
 	public function setPipeline(pipe: PipelineState): Void {
-		setCullMode(pipe.cullMode);
-		setDepthMode(pipe.depthWrite, pipe.depthMode);
-		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
-		setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);
-		setConservativeRasterization(pipe.conservativeRasterization);
 		pipe.set();
 	}
 	
-	@:functionCode('Kore::Graphics4::setColorMask(red, green, blue, alpha);')
-	function setColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool) {
-	}
-
-	@:functionCode('Kore::Graphics4::setRenderState(Kore::Graphics4::ConservativeRasterization, on);')
-	function setConservativeRasterization(on: Bool) {
-	}
-
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		setBoolPrivate(cast location, value);
 	}

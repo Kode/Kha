@@ -409,10 +409,6 @@ void post_kore_init() {
 	// (DK) make main window context current, all assets bind to it and are shared
 	Kore::System::makeCurrent(0);
 
-#ifndef VR_RIFT
-	Kore::Graphics4::setRenderState(Kore::Graphics4::DepthTest, false);
-#endif
-
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
 
