@@ -63,7 +63,7 @@ extern class Krom {
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
 	static function setVertices(buffer: Dynamic, vertices: kha.arrays.Float32Array): Void;
 	static function setVertexBuffer(buffer: Dynamic): Void;
-	static function setVertexBuffers(vb0: Dynamic, vb1: Dynamic, vb2: Dynamic, vb3: Dynamic, count: Int): Void;
+	static function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	static function drawIndexedVertices(start: Int, count: Int): Void;
 	static function drawIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void;
 	
