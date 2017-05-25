@@ -118,12 +118,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		Krom.setVertexBuffers(
-			vertexBuffers.length > 0 ? vertexBuffers[0].buffer : null,
-			vertexBuffers.length > 1 ? vertexBuffers[1].buffer : null,
-			vertexBuffers.length > 2 ? vertexBuffers[2].buffer : null,
-			vertexBuffers.length > 3 ? vertexBuffers[3].buffer : null,
-			vertexBuffers.length);
+		Krom.setVertexBuffers(vertexBuffers);
 	}
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
