@@ -431,6 +431,7 @@ class SystemImpl {
 		if(keyboard != null) {
 			canvas.onkeydown = keyDown;
 			canvas.onkeyup = keyUp;
+			canvas.onkeypress = keyPress;
 		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
@@ -903,6 +904,11 @@ class SystemImpl {
 				keyboard.sendUpEvent(Key.CHAR, char);
 			}
 		}
+	}
+
+	private static function keyPress(event: KeyboardEvent): Void {
+		event.stopPropagation();
+		keyboard.sendPressEvent(String.fromCharCode(event.which));
 	}
 
 	public static function canSwitchFullscreen(): Bool {
