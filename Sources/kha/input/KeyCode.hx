@@ -178,12 +178,12 @@ class KeyCode {
 	public static inline var WinOemAuto: Int = 243;
 	public static inline var WinOemENLW: Int = 244;
 	public static inline var WinOemBackTab: Int = 245;
-	public static inline var ATTN : Int = 246;
-	public static inline var CRSEL : Int = 247;
-	public static inline var EXSEL : Int = 248;
-	public static inline var EREOF : Int = 249;
-	public static inline var Play : Int = 250;
-	public static inline var Zoom : Int = 251;
-	public static inline var PA1 : Int = 253;
+	public static inline var ATTN: Int = 246;
+	public static inline var CRSEL: Int = 247;
+	public static inline var EXSEL: Int = 248;
+	public static inline var EREOF: Int = 249;
+	public static inline var Play: Int = 250;
+	public static inline var Zoom: Int = 251;
+	public static inline var PA1: Int = 253;
 	public static inline var WinOemClear: Int = 254;
 }

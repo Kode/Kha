@@ -817,52 +817,7 @@ class SystemImpl {
 		}
 
 		pressedKeys[event.keyCode] = true;
-		switch (event.keyCode) {
-		case 8:
-			keyboard.sendDownEvent(Key.BACKSPACE, "");
-			event.preventDefault();
-		case 9:
-			keyboard.sendDownEvent(Key.TAB, "");
-			event.preventDefault();
-		case 13:
-			keyboard.sendDownEvent(Key.ENTER, "");
-			event.preventDefault();
-		case 16:
-			keyboard.sendDownEvent(Key.SHIFT, "");
-			event.preventDefault();
-		case 17:
-			keyboard.sendDownEvent(Key.CTRL, "");
-			event.preventDefault();
-		case 18:
-			keyboard.sendDownEvent(Key.ALT, "");
-			event.preventDefault();
-		case 27:
-			keyboard.sendDownEvent(Key.ESC, "");
-			event.preventDefault();
-		case 32:
-			keyboard.sendDownEvent(Key.CHAR, " ");
-			event.preventDefault(); // don't scroll down in IE
-		case 46:
-			keyboard.sendDownEvent(Key.DEL, "");
-			event.preventDefault();
-		case 38:
-			keyboard.sendDownEvent(Key.UP, "");
-			event.preventDefault();
-		case 40:
-			keyboard.sendDownEvent(Key.DOWN, "");
-			event.preventDefault();
-		case 37:
-			keyboard.sendDownEvent(Key.LEFT, "");
-			event.preventDefault();
-		case 39:
-			keyboard.sendDownEvent(Key.RIGHT, "");
-			event.preventDefault();
-		default:
-			if (!event.altKey) {
-				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
-				keyboard.sendDownEvent(Key.CHAR, char);
-			}
-		}
+		keyboard.sendDownEvent(event.keyCode);
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
@@ -871,39 +826,7 @@ class SystemImpl {
 
 		pressedKeys[event.keyCode] = false;
 
-		switch (event.keyCode) {
-		case 8:
-			keyboard.sendUpEvent(Key.BACKSPACE, "");
-		case 9:
-			keyboard.sendUpEvent(Key.TAB, "");
-		case 13:
-			keyboard.sendUpEvent(Key.ENTER, "");
-		case 16:
-			keyboard.sendUpEvent(Key.SHIFT, "");
-		case 17:
-			keyboard.sendUpEvent(Key.CTRL, "");
-		case 18:
-			keyboard.sendUpEvent(Key.ALT, "");
-		case 27:
-			keyboard.sendUpEvent(Key.ESC, "");
-		case 32:
-			keyboard.sendUpEvent(Key.CHAR, " ");
-		case 46:
-			keyboard.sendUpEvent(Key.DEL, "");
-		case 38:
-			keyboard.sendUpEvent(Key.UP, "");
-		case 40:
-			keyboard.sendUpEvent(Key.DOWN, "");
-		case 37:
-			keyboard.sendUpEvent(Key.LEFT, "");
-		case 39:
-			keyboard.sendUpEvent(Key.RIGHT, "");
-		default:
-			if (!event.altKey) {
-				var char = keycodeToChar(event.key, event.keyCode, event.shiftKey);
-				keyboard.sendUpEvent(Key.CHAR, char);
-			}
-		}
+		keyboard.sendUpEvent(event.keyCode);
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
