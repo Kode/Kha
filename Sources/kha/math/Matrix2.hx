@@ -26,6 +26,11 @@ class Matrix2 {
 		return y * width + x;
 	}*/
 
+	@:extern public inline function setFrom(m: Matrix2): Void {
+		this._00 = m._00; this._10 = m._10;
+		this._01 = m._01; this._11 = m._11;
+	}
+
 	@:extern public static inline function empty(): Matrix2 {
 		return new Matrix2(
 			0, 0,

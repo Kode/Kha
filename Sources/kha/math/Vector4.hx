@@ -13,6 +13,13 @@ class Vector4 {
 	public var z: Float;
 	public var w: Float;
 	public var length(get, set): Float;
+
+	@:extern public inline function setFrom(v: Vector4): Void {
+		this.x = v.x;
+		this.y = v.y;
+		this.z = v.z;
+		this.w = v.w;
+	}
 	
 	private function get_length(): Float {
 		return Math.sqrt(x * x + y * y + z * z + w * w);

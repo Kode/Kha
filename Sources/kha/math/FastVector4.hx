@@ -17,6 +17,13 @@ class FastVector4 {
 	public var z: FastFloat;
 	public var w: FastFloat;
 	public var length(get, set): FastFloat;
+
+	@:extern public inline function setFrom(v: FastVector4): Void {
+		this.x = v.x;
+		this.y = v.y;
+		this.z = v.z;
+		this.w = v.w;
+	}
 	
 	private function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y + z * z + w * w);
