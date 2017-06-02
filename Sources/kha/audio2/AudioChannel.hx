@@ -23,12 +23,31 @@ class AudioChannel implements kha.audio1.AudioChannel {
 			return;
 		}
 		
-		for (i in 0...length) {
-			if (myPosition >= data.length && looping) {
-				myPosition = 0;
+		var w_ptr = 0;
+		var chk_ptr = 0;
+		while (w_ptr < length) {
+			/* compute one chunk to render */
+			var addressable_data = data.length - myPosition;
+			var next_chunk = addressable_data < length ? addressable_data : length;
+			while (chk_ptr < next_chunk) {
+				samples[w_ptr] = data[myPosition];
+				++myPosition;
+				++chk_ptr;
+				++w_ptr;
 			}
-			samples[i] = myPosition < data.length ? data[myPosition] : 0;
-			++myPosition;
+			/* loop to next chunk if applicable */
+			if (!looping) break;
+			else { 
+				chk_ptr = 0;
+				if (myPosition >= data.length) {
+					myPosition = 0;
+				}
+			}
+		}
+		/* fill empty */
+		while (w_ptr < length) {
+			samples[w_ptr] = 0;
+			++w_ptr;
 		}
 	}
 	
