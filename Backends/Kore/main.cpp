@@ -35,108 +35,16 @@ namespace {
 	Kore::Mutex mutex;
 	bool shift = false;
 	
-	void keyDown(Kore::KeyCode code, wchar_t character) {
-		switch (code) {
-		case Kore::Key_Up:
-			SystemImpl_obj::pushUp();
-			break;
-		case Kore::Key_Down:
-			SystemImpl_obj::pushDown();
-			break;
-		case Kore::Key_Left:
-			SystemImpl_obj::pushLeft();
-			break;
-		case Kore::Key_Right:
-			SystemImpl_obj::pushRight();
-			break;
-		case Kore::Key_Space:
-			SystemImpl_obj::pushChar(' ');
-			break;
-		case Kore::Key_Shift:
-			SystemImpl_obj::pushShift();
-			shift = true;
-			break;
-		case Kore::Key_Backspace:
-			SystemImpl_obj::pushBackspace();
-			break;
-		case Kore::Key_Tab:
-			SystemImpl_obj::pushTab();
-			break;
-		case Kore::Key_Enter:
-		case Kore::Key_Return:
-			SystemImpl_obj::pushEnter();
-			break;
-		case Kore::Key_Control:
-			SystemImpl_obj::pushControl();
-			break;
-		case Kore::Key_Alt:
-			SystemImpl_obj::pushAlt();
-			break;
-		case Kore::Key_Escape:
-			SystemImpl_obj::pushEscape();
-			break;
-		case Kore::Key_Delete:
-			SystemImpl_obj::pushDelete();
-			break;
-		case Kore::Key_Back:
-			SystemImpl_obj::pushBack();
-			break;
-		default:
-			SystemImpl_obj::pushChar(character);
-			break;
-		}
+	void keyDown(Kore::KeyCode code) {
+		SystemImpl_obj::keyDown((int)code);
 	}
 
-	void keyUp(Kore::KeyCode code, wchar_t character) {
-		switch (code) {
-		case Kore::Key_Up:
-			SystemImpl_obj::releaseUp();
-			break;
-		case Kore::Key_Down:
-			SystemImpl_obj::releaseDown();
-			break;
-		case Kore::Key_Left:
-			SystemImpl_obj::releaseLeft();
-			break;
-		case Kore::Key_Right:
-			SystemImpl_obj::releaseRight();
-			break;
-		case Kore::Key_Space:
-			SystemImpl_obj::releaseChar(' ');
-			break;
-		case Kore::Key_Shift:
-			SystemImpl_obj::releaseShift();
-			shift = false;
-			break;
-		case Kore::Key_Backspace:
-			SystemImpl_obj::releaseBackspace();
-			break;
-		case Kore::Key_Tab:
-			SystemImpl_obj::releaseTab();
-			break;
-		case Kore::Key_Enter:
-		case Kore::Key_Return:
-			SystemImpl_obj::releaseEnter();
-			break;
-		case Kore::Key_Control:
-			SystemImpl_obj::releaseControl();
-			break;
-		case Kore::Key_Alt:
-			SystemImpl_obj::releaseAlt();
-			break;
-		case Kore::Key_Escape:
-			SystemImpl_obj::releaseEscape();
-			break;
-		case Kore::Key_Delete:
-			SystemImpl_obj::releaseDelete();
-			break;
-		case Kore::Key_Back:
-			SystemImpl_obj::releaseBack();
-			break;
-		default:
-			SystemImpl_obj::releaseChar(character);
-			break;
-		}
+	void keyUp(Kore::KeyCode code) {
+		SystemImpl_obj::keyUp((int)code);
+	}
+
+	void keyPress(wchar_t character) {
+		SystemImpl_obj::keyPress(character);
 	}
 
 	void mouseDown(int windowId, int button, int x, int y) {
@@ -367,6 +275,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
+	Kore::Keyboard::the()->KeyPress = keyPress;
 	Kore::Mouse::the()->Press = mouseDown;
 	Kore::Mouse::the()->Release = mouseUp;
 	Kore::Mouse::the()->Move = mouseMove;

@@ -1,6 +1,8 @@
 package kha.input;
 
 class KeyCode {
+	public static inline var Unknown: Int = 0;
+	public static inline var Back: Int = 1; // Android
 	public static inline var Cancel: Int = 3;
 	public static inline var Help: Int = 6;
 	public static inline var Backspace: Int = 8;

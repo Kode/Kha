@@ -269,116 +269,16 @@ class SystemImpl {
 		System.render(id, framebuffers[id]);
 	}
 
-	public static function pushUp(): Void {
-		keyboard.sendDownEvent(Key.UP, null);
+	public static function keyDown(code: Int): Void {
+		keyboard.sendDownEvent(code);
 	}
 
-	public static function pushDown(): Void {
-		keyboard.sendDownEvent(Key.DOWN, null);
+	public static function keyUp(code: Int): Void {
+		keyboard.sendUpEvent(code);
 	}
 
-	public static function pushLeft(): Void {
-		keyboard.sendDownEvent(Key.LEFT, null);
-	}
-
-	public static function pushRight(): Void {
-		keyboard.sendDownEvent(Key.RIGHT, null);
-	}
-
-	public static function releaseUp(): Void {
-		keyboard.sendUpEvent(Key.UP, null);
-	}
-
-	public static function releaseDown(): Void {
-		keyboard.sendUpEvent(Key.DOWN, null);
-	}
-
-	public static function releaseLeft(): Void {
-		keyboard.sendUpEvent(Key.LEFT, null);
-	}
-
-	public static function releaseRight(): Void {
-		keyboard.sendUpEvent(Key.RIGHT, null);
-	}
-
-	public static function pushChar(charCode: Int): Void {
-		keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(charCode));
-	}
-
-	public static function releaseChar(charCode: Int): Void {
-		keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(charCode));
-	}
-
-	public static function pushShift(): Void {
-		keyboard.sendDownEvent(Key.SHIFT, null);
-	}
-
-	public static function releaseShift(): Void {
-		keyboard.sendUpEvent(Key.SHIFT, null);
-	}
-
-	public static function pushBackspace(): Void {
-		keyboard.sendDownEvent(Key.BACKSPACE, null);
-	}
-
-	public static function releaseBackspace(): Void {
-		keyboard.sendUpEvent(Key.BACKSPACE, null);
-	}
-
-	public static function pushTab(): Void {
-		keyboard.sendDownEvent(Key.TAB, null);
-	}
-
-	public static function releaseTab(): Void {
-		keyboard.sendUpEvent(Key.TAB, null);
-	}
-
-	public static function pushEnter(): Void {
-		keyboard.sendDownEvent(Key.ENTER, null);
-	}
-
-	public static function releaseEnter(): Void {
-		keyboard.sendUpEvent(Key.ENTER, null);
-	}
-
-	public static function pushControl(): Void {
-		keyboard.sendDownEvent(Key.CTRL, null);
-	}
-
-	public static function releaseControl(): Void {
-		keyboard.sendUpEvent(Key.CTRL, null);
-	}
-
-	public static function pushAlt(): Void {
-		keyboard.sendDownEvent(Key.ALT, null);
-	}
-
-	public static function releaseAlt(): Void {
-		keyboard.sendUpEvent(Key.ALT, null);
-	}
-
-	public static function pushEscape(): Void {
-		keyboard.sendDownEvent(Key.ESC, null);
-	}
-
-	public static function releaseEscape(): Void {
-		keyboard.sendUpEvent(Key.ESC, null);
-	}
-
-	public static function pushDelete(): Void {
-		keyboard.sendDownEvent(Key.DEL, null);
-	}
-
-	public static function releaseDelete(): Void {
-		keyboard.sendUpEvent(Key.DEL, null);
-	}
-
-	public static function pushBack(): Void {
-		keyboard.sendDownEvent(Key.BACK, null);
-	}
-
-	public static function releaseBack(): Void {
-		keyboard.sendUpEvent(Key.BACK, null);
+	public static function keyPress(char: Int): Void {
+		keyboard.sendPressEvent(String.fromCharCode(char));
 	}
 
 	public static var mouseX: Int;
