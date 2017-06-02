@@ -29,7 +29,7 @@ class Audio1 {
 		internalStreamChannels = new Vector<StreamChannel>(channelCount);
 		sampleCache1 = new Vector<FastFloat>(512);
 		sampleCache2 = new Vector<FastFloat>(512);
-		Audio.audioCallback = _mix;
+		Audio.audioCallback = mix;
 	}
 	
 	private static inline function max(a: Float, b: Float): Float {
@@ -40,7 +40,7 @@ class Audio1 {
 		return a < b ? a : b;
 	}
 	
-	private static function _mix(samples: Int, buffer: Buffer): Void {
+	public static function mix(samples: Int, buffer: Buffer): Void {
 		if (sampleCache1.length < samples) {
 			sampleCache1 = new Vector<FastFloat>(samples);
 			sampleCache2 = new Vector<FastFloat>(samples);
