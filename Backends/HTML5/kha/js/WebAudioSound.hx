@@ -91,24 +91,60 @@ class WebAudioSound extends kha.Sound {
 	override public function uncompress(done: Void->Void): Void {
 		Audio._context.decodeAudioData(compressedData.getData(),
 		function (buffer) {
-			uncompressedData = new Vector<Float>(buffer.getChannelData(0).length * 2);
+			var ch0 = buffer.getChannelData(0);
+			var len = ch0.length;
+			uncompressedData = new Vector<Float>(len * 2);
 			if (buffer.numberOfChannels == 1) {
-				for (i in 0...buffer.getChannelData(0).length) {
-					uncompressedData[i * 2 + 0] = buffer.getChannelData(0)[i];
-					uncompressedData[i * 2 + 1] = buffer.getChannelData(0)[i];
-				}
+				var idx = 0;
+				var i = 0;
+				var lidx = len * 2;
+				var uncompressInner = function() {};
+				uncompressInner = function() {
+					var chk_len = idx + 11025;
+					var next_chk = chk_len > lidx ? lidx : chk_len;
+					while(idx < next_chk) {
+						uncompressedData[idx] = ch0[i];
+						uncompressedData[idx+1] = ch0[i];
+						idx += 2;
+						++i;
+					}
+					if (idx < lidx)
+						js.Browser.window.setTimeout(uncompressInner,0);
+					else {
+						compressedData = null;
+					}
+				};
+				uncompressInner();
+				js.Browser.window.setTimeout(done,250);
 			}
 			else {
-				for (i in 0...buffer.getChannelData(0).length) {
-					uncompressedData[i * 2 + 0] = buffer.getChannelData(0)[i];
-					uncompressedData[i * 2 + 1] = buffer.getChannelData(1)[i];
-				}
+				var ch1 = buffer.getChannelData(1);
+				var idx = 0;
+				var i = 0;
+				var lidx = len * 2;
+				var uncompressInner = function() {};
+				uncompressInner = function() {
+					var chk_len = idx + 11025;
+					var next_chk = chk_len > lidx ? lidx : chk_len;
+					while(idx < next_chk) {
+						uncompressedData[idx] = ch0[i];
+						uncompressedData[idx+1] = ch1[i];
+						idx += 2;
+						++i;
+					}
+					if (idx < lidx)
+						js.Browser.window.setTimeout(uncompressInner,0);
+					else {
+						compressedData = null;
+					}
+				};
+				uncompressInner();
+				js.Browser.window.setTimeout(done,250);
 			}
-			compressedData = null;
-			done();
 		},
 		function () {
 			superUncompress(done);
 		});
 	}
+	
 }
