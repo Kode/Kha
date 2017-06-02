@@ -6,9 +6,9 @@ import flash.net.URLRequest;
 import flash.system.Capabilities;
 import kha.flash.utils.AGALMiniAssembler;
 import kha.input.Keyboard;
+import kha.input.KeyCode;
 import kha.input.Mouse;
 import kha.input.MouseImpl;
-import kha.Key;
 import flash.display.Stage;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
@@ -134,36 +134,35 @@ class SystemImpl {
 		pressedKeys[event.keyCode] = true;
 		switch (event.keyCode) {
 		case 8:
-			keyboard.sendDownEvent(Key.BACKSPACE, "");
+			keyboard.sendDownEvent(KeyCode.Backspace);
 		case 9:
-			keyboard.sendDownEvent(Key.TAB, "");
+			keyboard.sendDownEvent(KeyCode.Tab);
 		case 13:
-			keyboard.sendDownEvent(Key.ENTER, "");
+			keyboard.sendDownEvent(KeyCode.Return);
 		case 16:
-			keyboard.sendDownEvent(Key.SHIFT, "");
+			keyboard.sendDownEvent(KeyCode.Shift);
 		case 17:
-			keyboard.sendDownEvent(Key.CTRL, "");
+			keyboard.sendDownEvent(KeyCode.Control);
 		case 18:
-			keyboard.sendDownEvent(Key.ALT, "");
+			keyboard.sendDownEvent(KeyCode.Alt);
 		case 27:
-			keyboard.sendDownEvent(Key.ESC, "");
+			keyboard.sendDownEvent(KeyCode.Escape);
 		case 46:
-			keyboard.sendDownEvent(Key.DEL, "");
+			keyboard.sendDownEvent(KeyCode.Delete);
 		case 38:
-			keyboard.sendDownEvent(Key.UP, "");
+			keyboard.sendDownEvent(KeyCode.Up);
 		case 40:
-			keyboard.sendDownEvent(Key.DOWN, "");
+			keyboard.sendDownEvent(KeyCode.Down);
 		case 37:
-			keyboard.sendDownEvent(Key.LEFT, "");
+			keyboard.sendDownEvent(KeyCode.Left);
 		case 39:
-			keyboard.sendDownEvent(Key.RIGHT, "");
-		case 65:
-			keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
-		case 83:
-			keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendDownEvent(KeyCode.Right);
 		default:
-			if (event.charCode != 0) {
-				keyboard.sendDownEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			if (event.keyCode >= 65 && event.keyCode <= 90) {
+				keyboard.sendDownEvent(event.keyCode - KeyCode.A);
+			}
+			else if (event.keyCode >= 48 && event.keyCode <= 57) {
+				keyboard.sendDownEvent(event.keyCode - KeyCode.Zero);
 			}
 		}
 	}
@@ -172,37 +171,39 @@ class SystemImpl {
 		pressedKeys[event.keyCode] = false;
 		switch (event.keyCode) {
 		case 8:
-			keyboard.sendUpEvent(Key.BACKSPACE, "");
+			keyboard.sendUpEvent(KeyCode.Backspace);
 		case 9:
-			keyboard.sendUpEvent(Key.TAB, "");
+			keyboard.sendUpEvent(KeyCode.Tab);
 		case 13:
-			keyboard.sendUpEvent(Key.ENTER, "");
+			keyboard.sendUpEvent(KeyCode.Return);
 		case 16:
-			keyboard.sendUpEvent(Key.SHIFT, "");
+			keyboard.sendUpEvent(KeyCode.Shift);
 		case 17:
-			keyboard.sendUpEvent(Key.CTRL, "");
+			keyboard.sendUpEvent(KeyCode.Control);
 		case 18:
-			keyboard.sendUpEvent(Key.ALT, "");
+			keyboard.sendUpEvent(KeyCode.Alt);
 		case 27:
-			keyboard.sendUpEvent(Key.ESC, "");
+			keyboard.sendUpEvent(KeyCode.Escape);
 		case 46:
-			keyboard.sendUpEvent(Key.DEL, "");
+			keyboard.sendUpEvent(KeyCode.Delete);
 		case 38:
-			keyboard.sendUpEvent(Key.UP, "");
+			keyboard.sendUpEvent(KeyCode.Up);
 		case 40:
-			keyboard.sendUpEvent(Key.DOWN, "");
+			keyboard.sendUpEvent(KeyCode.Down);
 		case 37:
-			keyboard.sendUpEvent(Key.LEFT, "");
+			keyboard.sendUpEvent(KeyCode.Left);
 		case 39:
-			keyboard.sendUpEvent(Key.RIGHT, "");
-		case 65:
-			keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
-		case 83:
-			keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			keyboard.sendUpEvent(KeyCode.Right);
 		default:
-			if (event.charCode != 0) {
-				keyboard.sendUpEvent(Key.CHAR, String.fromCharCode(event.charCode));
+			if (event.keyCode >= 65 && event.keyCode <= 90) {
+				keyboard.sendDownEvent(event.keyCode - KeyCode.A);
 			}
+			else if (event.keyCode >= 48 && event.keyCode <= 57) {
+				keyboard.sendDownEvent(event.keyCode - KeyCode.Zero);
+			}
+		}
+		if (event.charCode != 0) {
+			keyboard.sendPressEvent(String.fromCharCode(event.charCode));
 		}
 	}
 
