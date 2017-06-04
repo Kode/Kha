@@ -76,12 +76,16 @@ class Image implements Canvas implements Resource {
 			return 0;
 		case RGBA64:	// Target64BitFloat
 			return 1;
+		case A32:		// Target32BitRedFloat
+			return 2;
 		case RGBA128:	// Target128BitFloat
 			return 3;
 		case DEPTH16:	// Target16BitDepth
 			return 4;
 		case L8:
 			return 5;	// Target8BitRed
+		case A16:
+			return 6;	// Target16BitRedFloat
 		default:
 			return 0;
 		}
@@ -119,8 +123,10 @@ class Image implements Canvas implements Resource {
 			return 4;
 		case A32:
 			return 5;
+		case A16:
+			return 7;
 		default:
-			return 1; // Grey 8
+			return 1; // Grey8
 		}
 	}
 
