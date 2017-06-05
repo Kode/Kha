@@ -113,6 +113,8 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
+		setStates(cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
+		getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
 			inputLayout.length > 1 ? inputLayout[1] : null,
@@ -230,17 +232,19 @@ class PipelineState extends PipelineStateBase {
 		pipeline->colorWriteMaskAlpha = colorWriteMaskAlpha;
 		
 		pipeline->conservativeRasterization = conservativeRasterization;
-		
-		Kore::Graphics4::setPipeline(pipeline);
 	')
-	private function set2(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int,
+	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int,
 	blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {
 		
 	}
 	
+	@:functionCode('Kore::Graphics4::setPipeline(pipeline);')
+	private function set2(): Void {
+		
+	}
+	
 	public function set(): Void {
-		set2(cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
-		getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
+		set2();
 	}
 	
 	@:noCompletion
