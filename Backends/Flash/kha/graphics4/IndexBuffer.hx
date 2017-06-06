@@ -1,7 +1,6 @@
 package kha.graphics4;
 
 import flash.display3D.IndexBuffer3D;
-import flash.Vector;
 import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
