@@ -132,76 +132,12 @@ class SystemImpl {
 	private static function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
-		switch (event.keyCode) {
-		case 8:
-			keyboard.sendDownEvent(KeyCode.Backspace);
-		case 9:
-			keyboard.sendDownEvent(KeyCode.Tab);
-		case 13:
-			keyboard.sendDownEvent(KeyCode.Return);
-		case 16:
-			keyboard.sendDownEvent(KeyCode.Shift);
-		case 17:
-			keyboard.sendDownEvent(KeyCode.Control);
-		case 18:
-			keyboard.sendDownEvent(KeyCode.Alt);
-		case 27:
-			keyboard.sendDownEvent(KeyCode.Escape);
-		case 46:
-			keyboard.sendDownEvent(KeyCode.Delete);
-		case 38:
-			keyboard.sendDownEvent(KeyCode.Up);
-		case 40:
-			keyboard.sendDownEvent(KeyCode.Down);
-		case 37:
-			keyboard.sendDownEvent(KeyCode.Left);
-		case 39:
-			keyboard.sendDownEvent(KeyCode.Right);
-		default:
-			if (event.keyCode >= 65 && event.keyCode <= 90) {
-				keyboard.sendDownEvent(event.keyCode - KeyCode.A);
-			}
-			else if (event.keyCode >= 48 && event.keyCode <= 57) {
-				keyboard.sendDownEvent(event.keyCode - KeyCode.Zero);
-			}
-		}
+		keyboard.sendDownEvent(event.keyCode);
 	}
 
 	private static function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
-		switch (event.keyCode) {
-		case 8:
-			keyboard.sendUpEvent(KeyCode.Backspace);
-		case 9:
-			keyboard.sendUpEvent(KeyCode.Tab);
-		case 13:
-			keyboard.sendUpEvent(KeyCode.Return);
-		case 16:
-			keyboard.sendUpEvent(KeyCode.Shift);
-		case 17:
-			keyboard.sendUpEvent(KeyCode.Control);
-		case 18:
-			keyboard.sendUpEvent(KeyCode.Alt);
-		case 27:
-			keyboard.sendUpEvent(KeyCode.Escape);
-		case 46:
-			keyboard.sendUpEvent(KeyCode.Delete);
-		case 38:
-			keyboard.sendUpEvent(KeyCode.Up);
-		case 40:
-			keyboard.sendUpEvent(KeyCode.Down);
-		case 37:
-			keyboard.sendUpEvent(KeyCode.Left);
-		case 39:
-			keyboard.sendUpEvent(KeyCode.Right);
-		default:
-			if (event.keyCode >= 65 && event.keyCode <= 90) {
-				keyboard.sendDownEvent(event.keyCode - KeyCode.A);
-			}
-			else if (event.keyCode >= 48 && event.keyCode <= 57) {
-				keyboard.sendDownEvent(event.keyCode - KeyCode.Zero);
-			}
-		}
+		keyboard.sendUpEvent(event.keyCode);
 		if (event.charCode != 0) {
 			keyboard.sendPressEvent(String.fromCharCode(event.charCode));
 		}
