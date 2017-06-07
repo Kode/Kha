@@ -26,12 +26,16 @@ class Image implements Canvas implements Resource {
 			return 0;
 		case RGBA64:	// Target64BitFloat
 			return 1;
+		case A32:		// Target32BitRedFloat
+			return 2;
 		case RGBA128:	// Target128BitFloat
 			return 3;
 		case DEPTH16:	// Target16BitDepth
 			return 4;
 		case L8:
 			return 5;	// Target8BitRed
+		case A16:
+			return 6;	// Target16BitRedFloat
 		default:
 			return 0;
 		}
@@ -69,6 +73,8 @@ class Image implements Canvas implements Resource {
 			return 4;
 		case A32:
 			return 5;
+		case A16:
+			return 7;
 		default:
 			return 1; // Grey8
 		}
@@ -147,9 +153,22 @@ class Image implements Canvas implements Resource {
 
 	public function getPixels(): Bytes {
 		if (renderTarget_ == null) return null;
-		if (pixels == null) pixels = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		if (pixels == null) pixels = Bytes.alloc(formatByteSize(format) * width * height);
 		Krom.getRenderTargetPixels(renderTarget_, pixels.getData());
 		return pixels;
+	}
+
+	private static function formatByteSize(format: TextureFormat): Int {
+		return switch(format) {
+			case RGBA32: 4;
+			case L8: 1;
+			case RGBA128: 16;
+			case DEPTH16: 2;
+			case RGBA64: 8;
+			case A32: 4;
+			case A16: 2;
+			default: 4;
+		}
 	}
 	
 	public function generateMipmaps(levels: Int): Void {
