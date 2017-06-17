@@ -183,6 +183,10 @@ namespace {
 	void shutdown() {
 		SystemImpl_obj::shutdown();
 	}
+
+	void dropFiles(wchar_t* filePath) {
+		SystemImpl_obj::dropFiles(String(filePath));
+	}
 	
 	void orientation(Kore::Orientation orientation) {
 		/*switch (orientation) {
@@ -271,6 +275,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::System::setPauseCallback(pause);
 	Kore::System::setBackgroundCallback(background);
 	Kore::System::setShutdownCallback(shutdown);
+	Kore::System::setDropFilesCallback(dropFiles);
 	Kore::System::setCallback(update);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;

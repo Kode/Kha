@@ -376,6 +376,10 @@ class SystemImpl {
 		System.shutdown();
 	}
 
+	public static function dropFiles(filePath: String): Void {
+		System.dropFiles(filePath);
+	}
+
 	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode);')
 	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int): Void {}
 
