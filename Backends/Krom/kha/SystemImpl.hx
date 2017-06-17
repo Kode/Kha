@@ -22,6 +22,10 @@ class SystemImpl {
 		Scheduler.executeFrame();
 		System.render(0, framebuffer);
 	}
+
+	private static function dropFilesCallback(filePath: String): Void {
+		System.dropFiles(filePath);
+	}
 		
 	private static function keyboardDownCallback(code: Int): Void {
 		keyboard.sendDownEvent(code);
@@ -98,6 +102,7 @@ class SystemImpl {
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.graphics4.Graphics2(framebuffer), g4);
 		Krom.setCallback(renderCallback);
+		Krom.setDropFilesCallback(dropFilesCallback);
 		
 		keyboard = new Keyboard();
 		mouse = new Mouse();

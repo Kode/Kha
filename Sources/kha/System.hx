@@ -20,6 +20,7 @@ class System {
 	private static var pauseListeners: Array<Void -> Void> = new Array();
 	private static var backgroundListeners: Array<Void -> Void> = new Array();
 	private static var shutdownListeners: Array<Void -> Void> = new Array();
+	private static var dropFilesListeners: Array<String -> Void> = new Array();
 	private static var theTitle: String;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
@@ -63,6 +64,10 @@ class System {
 		if (shutdownListener != null) shutdownListeners.push(shutdownListener);
 	}
 
+	public static function notifyOnDropFiles(dropFilesListener: String -> Void): Void {
+		dropFilesListeners.push(dropFilesListener);
+	}
+
 	private static function render(id: Int, framebuffer: Framebuffer): Void {
 		if (renderListeners.length == 0) {
 			return;
@@ -100,6 +105,12 @@ class System {
 	private static function shutdown(): Void {
 		for (listener in shutdownListeners) {
 			listener();
+		}
+	}
+
+	private static function dropFiles(filePath: String): Void {
+		for (listener in dropFilesListeners) {
+			listener(filePath);
 		}
 	}
 
