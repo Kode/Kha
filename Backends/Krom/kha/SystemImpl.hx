@@ -175,7 +175,7 @@ class SystemImpl {
 	}
 	
 	public static function getSystemId(): String {
-		return "Krom";
+		return Krom.systemId();
 	}
 	
 	public static function requestShutdown(): Void {
