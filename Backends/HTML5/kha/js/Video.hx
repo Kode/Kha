@@ -10,32 +10,41 @@ using StringTools;
 
 class Video extends kha.Video {
 	private var filenames: Array<String>;
-	static var loading : List<Video> = new List(); 
-	public var element : VideoElement;
+	public var element: VideoElement;
 	private var done: kha.Video -> Void;
 	public var texture: Image;
 	
-	public function new(filenames: Array<String>, done: kha.Video -> Void) {
+	private function new() {
 		super();
+	}
+
+	public static function fromElement(element: js.html.VideoElement): Video {
+		var video = new Video();
+		video.element = element;
+		if (SystemImpl.gl != null) video.texture = Image.fromVideo(video);
+		return video;
+	}
+
+	public static function fromFile(filenames: Array<String>, done: kha.Video -> Void): Void {
+		var video = new Video();
+
+		video.done = done;
 		
-		this.done = done;
-		loading.add(this); // prevent gc from removing this
+		video.element = cast Browser.document.createElement("video");
 		
-		element = cast Browser.document.createElement("video");
-		
-		this.filenames = [];
+		video.filenames = [];
 		for (filename in filenames) {
-			if (element.canPlayType("video/webm") != "" && filename.endsWith(".webm")) this.filenames.push(filename);
+			if (video.element.canPlayType("video/webm") != "" && filename.endsWith(".webm")) video.filenames.push(filename);
 #if !sys_debug_html5
-			if ( element.canPlayType("video/mp4") != "" && filename.endsWith(".mp4")) this.filenames.push(filename);
+			if (video.element.canPlayType("video/mp4") != "" && filename.endsWith(".mp4")) video.filenames.push(filename);
 #end
 		}
 		
-		element.addEventListener("error", errorListener, false);
-		element.addEventListener("canplaythrough", canPlayThroughListener, false);
+		video.element.addEventListener("error", video.errorListener, false);
+		video.element.addEventListener("canplaythrough", video.canPlayThroughListener, false);
 		
-		element.preload = "auto";
-		element.src = this.filenames[0];
+		video.element.preload = "auto";
+		video.element.src = video.filenames[0];
 	}
 
 	override public function width(): Int{
@@ -121,6 +130,5 @@ class Video extends kha.Video {
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
 		if (SystemImpl.gl != null) texture = Image.fromVideo(this);
 		done(this);
-		loading.remove(this);
 	}
 }

@@ -106,7 +106,7 @@ class LoaderImpl {
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
-		var video = new kha.js.Video(desc.files, done);
+		kha.js.Video.fromFile(desc.files, done);
 	}
     
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
