@@ -1,6 +1,7 @@
 package kha;
 
 import kha.input.Gamepad;
+import kha.input.KeyCode;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Sensor;
@@ -269,11 +270,11 @@ class SystemImpl {
 		System.render(id, framebuffers[id]);
 	}
 
-	public static function keyDown(code: Int): Void {
+	public static function keyDown(code: KeyCode): Void {
 		keyboard.sendDownEvent(code);
 	}
 
-	public static function keyUp(code: Int): Void {
+	public static function keyUp(code: KeyCode): Void {
 		keyboard.sendUpEvent(code);
 	}
 

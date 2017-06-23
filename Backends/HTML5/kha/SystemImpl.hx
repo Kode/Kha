@@ -817,7 +817,7 @@ class SystemImpl {
 		}
 
 		pressedKeys[event.keyCode] = true;
-		keyboard.sendDownEvent(event.keyCode);
+		keyboard.sendDownEvent(cast event.keyCode);
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
@@ -826,7 +826,7 @@ class SystemImpl {
 
 		pressedKeys[event.keyCode] = false;
 
-		keyboard.sendUpEvent(event.keyCode);
+		keyboard.sendUpEvent(cast event.keyCode);
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {

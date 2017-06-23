@@ -169,12 +169,12 @@ class ControllerBuilder {
 									var $varname: Bool = bytes.get($v { index } ) != 0;
 								};
 								index += 1;
-							case "Key":
+							case "KeyCode":
 								var argname = arg.name;
 								var varname = "input" + varindex;
 								expr = macro @:mergeBlock {
 									$expr;
-									var $varname: kha.Key = kha.Key.createByIndex(bytes.get($v { index } ));
+									var $varname: kha.input.KeyCode = cast bytes.get($v { index } );
 								};
 								index += 1;
 							}

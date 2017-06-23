@@ -9,13 +9,13 @@ class Keyboard extends Controller {
 		return SystemImpl.getKeyboard(num);
 	}
 	
-	public function notify(downListener: Int->Void, upListener: Int->Void, pressListener: String->Void = null): Void {
+	public function notify(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void = null): Void {
 		if (downListener != null) downListeners.push(downListener);
 		if (upListener != null) upListeners.push(upListener);
 		if (pressListener != null) pressListeners.push(pressListener);
 	}
 	
-	public function remove(downListener: Int->Void, upListener: Int->Void, pressListener: String->Void): Void {
+	public function remove(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void): Void {
 		if (downListener != null) downListeners.remove(downListener);
 		if (upListener != null) upListeners.remove(upListener);
 		if (pressListener != null) pressListeners.remove(pressListener);
@@ -30,8 +30,8 @@ class Keyboard extends Controller {
 	}
 
 	private static var instance: Keyboard;
-	private var downListeners: Array<Int->Void>;
-	private var upListeners: Array<Int->Void>;
+	private var downListeners: Array<KeyCode->Void>;
+	private var upListeners: Array<KeyCode->Void>;
 	private var pressListeners: Array<String->Void>;
 	
 	private function new() {
@@ -43,7 +43,7 @@ class Keyboard extends Controller {
 	}
 	
 	@input
-	private function sendDownEvent(code: Int): Void {
+	private function sendDownEvent(code: KeyCode): Void {
 		#if sys_server
 		//js.Node.console.log(kha.Scheduler.time() + " Down: " + key + " from " + kha.network.Session.the().me.id);
 		#end
@@ -53,7 +53,7 @@ class Keyboard extends Controller {
 	}
 	
 	@input
-	private function sendUpEvent(code: Int): Void {
+	private function sendUpEvent(code: KeyCode): Void {
 		#if sys_server
 		//js.Node.console.log(kha.Scheduler.time() + " Up: " + key + " from " + kha.network.Session.the().me.id);
 		#end

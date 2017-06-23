@@ -83,7 +83,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 	}
 	
-	private function keyDownEvent(code: Int): Void {
+	private function keyDownEvent(code: KeyCode): Void {
 		switch (code) {
 			case KeyCode.Left:
 				yawDelta = keyboardSpeed;
@@ -104,7 +104,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		
 	}
 	
-	private function keyUpEvent(code: Int): Void {
+	private function keyUpEvent(code: KeyCode): Void {
 		switch(code) {
 			case KeyCode.Left:
 				yawDelta = 0.0;
