@@ -132,12 +132,12 @@ class SystemImpl {
 	private static function keyDownHandler(event: KeyboardEvent): Void {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
-		keyboard.sendDownEvent(event.keyCode);
+		keyboard.sendDownEvent(cast event.keyCode);
 	}
 
 	private static function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
-		keyboard.sendUpEvent(event.keyCode);
+		keyboard.sendUpEvent(cast event.keyCode);
 		if (event.charCode != 0) {
 			keyboard.sendPressEvent(String.fromCharCode(event.charCode));
 		}

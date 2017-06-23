@@ -28,11 +28,11 @@ class SystemImpl {
 	}
 		
 	private static function keyboardDownCallback(code: Int): Void {
-		keyboard.sendDownEvent(code);
+		keyboard.sendDownEvent(cast code);
 	}
 	
 	private static function keyboardUpCallback(code: Int): Void {
-		keyboard.sendUpEvent(code);
+		keyboard.sendUpEvent(cast code);
 	}
 	
 	private static function keyboardPressCallback(charCode: Int): Void {

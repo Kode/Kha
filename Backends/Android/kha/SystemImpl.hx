@@ -244,7 +244,7 @@ class SystemImpl {
 		case 0x00000004:
 			keyboard.sendDownEvent(KeyCode.Back);
 		default:
-			keyboard.sendDownEvent(code - KeyCode.A);
+
 		}
 	}
 
@@ -260,7 +260,7 @@ class SystemImpl {
 		case 0x00000004:
 			keyboard.sendUpEvent(KeyCode.Back);
 		default:
-			keyboard.sendUpEvent(code - KeyCode.A);
+
 		}
 	}
 
