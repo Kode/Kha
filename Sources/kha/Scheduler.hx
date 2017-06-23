@@ -72,8 +72,7 @@ class Scheduler {
 		
 		stopped = true;
 		frame_tasks_sorted = true;
-		current = realTime();
-		lastTime = realTime();
+		current = lastTime = realTime();
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;

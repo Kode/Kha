@@ -41,21 +41,11 @@ class SystemImpl {
 	@:noCompletion public static var _hasWebAudio: Bool;
 	//public static var graphics(default, null): Graphics;
 	public static var khanvas: CanvasElement;
-	private static var performance: Dynamic;
 	private static var options: SystemOptions;
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
 	public static var insideInputEvent: Bool = false;
-
-	public static function initPerformanceTimer(): Void {
-		if (Browser.window.performance != null && Browser.window.performance.now != null) {
-			performance = Browser.window.performance;
-		}
-		else {
-			performance = untyped __js__("window.Date");
-		}
-	}
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error(error.stack);
@@ -149,16 +139,9 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
+		var performance = (untyped __js__("window.performance ? window.performance : window.Data"));
 		return performance.now() / 1000;
 	}
-
-	//public static function getPixelWidth(): Int {
-		//return khanvas.width;
-	//}
-//
-	//public static function getPixelHeight(): Int {
-		//return khanvas.height;
-	//}
 
 	public static function getVsync(): Bool {
 		return true;
@@ -214,7 +197,6 @@ class SystemImpl {
 
 		CanvasImage.init();
 		//Loader.init(new kha.js.Loader());
-		SystemImpl.initPerformanceTimer();
 		Scheduler.init();
 
 		loadFinished();
