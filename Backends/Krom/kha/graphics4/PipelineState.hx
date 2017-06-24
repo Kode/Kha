@@ -27,6 +27,7 @@ class PipelineState extends PipelineStateBase {
 		var tcs = tessellationControlShader != null ? tessellationControlShader.shader : null;
 		var tes = tessellationEvaluationShader != null ? tessellationEvaluationShader.shader : null;
 		Krom.compilePipeline(pipeline, structure0, structure1, structure2, structure3, inputLayout.length, vertexShader.shader, fragmentShader.shader, gs, tcs, tes, {
+			interleavedLayout: this.interleavedLayout,
 			cullMode: convertCullMode(cullMode),
 			depthWrite: this.depthWrite,
 			depthMode: convertCompareMode(depthMode),

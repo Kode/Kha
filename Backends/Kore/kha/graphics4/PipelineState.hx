@@ -71,6 +71,7 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	@:functionCode('
+		pipeline->interleavedLayout = interleavedLayout;
 		pipeline->vertexShader = vertexShader->shader;
 		pipeline->fragmentShader = fragmentShader->shader;
 		if (geometryShader != null()) pipeline->geometryShader = geometryShader->shader;
@@ -99,7 +100,7 @@ class PipelineState extends PipelineStateBase {
 					data = Kore::Graphics4::Float4x4VertexData;
 					break;
 				}
-				pipeline-> inputLayout[i1] = structures2[i1];
+				pipeline->inputLayout[i1] = structures2[i1];
 				pipeline->inputLayout[i1]->add((*structures[i1])->get(i2)->name, data);
 			}
 		}
@@ -108,7 +109,7 @@ class PipelineState extends PipelineStateBase {
 		}
 		pipeline->compile();
 	')
-	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
+	private function linkWithStructures2(interleavedLayout: Bool, structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
 		
 	}
 	
@@ -116,6 +117,7 @@ class PipelineState extends PipelineStateBase {
 		setStates(cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
 		getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
 		linkWithStructures2(
+			interleavedLayout,
 			inputLayout.length > 0 ? inputLayout[0] : null,
 			inputLayout.length > 1 ? inputLayout[1] : null,
 			inputLayout.length > 2 ? inputLayout[2] : null,
