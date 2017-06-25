@@ -2,13 +2,13 @@ package kha.arrays;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
-abstract Float32Array(FloatBuffer) {
+abstract Uint32Array(IntBuffer) {
 	private static inline var elementSize = 4;
 		
 	public inline function new(elements: Int) {
-		this = ByteBuffer.allocateDirect(elements * elementSize).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		this = ByteBuffer.allocateDirect(elements * elementSize).order(ByteOrder.nativeOrder()).asIntBuffer();
 	}
 	
 	public var length(get, never): Int;
@@ -17,31 +17,31 @@ abstract Float32Array(FloatBuffer) {
 		return this.remaining();
 	}
 	
-	public function set(index: Int, value: FastFloat): FastFloat {
+	public function set(index: Int, value: Int): Int {
 		this.put(index, value);
 		return value;
 	}
 	
-	public inline function get(index: Int): FastFloat {
+	public inline function get(index: Int): Int {
 		return this.get(index);
 	}
 	
-	public inline function data(): FloatBuffer {
+	public inline function data(): IntBuffer {
 		return this;
 	}
 	
 	@:arrayAccess
-	public inline function arrayRead(index: Int): FastFloat {
+	public inline function arrayRead(index: Int): Int {
 		return this.get(index);
 	}
 
 	@:arrayAccess
-	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
+	public inline function arrayWrite(index: Int, value: Int): Int {
 		this.put(index, value);
 		return value;
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Float32Array {
+	//public inline function subarray(start: Int, ?end: Int): Uint32Array {
 	//	return cast this.subarray(start, end);
 	//}
 }

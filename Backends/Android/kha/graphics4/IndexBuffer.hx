@@ -6,11 +6,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
 	//private var buffer: Int;
-	private var lockedData: Array<Int>;
+	private var lockedData: Uint32Array;
 	public var data: ShortBuffer;
 	private var mySize: Int;
 	private var usage: Usage;
@@ -19,8 +20,7 @@ class IndexBuffer {
 		this.usage = usage;
 		mySize = indexCount;
 		//buffer = createBuffer();
-		lockedData = new Array<Int>();
-		lockedData[indexCount - 1] = 0;
+		lockedData = new Uint32Array(indexCount);
 		data = ByteBuffer.allocateDirect(indexCount * 2).order(ByteOrder.nativeOrder()).asShortBuffer();
 	}
 	
@@ -30,13 +30,13 @@ class IndexBuffer {
 		return buffers[0];
 	}
 	
-	public function lock(): Array<Int> {
+	public function lock(): Uint32Array {
 		return lockedData;
 	}
 	
 	public function unlock(): Void {
 		for (i in 0...mySize) {
-			data.put(i, lockedData[i]);
+			data.put(i, lockedData.get(i));
 		}
 		//GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, buffer);
 		//GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, mySize, data, GLES20.GL_STATIC_DRAW);
