@@ -3,6 +3,7 @@ package kha.graphics4;
 import android.opengl.GLES20;
 import java.NativeArray;
 import java.lang.Byte;
+import java.StdTypes;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
@@ -61,7 +62,7 @@ class PipelineState extends PipelineStateBase {
 		shader.shader = s;
 	}
 	
-	private static function compare(string: String, array: NativeArray<Byte>): Bool {
+	private static function compare(string: String, array: NativeArray<Int8>): Bool {
 		if (string.length != array.length) return false;
 		for (i in 0...string.length) {
 			if (string.charCodeAt(i) != array[i]) return false;
@@ -75,7 +76,7 @@ class PipelineState extends PipelineStateBase {
 		var count = new NativeArray<Int>(1);
 		GLES20.glGetProgramiv(program, GLES20.GL_ACTIVE_UNIFORMS, count, 0);
 		for (i in 0...count[0]) {
-			var nameArray = new NativeArray<Byte>(1024);
+			var nameArray = new NativeArray<Int8>(1024);
 			var length = new NativeArray<Int>(1);
 			var size = new NativeArray<Int>(1);
 			var typeArray = new NativeArray<Int>(1);

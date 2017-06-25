@@ -4,6 +4,7 @@ import java.NativeArray;
 import java.lang.Byte;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.StdTypes;
 
 extern class GLES20 {
 	public static var GL_COLOR_BUFFER_BIT : Int;
@@ -161,5 +162,5 @@ extern class GLES20 {
 
 	public static function glColorMask(red: Bool, green: Bool, blue: Bool, alpha: Bool): Void;
 	
-	public static function glGetActiveUniform(program: Int, index: Int, bufsize: Int, length: NativeArray<Int>, lengthOffset: Int, size: NativeArray<Int>, sizeOffset: Int, type: NativeArray<Int>, typeOffset: Int, name: NativeArray<Byte>, nameOffset: Int): Void;
+	public static function glGetActiveUniform(program: Int, index: Int, bufsize: Int, length: NativeArray<Int>, lengthOffset: Int, size: NativeArray<Int>, sizeOffset: Int, type: NativeArray<Int>, typeOffset: Int, name: NativeArray<Int8>, nameOffset: Int): Void;
 }
