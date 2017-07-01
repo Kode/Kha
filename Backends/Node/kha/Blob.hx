@@ -115,6 +115,10 @@ class Blob implements Resource {
 	public function readUtf8String(): String {
 		return toString();
 	}
+
+	public function toBytes(): Bytes {
+		return Bytes.ofData(cast buffer);
+	}
 	
 	public function unload(): Void {
 		buffer = null;

@@ -24,4 +24,18 @@ abstract Float32Array(js.html.Float32Array) {
 	public inline function data(): js.html.Float32Array {
 		return this;
 	}
+
+	@:arrayAccess
+	public inline function arrayRead(index: Int): FastFloat {
+		return this[index];
+	}
+
+	@:arrayAccess
+	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
+		return this[index] = value;
+	}
+
+	public inline function subarray(start: Int, ?end: Int): Float32Array {
+		return cast this.subarray(start, end);
+	}
 }
