@@ -23,6 +23,8 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var Orange: Color = 0xffffa500;
 	
 	public static inline var Transparent: Color = 0x00000000;
+	public static inline var None: Color = -1;
+
 	
 	private static inline var invMaxChannelValue: FastFloat = 1 / 255;
 	
