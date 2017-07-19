@@ -133,14 +133,14 @@ class SystemImpl {
 		if (pressedKeys[event.keyCode]) return;
 		pressedKeys[event.keyCode] = true;
 		keyboard.sendDownEvent(cast event.keyCode);
+		if (event.charCode != 0) {
+			keyboard.sendPressEvent(String.fromCharCode(event.charCode));
+		}
 	}
 
 	private static function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
 		keyboard.sendUpEvent(cast event.keyCode);
-		if (event.charCode != 0) {
-			keyboard.sendPressEvent(String.fromCharCode(event.charCode));
-		}
 	}
 
 	private static var mouseX: Int;
