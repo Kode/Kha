@@ -230,7 +230,7 @@ namespace {
 	}
 }
 
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync) {
+void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync, bool resizable, bool maximizable, bool minimizable) {
 	Kore::log(Kore::Info, "Starting Kore");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
@@ -253,6 +253,9 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		options.vSync = vSync;
 		options.targetDisplay = display;
 		options.mode = windowMode;
+		options.resizable = resizable;
+		options.maximizable = maximizable;
+		options.minimizable = minimizable;
 		options.rendererOptions.depthBufferBits = 16;
 		options.rendererOptions.stencilBufferBits = 8;
 		options.rendererOptions.textureFormat = 0;
@@ -311,12 +314,12 @@ const char* getGamepadId(int index) {
 	return Kore::Gamepad::get(index)->productName;
 }
 
-void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync);
+void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode, bool resizable, bool maximizable, bool minimizable) {
+	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync, resizable, maximizable, minimizable);
 }
 
 void init_kore_ex(const char* name) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0, false);
+	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0, false, false, false, true);
 }
 
 void post_kore_init() {

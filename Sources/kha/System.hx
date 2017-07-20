@@ -9,7 +9,10 @@ typedef SystemOptions = {
 	?height: Int,
 	?samplesPerPixel: Int,
 	?vSync: Bool,
-	?windowMode: WindowMode
+	?windowMode: WindowMode,
+	?resizable: Bool,
+	?maximizable: Bool,
+	?minimizable: Bool
 }
 
 @:allow(kha.SystemImpl)
@@ -30,6 +33,9 @@ class System {
 		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
 		if (options.vSync == null) options.vSync = true;
 		if (options.windowMode == null) options.windowMode = WindowMode.Window;
+		if (options.resizable == null) options.resizable = false;
+		if (options.maximizable == null) options.maximizable = false;
+		if (options.minimizable == null) options.minimizable = true;
 		theTitle = options.title;
 		SystemImpl.init(options, callback);
 	}
