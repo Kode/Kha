@@ -1,6 +1,6 @@
 package kha.input;
 
-@:enum abstract KeyCode(Int) {
+@:enum abstract KeyCode(Int) to Int {
 	var Unknown = 0;
 	var Back = 1; // Android
 	var Cancel = 3;
