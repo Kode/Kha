@@ -279,6 +279,12 @@ class Graphics implements kha.graphics4.Graphics {
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
 		untyped __cpp__("texture->renderTarget->useDepthAsTexture(koreUnit->unit);");
 	}
+	
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+		if (texture == null) return;
+		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("if (texture->textureArray != nullptr) Kore::Graphics4::setTextureArray(koreUnit->unit, texture->textureArray);");
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) return;
