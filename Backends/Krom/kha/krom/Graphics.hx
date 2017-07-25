@@ -105,6 +105,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		Krom.setTextureDepth(unit, texture);
 	}
+	
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 
