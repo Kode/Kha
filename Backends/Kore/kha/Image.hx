@@ -45,8 +45,7 @@ class Image implements Canvas implements Resource {
 	/**
 	 * Textures in array mast be readable!
 	 */
-	public static function createArray(images:Array<Image>, format: TextureFormat = null):Image
-	{
+	public static function createArray(images:Array<Image>, format: TextureFormat = null):Image {
 		var image = new Image(false);
 		image.format = (format == null) ? TextureFormat.RGBA32 : format;
 		initArrayTexture(image, images);
@@ -63,8 +62,7 @@ class Image implements Canvas implements Resource {
 		std::copy(textures.begin(), textures.end(), source->textureArrayTextures);
 		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
 	')
-	private static function initArrayTexture(source:Image, images:Array<Image>):Void
-	{
+	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
 		
 	}
 	
