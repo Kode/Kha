@@ -1,5 +1,6 @@
 package kha.audio2;
 
+import java.NativeArray;
 import android.media.AudioTrack;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
@@ -7,18 +8,17 @@ import android.media.AudioTrackBuilder;
 import android.media.AudioAttributesBuilder;
 import android.media.AudioFormatBuilder;
 import android.media.AudioTrackOnPlaybackPositionUpdateListener;
-import java.NativeArray;
-import java.lang.Float;
 
 class Audio {
 	private static var audioTrack: AudioTrack;
+	private static var listener: UpdateListener;
 	public static var buffer: Buffer;
 	
 	public static var audioCallback: Int->Buffer->Void;
 	
 	public static function initAudioTrack(): Void {
-		var sampleRate = AudioTrack.getNativeOutputSampleRate(AudioTrack.MODE_STREAM);
-		var bufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_FLOAT);
+		var sampleRate = 44100; // AudioTrack.getNativeOutputSampleRate(AudioTrack.MODE_STREAM);
+		var bufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_FLOAT) * 2;
 		audioTrack = new AudioTrackBuilder()
 			.setAudioAttributes(new AudioAttributesBuilder()
 				.setUsage(AudioAttributes.USAGE_GAME)
@@ -40,8 +40,18 @@ class Audio {
 			initAudioTrack();
 			var buffersize = audioTrack.getBufferSizeInFrames();
 			buffer = new Buffer(buffersize, 2, 44100);
+			audioTrack.setPositionNotificationPeriod(Math.ceil(buffersize / 2));
+			listener = new UpdateListener();
+			audioTrack.setPlaybackPositionUpdateListener(listener);
+			// prime the AudioTrack buffer to ensure playback
+			var zeros = new NativeArray<Single>(buffersize * 2);
+			for (i in 0...buffersize) {
+				zeros[2 * i + 0] = 0.0;
+				zeros[2 * i + 1] = 0.0;
+			}
+			audioTrack.write(zeros, 0, buffersize * 2, AudioTrack.WRITE_BLOCKING);
 			
-			audioTrack.setPlaybackPositionUpdateListener(new UpdateListener());
+			audioTrack.play();
 			return true;
 		}
 		catch (e: Dynamic) {
@@ -68,10 +78,10 @@ private class UpdateListener implements AudioTrackOnPlaybackPositionUpdateListen
 	
 	public function onPeriodicNotification(track: AudioTrack): Void {
 		var notificationPeriod = track.getPositionNotificationPeriod();
-		var chunk = new NativeArray<Float>(notificationPeriod * 2);
+		var chunk = new NativeArray<Single>(notificationPeriod * 2);
 		
 		if (Audio.audioCallback != null) {
-			Audio.audioCallback(notificationPeriod, Audio.buffer);
+			Audio.audioCallback(notificationPeriod * 2, Audio.buffer);
 			for (i in 0...notificationPeriod * 2) {
 				chunk[i] = Audio.buffer.data.get(Audio.buffer.readLocation);
 				Audio.buffer.readLocation += 1;

@@ -2,6 +2,7 @@ package android.media;
 
 import android.content.Context;
 import android.view.SurfaceHolder;
+import haxe.Int64;
 import java.lang.Float;
 
 extern class MediaPlayer {
