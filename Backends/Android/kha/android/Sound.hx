@@ -1,12 +1,10 @@
 package kha.android;
 
 import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import haxe.Int64;
 import haxe.io.Bytes;
-import haxe.io.BytesOutput;
 import java.NativeArray;
-import kha.audio1.AudioChannel;
+import java.types.Int8;
+import java.io.FileInputStream;
 
 class Sound extends kha.Sound {
 	
@@ -24,8 +22,8 @@ class Sound extends kha.Sound {
 		}
 	}
 	
-	private function parseWaveFile(input:java.io.FileInputStream): Void {
-		var wavBytes = new NativeArray<java.types.Int8>(input.available());
+	private function parseWaveFile(input:FileInputStream): Void {
+		var wavBytes = new NativeArray<Int8>(input.available());
 		input.read(wavBytes);
 		input.close();
 		var data = Bytes.ofData(wavBytes);
