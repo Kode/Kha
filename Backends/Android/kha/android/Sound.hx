@@ -1,6 +1,5 @@
 package kha.android;
 
-import android.media.SoundPool;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import haxe.Int64;
@@ -10,60 +9,72 @@ import java.NativeArray;
 import kha.audio1.AudioChannel;
 
 class Sound extends kha.Sound {
-	//static var pool : SoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
-	//var soundid : Int;
-	// var wavBytes: NativeArray<java.types.Int8>;
 	
 	public function new(file : AssetFileDescriptor) {
 		super();
-		//soundid = pool.load(file, 1);
-		var inputStream = file.createInputStream();
-		inputStream.skip(44); // assume wave header has 44 bytes (can fail, should parse header instead)
-		var length = inputStream.available();
-		var wavBytes = new NativeArray<java.types.Int8>(length);
-		inputStream.read(wavBytes);
-		inputStream.close();
-		compressedData = Bytes.ofData(wavBytes);
-		wavBytes = null;
+		try {
+			var inputStream = file.createInputStream();
+			parseWaveFile(inputStream);
+		}
+		catch (msg:String) {
+			trace("Error occured while parsing WAV file: " + msg);
+		}
+		catch (e:Dynamic) {
+			trace(e);
+		}
 	}
 	
-	//public function play(): AudioChannel {
-		//pool.play(soundid, 1, 1, 1, 0, 1);
-		//return null;
-	//}
+	private function parseWaveFile(input:java.io.FileInputStream): Void {
+		var wavBytes = new NativeArray<java.types.Int8>(input.available());
+		input.read(wavBytes);
+		input.close();
+		var data = Bytes.ofData(wavBytes);
+		wavBytes = null;
+		// read header
+		if (data.getString(0, 4) != "RIFF" || data.getString(8, 4) != "WAVE") {
+			throw "File is not little-endian encoded.";
+		}
+		if (data.getUInt16(20) != 1 || data.getUInt16(34) != 16) {
+			throw "File is not 16 bit PCM encoded.";
+		}
+		if (data.getUInt16(22) != 2) {
+			throw "Audio is not sampled in stereo.";
+		}
+		var testRate:Int = data.getInt32(24);
+		// testRate is 48000 in release mode despite the value of 44100 in files.
+		// In debug mode 44100 is read...
+		//if (44100 != compRate) {
+			//throw "Audio is not sampled at 44.100 kHz.";
+		//}
+		var nextSubchunk = 20 + data.getInt32(16);
+		var chunkSize = 0;
+		while (data.getString(nextSubchunk, 4) != "data") {
+			chunkSize = data.getInt32(nextSubchunk + 4);
+			nextSubchunk = nextSubchunk + 8 + chunkSize;
+			if (nextSubchunk + 8 > data.length) {
+				throw "No data chunk found.";
+			}
+		}
+		chunkSize = data.getInt32(nextSubchunk + 4);
+		
+		compressedData = data.sub(nextSubchunk + 8, chunkSize);
+		data = null;
+	}
 
 	public override function uncompress(done:Void->Void): Void {
 		var numFrames:Int = Math.floor(compressedData.length / 4);
 		uncompressedData = new haxe.ds.Vector<Float>(numFrames * 2);
 		// assume stereo channels
 		for (i in 0...numFrames) {
-			uncompressedData[2 * i + 0] = (compressedData.getUInt16(4 * i + 0) - 32768) / 32768; // signed Int16 in little endian to Float in range [-1, 1)
-			uncompressedData[2 * i + 1] = (compressedData.getUInt16(4 * i + 2) - 32768) / 32768;
+			// signed Int16 in little endian to Float in range [-1, 1)
+			uncompressedData[2 * i + 0] = uint16ToInt16(compressedData.getUInt16(4 * i + 0)) / 32768;
+			uncompressedData[2 * i + 1] = uint16ToInt16(compressedData.getUInt16(4 * i + 2)) / 32768;
 		}
 		compressedData = null;
 		done();
 	}
 	
-	//override public function uncompress(done:Void->Void):Void 
-	//{
-		//var timeInSec:Float = 10;
-		//var rate = 44100;
-		//var numFrames = Math.floor(timeInSec * rate);
-		//uncompressedData = new haxe.ds.Vector<Float>(numFrames * 2);
-		//var soundFreq = 130.81; // C3
-		//
-		//var time:Float = 0;
-		//for (i in 0...numFrames) {
-			//uncompressedData[2 * i + 0] = Math.sin(time * soundFreq);
-			//uncompressedData[2 * i + 1] = Math.sin(time * soundFreq);
-			//time += 1 / rate;
-		//}
-		//
-		//compressedData = null;
-		//done();
-	//}
-	
-	//override public function stop() : Void {
-	//	pool.stop(soundid);
-	//}
+	private inline function uint16ToInt16(uint:Int): Int {
+		return (uint + 32768) % 65536 - 32768;
+	}
 }
