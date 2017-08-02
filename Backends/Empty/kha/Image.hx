@@ -22,6 +22,10 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	public static var maxSize(get, null): Int;
 
 	public static function get_maxSize(): Int {

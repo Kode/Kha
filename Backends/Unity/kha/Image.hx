@@ -34,6 +34,10 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	private static function upperPowerOfTwo(v: Int): Int {
 		v--;
 		v |= v >>> 1;

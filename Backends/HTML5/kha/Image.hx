@@ -52,6 +52,10 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
 		var dataUrl = "data:image;base64," + haxe.crypto.Base64.encode(bytes);
 		var imageElement = cast(js.Browser.document.createElement('img'), ImageElement);
