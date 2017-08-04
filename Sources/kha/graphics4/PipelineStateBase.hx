@@ -3,7 +3,6 @@ package kha.graphics4;
 class PipelineStateBase {
 	public function new() {
 		inputLayout = null;
-		interleavedLayout = true;
 		vertexShader = null;
 		fragmentShader = null;
 		geometryShader = null;
@@ -36,7 +35,6 @@ class PipelineStateBase {
 	}
 
 	public var inputLayout: Array<VertexStructure>;
-	public var interleavedLayout: Bool;
 	public var vertexShader: VertexShader;
 	public var fragmentShader: FragmentShader;
 	public var geometryShader: GeometryShader;
