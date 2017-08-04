@@ -71,7 +71,6 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	@:functionCode('
-		pipeline->interleavedLayout = interleavedLayout;
 		pipeline->vertexShader = vertexShader->shader;
 		pipeline->fragmentShader = fragmentShader->shader;
 		if (geometryShader != null()) pipeline->geometryShader = geometryShader->shader;
@@ -81,9 +80,10 @@ class PipelineState extends PipelineStateBase {
 		Kore::Graphics4::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
 		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
 		for (int i1 = 0; i1 < size; ++i1) {
+			structures2[i1]->instanced = (*structures[i1])->instanced;
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
 				Kore::Graphics4::VertexData data;
-			switch ((*structures[i1])->get(i2)->data->index) {
+				switch ((*structures[i1])->get(i2)->data->index) {
 				case 0:
 					data = Kore::Graphics4::Float1VertexData;
 					break;

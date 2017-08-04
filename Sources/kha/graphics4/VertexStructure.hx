@@ -2,9 +2,11 @@ package kha.graphics4;
 
 class VertexStructure {
 	public var elements: Array<VertexElement>;
+	public var instanced: Bool;
 	
 	public function new() {
 		elements = new Array<VertexElement>();
+		instanced = false;
 	}
 	
 	public function add(name: String, data: VertexData) {
