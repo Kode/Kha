@@ -109,7 +109,7 @@ class PipelineState extends PipelineStateBase {
 		}
 		pipeline->compile();
 	')
-	private function linkWithStructures2(interleavedLayout: Bool, structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
+	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
 		
 	}
 	
@@ -117,7 +117,6 @@ class PipelineState extends PipelineStateBase {
 		setStates(cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
 		getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
 		linkWithStructures2(
-			interleavedLayout,
 			inputLayout.length > 0 ? inputLayout[0] : null,
 			inputLayout.length > 1 ? inputLayout[1] : null,
 			inputLayout.length > 2 ? inputLayout[2] : null,
