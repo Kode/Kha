@@ -254,6 +254,10 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		return null;
+	}
+
 	public var g1(get, null): kha.graphics1.Graphics;
 
 	private function get_g1(): kha.graphics1.Graphics {

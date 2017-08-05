@@ -43,6 +43,7 @@ extern class Krom {
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
 	static function createTexture3D(width: Int, height: Int, depth: Int, format: Int): Dynamic;
 	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
+	static function createTextureFromBytes3D(data: haxe.io.BytesData, width: Int, height: Int, depth: Int, format: Int, readable: Bool): Dynamic;
 	static function getRenderTargetPixels(renderTarget: Dynamic, data: haxe.io.BytesData): Void;
 	static function unlockTexture(texture: Dynamic, data: haxe.io.BytesData): Void;
 	static function generateMipmaps(texture: Dynamic, levels: Int): Void;

@@ -52,6 +52,19 @@ class Image implements Canvas implements Resource {
 	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
 		
 	}
+
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+		var readable = true;
+		var image = new Image(readable);
+		image.format = format;
+		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
+		return image;
+	}
+
+	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, depth, format, readable);')
+	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
+		
+	}
 	
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
