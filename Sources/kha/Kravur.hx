@@ -101,6 +101,14 @@ class KravurImage {
 		}
 		return width;
 	}
+
+	public function charactersWidth(characters: Array<Int>, start: Int, length: Int): Float {
+		var width: Float = 0;
+		for (i in start...start + length) {
+			width += getCharWidth(characters[i]);
+		}
+		return width;
+	}
 	
 	public function getBaselinePosition(): Float {
 		return baseline;
@@ -165,6 +173,10 @@ class Kravur implements Font {
 
 	public function width(fontSize: Int, str: String): Float {
 		return _get(fontSize).stringWidth(str);
+	}
+
+	public function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float {
+		return _get(fontSize).charactersWidth(characters, start, length);
 	}
 	
 	public function baseline(fontSize: Int): Float {

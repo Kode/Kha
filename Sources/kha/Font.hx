@@ -16,6 +16,8 @@ interface Font extends Resource {
 	 */
 	function width(fontSize: Int, str: String): Float;
 	
+	function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float;
+
 	/**
 	 * The base line position.
 	 */

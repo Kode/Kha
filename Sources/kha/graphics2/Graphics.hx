@@ -55,6 +55,10 @@ class Graphics {
 
 	}
 
+	public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+		
+	}
+
 	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 
 	}

@@ -782,6 +782,31 @@ class TextShaderPainter {
 		}
 		endString();
 	}
+
+	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
+		var font = this.font._get(fontSize, fontGlyphs);
+		var tex = font.getTexture();
+		if (lastTexture != null && tex != lastTexture) drawBuffer();
+		lastTexture = tex;
+
+		var xpos = x;
+		var ypos = y;
+		for (i in start...start + length) {
+			var q = font.getBakedQuad(findIndex(text[i], fontGlyphs), xpos, ypos);
+			if (q != null) {
+				if (bufferIndex + 1 >= bufferSize) drawBuffer();
+				setRectColors(opacity, color);
+				setRectTexCoords(q.s0 * tex.width / tex.realWidth, q.t0 * tex.height / tex.realHeight, q.s1 * tex.width / tex.realWidth, q.t1 * tex.height / tex.realHeight);
+				var p0 = transformation.multvec(new FastVector2(q.x0, q.y1)); //bottom-left
+				var p1 = transformation.multvec(new FastVector2(q.x0, q.y0)); //top-left
+				var p2 = transformation.multvec(new FastVector2(q.x1, q.y0)); //top-right
+				var p3 = transformation.multvec(new FastVector2(q.x1, q.y1)); //bottom-right
+				setRectVertices(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+				xpos += q.xadvance;
+				++bufferIndex;
+			}
+		}
+	}
 	
 	public function end(): Void {
 		if (bufferIndex > 0) drawBuffer();
@@ -961,6 +986,13 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.end();
 		
 		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs);
+	}
+
+	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+		imagePainter.end();
+		coloredPainter.end();
+		
+		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs);
 	}
 
 	override public function get_font(): Font {

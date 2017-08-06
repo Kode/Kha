@@ -22,6 +22,10 @@ class Font implements kha.Font {
 		return kravur._get(fontSize).stringWidth(str);
 	}
 	
+	public function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float {
+		return kravur._get(fontSize).charactersWidth(characters, start, length);
+	}
+
 	public function baseline(fontSize: Int): Float {
 		return kravur._get(fontSize).getBaselinePosition();
 	}
