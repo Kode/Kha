@@ -210,6 +210,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 	
 	}
+	
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	
+	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 

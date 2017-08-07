@@ -10,9 +10,10 @@ import kha.graphics4.Usage;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
+#include <Kore/Graphics4/TextureArray.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget;")
+@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget; Kore::Graphics4::TextureArray* textureArray; Kore::Graphics4::Image* textureArrayTextures[];")
 class Image implements Canvas implements Resource {
 	private var format: TextureFormat;
 	private var readable: Bool;
@@ -39,6 +40,33 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
+	
+	
+	/**
+	 * Textures in array mast be readable!
+	 */
+	public static function createArray(images:Array<Image>, format: TextureFormat = null):Image {
+		var image = new Image(false);
+		image.format = (format == null) ? TextureFormat.RGBA32 : format;
+		initArrayTexture(image, images);
+		return image;
+	}
+	
+	@:functionCode('
+		std::vector<Kore::Graphics4::Texture*> textures;
+		for (unsigned int i = 0; i < images->length; i++) {
+			
+			textures.push_back( images->__get(i).StaticCast<  ::kha::Image >()->texture );
+			
+		}
+		std::copy(textures.begin(), textures.end(), source->textureArrayTextures);
+		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
+	')
+	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
+		
+	}
+	
+	
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
@@ -277,7 +305,7 @@ class Image implements Canvas implements Resource {
 		return Color.fromValue(atInternal(x, y));
 	}
 
-	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr;")
+	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr; delete[] textureArrayTextures;")
 	public function unload(): Void {
 
 	}
