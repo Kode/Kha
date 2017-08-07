@@ -89,6 +89,12 @@ extern class Krom {
 	static function screenDpi(): Int;
 	static function systemId(): String;
 	static function requestShutdown(): Void;
+	static function displayCount(): Int;
+	static function displayWidth(index: Int): Int;
+	static function displayHeight(index: Int): Int;
+	static function displayX(index: Int): Int;
+	static function displayY(index: Int): Int;
+	static function displayIsPrimary(index: Int): Bool;
 
 	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
 	static function sysCommand(cmd: String, ?args: Array<String>): Int;
