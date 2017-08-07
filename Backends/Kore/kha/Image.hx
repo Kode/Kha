@@ -13,7 +13,7 @@ import kha.graphics4.Usage;
 #include <Kore/Graphics4/TextureArray.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget; Kore::Graphics4::TextureArray* textureArray; Kore::Graphics4::Image* textureArrayTextures[];")
+@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget; Kore::Graphics4::TextureArray* textureArray; Kore::Graphics4::Image** textureArrayTextures;")
 class Image implements Canvas implements Resource {
 	private var format: TextureFormat;
 	private var readable: Bool;
@@ -53,13 +53,10 @@ class Image implements Canvas implements Resource {
 	}
 	
 	@:functionCode('
-		std::vector<Kore::Graphics4::Texture*> textures;
-		for (unsigned int i = 0; i < images->length; i++) {
-			
-			textures.push_back( images->__get(i).StaticCast<  ::kha::Image >()->texture );
-			
+		source->textureArrayTextures = new Kore::Graphics4::Image*[images->length];
+		for (unsigned i = 0; i < images->length; ++i) {
+			source->textureArrayTextures[i] = images->__get(i).StaticCast<  ::kha::Image >()->texture;
 		}
-		std::copy(textures.begin(), textures.end(), source->textureArrayTextures);
 		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
 	')
 	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
@@ -305,7 +302,7 @@ class Image implements Canvas implements Resource {
 		return Color.fromValue(atInternal(x, y));
 	}
 
-	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr;")
+	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr; delete[] textureArrayTextures; textureArrayTextures = nullptr;")
 	public function unload(): Void {
 
 	}
