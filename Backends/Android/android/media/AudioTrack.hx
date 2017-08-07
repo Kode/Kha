@@ -14,7 +14,6 @@ extern class AudioTrack {
 	public function write(audioData: NativeArray<Int16>, offsetInShorts: Int, sizeInShorts: Int): Int;
 	public function setPositionNotificationPeriod(periodInFrames:Int): Int;
 	public function setNotificationMarkerPosition(markerInFrames:Int): Int;
-	public function getUnderrunCount(): Int;
 	public static function getMinBufferSize(sampleRateInHz:Int, channelConfig:Int, audioFormat:Int): Int;
 	
 	public static var MODE_STREAM: Int;

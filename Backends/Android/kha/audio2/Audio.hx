@@ -17,7 +17,7 @@ class Audio {
 	
 	public static function initAudioTrack(): Void {
 		var sampleRate = 44100;
-		buffersizeInBytes = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT) * 8;
+		buffersizeInBytes = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT) * 2;
 
 		audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
 									AudioFormat.ENCODING_PCM_16BIT, buffersizeInBytes, AudioTrack.MODE_STREAM);
@@ -30,8 +30,9 @@ class Audio {
 			initAudioTrack();
 			var buffersize = Math.ceil(buffersizeInBytes / 4); // stereo 16 bit samples
 			buffer = new Buffer(buffersize, 2, 44100);
-			audioTrack.setPositionNotificationPeriod(Math.ceil(buffersize / 2));
-			listener = new UpdateListener();
+			var notificationPeriod = Math.ceil(buffersize / 2);
+			audioTrack.setPositionNotificationPeriod(notificationPeriod);
+			listener = new UpdateListener(notificationPeriod);
 			audioTrack.setPlaybackPositionUpdateListener(listener);
 			// prime the AudioTrack buffer to ensure playback
 			var zeros = new NativeArray<Int16>(buffersize * 2);
@@ -59,7 +60,12 @@ class Audio {
 }
 
 private class UpdateListener implements AudioTrackOnPlaybackPositionUpdateListener {
-	public function new(): Void {
+	private var chunk:NativeArray<Int16>;
+	private var notificationPeriod:Int;
+	
+	public function new(notificationPeriod:Int): Void {
+		this.notificationPeriod = notificationPeriod;
+		chunk = new NativeArray<Int16>(notificationPeriod * 2);
 	}
 	
 	public function onMarkerReached(track: AudioTrack): Void {
@@ -67,9 +73,6 @@ private class UpdateListener implements AudioTrackOnPlaybackPositionUpdateListen
 	}
 	
 	public function onPeriodicNotification(track: AudioTrack): Void {
-		var notificationPeriod = track.getPositionNotificationPeriod();
-		var chunk = new NativeArray<Int16>(notificationPeriod * 2);
-		
 		if (Audio.audioCallback != null) {
 			Audio.audioCallback(notificationPeriod * 2, Audio.buffer);
 			for (i in 0...notificationPeriod * 2) {
@@ -87,6 +90,5 @@ private class UpdateListener implements AudioTrackOnPlaybackPositionUpdateListen
 			}
 		}
 		track.write(chunk, 0, notificationPeriod * 2);
-		trace(track.getUnderrunCount());
 	}
 }
