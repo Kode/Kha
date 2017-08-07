@@ -305,7 +305,7 @@ class Image implements Canvas implements Resource {
 		return Color.fromValue(atInternal(x, y));
 	}
 
-	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr; delete[] textureArrayTextures;")
+	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr;")
 	public function unload(): Void {
 
 	}
