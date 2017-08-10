@@ -57,9 +57,11 @@ class Sound extends kha.Sound {
 		}
 		if (soundId < 0) {
 			try {
+				var start = Scheduler.realTime();
 				mediaPlayer = new MediaPlayer();
 				mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 				mediaPlayer.prepare();
+				trace('MediaPlayer preparation for ${file}: ${Scheduler.realTime() - start} seconds.');
 			}
 			catch (e: Dynamic) {
 				trace(e);
@@ -69,6 +71,11 @@ class Sound extends kha.Sound {
 	
 	override public function uncompress(done: Void->Void): Void {
 		done();
+	}
+	
+	override public function unload(): Void {
+		Audio.soundpool.unload(soundId);
+		mediaPlayer.release();
 	}
 	
 	//public function new(file : AssetFileDescriptor) {
