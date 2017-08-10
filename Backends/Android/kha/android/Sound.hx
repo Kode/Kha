@@ -1,9 +1,12 @@
 package kha.android;
 
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.SoundPoolOnLoadCompleteListener;
+import android.os.BuildVERSION;
 import kha.audio1.Audio;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
@@ -31,13 +34,43 @@ class LoadListener implements SoundPoolOnLoadCompleteListener {
 }
 
 class Sound extends kha.Sound {
-	private var afd: AssetFileDescriptor;
 	public var soundId(default, null) = -1;
 	public var mediaPlayer(default, null): MediaPlayer = null;
 	
 	public function new(file: AssetFileDescriptor) {
 		super();
-		if (file.getLength() < 1024 * 1024) { // does only guarantee complete playback for wav/flac (audio signal may be bigger than 1MB after decompression)
+		
+		var uncompressedSize: Float;
+		var sampleRate = 48000; // worst case
+		var channelCount = 2;
+		var length: Float = 0;
+		
+		// if api >= 16 determine sample rate and channel count for size calculation
+		if (BuildVERSION.SDK_INT >= 16) {
+			try {
+				var mex = new MediaExtractor();
+				mex.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+				var mf = mex.getTrackFormat(0);
+				sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+				channelCount = mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+			}
+			catch (e: Dynamic) {
+				trace(e);
+			}
+		}
+		
+		try {
+			mediaPlayer = new MediaPlayer();
+			mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+			mediaPlayer.prepare();
+			length = mediaPlayer.getDuration() / 1000; // getDuration returns milliseconds
+		}
+		catch (e: Dynamic) {
+			trace(e);
+		}
+		
+		uncompressedSize = (length != 0) ? sampleRate * channelCount * length * 2 : 1024 * 1024 + 1;
+		if (uncompressedSize < 1024 * 1024 && Audio.spSamples < Audio.spSamplesMax) {
 			try {
 				var id:Int = Audio.soundpool.load(file, 1);
 				var lock = new ReentrantLock();
@@ -48,6 +81,7 @@ class Sound extends kha.Sound {
 				isLoaded.await();
 				if (id > 0 && ll.status == 0) {
 					this.soundId = id;
+					Audio.spSamples++;
 				}
 				lock.unlock();
 			}
@@ -55,17 +89,9 @@ class Sound extends kha.Sound {
 				trace(e);
 			}
 		}
-		if (soundId < 0) {
-			try {
-				var start = Scheduler.realTime();
-				mediaPlayer = new MediaPlayer();
-				mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-				mediaPlayer.prepare();
-				trace('MediaPlayer preparation for ${file}: ${Scheduler.realTime() - start} seconds.');
-			}
-			catch (e: Dynamic) {
-				trace(e);
-			}
+		if (soundId > 0) {
+			mediaPlayer.release();
+			mediaPlayer = null;
 		}
 	}
 	
@@ -74,8 +100,12 @@ class Sound extends kha.Sound {
 	}
 	
 	override public function unload(): Void {
-		Audio.soundpool.unload(soundId);
-		mediaPlayer.release();
+		if (soundId > 0) {
+			Audio.soundpool.unload(soundId);
+		}
+		if (mediaPlayer != null) {
+			mediaPlayer.release();
+		}
 	}
 	
 	//public function new(file : AssetFileDescriptor) {
