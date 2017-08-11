@@ -18,59 +18,97 @@ class CompListener implements MediaPlayerOnCompletionListener {
 
 class MediaPlayerChannel implements AudioChannel {
 	private var mp: MediaPlayer;
+	private var sound: Sound;
 	
 	@:noCompletion
 	public var playbackComplete: Bool = false;
 	
 	public function new(sound:Sound, loop:Bool): Void {
+		this.sound = sound;
+		sound.ownedByMPC = this;
 		mp = sound.mediaPlayer;
 		mp.seekTo(0);
 		mp.setLooping(loop);
 		volume = 1;
+		mp.setOnCompletionListener(new CompListener(this));
 		mp.start();
 	}
 	
 	public function play(): Void {
-		mp.start();
+		try {
+			mp.start();
+		}
+		catch (e: Dynamic) {
+			trace(e);
+		}
 	}
 
 	public function pause(): Void {
-		mp.pause();
+		try {
+			mp.pause();
+		}
+		catch (e: Dynamic) {
+			trace(e);
+		}
 	}
 
 	public function stop(): Void {
-		mp.stop();
-		mp.release();
+		try {
+			mp.stop();
+		}
+		catch (e: Dynamic) {
+			trace(e);
+		}
 	}
 
 	public var length(get, null): Float;
 
 	private function get_length(): Float {
-		return mp.getDuration() / 1000;
+		try {
+			return mp.getDuration() / 1000;
+		}
+		catch (e: Dynamic) {
+			trace(e);
+			return 0;
+		}
 	}
 
 	public var position(get, null): Float;
 
 	private function get_position(): Float {
-		return mp.getCurrentPosition() / 1000;
+		try {
+			return mp.getCurrentPosition() / 1000;
+		}
+		catch (e: Dynamic) {
+			trace(e);
+			return 0;
+		}
 	}
 
 	@:isVar
 	public var volume(get, set): Float;
 	
 	private function get_volume(): Float {
-		return volume;
+		if (sound.ownedByMPC == this) {
+			return volume;
+		}
+		return sound.ownedByMPC.volume;
 	}
 
 	private function set_volume(value: Float): Float {
-		mp.setVolume(value, value);
-		volume = value;
-		return value;
+		if (sound.ownedByMPC == this) {
+			mp.setVolume(value, value);
+			volume = value;
+			return value;
+		}
+		else {
+			return sound.ownedByMPC.volume = value;
+		}
 	}
 
 	public var finished(get, null): Bool;
 	
 	private function get_finished(): Bool {
-		return playbackComplete;
+		return sound.ownedByMPC.playbackComplete;
 	}
 }

@@ -17,7 +17,7 @@ class Audio {
 		var androidSound: Sound = cast(sound, Sound);
 		if (androidSound.soundId > 0) {
 			var loopMode = loop ? -1: 0;
-			var sc = new SoundPoolChannel(soundpool, androidSound.soundId, loopMode);
+			var sc = new SoundPoolChannel(androidSound, loopMode);
 			return sc;
 		}
 		else {
@@ -26,7 +26,7 @@ class Audio {
 			return mc;
 			}
 			catch (e: Dynamic) {
-				return null;
+				trace(e);
 			}
 		}
 		return null;

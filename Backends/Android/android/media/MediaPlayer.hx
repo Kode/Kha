@@ -21,4 +21,5 @@ extern class MediaPlayer {
 	public function getCurrentPosition(): Int; // millisec
 	public function getDuration(): Int; // millisec
 	public function seekTo(msec: Int): Void;
+	public function setOnCompletionListener(listener: MediaPlayerOnCompletionListener): Void;
 }

@@ -10,6 +10,7 @@ import android.os.BuildVERSION;
 import kha.audio1.Audio;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
+import kha.audio1.MediaPlayerChannel;
 //import haxe.io.Bytes;
 //import java.NativeArray;
 //import java.types.Int8;
@@ -36,6 +37,8 @@ class LoadListener implements SoundPoolOnLoadCompleteListener {
 class Sound extends kha.Sound {
 	public var soundId(default, null) = -1;
 	public var mediaPlayer(default, null): MediaPlayer = null;
+	public var length: Float = 0;
+	public var ownedByMPC: MediaPlayerChannel;
 	
 	public function new(file: AssetFileDescriptor) {
 		super();
@@ -43,7 +46,6 @@ class Sound extends kha.Sound {
 		var uncompressedSize: Float;
 		var sampleRate = 48000; // worst case
 		var channelCount = 2;
-		var length: Float = 0;
 		
 		// if api >= 16 determine sample rate and channel count for size calculation
 		if (BuildVERSION.SDK_INT >= 16) {
@@ -53,6 +55,7 @@ class Sound extends kha.Sound {
 				var mf = mex.getTrackFormat(0);
 				sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 				channelCount = mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+				mex.release();
 			}
 			catch (e: Dynamic) {
 				trace(e);
@@ -101,7 +104,9 @@ class Sound extends kha.Sound {
 	
 	override public function unload(): Void {
 		if (soundId > 0) {
-			Audio.soundpool.unload(soundId);
+			if (Audio.soundpool.unload(soundId)) {
+				Audio.spSamples--;
+			}
 		}
 		if (mediaPlayer != null) {
 			mediaPlayer.release();
