@@ -136,6 +136,10 @@ class SystemImpl {
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);
 
+		//if (kha.audio2.Audio._init()) {
+			//kha.audio2.Audio1._init();
+		//}
+		
 		Scheduler.start();
 
 		done();
