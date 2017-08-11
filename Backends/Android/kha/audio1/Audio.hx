@@ -5,9 +5,12 @@ import android.media.AudioManager;
 import kha.android.Sound;
 
 class Audio {
-	public static var spSamples = 0;
-	public static var spSamplesMax = 32;
-	public static var soundpool = new SoundPool(spSamplesMax, AudioManager.STREAM_MUSIC, 0);
+	@:allow(kha.android.Sound)
+	private static var spSamples = 0;
+	@:allow(kha.android.Sound)
+	private static var spSamplesMax(default, null): Int = 32;
+	@:noCompletion
+	public static var soundpool(default, null) = new SoundPool(spSamplesMax, AudioManager.STREAM_MUSIC, 0);
 	
 	public static function play(sound: kha.Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		// It is possible to have more than one simultaneously playing instances of one Sound

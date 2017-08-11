@@ -36,7 +36,9 @@ class MediaPlayerChannel implements AudioChannel {
 	
 	public function play(): Void {
 		try {
-			mp.start();
+			if (!sound.ownedByMPC.playbackComplete) {
+				mp.start();
+			}
 		}
 		catch (e: Dynamic) {
 			trace(e);
