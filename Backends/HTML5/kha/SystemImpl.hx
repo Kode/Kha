@@ -315,7 +315,7 @@ class SystemImpl {
 		//var heightTransform: Float = canvas.height / Loader.the.height;
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
-			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
+			var g4 = new kha.js.graphics4.Graphics();
 			frame = new Framebuffer(0, null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
@@ -491,11 +491,26 @@ class SystemImpl {
 	}
 
 	private static function setMouseXY(event: MouseEvent): Void {
+		var internalSpacingX: Float = 0;
+		var internalSpacingY: Float = 0;
+		var scale: Float = 1;
+		if (SystemImpl.options.width != null && SystemImpl.options.height != null) {
+			var optX = SystemImpl.options.width;
+			var optY = SystemImpl.options.height;
+			var canvX = SystemImpl.khanvas.width;
+			var canvY = SystemImpl.khanvas.height;
+			var systemRatio = optX / optY;
+			var canvasRatio = canvX / canvY;
+			internalSpacingX = canvasRatio > systemRatio ? 0.5 * (canvX - optX * (canvY / optY)) : 0;
+			internalSpacingY = canvasRatio < systemRatio ? 0.5 * (canvY - optY * (canvX / optX)) : 0;
+			scale = canvasRatio > systemRatio ? optY / canvY : optX / canvX;
+		}
+
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
 		var borderHeight = SystemImpl.khanvas.clientTop;
-		mouseX = Std.int((event.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
-		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
+		mouseX = Std.int((event.clientX - rect.left - borderWidth - internalSpacingX) * scale * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
+		mouseY = Std.int((event.clientY - rect.top - borderHeight - internalSpacingY) * scale * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
 	private static var iosSoundEnabled: Bool = false;
@@ -622,13 +637,17 @@ class SystemImpl {
 		var lastMouseY = mouseY;
 		setMouseXY(event);
 
-		var movementX = event.movementX;
-		var movementY = event.movementY;
+		var movementX = mouseX - lastMouseX;
+		var movementY = mouseY - lastMouseY;
 
-		if(event.movementX == null) {
-		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
-		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
-		}
+		// at the moment event.movementX and Y don't behave the same on different browsers if windows or the website is zoomed.
+		// var movementX = event.movementX;
+		// var movementY = event.movementY;
+
+		// if(event.movementX == null) {
+		//    movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+		//    movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		// }
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 		insideInputEvent = false;
