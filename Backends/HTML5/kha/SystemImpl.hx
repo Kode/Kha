@@ -195,6 +195,36 @@ class SystemImpl {
 		for (i in 0...256) pressedKeys.push(false);
 		for (i in 0...256) pressedKeys.push(null);
 
+		js.Browser.document.addEventListener("copy", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.copyListener != null) {
+				var data = System.copyListener();
+				if (data != null) {
+					e.clipboardData.setData("text/plain", data);
+				}
+				e.preventDefault();
+			}
+		});
+
+		js.Browser.document.addEventListener("cut", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.cutListener != null) {
+				var data = System.cutListener();
+				if (data != null) {
+					e.clipboardData.setData("text/plain", data);
+				}
+				e.preventDefault();
+			}
+		});
+
+		js.Browser.document.addEventListener("paste", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.pasteListener != null) {
+				System.pasteListener(e.clipboardData.getData("text/plain"));
+				e.preventDefault();
+			}
+		});
+
 		CanvasImage.init();
 		//Loader.init(new kha.js.Loader());
 		Scheduler.init();

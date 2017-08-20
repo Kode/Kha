@@ -24,6 +24,9 @@ class System {
 	private static var backgroundListeners: Array<Void -> Void> = new Array();
 	private static var shutdownListeners: Array<Void -> Void> = new Array();
 	private static var dropFilesListeners: Array<String -> Void> = new Array();
+	static var cutListener: Void->String = null;
+	static var copyListener: Void->String = null;
+	static var pasteListener: String->Void = null;
 	private static var theTitle: String;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
@@ -72,6 +75,12 @@ class System {
 
 	public static function notifyOnDropFiles(dropFilesListener: String -> Void): Void {
 		dropFilesListeners.push(dropFilesListener);
+	}
+
+	public static function notifyOnCutCopyPaste(cutListener: Void->String, copyListener: Void->String, pasteListener: String->Void): Void {
+		System.cutListener = cutListener;
+		System.copyListener = copyListener;
+		System.pasteListener = pasteListener;
 	}
 
 	private static function render(id: Int, framebuffer: Framebuffer): Void {
