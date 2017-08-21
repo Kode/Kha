@@ -180,7 +180,7 @@ class SystemImpl {
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
-		#if !no_keyboard
+		#if !kha_no_keyboard 
 		keyboard = new Keyboard();
 		#end
 		mouse = new kha.input.MouseImpl();
