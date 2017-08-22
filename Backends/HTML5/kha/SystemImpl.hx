@@ -109,6 +109,17 @@ class SystemImpl {
 		return false;
 	}
 
+	private static function isFirefox(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Firefox") >= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
+	}
+
 	public static function windowWidth(windowId: Int = 0): Int {
 		return (khanvas.width == 0 && options.width != null) ? options.width : khanvas.width;
 	}
@@ -491,26 +502,11 @@ class SystemImpl {
 	}
 
 	private static function setMouseXY(event: MouseEvent): Void {
-		var internalSpacingX: Float = 0;
-		var internalSpacingY: Float = 0;
-		var scale: Float = 1;
-		if (SystemImpl.options.width != null && SystemImpl.options.height != null) {
-			var optX = SystemImpl.options.width;
-			var optY = SystemImpl.options.height;
-			var canvX = SystemImpl.khanvas.width;
-			var canvY = SystemImpl.khanvas.height;
-			var systemRatio = optX / optY;
-			var canvasRatio = canvX / canvY;
-			internalSpacingX = canvasRatio > systemRatio ? 0.5 * (canvX - optX * (canvY / optY)) : 0;
-			internalSpacingY = canvasRatio < systemRatio ? 0.5 * (canvY - optY * (canvX / optX)) : 0;
-			scale = canvasRatio > systemRatio ? optY / canvY : optX / canvX;
-		}
-
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
 		var borderHeight = SystemImpl.khanvas.clientTop;
-		mouseX = Std.int((event.clientX - rect.left - borderWidth - internalSpacingX) * scale * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
-		mouseY = Std.int((event.clientY - rect.top - borderHeight - internalSpacingY) * scale * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
+		mouseX = Std.int((event.clientX - rect.left - borderWidth) * SystemImpl.khanvas.width / (rect.width - 2 * borderWidth));
+		mouseY = Std.int((event.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
 	private static var iosSoundEnabled: Bool = false;
@@ -637,17 +633,19 @@ class SystemImpl {
 		var lastMouseY = mouseY;
 		setMouseXY(event);
 
-		var movementX = mouseX - lastMouseX;
-		var movementY = mouseY - lastMouseY;
+		var movementX = event.movementX;
+		var movementY = event.movementY;
 
-		// at the moment event.movementX and Y don't behave the same on different browsers if windows or the website is zoomed.
-		// var movementX = event.movementX;
-		// var movementY = event.movementY;
+		if(event.movementX == null) {
+		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		}
 
-		// if(event.movementX == null) {
-		//    movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
-		//    movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
-		// }
+		// this ensures same behaviour across browser until they fix it
+		if (isFirefox()) {
+			movementX = Std.int(movementX * Browser.window.devicePixelRatio);
+			movementY = Std.int(movementY * Browser.window.devicePixelRatio);
+		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 		insideInputEvent = false;
