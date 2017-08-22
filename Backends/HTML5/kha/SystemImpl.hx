@@ -45,6 +45,7 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
+	private static var firefox: Bool = false;
 	public static var insideInputEvent: Bool = false;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
@@ -67,6 +68,7 @@ class SystemImpl {
 		#else
 		mobile = isMobile();
 		chrome = isChrome();
+		firefox = isFirefox();
 		init2();
 		callback();
 		#end
@@ -101,6 +103,17 @@ class SystemImpl {
 	private static function isChrome(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Chrome") >= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
+	}
+
+	private static function isFirefox(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Firefox") >= 0) {
 			return true;
 		}
 		else {
@@ -345,7 +358,7 @@ class SystemImpl {
 		//var heightTransform: Float = canvas.height / Loader.the.height;
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
-			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
+			var g4 = new kha.js.graphics4.Graphics();
 			frame = new Framebuffer(0, null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
@@ -658,6 +671,12 @@ class SystemImpl {
 		if(event.movementX == null) {
 		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
 		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		}
+
+		// this ensures same behaviour across browser until they fix it
+		if (firefox) {
+			movementX = Std.int(movementX * Browser.window.devicePixelRatio);
+			movementY = Std.int(movementY * Browser.window.devicePixelRatio);
 		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
