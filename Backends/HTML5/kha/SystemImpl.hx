@@ -45,6 +45,7 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
+	private static var firefox: Bool = false;
 	public static var insideInputEvent: Bool = false;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
@@ -67,6 +68,7 @@ class SystemImpl {
 		#else
 		mobile = isMobile();
 		chrome = isChrome();
+		firefox = isFirefox();
 		init2();
 		callback();
 		#end
@@ -642,7 +644,7 @@ class SystemImpl {
 		}
 
 		// this ensures same behaviour across browser until they fix it
-		if (isFirefox()) {
+		if (firefox) {
 			movementX = Std.int(movementX * Browser.window.devicePixelRatio);
 			movementY = Std.int(movementY * Browser.window.devicePixelRatio);
 		}
