@@ -603,7 +603,12 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if (khanvas.setCapture != null)  khanvas.setCapture();
+			if (khanvas.setCapture != null)  {
+				khanvas.setCapture();
+			}
+			else {
+				khanvas.ownerDocument.addEventListener('mousemove', documentMouseMove, true);
+			}
 			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -624,7 +629,12 @@ class SystemImpl {
 		
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
-		if(khanvas.releaseCapture != null) khanvas.ownerDocument.releaseCapture();
+		if (khanvas.releaseCapture != null) {
+			khanvas.ownerDocument.releaseCapture();
+		}
+		else {
+			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
+		}
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -657,6 +667,11 @@ class SystemImpl {
 		insideInputEvent = false;
 	}
 
+	private static function documentMouseMove(event: MouseEvent): Void {
+		event.stopPropagation();
+		mouseMove(event);
+	}
+	
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
 		unlockSoundOnIOS();
