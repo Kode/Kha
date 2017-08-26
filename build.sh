@@ -49,7 +49,7 @@ TRUE=0
 if  [ "$target" == "windows" ] ||
 	[ "$target" == "linux" ] ||
 	[ "$target" == "android" ] ||
-	[ "$target" == "windowsrt" ]
+	[ "$target" == "windowsrt" ] ||
 	[ "$target" == "osx" ] ||
 	[ "$target" == "ios" ] ||
 	[ "$target" == "html5" ] ||
@@ -59,7 +59,6 @@ if  [ "$target" == "windows" ] ||
 	[ "$target" == "java" ] ||
 	[ "$target" == "psm" ] ||
 	[ "$target" == "dalvik" ] ||
-	[ "$target" == "tizen" ] ||
 	[ "$target" == "tizen" ]; then
 	TRUE=1
 fi
