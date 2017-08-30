@@ -95,6 +95,8 @@ extern class Krom {
 	static function displayX(index: Int): Int;
 	static function displayY(index: Int): Int;
 	static function displayIsPrimary(index: Int): Bool;
+	static function writeStorage(name: String, data: haxe.io.BytesData): Void;
+	static function readStorage(name: String): haxe.io.BytesData;
 
 	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
 	static function sysCommand(cmd: String, ?args: Array<String>): Int;
