@@ -73,6 +73,8 @@ class Image implements Canvas implements Resource {
 	private function get_realWidth(): Int { return rw; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return rh; }
+	public var g1(get, null): kha.graphics1.Graphics;
+	private function get_g1(): kha.graphics1.Graphics { return null; }
 	public var g2(get, null): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return null; }
 	public var g4(get, null): kha.graphics4.Graphics;
