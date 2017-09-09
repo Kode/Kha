@@ -45,6 +45,7 @@ class SystemImpl {
 	public static var mobile: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
+	private static var firefox: Bool = false;
 	public static var insideInputEvent: Bool = false;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
@@ -67,6 +68,7 @@ class SystemImpl {
 		#else
 		mobile = isMobile();
 		chrome = isChrome();
+		firefox = isFirefox();
 		init2();
 		callback();
 		#end
@@ -101,6 +103,17 @@ class SystemImpl {
 	private static function isChrome(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Chrome") >= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		return false;
+	}
+
+	private static function isFirefox(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("Firefox") >= 0) {
 			return true;
 		}
 		else {
@@ -180,7 +193,7 @@ class SystemImpl {
 	public static function init2(?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
-		#if !no_keyboard
+		#if !kha_no_keyboard 
 		keyboard = new Keyboard();
 		#end
 		mouse = new kha.input.MouseImpl();
@@ -194,6 +207,36 @@ class SystemImpl {
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		for (i in 0...256) pressedKeys.push(null);
+
+		js.Browser.document.addEventListener("copy", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.copyListener != null) {
+				var data = System.copyListener();
+				if (data != null) {
+					e.clipboardData.setData("text/plain", data);
+				}
+				e.preventDefault();
+			}
+		});
+
+		js.Browser.document.addEventListener("cut", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.cutListener != null) {
+				var data = System.cutListener();
+				if (data != null) {
+					e.clipboardData.setData("text/plain", data);
+				}
+				e.preventDefault();
+			}
+		});
+
+		js.Browser.document.addEventListener("paste", function (e_) {
+			var e: js.html.ClipboardEvent = cast e_;
+			if (System.pasteListener != null) {
+				System.pasteListener(e.clipboardData.getData("text/plain"));
+				e.preventDefault();
+			}
+		});
 
 		CanvasImage.init();
 		//Loader.init(new kha.js.Loader());
@@ -315,7 +358,7 @@ class SystemImpl {
 		//var heightTransform: Float = canvas.height / Loader.the.height;
 		//var transform: Float = Math.min(widthTransform, heightTransform);
 		if (gl) {
-			var g4 = gl ? new kha.js.graphics4.Graphics() : null;
+			var g4 = new kha.js.graphics4.Graphics();
 			frame = new Framebuffer(0, null, null, g4);
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
@@ -560,7 +603,12 @@ class SystemImpl {
 				mouse.sendDownEvent(0, 0, mouseX, mouseY);
 			}
 
-			if (khanvas.setCapture != null)  khanvas.setCapture();
+			if (khanvas.setCapture != null)  {
+				khanvas.setCapture();
+			}
+			else {
+				khanvas.ownerDocument.addEventListener('mousemove', documentMouseMove, true);
+			}
 			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
 		}
 		else if(event.which == 2) { //middle button
@@ -581,7 +629,12 @@ class SystemImpl {
 		
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
-		if(khanvas.releaseCapture != null) khanvas.ownerDocument.releaseCapture();
+		if (khanvas.releaseCapture != null) {
+			khanvas.ownerDocument.releaseCapture();
+		}
+		else {
+			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
+		}
 		if (leftMouseCtrlDown) {
 			mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		}
@@ -614,6 +667,11 @@ class SystemImpl {
 		insideInputEvent = false;
 	}
 
+	private static function documentMouseMove(event: MouseEvent): Void {
+		event.stopPropagation();
+		mouseMove(event);
+	}
+	
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
 		unlockSoundOnIOS();
@@ -628,6 +686,12 @@ class SystemImpl {
 		if(event.movementX == null) {
 		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
 		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		}
+
+		// this ensures same behaviour across browser until they fix it
+		if (firefox) {
+			movementX = Std.int(movementX * Browser.window.devicePixelRatio);
+			movementY = Std.int(movementY * Browser.window.devicePixelRatio);
 		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);

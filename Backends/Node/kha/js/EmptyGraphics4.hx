@@ -111,6 +111,10 @@ class EmptyGraphics4 implements Graphics {
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
 		
 	}
+
+	public function setTextureArray(unit: TextureUnit, texture: kha.Image): Void {
+	
+	}
 	
 	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {
 		
