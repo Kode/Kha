@@ -6,6 +6,8 @@ import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
 
 class VertexBuffer {
+	static var lastId: Int = -1;
+	public var _id: Int;
 	public var _data: Float32Array;
 	private var mySize: Int;
 	private var myStride: Int;
@@ -73,6 +75,16 @@ class VertexBuffer {
 			}
 			++index;
 		}
+		
+		_id = ++lastId;
+		var elements = new Array<Dynamic>();
+		for (element in structure.elements) {
+			elements.push({
+				name: element.name,
+				data: element.data.getIndex()
+			});
+		}
+		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}});
 	}
 
 	public function delete(): Void {
@@ -86,7 +98,7 @@ class VertexBuffer {
 	}
 	
 	public function unlock(): Void {
-		
+		Worker.postMessage({ command: 'updateVertexBuffer', id: _id, data: _data.data() });
 	}
 	
 	public function stride(): Int {

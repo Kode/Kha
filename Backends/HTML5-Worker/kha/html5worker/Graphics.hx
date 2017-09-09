@@ -61,7 +61,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		
+		Worker.postMessage({ command: 'setVertexBuffer', id: vertexBuffer._id });
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
@@ -73,7 +73,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-	
+		Worker.postMessage({ command: 'setIndexBuffer', id: indexBuffer._id });
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
@@ -165,7 +165,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
-		
+		Worker.postMessage({ command: 'drawIndexedVertices', start: start, count: count });
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

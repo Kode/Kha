@@ -4,6 +4,8 @@ import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
+	static var lastId: Int = -1;
+	public var _id: Int;
 	public var _data: Uint32Array;
 	private var mySize: Int;
 	private var usage: Usage;
@@ -12,6 +14,8 @@ class IndexBuffer {
 		this.usage = usage;
 		mySize = indexCount;
 		_data = new Uint32Array(indexCount);
+		_id = ++lastId;
+		Worker.postMessage({ command: 'createIndexBuffer', id: _id, size: indexCount });
 	}
 	
 	public function delete(): Void {
@@ -25,7 +29,7 @@ class IndexBuffer {
 	}
 	
 	public function unlock(): Void {
-
+		Worker.postMessage({ command: 'updateIndexBuffer', id: _id, data: _data.data() });
 	}
 	
 	public function set(): Void {
