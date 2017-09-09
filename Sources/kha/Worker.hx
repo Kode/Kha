@@ -10,10 +10,11 @@ import sys.io.File;
 
 using haxe.macro.ExprTools;
 
+#if (kha_html5 || kha_debug_html5)
 class Worker {
 	#if kha_in_worker
 	
-	public static function notify(func: Dynamic->Void): Void {
+	public static function notifyWorker(func: Dynamic->Void): Void {
 		#if !macro
 		untyped __js__("self").addEventListener("message", function (e) {
 			func(e.data);
@@ -21,7 +22,7 @@ class Worker {
 		#end
 	}
 
-	public static function post(message: Dynamic): Void {
+	public static function postFromWorker(message: Dynamic): Void {
 		#if !macro
 		untyped __js__("self").postMessage(message);
 		#end
@@ -70,16 +71,54 @@ class Worker {
 			threadstring += thread + "\n";
 		}
 		File.saveContent(AssetsBuilder.findResources() + "workers.txt", threadstring);
-		return Context.parse("kha.Worker._create(\"" + name + ".js\")", Context.currentPos()); //Context.parse("new js.html.Worker(\"" + func.toString() + ".js\")", Context.currentPos());
+		return Context.parse("kha.Worker._create(\"" + name + ".js\")", Context.currentPos());
 	}
 
 	#end
 }
+#end
 
-/*
+#if kha_kore
+
+import cpp.vm.Thread;
+import kha.Scheduler;
+
 class Worker {
-	public static macro function run(clazz: Expr) {
-		return Context.parse(clazz.toString() + ".main()", Context.currentPos());
+	public static var _mainThread: Thread;
+	var thread: Thread;
+
+	function new(thread: Thread) {
+		this.thread = thread;
+	}
+
+	public static function create(clazz: Class<Dynamic>): Worker {
+		return new Worker(Thread.create(Reflect.field(clazz, "main")));
+	}
+
+	public function notify(func: Dynamic->Void): Void {
+		Scheduler.addFrameTask(function () {
+			var message = Thread.readMessage(false);
+			if (message != null) {
+				func(message);
+			}
+		}, 0);		
+	}
+
+	public function post(message: Dynamic): Void {
+		thread.sendMessage(message);
+	}
+
+	public static function notifyWorker(func: Dynamic->Void): Void {
+		while (true) {
+			var message = Thread.readMessage(true);
+			if (message != null) {
+				func(message);
+			}
+		}
+	}
+
+	public static function postFromWorker(message: Dynamic): Void {
+		_mainThread.sendMessage(message);
 	}
 }
-*/
+#end

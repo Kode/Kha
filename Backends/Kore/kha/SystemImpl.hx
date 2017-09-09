@@ -108,6 +108,7 @@ class SystemImpl {
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		initKore(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode), options.resizable, options.maximizable, options.minimizable);
 
+		kha.Worker._mainThread = cpp.vm.Thread.current();
 		//Shaders.init();
 
 		untyped __cpp__('post_kore_init()');
