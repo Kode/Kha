@@ -21,13 +21,52 @@ class SystemImpl {
 	static var width: Int = 800;
 	static var height: Int = 600;
 	static var dpi: Int = 96;
-	
+	static inline var maxGamepads: Int = 4;
+	static var frame: Framebuffer;
+	static var keyboard: Keyboard = null;
+	static var mouse: kha.input.Mouse;
+	static var surface: Surface;
+	static var gamepads: Array<Gamepad>;
+
 	public static function init(options: SystemOptions, callback: Void -> Void) {
+		Worker.handleMessages(messageHandler);
+		
+		Shaders.init();
+		var shaders = new Array<Dynamic>();
+		for (field in Reflect.fields(Shaders)) {
+			if (field != "init" && field != "__name__" && field.substr(field.length - 5, 4) != "Data") {
+				var shader = Reflect.field(Shaders, field);
+				shaders.push({
+					name: field,
+					files: shader.files,
+					sources: shader.sources
+				});
+			}
+		}
+		Worker.postMessage({ command: 'setShaders', shaders: shaders });
+			
 		SystemImpl.options = options;
-		init2();
+		
+		//haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
+		
+		keyboard = new Keyboard();
+		mouse = new Mouse();
+		surface = new Surface();
+		gamepads = new Array<Gamepad>();
+		for (i in 0...maxGamepads) {
+			gamepads[i] = new Gamepad(i);
+		}
+		
+		var g4 = new kha.html5worker.Graphics();
+		frame = new Framebuffer(0, null, null, g4);
+		frame.init(new kha.graphics2.Graphics1(frame), new kha.graphics4.Graphics2(frame), g4);
+
+		Scheduler.init();
+		Scheduler.start();
+		
 		callback();
 	}
-
+	
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		trace('initEx is not supported on the html5 target, running init() with first window options');
 
@@ -74,29 +113,6 @@ class SystemImpl {
 		
 	}
 
-	static inline var maxGamepads: Int = 4;
-	static var frame: Framebuffer;
-	static var keyboard: Keyboard = null;
-	static var mouse: kha.input.Mouse;
-	static var surface: Surface;
-	static var gamepads: Array<Gamepad>;
-
-	static function init2() {
-		//haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
-		keyboard = new Keyboard();
-		mouse = new Mouse();
-		surface = new Surface();
-		gamepads = new Array<Gamepad>();
-		for (i in 0...maxGamepads) {
-			gamepads[i] = new Gamepad(i);
-		}
-
-		Scheduler.init();
-
-		loadFinished();
-	}
-
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -105,15 +121,6 @@ class SystemImpl {
 	public static function getKeyboard(num: Int): Keyboard {
 		if (num != 0) return null;
 		return keyboard;
-	}
-
-	private static function loadFinished() {
-		Scheduler.start();
-
-		function animate(timestamp) {
-			Scheduler.executeFrame();
-			System.render(0, frame);
-		}
 	}
 
 	public static function lockMouse(): Void {
@@ -182,5 +189,29 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
+	}
+	
+	static function messageHandler(value: Dynamic): Void {
+		switch (value.data.command) {
+		/*case 'loadedBlob':
+			cast(Loader.the, kha.js.Loader).loadedBlob(value.data);
+		case 'loadedImage':
+			cast(Loader.the, kha.js.Loader).loadedImage(value.data);
+		case 'loadedSound':
+			cast(Loader.the, kha.js.Loader).loadedSound(value.data);
+		case 'loadedMusic':
+			cast(Loader.the, kha.js.Loader).loadedMusic(value.data);*/
+		case 'frame':
+			if (frame != null) {
+				Scheduler.executeFrame();
+				Worker.postMessage({ command: 'beginFrame' });
+				System.render(0, frame);
+				Worker.postMessage({ command: 'endFrame' });
+			}
+		/*case 'keyDown':
+			Configuration.screen().keyDown(Key.createByIndex(value.data.key), value.data.char);
+		case 'keyUp':
+			Configuration.screen().keyUp(Key.createByIndex(value.data.key), value.data.char);*/
+		}
 	}
 }
