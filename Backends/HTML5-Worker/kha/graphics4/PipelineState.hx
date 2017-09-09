@@ -23,9 +23,6 @@ class PipelineState extends PipelineStateBase {
 	}
 		
 	public function compile(): Void {
-		compileShader(vertexShader);
-		compileShader(fragmentShader);
-		
 		var index = 0;
 		for (structure in inputLayout) {
 			for (element in structure.elements) {
@@ -55,19 +52,15 @@ class PipelineState extends PipelineStateBase {
 		Worker.postMessage({ command: 'compilePipeline', id: _id, frag: fragmentShader.files[0], vert: vertexShader.files[0], layout: layout });
 	}
 	
-	public function set(): Void {
-
-	}
-	
-	private function compileShader(shader: Dynamic): Void {
-
-	}
-	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return null;
+		var loc = new kha.html5worker.ConstantLocation();
+		Worker.postMessage({ command: 'createConstantLocation', id: loc._id, name: name, pipeline: _id });
+		return loc;
 	}
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		return null;
+		var unit = new kha.html5worker.TextureUnit();
+		Worker.postMessage({ command: 'createTextureUnit', id: unit._id, name: name, pipeline: _id });
+		return unit;
 	}
 }

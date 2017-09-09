@@ -201,6 +201,8 @@ class SystemImpl {
 			cast(Loader.the, kha.js.Loader).loadedSound(value.data);
 		case 'loadedMusic':
 			cast(Loader.the, kha.js.Loader).loadedMusic(value.data);*/
+		case 'loadedImage':
+			LoaderImpl._loadedImage(value.data);
 		case 'frame':
 			if (frame != null) {
 				Scheduler.executeFrame();

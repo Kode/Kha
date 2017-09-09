@@ -77,7 +77,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
+		Worker.postMessage({ command: 'setTexture', stage: cast(stage, kha.html5worker.TextureUnit)._id, texture: texture.id });
 	}
 	
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
@@ -161,7 +161,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		
+		Worker.postMessage({ command: 'setMatrix3', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_00: matrix._00, _01: matrix._01, _02: matrix._02,
+			_10: matrix._10, _11: matrix._11, _12: matrix._12,
+			_20: matrix._20, _21: matrix._21, _22: matrix._22
+		});
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
