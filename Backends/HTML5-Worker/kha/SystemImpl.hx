@@ -201,6 +201,8 @@ class SystemImpl {
 			cast(Loader.the, kha.js.Loader).loadedSound(value.data);
 		case 'loadedMusic':
 			cast(Loader.the, kha.js.Loader).loadedMusic(value.data);*/
+		case 'patch':
+			js.Lib.eval(value.data.source);
 		case 'loadedImage':
 			LoaderImpl._loadedImage(value.data);
 		case 'frame':
