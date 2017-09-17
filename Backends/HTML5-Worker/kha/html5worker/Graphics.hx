@@ -117,47 +117,62 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
-
+		Worker.postMessage({ command: 'setBool', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			value: value});
 	}
 
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
-
+		Worker.postMessage({ command: 'setInt', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			value: value});
 	}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
-		
+		Worker.postMessage({ command: 'setFloat', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			value: value});
 	}
 
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
-		
+		Worker.postMessage({ command: 'setFloat2', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2});
 	}
 
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
-		
+		Worker.postMessage({ command: 'setFloat3', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2, _2: value3});
 	}
 
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
-		
+		Worker.postMessage({ command: 'setFloat4', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2, _2: value3, _3: value4});
 	}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		
+		Worker.postMessage({ command: 'setFloats', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			values: values});
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
-		
+		Worker.postMessage({ command: 'setVector2', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			x: value.x, y: value.y});
 	}
 
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
-		
+		Worker.postMessage({ command: 'setVector3', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			x: value.x, y: value.y, z: value.z});
 	}
 
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
-		
+		Worker.postMessage({ command: 'setVector4', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			x: value.x, y: value.y, z: value.z, w: value.w});
 	}
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		
+		Worker.postMessage({ command: 'setMatrix4', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_00: matrix._00, _01: matrix._01, _02: matrix._02, _03: matrix._03,
+			_10: matrix._10, _11: matrix._11, _12: matrix._12, _13: matrix._13,
+			_20: matrix._20, _21: matrix._21, _22: matrix._22, _23: matrix._23,
+			_30: matrix._30, _31: matrix._31, _32: matrix._32, _33: matrix._33
+		});
 	}
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
