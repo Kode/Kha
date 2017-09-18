@@ -193,18 +193,14 @@ class SystemImpl {
 	
 	static function messageHandler(value: Dynamic): Void {
 		switch (value.data.command) {
-		/*case 'loadedBlob':
-			cast(Loader.the, kha.js.Loader).loadedBlob(value.data);
-		case 'loadedImage':
-			cast(Loader.the, kha.js.Loader).loadedImage(value.data);
-		case 'loadedSound':
-			cast(Loader.the, kha.js.Loader).loadedSound(value.data);
-		case 'loadedMusic':
-			cast(Loader.the, kha.js.Loader).loadedMusic(value.data);*/
 		case 'patch':
 			js.Lib.eval(value.data.source);
 		case 'loadedImage':
 			LoaderImpl._loadedImage(value.data);
+		case 'loadedSound':
+			LoaderImpl._loadedSound(value.data);
+		case 'loadedBlob':
+			LoaderImpl._loadedBlob(value.data);
 		case 'frame':
 			if (frame != null) {
 				Scheduler.executeFrame();

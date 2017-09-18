@@ -1,5 +1,7 @@
 package kha;
 
+import haxe.io.Bytes;
+
 class LoaderImpl {
 	static var loadingImages: Map<Int, Image->Void> = new Map();
 	static var imageId = -1;
@@ -35,6 +37,12 @@ class LoaderImpl {
 		loadingSounds[soundId] = done;
 		Worker.postMessage({ command: 'loadSound', file: desc.files[0], id: soundId });
 	}
+
+	public static function _loadedSound(value: Dynamic) {
+		var sound = new kha.html5worker.Sound();
+		loadingSounds[value.id](sound);
+		loadingSounds.remove(value.id);
+	}
 	
 	public static function getVideoFormats(): Array<String> {
 		return ["mp4"];
@@ -50,6 +58,12 @@ class LoaderImpl {
 		++blobId;
 		loadingBlobs[blobId] = done;
 		Worker.postMessage({ command: 'loadBlob', file: desc.files[0], id: blobId });
+	}
+
+	public static function _loadedBlob(value: Dynamic) {
+		var blob = new Blob(Bytes.ofData(value.data));
+		loadingBlobs[value.id](blob);
+		loadingBlobs.remove(value.id);
 	}
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
