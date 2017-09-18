@@ -2,6 +2,7 @@ package kha;
 
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.KeyCode;
 import kha.input.Mouse;
 import kha.input.Surface;
 import kha.System;
@@ -208,10 +209,20 @@ class SystemImpl {
 				System.render(0, frame);
 				Worker.postMessage({ command: 'endFrame' });
 			}
-		/*case 'keyDown':
-			Configuration.screen().keyDown(Key.createByIndex(value.data.key), value.data.char);
+		case 'keyDown':
+			keyboard.sendDownEvent(cast value.data.key);
 		case 'keyUp':
-			Configuration.screen().keyUp(Key.createByIndex(value.data.key), value.data.char);*/
+			keyboard.sendUpEvent(cast value.data.key);
+		case 'keyPress':
+			keyboard.sendPressEvent(value.data.character);
+		case 'mouseDown':
+			mouse.sendDownEvent(0, value.data.button, value.data.x, value.data.y);
+		case 'mouseUp':
+			mouse.sendUpEvent(0, value.data.button, value.data.x, value.data.y);
+		case 'mouseMove':
+			mouse.sendMoveEvent(0, value.data.x, value.data.y, value.data.mx, value.data.my);
+		case 'mouseWheel':
+			mouse.sendWheelEvent(0, value.data.delta);
 		}
 	}
 }
