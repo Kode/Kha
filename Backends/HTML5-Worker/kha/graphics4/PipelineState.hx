@@ -49,7 +49,29 @@ class PipelineState extends PipelineStateBase {
 			});
 		}
 		
-		Worker.postMessage({ command: 'compilePipeline', id: _id, frag: fragmentShader.files[0], vert: vertexShader.files[0], layout: layout });
+		var state = {
+			cullMode: cullMode,
+			depthWrite: depthWrite,
+			depthMode: depthMode,
+			stencilMode: stencilMode,
+			stencilBothPass: stencilBothPass,
+			stencilDepthFail: stencilDepthFail,
+			stencilFail: stencilFail,
+			stencilReferenceValue: stencilReferenceValue,
+			stencilReadMask: stencilReadMask,
+			stencilWriteMask: stencilWriteMask,
+			blendSource: blendSource,
+			blendDestination: blendDestination,
+			alphaBlendSource: alphaBlendSource,
+			alphaBlendDestination: alphaBlendDestination,
+			colorWriteMaskRed: colorWriteMaskRed,
+			colorWriteMaskGreen: colorWriteMaskGreen,
+			colorWriteMaskBlue: colorWriteMaskBlue,
+			colorWriteMaskAlpha: colorWriteMaskAlpha,
+			conservativeRasterization: conservativeRasterization
+		};
+
+		Worker.postMessage({ command: 'compilePipeline', id: _id, frag: fragmentShader.files[0], vert: vertexShader.files[0], layout: layout, state: state });
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
