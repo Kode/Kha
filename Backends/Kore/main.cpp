@@ -228,6 +228,22 @@ namespace {
 			if (Audio2::buffer.writeLocation >= Audio2::buffer.dataSize) Audio2::buffer.writeLocation = 0;
 		}
 	}
+
+	char cutCopyString[4096];
+
+	char* copy() {
+		strcpy(cutCopyString, SystemImpl_obj::copy().c_str());
+		return cutCopyString;
+	}
+
+	char* cut() {
+		strcpy(cutCopyString, SystemImpl_obj::cut().c_str());
+		return cutCopyString;
+	}
+
+	void paste(char* data) {
+		SystemImpl_obj::paste(String(data));
+	}
 }
 
 void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync, bool resizable, bool maximizable, bool minimizable) {
@@ -280,6 +296,9 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::System::setShutdownCallback(shutdown);
 	Kore::System::setDropFilesCallback(dropFiles);
 	Kore::System::setCallback(update);
+	Kore::System::setCopyCallback(copy);
+	Kore::System::setCutCallback(cut);
+	Kore::System::setPasteCallback(paste);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;

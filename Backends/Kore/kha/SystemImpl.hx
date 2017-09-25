@@ -381,6 +381,30 @@ class SystemImpl {
 	public static function dropFiles(filePath: String): Void {
 		System.dropFiles(filePath);
 	}
+	
+	public static function copy(): String {
+		if (System.copyListener != null) {
+			return System.copyListener();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public static function cut(): String {
+		if (System.cutListener != null) {
+			return System.cutListener();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public static function paste(data: String): Void {
+		if (System.pasteListener != null) {
+			System.pasteListener(data);
+		}
+	}
 
 	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode, resizable, maximizable, minimizable);')
 	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {}
