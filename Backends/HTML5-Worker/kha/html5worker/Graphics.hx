@@ -77,7 +77,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		Worker.postMessage({ command: 'setTexture', stage: cast(stage, kha.html5worker.TextureUnit)._id, texture: texture.id });
+		Worker.postMessage({ command: 'setTexture', stage: cast(stage, kha.html5worker.TextureUnit)._id, texture: texture == null ? -1 : texture.id });
 	}
 	
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
