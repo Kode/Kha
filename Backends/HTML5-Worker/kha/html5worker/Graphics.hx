@@ -49,7 +49,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
-		Worker.postMessage({ command: 'clear', color: color == null ? null : color.value, depth: depth, stencil: stencil });
+		Worker.postMessage({ command: 'clear', color: color == null ? null : color.value, hasDepth: depth != null, depth: depth, hasStencil: stencil != null, stencil: stencil });
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
