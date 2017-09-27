@@ -1,6 +1,7 @@
 package kha.html5worker;
 
 import haxe.ds.Vector;
+import kha.Canvas;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
@@ -16,12 +17,16 @@ import kha.math.FastVector3;
 import kha.math.FastVector4;
 
 class Graphics implements kha.graphics4.Graphics {
+	var renderTarget: Image;
+	
 	public function new(renderTarget: Canvas = null) {
-		
+		if (Std.is(renderTarget, Image) {
+			this.renderTarget = cast renderTarget;
+		}
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-		Worker.postMessage({ command: 'begin' });
+		Worker.postMessage({ command: 'begin', renderTarget: renderTarget == null ? -1 : renderTarget._rtid });
 	}
 
 	public function beginFace(face: Int): Void {

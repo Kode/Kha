@@ -6,13 +6,16 @@ import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
 	public var id: Int;
+	public var _rtid: Int;
+	static var lastRtId: Int = -1;
 	private var w: Int;
 	private var h: Int;
 	private var rw: Int;
 	private var rh: Int;
 	
-	public function new(id: Int, width: Int, height: Int, realWidth: Int, realHeight: Int) {
+	public function new(id: Int, rtid: Int, width: Int, height: Int, realWidth: Int, realHeight: Int) {
 		this.id = id;
+		this._rtid = rtid;
 		w = width;
 		h = height;
 		rw = realWidth;
@@ -31,7 +34,9 @@ class Image implements Canvas implements Resource {
 	
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
 		if (format == null) format = TextureFormat.RGBA32;
-		return null;
+		var rtid = ++lastRtId;
+		Worker.postMessage({ command: 'createRenderTarget', id: rtid, width: width, height: height });
+		return new Image(-1, rtid, width, height, width, height);
 	}
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
