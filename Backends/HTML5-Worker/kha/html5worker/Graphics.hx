@@ -20,7 +20,7 @@ class Graphics implements kha.graphics4.Graphics {
 	var renderTarget: Image;
 	
 	public function new(renderTarget: Canvas = null) {
-		if (Std.is(renderTarget, Image) {
+		if (Std.is(renderTarget, Image)) {
 			this.renderTarget = cast renderTarget;
 		}
 	}
