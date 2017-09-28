@@ -11,6 +11,7 @@ class LoaderImpl {
 	static var videoId = -1;
 	static var loadingBlobs: Map<Int, Blob->Void> = new Map();
 	static var blobId = -1;
+	static var sounds: Map<Int, Sound> = new Map();
 	
 	public static function getImageFormats(): Array<String> {
 		return ["png", "jpg", "hdr"];
@@ -39,9 +40,14 @@ class LoaderImpl {
 	}
 
 	public static function _loadedSound(value: Dynamic) {
-		var sound = new kha.html5worker.Sound();
+		var sound = new kha.html5worker.Sound(value.id);
 		loadingSounds[value.id](sound);
 		loadingSounds.remove(value.id);
+		sounds.set(value.id, sound);
+	}
+	
+	public static function _uncompressedSound(value: Dynamic): Void {
+		cast(sounds[value.id], kha.html5worker.Sound)._callback();
 	}
 	
 	public static function getVideoFormats(): Array<String> {

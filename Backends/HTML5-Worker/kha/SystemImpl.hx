@@ -202,6 +202,8 @@ class SystemImpl {
 			LoaderImpl._loadedSound(value.data);
 		case 'loadedBlob':
 			LoaderImpl._loadedBlob(value.data);
+		case 'uncompressedSound':
+			LoaderImpl._uncompressedSound(value.data);
 		case 'frame':
 			if (frame != null) {
 				Scheduler.executeFrame();
