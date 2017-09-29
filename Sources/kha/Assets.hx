@@ -55,7 +55,7 @@ class Assets {
 	
 	public static var progress: Float; // moves from 0 to 1, use for loading screens
 
-	public static function loadEverything(callback: Void -> Void): Void {
+	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
@@ -92,50 +92,102 @@ class Assets {
 		
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
-				Reflect.field(blobs, blob)(function () {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
-				});
-			}
-		}
-		for (image in Type.getInstanceFields(ImageList)) {
-			if (image.endsWith("Load")) {
-				Reflect.field(images, image)(function () {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
-				});
-			}
-		}
-		for (sound in Type.getInstanceFields(SoundList)) {
-			if (sound.endsWith("Load")) {
-				Reflect.field(sounds, sound)(function () {
-					var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
-					sound.uncompress(function () {
+				var name = blob.substr(0, blob.length - 4);
+				var description = Reflect.field(blobs, name + "Description");
+				if (filter == null || filter(description)) {
+					Reflect.field(blobs, blob)(function () {
 						--filesLeft;
 						progress = 1 - filesLeft / fileCount;
 						if (filesLeft == 0) callback();
 					});
-				});
+				}
+				else {
+					--filesLeft;
+					progress = 1 - filesLeft / fileCount;
+					if (filesLeft == 0) callback();
+				}
+			}
+		}
+		for (image in Type.getInstanceFields(ImageList)) {
+			if (image.endsWith("Load")) {
+				var name = image.substr(0, image.length - 4);
+				var description = Reflect.field(images, name + "Description");
+				if (filter == null || filter(description)) {
+					Reflect.field(images, image)(function () {
+						--filesLeft;
+						progress = 1 - filesLeft / fileCount;
+						if (filesLeft == 0) callback();
+					});
+				}
+				else {
+					--filesLeft;
+					progress = 1 - filesLeft / fileCount;
+					if (filesLeft == 0) callback();
+				}
+			}
+		}
+		for (sound in Type.getInstanceFields(SoundList)) {
+			if (sound.endsWith("Load")) {
+				var name = sound.substr(0, sound.length - 4);
+				var description = Reflect.field(sounds, name + "Description");
+				if (filter == null || filter(description)) {
+					Reflect.field(sounds, sound)(function () {
+						if (uncompressSoundsFilter == null || uncompressSoundsFilter(description)) {
+							var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
+							sound.uncompress(function () {
+								--filesLeft;
+								progress = 1 - filesLeft / fileCount;
+								if (filesLeft == 0) callback();
+							});
+						}
+						else {
+							--filesLeft;
+							progress = 1 - filesLeft / fileCount;
+							if (filesLeft == 0) callback();
+						}
+					});
+				}
+				else {
+					--filesLeft;
+					progress = 1 - filesLeft / fileCount;
+					if (filesLeft == 0) callback();
+				}
 			}
 		}
 		for (font in Type.getInstanceFields(FontList)) {
 			if (font.endsWith("Load")) {
-				Reflect.field(fonts, font)(function () {
+				var name = font.substr(0, font.length - 4);
+				var description = Reflect.field(fonts, name + "Description");
+				if (filter == null || filter(description)) {
+					Reflect.field(fonts, font)(function () {
+						--filesLeft;
+						progress = 1 - filesLeft / fileCount;
+						if (filesLeft == 0) callback();
+					});
+				}
+				else {
 					--filesLeft;
 					progress = 1 - filesLeft / fileCount;
 					if (filesLeft == 0) callback();
-				});
+				}
 			}
 		}
 		for (video in Type.getInstanceFields(VideoList)) {
 			if (video.endsWith("Load")) {
-				Reflect.field(videos, video)(function () {
+				var name = video.substr(0, video.length - 4);
+				var description = Reflect.field(videos, name + "Description");
+				if (filter == null || filter(description)) {
+					Reflect.field(videos, video)(function () {
+						--filesLeft;
+						progress = 1 - filesLeft / fileCount;
+						if (filesLeft == 0) callback();
+					});
+				}
+				else {
 					--filesLeft;
 					progress = 1 - filesLeft / fileCount;
 					if (filesLeft == 0) callback();
-				});
+				}
 			}
 		}
 	}
