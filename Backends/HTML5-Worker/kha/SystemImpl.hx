@@ -211,6 +211,9 @@ class SystemImpl {
 				System.render(0, frame);
 				Worker.postMessage({ command: 'endFrame' });
 			}
+		case 'setWindowSize':
+			width = value.data.width;
+			height = value.data.height;
 		case 'keyDown':
 			keyboard.sendDownEvent(cast value.data.key);
 		case 'keyUp':
