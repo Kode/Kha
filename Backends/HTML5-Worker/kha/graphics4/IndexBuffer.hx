@@ -15,7 +15,7 @@ class IndexBuffer {
 		mySize = indexCount;
 		_data = new Uint32Array(indexCount);
 		_id = ++lastId;
-		Worker.postMessage({ command: 'createIndexBuffer', id: _id, size: indexCount });
+		Worker.postMessage({ command: 'createIndexBuffer', id: _id, size: indexCount, usage: usage.getIndex() });
 	}
 	
 	public function delete(): Void {

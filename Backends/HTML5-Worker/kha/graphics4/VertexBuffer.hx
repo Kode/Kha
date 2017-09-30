@@ -86,7 +86,7 @@ class VertexBuffer {
 				data: element.data.getIndex()
 			});
 		}
-		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}});
+		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}, usage: usage.getIndex()});
 	}
 
 	public function delete(): Void {
