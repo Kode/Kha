@@ -156,10 +156,11 @@ class Scaler {
 	
 	public static function scale(source: Image, destination: Canvas, rotation: ScreenRotation): Void {
 		var g = destination.g2;
-		g.transformation = getScaledTransformation(source.width, source.height, destination.width, destination.height, rotation);
+		g.pushTransformation(getScaledTransformation(source.width, source.height, destination.width, destination.height, rotation));
 		g.color = Color.White;
 		g.opacity = 1;
 		g.drawImage(source, 0, 0);
+		g.popTransformation();
 	}
 	
 	public static function getScaledTransformation(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): FastMatrix3 {
