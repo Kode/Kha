@@ -8,25 +8,31 @@ import kha.graphics4.Usage;
 class Image implements Canvas implements Resource {
 	public var id: Int;
 	public var _rtid: Int;
+	public static var _lastId: Int = -1;
 	static var lastRtId: Int = -1;
-	private var w: Int;
-	private var h: Int;
-	private var rw: Int;
-	private var rh: Int;
+	var w: Int;
+	var h: Int;
+	var rw: Int;
+	var rh: Int;
+	var format: TextureFormat;
+	var bytes: Bytes = null;
 	
-	public function new(id: Int, rtid: Int, width: Int, height: Int, realWidth: Int, realHeight: Int) {
+	public function new(id: Int, rtid: Int, width: Int, height: Int, realWidth: Int, realHeight: Int, format: TextureFormat) {
 		this.id = id;
 		this._rtid = rtid;
 		w = width;
 		h = height;
 		rw = realWidth;
 		rh = realHeight;
+		this.format = format;
 	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
-		return null;
+		var id = ++_lastId;
+		Worker.postMessage({ command: 'createImage', id: id, width: width, height: height, format: format.getIndex(), usage: usage.getIndex() });
+		return new Image(id, -1, width, height, width, height, format);
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -37,7 +43,7 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		var rtid = ++lastRtId;
 		Worker.postMessage({ command: 'createRenderTarget', id: rtid, width: width, height: height });
-		return new Image(-1, rtid, width, height, width, height);
+		return new Image(-1, rtid, width, height, width, height, format);
 	}
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -62,8 +68,33 @@ class Image implements Canvas implements Resource {
 	
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function unload(): Void { }
-	public function lock(level: Int = 0): Bytes { return null; }
-	public function unlock(): Void { }
+	
+	public function lock(level: Int = 0): Bytes {
+		if (bytes == null) {
+			switch (format) {
+				case RGBA32:
+					bytes = Bytes.alloc(4 * width * height);
+				case L8:
+					bytes = Bytes.alloc(width * height);
+				case RGBA128:
+					bytes = Bytes.alloc(16 * width * height);
+				case DEPTH16:
+					bytes = Bytes.alloc(2 * width * height);
+				case RGBA64:
+					bytes = Bytes.alloc(8 * width * height);
+				case A32:
+					bytes = Bytes.alloc(4 * width * height);
+				case A16:
+					bytes = Bytes.alloc(2 * width * height);
+			}
+		}
+		return bytes;
+	}
+	
+	public function unlock(): Void {
+		Worker.postMessage({ command: 'unlockImage', id: id, bytes: bytes.getData() });
+	}
+	
 	public function getPixels(): Bytes { return null; }
 	public function generateMipmaps(levels: Int): Void { }
 	public function setMipmaps(mipmaps: Array<Image>): Void { }

@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
+import kha.graphics4.TextureFormat;
 
 class LoaderImpl {
 	static var loadingImages: Map<Int, Image->Void> = new Map();
@@ -24,7 +25,7 @@ class LoaderImpl {
 	}
 	
 	public static function _loadedImage(value: Dynamic) {
-		var image = new Image(value.id, -1, value.width, value.height, value.realWidth, value.realHeight);
+		var image = new Image(value.id, -1, value.width, value.height, value.realWidth, value.realHeight, TextureFormat.RGBA32);
 		loadingImages[value.id](image);
 		loadingImages.remove(value.id);
 	}
