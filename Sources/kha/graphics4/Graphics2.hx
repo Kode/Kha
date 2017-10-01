@@ -6,6 +6,8 @@ import kha.Color;
 import kha.FastFloat;
 import kha.Font;
 import kha.graphics2.ImageScaleQuality;
+import kha.graphics2.HorTextAlignment;
+import kha.graphics2.VerTextAlignment;
 import kha.Image;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.ConstantLocation;
@@ -756,14 +758,35 @@ class TextShaderPainter {
 		return 0;
 	}
 	
-	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
+	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
 		var font = this.font._get(fontSize, fontGlyphs);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
 
-		var xpos = x;
-		var ypos = y;
+		var xoffset = 0.0;
+		if(horAlign == TextCenter || horAlign == TextRight) {
+			var width = font.stringWidth(text);
+			if(horAlign == TextCenter) {
+				xoffset = -width * 0.5;
+			}
+			else {
+				xoffset = -width;
+			}
+		}
+		var yoffset = 0.0;
+		if(verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = font.getHeight();
+			if(verAlign == TextMiddle) {
+				yoffset = -height * 0.5;
+			}
+			else {
+				yoffset = -height;
+			}
+		}
+
+		var xpos = x + xoffset;
+		var ypos = y + yoffset;
 		startString(text);
 		for (i in 0...stringLength()) {
 			var q = font.getBakedQuad(findIndex(charCodeAt(i), fontGlyphs), xpos, ypos);
@@ -783,14 +806,35 @@ class TextShaderPainter {
 		endString();
 	}
 
-	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
+	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
 		var font = this.font._get(fontSize, fontGlyphs);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
 
-		var xpos = x;
-		var ypos = y;
+		var xoffset = 0.0;
+		if(horAlign == TextCenter || horAlign == TextRight) {
+			var width = font.charactersWidth(text, start, length);
+			if(horAlign == TextCenter) {
+				xoffset = -width * 0.5;
+			}
+			else {
+				xoffset = -width;
+			}
+		}
+		var yoffset = 0.0;
+		if(verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = font.getHeight();
+			if(verAlign == TextMiddle) {
+				yoffset = -height * 0.5;
+			}
+			else {
+				yoffset = -height;
+			}
+		}
+
+		var xpos = x + xoffset;
+		var ypos = y + yoffset;
 		for (i in start...start + length) {
 			var q = font.getBakedQuad(findIndex(text[i], fontGlyphs), xpos, ypos);
 			if (q != null) {
@@ -981,18 +1025,24 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 	}
 
-	public override function drawString(text: String, x: Float, y: Float): Void {
+	public override function drawString(text: String, x: Float, y: Float, ?horAlign:HorTextAlignment, ?verAlign:VerTextAlignment): Void {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs);
+		if(horAlign == null) horAlign = TextLeft;
+		if(verAlign == null) verAlign = TextTop;
+		
+		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs, horAlign, verAlign);
 	}
 
-	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float, ?horAlign:HorTextAlignment, ?verAlign:VerTextAlignment): Void {
 		imagePainter.end();
 		coloredPainter.end();
-		
-		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs);
+
+		if(horAlign == null) horAlign = TextLeft;
+		if(verAlign == null) verAlign = TextTop;
+
+		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs, horAlign, verAlign);
 	}
 
 	override public function get_font(): Font {
