@@ -5,7 +5,6 @@ import kha.graphics4.TextureFormat;
 
 class LoaderImpl {
 	static var loadingImages: Map<Int, Image->Void> = new Map();
-	static var imageId = -1;
 	static var loadingSounds: Map<Int, Sound->Void> = new Map();
 	static var soundId = -1;
 	static var loadingVideos: Map<Int, Video->Void> = new Map();
@@ -19,9 +18,9 @@ class LoaderImpl {
 	}
 	
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
-		++imageId;
-		loadingImages[imageId] = done;
-		Worker.postMessage({ command: 'loadImage', file: desc.files[0], id: imageId });
+		++kha.Image._lastId;
+		loadingImages[kha.Image._lastId] = done;
+		Worker.postMessage({ command: 'loadImage', file: desc.files[0], id: kha.Image._lastId });
 	}
 	
 	public static function _loadedImage(value: Dynamic) {
