@@ -5,8 +5,6 @@ import kha.Color;
 import kha.FontStyle;
 import kha.graphics2.Graphics;
 import kha.graphics2.ImageScaleQuality;
-import kha.graphics2.HorTextAlignment;
-import kha.graphics2.VerTextAlignment;
 import kha.Kravur;
 import kha.math.FastMatrix3;
 import kha.math.Matrix3;
@@ -157,39 +155,17 @@ class CanvasGraphics extends Graphics {
 		canvas.fill();
 	}
 	
-	override public function drawString(text: String, x: Float, y: Float, ?horAlign:HorTextAlignment, ?verAlign:VerTextAlignment) {
+	override public function drawString(text: String, x: Float, y: Float) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 		
 		var image = webfont.getImage(fontSize, myColor);
-
 		if (image.width > 0) {
-			var font = webfont.kravur._get(fontSize);
-			var xoffset = 0.0;
-			if(horAlign == TextCenter || horAlign == TextRight) {
-				var width = font.stringWidth(text);
-				if(horAlign == TextCenter) {
-					xoffset = -width * 0.5;
-				}
-				else {
-					xoffset = -width;
-				}
-			}
-			var yoffset = 0.0;
-			if(verAlign == TextMiddle || verAlign == TextBottom) {
-				var height = font.getHeight();
-				if(verAlign == TextMiddle) {
-					yoffset = -height * 0.5;
-				}
-				else {
-					yoffset = -height;
-				}
-			}
 			// the image created in getImage() is not imediately useable
-			var xpos = x + xoffset;
-			var ypos = y + yoffset;
+			var xpos = x;
+			var ypos = y;
 			for (i in 0...text.length) {
-				var q = font.getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
+				var q = webfont.kravur._get(fontSize).getBakedQuad(text.charCodeAt(i) - 32, xpos, ypos);
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
 						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);

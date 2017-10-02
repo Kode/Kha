@@ -1025,22 +1025,30 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 	}
 
-	public override function drawString(text: String, x: Float, y: Float, ?horAlign:HorTextAlignment, ?verAlign:VerTextAlignment): Void {
+	public override function drawString(text: String, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
-		
-		if(horAlign == null) horAlign = TextLeft;
-		if(verAlign == null) verAlign = TextTop;
+				
+		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs, TextLeft, TextTop);
+	}
+
+	public override function drawAlignedString(text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
+		imagePainter.end();
+		coloredPainter.end();
 		
 		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs, horAlign, verAlign);
 	}
 
-	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float, ?horAlign:HorTextAlignment, ?verAlign:VerTextAlignment): Void {
+	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
 
-		if(horAlign == null) horAlign = TextLeft;
-		if(verAlign == null) verAlign = TextTop;
+		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs, TextLeft, TextTop);
+	}
+
+	public override function drawAlignedCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
+		imagePainter.end();
+		coloredPainter.end();
 
 		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs, horAlign, verAlign);
 	}
