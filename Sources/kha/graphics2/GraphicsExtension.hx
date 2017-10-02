@@ -100,16 +100,20 @@ class GraphicsExtension {
 	 * Draws a filled convex polygon.
 	 */
 	public static function fillPolygon(g2: Graphics, x: Float, y: Float, vertices: Array<Vector2>) {
+		
 		var iterator = vertices.iterator();
+
+		if (!iterator.hasNext()) return;
 		var v0 = iterator.next();
-		var v1 = v0;
+		
+		if (!iterator.hasNext()) return;
+		var v1 = iterator.next();
 		
 		while (iterator.hasNext()) {
 			var v2 = iterator.next();
-			g2.fillTriangle(v1.x + x, v1.y + y, v2.x + x, v2.y + y, x, y);
+			g2.fillTriangle(v0.x + x, v0.y + y, v1.x + x, v1.y + y, v2.x + x, v2.y + y);
 			v1 = v2;
 		}
-		g2.fillTriangle(v1.x + x, v1.y + y, v0.x + x, v0.y + y, x, y);
 	}
 	
 	/**
