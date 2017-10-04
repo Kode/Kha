@@ -103,7 +103,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		Worker.postMessage({ command: 'setTextureParameters', id: cast(stage, kha.html5worker.TextureUnit)._id,
+		Worker.postMessage({ command: 'setTextureParameters', id: cast(texunit, kha.html5worker.TextureUnit)._id,
 			uAddressing: uAddressing.getIndex(), vAddressing: vAddressing.getIndex(),
 			minificationFilter: minificationFilter.getIndex(), magnificationFilter: magnificationFilter.getIndex(), mipmapFilter: mipmapFilter.getIndex()
 		});
