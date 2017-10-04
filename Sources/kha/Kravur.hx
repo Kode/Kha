@@ -115,12 +115,16 @@ class KravurImage {
 	}
 }
 
-class Kravur implements Font {
+class Kravur implements Resource {
 	private var blob: Blob;
 	private var images: Map<Int, KravurImage> = new Map();
 	
 	public function new(blob: Blob) {
 		this.blob = blob;
+	}
+
+	public static function fromBytes(bytes: Bytes): Kravur {
+		return new Kravur(Blob.fromBytes(bytes));
 	}
 	
 	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {

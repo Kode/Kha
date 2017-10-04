@@ -178,11 +178,11 @@ class CanvasGraphics extends Graphics {
 	override public function set_font(font: kha.Font): kha.Font {
 		webfont = cast(font, kha.js.Font);
 		//canvas.font = webfont.size + "px " + webfont.name;
-		return webfont;
+		return cast webfont;
 	}
 	
 	override public function get_font(): kha.Font {
-		return webfont;
+		return cast webfont;
 	}
 
 	override public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0) {

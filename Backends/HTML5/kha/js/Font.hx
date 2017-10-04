@@ -1,19 +1,24 @@
 package kha.js;
 
+import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
 import kha.Color;
 import kha.FontStyle;
 import kha.Kravur;
 
-class Font implements kha.Font {
+class Font implements Resource {
 	public var kravur: Kravur;
 	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
 	
-	public function new(kravur: Kravur) {
-		this.kravur = kravur;
+	public function new(blob: Blob) {
+		this.kravur = new Kravur(blob);
 	}
 	
+	public static function fromBytes(bytes: Bytes): Font {
+		return new Font(Blob.fromBytes(bytes));
+	}
+
 	public function height(fontSize: Int): Float {
 		return kravur._get(fontSize).getHeight();
 	}

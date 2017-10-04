@@ -11,7 +11,7 @@ import kha.FontStyle;
 		testGraphics = testImage.createGraphics();
 	}
 ')
-class Font implements kha.Font {
+class Font implements Resource {
 	public var myName: String;
 	public var myStyle: FontStyle;
 	public var mySize: Float;
