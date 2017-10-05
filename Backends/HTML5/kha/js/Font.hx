@@ -7,6 +7,7 @@ import kha.Color;
 import kha.FontStyle;
 import kha.Kravur;
 
+@:keep
 class Font implements Resource {
 	public var kravur: Kravur;
 	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
