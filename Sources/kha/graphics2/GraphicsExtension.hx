@@ -183,7 +183,7 @@ class GraphicsExtension {
 		return p;
 	}
 
-	static public function drawAlignedStringExt(g2:Graphics, text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
+	static public function drawAlignedString(g2:Graphics, text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
 		var kravur:Kravur = cast(g2.font, Kravur);
 		var font = kravur._get(g2.fontSize, g2.fontGlyphs);
 		var xoffset = 0.0;
@@ -209,7 +209,7 @@ class GraphicsExtension {
 		g2.drawString(text, x+xoffset, y+yoffset);
 	}
 
-	static public function drawAlignedCharactersExt(g2:Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
+	static public function drawAlignedCharacters(g2:Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
 		var kravur:Kravur = cast(g2.font, Kravur);
 		var font = kravur._get(g2.fontSize, g2.fontGlyphs);
 		var xoffset = 0.0;
