@@ -55,15 +55,7 @@ class Graphics {
 
 	}
 
-	public function drawAlignedString(text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
-
-	}
-
 	public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
-		
-	}
-
-	public function drawAlignedCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment): Void {
 		
 	}
 
