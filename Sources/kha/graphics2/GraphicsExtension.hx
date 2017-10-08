@@ -2,6 +2,8 @@ package kha.graphics2;
 
 import kha.math.Vector2;
 import kha.graphics2.Graphics;
+import kha.graphics2.VerTextAlignment;
+import kha.graphics2.HorTextAlignment;
 
 /**
  * Static extension functions for Graphics2.
@@ -183,5 +185,57 @@ class GraphicsExtension {
 		p[1] += ttt * y[3];
 
 		return p;
+	}
+
+	static public function drawAlignedString(g2:Graphics, text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
+		var kravur:Kravur = cast(g2.font, Kravur);
+		var font = kravur._get(g2.fontSize, g2.fontGlyphs);
+		var xoffset = 0.0;
+		if(horAlign == TextCenter || horAlign == TextRight) {
+			var width = font.stringWidth(text);
+			if(horAlign == TextCenter) {
+				xoffset = -width * 0.5;
+			}
+			else {
+				xoffset = -width;
+			}
+		}
+		var yoffset = 0.0;
+		if(verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = font.getHeight();
+			if(verAlign == TextMiddle) {
+				yoffset = -height * 0.5;
+			}
+			else {
+				yoffset = -height;
+			}
+		}
+		g2.drawString(text, x+xoffset, y+yoffset);
+	}
+
+	static public function drawAlignedCharacters(g2:Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
+		var kravur:Kravur = cast(g2.font, Kravur);
+		var font = kravur._get(g2.fontSize, g2.fontGlyphs);
+		var xoffset = 0.0;
+		if(horAlign == TextCenter || horAlign == TextRight) {
+			var width = font.charactersWidth(text, start, length);
+			if(horAlign == TextCenter) {
+				xoffset = -width * 0.5;
+			}
+			else {
+				xoffset = -width;
+			}
+		}
+		var yoffset = 0.0;
+		if(verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = font.getHeight();
+			if(verAlign == TextMiddle) {
+				yoffset = -height * 0.5;
+			}
+			else {
+				yoffset = -height;
+			}
+		}
+		g2.drawCharacters(text, start, length, x+xoffset, y+yoffset);
 	}
 }
