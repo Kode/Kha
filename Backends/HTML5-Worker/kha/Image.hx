@@ -63,7 +63,7 @@ class Image implements Canvas implements Resource {
 	public static var nonPow2Supported(get, null): Bool;
 	
 	public static function get_nonPow2Supported(): Bool {
-		return false;
+		return true;
 	}
 	
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
