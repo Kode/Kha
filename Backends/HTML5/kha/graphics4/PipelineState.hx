@@ -7,22 +7,27 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
-	private var program: Dynamic;
+	private var program: Dynamic = null;
 	private var textures: Array<String>;
 	private var textureValues: Array<Dynamic>;
 	
 	public function new() {
 		super();
-		program = SystemImpl.gl.createProgram();
 		textures = new Array<String>();
 		textureValues = new Array<Dynamic>();
 	}
 	
 	public function delete(): Void {
-		SystemImpl.gl.deleteProgram(program);
+		if (program != null) {
+			SystemImpl.gl.deleteProgram(program);
+		}
 	}
 		
 	public function compile(): Void {
+		if (program != null) {
+			SystemImpl.gl.deleteProgram(program);
+		}
+		program = SystemImpl.gl.createProgram();
 		compileShader(vertexShader);
 		compileShader(fragmentShader);
 		SystemImpl.gl.attachShader(program, vertexShader.shader);
@@ -67,11 +72,11 @@ class PipelineState extends PipelineStateBase {
 				}
 			}
 			else {
-				if (!highpSupported && files[i].indexOf("-relaxed") >= 0) {
+				if (!highpSupported && (files[i].indexOf("-relaxed") >= 0 || files[i].indexOf("runtime-string") >= 0)) {
 					SystemImpl.gl.shaderSource(s, shader.sources[i]);
 					break;
 				}
-				if (highpSupported && files[i].indexOf("-relaxed") < 0) {
+				if (highpSupported && (files[i].indexOf("-relaxed") < 0 || files[i].indexOf("runtime-string") >= 0)) {
 					SystemImpl.gl.shaderSource(s, shader.sources[i]);
 					break;
 				}
