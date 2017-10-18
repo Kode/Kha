@@ -171,12 +171,12 @@ class Kravur implements Resource {
 		return images[fontSize];
 	}
 
-	public function height(fontSize: Int): Float {
-		return _get(fontSize).getHeight();
+	public function height(fontSize: Int, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).getHeight();
 	}
 
-	public function width(fontSize: Int, str: String): Float {
-		return _get(fontSize).stringWidth(str);
+	public function width(fontSize: Int, str: String, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).stringWidth(str);
 	}
 
 	public function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float {
