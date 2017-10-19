@@ -306,11 +306,7 @@ class SystemImpl {
 
 		#if kha_webgl
 		try {
-			#if kha_webgl2
-			SystemImpl.gl = canvas.getContext("webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
-			#else
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
-			#end
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
 			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
@@ -324,21 +320,14 @@ class SystemImpl {
 			if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
 			
 			gl = true;
-
-			#if kha_webgl2
 			gl2 = true;
-			#else
-			gl2 = false;
-			#end
-
 			Shaders.init();
 		}
 		catch (e: Dynamic) {
 			trace("Could not initialize WebGL 2, falling back to WebGL.");
-			gl = false;
 		}
 
-		if (!gl) {
+		if (!gl2) {
 			try {
 				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
 				if (SystemImpl.gl != null) {
@@ -374,6 +363,7 @@ class SystemImpl {
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
 		else {
+			untyped __js__ ("kha_Kravur = kha_js_Font");
 			var g2 = new CanvasGraphics(canvas.getContext("2d"));
 			frame = new Framebuffer(0, null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
