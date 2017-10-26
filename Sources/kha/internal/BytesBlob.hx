@@ -2,6 +2,7 @@ package kha.internal;
 
 import haxe.io.Bytes;
 
+@:keep
 class BytesBlob implements Resource {
 	public var bytes: Bytes;
 	private var buffer: Array<Int>;
