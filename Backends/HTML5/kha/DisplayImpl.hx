@@ -6,27 +6,22 @@ class DisplayImpl {
 	}
 
 	public static function width(index: Int): Int {
-		trace('TODO (DK) implement me');
-        return -1;
+		return js.Browser.window.screen.width;
 	}
 
 	public static function height(index: Int): Int {
-		trace('TODO (DK) implement me');
-        return -1;
+		return js.Browser.window.screen.height;
 	}
 
 	public static function x(index: Int): Int {
-		trace('TODO (DK) implement me');
-        return -1;
+		return js.Browser.window.screen.left;
 	}
 
 	public static function y(index: Int): Int {
-		trace('TODO (DK) implement me');
-        return -1;
+		return js.Browser.window.screen.top;
 	}
 
 	public static function isPrimary(index: Int): Bool {
-		trace('TODO (DK) implement me');
-        return true;
+		return true;
 	}
 }
