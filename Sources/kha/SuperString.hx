@@ -8,7 +8,7 @@ using StringTools;
 
 #if cpp
 
-abstract SuperString(String) {
+abstract SuperString(String) from String to String {
 	inline public function new(value: String) {
 		this = value;
 	}
@@ -80,8 +80,8 @@ abstract SuperString(String) {
 		return new SuperString(Utf8.sub(this, pos, len == null ? length - pos : len));
 	}
 
-	public function substring(start: Int, end: Int): SuperString {
-		return new SuperString(Utf8.sub(this, start, end - start));
+	public function substring(start: Int, ?end: Int): SuperString {
+		return new SuperString(Utf8.sub(this, start, end == null ? length - start : end - start));
 	}
 
 	public function split(splitter: String): Array<SuperString> {
