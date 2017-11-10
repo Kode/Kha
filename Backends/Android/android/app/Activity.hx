@@ -42,4 +42,6 @@ extern class Activity extends Context {
 	function startIntentSenderForResult(intent: IntentSender, requestCode: Int, fillInIntent: Intent, flagsMask: Int, flagsValues: Int, extraFlags: Int): Void;
 	
 	function startActivity (intent: Intent): Void;
+
+    function onWindowFocusChanged(hasFocus: Bool): Void;
 }
