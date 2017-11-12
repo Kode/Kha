@@ -362,7 +362,9 @@ void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
+#if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
 	Kore::System::stop();
+#endif
 }
 
 int kore(int argc, char** argv) {
