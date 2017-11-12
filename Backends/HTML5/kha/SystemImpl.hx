@@ -878,6 +878,7 @@ class SystemImpl {
 
 	private static function keyPress(event: KeyboardEvent): Void {
 		event.stopPropagation();
+		if (firefox && (event.which == 0 || event.which == 8)) return; // Firefox bug 968056
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 	}
 
