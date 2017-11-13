@@ -3,6 +3,7 @@ package kha.internal;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
 
+@:keep
 class BytesBlob implements Resource {
 	static inline var bufferSize: Int = 2000;
 	public var bytes: Bytes;
