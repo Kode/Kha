@@ -1,16 +1,15 @@
 package kha.internal;
 
+import haxe.ds.Vector;
 import haxe.io.Bytes;
 
 class BytesBlob implements Resource {
+	static inline var bufferSize: Int = 2000;
 	public var bytes: Bytes;
-	private var buffer: Array<Int>;
-	private var myFirstLine: Bool = true;
 	
 	@:allow(kha.LoaderImpl)
 	private function new(bytes: Bytes) {
 		this.bytes = bytes;
-		buffer = new Array<Int>();
 	}
 	
 	public static function fromBytes(bytes: Bytes): Blob {
@@ -170,7 +169,7 @@ class BytesBlob implements Resource {
 		}
 	}
 	
-	private function readUtf8Char(position: { value: Int }): Int {
+	function readUtf8Char(position: { value: Int }): Int {
 		if (position.value >= length) return -1;
 		var c: Int = readU8(position.value);
 		++position.value;
@@ -196,38 +195,33 @@ class BytesBlob implements Resource {
 		return value;
 	}
 	
-	private function readUtf8Block(position: { value: Int }): String {
+	 function readUtf8Block(buffer: Vector<Int>, position: { value: Int }): String {
 		var bufferindex: Int = 0;
 		if (position.value >= length) return "";
-		while (bufferindex < 2000) {
+		while (bufferindex < bufferSize) {
 			var c = readUtf8Char(position);
 			if (c < 0) break;
 			buffer[bufferindex] = c;
 			++bufferindex;
 		}
-		if (myFirstLine) {
-			myFirstLine = false;
-			if (bufferindex > 2 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF) { //byte order mark created by stupid Windows programs
-				var chars: Array<Int> = new Array<Int>();
-				for (i in 3...bufferindex - 3) chars[i - 3] = buffer[i];
-				return toText(chars, bufferindex - 3);
-			}
-		}
-		var chars = new Array<Int>();
-		for (i in 0...bufferindex) chars[i] = buffer[i];
-		return toText(chars, bufferindex);
+		return toText(buffer, bufferindex);
 	}
 	
-	private function toText(chars: Array<Int>, length: Int): String {
+	static function toText(chars: Vector<Int>, length: Int): String {
 		var value = "";
 		for (i in 0...length) value += String.fromCharCode(chars[i]);
 		return value;
 	}
 
 	public function readUtf8String(): String {
+		var buffer = new Vector<Int>(bufferSize);
 		var text = "";
-		var position: { value: Int } = { value: 0 };
-		while (position.value < length) text += readUtf8Block(position);
+		var start = 0;
+		if (length >= 3 && bytes.get(0) == 0xef && bytes.get(1) == 0xbb && bytes.get(2) == 0xbf) {
+			start = 3;
+		}
+		var position: { value: Int } = { value: start };
+		while (position.value < length) text += readUtf8Block(buffer, position);
 		return text;
 	}
 	
