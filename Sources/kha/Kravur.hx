@@ -84,9 +84,19 @@ class KravurImage {
 	}
 	
 	private function getCharWidth(charIndex: Int): Float {
-		if (charIndex < 32) return 0;
-		if (charIndex - 32 >= chars.length) return 0;
-		return chars[charIndex - 32].xadvance;
+		var offset = Kravur.gaps[0];
+		if (charIndex < offset) return 0;
+
+		for (i in 1...Std.int(Kravur.gaps.length/2)) {
+			var prevEnd = Kravur.gaps[i*2-1];
+			var start = Kravur.gaps[i*2];
+			if (charIndex > start-1) offset += start-1 - prevEnd;
+		}
+
+		if (charIndex - offset >= chars.length) return 0;
+			//throw charIndex-offset+">="+chars.length+" "+Kravur.gaps;
+
+		return chars[charIndex - offset].xadvance;
 	}
 	
 	public function getHeight(): Float {
@@ -116,6 +126,9 @@ class KravurImage {
 }
 
 class Kravur implements Resource {
+	public static var glyphs: Array<Int> = [for (i in 32...256) i];
+	public static var gaps: Array<Int>;
+	private var oldGlyphs: Array<Int>;
 	private var blob: Blob;
 	private var images: Map<Int, KravurImage> = new Map();
 	
@@ -128,15 +141,26 @@ class Kravur implements Resource {
 	}
 	
 	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
+		if (glyphs == null) glyphs = Font.glyphs;
+
+		if (glyphs != oldGlyphs) {
+			oldGlyphs = glyphs;
+			//save first/last block chars
+			gaps = [glyphs[0]];
+			var next = gaps[0] + 1;
+			for (i in 1...glyphs.length) {
+				if (glyphs[i] != next) {
+					gaps.push(glyphs[i-1]);
+					gaps.push(glyphs[i]);
+					next = glyphs[i] + 1;
+				} else next++;
+			}
+			trace(gaps);
+			gaps.push(glyphs[glyphs.length - 1]);
+		}
+
 		var imageIndex = glyphs == null ? fontSize : fontSize * 10000 + glyphs.length;
 		if (!images.exists(imageIndex)) {
-			if (glyphs == null) {
-				glyphs = [];
-				for (i in 32...256) {
-					glyphs.push(i);
-				}
-			}
-
 			var width: Int = 64;
 			var height: Int = 32;
 			var baked = new Vector<Stbtt_bakedchar>(glyphs.length);
