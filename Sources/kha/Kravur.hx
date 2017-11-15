@@ -84,8 +84,9 @@ class KravurImage {
 	}
 	
 	private function getCharWidth(charIndex: Int): Float {
+		if (chars.length == 0) return 0;
 		var offset = Kravur.gaps[0];
-		if (charIndex < offset) return 0;
+		if (charIndex < offset) return chars[0].xadvance;
 
 		for (i in 1...Std.int(Kravur.gaps.length/2)) {
 			var prevEnd = Kravur.gaps[i*2-1];
@@ -93,9 +94,7 @@ class KravurImage {
 			if (charIndex > start-1) offset += start-1 - prevEnd;
 		}
 
-		if (charIndex - offset >= chars.length) return 0;
-			//throw charIndex-offset+">="+chars.length+" "+Kravur.gaps;
-
+		if (charIndex - offset >= chars.length) return chars[0].xadvance;
 		return chars[charIndex - offset].xadvance;
 	}
 	
@@ -155,7 +154,6 @@ class Kravur implements Resource {
 					next = glyphs[i] + 1;
 				} else next++;
 			}
-			trace(gaps);
 			gaps.push(glyphs[glyphs.length - 1]);
 		}
 
