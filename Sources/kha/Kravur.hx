@@ -34,12 +34,14 @@ class KravurImage {
 	public var width: Int;
 	public var height: Int;
 	private var baseline: Float;
+	private var gaps: Array<Int>;
 	
-	public function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector<Stbtt_bakedchar>, pixels: Blob) {
+	public function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector<Stbtt_bakedchar>, pixels: Blob, gaps: Array<Int>) {
 		mySize = size;
 		this.width = width;
 		this.height = height;
 		this.chars = chars;
+		this.gaps = gaps;
 		baseline = ascent;
 		for (char in chars) {
 			char.yoff += baseline;
@@ -84,9 +86,18 @@ class KravurImage {
 	}
 	
 	private function getCharWidth(charIndex: Int): Float {
-		if (charIndex < 32) return 0;
-		if (charIndex - 32 >= chars.length) return 0;
-		return chars[charIndex - 32].xadvance;
+		if (chars.length == 0) return 0;
+		var offset = gaps[0];
+		if (charIndex < offset) return chars[0].xadvance;
+
+		for (i in 1...Std.int(gaps.length/2)) {
+			var prevEnd = gaps[i*2-1];
+			var start = gaps[i*2];
+			if (charIndex > start-1) offset += start-1 - prevEnd;
+		}
+
+		if (charIndex - offset >= chars.length) return chars[0].xadvance;
+		return chars[charIndex - offset].xadvance;
 	}
 	
 	public function getHeight(): Float {
@@ -116,6 +127,8 @@ class KravurImage {
 }
 
 class Kravur implements Resource {
+	private var oldGlyphs: Array<Int>;
+	private var gaps: Array<Int>;
 	private var blob: Blob;
 	private var images: Map<Int, KravurImage> = new Map();
 	
@@ -128,15 +141,25 @@ class Kravur implements Resource {
 	}
 	
 	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
+		if (glyphs == null) glyphs = [for (i in 32...256) i];
+
+		if (glyphs != oldGlyphs) {
+			oldGlyphs = glyphs;
+			//save first/last block chars
+			gaps = [glyphs[0]];
+			var next = gaps[0] + 1;
+			for (i in 1...glyphs.length) {
+				if (glyphs[i] != next) {
+					gaps.push(glyphs[i-1]);
+					gaps.push(glyphs[i]);
+					next = glyphs[i] + 1;
+				} else next++;
+			}
+			gaps.push(glyphs[glyphs.length - 1]);
+		}
+
 		var imageIndex = glyphs == null ? fontSize : fontSize * 10000 + glyphs.length;
 		if (!images.exists(imageIndex)) {
-			if (glyphs == null) {
-				glyphs = [];
-				for (i in 32...256) {
-					glyphs.push(i);
-				}
-			}
-
 			var width: Int = 64;
 			var height: Int = 32;
 			var baked = new Vector<Stbtt_bakedchar>(glyphs.length);
@@ -165,27 +188,27 @@ class Kravur implements Resource {
 			var descent = Math.round(metrics.descent * scale);
 			var lineGap = Math.round(metrics.lineGap * scale);
 			
-			var image = new KravurImage(Std.int(fontSize), ascent, descent, lineGap, width, height, baked, pixels);
+			var image = new KravurImage(Std.int(fontSize), ascent, descent, lineGap, width, height, baked, pixels, gaps);
 			images[imageIndex] = image;
 			return image;
 		}
 		return images[imageIndex];
 	}
 
-	public function height(fontSize: Int): Float {
-		return _get(fontSize).getHeight();
+	public function height(fontSize: Int, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).getHeight();
 	}
 
-	public function width(fontSize: Int, str: String): Float {
-		return _get(fontSize).stringWidth(str);
+	public function width(fontSize: Int, str: String, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).stringWidth(str);
 	}
 
-	public function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float {
-		return _get(fontSize).charactersWidth(characters, start, length);
+	public function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).charactersWidth(characters, start, length);
 	}
 	
-	public function baseline(fontSize: Int): Float {
-		return _get(fontSize).getBaselinePosition();
+	public function baseline(fontSize: Int, ?fontGlyphs: Array<Int>): Float {
+		return _get(fontSize, fontGlyphs).getBaselinePosition();
 	}
 	
 	public function unload(): Void {
