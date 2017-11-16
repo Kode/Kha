@@ -73,6 +73,14 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
    		setRenderer(renderer = new KhaRenderer(activity.getApplicationContext(), this));
    		setOnTouchListener(this);
    		initInputManager(activity);
+        setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_IMMERSIVE
+        );
 	}
 
 	@:functionCode('inputManager = (android.view.inputmethod.InputMethodManager)activity.getSystemService(android.content.Context.INPUT_METHOD_SERVICE);')
