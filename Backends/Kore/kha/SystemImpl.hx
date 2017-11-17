@@ -606,7 +606,7 @@ class SystemImpl {
 	}
 	
 	public static function loadUrl(url: String): Void {
-		
+		untyped __cpp__("Kore::System::loadURL(url)");
 	}
 
 	@:functionCode('return ::String(::getGamepadId(index));')
