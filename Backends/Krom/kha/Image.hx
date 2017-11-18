@@ -181,7 +181,7 @@ class Image implements Canvas implements Resource {
 	}
 	
 	public function generateMipmaps(levels: Int): Void {
-		Krom.generateMipmaps(texture_, levels);
+		texture_ == null ? Krom.generateRenderTargetMipmaps(renderTarget_, levels) : Krom.generateTextureMipmaps(texture_, levels);
 	}
 	
 	public function setMipmaps(mipmaps: Array<Image>): Void {
