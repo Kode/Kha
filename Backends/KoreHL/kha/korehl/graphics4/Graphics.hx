@@ -105,8 +105,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	
-	private function getBlendingMode(op: BlendingFactor): Int {
-		switch (op) {
+	private static function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
 		case BlendOne, Undefined:
 			return 0;
 		case BlendZero:
@@ -119,6 +119,16 @@ class Graphics implements kha.graphics4.Graphics {
 			return 4;
 		case InverseDestinationAlpha:
 			return 5;
+		case SourceColor:
+			return 6;
+		case DestinationColor:
+			return 7;
+		case InverseSourceColor:
+			return 8;
+		case InverseDestinationColor:
+			return 9;
+		default:
+			return 0;
 		}
 	}
 	
@@ -136,7 +146,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
-		setBlendingModeNative(getBlendingMode(source), getBlendingMode(destination));
+		setBlendingModeNative(getBlendFunc(source), getBlendFunc(destination));
 	}
 	
 	//@:functionCode('Kore::Graphics::clear(flags, color, z, stencil);')
@@ -297,6 +307,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		setTextureInternal(cast unit, texture);
+	}
+
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	
 	}
 	
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
