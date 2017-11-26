@@ -1,4 +1,4 @@
-var project = new Project('Kha');
+let project = new Project('Kha', __dirname);
 
 project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/alloc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
 project.addExcludes('hl/src/std/unicase.c');
@@ -18,4 +18,4 @@ if (platform === Platform.Windows) {
 	project.addLib('ws2_32');
 }
 
-return project;
+resolve(project);
