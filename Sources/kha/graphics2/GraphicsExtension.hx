@@ -11,28 +11,81 @@ import kha.graphics2.HorTextAlignment;
  */
 class GraphicsExtension {
 	/**
-	 * Draws a circle.
-	 * @param	segments (optional) The amount of lines that should be used to draw the circle. 
+	 * Draws a arc.
+	 * @param	ccw (optional) Specifies whether the drawing should be counterclockwise. 
+	 * @param	segments (optional) The amount of lines that should be used to draw the arc. 
 	 */
-	public static function drawCircle(g2: Graphics, cx: Float, cy: Float, radius: Float, strength: Float = 1, segments: Int = 0): Void {
+	public static function drawArc(g2: Graphics, cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1, ccw: Bool = false, segments: Int = 0): Void {
 		#if sys_html5
-			if (kha.SystemImpl.gl == null) {
-				var g: kha.js.CanvasGraphics = cast g2;
-				radius -= strength/2; // reduce radius to fit the line thickness within image width/height
-				g.drawCircle(cx, cy, radius, strength);
-				return;
-			}
+		if (kha.SystemImpl.gl == null) {
+			var g: kha.js.CanvasGraphics = cast g2;
+			radius -= strength/2; // reduce radius to fit the line thickness within image width/height
+			g.drawArc(cx, cy, radius, sAngle, eAngle, strength, ccw);
+			return;
+		}
 		#end
-
+		
+		sAngle = sAngle % (Math.PI * 2);
+		eAngle = eAngle % (Math.PI * 2);
+		
+		if (ccw) {
+			if (eAngle > sAngle) eAngle -= Math.PI * 2;
+		} else if (eAngle < sAngle) eAngle += Math.PI * 2;
+		
 		if (segments <= 0)
 			segments = Math.floor(10 * Math.sqrt(radius));
-			
-		var theta = 2 * Math.PI / segments;
+		
+		var theta = (eAngle - sAngle) / segments;
 		var c = Math.cos(theta);
 		var s = Math.sin(theta);
 		
-		var x = radius;
-		var y = 0.0;
+		var x = Math.cos(sAngle) * radius;
+		var y = Math.sin(sAngle) * radius;
+		
+		for (n in 0...segments) {
+			var px = x + cx;
+			var py = y + cy;
+		
+			var t = x;
+			x = c * x - s * y;
+			y = c * y + s * t;
+		
+			g2.drawLine(px, py, x + cx, y + cy, strength);
+		}
+	}
+
+	/**
+	 * Draws a filled arc.
+	 * @param	ccw (optional) Specifies whether the drawing should be counterclockwise. 
+	 * @param	segments (optional) The amount of lines that should be used to draw the arc. 
+	 */
+	public static function fillArc(g2: Graphics, cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, ccw: Bool = false, segments: Int = 0): Void {
+		#if sys_html5
+			if (kha.SystemImpl.gl == null) {
+				var g: kha.js.CanvasGraphics = cast g2;
+				g.fillArc(cx, cy, radius, sAngle, eAngle, ccw);
+				return;
+			}
+		#end
+		
+		sAngle = sAngle % (Math.PI * 2);
+		eAngle = eAngle % (Math.PI * 2);
+		
+		if (ccw) {
+			if (eAngle > sAngle) eAngle -= Math.PI * 2;
+		} else if (eAngle < sAngle) eAngle += Math.PI * 2;
+		
+		if (segments <= 0)
+			segments = Math.floor(10 * Math.sqrt(radius));
+		
+		var theta = (eAngle - sAngle) / segments;
+		var c = Math.cos(theta);
+		var s = Math.sin(theta);
+		
+		var x = Math.cos(sAngle) * radius;
+		var y = Math.sin(sAngle) * radius;
+		var sx = x + cx;
+		var sy = y + cy;
 		
 		for (n in 0...segments) {
 			var px = x + cx;
@@ -42,9 +95,45 @@ class GraphicsExtension {
 			x = c * x - s * y;
 			y = c * y + s * t;
 			
-			g2.drawLine(px, py, x + cx, y + cy, strength);
+			g2.fillTriangle(px, py, x + cx, y + cy, sx, sy);
 		}
 	}
+
+	/**
+	 * Draws a circle.
+	 * @param	segments (optional) The amount of lines that should be used to draw the circle. 
+	 */
+	public static function drawCircle(g2: Graphics, cx: Float, cy: Float, radius: Float, strength: Float = 1, segments: Int = 0): Void {
+			#if sys_html5
+				if (kha.SystemImpl.gl == null) {
+					var g: kha.js.CanvasGraphics = cast g2;
+					radius -= strength/2; // reduce radius to fit the line thickness within image width/height
+					g.drawCircle(cx, cy, radius, strength);
+					return;
+				}
+			#end
+
+			if (segments <= 0)
+				segments = Math.floor(10 * Math.sqrt(radius));
+			
+			var theta = 2 * Math.PI / segments;
+			var c = Math.cos(theta);
+			var s = Math.sin(theta);
+		
+			var x = radius;
+			var y = 0.0;
+		
+			for (n in 0...segments) {
+				var px = x + cx;
+				var py = y + cy;
+			
+				var t = x;
+				x = c * x - s * y;
+				y = c * y + s * t;
+			
+				g2.drawLine(px, py, x + cx, y + cy, strength);
+			}
+		}
 	
 	/**
 	 * Draws a filled circle.
