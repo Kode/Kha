@@ -1,3 +1,3 @@
 package kha;
 
-typedef Pointer = hl.types.Bytes;
+typedef Pointer = hl.Bytes;

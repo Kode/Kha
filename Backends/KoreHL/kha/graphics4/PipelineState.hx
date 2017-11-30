@@ -67,18 +67,18 @@ class PipelineState extends PipelineStateBase {
 	
 	public function unused(): Void {
 		var include1 = new VertexElement("include", VertexData.Float2);
-		var include2 = new VertexShader(null);
-		var include3 = new FragmentShader(null);
-		var include4 = new GeometryShader(null);
-		var include5 = new TessellationControlShader(null);
-		var include6 = new TessellationEvaluationShader(null);
+		var include2 = new VertexShader(null, null);
+		var include3 = new FragmentShader(null, null);
+		// var include4 = new GeometryShader(null);
+		// var include5 = new TessellationControlShader(null);
+		// var include6 = new TessellationEvaluationShader(null);
 	}
 	
 	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return null; }
 	@:hlNative("std", "kore_program_set_fragment_shader") static function kore_program_set_fragment_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_program_set_vertex_shader") static function kore_program_set_vertex_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_program_link") static function kore_program_link(program: Pointer, structure: Pointer): Void { }
-	@:hlNative("std", "kore_program_get_constantlocation") static function kore_program_get_constantlocation(program: Pointer, name: hl.types.Bytes): Pointer { return null; }
-	@:hlNative("std", "kore_program_get_textureunit") static function kore_program_get_textureunit(program: Pointer, name: hl.types.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_program_get_constantlocation") static function kore_program_get_constantlocation(program: Pointer, name: hl.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_program_get_textureunit") static function kore_program_get_textureunit(program: Pointer, name: hl.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_program_set") static function kore_program_set(program: Pointer): Void { }
 }

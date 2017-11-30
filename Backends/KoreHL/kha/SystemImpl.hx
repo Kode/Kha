@@ -142,8 +142,12 @@ class SystemImpl {
 	public static function loadUrl(url: String): Void {
 		
 	}
+
+	public static function getGamepadId(index: Int): String {
+		return "unknown";
+	}
 	
-	@:hlNative("std", "init_kore") static function init_kore(title: hl.types.Bytes, width: Int, height: Int): Void { }
+	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
