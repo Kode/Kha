@@ -503,9 +503,9 @@ class SystemImpl {
 	}
 
 	public static function isMouseLocked(): Bool {
-		return untyped __js__("document.pointerLockElement === kha_Sys.khanvas ||
-			document.mozPointerLockElement === kha_Sys.khanvas ||
-			document.webkitPointerLockElement === kha_Sys.khanvas");
+		return untyped __js__("document.pointerLockElement === kha_SystemImpl.khanvas ||
+			document.mozPointerLockElement === kha_SystemImpl.khanvas ||
+			document.webkitPointerLockElement === kha_SystemImpl.khanvas");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void{
