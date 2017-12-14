@@ -82,6 +82,10 @@ extern class Krom {
 	static function setMouseWheelCallback(callback: Int->Void): Void;
 	static function setGamepadAxisCallback(callback: Int->Int->Float->Void): Void;
 	static function setGamepadButtonCallback(callback: Int->Int->Float->Void): Void;
+	static function lockMouse(): Void;
+	static function unlockMouse(): Void;
+	static function canLockMouse(): Bool;
+	static function isMouseLocked(): Bool;
 	static function setAudioCallback(callback: Int->Void): Void;
 	static function audioThread(lock: Bool): Void;
 	static function getTime(): Float;

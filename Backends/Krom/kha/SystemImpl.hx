@@ -17,6 +17,7 @@ class SystemImpl {
 	private static var mouse: Mouse;
 	private static var maxGamepads: Int = 4;
 	private static var gamepads: Array<Gamepad>;
+	private static var mouseLockListeners: Array<Void->Void> = [];
 	
 	private static function renderCallback(): Void {
 		Scheduler.executeFrame();
@@ -191,27 +192,41 @@ class SystemImpl {
 	}
 		
 	public static function lockMouse(): Void {
-		
+		if(!isMouseLocked()){
+			Krom.lockMouse();
+			for (listener in mouseLockListeners) {
+				listener();
+			}
+		}
 	}
 	
 	public static function unlockMouse(): Void {
-		
+		if(isMouseLocked()){
+			Krom.unlockMouse();
+			for (listener in mouseLockListeners) {
+				listener();
+			}
+		}
 	}
 
 	public static function canLockMouse(): Bool {
-		return false;
+		return Krom.canLockMouse();
 	}
 
 	public static function isMouseLocked(): Bool {
-		return false;
+		return Krom.isMouseLocked();
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void{
-		
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canLockMouse() && func != null) {
+			mouseLockListeners.push(func);
+		}
 	}
 
-	public static function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+		if (canLockMouse() && func != null) {
+			mouseLockListeners.remove(func);
+		}
 	}
 
 	static function unload(): Void {
