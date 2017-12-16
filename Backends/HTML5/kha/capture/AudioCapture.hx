@@ -3,7 +3,7 @@ package kha.capture;
 import js.html.audio.AudioProcessingEvent;
 import kha.audio2.Buffer;
 
-class Audio {
+class AudioCapture {
 	private static var input: js.html.audio.MediaStreamAudioSourceNode;
 	private static var processingNode: js.html.audio.ScriptProcessorNode;
 	private static var buffer: Buffer;

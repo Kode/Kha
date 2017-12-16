@@ -140,13 +140,27 @@ class CanvasGraphics extends Graphics {
 		canvas.globalAlpha = opacity;
 	}
 
+	public function drawArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1.0, ccw: Bool = false) {
+		_drawArc(cx, cy, radius, sAngle, eAngle, strength, ccw);
+	}
+
 	public function drawCircle(cx: Float, cy: Float, radius: Float, strength: Float = 1.0) {
+		_drawArc(cx, cy, radius, 0, 2 * Math.PI, strength, false);
+	}
+
+	inline function _drawArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float, ccw: Bool) {
 		canvas.beginPath();
 		var oldStrength = canvas.lineWidth;
 		canvas.lineWidth = Math.round(strength);
-		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+		canvas.arc(cx, cy, radius, sAngle, eAngle, ccw);
 		canvas.stroke();
 		canvas.lineWidth = oldStrength;
+	}
+
+	public function fillArc(cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, ccw: Bool = false) {
+		canvas.beginPath();
+		canvas.arc(cx, cy, radius, sAngle, eAngle, ccw);
+		canvas.fill();
 	}
 
 	public function fillCircle(cx: Float, cy: Float, radius: Float) {

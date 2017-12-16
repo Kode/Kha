@@ -252,7 +252,7 @@ class Image implements Canvas implements Resource {
 	}
 	
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
-	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.types.Bytes, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool { return false; }
 	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }

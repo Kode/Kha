@@ -10,7 +10,7 @@ import sys.io.File;
 
 using haxe.macro.ExprTools;
 
-#if (kha_html5 || kha_debug_html5)
+#if ((kha_html5 || kha_debug_html5) && js)
 class Worker {
 	#if kha_in_worker
 	
