@@ -51,7 +51,7 @@ if (platform === Platform.WindowsApp) {
 	project.addDefine('HX_WINDOWS');
 	project.addDefine('HX_WINRT');
 }
-if (platform !== Platform.Windows) {
+if (platform !== Platform.Windows || audio !== AudioApi.DirectSound) {
 	project.addDefine('KORE_MULTITHREADED_AUDIO');
 }
 if (platform === Platform.OSX) {
