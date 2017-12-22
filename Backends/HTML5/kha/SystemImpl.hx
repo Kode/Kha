@@ -385,8 +385,10 @@ class SystemImpl {
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
 		
+		#if kha_webvr
 		kha.vr.VrInterface.instance = new VrInterface();
-
+		#end
+		
 		Scheduler.start();
 
 		var window: Dynamic = Browser.window;
