@@ -9,7 +9,7 @@ class ControllerBuilder {
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 		
-		#if (!sys_server && (sys_html5 || sys_debug_html5 || sys_kore))
+		#if (!kha_server && (kha_html5 || kha_debug_html5 || kha_kore))
 
 		{
 			var funcindex = 0;
@@ -111,7 +111,7 @@ class ControllerBuilder {
 		#end
 
 		// macros failing everywhere but in JavaScript?
-		#if (sys_server || sys_html5 || sys_debug_html5)
+		#if (kha_server || kha_html5 || kha_debug_html5)
 
 		var receive = macro @:mergeBlock {
 			var funcindex = bytes.getInt32(0);

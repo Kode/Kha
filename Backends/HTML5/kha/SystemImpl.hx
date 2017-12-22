@@ -55,7 +55,7 @@ class SystemImpl {
 
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		SystemImpl.options = options;
-		#if sys_debug_html5
+		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
 		var electron = untyped __js__("require('electron')");
 		electron.webFrame.setZoomLevelLimits(1, 1);
@@ -294,7 +294,7 @@ class SystemImpl {
 		// Only consider custom canvas ID for release builds
 		var canvas: Dynamic = khanvas;
 		if (canvas == null) {
-			#if (sys_debug_html5 || !canvas_id)
+			#if (kha_debug_html5 || !canvas_id)
 			canvas = Browser.document.getElementById("khanvas");
 			#else
 			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);

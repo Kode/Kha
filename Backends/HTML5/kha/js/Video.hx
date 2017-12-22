@@ -35,7 +35,7 @@ class Video extends kha.Video {
 		video.filenames = [];
 		for (filename in filenames) {
 			if (video.element.canPlayType("video/webm") != "" && filename.endsWith(".webm")) video.filenames.push(filename);
-#if !sys_debug_html5
+#if !kha_debug_html5
 			if (video.element.canPlayType("video/mp4") != "" && filename.endsWith(".mp4")) video.filenames.push(filename);
 #end
 		}

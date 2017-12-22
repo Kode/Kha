@@ -122,6 +122,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
+		#if (debug || kha_debug_html5)
 		var error = SystemImpl.gl.getError();
 		switch (error) {
 			case GL.NO_ERROR:
@@ -141,6 +142,7 @@ class Graphics implements kha.graphics4.Graphics {
 			default:
 				trace("Unknown WebGL error");
 		}
+		#end
 	}
 
 	public function flush(): Void {

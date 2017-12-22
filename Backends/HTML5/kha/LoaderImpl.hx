@@ -44,7 +44,7 @@ class LoaderImpl {
 	public static function getSoundFormats(): Array<String> {
 		var element = Browser.document.createAudioElement();
 		var formats = new Array<String>();
-		#if !sys_debug_html5
+		#if !kha_debug_html5
 		if (element.canPlayType("audio/mp4") != "") formats.push("mp4");
 		#end
 		if (SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
@@ -54,7 +54,7 @@ class LoaderImpl {
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
 		if (SystemImpl._hasWebAudio) {
 			var element = Browser.document.createAudioElement();
-			#if !sys_debug_html5
+			#if !kha_debug_html5
 			if (element.canPlayType("audio/mp4") != "") {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];
@@ -98,7 +98,7 @@ class LoaderImpl {
 	}
 	
 	public static function getVideoFormats(): Array<String> {
-		#if sys_debug_html5
+		#if kha_debug_html5
 		return ["webm"];
 		#else
 		return ["mp4", "webm"];
@@ -110,7 +110,7 @@ class LoaderImpl {
 	}
     
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
-		#if sys_debug_html5
+		#if kha_debug_html5
 		var fs = untyped __js__("require('fs')");
         var path = untyped __js__("require('path')");
         var app = untyped __js__("require('electron').remote.require('electron').app");

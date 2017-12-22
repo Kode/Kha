@@ -72,7 +72,7 @@ class Audio {
 		//var source = _context.createMediaStreamSource(cast sound.compressedData.getData());
 		//source.connect(_context.destination);
 		var element = Browser.document.createAudioElement();
-		#if sys_debug_html5
+		#if kha_debug_html5
 		var blob = new js.html.Blob([sound.compressedData.getData()], {type: "audio/ogg"});
 		#else
 		var blob = new js.html.Blob([sound.compressedData.getData()], {type: "audio/mp4"});
