@@ -11,7 +11,6 @@ import kha.math.Quaternion;
 import kha.SystemImpl;
 
 class VrInterface extends kha.vr.VrInterface {
-
 	private var vrEnabled: Bool = false;
 
 	private var vrDisplay: Dynamic;
@@ -29,7 +28,11 @@ class VrInterface extends kha.vr.VrInterface {
 
 	public function new() {
 		super();
+		#if kha_webvr
 		var displayEnabled: Bool = untyped __js__('navigator.getVRDisplays');
+		#else
+		var displayEnabled = false;
+		#end
 		if (displayEnabled) {
 			vrEnabled = true;
 			getVRDisplays();
