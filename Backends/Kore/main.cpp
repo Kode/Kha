@@ -281,7 +281,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	}
 
 	//Kore::Mixer::init();
-	mutex.Create();
+	mutex.create();
 
 	// (DK) moved to post_kore_init
 //#ifndef VR_RIFT
