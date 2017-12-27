@@ -1,5 +1,6 @@
 package kha.internal;
 
+#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
@@ -44,3 +45,4 @@ class CompilerDefinesBuilder {
 		});
 	}
 }
+#end

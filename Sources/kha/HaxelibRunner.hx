@@ -1,4 +1,4 @@
-package;
+package kha;
 
 import haxe.io.Path;
 import sys.FileSystem;

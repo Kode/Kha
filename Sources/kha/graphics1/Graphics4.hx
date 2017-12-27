@@ -85,9 +85,17 @@ class Graphics4 implements kha.graphics4.Graphics {
 
 	}
 
+	public function setTextureArray(unit: TextureUnit, texture: Image): Void {
+
+	};
+
 	public function setVideoTexture(unit: TextureUnit, texture: Video): Void {
 		
 	}
+
+	public function setImageTexture(unit: TextureUnit, texture: Image): Void {
+
+	};
 
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		
@@ -188,6 +196,7 @@ class Graphics4 implements kha.graphics4.Graphics {
 	}
 	
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
+		#if js
 		//var vertexShaderSource = "output.gl_Position = new vec4(input.pos.x,input.pos.y,0.5,1.0);";
 		//var vertexShader = untyped __js__("new Function([\"input\", \"output\", \"vec4\"], vertexShaderSource)");
 		//var vertexShader = untyped __js__("window[this.pipeline.vertexShader.name]");
@@ -273,6 +282,7 @@ class Graphics4 implements kha.graphics4.Graphics {
 			
 			index += 3;
 		}
+		#end
 	}
 		
 	private static function vec2(x: FastFloat, y: FastFloat): Array<FastFloat> {
