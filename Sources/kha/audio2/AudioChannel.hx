@@ -26,16 +26,16 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		var w_ptr = 0;
 		var chk_ptr = 0;
 		while (w_ptr < length) {
-			/* compute one chunk to render */
+			// compute one chunk to render
 			var addressable_data = data.length - myPosition;
-			var next_chunk = addressable_data < length ? addressable_data : length;
+			var next_chunk = addressable_data < (length - w_ptr) ? addressable_data : (length - w_ptr);
 			while (chk_ptr < next_chunk) {
 				samples[w_ptr] = data[myPosition];
 				++myPosition;
 				++chk_ptr;
 				++w_ptr;
 			}
-			/* loop to next chunk if applicable */
+			// loop to next chunk if applicable
 			if (!looping) break;
 			else { 
 				chk_ptr = 0;
@@ -44,7 +44,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 				}
 			}
 		}
-		/* fill empty */
+		// fill empty
 		while (w_ptr < length) {
 			samples[w_ptr] = 0;
 			++w_ptr;
