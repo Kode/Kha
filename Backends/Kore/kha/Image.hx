@@ -325,7 +325,7 @@ class Image implements Canvas implements Resource {
 		int stride = texture->stride();
 		for (int y = 0; y < texture->height; ++y) {
 			for (int x = 0; x < texture->width; ++x) {
-#ifdef DIRECT3D
+#ifdef KORE_DIRECT3D
 				if (texture->format == Kore::Graphics4::Image::RGBA32) {
 					//RBGA->BGRA
 					tex[y * stride + x * size + 0] = b[(y * texture->width + x) * size + 2];
