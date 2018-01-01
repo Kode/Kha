@@ -3,13 +3,13 @@ package kha;
 import haxe.io.Bytes;
 
 extern class Font implements Resource {
-	function height(fontSize: Int): Float;
+	function height(fontSize: Int, ?fontGlyphs: Array<Int>): Float;
 
-	function width(fontSize: Int, str: String): Float;
+	function width(fontSize: Int, str: String, ?fontGlyphs: Array<Int>): Float;
 	
-	function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int): Float;
+	function widthOfCharacters(fontSize: Int, characters: Array<Int>, start: Int, length: Int, ?fontGlyphs: Array<Int>): Float;
 
-	function baseline(fontSize: Int): Float;
+	function baseline(fontSize: Int, ?fontGlyphs: Array<Int>): Float;
 
 	function unload(): Void;
 
