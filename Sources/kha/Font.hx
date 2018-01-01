@@ -15,4 +15,6 @@ extern class Font implements Resource {
 
 	// Portability warning, this works only on some platforms but can usually read ttf
 	static function fromBytes(bytes: Bytes): Font;
+
+	static var glyphs: Array<Int>;
 }
