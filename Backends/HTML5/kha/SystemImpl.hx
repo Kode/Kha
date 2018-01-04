@@ -43,6 +43,7 @@ class SystemImpl {
 	public static var khanvas: CanvasElement;
 	private static var options: SystemOptions;
 	public static var mobile: Bool = false;
+	public static var ios: Bool = false;
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
 	private static var firefox: Bool = false;
@@ -67,6 +68,7 @@ class SystemImpl {
 		}, 1000);
 		#else
 		mobile = isMobile();
+		ios = isIOS();
 		chrome = isChrome();
 		firefox = isFirefox();
 		init2();
@@ -88,25 +90,28 @@ class SystemImpl {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Android") >= 0
 			|| agent.indexOf("webOS") >= 0
-			|| agent.indexOf("iPhone") >= 0
-			|| agent.indexOf("iPad") >= 0
-			|| agent.indexOf("iPod") >= 0
 			|| agent.indexOf("BlackBerry") >= 0
 			|| agent.indexOf("Windows Phone") >= 0) {
 				return true;
 		}
-		else {
-			return false;
+		if (isIOS()) return true;
+		return false;
+	}
+
+	private static function isIOS(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("iPhone") >= 0
+			|| agent.indexOf("iPad") >= 0
+			|| agent.indexOf("iPod") >= 0) {
+				return true;
 		}
+		return false;
 	}
 
 	private static function isChrome(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Chrome") >= 0) {
 			return true;
-		}
-		else {
-			return false;
 		}
 		return false;
 	}
@@ -115,9 +120,6 @@ class SystemImpl {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Firefox") >= 0) {
 			return true;
-		}
-		else {
-			return false;
 		}
 		return false;
 	}
@@ -468,6 +470,7 @@ class SystemImpl {
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
+		canvas.addEventListener("touchcancel", touchCancel, false);
 
 		Browser.window.addEventListener("unload", unload);
 	}
@@ -545,7 +548,7 @@ class SystemImpl {
 	private static var iosSoundEnabled: Bool = false;
 
 	private static function unlockSoundOnIOS(): Void {
-		if (!mobile || iosSoundEnabled) return;
+		if (!ios || iosSoundEnabled) return;
 		
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
 		var source = MobileWebAudio._context.createBufferSource();
@@ -707,6 +710,8 @@ class SystemImpl {
 		touchY = Std.int((touch.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
+	private static var iosTouchs: Array<Int> = [];
+
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
 		unlockSoundOnIOS();
@@ -715,9 +720,16 @@ class SystemImpl {
 		event.preventDefault();
 
 		for (touch in event.changedTouches)	{
+			var id = touch.identifier;
+			if (ios) {
+				id = iosTouchs.indexOf(-1);
+				if (id == -1) id = iosTouchs.length;
+				iosTouchs[id] = touch.identifier;
+			}
+
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
-			surface.sendTouchStartEvent(touch.identifier, touchX, touchY);
+			surface.sendTouchStartEvent(id, touchX, touchY);
 		}
 		insideInputEvent = false;
 	}
@@ -727,9 +739,15 @@ class SystemImpl {
 		unlockSoundOnIOS();
 
 		for (touch in event.changedTouches)	{
+			var id = touch.identifier;
+			if (ios) {
+				id = iosTouchs.indexOf(id);
+				iosTouchs[id] = -1;
+			}
+
 			setTouchXY(touch);
 			mouse.sendUpEvent(0, 0, touchX, touchY);
-			surface.sendTouchEndEvent(touch.identifier, touchX, touchY);
+			surface.sendTouchEndEvent(id, touchX, touchY);
 		}
 		insideInputEvent = false;
 	}
@@ -749,10 +767,28 @@ class SystemImpl {
 
 				mouse.sendMoveEvent(0, touchX, touchY, movementX, movementY);
 			}
+			var id = touch.identifier;
+			if (ios) id = iosTouchs.indexOf(id);
 
-			surface.sendMoveEvent(touch.identifier, touchX, touchY);
+			surface.sendMoveEvent(id, touchX, touchY);
 			index++;
 		}
+		insideInputEvent = false;
+	}
+
+	private static function touchCancel(event: TouchEvent): Void {
+		insideInputEvent = true;
+		unlockSoundOnIOS();
+
+		for (touch in event.changedTouches)	{
+			var id = touch.identifier;
+			if (ios) id = iosTouchs.indexOf(id);
+
+			setTouchXY(touch);
+			mouse.sendUpEvent(0, 0, touchX, touchY);
+			surface.sendTouchEndEvent(id, touchX, touchY);
+		}
+		iosTouchs = [];
 		insideInputEvent = false;
 	}
 
