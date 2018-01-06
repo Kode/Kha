@@ -81,24 +81,11 @@ class ImageShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline != null) return;
-		
-		shaderPipeline = new PipelineState();
-		shaderPipeline.fragmentShader = Shaders.painter_image_frag;
-		shaderPipeline.vertexShader = Shaders.painter_image_vert;
-
-		structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("texPosition", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
-		shaderPipeline.inputLayout = [structure];
-		
-		shaderPipeline.blendSource = BlendingFactor.BlendOne;
-		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
-		
-		shaderPipeline.compile();
+		if (shaderPipeline == null) {
+			structure = Graphics2.createImageVertexStructure();
+			shaderPipeline = Graphics2.createImagePipeline(structure);
+			shaderPipeline.compile();
+		}
 	}
 	
 	function initBuffers(): Void {
@@ -316,23 +303,11 @@ class ColoredShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline != null) return;
-		
-		shaderPipeline = new PipelineState();
-		shaderPipeline.fragmentShader = Shaders.painter_colored_frag;
-		shaderPipeline.vertexShader = Shaders.painter_colored_vert;
-
-		structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexColor", VertexData.Float4);
-		shaderPipeline.inputLayout = [structure];
-		
-		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
-			
-		shaderPipeline.compile();
+		if (shaderPipeline == null) {
+			structure = Graphics2.createColoredVertexStructure();
+			shaderPipeline = Graphics2.createColoredPipeline(structure);
+			shaderPipeline.compile();
+		}
 	}
 	
 	function initBuffers(): Void {
@@ -580,24 +555,11 @@ class TextShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline != null) return;
-		
-		shaderPipeline = new PipelineState();
-		shaderPipeline.fragmentShader = Shaders.painter_text_frag;
-		shaderPipeline.vertexShader = Shaders.painter_text_vert;
-
-		structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("texPosition", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
-		shaderPipeline.inputLayout = [structure];
-		
-		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
-		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
-		
-		shaderPipeline.compile();
+		if (shaderPipeline == null) {
+			structure = Graphics2.createTextVertexStructure();
+			shaderPipeline = Graphics2.createTextPipeline(structure);
+			shaderPipeline.compile();
+		}
 	}
 	
 	function initBuffers(): Void {
@@ -837,16 +799,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 		setProjection();
 		
 		if (videoPipeline == null) {
-			videoPipeline = new PipelineState();
+			videoPipeline = createImagePipeline(createImageVertexStructure());
 			videoPipeline.fragmentShader = Shaders.painter_video_frag;
 			videoPipeline.vertexShader = Shaders.painter_video_vert;
-
-			var structure = new VertexStructure();
-			structure.add("vertexPosition", VertexData.Float3);
-			structure.add("texPosition", VertexData.Float2);
-			structure.add("vertexColor", VertexData.Float4);
-			videoPipeline.inputLayout = [structure];
-			
 			videoPipeline.compile();
 		}
 	}
@@ -1112,5 +1067,64 @@ class Graphics2 extends kha.graphics2.Graphics {
 		setPipeline(videoPipeline);
 		drawVideoInternal(video, x, y, width, height);
 		setPipeline(null);
+	}
+
+	public static function createImageVertexStructure(): VertexStructure {
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
+		return structure;
+	}
+
+	public static function createImagePipeline(structure: VertexStructure): PipelineState {
+		var shaderPipeline = new PipelineState();
+		shaderPipeline.fragmentShader = Shaders.painter_image_frag;
+		shaderPipeline.vertexShader = Shaders.painter_image_vert;
+		shaderPipeline.inputLayout = [structure];
+		shaderPipeline.blendSource = BlendingFactor.BlendOne;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		return shaderPipeline;
+	}
+
+	public static function createColoredVertexStructure(): VertexStructure {
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("vertexColor", VertexData.Float4);
+		return structure;
+	}
+
+	public static function createColoredPipeline(structure: VertexStructure): PipelineState {
+		var shaderPipeline = new PipelineState();
+		shaderPipeline.fragmentShader = Shaders.painter_colored_frag;
+		shaderPipeline.vertexShader = Shaders.painter_colored_vert;
+		shaderPipeline.inputLayout = [structure];
+		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		return shaderPipeline;
+	}
+
+	public static function createTextVertexStructure(): VertexStructure {
+		var structure = new VertexStructure();
+		structure.add("vertexPosition", VertexData.Float3);
+		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexColor", VertexData.Float4);
+		return structure;
+	}
+
+	public static function createTextPipeline(structure: VertexStructure): PipelineState {
+		var shaderPipeline = new PipelineState();
+		shaderPipeline.fragmentShader = Shaders.painter_text_frag;
+		shaderPipeline.vertexShader = Shaders.painter_text_vert;
+		shaderPipeline.inputLayout = [structure];
+		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+		return shaderPipeline;
 	}
 }
