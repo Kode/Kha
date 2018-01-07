@@ -79,8 +79,8 @@ class CubeMap implements Canvas implements Resource {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				isDepthAttachment = true;
-				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
-				if (untyped __js__('navigator.appVersion.indexOf("Win")') == -1) {
+				// Some WebGL implementations throw incomplete framebuffer error, create color attachment
+				if (!SystemImpl.gl2) {
 					var colortex = SystemImpl.gl.createTexture();
 					SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, colortex);
 					for (i in 0...6) {
