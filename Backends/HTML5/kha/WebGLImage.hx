@@ -187,8 +187,8 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, texture, 0);
-				// OSX/Linux WebGL implementations throw incomplete framebuffer error, create color attachment
-				if (untyped __js__('navigator.appVersion.indexOf("Win")') == -1) {
+				// Some WebGL implementations throw incomplete framebuffer error, create color attachment
+				if (!SystemImpl.gl2) {
 					var colortex = SystemImpl.gl.createTexture();
 					SystemImpl.gl.bindTexture(GL.TEXTURE_2D, colortex);
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
