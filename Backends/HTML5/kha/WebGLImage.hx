@@ -44,14 +44,16 @@ class WebGLImage extends Image {
 	private static inline var GL_DEPTH24_STENCIL8 = 0x88F0;
 	private static inline var GL_DEPTH32F_STENCIL8 = 0x8CAD;
 
+	static var canvas: js.html.CanvasElement;
+
 	public static function init() {
 		if (context == null) {
 			// create only once
-			var canvas: Dynamic = Browser.document.createElement("canvas");
+			canvas = cast Browser.document.createElement("canvas");
 			if (canvas != null) {
 				context = canvas.getContext("2d");
-				canvas.width = 2048;
-				canvas.height = 2048;
+				canvas.width = 4096;
+				canvas.height = 4096;
 				context.globalCompositeOperation = "copy";
 			}
 		}
@@ -133,6 +135,16 @@ class WebGLImage extends Image {
 			data = new js.html.ImageData(new js.html.Uint8ClampedArray(image.buffer), this.width, this.height);
 		} 
 		else {
+			if (this.width > canvas.width || this.height > canvas.height) {
+				var cw = canvas.width;
+				var ch = canvas.height;
+				while (this.width > cw || this.height > ch) {
+					cw *= 2;
+					ch *= 2;
+				}
+				canvas.width = cw;
+				canvas.height = ch;
+			}
 			context.strokeStyle = "rgba(0,0,0,0)";
 			context.fillStyle = "rgba(0,0,0,0)";
 			context.fillRect(0, 0, image.width, image.height);
