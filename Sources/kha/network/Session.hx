@@ -51,7 +51,7 @@ class Session {
 	private var current: Client;
 	private var isJoinable: Bool = false;
 	private var lastStates: Array<State> = new Array();
-	private static inline var stateCount = 60 * 5; // 5 seconds with 60 fps
+	private static inline var stateCount = 60 * 10; // 10 seconds with 60 fps
 	#else
 	private var localClient: Client;
 	public var network: Network;
@@ -168,7 +168,7 @@ class Session {
 			SystemImpl._updateScreenRotation(rotation);
 			
 			if (controllers.exists(id)) {
-				Scheduler.addTimeTask(function () {
+				processEventRetroactively(function () {
 					current = client;
 					var offset = 22;
 					while (offset < bytes.length) {
@@ -177,31 +177,7 @@ class Session {
 						offset += (4 + length);
 					}
 					current = null;					
-				}, time - Scheduler.time());
-				if (time <= Scheduler.time()) {
-					var handeled = false;
-					var i = lastStates.length - 1;
-					while (i >= 0) {
-						if (lastStates[i].time < time) {
-							var offset = 9;
-							for (entity in entities) {
-								entity._receive(offset, lastStates[i].data);
-								offset += entity._size();
-							}
-							handeled = true;
-							// Invalidate states in which the new event is missing
-							if (i < lastStates.length - 1) {
-								lastStates.splice(i + 1, lastStates.length - i - 1);
-							}
-							Scheduler.back(lastStates[i].time);
-							break;
-						}
-						--i;
-					}
-					if (!handeled) {
-						trace("WARNING: Client input ignored");
-					}
-				}
+				}, time);
 			}
 		case REMOTE_CALL:
 			processRPC(bytes);
@@ -225,7 +201,7 @@ class Session {
 				entity._receive(offset, bytes);
 				offset += entity._size();
 			}
-			Scheduler.back(time);
+			Scheduler.warp(time);
 		case REMOTE_CALL:
 			switch (bytes.get(1)) {
 			case RPC_SERVER:
@@ -244,6 +220,37 @@ class Session {
 		
 		#end
 	}
+
+	#if sys_server
+	private function processEventRetroactively(event: Void->Void, time: Float) {
+		if (time <= Scheduler.time()) {
+			var temp = time;
+			// Process after earliest saved state if it is too far back
+			if (time <= lastStates[0].time) {
+				time = lastStates[0].time + 0.00001;
+			}
+
+			var i = lastStates.length - 1;
+			while (i >= 0) {
+				if (lastStates[i].time < time) {
+					var offset = 9;
+					for (entity in entities) {
+						entity._receive(offset, lastStates[i].data);
+						offset += entity._size();
+					}
+					// Invalidate states in which the new event is missing
+					if (i < lastStates.length - 1) {
+						lastStates.splice(i + 1, lastStates.length - i - 1);
+					}
+					Scheduler.warp(lastStates[i].time);
+					break;
+				}
+				--i;
+			}
+		}
+		Scheduler.addTimeTask(event, time - Scheduler.time());
+	}
+	#end
 
 	#if sys_server
 	public function processRPC(bytes: Bytes) {
@@ -412,7 +419,7 @@ class Session {
 				var bytes = haxe.io.Bytes.alloc(22 + controller._inputBufferIndex);
 				bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
 				bytes.setInt32(1, controller._id());
-				bytes.setDouble(5, Scheduler.realTime());
+				bytes.setDouble(5, Scheduler.time());
 				bytes.setInt32(13, System.windowWidth(0));
 				bytes.setInt32(17, System.windowHeight(0));
 				bytes.set(21, System.screenRotation.getIndex());

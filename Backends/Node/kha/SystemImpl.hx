@@ -115,11 +115,17 @@ class SystemImpl {
 	private static function run() {
 		Scheduler.executeFrame();
 		var time = Scheduler.time();
+
+		// Was scheduler reset?
+		if (time < lastTime - 10) {
+			lastTime = time;
+		}
+
 		if (time >= lastTime + 10) {
-			lastTime += 10;
+			lastTime = time;
 			Node.console.log(lastTime + " seconds.");
 		}
-		Node.setTimeout(run, 0);
+		Node.setTimeout(run, 1);
 	}
 	
 	private static function synch() {
