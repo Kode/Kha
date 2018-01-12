@@ -51,11 +51,13 @@ class Network {
 		var received = getBytesFromSocket(tempBuffer);
 		buffer.blit(bufferPos, tempBuffer, 0, received);
 		bufferPos += received;
-		if (received > 0) trace("received " + received + " bytes");
+		//if (received > 0) trace("received " + received + " bytes");
 		
 		// TODO: Handle partial packets, don't choke on garbage
 		if (listener != null && bufferPos > 0) {
-			listener(buffer);
+			var result = Bytes.alloc(bufferPos);
+			result.blit(0, buffer, 0, bufferPos);
+			listener(result);
 			bufferPos = 0;
 		}
 	}
