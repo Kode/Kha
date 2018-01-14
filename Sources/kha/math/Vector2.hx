@@ -51,4 +51,8 @@ class Vector2 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+	
+	@:extern public inline function angle(v: Vector2): Float {
+		return Math.atan2(y,x) - Math.atan2(v.y,v.x);
+	}
 }
