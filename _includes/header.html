@@ -1,12 +1,43 @@
 <!-- Header Segment -->
-<div class="ui vertical center aligned segment">
-    <div class="tophead ui text container">
-        <div class="ui header">
-            <b>Kha</b>
-            <p>&lt;Portable Multimedia Framework&gt;</p>
+{% if page.title == 'Kha Multimedia Framework' %}
+<div class="ui inverted vertical homehead center aligned segment">
+    <div class="black layer">
+        <div class="ui text container">
+
+            <!-- Title and Subtitle -->
+            <h1 class="ui inverted header">Kha</h1>
+            <h2>Ultra-portable, high performance,<br/>open source multimedia framework.</h2>
+
+            <!-- Buttons -->
+            <a class="ui vertical animated large inverted secondary button squared" href="getstarted">
+                <div class="visible content">GET STARTED</div>
+                <div class="hidden content">IT'S EASY</div>
+            </a>
+            <a class="ui vertical animated large inverted button squared" href="download">
+                <div class="visible content">DOWNLOAD</div>
+                <div class="hidden content">IT'S FREE</div>
+            </a>
+
+        </div>
+
+        <!-- Showcase Mini Label -->
+        <div class="ui grid container gametag">
+            <div class="wide column">
+                <div class="ui small black bottom right attached label squared">
+                    <a href="http://luboslenco.com/notes/">Screenshot of Armory</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Default Menu -->
-{% include menu-default.html %}
+{% else %}
+<div class="ui vertical center aligned segment">
+    <div class="tophead ui text container">
+        <div class="ui header">
+            <b>Kha</b>
+            <p>Multimedia Framework</p>
+        </div>
+    </div>
+</div>
+{% endif %}
