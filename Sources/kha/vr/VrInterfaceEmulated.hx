@@ -265,7 +265,7 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 	public function new() {
 		super();
 		
-		Gamepad.get(0).notify(axisEvent, buttonEvent,null);
+		Gamepad.get(0).notify(axisEvent, buttonEvent);
 		Keyboard.get(0).notify(keyDownEvent, keyUpEvent);
 		Mouse.get(0).notify(mouseButtonDownEvent, mouseButtonUpEvent, mouseMoveEvent, null);
 		
