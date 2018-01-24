@@ -40,7 +40,6 @@ class Gamepad {
 		this.index = index;
 		axisListeners = new Array<Int->Float->Void>();
 		buttonListeners = new Array<Int->Float->Void>();
-		disconnectListeners = new Array<Gamepad->Void>();
 		instances[index] = this;
 	}
 
