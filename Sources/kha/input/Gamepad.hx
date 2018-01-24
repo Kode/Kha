@@ -9,30 +9,32 @@ class Gamepad {
 		if (index >= instances.length) return null;
 		return instances[index];
 	}
-	public static function notifyConnect(connectListener:Int->Void): Void {
-		if(connectListener!=null)connectListeners.push(connectListener);
-	}
-	public static function removeConnect(connectListener:Int->Void): Void {
-		if(connectListener!=null)connectListeners.remove(connectListener);
-	}
 
-	public function notify(axisListener: Int->Float->Void, buttonListener: Int->Float->Void,disconnectListener:Gamepad->Void): Void {
-		if (axisListener != null) axisListeners.push(axisListener);
-		if (buttonListener != null) buttonListeners.push(buttonListener);
+	public static function notifyOnConnect(connectListener: Int->Void, disconnectListener: Int->Void): Void {
+		if (connectListener != null) connectListeners.push(connectListener);
 		if (disconnectListener != null) disconnectListeners.push(disconnectListener);
 	}
-	
-	public function remove(axisListener: Int->Float->Void, buttonListener: Int->Float->Void,disconnectListener:Gamepad->Void): Void {
-		if (axisListener != null) axisListeners.remove(axisListener);
-		if (buttonListener != null) buttonListeners.remove(buttonListener);
+
+	public static function removeConnect(connectListener: Int->Void, disconnectListener: Int->Void): Void {
+		if (connectListener != null) connectListeners.remove(connectListener);
 		if (disconnectListener != null) disconnectListeners.remove(disconnectListener);
 	}
+
+	public function notify(axisListener: Int->Float->Void, buttonListener: Int->Float->Void): Void {
+		if (axisListener != null) axisListeners.push(axisListener);
+		if (buttonListener != null) buttonListeners.push(buttonListener);
+	}
 	
-	private static var instances: Array<Gamepad> = new Array<Gamepad>();
+	public function remove(axisListener: Int->Float->Void, buttonListener: Int->Float->Void): Void {
+		if (axisListener != null) axisListeners.remove(axisListener);
+		if (buttonListener != null) buttonListeners.remove(buttonListener);
+	}
+	
+	private static var instances: Array<Gamepad> = new Array();
 	private var axisListeners: Array<Int->Float->Void>;
 	private var buttonListeners: Array<Int->Float->Void>;
-	private static var connectListeners:Array<Int->Void> =new Array<Int->Void>();
-	private var disconnectListeners:Array<Gamepad->Void>;
+	private static var connectListeners:Array<Int->Void> = new Array();
+	private static var disconnectListeners:Array<Int->Void> = new Array();
 	
 	private function new(index: Int = 0, id: String = "unknown") {
 		this.index = index;
@@ -64,7 +66,7 @@ class Gamepad {
 	}
 	
 	@input
-	private static function sendConnectEvent(index:Int): Void {
+	private static function sendConnectEvent(index: Int): Void {
 		instances[index].connected = true;
 		for (listener in connectListeners) {
 			listener(index);
@@ -72,10 +74,10 @@ class Gamepad {
 	}
 	
 	@input
-	private function sendDisconnectEvent(): Void {
-		connected = false;
+	private static function sendDisconnectEvent(index: Int): Void {
+		instances[index].connected = false;
 		for (listener in disconnectListeners) {
-			listener(this);
+			listener(index);
 		}
 	}
 }
