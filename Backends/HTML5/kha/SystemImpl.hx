@@ -206,6 +206,12 @@ class SystemImpl {
 			gamepads[i] = new Gamepad(i);
 			gamepadStates[i] = new GamepadStates();
 		}
+		js.Browser.window.addEventListener("gamepadconnected", function(e_) {
+			Gamepad.sendConnectEvent(e_.gamepad.index);
+		}); 
+		js.Browser.window.addEventListener("gamepaddisconnected", function(e_) { 
+			if(e_.gamepad.index<gamepads.length) gamepads[e_.gamepad.index].sendDisconnectEvent();
+		});
 		pressedKeys = new Array<Bool>();
 		for (i in 0...256) pressedKeys.push(false);
 		for (i in 0...256) pressedKeys.push(null);
