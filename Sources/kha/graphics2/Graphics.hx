@@ -125,13 +125,15 @@ class Graphics {
 	}
 	
 	public var fontGlyphs(get, set): Array<Int>;
-	
+
+	public static var _glyphs: Array<Int> = [for (i in 32...256) i];
+
 	private function get_fontGlyphs(): Array<Int> {
-		return Font.glyphs;
+		return _glyphs;
 	}
 	
 	private function set_fontGlyphs(value: Array<Int>): Array<Int> {
-		return Font.glyphs = value;
+		return _glyphs = value;
 	}
 	
 	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack

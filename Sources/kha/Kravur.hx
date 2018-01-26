@@ -34,6 +34,8 @@ class KravurImage {
 	public var width: Int;
 	public var height: Int;
 	private var baseline: Float;
+
+	public static var gaps: Array<Int>;
 	
 	public function new(size: Int, ascent: Int, descent: Int, lineGap: Int, width: Int, height: Int, chars: Vector<Stbtt_bakedchar>, pixels: Blob) {
 		mySize = size;
@@ -85,12 +87,12 @@ class KravurImage {
 	
 	private function getCharWidth(charIndex: Int): Float {
 		if (chars.length == 0) return 0;
-		var offset = Kravur.gaps[0];
+		var offset = gaps[0];
 		if (charIndex < offset) return chars[0].xadvance;
 
-		for (i in 1...Std.int(Kravur.gaps.length/2)) {
-			var prevEnd = Kravur.gaps[i*2-1];
-			var start = Kravur.gaps[i*2];
+		for (i in 1...Std.int(gaps.length/2)) {
+			var prevEnd = gaps[i*2-1];
+			var start = gaps[i*2];
 			if (charIndex > start-1) offset += start-1 - prevEnd;
 		}
 
@@ -125,8 +127,9 @@ class KravurImage {
 }
 
 class Kravur implements Resource {
-	public static var glyphs: Array<Int> = [for (i in 32...256) i];
-	public static var gaps: Array<Int>;
+	// Do not put static data in Kravur because it is overwritten
+	// when <canvas> is used - but it's still used by the overwriting class.
+
 	private var oldGlyphs: Array<Int>;
 	private var blob: Blob;
 	private var images: Map<Int, KravurImage> = new Map();
@@ -140,21 +143,21 @@ class Kravur implements Resource {
 	}
 	
 	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
-		if (glyphs == null) glyphs = Font.glyphs;
+		if (glyphs == null) glyphs = kha.graphics2.Graphics._glyphs;
 
 		if (glyphs != oldGlyphs) {
 			oldGlyphs = glyphs;
 			//save first/last block chars
-			gaps = [glyphs[0]];
-			var next = gaps[0] + 1;
+			KravurImage.gaps = [glyphs[0]];
+			var next = KravurImage.gaps[0] + 1;
 			for (i in 1...glyphs.length) {
 				if (glyphs[i] != next) {
-					gaps.push(glyphs[i-1]);
-					gaps.push(glyphs[i]);
+					KravurImage.gaps.push(glyphs[i-1]);
+					KravurImage.gaps.push(glyphs[i]);
 					next = glyphs[i] + 1;
 				} else next++;
 			}
-			gaps.push(glyphs[glyphs.length - 1]);
+			KravurImage.gaps.push(glyphs[glyphs.length - 1]);
 		}
 
 		var imageIndex = glyphs == null ? fontSize : fontSize * 10000 + glyphs.length;

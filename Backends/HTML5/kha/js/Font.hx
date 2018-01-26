@@ -13,7 +13,7 @@ class Font implements Resource {
 	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
 	
 	public function new(blob: Blob) {
-		this.kravur = new Kravur(blob);
+		this.kravur = untyped __js__ ("new kha_js_Font.Kravur(blob);");
 	}
 	
 	public static function fromBytes(bytes: Bytes): Font {
