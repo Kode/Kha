@@ -22,3 +22,7 @@
 	path = Tools/kravur
 	url = https://github.com/Kode/kravur_bin.git
 	branch = master
+[submodule "Tools/lame"]
+	path = Tools/lame
+	url = https://github.com/Kode/lame_bin.git
+	branch = master
