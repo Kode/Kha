@@ -47,6 +47,7 @@ class SystemImpl {
 	public static var mobileAudioPlaying: Bool = false;
 	private static var chrome: Bool = false;
 	private static var firefox: Bool = false;
+	private static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
@@ -71,6 +72,7 @@ class SystemImpl {
 		ios = isIOS();
 		chrome = isChrome();
 		firefox = isFirefox();
+		ie = isIE();
 		init2();
 		callback();
 		#end
@@ -119,6 +121,15 @@ class SystemImpl {
 	private static function isFirefox(): Bool {
 		var agent = js.Browser.navigator.userAgent;
 		if (agent.indexOf("Firefox") >= 0) {
+			return true;
+		}
+		return false;
+	}
+
+	private static function isIE(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		if (agent.indexOf("MSIE ") >= 0
+			|| agent.indexOf("Trident/") >= 0) {
 			return true;
 		}
 		return false;
@@ -212,9 +223,11 @@ class SystemImpl {
 		js.Browser.window.addEventListener("gamepaddisconnected", function(e_) {
 			Gamepad.sendDisconnectEvent(e_.gamepad.index);
 		});
-		pressedKeys = new Array<Bool>();
-		for (i in 0...256) pressedKeys.push(false);
-		for (i in 0...256) pressedKeys.push(null);
+		if (ie) {
+			pressedKeys = new Array<Bool>();
+			for (i in 0...256) pressedKeys.push(false);
+			for (i in 0...256) pressedKeys.push(null);
+		}
 
 		js.Browser.document.addEventListener("copy", function (e_) {
 			var e: js.html.ClipboardEvent = cast e_;
@@ -900,12 +913,18 @@ class SystemImpl {
 		event.stopPropagation();
 
 		// prevent key repeat
-		if (pressedKeys[event.keyCode]) {
+		if (ie) {
+			if (pressedKeys[event.keyCode]) {
+				event.preventDefault();
+				return;
+			}
+			pressedKeys[event.keyCode] = true;
+
+		} else if (event.repeat) {
 			event.preventDefault();
 			return;
 		}
 
-		pressedKeys[event.keyCode] = true;
 		keyboard.sendDownEvent(cast event.keyCode);
 	}
 
@@ -913,7 +932,7 @@ class SystemImpl {
 		event.preventDefault();
 		event.stopPropagation();
 
-		pressedKeys[event.keyCode] = false;
+		if (ie) pressedKeys[event.keyCode] = false;
 
 		keyboard.sendUpEvent(cast event.keyCode);
 	}
