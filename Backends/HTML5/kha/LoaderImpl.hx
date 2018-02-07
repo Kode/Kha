@@ -46,6 +46,7 @@ class LoaderImpl {
 		var formats = new Array<String>();
 		#if !kha_debug_html5
 		if (element.canPlayType("audio/mp4") != "") formats.push("mp4");
+		if (element.canPlayType("audio/mp3") != "") formats.push("mp3");
 		#end
 		if (SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
 		return formats;
@@ -59,6 +60,15 @@ class LoaderImpl {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];
 					if (file.endsWith(".mp4")) {
+						new WebAudioSound(file, done);
+						return;
+					}
+				}
+			}
+			if (element.canPlayType("audio/mp3") != "") {
+				for (i in 0...desc.files.length) {
+					var file: String = desc.files[i];
+					if (file.endsWith(".mp3")) {
 						new WebAudioSound(file, done);
 						return;
 					}
@@ -79,6 +89,15 @@ class LoaderImpl {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];
 					if (file.endsWith(".mp4")) {
+						new MobileWebAudioSound(file, done);
+						return;
+					}
+				}
+			}
+			if (element.canPlayType("audio/mp3") != "") {
+				for (i in 0...desc.files.length) {
+					var file: String = desc.files[i];
+					if (file.endsWith(".mp3")) {
 						new MobileWebAudioSound(file, done);
 						return;
 					}
