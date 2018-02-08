@@ -2,6 +2,7 @@ package kha;
 
 import haxe.io.Bytes;
 import kha.graphics4.Graphics;
+import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
@@ -39,7 +40,7 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: Bool = false, antiAliasingSamples: Int = 1): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		var rtid = ++lastRtId;
 		Worker.postMessage({ command: 'createRenderTarget', id: rtid, width: width, height: height });
