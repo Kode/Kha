@@ -169,7 +169,7 @@ class CanvasGraphics extends Graphics {
 		canvas.fill();
 	}
 	
-	var backedQuadCache = new kha.Kravur.AlignedQuad();
+	var bakedQuadCache = new kha.Kravur.AlignedQuad();
 	
 	override public function drawString(text: String, x: Float, y: Float) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
@@ -183,9 +183,9 @@ class CanvasGraphics extends Graphics {
 			for (i in 0...text.length) {
 				var q;
 				if (fontGlyphs != null)
-					q = webfont.kravur._get(fontSize, fontGlyphs).getBakedQuad(backedQuadCache, fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
+					q = webfont.kravur._get(fontSize, fontGlyphs).getBakedQuad(bakedQuadCache, fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
 				else
-					q = webfont.kravur._get(fontSize).getBakedQuad(backedQuadCache, text.charCodeAt(i) - 32, xpos, ypos);
+					q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, text.charCodeAt(i) - 32, xpos, ypos);
 
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)

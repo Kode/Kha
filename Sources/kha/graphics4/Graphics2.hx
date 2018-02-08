@@ -718,7 +718,7 @@ class TextShaderPainter {
 		return 0;
 	}
 
-	var backedQuadCache = new kha.Kravur.AlignedQuad();
+	var bakedQuadCache = new kha.Kravur.AlignedQuad();
 	
 	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
 		var font = this.font._get(fontSize, fontGlyphs);
@@ -730,7 +730,7 @@ class TextShaderPainter {
 		var ypos = y;
 		startString(text);
 		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(backedQuadCache, findIndex(charCodeAt(i), fontGlyphs), xpos, ypos);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCodeAt(i), fontGlyphs), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -756,7 +756,7 @@ class TextShaderPainter {
 		var xpos = x;
 		var ypos = y;
 		for (i in start...start + length) {
-			var q = font.getBakedQuad(backedQuadCache, findIndex(text[i], fontGlyphs), xpos, ypos);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(text[i], fontGlyphs), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
