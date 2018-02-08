@@ -60,7 +60,7 @@ class KravurImage {
 		return texture;
 	}
 	
-	public function getBakedQuad(char_index: Int, xpos: Float, ypos: Float): AlignedQuad {
+	public function getBakedQuad(q: AlignedQuad, char_index: Int, xpos: Float, ypos: Float): AlignedQuad {
 		if (char_index >= chars.length) return null;
 		var ipw: Float = 1.0 / width;
 		var iph: Float = 1.0 / height;
@@ -69,7 +69,6 @@ class KravurImage {
 		var round_x: Int = Math.round(xpos + b.xoff);
 		var round_y: Int = Math.round(ypos + b.yoff);
 
-		var q = new AlignedQuad();
 		q.x0 = round_x;
 		q.y0 = round_y;
 		q.x1 = round_x + b.x1 - b.x0;
