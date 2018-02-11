@@ -29,7 +29,7 @@ class Compute {
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
 		var accessKore: Int = getAccess(access);
-		untyped __cpp__('Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Graphics4::Access)accessKore);');
+		untyped __cpp__('Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Compute::Access)accessKore);');
 	}
 
 	public static function setShader(shader: Shader) {
