@@ -8,6 +8,7 @@ import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
+import kha.graphics4.CubeMap;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -127,6 +128,22 @@ class Compute {
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
 		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, texture->renderTarget);");
+	}
+
+	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
+		setSampledCubeMapPrivate(unit, cubeMap);
+	}
+
+	@:functionCode('
+		if (cubeMap->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, cubeMap->texture);
+		else Kore::Compute::setSampledTexture(unit->unit, cubeMap->renderTarget);
+	')
+	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
+		
+	}
+
+	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
+		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, cubeMap->renderTarget);");
 	}
 
 	public static function setShader(shader: Shader) {

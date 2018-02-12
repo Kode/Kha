@@ -8,6 +8,7 @@ import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
+import kha.graphics4.CubeMap;
 
 extern class Compute {
 	public static function setBool(location: ConstantLocation, value: Bool): Void;
@@ -26,6 +27,8 @@ extern class Compute {
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access): Void;
 	public static function setSampledTexture(unit: TextureUnit, texture: Image): Void;
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image): Void;
+	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
+	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	public static function setShader(shader: Shader): Void;
 	public static function compute(x: Int, y: Int, z: Int): Void;
 }
