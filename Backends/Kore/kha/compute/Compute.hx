@@ -8,6 +8,7 @@ import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
+import kha.graphics4.CubeMap;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -102,8 +103,47 @@ class Compute {
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
-		var accessKore: Int = getAccess(access);
-		untyped __cpp__('Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Compute::Access)accessKore);');
+		setTexturePrivate(unit, texture, getAccess(access));
+	}
+
+	@:functionCode('
+		if (texture->texture != nullptr) Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Compute::Access)access);
+		else Kore::Compute::setTexture(unit->unit, texture->renderTarget, (Kore::Compute::Access)access);
+	')
+	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
+		
+	}
+
+	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
+		setSampledTexturePrivate(unit, texture);
+	}
+
+	@:functionCode('
+		if (texture->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, texture->texture);
+		else Kore::Compute::setSampledTexture(unit->unit, texture->renderTarget);
+	')
+	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
+		
+	}
+
+	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
+		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, texture->renderTarget);");
+	}
+
+	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
+		setSampledCubeMapPrivate(unit, cubeMap);
+	}
+
+	@:functionCode('
+		if (cubeMap->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, cubeMap->texture);
+		else Kore::Compute::setSampledTexture(unit->unit, cubeMap->renderTarget);
+	')
+	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
+		
+	}
+
+	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
+		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, cubeMap->renderTarget);");
 	}
 
 	public static function setShader(shader: Shader) {
