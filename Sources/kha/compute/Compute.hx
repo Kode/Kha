@@ -9,6 +9,9 @@ import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
 import kha.graphics4.CubeMap;
+import kha.graphics4.TextureAddressing;
+import kha.graphics4.TextureFilter;
+import kha.graphics4.MipMapFilter;
 
 extern class Compute {
 	public static function setBool(location: ConstantLocation, value: Bool): Void;
@@ -29,6 +32,8 @@ extern class Compute {
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image): Void;
 	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
+	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	public static function setShader(shader: Shader): Void;
 	public static function compute(x: Int, y: Int, z: Int): Void;
 }
