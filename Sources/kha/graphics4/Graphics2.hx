@@ -30,22 +30,22 @@ import kha.Shaders;
 import kha.simd.Float32x4;
 
 class ImageShaderPainter {
-	private var projectionMatrix: FastMatrix4;
-	private static var shaderPipeline: PipelineState = null;
-	private static var structure: VertexStructure = null;
-	private var projectionLocation: ConstantLocation;
-	private var textureLocation: TextureUnit;
-	private static var bufferSize: Int = 1500;
-	private static var vertexSize: Int = 9;
-	private var bufferIndex: Int;
-	private var rectVertexBuffer: VertexBuffer;
-	private var rectVertices: Float32Array;
-	private var indexBuffer: IndexBuffer;
-	private var lastTexture: Image;
-	private var bilinear: Bool = false;
-	private var bilinearMipmaps: Bool = false;    
-	private var g: Graphics;
-	private var myPipeline: PipelineState = null;
+	var projectionMatrix: FastMatrix4;
+	static var shaderPipeline: PipelineState = null;
+	static var structure: VertexStructure = null;
+	static inline var bufferSize: Int = 1500;
+	static inline var vertexSize: Int = 9;
+	static var bufferIndex: Int;
+	static var rectVertexBuffer: VertexBuffer;
+	static var rectVertices: Float32Array;
+	static var indexBuffer: IndexBuffer;
+	static var lastTexture: Image;
+	var bilinear: Bool = false;
+	var bilinearMipmaps: Bool = false;    
+	var g: Graphics;
+	var myPipeline: PipelineState = null;
+	var projectionLocation: ConstantLocation;
+	var textureLocation: TextureUnit;
 	public var pipeline(get, set): PipelineState;
 	
 	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
@@ -81,28 +81,32 @@ class ImageShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline == null) {
+		if (structure == null) {
 			structure = Graphics2.createImageVertexStructure();
+		}
+		if (shaderPipeline == null) {
 			shaderPipeline = Graphics2.createImagePipeline(structure);
 			shaderPipeline.compile();
 		}
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
-		rectVertices = rectVertexBuffer.lock();
-		
-		indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
-		var indices = indexBuffer.lock();
-		for (i in 0...bufferSize) {
-			indices[i * 3 * 2 + 0] = i * 4 + 0;
-			indices[i * 3 * 2 + 1] = i * 4 + 1;
-			indices[i * 3 * 2 + 2] = i * 4 + 2;
-			indices[i * 3 * 2 + 3] = i * 4 + 0;
-			indices[i * 3 * 2 + 4] = i * 4 + 2;
-			indices[i * 3 * 2 + 5] = i * 4 + 3;
+		if (rectVertexBuffer == null) {
+			rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
+			rectVertices = rectVertexBuffer.lock();
+			
+			indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
+			var indices = indexBuffer.lock();
+			for (i in 0...bufferSize) {
+				indices[i * 3 * 2 + 0] = i * 4 + 0;
+				indices[i * 3 * 2 + 1] = i * 4 + 1;
+				indices[i * 3 * 2 + 2] = i * 4 + 2;
+				indices[i * 3 * 2 + 3] = i * 4 + 0;
+				indices[i * 3 * 2 + 4] = i * 4 + 2;
+				indices[i * 3 * 2 + 5] = i * 4 + 3;
+			}
+			indexBuffer.unlock();
 		}
-		indexBuffer.unlock();
 	}
 	
 	private inline function setRectVertices(
@@ -251,25 +255,25 @@ class ImageShaderPainter {
 }
 
 class ColoredShaderPainter {
-	private var projectionMatrix: FastMatrix4;
-	private static var shaderPipeline: PipelineState = null;
-	private static var structure: VertexStructure = null;
-	private var projectionLocation: ConstantLocation;
+	var projectionMatrix: FastMatrix4;
+	static var shaderPipeline: PipelineState = null;
+	static var structure: VertexStructure = null;
 	
-	private static var bufferSize: Int = 100;
-	private var bufferIndex: Int;
-	private var rectVertexBuffer: VertexBuffer;
-	private var rectVertices: Float32Array;
-	private var indexBuffer: IndexBuffer;
+	static inline var bufferSize: Int = 100;
+	static var bufferIndex: Int;
+	static var rectVertexBuffer: VertexBuffer;
+	static var rectVertices: Float32Array;
+	static var indexBuffer: IndexBuffer;
 	
-	private static var triangleBufferSize: Int = 100;
-	private var triangleBufferIndex: Int;
-	private var triangleVertexBuffer: VertexBuffer;
-	private var triangleVertices: Float32Array;
-	private var triangleIndexBuffer: IndexBuffer;
+	static inline var triangleBufferSize: Int = 100;
+	static var triangleBufferIndex: Int;
+	static var triangleVertexBuffer: VertexBuffer;
+	static var triangleVertices: Float32Array;
+	static var triangleIndexBuffer: IndexBuffer;
 	
-	private var g: Graphics;
-	private var myPipeline: PipelineState = null;
+	var g: Graphics;
+	var myPipeline: PipelineState = null;
+	var projectionLocation: ConstantLocation;
 	public var pipeline(get, set): PipelineState;
 	
 	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
@@ -303,40 +307,44 @@ class ColoredShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline == null) {
+		if (structure == null) {
 			structure = Graphics2.createColoredVertexStructure();
+		}
+		if (shaderPipeline == null) {
 			shaderPipeline = Graphics2.createColoredPipeline(structure);
 			shaderPipeline.compile();
 		}
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
-		rectVertices = rectVertexBuffer.lock();
-		
-		indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
-		var indices = indexBuffer.lock();
-		for (i in 0...bufferSize) {
-			indices[i * 3 * 2 + 0] = i * 4 + 0;
-			indices[i * 3 * 2 + 1] = i * 4 + 1;
-			indices[i * 3 * 2 + 2] = i * 4 + 2;
-			indices[i * 3 * 2 + 3] = i * 4 + 0;
-			indices[i * 3 * 2 + 4] = i * 4 + 2;
-			indices[i * 3 * 2 + 5] = i * 4 + 3;
+		if (rectVertexBuffer == null) {
+			rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
+			rectVertices = rectVertexBuffer.lock();
+			
+			indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
+			var indices = indexBuffer.lock();
+			for (i in 0...bufferSize) {
+				indices[i * 3 * 2 + 0] = i * 4 + 0;
+				indices[i * 3 * 2 + 1] = i * 4 + 1;
+				indices[i * 3 * 2 + 2] = i * 4 + 2;
+				indices[i * 3 * 2 + 3] = i * 4 + 0;
+				indices[i * 3 * 2 + 4] = i * 4 + 2;
+				indices[i * 3 * 2 + 5] = i * 4 + 3;
+			}
+			indexBuffer.unlock();
+			
+			triangleVertexBuffer = new VertexBuffer(triangleBufferSize * 3, structure, Usage.DynamicUsage);
+			triangleVertices = triangleVertexBuffer.lock();
+			
+			triangleIndexBuffer = new IndexBuffer(triangleBufferSize * 3, Usage.StaticUsage);
+			var triIndices = triangleIndexBuffer.lock();
+			for (i in 0...bufferSize) {
+				triIndices[i * 3 + 0] = i * 3 + 0;
+				triIndices[i * 3 + 1] = i * 3 + 1;
+				triIndices[i * 3 + 2] = i * 3 + 2;
+			}
+			triangleIndexBuffer.unlock();
 		}
-		indexBuffer.unlock();
-		
-		triangleVertexBuffer = new VertexBuffer(triangleBufferSize * 3, structure, Usage.DynamicUsage);
-		triangleVertices = triangleVertexBuffer.lock();
-		
-		triangleIndexBuffer = new IndexBuffer(triangleBufferSize * 3, Usage.StaticUsage);
-		var triIndices = triangleIndexBuffer.lock();
-		for (i in 0...bufferSize) {
-			triIndices[i * 3 + 0] = i * 3 + 0;
-			triIndices[i * 3 + 1] = i * 3 + 1;
-			triIndices[i * 3 + 2] = i * 3 + 2;
-		}
-		triangleIndexBuffer.unlock();
 	}
 	
 	public function setRectVertices(
@@ -504,23 +512,23 @@ class ColoredShaderPainter {
 @:headerClassCode("const wchar_t* wtext;")
 #end
 class TextShaderPainter {
-	private var projectionMatrix: FastMatrix4;
-	private static var shaderPipeline: PipelineState = null;
-	private static var structure: VertexStructure = null;
-	private var projectionLocation: ConstantLocation;
-	private var textureLocation: TextureUnit;
-	private static var bufferSize: Int = 100;
-	private var bufferIndex: Int;
-	private var rectVertexBuffer: VertexBuffer;
-	private var rectVertices: Float32Array;
-	private var indexBuffer: IndexBuffer;
-	private var font: Kravur;
-	private var lastTexture: Image;
-	private var g: Graphics;
-	private var myPipeline: PipelineState = null;
+	var projectionMatrix: FastMatrix4;
+	static var shaderPipeline: PipelineState = null;
+	static var structure: VertexStructure = null;
+	static inline var bufferSize: Int = 100;
+	static var bufferIndex: Int;
+	static var rectVertexBuffer: VertexBuffer;
+	static var rectVertices: Float32Array;
+	static var indexBuffer: IndexBuffer;
+	var font: Kravur;
+	static var lastTexture: Image;
+	var g: Graphics;
+	var myPipeline: PipelineState = null;
+	var projectionLocation: ConstantLocation;
+	var textureLocation: TextureUnit;
 	public var pipeline(get, set): PipelineState;
 	public var fontSize: Int;
-	private var bilinear: Bool = false;
+	var bilinear: Bool = false;
 	
 	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
 	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
@@ -555,28 +563,32 @@ class TextShaderPainter {
 	}
 	
 	private static function initShaders(): Void {
-		if (shaderPipeline == null) {
+		if (structure == null) {
 			structure = Graphics2.createTextVertexStructure();
+		}
+		if (shaderPipeline == null) {
 			shaderPipeline = Graphics2.createTextPipeline(structure);
 			shaderPipeline.compile();
 		}
 	}
 	
 	function initBuffers(): Void {
-		rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
-		rectVertices = rectVertexBuffer.lock();
-		
-		indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
-		var indices = indexBuffer.lock();
-		for (i in 0...bufferSize) {
-			indices[i * 3 * 2 + 0] = i * 4 + 0;
-			indices[i * 3 * 2 + 1] = i * 4 + 1;
-			indices[i * 3 * 2 + 2] = i * 4 + 2;
-			indices[i * 3 * 2 + 3] = i * 4 + 0;
-			indices[i * 3 * 2 + 4] = i * 4 + 2;
-			indices[i * 3 * 2 + 5] = i * 4 + 3;
+		if (rectVertexBuffer == null) {
+			rectVertexBuffer = new VertexBuffer(bufferSize * 4, structure, Usage.DynamicUsage);
+			rectVertices = rectVertexBuffer.lock();
+			
+			indexBuffer = new IndexBuffer(bufferSize * 3 * 2, Usage.StaticUsage);
+			var indices = indexBuffer.lock();
+			for (i in 0...bufferSize) {
+				indices[i * 3 * 2 + 0] = i * 4 + 0;
+				indices[i * 3 * 2 + 1] = i * 4 + 1;
+				indices[i * 3 * 2 + 2] = i * 4 + 2;
+				indices[i * 3 * 2 + 3] = i * 4 + 0;
+				indices[i * 3 * 2 + 4] = i * 4 + 2;
+				indices[i * 3 * 2 + 5] = i * 4 + 3;
+			}
+			indexBuffer.unlock();
 		}
-		indexBuffer.unlock();
 	}
 	
 	private function setRectVertices(
