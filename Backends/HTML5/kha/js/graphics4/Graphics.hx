@@ -476,6 +476,8 @@ class Graphics implements kha.graphics4.Graphics {
 				SystemImpl.gl.uniform3fv(webglLocation.value, cast values);
 			case GL.FLOAT_VEC4:
 				SystemImpl.gl.uniform4fv(webglLocation.value, cast values);
+			case GL.FLOAT_MAT4:
+				SystemImpl.gl.uniformMatrix4fv(webglLocation.value,false,cast values);
 			default:
 				SystemImpl.gl.uniform1fv(webglLocation.value, cast values);
 		}
