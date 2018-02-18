@@ -9,6 +9,9 @@ import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
 import kha.graphics4.CubeMap;
+import kha.graphics4.TextureAddressing;
+import kha.graphics4.TextureFilter;
+import kha.graphics4.MipMapFilter;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -144,6 +147,84 @@ class Compute {
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
 		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, cubeMap->renderTarget);");
+	}
+
+	@:functionCode('
+		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
+		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
+	')
+	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
+		
+	}
+
+	@:functionCode('
+		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
+		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
+		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wWrap);
+	')
+	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
+		
+	}
+	
+	@:functionCode('
+		Kore::Compute::setTextureMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
+		Kore::Compute::setTextureMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
+		Kore::Compute::setTextureMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+	')
+	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
+		
+	}
+
+	@:functionCode('
+		Kore::Compute::setTexture3DMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
+		Kore::Compute::setTexture3DMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
+		Kore::Compute::setTexture3DMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+	')
+	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
+		
+	}
+	
+	private static function getTextureAddressing(addressing: TextureAddressing): Int {
+		switch (addressing) {
+		case TextureAddressing.Repeat:
+			return 0;
+		case TextureAddressing.Mirror:
+			return 1;
+		case TextureAddressing.Clamp:
+			return 2;
+		}
+	}
+	
+	private static function getTextureFilter(filter: TextureFilter): Int {
+		switch (filter) {
+		case PointFilter:
+			return 0;
+		case LinearFilter:
+			return 1;
+		case AnisotropicFilter:
+			return 2;
+		}
+	}
+	
+	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
+		switch (filter) {
+		case NoMipFilter:
+			return 0;
+		case PointMipFilter:
+			return 1;
+		case LinearMipFilter:
+			return 2;
+		}
+	}
+	
+	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		setTextureWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
+		setTextureFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+	}
+
+	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		setTexture3DWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing));
+		setTexture3DFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
 	}
 
 	public static function setShader(shader: Shader) {
