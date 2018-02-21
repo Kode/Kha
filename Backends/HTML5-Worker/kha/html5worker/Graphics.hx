@@ -58,7 +58,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
-		
+		Worker.postMessage({ command: 'viewport', x: x, y: y, width: width, height: height });
 	}
 
 	public function createVertexBuffer(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
@@ -197,11 +197,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		
+		Worker.postMessage({ command: 'scissor', x: x, y: y, width: width, height: height });
 	}
 
 	public function disableScissor(): Void {
-		
+		Worker.postMessage({ command: 'disableScissor' });
 	}
 
 	public function renderTargetsInvertedY(): Bool {
