@@ -106,7 +106,7 @@ class SystemImpl {
 		Krom.setDropFilesCallback(dropFilesCallback);
 		
 		keyboard = new Keyboard();
-		mouse = new Mouse();
+		mouse = new MouseImpl();
 		gamepads = new Array<Gamepad>();
 		for (i in 0...maxGamepads) {
 			gamepads[i] = new Gamepad(i);
