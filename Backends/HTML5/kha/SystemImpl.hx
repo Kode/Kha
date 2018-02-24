@@ -1014,7 +1014,10 @@ class SystemImpl {
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
-
+		if (untyped khanvas.getContext) {
+			khanvas.width=width;
+			khanvas.height=height;
+		}
 	}
 
 	public static function setKeepScreenOn(on: Bool): Void {
