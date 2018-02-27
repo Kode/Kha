@@ -70,7 +70,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-	
+		var ids = new Array<Int>();
+		for (buffer in vertexBuffers) {
+			ids.push(buffer._id);
+		}
+		Worker.postMessage({ command: 'setVertexBuffers', ids: ids });
 	}
 
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
@@ -209,10 +213,10 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
-		
+		Worker.postMessage({ command: 'drawIndexedVerticesInstanced', instanceCount: instanceCount, start: start, count: count });
 	}
 
 	public function instancedRenderingAvailable(): Bool {
-		return false;
+		return true;
 	}
 }
