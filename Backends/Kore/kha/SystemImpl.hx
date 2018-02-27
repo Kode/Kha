@@ -103,7 +103,7 @@ class SystemImpl {
 	private static var gamepad3: Gamepad;
 	private static var gamepad4: Gamepad;
 	private static var surface: Surface;
-	private static var mouseLockListeners: Array<Int->Void>;
+	private static var mouseLockListeners: Array<Void->Void>;
 
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		initKore(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode), options.resizable, options.maximizable, options.minimizable);
@@ -158,7 +158,7 @@ class SystemImpl {
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new kha.kore.Keyboard();
-		mouse = new kha.input.Mouse();
+		mouse = new kha.input.MouseImpl();
 		gamepad1 = new Gamepad(0);
 		gamepad2 = new Gamepad(1);
 		gamepad3 = new Gamepad(2);
@@ -214,7 +214,7 @@ class SystemImpl {
 		if(!isMouseLocked()){
 			untyped __cpp__("Kore::Mouse::the()->lock(windowId);");
 			for (listener in mouseLockListeners) {
-				listener(windowId);
+				listener();
 			}
 		}
 	}
@@ -223,7 +223,7 @@ class SystemImpl {
 		if(isMouseLocked()){
 			untyped __cpp__("Kore::Mouse::the()->unlock(windowId);");
 			for (listener in mouseLockListeners) {
-				listener(windowId);
+				listener();
 			}
 		}
 	}
@@ -236,13 +236,13 @@ class SystemImpl {
 		return untyped __cpp__('Kore::Mouse::the()->isLocked(windowId)');
 	}
 
-	public static function notifyOfMouseLockChange(func: Int -> Void, error: Int -> Void, windowId: Int = 0): Void {
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-	public static function removeFromMouseLockChange(func: Int -> Void, error: Void -> Void, windowId: Int = 0): Void {
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.remove(func);
 		}
