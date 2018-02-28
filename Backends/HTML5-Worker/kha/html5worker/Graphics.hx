@@ -1,6 +1,6 @@
 package kha.html5worker;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Canvas;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
@@ -155,7 +155,7 @@ class Graphics implements kha.graphics4.Graphics {
 			_0: value1, _1: value2, _2: value3, _3: value4});
 	}
 
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		Worker.postMessage({ command: 'setFloats', location: cast(location, kha.html5worker.ConstantLocation)._id,
 			values: values});
 	}

@@ -1,6 +1,6 @@
 package kha.compute;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Image;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
@@ -20,7 +20,7 @@ extern class Compute {
 	public static function setFloat2(location: ConstantLocation, value1: FastFloat, value2: FastFloat): Void;
 	public static function setFloat3(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void;
 	public static function setFloat4(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void;
-	public static function setFloats(location: ConstantLocation, values: Vector<FastFloat>): Void;
+	public static function setFloats(location: ConstantLocation, values: Float32Array): Void;
 	public static function setVector2(location: ConstantLocation, value: FastVector2): Void;
 	public static function setVector3(location: ConstantLocation, value: FastVector3): Void;
 	public static function setVector4(location: ConstantLocation, value: FastVector4): Void;

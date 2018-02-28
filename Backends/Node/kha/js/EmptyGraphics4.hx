@@ -1,6 +1,6 @@
 package kha.js;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.ConstantLocation;
@@ -176,7 +176,7 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
-	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
+	public function setFloats(location: ConstantLocation, floats: Float32Array): Void {
 		
 	}
 

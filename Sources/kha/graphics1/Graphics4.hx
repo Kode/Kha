@@ -1,6 +1,6 @@
 package kha.graphics1;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Blob;
 import kha.Color;
 import kha.FastFloat;
@@ -149,11 +149,11 @@ class Graphics4 implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
+	public function setFloats(location: ConstantLocation, floats: Float32Array): Void {
 		
 	}
 
-	public function setFloat4s(location: ConstantLocation, float4s: Vector<FastFloat>): Void {
+	public function setFloat4s(location: ConstantLocation, float4s: Float32Array): Void {
 
 	}
 	

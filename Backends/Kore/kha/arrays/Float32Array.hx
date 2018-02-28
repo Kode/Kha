@@ -19,14 +19,19 @@ extern class Float32ArrayData {
 		return 0;
 	}
 	
+	public function alloc(elements: Int): Void;
+
+	public function free(): Void;
+
 	public function get(index: Int): FastFloat;
 		
 	public function set(index: Int, value: FastFloat): FastFloat;
 }
 
 abstract Float32Array(Float32ArrayData) {
-	public inline function new() {
+	public inline function new(elements: Int = 0) {
 		this = Float32ArrayData.create();
+		if (elements > 0) this.alloc(elements);
 	}
 	
 	public var length(get, never): Int;

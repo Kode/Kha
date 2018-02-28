@@ -417,9 +417,9 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: haxe.ds.Vector<FastFloat>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void {
 		var flashLocation: ConstantLocation = cast location;
-		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, values.toData());
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, values);
 	}
 
 	//public function renderToBackbuffer(): Void {

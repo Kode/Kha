@@ -17,6 +17,10 @@ extern class Uint32ArrayData {
 	function get_length(): Int {
 		return 0;
 	}
+
+	public function alloc(elements: Int): Void;
+
+	public function free(): Void;
 	
 	public function get(index: Int): Int;
 		
@@ -24,8 +28,13 @@ extern class Uint32ArrayData {
 }
 
 abstract Uint32Array(Uint32ArrayData) {
-	public inline function new() {
+	public inline function new(elements: Int = 0) {
 		this = Uint32ArrayData.create();
+		if (elements > 0) this.alloc(elements);
+	}
+
+	public inline function free(): Void {
+		this.free();
 	}
 	
 	public var length(get, never): Int;

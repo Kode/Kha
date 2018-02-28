@@ -411,21 +411,21 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_set_float4(location._location, x, y, z, w);
 	}
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		setFloatsPrivate(cast location, values);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloats(location->location, values->Pointer(), values->length);')
-	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+	//@:functionCode('Kore::Graphics::setFloats(location->location, values.data, values.length());')
+	private function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {
 		
 	}
 
-	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+	public function setFloat4s(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		setFloat4sPrivate(cast location, values);
 	}
 	
-	//@:functionCode('Kore::Graphics::setFloat4s(location->location, values->Pointer(), values->length);')
-	private function setFloat4sPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+	//@:functionCode('Kore::Graphics::setFloat4s(location->location, values.data, values.length());')
+	private function setFloat4sPrivate(location: ConstantLocation, values: Float32Array): Void {
 		
 	}
 	

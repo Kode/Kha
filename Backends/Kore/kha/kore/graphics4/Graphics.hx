@@ -1,6 +1,6 @@
 package kha.kore.graphics4;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Blob;
 import kha.Canvas;
 import kha.Color;
@@ -418,14 +418,14 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 	
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		setFloatsPrivate(cast location, values);
 	}
 	
 	@:functionCode('
-		Kore::Graphics4::setFloats(location->location, values->Pointer(), values->length);
+		Kore::Graphics4::setFloats(location->location, values.data, values.length());
 	')
-	private function setFloatsPrivate(location: ConstantLocation, values: Vector<FastFloat>): Void {
+	private function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {
 		
 	}
 
