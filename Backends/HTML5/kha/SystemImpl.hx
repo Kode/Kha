@@ -437,17 +437,17 @@ class SystemImpl {
 			if (untyped canvas.getContext) {
 
 				// Lookup the size the browser is displaying the canvas.
-				if(canvas.clientWidth != options.width ||
-				   canvas.clientHeight != options.height) {
+				//TODO deal with window.devicePixelRatio ?
+				var displayWidth  = canvas.clientWidth;
+				var displayHeight = canvas.clientHeight;
 
-					// set the display size of the canvas.
-					canvas.style.width = options.width + "px";
-					canvas.style.height = options.height + "px";
+				// Check if the canvas is not the same size.
+				if (canvas.width  != displayWidth ||
+					canvas.height != displayHeight) {
 
-					// set the size of the drawingBuffer
-					var devicePixelRatio = js.Browser.window.devicePixelRatio == null ? 1 : js.Browser.window.devicePixelRatio;
-					canvas.width = options.width * devicePixelRatio;
-					canvas.height = options.height * devicePixelRatio;
+					// Make the canvas the same size
+					canvas.width  = displayWidth;
+					canvas.height = displayHeight;
 				}
 
 				System.render(0, frame);
