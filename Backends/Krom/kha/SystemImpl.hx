@@ -249,12 +249,12 @@ class SystemImpl {
 		
 	}
 
-	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
 
-	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
