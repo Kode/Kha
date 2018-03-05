@@ -182,4 +182,28 @@ class System {
 	public static function loadUrl(url: String): Void {
 		SystemImpl.loadUrl(url);
 	}
+
+	public static function canSwitchFullscreen(): Bool {
+		return SystemImpl.canSwitchFullscreen();
+	}
+
+	public static function isFullscreen(): Bool {
+		return SystemImpl.isFullscreen();
+	}
+
+	public static function requestFullscreen(): Void {
+		SystemImpl.requestFullscreen();
+	}
+
+	public static function exitFullscreen(): Void {
+		SystemImpl.exitFullscreen();
+	}
+
+	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+		SystemImpl.notifyOfFullscreenChange(func, error);
+	}
+
+	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {
+		SystemImpl.removeFromFullscreenChange(func, error);
+	}
 }
