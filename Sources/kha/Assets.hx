@@ -11,6 +11,10 @@ private class ImageList {
 	public function new() {
 		
 	}
+
+	public function get(name: String): Image {
+		return Reflect.field(this, name);
+	}
 }
 
 @:keep
@@ -18,6 +22,10 @@ private class ImageList {
 private class SoundList {
 	public function new() {
 		
+	}
+
+	public function get(name: String): Sound {
+		return Reflect.field(this, name);
 	}
 }
 
@@ -27,6 +35,10 @@ private class BlobList {
 	public function new() {
 		
 	}
+
+	public function get(name: String): Blob {
+		return Reflect.field(this, name);
+	}
 }
 
 @:keep
@@ -35,6 +47,10 @@ private class FontList {
 	public function new() {
 		
 	}
+
+	public function get(name: String): Font {
+		return Reflect.field(this, name);
+	}
 }
 
 @:keep
@@ -42,6 +58,10 @@ private class FontList {
 private class VideoList {
 	public function new() {
 		
+	}
+
+	public function get(name: String): Video {
+		return Reflect.field(this, name);
 	}
 }
 
