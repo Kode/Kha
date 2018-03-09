@@ -4,6 +4,7 @@ import kha.input.Gamepad;
 import kha.input.KeyCode;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Pen;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
@@ -32,6 +33,7 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/pch.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
+#include <Kore/Input/Pen.h>
 #include <Kore/Window.h>
 
 void init_kore(const char* name, int width, int height, int antialiasing, bool vsync, int windowMode, bool resizable, bool maximizable, bool minimizable);
@@ -48,6 +50,11 @@ class SystemImpl {
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
+	}
+
+	public static function getPen(num: Int): Pen {
+		if (num != 0) return null;
+		return pen;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
@@ -98,6 +105,7 @@ class SystemImpl {
 	private static var framebuffers: Array<Framebuffer> = new Array();
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var pen: kha.input.Pen;
 	private static var gamepad1: Gamepad;
 	private static var gamepad2: Gamepad;
 	private static var gamepad3: Gamepad;
@@ -159,6 +167,7 @@ class SystemImpl {
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.MouseImpl();
+		pen = new kha.input.Pen();
 		gamepad1 = new Gamepad(0);
 		gamepad2 = new Gamepad(1);
 		gamepad3 = new Gamepad(2);
@@ -312,6 +321,18 @@ class SystemImpl {
 	
 	public static function mouseLeave(windowId: Int): Void {
 		mouse.sendLeaveEvent(windowId);
+	}
+
+	public static function penDown(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendDownEvent(windowId, x, y, pressure);
+	}
+
+	public static function penUp(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendUpEvent(windowId, x, y, pressure);
+	}
+
+	public static function penMove(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
