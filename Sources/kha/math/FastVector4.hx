@@ -1,5 +1,6 @@
 package kha.math;
 
+@:structInit
 class FastVector4 {
 	public inline function new(x: FastFloat = 0, y: FastFloat = 0, z: FastFloat = 0, w: FastFloat = 1): Void {
 		this.x = x;
