@@ -21,6 +21,12 @@
  */
 #include <hl.h>
 
+#ifdef PRId64
+#	define PR_I64 USTR("%" PRId64)
+#else
+#	define PR_I64 USTR("%lld")
+#endif
+
 typedef struct _stringitem {
 	uchar *str;
 	int size;
@@ -34,8 +40,8 @@ struct hl_buffer {
 	stringitem data;
 };
 
-hl_buffer *hl_alloc_buffer() {
-	hl_buffer *b = (hl_buffer*)hl_gc_alloc(sizeof(hl_buffer));
+HL_PRIM hl_buffer *hl_alloc_buffer() {
+	hl_buffer *b = (hl_buffer*)hl_gc_alloc_raw(sizeof(hl_buffer));
 	b->totlen = 0;
 	b->blen = 16;
 	b->data = NULL;
@@ -48,7 +54,7 @@ static void buffer_append_new( hl_buffer *b, const uchar *s, int len ) {
 	while( b->totlen >= (b->blen << 2) )
 		b->blen <<= 1;
 	size = (len < b->blen)?b->blen:len;
-	it = (stringitem)hl_gc_alloc(sizeof(struct _stringitem));
+	it = (stringitem)hl_gc_alloc_raw(sizeof(struct _stringitem));
 	it->str = (uchar*)hl_gc_alloc_noptr(size<<1);
 	memcpy(it->str,s,len<<1);
 	it->size = size;
@@ -57,7 +63,7 @@ static void buffer_append_new( hl_buffer *b, const uchar *s, int len ) {
 	b->data = it;
 }
 
-void hl_buffer_str_sub( hl_buffer *b, const uchar *s, int len ) {
+HL_PRIM void hl_buffer_str_sub( hl_buffer *b, const uchar *s, int len ) {
 	stringitem it;
 	if( s == NULL || len <= 0 )
 		return;
@@ -79,21 +85,21 @@ void hl_buffer_str_sub( hl_buffer *b, const uchar *s, int len ) {
 	buffer_append_new(b,s,len);
 }
 
-void hl_buffer_str( hl_buffer *b, const uchar *s ) {
+HL_PRIM void hl_buffer_str( hl_buffer *b, const uchar *s ) {
 	if( s ) hl_buffer_str_sub(b,s,(int)ustrlen(s)); else hl_buffer_str_sub(b,USTR("NULL"),4);
 }
 
-void hl_buffer_cstr( hl_buffer *b, const char *s ) {
+HL_PRIM void hl_buffer_cstr( hl_buffer *b, const char *s ) {
 	if( s ) {
-		int len = (int)strlen(s);
+		int len = (int)hl_utf8_length((vbyte*)s,0);
 		uchar *out = (uchar*)malloc(sizeof(uchar)*(len+1));
-		strtou(out,len,s);
+		hl_from_utf8(out,len,s);
 		hl_buffer_str_sub(b,out,len);
 		free(out);
 	} else hl_buffer_str_sub(b,USTR("NULL"),4);
 }
 
-void hl_buffer_char( hl_buffer *b, uchar c ) {
+HL_PRIM void hl_buffer_char( hl_buffer *b, uchar c ) {
 	stringitem it;
 	b->totlen++;
 	it = b->data;
@@ -104,7 +110,7 @@ void hl_buffer_char( hl_buffer *b, uchar c ) {
 	buffer_append_new(b,(uchar*)&c,1);
 }
 
-uchar *hl_buffer_content( hl_buffer *b, int *len ) {
+HL_PRIM uchar *hl_buffer_content( hl_buffer *b, int *len ) {
 	uchar *buf = (uchar*)hl_gc_alloc_noptr((b->totlen+1)<<1);
 	stringitem it = b->data;
 	uchar *s = ((uchar*)buf) + b->totlen;
@@ -134,14 +140,17 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack );
 static void hl_buffer_addr( hl_buffer *b, void *data, hl_type *t, vlist *stack ) {
 	uchar buf[32];
 	switch( t->kind ) {
-	case HI8:
-		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),(int)*(char*)data));
+	case HUI8:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),(int)*(unsigned char*)data));
 		break;
-	case HI16:
-		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),(int)*(short*)data));
+	case HUI16:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),(int)*(unsigned short*)data));
 		break;
 	case HI32:
 		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),*(int*)data));
+		break;
+	case HI64:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,PR_I64,*(int64*)data));
 		break;
 	case HF32:
 		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%.9f"),*(float*)data));
@@ -152,7 +161,6 @@ static void hl_buffer_addr( hl_buffer *b, void *data, hl_type *t, vlist *stack )
 	case HBYTES:
 		hl_buffer_str(b,*(uchar**)data);
 		break;
-	case HENUM:
 	case HTYPE:
 	case HREF:
 	case HABSTRACT:
@@ -185,14 +193,17 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 	case HVOID:
 		hl_buffer_str_sub(b,USTR("void"),4);
 		break;
-	case HI8:
-		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),v->v.c));
+	case HUI8:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),v->v.ui8));
 		break;
-	case HI16:
-		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),v->v.s));
+	case HUI16:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),v->v.ui16));
 		break;
 	case HI32:
 		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%d"),v->v.i));
+		break;
+	case HI64:
+		hl_buffer_str_sub(b,buf,usprintf(buf,32,PR_I64,v->v.i64));
 		break;
 	case HF32:
 		hl_buffer_str_sub(b,buf,usprintf(buf,32,USTR("%.9f"),v->v.f));
@@ -250,7 +261,6 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 		}
 		break;
 	case HTYPE:
-		hl_buffer_str_sub(b, USTR("type:"), 5);
 		hl_buffer_str(b, hl_type_str((hl_type*)v->v.ptr));
 		break;
 	case HREF:
@@ -302,9 +312,9 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 			}
 			l.v = v;
 			l.next = stack;
-			f = hl_lookup_find(&o->dproto->fields,o->nfields,hl_hash_gen(USTR("__string"),false));
+			f = hl_lookup_find(o->lookup,o->nfields,hl_hash_gen(USTR("__string"),false));
 			if( f && f->t->kind == HFUN && f->t->fun->nargs == 0 && f->t->fun->ret->kind == HBYTES ) {
-				vclosure *v = *(vclosure**)(o->fields_data + f->field_index);
+				vclosure *v = (vclosure*)o->values[f->field_index];
 				if( v ) {
 					hl_buffer_str(b, v->hasValue ? ((uchar*(*)(void*))v->fun)(v->value) : ((uchar*(*)())v->fun)());
 					break;
@@ -312,11 +322,11 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 			}
 			hl_buffer_char(b, '{');
 			for(i=0;i<o->nfields;i++) {
-				hl_field_lookup *f = &o->dproto->fields + i;
+				hl_field_lookup *f = o->lookup + i;
 				if( i ) hl_buffer_str_sub(b,USTR(", "),2);
 				hl_buffer_str(b,hl_field_name(f->hashed_name));
 				hl_buffer_str_sub(b,USTR(" : "),3);
-				hl_buffer_addr(b, o->fields_data + f->field_index, f->t, &l);
+				hl_buffer_addr(b, hl_is_ptr(f->t) ? (void*)(o->values + f->field_index) : (void*)(o->raw_data + f->field_index), f->t, &l);
 			}
 			hl_buffer_char(b, '}');
 		}
@@ -324,13 +334,15 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 	case HABSTRACT:
 		hl_buffer_char(b, '~');
 		hl_buffer_str(b, v->t->abs_name);
+		hl_buffer_char(b, ':');
+		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT,(int_val)v->v.ptr));
 		break;
 	case HENUM:
 		{
 			int i;
 			vlist l;
 			vlist *vtmp = stack;
-			hl_enum_construct *c = v->t->tenum->constructs + ((venum*)v->v.ptr)->index;
+			hl_enum_construct *c = v->t->tenum->constructs + ((venum*)v)->index;
 			if( !c->nparams ) {
 				hl_buffer_str(b, c->name);
 				break;
@@ -348,7 +360,7 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 			hl_buffer_char(b,'(');
 			for(i=0;i<c->nparams;i++) {
 				if( i ) hl_buffer_char(b,',');
-				hl_buffer_addr(b,(char*)v->v.ptr + c->offsets[i],c->params[i], &l); 
+				hl_buffer_addr(b,(char*)v + c->offsets[i],c->params[i], &l);
 			}
 			hl_buffer_char(b,')');
 		}
@@ -362,11 +374,11 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 	}
 }
 
-void hl_buffer_val( hl_buffer *b, vdynamic *v ) {
+HL_PRIM void hl_buffer_val( hl_buffer *b, vdynamic *v ) {
 	hl_buffer_rec(b,v,NULL);
 }
 
-uchar *hl_to_string( vdynamic *v ) {
+HL_PRIM uchar *hl_to_string( vdynamic *v ) {
 	hl_buffer *b = hl_alloc_buffer();
 	hl_buffer_val(b,v);
 	hl_buffer_char(b,0);

@@ -25,14 +25,14 @@ HL_PRIM vbyte *hl_alloc_bytes( int size ) {
 	return (vbyte*)hl_gc_alloc_noptr(size);
 }
 
-HL_PRIM vbyte *hl_copy_bytes( vbyte *ptr, int size ) {
+HL_PRIM vbyte *hl_copy_bytes( const vbyte *ptr, int size ) {
 	vbyte *b = hl_alloc_bytes(size);
 	memcpy(b,ptr,size);
 	return b;
 }
 
 HL_PRIM void hl_bytes_blit( char *dst, int dpos, char *src, int spos, int len ) {
-	memcpy(dst + dpos,src+spos,len);
+	memmove(dst + dpos,src+spos,len);
 }
 
 HL_PRIM int hl_bytes_compare( vbyte *a, int apos, vbyte *b, int bpos, int len ) {
@@ -186,10 +186,52 @@ HL_PRIM vdynamic *hl_parse_int( vbyte *bytes, int pos, int len ) {
 	return c == end ? NULL : hl_make_dyn(&h,&hlt_i32);
 }
 
-DEFINE_PRIM(_BYTES,hl_balloc,_I32);
-DEFINE_PRIM(_VOID,hl_bblit,_BYTES _I32 _BYTES _I32 _I32);
-DEFINE_PRIM(_I32,hl_bytes_compare,_BYTES _I32 _BYTES _I32 _I32);
-DEFINE_PRIM(_I32,hl_bytes_find,_BYTES _I32 _I32 _BYTES _I32 _I32);
-DEFINE_PRIM(_VOID,hl_bytes_fill,_BYTES _I32 _I32 _I32);
-DEFINE_PRIM(_VOID,hl_bsort_i32,_BYTES _I32 _I32 _FUN(_I32,_I32 _I32));
-DEFINE_PRIM(_VOID,hl_bsort_f64,_BYTES _I32 _I32 _FUN(_I32,_F64 _F64));
+// pointer manipulation
+
+HL_PRIM vbyte *hl_bytes_offset( vbyte *src, int offset ) {
+	return src + offset;
+}
+
+HL_PRIM int hl_bytes_subtract( vbyte *a, vbyte *b ) {
+	return (int)(a - b);
+}
+
+HL_PRIM int hl_bytes_address( vbyte *a, int *high ) {
+#	ifdef HL_64
+	*high = (int)(((uint64)a)>>32);
+#	else
+	*high = 0;
+#	endif
+	return (int)(int_val)a;
+}
+
+HL_PRIM vbyte *hl_bytes_from_address( int low, int high ) {
+#	ifdef HL_64
+	// MSVC does overflow on <<32 even on uint64...
+	struct { int low; int high; } i64;
+	i64.low = low;
+	i64.high = high;
+	return *(vbyte**)&i64;
+#	else
+	return (vbyte*)low;
+#	endif
+}
+
+HL_PRIM int hl_string_compare( vbyte *a, vbyte *b, int len ) {
+	return memcmp(a,b,len * sizeof(uchar));
+}
+
+DEFINE_PRIM(_BYTES,alloc_bytes,_I32);
+DEFINE_PRIM(_VOID,bytes_blit,_BYTES _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_I32,bytes_compare,_BYTES _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_I32,string_compare,_BYTES _BYTES _I32);
+DEFINE_PRIM(_I32,bytes_find,_BYTES _I32 _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_VOID,bytes_fill,_BYTES _I32 _I32 _I32);
+DEFINE_PRIM(_F64, parse_float,_BYTES _I32 _I32);
+DEFINE_PRIM(_NULL(_I32), parse_int, _BYTES _I32 _I32);
+DEFINE_PRIM(_VOID,bsort_i32,_BYTES _I32 _I32 _FUN(_I32,_I32 _I32));
+DEFINE_PRIM(_VOID,bsort_f64,_BYTES _I32 _I32 _FUN(_I32,_F64 _F64));
+DEFINE_PRIM(_BYTES,bytes_offset, _BYTES _I32);
+DEFINE_PRIM(_I32,bytes_subtract, _BYTES _BYTES);
+DEFINE_PRIM(_I32,bytes_address, _BYTES _REF(_I32));
+DEFINE_PRIM(_BYTES,bytes_from_address, _I32 _I32);

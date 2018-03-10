@@ -20,7 +20,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include <hl.h>
-#include <time.h>
+
+#ifdef HL_CONSOLE
+#	include <posix/posix.h>
+#else
+#	include <time.h>
+#endif
 
 #ifdef HL_WIN
 
@@ -54,8 +59,7 @@ HL_PRIM vbyte *hl_date_to_string( int date, int *len ) {
 		hl_error("invalid date");
 	size = (int)strftime(buf,127,"%Y-%m-%d %H:%M:%S",&t);
 	out = (uchar*)hl_gc_alloc_noptr((size + 1) << 1);
-	strtou(out,size,buf);
-	out[size] = 0;
+	hl_from_utf8(out,size,buf);
 	*len = size;
 	return (vbyte*)out;
 }
@@ -68,10 +72,36 @@ HL_PRIM int hl_date_from_time( double time ) {
 	return (int)(time / 1000.);
 }
 
-HL_PRIM int hl_date_from_string( vbyte *b ) {
-	uchar *str = (uchar*)b;
-	hl_fatal("TODO");
-	return *str;
+HL_PRIM int hl_date_from_string( vbyte *b, int len ) {
+	struct tm t;
+	int o = 0;
+	const char *str = hl_to_utf8((uchar*)b);
+	bool recal = true;
+	memset(&t,0,sizeof(struct tm));
+	switch( strlen(str) ) {
+	case 19:
+		sscanf(str,"%4d-%2d-%2d %2d:%2d:%2d",&t.tm_year,&t.tm_mon,&t.tm_mday,&t.tm_hour,&t.tm_min,&t.tm_sec);
+		t.tm_isdst = -1;
+		break;
+	case 8:
+		sscanf(str,"%2d:%2d:%2d",&t.tm_hour,&t.tm_min,&t.tm_sec);
+		o = t.tm_sec + t.tm_min * 60 + t.tm_hour * 60 * 60;
+		recal = false;
+		break;
+	case 10:
+		sscanf(str,"%4d-%2d-%2d",&t.tm_year,&t.tm_mon,&t.tm_mday);
+		t.tm_isdst = -1;
+		break;
+	default:
+		hl_error("Invalid date format");
+		break;
+	}
+	if( recal ) {
+		t.tm_year -= 1900;
+		t.tm_mon--;
+		o = (int)mktime(&t);
+	}
+	return o;
 }
 
 HL_PRIM int hl_date_new( int y, int mo, int d, int h, int m, int s ) {
@@ -100,3 +130,11 @@ HL_PRIM void hl_date_get_inf( int date, int *y, int *mo, int *day, int *h, int *
 	if( s ) *s = t.tm_sec;
 	if( wday ) *wday = t.tm_wday;
 }
+
+DEFINE_PRIM(_I32, date_now, _NO_ARG);
+DEFINE_PRIM(_BYTES, date_to_string, _I32 _REF(_I32));
+DEFINE_PRIM(_F64, date_get_time, _I32);
+DEFINE_PRIM(_I32, date_from_time, _F64);
+DEFINE_PRIM(_I32, date_from_string, _BYTES _I32);
+DEFINE_PRIM(_I32, date_new, _I32 _I32 _I32 _I32 _I32 _I32);
+DEFINE_PRIM(_VOID, date_get_inf, _I32 _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32));
