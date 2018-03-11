@@ -7,7 +7,7 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
-	private var program: Pointer;
+	private var pipeline: Pointer;
 	
 	public function new() {
 		super();
@@ -15,12 +15,12 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	private function init(): Void {
-		program = kore_create_pipeline();
+		pipeline = kore_create_pipeline();
 	}
 	
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
-		kore_pipeline_set_vertex_shader(program, vertexShader._shader);
-		kore_pipeline_set_fragment_shader(program, fragmentShader._shader);
+		kore_pipeline_set_vertex_shader(pipeline, vertexShader._shader);
+		kore_pipeline_set_fragment_shader(pipeline, fragmentShader._shader);
 		
 		var kore_structure = VertexBuffer.kore_create_vertexstructure();
 		for (i in 0...structure0.size()) {
@@ -40,7 +40,7 @@ class PipelineState extends PipelineStateBase {
 			VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(structure0.get(i).name), data);
 		}
 		
-		kore_pipeline_compile(program, kore_structure);
+		kore_pipeline_compile(pipeline, kore_structure);
 	}
 	
 	public function compile(): Void {
@@ -53,16 +53,16 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
-		return new kha.korehl.graphics4.ConstantLocation(kore_pipeline_get_constantlocation(program, StringHelper.convert(name)));
+		return new kha.korehl.graphics4.ConstantLocation(kore_pipeline_get_constantlocation(pipeline, StringHelper.convert(name)));
 	}
 	
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
-		return new kha.korehl.graphics4.TextureUnit(kore_pipeline_get_textureunit(program, StringHelper.convert(name)));
+		return new kha.korehl.graphics4.TextureUnit(kore_pipeline_get_textureunit(pipeline, StringHelper.convert(name)));
 	}
 	
 	public function set(): Void {
-		kore_pipeline_set(program);
+		kore_pipeline_set(pipeline);
 	}
 	
 	public function unused(): Void {
@@ -75,10 +75,10 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	@:hlNative("std", "kore_create_pipeline") static function kore_create_pipeline(): Pointer { return null; }
-	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(program: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(program: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(program: Pointer, structure: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(program: Pointer, name: hl.Bytes): Pointer { return null; }
-	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(program: Pointer, name: hl.Bytes): Pointer { return null; }
-	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(program: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void { }
 }
