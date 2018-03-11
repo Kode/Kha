@@ -19,18 +19,30 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include <string.h>
-#define _WINSOCKAPI_
-#include <hl.h>
-#ifdef HL_WIN
+#ifdef _WIN32
+
+#define FD_SETSIZE	65536
+#pragma warning(disable:4548)
+
+#	include <string.h>
+#	define _WINSOCKAPI_
+#	include <hl.h>
 #	include <winsock2.h>
 #	define FDSIZE(n)	(sizeof(u_int) + (n) * sizeof(SOCKET))
 #	define SHUT_WR		SD_SEND
 #	define SHUT_RD		SD_RECEIVE
 #	define SHUT_RDWR	SD_BOTH
-	static bool init_done = false;
-	static WSADATA init_data;
+	typedef int _sockaddr;
+	typedef int socklen_t;
+
 #else
+
+#if defined(__ORBIS__) || defined(__NX__)
+#	include <hl.h>
+#	include <posix/posix.h>
+#else
+#	define _GNU_SOURCE
+#	include <string.h>
 #	include <sys/types.h>
 #	include <sys/socket.h>
 #	include <sys/time.h>
@@ -39,15 +51,18 @@
 #	include <arpa/inet.h>
 #	include <unistd.h>
 #	include <netdb.h>
+#	include <poll.h>
 #	include <fcntl.h>
 #	include <errno.h>
 #	include <stdio.h>
-#	include <poll.h>
+#endif
 	typedef int SOCKET;
 #	define closesocket close
 #	define SOCKET_ERROR (-1)
 #	define INVALID_SOCKET (-1)
+	typedef unsigned int _sockaddr;
 #endif
+
 #ifdef HL_LINUX
 #	include <linux/version.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,44)
@@ -55,12 +70,15 @@
 #	define HAS_EPOLL
 #endif
 #endif
+
 #ifndef HAS_EPOLL
 #	define EPOLLIN 0x001
 #	define EPOLLOUT 0x004
 #endif
 
-#if defined(HL_WIN) || defined(HL_MAC)
+#include <hl.h>
+
+#if defined(HL_WIN) || defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS)
 #	define MSG_NOSIGNAL 0
 #endif
 
@@ -79,8 +97,10 @@ static int block_error() {
 	return -2;
 }
 
-void hl_socket_init() {
+HL_PRIM void hl_socket_init() {
 #ifdef HL_WIN
+	static bool init_done = false;
+	static WSADATA init_data;
 	if( !init_done ) {
 		WSAStartup(MAKEWORD(2,0),&init_data);
 		init_done = true;
@@ -88,7 +108,7 @@ void hl_socket_init() {
 #endif
 }
 
-hl_socket *hl_socket_new( bool udp ) {
+HL_PRIM hl_socket *hl_socket_new( bool udp ) {
 	SOCKET s;
 	if( udp )
 		s = socket(AF_INET,SOCK_DGRAM,0);
@@ -113,48 +133,61 @@ hl_socket *hl_socket_new( bool udp ) {
 	}
 }
 
-void hl_socket_close( hl_socket *s ) {
+HL_PRIM void hl_socket_close( hl_socket *s ) {
+	if( !s ) return;
 	closesocket(s->sock);
 	s->sock = INVALID_SOCKET;
 }
 
-int hl_socket_send_char( hl_socket *s, int c ) {
-	unsigned char cc;
-	cc = (unsigned char)c;
+HL_PRIM int hl_socket_send_char( hl_socket *s, int c ) {
+	char cc;
+	cc = (char)(unsigned char)c;
+	if( !s )
+		return -2;
 	if( send(s->sock,&cc,1,MSG_NOSIGNAL) == SOCKET_ERROR )
 		return block_error();
 	return 1;
 }
 
-int hl_socket_send( hl_socket *s, vbyte *buf, int pos, int len ) {
-	int r = send(s->sock, (char*)buf + pos, len, MSG_NOSIGNAL);
-	if( len == SOCKET_ERROR )
+HL_PRIM int hl_socket_send( hl_socket *s, vbyte *buf, int pos, int len ) {
+	int r;
+	if( !s )
+		return -2;
+	r = send(s->sock, (char*)buf + pos, len, MSG_NOSIGNAL);
+	if( r == SOCKET_ERROR )
 		return block_error();
 	return len;
 }
 
 
-int hl_socket_recv( hl_socket *s, vbyte *buf, int pos, int len ) {
-	int	ret = recv(s->sock, (char*)buf + pos, len, MSG_NOSIGNAL);
+HL_PRIM int hl_socket_recv( hl_socket *s, vbyte *buf, int pos, int len ) {
+	int	ret;
+	if( !s )
+		return -2;
+	ret = recv(s->sock, (char*)buf + pos, len, MSG_NOSIGNAL);
 	if( ret == SOCKET_ERROR )
 		return block_error();
 	return ret;
 }
 
-int hl_socket_recv_char( hl_socket *s ) {
-	unsigned char cc;
-	int ret = recv(s->sock,&cc,1,MSG_NOSIGNAL);
-	if( ret == SOCKET_ERROR || ret == 0 )
+HL_PRIM int hl_socket_recv_char( hl_socket *s ) {
+	char cc;
+	int ret;
+	if( !s ) return -2;
+	ret = recv(s->sock,&cc,1,MSG_NOSIGNAL);
+	if( ret == SOCKET_ERROR )
 		return block_error();
-	return cc;
+	if( ret == 0 )
+		return -2;
+	return (unsigned char)cc;
 }
 
-int hl_host_resolve( vbyte *host ) {
+HL_PRIM int hl_host_resolve( vbyte *host ) {
 	unsigned int ip;
 	ip = inet_addr((char*)host);
 	if( ip == INADDR_NONE ) {
 		struct hostent *h;
-#	if defined(HL_WIN) || defined(HL_MAC)
+#	if defined(HL_WIN) || defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS) || defined (HL_CYGWIN) || defined(HL_CONSOLE)
 		h = gethostbyname((char*)host);
 #	else
 		struct hostent hbase;
@@ -164,21 +197,23 @@ int hl_host_resolve( vbyte *host ) {
 #	endif
 		if( h == NULL )
 			return 0;
-		ip = *((unsigned int*)h->h_addr);
+		ip = *((unsigned int*)h->h_addr_list[0]);
 	}
 	return ip;
 }
 
-vbyte *hl_host_to_string( int ip ) {
+HL_PRIM vbyte *hl_host_to_string( int ip ) {
 	struct in_addr i;
 	*(int*)&i = ip;
 	return (vbyte*)inet_ntoa(i);
 }
 
-vbyte *hl_host_reverse( int ip ) {
+HL_PRIM vbyte *hl_host_reverse( int ip ) {
 	struct hostent *h;
-#	if defined(HL_WIN) || defined(HL_MAC)
+#	if defined(HL_WIN) || defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS) || defined(HL_CYGWIN) || defined(HL_CONSOLE)
 	h = gethostbyaddr((char *)&ip,4,AF_INET);
+#	elif defined(__ANDROID__)
+	hl_error("hl_host_reverse() not available for this platform");
 #	else
 	struct hostent htmp;
 	int errcode;
@@ -186,23 +221,24 @@ vbyte *hl_host_reverse( int ip ) {
 	gethostbyaddr_r((char*)&ip,4,AF_INET,&htmp,buf,1024,&h,&errcode);
 #	endif
 	if( h == NULL )
-		return NULL; 
+		return NULL;
 	return (vbyte*)h->h_name;
 }
 
-vbyte *hl_host_local() {
+HL_PRIM vbyte *hl_host_local() {
 	char buf[256];
 	if( gethostname(buf,256) == SOCKET_ERROR )
 		return NULL;
 	return hl_copy_bytes((vbyte*)buf,(int)strlen(buf)+1);
 }
 
-bool hl_socket_connect( hl_socket *s, int host, int port ) {
+HL_PRIM bool hl_socket_connect( hl_socket *s, int host, int port ) {
 	struct sockaddr_in addr;
 	memset(&addr,0,sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
+	addr.sin_port = htons((unsigned short)port);
 	*(int*)&addr.sin_addr.s_addr = host;
+	if( !s ) return false;
 	if( connect(s->sock,(struct sockaddr*)&addr,sizeof(addr)) != 0 ) {
 		int err = block_error();
 		if( err == -1 ) return true; // in progress
@@ -211,28 +247,31 @@ bool hl_socket_connect( hl_socket *s, int host, int port ) {
 	return true;
 }
 
-bool hl_socket_listen( hl_socket *s, int n ) {
+HL_PRIM bool hl_socket_listen( hl_socket *s, int n ) {
+	if( !s ) return false;
 	return listen(s->sock,n) != SOCKET_ERROR;
 }
 
-bool hl_socket_bind( hl_socket *s, int host, int port ) {
-	int opt = 1;
+HL_PRIM bool hl_socket_bind( hl_socket *s, int host, int port ) {
 	struct sockaddr_in addr;
+	if( !s ) return false;
 	memset(&addr,0,sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
+	addr.sin_port = htons((unsigned short)port);
 	*(int*)&addr.sin_addr.s_addr = host;
 	#ifndef HL_WIN
+	int opt = 1;
 	setsockopt(s->sock,SOL_SOCKET,SO_REUSEADDR,(char*)&opt,sizeof(opt));
 	#endif
 	return bind(s->sock,(struct sockaddr*)&addr,sizeof(addr)) != SOCKET_ERROR;
 }
 
-hl_socket *hl_socket_accept( hl_socket *s ) {
+HL_PRIM hl_socket *hl_socket_accept( hl_socket *s ) {
 	struct sockaddr_in addr;
-	unsigned int addrlen = sizeof(addr);
+	_sockaddr addrlen = sizeof(addr);
 	SOCKET nsock;
 	hl_socket *hs;
+	if( !s ) return NULL;
 	nsock = accept(s->sock,(struct sockaddr*)&addr,&addrlen);
 	if( nsock == INVALID_SOCKET )
 		return NULL;
@@ -241,33 +280,39 @@ hl_socket *hl_socket_accept( hl_socket *s ) {
 	return hs;
 }
 
-bool hl_socket_peer( hl_socket *s, int *host, int *port ) {
+HL_PRIM bool hl_socket_peer( hl_socket *s, int *host, int *port ) {
 	struct sockaddr_in addr;
-	unsigned int addrlen = sizeof(addr);
-	if( getpeername(s->sock,(struct sockaddr*)&addr,&addrlen) == SOCKET_ERROR )
+	_sockaddr addrlen = sizeof(addr);
+	if( !s || getpeername(s->sock,(struct sockaddr*)&addr,&addrlen) == SOCKET_ERROR )
 		return false;
 	*host = *(int*)&addr.sin_addr;
 	*port = ntohs(addr.sin_port);
 	return true;
 }
 
-bool hl_socket_host( hl_socket *s, int *host, int *port ) {
+HL_PRIM bool hl_socket_host( hl_socket *s, int *host, int *port ) {
 	struct sockaddr_in addr;
-	unsigned int addrlen = sizeof(addr);
-	if( getsockname(s->sock,(struct sockaddr*)&addr,&addrlen) == SOCKET_ERROR )
+	_sockaddr addrlen = sizeof(addr);
+	if( !s || getsockname(s->sock,(struct sockaddr*)&addr,&addrlen) == SOCKET_ERROR )
 		return false;
 	*host = *(int*)&addr.sin_addr;
 	*port = ntohs(addr.sin_port);
 	return true;
 }
 
-bool hl_socket_set_timeout( hl_socket *s, double t ) {
+static void init_timeval( double f, struct timeval *t ) {
+	t->tv_usec = (int)((f - (int)f) * 1000000);
+	t->tv_sec = (int)f;
+}
+
+HL_PRIM bool hl_socket_set_timeout( hl_socket *s, double t ) {
 #ifdef HL_WIN
 	int time = (int)(t * 1000);
 #else
 	struct timeval time;
-	//init_timeval(t,&time);
+	init_timeval(t,&time);
 #endif
+	if( !s ) return false;
 	if( setsockopt(s->sock,SOL_SOCKET,SO_SNDTIMEO,(char*)&time,sizeof(time)) != 0 )
 		return false;
 	if( setsockopt(s->sock,SOL_SOCKET,SO_RCVTIMEO,(char*)&time,sizeof(time)) != 0 )
@@ -275,29 +320,164 @@ bool hl_socket_set_timeout( hl_socket *s, double t ) {
 	return true;
 }
 
-bool hl_socket_shutdown( hl_socket *s, bool r, bool w ) {
+HL_PRIM bool hl_socket_shutdown( hl_socket *s, bool r, bool w ) {
+	if( !s )
+		return false;
 	if( !r && !w )
 		return true;
 	return shutdown(s->sock,r?(w?SHUT_RDWR:SHUT_RD):SHUT_WR) == 0;
 }
 
-bool hl_socket_set_blocking( hl_socket *s, bool b ) {
+HL_PRIM bool hl_socket_set_blocking( hl_socket *s, bool b ) {
 #ifdef HL_WIN
 	unsigned long arg = b?0:1;
+	if( !s ) return false;
 	return ioctlsocket(s->sock,FIONBIO,&arg) == 0;
 #else
-	int rights = fcntl(s->sock,F_GETFL);
+	int rights;
+	if( !s ) return false;
+	rights = fcntl(s->sock,F_GETFL);
 	if( rights == -1 )
 		return false;
 	if( b )
 		rights &= ~O_NONBLOCK;
 	else
 		rights |= O_NONBLOCK;
-	return false;//fcntl(val_sock(o),F_SETFL,rights) != -1;
+	return fcntl(s->sock,F_SETFL,rights) != -1;
 #endif
 }
 
-bool hl_socket_set_fast_send( hl_socket *s, bool b ) {
+HL_PRIM bool hl_socket_set_fast_send( hl_socket *s, bool b ) {
 	int fast = b;
+	if( !s ) return false;
 	return setsockopt(s->sock,IPPROTO_TCP,TCP_NODELAY,(char*)&fast,sizeof(fast)) == 0;
 }
+
+HL_PRIM int hl_socket_send_to( hl_socket *s, char *data, int len, int host, int port ) {
+	struct sockaddr_in addr;
+	if( !s ) return -2;
+	memset(&addr,0,sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons((unsigned short)port);
+	*(int*)&addr.sin_addr.s_addr = host;
+	len = sendto(s->sock, data, len, MSG_NOSIGNAL, (struct sockaddr*)&addr, sizeof(addr));
+	if( len == SOCKET_ERROR )
+		return block_error();
+	return len;
+}
+
+HL_PRIM int hl_socket_recv_from( hl_socket *s, char *data, int len, int *host, int *port ) {
+	struct sockaddr_in saddr;
+	socklen_t slen = sizeof(saddr);
+	if( !s ) return -2;
+	len = recvfrom(s->sock, data, len, MSG_NOSIGNAL, (struct sockaddr*)&saddr, &slen);
+	if( len == SOCKET_ERROR ) {
+#ifdef	HL_WIN
+		if( WSAGetLastError() == WSAECONNRESET )
+			len = 0;
+		else
+#endif
+		return block_error();
+	}
+	*host = *(int*)&saddr.sin_addr;
+	*port = ntohs(saddr.sin_port);
+	return len;
+}
+
+HL_PRIM int hl_socket_fd_size( int size ) {
+	if( size > FD_SETSIZE )
+		return -1;
+#	ifdef HL_WIN
+	return FDSIZE(size);
+#	else
+	return sizeof(fd_set);
+#	endif
+}
+
+static fd_set *make_socket_set( varray *a, char **tmp, int *tmp_size, unsigned int *max ) {
+	fd_set *set = (fd_set*)*tmp;
+	int i, req;
+	if( a == NULL )
+		return set;
+	req = hl_socket_fd_size(a->size);
+	if( *tmp_size < req )
+		return NULL;
+	*tmp_size -= req;
+	*tmp += req;
+	FD_ZERO(set);
+	for(i=0;i<a->size;i++) {
+		hl_socket *s= hl_aptr(a,hl_socket*)[i];
+		if( s== NULL ) break;
+		if( s->sock > *max ) *max = (int)s->sock;
+		FD_SET(s->sock,set);
+	}
+	return set;
+}
+
+static void make_array_result( fd_set *set, varray *a ) {
+	int i;
+	int pos = 0;
+	hl_socket **aptr = hl_aptr(a,hl_socket*);
+	if( a == NULL )
+		return;
+	for(i=0;i<a->size;i++) {
+		hl_socket *s = aptr[i];
+		if( s == NULL )
+			break;
+		if( FD_ISSET(s->sock,set) )
+			aptr[pos++] = s;
+	}
+	if( pos < a->size )
+		aptr[pos++] = NULL;
+}
+
+HL_PRIM bool hl_socket_select( varray *ra, varray *wa, varray *ea, char *tmp, int tmp_size, double timeout ) {
+	struct timeval tval, *tt;
+	fd_set *rs, *ws, *es;
+	unsigned int max = 0;
+	rs = make_socket_set(ra,&tmp,&tmp_size,&max);
+	ws = make_socket_set(wa,&tmp,&tmp_size,&max);
+	es = make_socket_set(ea,&tmp,&tmp_size,&max);
+	if( rs == NULL || ws == NULL || es == NULL )
+		return false;
+	if( timeout < 0 )
+		tt = NULL;
+	else {
+		tt = &tval;
+		init_timeval(timeout,tt);
+	}
+	if( select((int)(max+1),ra?rs:NULL,wa?ws:NULL,ea?es:NULL,tt) == SOCKET_ERROR )
+		return false;
+	make_array_result(rs,ra);
+	make_array_result(ws,wa);
+	make_array_result(es,ea);
+	return true;
+}
+
+#define _SOCK	_ABSTRACT(hl_socket)
+DEFINE_PRIM(_VOID,socket_init,_NO_ARG);
+DEFINE_PRIM(_SOCK,socket_new,_BOOL);
+DEFINE_PRIM(_VOID,socket_close,_SOCK);
+DEFINE_PRIM(_I32,socket_send_char,_SOCK _I32);
+DEFINE_PRIM(_I32,socket_send,_SOCK _BYTES _I32 _I32 );
+DEFINE_PRIM(_I32,socket_recv,_SOCK _BYTES _I32 _I32 );
+DEFINE_PRIM(_I32,socket_recv_char, _SOCK);
+DEFINE_PRIM(_I32,host_resolve,_BYTES);
+DEFINE_PRIM(_BYTES,host_to_string,_I32);
+DEFINE_PRIM(_BYTES,host_reverse,_I32);
+DEFINE_PRIM(_BYTES,host_local,_NO_ARG);
+DEFINE_PRIM(_BOOL,socket_connect,_SOCK _I32 _I32);
+DEFINE_PRIM(_BOOL,socket_listen,_SOCK _I32);
+DEFINE_PRIM(_BOOL,socket_bind,_SOCK _I32 _I32);
+DEFINE_PRIM(_SOCK,socket_accept,_SOCK);
+DEFINE_PRIM(_BOOL,socket_peer,_SOCK _REF(_I32) _REF(_I32));
+DEFINE_PRIM(_BOOL,socket_host,_SOCK _REF(_I32) _REF(_I32));
+DEFINE_PRIM(_BOOL,socket_set_timeout,_SOCK _F64);
+DEFINE_PRIM(_BOOL,socket_shutdown,_SOCK _BOOL _BOOL);
+DEFINE_PRIM(_BOOL,socket_set_blocking,_SOCK _BOOL);
+DEFINE_PRIM(_BOOL,socket_set_fast_send,_SOCK _BOOL);
+
+DEFINE_PRIM(_I32, socket_send_to, _SOCK _BYTES _I32 _I32 _I32);
+DEFINE_PRIM(_I32, socket_recv_from, _SOCK _BYTES _I32 _REF(_I32) _REF(_I32));
+DEFINE_PRIM(_I32, socket_fd_size, _I32 );
+DEFINE_PRIM(_BOOL, socket_select, _ARR _ARR _ARR _BYTES _I32 _F64);

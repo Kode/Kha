@@ -20,6 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include <hl.h>
+
+#ifdef HL_CONSOLE
+#	include <posix/posix.h>
+#else
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +33,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HL_WIN
+#if defined(HL_WIN)
 #	include <windows.h>
 #	include <direct.h>
 #	include <conio.h>
@@ -46,15 +51,17 @@ typedef struct _stat32 pstat;
 #else
 #	include <errno.h>
 #	include <unistd.h>
-#	include <dirent.h>
 #	include <limits.h>
-#	include <termios.h>
 #	include <sys/time.h>
+#	include <dirent.h>
+#	include <termios.h>
 #	include <sys/times.h>
 #	include <sys/wait.h>
 #	include <locale.h>
 #	define HL_UTF8PATH
 typedef struct stat pstat;
+#endif
+
 #endif
 
 #ifdef HL_UTF8PATH
@@ -86,7 +93,7 @@ static pchar *pstrdup( const pchar *s, int len ) {
 }
 
 HL_PRIM bool hl_sys_utf8_path() {
-#ifdef HL_UTF8_PATH
+#ifdef HL_UTF8PATH
 	return true;
 #else
 	return false;
@@ -104,13 +111,33 @@ HL_PRIM vbyte *hl_sys_string() {
 	return (vbyte*)USTR("BSD");
 #elif defined(HL_MAC)
 	return (vbyte*)USTR("Mac");
+#elif defined(HL_CONSOLE)
+	return (vbyte*)sys_platform_name();
+#elif defined(HL_IOS)
+	return (vbyte*)USTR("iOS");
+#elif defined(HL_TVOS)
+	return (vbyte*)USTR("tvOS");
+#elif defined(HL_ANDROID)
+	return (vbyte*)USTR("Android");
 #else
-#error Unknow system string
+#error Unknown system string
+#endif
+}
+
+HL_PRIM vbyte *hl_sys_locale() {
+#ifdef HL_WIN
+	wchar_t loc[LOCALE_NAME_MAX_LENGTH];
+	int len = GetSystemDefaultLocaleName(loc,LOCALE_NAME_MAX_LENGTH);
+	return len == 0 ? NULL : hl_copy_bytes((vbyte*)loc,(len+1)*2);
+#else
+	return (vbyte*)setlocale(LC_ALL, NULL);
 #endif
 }
 
 HL_PRIM void hl_sys_print( vbyte *msg ) {
+	hl_blocking(true);
 	uprintf(USTR("%s"),(uchar*)msg);
+	hl_blocking(false);
 }
 
 HL_PRIM void hl_sys_exit( int code ) {
@@ -119,16 +146,14 @@ HL_PRIM void hl_sys_exit( int code ) {
 
 HL_PRIM double hl_sys_time() {
 #ifdef HL_WIN
-#define EPOCH_DIFF	(134774*24*60*60.0)
-	SYSTEMTIME t;
-	FILETIME ft;
-    ULARGE_INTEGER ui;
-	GetSystemTime(&t);
-	if( !SystemTimeToFileTime(&t,&ft) )
-		return 0.;
-    ui.LowPart = ft.dwLowDateTime;
-    ui.HighPart = ft.dwHighDateTime;
-	return ((double)ui.QuadPart) / 10000000.0 - EPOCH_DIFF;
+	static double freq = 0.;
+	LARGE_INTEGER time;
+	if( freq == 0 ) {
+		QueryPerformanceFrequency(&time);
+		freq = (double)time.QuadPart;
+	}
+	QueryPerformanceCounter(&time);
+	return ((double)time.QuadPart) / freq;
 #else
 	struct timeval tv;
 	if( gettimeofday(&tv,NULL) != 0 )
@@ -137,17 +162,12 @@ HL_PRIM double hl_sys_time() {
 #endif
 }
 
-HL_PRIM int hl_random( int max ) {
-	if( max <= 0 ) return 0;
-	return rand() % max;
-}
-
-vbyte *hl_sys_get_env( vbyte *v ) {
+HL_PRIM vbyte *hl_sys_get_env( vbyte *v ) {
 	return (vbyte*)getenv((pchar*)v);
 }
 
-bool hl_sys_put_env( vbyte *e, vbyte *v ) {
-#ifdef HL_WIN
+HL_PRIM bool hl_sys_put_env( vbyte *e, vbyte *v ) {
+#if defined(HL_WIN)
 	hl_buffer *b = hl_alloc_buffer();
 	hl_buffer_str(b,(uchar*)e);
 	hl_buffer_char(b,'=');
@@ -170,7 +190,7 @@ bool hl_sys_put_env( vbyte *e, vbyte *v ) {
 extern char **environ;
 #endif
 
-varray *hl_sys_env() {
+HL_PRIM varray *hl_sys_env() {
 	varray *a;
 	pchar **e = environ;
 	pchar **arr;
@@ -182,6 +202,7 @@ varray *hl_sys_env() {
 			continue;
 		}
 		count++;
+		e++;
 	}
 	a = hl_alloc_array(&hlt_bytes,count*2);
 	e = environ;
@@ -193,15 +214,16 @@ varray *hl_sys_env() {
 			continue;
 		}
 		*arr++ = pstrdup(*e,(int)(x - *e));
-		*arr++ = pstrdup(x,-1);
+		*arr++ = pstrdup(x+1,-1);
 		e++;
 	}
 	return a;
 }
 
 
-void hl_sys_sleep( double f ) {
-#ifdef HL_WIN
+HL_PRIM void hl_sys_sleep( double f ) {
+	hl_blocking(true);
+#if defined(HL_WIN)
 	Sleep((DWORD)(f * 1000));
 #else
 	struct timespec t;
@@ -209,9 +231,10 @@ void hl_sys_sleep( double f ) {
 	t.tv_nsec = (int)((f - t.tv_sec) * 1e9);
 	nanosleep(&t,NULL);
 #endif
+	hl_blocking(false);
 }
 
-bool hl_sys_set_time_locale( vbyte *l ) {
+HL_PRIM bool hl_sys_set_time_locale( vbyte *l ) {
 #ifdef HL_POSIX
 	locale_t lc, old;
 	lc = newlocale(LC_TIME_MASK,(char*)l,NULL);
@@ -230,7 +253,7 @@ bool hl_sys_set_time_locale( vbyte *l ) {
 }
 
 
-vbyte *hl_sys_get_cwd() {
+HL_PRIM vbyte *hl_sys_get_cwd() {
 	pchar buf[256];
 	int l;
 	if( getcwd(buf,256) == NULL )
@@ -243,11 +266,11 @@ vbyte *hl_sys_get_cwd() {
 	return (vbyte*)pstrdup(buf,-1);
 }
 
-bool hl_sys_set_cwd( vbyte *dir ) {
+HL_PRIM bool hl_sys_set_cwd( vbyte *dir ) {
 	return chdir((pchar*)dir) == 0;
 }
 
-bool hl_sys_is64() {
+HL_PRIM bool hl_sys_is64() {
 #ifdef HL_64
 	return true;
 #else
@@ -255,29 +278,41 @@ bool hl_sys_is64() {
 #endif
 }
 
-int hl_sys_command( vbyte *cmd ) {
-#ifdef HL_WIN
-	return system((pchar*)cmd);
+HL_PRIM int hl_sys_command( vbyte *cmd ) {
+#if defined(HL_WIN)
+	int ret;
+	hl_blocking(true);
+	ret = system((pchar*)cmd);
+	hl_blocking(false);
+	return ret;
 #else
-	int status = system((pchar*)cmd);
+	int status;
+	hl_blocking(true);
+#if defined(HL_IOS) || defined(HL_TVOS)
+	status = 0;
+	hl_error("hl_sys_command() not available on this platform");
+#else
+	status = system((pchar*)cmd);
+#endif
+	hl_blocking(false);
 	return WEXITSTATUS(status) | (WTERMSIG(status) << 8);
 #endif
 }
 
-bool hl_sys_exists( vbyte *path ) {
+HL_PRIM bool hl_sys_exists( vbyte *path ) {
 	pstat st;
 	return stat((pchar*)path,&st) == 0;
 }
 
-bool hl_sys_delete( vbyte *path ) {
+HL_PRIM bool hl_sys_delete( vbyte *path ) {
 	return unlink((pchar*)path) == 0;
 }
 
-bool hl_sys_rename( vbyte *path, vbyte *newname ) {
+HL_PRIM bool hl_sys_rename( vbyte *path, vbyte *newname ) {
 	return rename((pchar*)path,(pchar*)newname) == 0;
 }
 
-varray *hl_sys_stat( vbyte *path ) {
+HL_PRIM varray *hl_sys_stat( vbyte *path ) {
 	pstat s;
 	varray *a;
 	int *i;
@@ -299,23 +334,31 @@ varray *hl_sys_stat( vbyte *path ) {
 	return a;
 }
 
-bool hl_sys_is_dir( vbyte *path ) {
+HL_PRIM bool hl_sys_is_dir( vbyte *path ) {
 	pstat s;
 	if( stat((pchar*)path,&s) != 0 )
 		return false;
 	return (s.st_mode & S_IFDIR) != 0;
 }
 
-bool hl_sys_create_dir( vbyte *path, int mode ) {
+HL_PRIM bool hl_sys_create_dir( vbyte *path, int mode ) {
 	return mkdir((pchar*)path,mode) == 0;
 }
 
-bool hl_sys_remove_dir( vbyte *path ) {
+HL_PRIM bool hl_sys_remove_dir( vbyte *path ) {
 	return rmdir((pchar*)path) == 0;
 }
 
-double hl_sys_cpu_time() {
+HL_PRIM int hl_sys_getpid() {
 #ifdef HL_WIN
+	return GetCurrentProcessId();
+#else
+	return getpid();
+#endif
+}
+
+HL_PRIM double hl_sys_cpu_time() {
+#if defined(HL_WIN)
 	FILETIME unused;
 	FILETIME stime;
 	FILETIME utime;
@@ -323,21 +366,21 @@ double hl_sys_cpu_time() {
 		return 0.;
 	return ((double)(utime.dwHighDateTime+stime.dwHighDateTime)) * 65.536 * 6.5536 + (((double)utime.dwLowDateTime + (double)stime.dwLowDateTime) / 10000000);
 #else
-	struct tms t;
+	struct tms t = {0};
 	times(&t);
 	return ((double)(t.tms_utime + t.tms_stime)) / CLK_TCK;
 #endif
 }
 
-double hl_sys_thread_cpu_time() {
+HL_PRIM double hl_sys_thread_cpu_time() {
 #if defined(HL_WIN)
 	FILETIME unused;
 	FILETIME utime;
 	if( !GetThreadTimes(GetCurrentThread(),&unused,&unused,&unused,&utime) )
 		return 0.;
 	return ((double)utime.dwHighDateTime) * 65.536 * 6.5536 + (((double)utime.dwLowDateTime) / 10000000);
-#elif defined(HL_MAC)
-	hl_error("sys_thread_cpu_time not implemented on OSX");
+#elif defined(HL_MAC) || defined(HL_CONSOLE)
+	hl_error("sys_thread_cpu_time not implemented on this platform");
 	return 0.;
 #else
 	struct timespec t;
@@ -347,7 +390,7 @@ double hl_sys_thread_cpu_time() {
 #endif
 }
 
-varray *hl_sys_read_dir( vbyte *_path ) {
+HL_PRIM varray *hl_sys_read_dir( vbyte *_path ) {
 	pchar *path = (pchar*)_path;
 	int count = 0;
 	int pos = 0;
@@ -373,7 +416,7 @@ varray *hl_sys_read_dir( vbyte *_path ) {
 		if( d.cFileName[0] != '.' || (d.cFileName[1] != 0 && (d.cFileName[1] != '.' || d.cFileName[2] != 0)) ) {
 			if( pos == count ) {
 				int ncount = count == 0 ? 16 : count * 2;
-				varray *narr = hl_alloc_array(&hlt_bytes,count);
+				varray *narr = hl_alloc_array(&hlt_bytes,ncount);
 				pchar **ncur = hl_aptr(narr,pchar*);
 				memcpy(ncur,current,count*sizeof(void*));
 				current = ncur;
@@ -401,7 +444,7 @@ varray *hl_sys_read_dir( vbyte *_path ) {
 			continue;
 		if( pos == count ) {
 			int ncount = count == 0 ? 16 : count * 2;
-			varray *narr = hl_alloc_array(&hlt_bytes,count);
+			varray *narr = hl_alloc_array(&hlt_bytes,ncount);
 			pchar **ncur = hl_aptr(narr,pchar*);
 			memcpy(ncur,current,count*sizeof(void*));
 			current = ncur;
@@ -417,12 +460,54 @@ varray *hl_sys_read_dir( vbyte *_path ) {
 	return a;
 }
 
-vbyte *hl_sys_full_path( vbyte *path ) {
-#ifdef HL_WIN
-	pchar buf[MAX_PATH+1];
-	if( GetFullPathNameW((pchar*)path,MAX_PATH+1,buf,NULL) == 0 )
+HL_PRIM vbyte *hl_sys_full_path( vbyte *path ) {
+#if defined(HL_WIN)
+	pchar out[MAX_PATH+1];
+	int len, i, last;
+	HANDLE handle;
+	WIN32_FIND_DATA data;
+	const char sep = '\\';
+	if( GetFullPathNameW((pchar*)path,MAX_PATH+1,out,NULL) == 0 )
 		return NULL;
-	return (vbyte*)pstrdup(buf,-1);
+	len = (int)ustrlen(out);
+	i = 0;
+
+	if (len >= 2 && out[1] == ':') {
+		// convert drive letter to uppercase
+		if (out[0] >= 'a' && out[0] <= 'z')
+			out[0] += (pchar)('A' - 'a');
+		if (len >= 3 && out[2] == sep)
+			i = 3;
+		else
+			i = 2;
+	}
+
+	last = i;
+
+	while (i < len) {
+		// skip until separator
+		while (i < len && out[i] != sep)
+			i++;
+
+		// temporarily strip string to last found component
+		out[i] = 0;
+
+		// get actual file/dir name with proper case
+		if ((handle = FindFirstFileW(out, &data)) != INVALID_HANDLE_VALUE) {
+			// replace the component with proper case
+			memcpy(out + last, data.cFileName, i - last);
+			FindClose(handle);
+		}
+
+		// if we're not at the end, restore the path
+		if (i < len)
+			out[i] = sep;
+
+		// advance
+		i++;
+		last = i;
+	}
+	return (vbyte*)pstrdup(out,len);
 #else
 	pchar buf[PATH_MAX];
 	if( realpath((pchar*)path,buf) == NULL )
@@ -431,7 +516,7 @@ vbyte *hl_sys_full_path( vbyte *path ) {
 #endif
 }
 
-vbyte *hl_sys_exe_path() {
+HL_PRIM vbyte *hl_sys_exe_path() {
 #if defined(HL_WIN)
 	pchar path[MAX_PATH];
 	if( GetModuleFileNameW(NULL,path,MAX_PATH) == 0 )
@@ -443,6 +528,8 @@ vbyte *hl_sys_exe_path() {
 	if( _NSGetExecutablePath(path, &path_len) )
 		return NULL;
 	return (vbyte*)pstrdup(path,-1);
+#elif defined(HL_CONSOLE)
+	return (vbyte*)sys_exe_path();
 #else
 	const pchar *p = getenv("_");
 	if( p != NULL )
@@ -452,15 +539,17 @@ vbyte *hl_sys_exe_path() {
 		int length = readlink("/proc/self/exe", path, sizeof(path));
 		if( length < 0 )
 			return NULL;
-	    path[length] = '\0';
+		path[length] = '\0';
 		return (vbyte*)pstrdup(path,-1);
 	}
 #endif
 }
 
-int hl_sys_get_char( bool b ) {
-#	ifdef HL_WIN
+HL_PRIM int hl_sys_get_char( bool b ) {
+#	if defined(HL_WIN)
 	return b?getche():getch();
+#	elif defined(HL_CONSOLE)
+	return -1;
 #	else
 	// took some time to figure out how to do that
 	// without relying on ncurses, which clear the
@@ -478,43 +567,65 @@ int hl_sys_get_char( bool b ) {
 #	endif
 }
 
-#ifndef HL_JIT
-
-#include <hlc.h>
-#if defined(HL_VCC) && defined(_DEBUG)
-#	include <crtdbg.h>
-#else
-#	define _CrtSetDbgFlag(x)
-#endif
-
-extern void hl_entry_point();
-
-static char **sys_args;
+static pchar **sys_args;
 static int sys_nargs;
 
-varray *hl_sys_args() {
+HL_PRIM varray *hl_sys_args() {
 	varray *a = hl_alloc_array(&hlt_bytes,sys_nargs);
 	int i;
 	for(i=0;i<sys_nargs;i++)
-		hl_aptr(a,char*)[i] = sys_args[i];
+		hl_aptr(a,pchar*)[i] = sys_args[i];
 	return a;
 }
 
-extern void run_kore();
+static void *hl_file = NULL;
 
-int kore( int argc, char **argv ) {
-	hl_trap_ctx ctx;
-	vdynamic *exc;
-	sys_args = argv + 1;
-	sys_nargs = argc - 1;
-	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_DELAY_FREE_MEM_DF /*| _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF*/ );
-	hlc_trap(ctx,exc,on_exception);
-	hl_entry_point();
-	run_kore();
-	return 0;
-on_exception:
-	uprintf(USTR("Uncaught exception: %s\n"),hl_to_string(exc));
-	return 1;
+HL_PRIM void hl_sys_init(void **args, int nargs, void *hlfile) {
+	sys_args = (pchar**)args;
+	sys_nargs = nargs;
+	hl_file = hlfile;
 }
 
+HL_PRIM vbyte *hl_sys_hl_file() {
+	return hl_file;
+}
+
+#ifndef HL_MOBILE
+const char *hl_sys_special( const char *key ) {
+	 hl_error("Unknown sys_special key");
+	 return NULL;
+}
+DEFINE_PRIM(_BYTES, sys_special, _BYTES);
 #endif
+
+DEFINE_PRIM(_BYTES, sys_hl_file, _NO_ARG);
+DEFINE_PRIM(_BOOL, sys_utf8_path, _NO_ARG);
+DEFINE_PRIM(_BYTES, sys_string, _NO_ARG);
+DEFINE_PRIM(_BYTES, sys_locale, _NO_ARG);
+DEFINE_PRIM(_VOID, sys_print, _BYTES);
+DEFINE_PRIM(_VOID, sys_exit, _I32);
+DEFINE_PRIM(_F64, sys_time, _NO_ARG);
+DEFINE_PRIM(_BYTES, sys_get_env, _BYTES);
+DEFINE_PRIM(_BOOL, sys_put_env, _BYTES _BYTES);
+DEFINE_PRIM(_ARR, sys_env, _NO_ARG);
+DEFINE_PRIM(_VOID, sys_sleep, _F64);
+DEFINE_PRIM(_BOOL, sys_set_time_locale, _BYTES);
+DEFINE_PRIM(_BYTES, sys_get_cwd, _NO_ARG);
+DEFINE_PRIM(_BOOL, sys_set_cwd, _BYTES);
+DEFINE_PRIM(_BOOL, sys_is64, _NO_ARG);
+DEFINE_PRIM(_I32, sys_command, _BYTES);
+DEFINE_PRIM(_BOOL, sys_exists, _BYTES);
+DEFINE_PRIM(_BOOL, sys_delete, _BYTES);
+DEFINE_PRIM(_BOOL, sys_rename, _BYTES _BYTES);
+DEFINE_PRIM(_ARR, sys_stat, _BYTES);
+DEFINE_PRIM(_BOOL, sys_is_dir, _BYTES);
+DEFINE_PRIM(_BOOL, sys_create_dir, _BYTES _I32);
+DEFINE_PRIM(_BOOL, sys_remove_dir, _BYTES);
+DEFINE_PRIM(_F64, sys_cpu_time, _NO_ARG);
+DEFINE_PRIM(_F64, sys_thread_cpu_time, _NO_ARG);
+DEFINE_PRIM(_ARR, sys_read_dir, _BYTES);
+DEFINE_PRIM(_BYTES, sys_full_path, _BYTES);
+DEFINE_PRIM(_BYTES, sys_exe_path, _NO_ARG);
+DEFINE_PRIM(_I32, sys_get_char, _BOOL);
+DEFINE_PRIM(_ARR, sys_args, _NO_ARG);
+DEFINE_PRIM(_I32, sys_getpid, _NO_ARG);

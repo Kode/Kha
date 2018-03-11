@@ -1,12 +1,11 @@
 #include <Kore/pch.h>
-#include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics4/Graphics.h>
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Sensor.h>
 #include <Kore/Input/Surface.h>
-#include <Kore/Audio/Audio.h>
-#include <Kore/Audio/Mixer.h>
+#include <Kore/Audio1/Audio.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
@@ -44,10 +43,10 @@ namespace {
 
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
-				Kore::Graphics::begin(windowIndex);
+				Kore::Graphics4::begin(windowIndex);
 				frame();
-				Kore::Graphics::end(windowIndex);
-				Kore::Graphics::swapBuffers(windowIndex);
+				Kore::Graphics4::end(windowIndex);
+				Kore::Graphics4::swapBuffers(windowIndex);
 			}
 		}
 	}

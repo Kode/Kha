@@ -19,59 +19,174 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include "hlmodule.h"
+#include <hl.h>
+#include <hlmodule.h>
 
-#ifdef HL_VCC
-#	include <crtdbg.h>
+#ifdef HL_WIN
+#	include <locale.h>
+typedef uchar pchar;
+#define pprintf(str,file)	uprintf(USTR(str),file)
+#define pfopen(file,ext) _wfopen(file,USTR(ext))
+#define pcompare wcscmp
+#define ptoi(s)	wcstol(s,NULL,10)
+#define PSTR(x) USTR(x)
 #else
-#	define _CrtSetDbgFlag(x)
+typedef char pchar;
+#define pprintf printf
+#define pfopen fopen
+#define pcompare strcmp
+#define ptoi atoi
+#define PSTR(x) x
 #endif
 
-int main( int argc, char *argv[] ) {
-	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_DELAY_FREE_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF );
-	if( argc == 1 ) {
-		printf("HLVM %d.%d.%d (c)2015 Haxe Foundation\n  Usage : hl <file>\n",HL_VERSION/100,(HL_VERSION/10)%10,HL_VERSION%10);
-		return 1;
+static hl_code *load_code( const pchar *file ) {
+	hl_code *code;
+	FILE *f = pfopen(file,"rb");
+	int pos, size;
+	char *fdata;
+	if( f == NULL ) {
+		pprintf("File not found '%s'\n",file);
+		return NULL;
 	}
-	hl_global_init();
-	{
+	fseek(f, 0, SEEK_END);
+	size = (int)ftell(f);
+	fseek(f, 0, SEEK_SET);
+	fdata = (char*)malloc(size);
+	pos = 0;
+	while( pos < size ) {
+		int r = (int)fread(fdata + pos, 1, size-pos, f);
+		if( r <= 0 ) {
+			pprintf("Failed to read '%s'\n",file);
+			return NULL;
+		}
+		pos += r;
+	}
+	fclose(f);
+	code = hl_code_read((unsigned char*)fdata, size);
+	free(fdata);
+	return code;
+}
+
+#ifdef HL_VCC
+static int throw_handler( int code ) {
+	switch( code ) {
+	case EXCEPTION_ACCESS_VIOLATION: hl_error("Access violation");
+	case EXCEPTION_STACK_OVERFLOW: hl_error("Stack overflow");
+	default: hl_error("Unknown runtime error");
+	}
+	return EXCEPTION_CONTINUE_SEARCH;
+}
+
+// this allows some runtime detection to switch to high performance mode
+__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif
+
+#ifdef HL_WIN
+int wmain(int argc, pchar *argv[]) {
+#else
+int main(int argc, pchar *argv[]) {
+#endif
+	pchar *file = NULL;
+	int debug_port = -1;
+	bool debug_wait = false;
+	struct {
 		hl_code *code;
 		hl_module *m;
-		const char *file = argv[1];
-		FILE *f = fopen(file,"rb");
-		int pos, size;
-		char *fdata;
-		if( f == NULL ) {
-			printf("File not found '%s'\n",file);
+		vdynamic *exc;
+	} ctx;
+	hl_trap_ctx trap;
+	int first_boot_arg = -1;
+	argv++;
+	argc--;
+	while( argc ) {
+		pchar *arg = *argv++;
+		argc--;
+		if( pcompare(arg,PSTR("--debug")) == 0 ) {
+			if( argc-- == 0 ) break;
+			debug_port = ptoi(*argv++);
+			continue;
+		}
+		if( pcompare(arg,PSTR("--debug-wait")) == 0 ) {
+			debug_wait = true;
+			continue;
+		}
+		if( pcompare(arg,PSTR("--version")) == 0 ) {
+			printf("%d.%d.%d",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
+			return 0;
+		}
+		if( *arg == '-' || *arg == '+' ) {
+			if( first_boot_arg < 0 ) first_boot_arg = argc + 1;
+			// skip value
+			if( argc && **argv != '+' && **argv != '-' ) {
+				argc--;
+				argv++;
+			}
+			continue;
+		}
+		file = arg;
+		break;
+	}
+	if( file == NULL ) {
+		FILE *fchk;
+		file = PSTR("hlboot.dat");
+		fchk = pfopen(file,"rb");
+		if( fchk == NULL ) {
+			printf("HL/JIT %d.%d.%d (c)2015-2017 Haxe Foundation\n  Usage : hl [--debug <port>] <file>\n",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
 			return 1;
 		}
-		fseek(f, 0, SEEK_END);
-		size = (int)ftell(f);
-		fseek(f, 0, SEEK_SET);
-		fdata = (char*)malloc(size);
-		pos = 0;
-		while( pos < size ) {
-			int r = (int)fread(fdata + pos, 1, size-pos, f);
-			if( r <= 0 ) {
-				printf("Failed to read '%s'\n",file);
-				return 2;
-			}
-			pos += r;
+		fclose(fchk);
+		if( first_boot_arg >= 0 ) {
+			argv -= first_boot_arg;
+			argc = first_boot_arg;
 		}
-		fclose(f);
-		code = hl_code_read((unsigned char*)fdata, size);
-		free(fdata);
-		if( code == NULL )
-			return 3;
-		m = hl_module_alloc(code);
-		if( m == NULL )
-			return 4;
-		if( !hl_module_init(m) )
-			return 5;
-		hl_callback(m->functions_ptrs[m->code->entrypoint],0,NULL);
-		hl_module_free(m);
-		hl_free(&code->alloc);
 	}
+#	ifdef HL_WIN
+	setlocale(LC_CTYPE,""); // printf to current locale
+#	endif
+	hl_global_init(&ctx);
+	hl_sys_init((void**)argv,argc,file);
+	setbuf(stdout,NULL); // disable stdout buffering
+	ctx.code = load_code(file);
+	if( ctx.code == NULL )
+		return 1;
+	ctx.m = hl_module_alloc(ctx.code);
+	if( ctx.m == NULL )
+		return 2;
+	if( !hl_module_init(ctx.m, &argc) )
+		return 3;
+	hl_code_free(ctx.code);
+	if( debug_port > 0 && !hl_module_debug(ctx.m,debug_port,debug_wait) ) {
+		fprintf(stderr,"Could not start debugger on port %d",debug_port);
+		return 4;
+	}
+	hl_trap(trap, ctx.exc, on_exception);
+#	ifdef HL_VCC
+	__try {
+#	endif
+		vclosure c;
+		c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
+		c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
+		c.hasValue = 0;
+		hl_dyn_call(&c,NULL,0);
+#	ifdef HL_VCC
+	} __except( throw_handler(GetExceptionCode()) ) {}
+#	endif
+	hl_module_free(ctx.m);
+	hl_free(&ctx.code->alloc);
 	hl_global_free();
 	return 0;
+on_exception:
+	{
+		varray *a = hl_exception_stack();
+		int i;
+		uprintf(USTR("Uncaught exception: %s\n"), hl_to_string(ctx.exc));
+		for(i=0;i<a->size;i++)
+			uprintf(USTR("Called from %s\n"), hl_aptr(a,uchar*)[i]);
+		hl_debug_break();
+	}
+	hl_global_free();
+	return 1;
 }
+
