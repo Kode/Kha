@@ -93,11 +93,17 @@ static int throw_handler( int code ) {
 }
 #endif
 
-#ifdef HL_WIN
-int wmain(int argc, uchar *argv[]) {
+#ifdef KOREC
+extern void run_kore();
+int kore(int argc, char *argv[]) {
 #else
-int main(int argc, char *argv[]) {
+	#ifdef HL_WIN
+	int wmain(int argc, uchar *argv[]) {
+	#else
+	int main(int argc, char *argv[]) {
+	#endif
 #endif
+
 	hl_trap_ctx ctx;
 	vdynamic *exc;
 #	ifdef HL_CONSOLE
@@ -112,6 +118,9 @@ int main(int argc, char *argv[]) {
 	__try {
 #	endif
 	hl_entry_point();
+#	ifdef KOREC
+	run_kore();
+#	endif
 #	ifdef HL_VCC
 	} __except( throw_handler(GetExceptionCode()) ) {}
 #	endif
