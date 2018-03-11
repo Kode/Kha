@@ -15,7 +15,7 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	private function init(): Void {
-		program = kore_create_program();
+		program = kore_create_pipeline();
 	}
 	
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
@@ -74,7 +74,7 @@ class PipelineState extends PipelineStateBase {
 		// var include6 = new TessellationEvaluationShader(null);
 	}
 	
-	@:hlNative("std", "kore_create_program") static function kore_create_program(): Pointer { return null; }
+	@:hlNative("std", "kore_create_pipeline") static function kore_create_pipeline(): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(program: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(program: Pointer, structure: Pointer): Void { }
