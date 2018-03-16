@@ -75,6 +75,14 @@ class Assets {
 	
 	public static var progress: Float; // moves from 0 to 1, use for loading screens
 
+	/**
+	Loads all assets which were detected by khamake. When running khamake (doing so is Kha's standard build behavior)
+	it creates a files.json in the build/{target}-resources directoy which contains information about all assets which were found.
+	The filter parameter can be used to load assets selectively. The Dynamic parameter describes the asset,
+	it contains the very same objects which are listed in files.json.
+	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
+	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
+	*/
 	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
