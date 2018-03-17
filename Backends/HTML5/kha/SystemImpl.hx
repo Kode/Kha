@@ -910,6 +910,11 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
+		if ((untyped event.code == event.key)
+			|| event.ctrlKey || event.metaKey
+			|| event.keyCode == 16 || event.keyCode == 18) {
+				event.preventDefault();
+		}
 		event.stopPropagation();
 
 		// prevent key repeat
@@ -938,8 +943,8 @@ class SystemImpl {
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		event.preventDefault();
 		event.stopPropagation();
-		if (firefox && (event.which == 0 || event.which == 8)) return; // Firefox bug 968056
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 	}
 
