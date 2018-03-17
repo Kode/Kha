@@ -910,11 +910,7 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
-		if ((untyped event.code == event.key)
-			|| event.ctrlKey || event.metaKey
-			|| event.keyCode == 16 || event.keyCode == 18) {
-				event.preventDefault();
-		}
+		if (event.key != null && event.key.length != 1) event.preventDefault();
 		event.stopPropagation();
 
 		// prevent key repeat
