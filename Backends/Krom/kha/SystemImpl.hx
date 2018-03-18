@@ -5,6 +5,7 @@ import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.MouseImpl;
+import kha.input.Pen;
 import kha.input.Surface;
 import kha.System;
 
@@ -15,6 +16,7 @@ class SystemImpl {
 	private static var framebuffer: Framebuffer;
 	private static var keyboard: Keyboard;
 	private static var mouse: Mouse;
+	private static var pen: Pen;
 	private static var maxGamepads: Int = 4;
 	private static var gamepads: Array<Gamepad>;
 	private static var mouseLockListeners: Array<Void->Void> = [];
@@ -56,11 +58,23 @@ class SystemImpl {
 		mouse.sendWheelEvent(0, delta);
 	}
 
+	private static function penDownCallback(x: Int, y: Int, pressure: Float): Void {
+		pen.sendDownEvent(0, x, y, pressure);
+	}
+
+	private static function penUpCallback(x: Int, y: Int, pressure: Float): Void {
+		pen.sendUpEvent(0, x, y, pressure);
+	}
+
+	private static function penMoveCallback(x: Int, y: Int, pressure: Float): Void {
+		pen.sendMoveEvent(0, x, y, pressure);
+	}
+
 	private static function gamepadAxisCallback(gamepad: Int, axis: Int, value: Float): Void {
 		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
 
-	public static function gamepadButtonCallback(gamepad: Int, button: Int, value: Float): Void {
+	private static function gamepadButtonCallback(gamepad: Int, button: Int, value: Float): Void {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
@@ -107,6 +121,7 @@ class SystemImpl {
 		
 		keyboard = new Keyboard();
 		mouse = new MouseImpl();
+		pen = new Pen();
 		gamepads = new Array<Gamepad>();
 		for (i in 0...maxGamepads) {
 			gamepads[i] = new Gamepad(i);
@@ -119,6 +134,9 @@ class SystemImpl {
 		Krom.setMouseUpCallback(mouseUpCallback);
 		Krom.setMouseMoveCallback(mouseMoveCallback);
 		Krom.setMouseWheelCallback(mouseWheelCallback);
+		Krom.setPenDownCallback(penDownCallback);
+		Krom.setPenUpCallback(penUpCallback);
+		Krom.setPenMoveCallback(penMoveCallback);
 		Krom.setGamepadAxisCallback(gamepadAxisCallback);
 		Krom.setGamepadButtonCallback(gamepadButtonCallback);
 
@@ -186,6 +204,10 @@ class SystemImpl {
 	public static function getMouse(num: Int): Mouse {
 		return mouse;
 	}
+
+	public static function getPen(num: Int): Pen {
+		return pen;
+	}
 	
 	public static function getKeyboard(num: Int): Keyboard {
 		return keyboard;
@@ -249,12 +271,12 @@ class SystemImpl {
 		
 	}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
 
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		
 	}
 
