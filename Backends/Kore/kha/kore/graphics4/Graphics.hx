@@ -423,7 +423,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		Kore::Graphics4::setFloats(location->location, values.data, values.length());
+		Kore::Graphics4::setFloats(location->location, values->self.data, values->self.length());
 	')
 	private function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {
 		

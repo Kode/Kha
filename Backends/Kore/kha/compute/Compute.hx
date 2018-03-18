@@ -55,7 +55,7 @@ class Compute {
 	}
 
 	public static function setFloats(location: ConstantLocation, values: Float32Array) {
-		untyped __cpp__('Kore::Compute::setFloats(location->location, values.data, values.length());');
+		untyped __cpp__('Kore::Compute::setFloats(location->location, values->self.data, values->self.length());');
 	}
 
 	public static function setVector2(location: ConstantLocation, value: FastVector2): Void {

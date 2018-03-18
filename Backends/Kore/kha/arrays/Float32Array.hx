@@ -1,7 +1,5 @@
 package kha.arrays;
 
-import cpp.RawPointer;
-import haxe.ds.Vector;
 import kha.FastFloat;
 
 @:unreflective
@@ -28,37 +26,51 @@ extern class Float32ArrayData {
 	public function set(index: Int, value: FastFloat): FastFloat;
 }
 
-abstract Float32Array(Float32ArrayData) {
+class Float32ArrayPrivate {
+
+	public var self: Float32ArrayData;
+
 	public inline function new(elements: Int = 0) {
-		this = Float32ArrayData.create();
-		if (elements > 0) this.alloc(elements);
+		self = Float32ArrayData.create();
+		if (elements > 0) self.alloc(elements);
 	}
-	
+}
+
+abstract Float32Array(Float32ArrayPrivate) {
+
+	public inline function new(elements: Int = 0) {
+		this = new Float32ArrayPrivate(elements);
+	}
+
+	public inline function free(): Void {
+		this.self.free();
+	}
+
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
-		return this.length;
+		return this.self.length;
 	}
 	
 	public inline function set(index: Int, value: FastFloat): FastFloat {
-		return this.set(index, value);
+		return this.self.set(index, value);
 	}
 	
 	public inline function get(index: Int): FastFloat {
-		return this.get(index);
+		return this.self.get(index);
 	}
 	
 	@:arrayAccess
 	public inline function arrayRead(index: Int): FastFloat {
-		return this.get(index);
+		return this.self.get(index);
 	}
 
 	@:arrayAccess
 	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
-		return this.set(index, value);
+		return this.self.set(index, value);
 	}
 
 	//public inline function subarray(start: Int, ?end: Int): Float32Array {
-	//	return cast this.subarray(start, end);
+	//	return cast this.self.subarray(start, end);
 	//}
 }
