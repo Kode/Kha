@@ -1,6 +1,6 @@
 package kha.krom;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Blob;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
@@ -154,10 +154,8 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setFloat4(location, value1, value2, value3, value4);
 	}
 
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		var vals = new kha.arrays.Float32Array(values.length);
-		for (i in 0...values.length) vals.set(i, values[i]);
-		Krom.setFloats(location, vals);
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
+		Krom.setFloats(location, values);
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
