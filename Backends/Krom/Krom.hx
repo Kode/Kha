@@ -27,7 +27,6 @@ extern class Krom {
 	static function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
 	static function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
-	static function setFloat4s(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
 	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
 	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
 	
@@ -109,4 +108,25 @@ extern class Krom {
 	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
 	static function sysCommand(cmd: String, ?args: Array<String>): Int;
 	static function savePath(): String;
+
+	static function setBoolCompute(location: kha.compute.ConstantLocation, value: Bool): Void;
+	static function setIntCompute(location: kha.compute.ConstantLocation, value: Int): Void;
+	static function setFloatCompute(location: kha.compute.ConstantLocation, value: Float): Void;
+	static function setFloat2Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float): Void;
+	static function setFloat3Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
+	static function setFloat4Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
+	static function setFloatsCompute(location: kha.compute.ConstantLocation, values: kha.arrays.Float32Array): Void;
+	static function setMatrixCompute(location: kha.compute.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
+	static function setMatrix3Compute(location: kha.compute.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
+	static function setTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas, access: Int): Void;
+	static function setSampledTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas): Void;
+	static function setSampledDepthTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas): Void;
+	static function setTextureParametersCompute(texunit: kha.compute.TextureUnit, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
+	static function setTexture3DParametersCompute(texunit: kha.compute.TextureUnit, uAddressing: Int, vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void;
+	static function setShaderCompute(shader: Dynamic): Void;
+	static function deleteShaderCompute(shader: Dynamic): Void;
+	static function createShaderCompute(bytes: haxe.io.BytesData): Dynamic;
+	static function getConstantLocationCompute(shader: Dynamic, name: String): Dynamic;
+	static function getTextureUnitCompute(shader: Dynamic, name: String): Dynamic;
+	static function compute(x: Int, y: Int, z: Int): Void;
 }
