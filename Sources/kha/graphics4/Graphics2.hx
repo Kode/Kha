@@ -1098,7 +1098,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		shaderPipeline.inputLayout = [structure];
 		shaderPipeline.blendSource = BlendingFactor.BlendOne;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
 		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 		return shaderPipeline;
 	}
