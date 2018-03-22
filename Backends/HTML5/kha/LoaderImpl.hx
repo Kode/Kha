@@ -22,7 +22,7 @@ class LoaderImpl {
 	public static function getImageFormats(): Array<String> {
 		return ["png", "jpg", "hdr"];
 	}
-	
+
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		if (StringTools.endsWith(desc.files[0], ".hdr")) {
@@ -40,7 +40,7 @@ class LoaderImpl {
 			img.crossOrigin = "";
 		}
 	}
-	
+
 	public static function getSoundFormats(): Array<String> {
 		var element = Browser.document.createAudioElement();
 		var formats = new Array<String>();
@@ -51,7 +51,7 @@ class LoaderImpl {
 		if (SystemImpl._hasWebAudio || element.canPlayType("audio/ogg") != "") formats.push("ogg");
 		return formats;
 	}
-	
+
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void) {
 		if (SystemImpl._hasWebAudio) {
 			var element = Browser.document.createAudioElement();
@@ -115,7 +115,7 @@ class LoaderImpl {
 			new kha.js.Sound(desc.files, done);
 		}
 	}
-	
+
 	public static function getVideoFormats(): Array<String> {
 		#if kha_debug_html5
 		return ["webm"];
@@ -127,24 +127,12 @@ class LoaderImpl {
 	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
 		kha.js.Video.fromFile(desc.files, done);
 	}
-    
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
-		#if kha_debug_html5
-		var fs = untyped __js__("require('fs')");
-        var path = untyped __js__("require('path')");
-        var app = untyped __js__("require('electron').remote.require('electron').app");
-		var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
-        fs.readFile(url, function (err, data) {
-			var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
-            var bytes = Bytes.alloc(byteArray.byteLength);
-            for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
-            done(new Blob(bytes));
-		});
-		#else
+
+	public static function loadRemote( desc: Dynamic, done: Blob -> Void ) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
-		
+
 		request.onreadystatechange = function() {
 			if (request.readyState != 4) return;
 			if ((request.status >= 200 && request.status < 400) ||
@@ -172,15 +160,37 @@ class LoaderImpl {
 			}
 		};
 		request.send(null);
-		#end
 	}
-	
+
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void) {
+#if kha_debug_html5
+		var isUrl = desc.files[0].startsWith('http');
+
+		if (isUrl) {
+			loadRemote(desc, done);
+		} else {
+			var fs = untyped __js__("require('fs')");
+			var path = untyped __js__("require('path')");
+			var app = untyped __js__("require('electron').remote.require('electron').app");
+			var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
+			fs.readFile(url, function (err, data) {
+				var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
+				var bytes = Bytes.alloc(byteArray.byteLength);
+				for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
+				done(new Blob(bytes));
+			});
+		}
+#else
+		loadRemote(desc, done);
+#end
+	}
+
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Font(blob));
 		});
 	}
-	
+
 	/*override public function loadURL(url: String): Void {
 		// inDAgo hack
 		if (url.substr(0, 1) == '#')
@@ -188,7 +198,7 @@ class LoaderImpl {
 		else
 			Browser.window.open(url, "Kha");
 	}
-	
+
 	override public function setNormalCursor() {
 		Mouse.SystemCursor = "default";
 		Mouse.UpdateSystemCursor();
