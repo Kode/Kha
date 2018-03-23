@@ -910,7 +910,8 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
-		if (event.key != null && event.key.length != 1) event.preventDefault();
+		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
+			&& (event.key != null && event.key.length != 1)) event.preventDefault();
 		event.stopPropagation();
 
 		// prevent key repeat
@@ -939,6 +940,7 @@ class SystemImpl {
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		if (event.which == 0) return; //for Firefox and Safari
 		event.preventDefault();
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
