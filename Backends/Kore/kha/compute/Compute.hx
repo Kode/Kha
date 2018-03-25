@@ -1,6 +1,6 @@
 package kha.compute;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Image;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
