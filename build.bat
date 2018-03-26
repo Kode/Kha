@@ -30,7 +30,6 @@ IF %target%==ios 		set TRUE=1
 IF %target%==html5 		set TRUE=1	
 IF %target%==flash 		set TRUE=1
 IF %target%==wpf 		set TRUE=1
-IF %target%==xna 		set TRUE=1
 IF %target%==java 		set TRUE=1
 IF %target%==psm 		set TRUE=1
 IF %target%==dalvik		set TRUE=1
