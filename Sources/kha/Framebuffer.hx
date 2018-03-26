@@ -3,7 +3,6 @@ package kha;
 /**
  * The Framebuffer represents the visible color output buffer.
  */
-@:allow(kha.Starter)
 class Framebuffer implements Canvas {
 	private var windowId: Int;
 	private var graphics1: kha.graphics1.Graphics;

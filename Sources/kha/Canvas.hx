@@ -4,7 +4,6 @@ package kha;
  * Interface for a generic Canvas with different APIs,<br>
  * that can be used to draw graphics.
  */
-@:allow(kha.Starter)
 interface Canvas {
 	/**
 	 * The width of the canvas in pixels.

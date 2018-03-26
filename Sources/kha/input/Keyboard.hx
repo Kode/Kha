@@ -5,26 +5,45 @@ import kha.network.Controller;
 @:allow(kha.SystemImpl)
 @:expose
 class Keyboard extends Controller {
+	/**
+	 * Get current Keyboard.
+	 * @param num (optional) keyboard id (0 by default).
+	 */
 	public static function get(num: Int = 0): Keyboard {
 		return SystemImpl.getKeyboard(num);
 	}
 	
+	/**
+	 * Creates event handlers from passed functions.
+	 * @param downListener function with `key:KeyCode` argument, fired when a key is pressed down.
+	 * @param upListener function with `key:KeyCode` argument, fired when a key is released.
+	 * @param pressListener (optional) function with `char:String` argument, fired when a key that produces a character value is pressed down.
+	 */
 	public function notify(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void = null): Void {
 		if (downListener != null) downListeners.push(downListener);
 		if (upListener != null) upListeners.push(upListener);
 		if (pressListener != null) pressListeners.push(pressListener);
 	}
 	
+	/**
+	 * Removes event handlers from the passed functions that were passed to `notify` function.
+	 */
 	public function remove(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void): Void {
 		if (downListener != null) downListeners.remove(downListener);
 		if (upListener != null) upListeners.remove(upListener);
 		if (pressListener != null) pressListeners.remove(pressListener);
 	}
 	
+	/**
+	 * Show virtual keyboard (if it exists).
+	 */
 	public function show(): Void {
 
 	}
 
+	/**
+	 * Hide virtual keyboard (if it exists).
+	 */
 	public function hide(): Void {
 
 	}

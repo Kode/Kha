@@ -39,5 +39,5 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Tizen
 * Unity 3D
 * PlayStation Vita (PlayStationMobile)
-* Xbox 360 (XNA)
+* Xbox 360
 * Potential (modern) console/handheld support
