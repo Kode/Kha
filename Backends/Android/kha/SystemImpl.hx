@@ -188,6 +188,7 @@ class SystemImpl {
 
 	}
 
+	@:access(Main.main)
 	public static function preinit(width: Int, height: Int): Void {
 		w = width;
 		h = height;
