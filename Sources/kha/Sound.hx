@@ -17,6 +17,11 @@ class Sound implements Resource {
 	}
 
 	public function uncompress(done: Void->Void): Void {
+		if (uncompressedData != null) {
+			done();
+			return;
+		}
+		
 		var output = new BytesOutput();
 		var header = Reader.readAll(compressedData, output, true);
 		var soundBytes = output.getBytes();

@@ -3,10 +3,10 @@ package kha.audio2;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
 
-@:headerCode('#include <Kore/Audio/stb_vorbis.h>')
+@:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <Kore/Audio1/stb_vorbis.c>')
 
 @:headerClassCode('stb_vorbis* vorbis;')
-class MusicChannel implements kha.audio1.MusicChannel {
+class StreamChannel implements kha.audio1.AudioChannel {
 	private var atend: Bool = false;
 	private var loop: Bool;
 	private var myVolume: Float;
