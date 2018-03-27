@@ -44,25 +44,7 @@ class Sound extends kha.Sound {
 		}
 	}
 	
-	
-	private function uncompress2(): Void {
-		
-	}
-
-	override public function uncompress(done: Void->Void): Void {
-		super.uncompress(done);
-	}
-	
-	private function unload2(): Void {
-		
-	}
-		
-	override public function unload(): Void {
-		super.unload();
-		unload2();
-	}
-	
-	private function _createData(size: Int): Void {
+	function _createData(size: Int): Void {
 		uncompressedData = new Vector<Float>(size);
 	}
 }
