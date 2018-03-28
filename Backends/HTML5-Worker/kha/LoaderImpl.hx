@@ -17,7 +17,7 @@ class LoaderImpl {
 		return ["png", "jpg", "hdr"];
 	}
 
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: Dynamic -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: AssetError -> Void) {
 		++kha.Image._lastId;
 		loadingImages[kha.Image._lastId] = done;
 		Worker.postMessage({ command: 'loadImage', file: desc.files[0], id: kha.Image._lastId });
@@ -33,7 +33,7 @@ class LoaderImpl {
 		return ["mp4"];
 	}
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		++soundId;
 		loadingSounds[soundId] = done;
 		Worker.postMessage({ command: 'loadSound', file: desc.files[0], id: soundId });
@@ -54,13 +54,13 @@ class LoaderImpl {
 		return ["mp4"];
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: Dynamic -> Void): Void {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {
 		++videoId;
 		loadingVideos[videoId] = done;
 		Worker.postMessage({ command: 'loadVideo', file: desc.files[0], id: videoId });
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: Dynamic -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
 		++blobId;
 		loadingBlobs[blobId] = done;
 		Worker.postMessage({ command: 'loadBlob', file: desc.files[0], id: blobId });
@@ -72,7 +72,7 @@ class LoaderImpl {
 		loadingBlobs.remove(value.id);
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: Dynamic -> Void): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Kravur(blob));
 		});

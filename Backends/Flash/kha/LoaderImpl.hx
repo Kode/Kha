@@ -77,7 +77,7 @@ class LoaderImpl {
 		#end
 	}*/
 
-	public static function loadImageFromDescription(desc: Dynamic, done: Image -> Void, failed: Dynamic -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: Image -> Void, failed: AssetError -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 
 		#if KHA_EMBEDDED_ASSETS
@@ -101,7 +101,7 @@ class LoaderImpl {
 		return ["png", "jpg"];
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: Dynamic -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
 		#if KHA_EMBEDDED_ASSETS
 
 		var file: String = adjustFilename(desc.files[0]);
@@ -120,7 +120,7 @@ class LoaderImpl {
 		#end
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: Dynamic -> Void): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Kravur(blob));
 		}, failed);
@@ -173,7 +173,7 @@ class LoaderImpl {
 		return ["mp3", "ogg"];
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: Dynamic -> Void) {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void) {
 		done(new kha.flash.Video(desc.files[0]));
 	}
 

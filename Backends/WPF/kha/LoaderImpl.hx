@@ -19,7 +19,7 @@ class LoaderImpl {
 	private static var savedCursor: Cursor;
 	private static var busyCursor: Bool = false;
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void): Void {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void): Void {
 		done(new kha.wpf.Sound(path + desc.files[0]));
 	}
 
@@ -27,7 +27,7 @@ class LoaderImpl {
 		return ["wav"];
 	}
 
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: Dynamic -> Void): Void {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: AssetError -> Void): Void {
 		done(Image.fromFilename(path + desc.files[0]));
 	}
 
@@ -35,11 +35,11 @@ class LoaderImpl {
 		return ["png", "jpg"];
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: kha.Blob -> Void, failed: Dynamic -> Void): Void {
+	public static function loadBlobFromDescription(desc: Dynamic, done: kha.Blob -> Void, failed: AssetError -> Void): Void {
 		done(new Blob(Bytes.ofData(File.ReadAllBytes(path + desc.files[0]))));
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: Dynamic -> Void): Void {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {
 		done(new kha.wpf.Video(path + desc.files[0]));
 	}
 
@@ -47,7 +47,7 @@ class LoaderImpl {
 		return ["wmv"];
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: kha.Font -> Void, failed: Dynamic -> Void): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: kha.Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Kravur(blob));
 		}, failed);
