@@ -23,7 +23,7 @@ class LoaderImpl {
 		return ["png", "jpg", "hdr"];
 	}
 
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: Dynamic -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: AssetError -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		if (StringTools.endsWith(desc.files[0], ".hdr")) {
 			loadBlobFromDescription(desc, function(blob) {
@@ -33,7 +33,7 @@ class LoaderImpl {
 		}
 		else {
 			var img: ImageElement = cast Browser.document.createElement("img");
-			img.onerror = function( event: Dynamic ) failed(desc.files[0]);
+			img.onerror = function( event: Dynamic ) failed({ url: desc.files[0], error: event });
 			img.onload = function(event: Dynamic) done(Image.fromImage(img, readable));
 			img.src = desc.files[0];
 			img.crossOrigin = "";
@@ -51,7 +51,7 @@ class LoaderImpl {
 		return formats;
 	}
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		if (SystemImpl._hasWebAudio) {
 			var element = Browser.document.createAudioElement();
 			#if !kha_debug_html5
@@ -123,11 +123,11 @@ class LoaderImpl {
 		#end
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: Dynamic -> Void): Void {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {
 		kha.js.Video.fromFile(desc.files, done);
 	}
 
-	public static function loadRemote( desc: Dynamic, done: Blob -> Void, failed: Dynamic -> Void ) {
+	public static function loadRemote( desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void ) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
@@ -146,23 +146,19 @@ class LoaderImpl {
 					bytes = Bytes.alloc(data.length);
 					for (i in 0...data.length) bytes.set(i, data[i]);
 				} else {
-					// trace("Error loading " + desc.files[0]);
-					// Browser.console.log("loadBlob failed");
-					failed(desc.files[0]);
+					failed({ url: desc.files[0] });
 					return;
 				}
 
 				done(new Blob(bytes));
 			} else {
-				// trace("Error loading " + desc.files[0]);
-				// Browser.console.log("loadBlob failed");
-				failed(desc.files[0]);
+				failed({ url: desc.files[0] });
 			}
 		}
 		request.send(null);
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: Dynamic->Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
 #if kha_debug_html5
 		var isUrl = desc.files[0].startsWith('http');
 
@@ -175,7 +171,7 @@ class LoaderImpl {
 			var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
 			fs.readFile(url, function (err, data) {
 				if (err != null) {
-					failed(err);
+					failed({ url: url, error: err });
 					return;
 				}
 
@@ -190,7 +186,7 @@ class LoaderImpl {
 #end
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: Dynamic -> Void): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Font(blob));
 		}, failed);

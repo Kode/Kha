@@ -6,14 +6,14 @@ import js.html.XMLHttpRequest;
 class MobileWebAudioSound extends kha.Sound {
 	public var _buffer: Dynamic;
 
-	public function new(filename: String, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public function new(filename: String, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		super();
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
 		request.responseType = "arraybuffer";
 
 		request.onerror = function() {
-			failed(filename);
+			failed({ url: filename });
 		};
 
 		request.onload = function() {
@@ -25,7 +25,7 @@ class MobileWebAudioSound extends kha.Sound {
 					done(this);
 				},
 				function () {
-					throw "Audio format not supported"; // TODO (DK) use 'failed' callback as well?
+					failed({ url: filename, error: 'Audio format not supported' });
 				}
 			);
 		};

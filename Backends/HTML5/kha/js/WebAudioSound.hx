@@ -58,14 +58,14 @@ class WebAudioChannel extends kha.SoundChannel {
 */
 
 class WebAudioSound extends kha.Sound {
-	public function new(filename: String, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public function new(filename: String, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		super();
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
 		request.responseType = "arraybuffer";
 
 		request.onerror = function() {
-			failed(filename);
+			failed({ url: filename });
 		};
 
 		request.onload = function() {

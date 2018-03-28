@@ -60,10 +60,10 @@ class Sound extends kha.Sound {
 	private var filenames: Array<String>;
 	static var loading: Array<Sound> = new Array();
 	private var done: kha.Sound -> Void;
-	private var failed: Dynamic -> Void;
+	private var failed: AssetError -> Void;
 	public var element: AudioElement;
 
-	public function new(filenames: Array<String>, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public function new(filenames: Array<String>, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		super();
 
 		this.done = done;
@@ -107,7 +107,7 @@ class Sound extends kha.Sound {
 			}
 		}
 
-		failed(element.src);
+		failed({ url: element.src });
 		finishAsset();
 	}
 

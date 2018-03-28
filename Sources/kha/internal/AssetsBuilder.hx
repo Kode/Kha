@@ -163,7 +163,7 @@ class AssetsBuilder {
 							name: "done"
 						}, {
 							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.DynamicToVoidCallback")),
+							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
 							opt: null,
 							name: "failure"
 						}]

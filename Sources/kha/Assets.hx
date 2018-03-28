@@ -83,7 +83,7 @@ class Assets {
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: Dynamic->Void, ?pos: haxe.PosInfos ): Void {
+	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void, ?pos: haxe.PosInfos ): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
@@ -208,7 +208,7 @@ class Assets {
 	 * @param	name The name as defined by the khafile.
 	 * @param	done A callback.
 	 */
-	public static function loadImage(name: String, done: Image -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadImage(name: String, done: Image -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(images, name + "Description");
 		LoaderImpl.loadImageFromDescription(description, function (image: Image) {
 			Reflect.setField(images, name, image);
@@ -223,7 +223,7 @@ class Assets {
 	 * @param   readable If true, a copy of the image will be kept in main memory for image read operations.
 	 * @param	done A callback.
 	 */
-	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ], readable: readable };
 		LoaderImpl.loadImageFromDescription(description, done, reporter(failed, pos));
 	}
@@ -234,7 +234,7 @@ class Assets {
 		return LoaderImpl.getImageFormats();
 	}
 
-	public static function loadBlob(name: String, done: Blob -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadBlob(name: String, done: Blob -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(blobs, name + "Description");
 		LoaderImpl.loadBlobFromDescription(description, function (blob: Blob) {
 			Reflect.setField(blobs, name, blob);
@@ -242,12 +242,12 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadBlobFromPath(path: String, done: Blob -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadBlobFromPath(path: String, done: Blob -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
 		LoaderImpl.loadBlobFromDescription(description, done, reporter(failed, pos));
 	}
 
-	public static function loadSound(name: String, done: Sound -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadSound(name: String, done: Sound -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(sounds, name + "Description");
 		return LoaderImpl.loadSoundFromDescription(description, function (sound: Sound) {
 			Reflect.setField(sounds, name, sound);
@@ -255,7 +255,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadSoundFromPath(path: String, done: Sound -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadSoundFromPath(path: String, done: Sound -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
 		return LoaderImpl.loadSoundFromDescription(description, done, reporter(failed, pos));
 	}
@@ -266,7 +266,7 @@ class Assets {
 		return LoaderImpl.getSoundFormats();
 	}
 
-	public static function loadFont(name: String, done: Font -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadFont(name: String, done: Font -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(fonts, name + "Description");
 		return LoaderImpl.loadFontFromDescription(description, function (font: Font) {
 			Reflect.setField(fonts, name, font);
@@ -274,7 +274,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadFontFromPath(path: String, done: Font -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadFontFromPath(path: String, done: Font -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
 		return LoaderImpl.loadFontFromDescription(description, done, reporter(failed, pos));
 	}
@@ -285,7 +285,7 @@ class Assets {
 		return ["ttf"];
 	}
 
-	public static function loadVideo(name: String, done: Video -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadVideo(name: String, done: Video -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(videos, name + "Description");
 		return LoaderImpl.loadVideoFromDescription(description, function (video: Video) {
 			Reflect.setField(videos, name, video);
@@ -293,7 +293,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadVideoFromPath(path: String, done: Video -> Void, ?failed: Dynamic -> Void, ?pos: haxe.PosInfos): Void {
+	public static function loadVideoFromPath(path: String, done: Video -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
 		return LoaderImpl.loadVideoFromDescription(description, done, reporter(failed, pos));
 	}
@@ -304,6 +304,6 @@ class Assets {
 		return LoaderImpl.getVideoFormats();
 	}
 
-	public static inline function reporter(custom: Dynamic -> Void, ?pos: haxe.PosInfos)
+	public static inline function reporter(custom: AssetError -> Void, ?pos: haxe.PosInfos)
 		return custom != null ? custom : haxe.Log.trace.bind(_, pos);
 }
