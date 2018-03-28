@@ -8,7 +8,7 @@ import haxe.io.Bytes;
 @:headerClassCode('stb_vorbis* vorbis;')
 class StreamChannel implements kha.audio1.AudioChannel {
 	private var atend: Bool = false;
-	private var loop: Bool;
+	@:keep private var loop: Bool;
 	private var myVolume: Float;
 	private var paused: Bool = false;
 	
