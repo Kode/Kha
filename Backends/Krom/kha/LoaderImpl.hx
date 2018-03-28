@@ -13,10 +13,7 @@ class LoaderImpl {
 
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: Dynamic -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		try
-			done(Image._fromTexture(Krom.loadImage(desc.files[0], readable)))
-		catch (x: Dynamic)
-			failed(x);
+		done(Image._fromTexture(Krom.loadImage(desc.files[0], readable)))
 	}
 
 	public static function getSoundFormats(): Array<String> {
@@ -24,10 +21,7 @@ class LoaderImpl {
 	}
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void) {
-		try
-			done(new kha.krom.Sound(Bytes.ofData(Krom.loadSound(desc.files[0]))))
-		catch (x: Dynamic)
-			failed(x);
+		done(new kha.krom.Sound(Bytes.ofData(Krom.loadSound(desc.files[0]))))
 	}
 
 	public static function getVideoFormats(): Array<String> {
@@ -39,10 +33,7 @@ class LoaderImpl {
 	}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: Dynamic -> Void) {
-		try
-			done(new Blob(Bytes.ofData(Krom.loadBlob(desc.files[0]))))
-		catch (x: Dynamic)
-			failed(x);
+		done(new Blob(Bytes.ofData(Krom.loadBlob(desc.files[0]))))
 	}
 
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: Dynamic -> Void): Void {

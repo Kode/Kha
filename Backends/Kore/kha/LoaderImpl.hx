@@ -12,10 +12,7 @@ import sys.io.File;
 
 class LoaderImpl {
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void) {
-		try
-			done(new kha.kore.Sound(desc.files[0]))
-		catch (x: Dynamic)
-			failed(x);
+		done(new kha.kore.Sound(desc.files[0]));
 	}
 
 	public static function getSoundFormats(): Array<String> {
@@ -24,10 +21,7 @@ class LoaderImpl {
 
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: Dynamic -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		try
-			done(kha.Image.fromFile(desc.files[0], readable))
-		catch (x: Dynamic)
-			failed(x);
+		done(kha.Image.fromFile(desc.files[0], readable));
 	}
 
 	public static function getImageFormats(): Array<String> {
@@ -35,10 +29,7 @@ class LoaderImpl {
 	}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: Dynamic -> Void) {
-		try
-			done(new Blob(File.getBytes(desc.files[0])))
-		catch (x: Dynamic)
-			failed(x);
+		done(new Blob(File.getBytes(desc.files[0])));
 	}
 
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: Dynamic -> Void): Void {
@@ -48,10 +39,7 @@ class LoaderImpl {
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: Video -> Void, failed: Dynamic -> Void) {
-		try
-			done(new kha.kore.Video(desc.files[0]))
-		catch (x: Dynamic)
-			failed(x);
+		done(new kha.kore.Video(desc.files[0]))
 	}
 
 	@:functionCode('return ::String(Kore::System::videoFormats()[0]);')
