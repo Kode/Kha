@@ -83,7 +83,7 @@ class Assets {
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void, ?pos: haxe.PosInfos ): Void {
+	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
@@ -131,7 +131,7 @@ class Assets {
 
 				if (filter == null || filter(description)) {
 					Reflect.field(blobs, blob)(onLoaded, function(err) {
-						reporter(failed, pos);
+						reporter(failed);
 						onLoaded();
 					});
 				} else {
@@ -146,7 +146,7 @@ class Assets {
 
 				if (filter == null || filter(description)) {
 					Reflect.field(images, image)(onLoaded, function(err) {
-						reporter(failed, pos);
+						reporter(failed);
 						onLoaded();
 					});
 				} else {
@@ -166,7 +166,7 @@ class Assets {
 						} else {
 							onLoaded();
 						}
-					}, reporter(failed, pos));
+					}, reporter(failed));
 				} else {
 					onLoaded();
 				}
@@ -178,7 +178,7 @@ class Assets {
 				var description = Reflect.field(fonts, name + "Description");
 				if (filter == null || filter(description)) {
 					Reflect.field(fonts, font)(onLoaded, function(err) {
-						reporter(failed, pos);
+						reporter(failed);
 						onLoaded();
 					});
 				} else {
@@ -192,7 +192,7 @@ class Assets {
 				var description = Reflect.field(videos, name + "Description");
 				if (filter == null || filter(description)) {
 					Reflect.field(videos, video)(onLoaded, function(err) {
-						reporter(failed, pos);
+						reporter(failed);
 						onLoaded();
 					});
 				} else {
