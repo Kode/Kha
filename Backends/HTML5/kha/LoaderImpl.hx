@@ -182,7 +182,7 @@ class LoaderImpl {
 			});
 		}
 #else
-		loadRemote(desc, done failed);
+		loadRemote(desc, done, failed);
 #end
 	}
 
