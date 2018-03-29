@@ -41,22 +41,22 @@ class AssetsBuilder {
 		return "";
 		#end
 	}
-	
+
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
 		var content = Json.parse(File.getContent(findResources() + "files.json"));
 		var files: Iterable<Dynamic> = content.files;
-		
+
 		var names = new Array<Expr>();
-		
+
 		for (file in files) {
 			var name = file.name;
 			var filename = file.files[0];
-			
+
 			if (file.type == type) {
-				
+
 				names.push(macro $v{name});
-				
+
 				switch (type) {
 					case "image":
 						fields.push({
@@ -104,7 +104,7 @@ class AssetsBuilder {
 							pos: Context.currentPos()
 						});
 				}
-				
+
 				fields.push({
 					name: name + "Name",
 					doc: null,
@@ -113,7 +113,7 @@ class AssetsBuilder {
 					kind: FVar(macro: String, macro $v { name }),
 					pos: Context.currentPos()
 				});
-				
+
 				fields.push({
 					name: name + "Description",
 					doc: null,
@@ -122,41 +122,31 @@ class AssetsBuilder {
 					kind: FVar(macro: Dynamic, macro $v { file }),
 					pos: Context.currentPos()
 				});
-				
+
 				var loadExpressions = macro { };
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Assets.loadImage($v{name}, function (image: Image) {
-								done();
-							});
+							Assets.loadImage($v{name}, function (image: Image) done(), kha.Assets.reporter(failure));
 						};
 					case "sound":
 						loadExpressions = macro {
-							Assets.loadSound($v{name}, function (sound: Sound) {
-								done();
-							});
+							Assets.loadSound($v{name}, function (sound: Sound) done(), kha.Assets.reporter(failure));
 						};
 					case "blob":
 						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function (blob: Blob) {
-								done();
-							});
+							Assets.loadBlob($v{name}, function (blob: Blob) done(), kha.Assets.reporter(failure));
 						};
 					case "font":
 						loadExpressions = macro {
-							Assets.loadFont($v{name}, function (font: Font) {
-								done();
-							});
+							Assets.loadFont($v{name}, function (font: Font) done(), kha.Assets.reporter(failure));
 						};
 					case "video":
 						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function (video: Video) {
-								done();
-							});
+							Assets.loadVideo($v{name}, function (video: Video) done(), kha.Assets.reporter(failure));
 						};
 				}
-				
+
 				fields.push({
 					name: name + "Load",
 					doc: null,
@@ -171,11 +161,16 @@ class AssetsBuilder {
 							type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
 							opt: null,
 							name: "done"
+						}, {
+							value: null,
+							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
+							opt: null,
+							name: "failure"
 						}]
 					}),
 					pos: Context.currentPos()
 				});
-				
+
 				fields.push({
 					name: name + "Unload",
 					doc: null,
@@ -194,16 +189,16 @@ class AssetsBuilder {
 				});
 			}
 		}
-		
+
 		fields.push({
 			name: "names",
 			doc: null,
 			meta: [],
 			access: [APublic],
 			kind: FVar(macro: Array<String>, macro $a { names }),
-			pos: Context.currentPos()		
+			pos: Context.currentPos()
 		});
-		
+
 		return fields;
 	}
 }

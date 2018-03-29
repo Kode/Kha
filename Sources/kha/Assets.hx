@@ -9,7 +9,7 @@ using StringTools;
 @:build(kha.internal.AssetsBuilder.build("image"))
 private class ImageList {
 	public function new() {
-		
+
 	}
 
 	public function get(name: String): Image {
@@ -21,7 +21,7 @@ private class ImageList {
 @:build(kha.internal.AssetsBuilder.build("sound"))
 private class SoundList {
 	public function new() {
-		
+
 	}
 
 	public function get(name: String): Sound {
@@ -33,7 +33,7 @@ private class SoundList {
 @:build(kha.internal.AssetsBuilder.build("blob"))
 private class BlobList {
 	public function new() {
-		
+
 	}
 
 	public function get(name: String): Blob {
@@ -45,7 +45,7 @@ private class BlobList {
 @:build(kha.internal.AssetsBuilder.build("font"))
 private class FontList {
 	public function new() {
-		
+
 	}
 
 	public function get(name: String): Font {
@@ -57,7 +57,7 @@ private class FontList {
 @:build(kha.internal.AssetsBuilder.build("video"))
 private class VideoList {
 	public function new() {
-		
+
 	}
 
 	public function get(name: String): Video {
@@ -72,7 +72,7 @@ class Assets {
 	public static var blobs: BlobList = new BlobList();
 	public static var fonts: FontList = new FontList();
 	public static var videos: VideoList = new VideoList();
-	
+
 	public static var progress: Float; // moves from 0 to 1, use for loading screens
 
 	/**
@@ -83,7 +83,7 @@ class Assets {
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null): Void {
+	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
@@ -110,29 +110,32 @@ class Assets {
 				++fileCount;
 			}
 		}
-		
+
 		if (fileCount == 0) {
 			callback();
 			return;
 		}
 
 		var filesLeft = fileCount;
-		
+
+		function onLoaded() {
+			--filesLeft;
+			progress = 1 - filesLeft / fileCount;
+			if (filesLeft == 0) callback();
+		}
+
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
 				var name = blob.substr(0, blob.length - 4);
 				var description = Reflect.field(blobs, name + "Description");
+
 				if (filter == null || filter(description)) {
-					Reflect.field(blobs, blob)(function () {
-						--filesLeft;
-						progress = 1 - filesLeft / fileCount;
-						if (filesLeft == 0) callback();
+					Reflect.field(blobs, blob)(onLoaded, function(err) {
+						reporter(failed);
+						onLoaded();
 					});
-				}
-				else {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
+				} else {
+					onLoaded();
 				}
 			}
 		}
@@ -140,17 +143,14 @@ class Assets {
 			if (image.endsWith("Load")) {
 				var name = image.substr(0, image.length - 4);
 				var description = Reflect.field(images, name + "Description");
+
 				if (filter == null || filter(description)) {
-					Reflect.field(images, image)(function () {
-						--filesLeft;
-						progress = 1 - filesLeft / fileCount;
-						if (filesLeft == 0) callback();
+					Reflect.field(images, image)(onLoaded, function(err) {
+						reporter(failed);
+						onLoaded();
 					});
-				}
-				else {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
+				} else {
+					onLoaded();
 				}
 			}
 		}
@@ -162,23 +162,13 @@ class Assets {
 					Reflect.field(sounds, sound)(function () {
 						if (uncompressSoundsFilter == null || uncompressSoundsFilter(description)) {
 							var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
-							sound.uncompress(function () {
-								--filesLeft;
-								progress = 1 - filesLeft / fileCount;
-								if (filesLeft == 0) callback();
-							});
+							sound.uncompress(onLoaded);
+						} else {
+							onLoaded();
 						}
-						else {
-							--filesLeft;
-							progress = 1 - filesLeft / fileCount;
-							if (filesLeft == 0) callback();
-						}
-					});
-				}
-				else {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
+					}, reporter(failed));
+				} else {
+					onLoaded();
 				}
 			}
 		}
@@ -187,16 +177,12 @@ class Assets {
 				var name = font.substr(0, font.length - 4);
 				var description = Reflect.field(fonts, name + "Description");
 				if (filter == null || filter(description)) {
-					Reflect.field(fonts, font)(function () {
-						--filesLeft;
-						progress = 1 - filesLeft / fileCount;
-						if (filesLeft == 0) callback();
+					Reflect.field(fonts, font)(onLoaded, function(err) {
+						reporter(failed);
+						onLoaded();
 					});
-				}
-				else {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
+				} else {
+					onLoaded();
 				}
 			}
 		}
@@ -205,120 +191,119 @@ class Assets {
 				var name = video.substr(0, video.length - 4);
 				var description = Reflect.field(videos, name + "Description");
 				if (filter == null || filter(description)) {
-					Reflect.field(videos, video)(function () {
-						--filesLeft;
-						progress = 1 - filesLeft / fileCount;
-						if (filesLeft == 0) callback();
+					Reflect.field(videos, video)(onLoaded, function(err) {
+						reporter(failed);
+						onLoaded();
 					});
-				}
-				else {
-					--filesLeft;
-					progress = 1 - filesLeft / fileCount;
-					if (filesLeft == 0) callback();
+				} else {
+					onLoaded();
 				}
 			}
 		}
 	}
-		
+
 	/**
 	 * Loads an image by name which was preprocessed by khamake.
-	 * 
+	 *
 	 * @param	name The name as defined by the khafile.
 	 * @param	done A callback.
 	 */
-	public static function loadImage(name: String, done: Image -> Void): Void {
+	public static function loadImage(name: String, done: Image -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(images, name + "Description");
 		LoaderImpl.loadImageFromDescription(description, function (image: Image) {
 			Reflect.setField(images, name, image);
 			done(image);
-		});
+		}, reporter(failed, pos));
 	}
-	
+
 	/**
 	 * Loads an image from a path. Most targets support PNG and JPEG formats.
-	 * 
+	 *
 	 * @param	path The path to the image file.
 	 * @param   readable If true, a copy of the image will be kept in main memory for image read operations.
 	 * @param	done A callback.
 	 */
-	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void): Void {
+	public static function loadImageFromPath(path: String, readable: Bool, done: Image -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ], readable: readable };
-		LoaderImpl.loadImageFromDescription(description, done);
+		LoaderImpl.loadImageFromDescription(description, done, reporter(failed, pos));
 	}
-	
+
 	public static var imageFormats(get, null): Array<String>;
-	
+
 	private static function get_imageFormats(): Array<String> {
 		return LoaderImpl.getImageFormats();
 	}
-	
-	public static function loadBlob(name: String, done: Blob -> Void): Void {
+
+	public static function loadBlob(name: String, done: Blob -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(blobs, name + "Description");
 		LoaderImpl.loadBlobFromDescription(description, function (blob: Blob) {
 			Reflect.setField(blobs, name, blob);
 			done(blob);
-		});
+		}, reporter(failed, pos));
 	}
-	
-	public static function loadBlobFromPath(path: String, done: Blob -> Void): Void {
+
+	public static function loadBlobFromPath(path: String, done: Blob -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
-		LoaderImpl.loadBlobFromDescription(description, done);
+		LoaderImpl.loadBlobFromDescription(description, done, reporter(failed, pos));
 	}
-	
-	public static function loadSound(name: String, done: Sound -> Void): Void {
+
+	public static function loadSound(name: String, done: Sound -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(sounds, name + "Description");
 		return LoaderImpl.loadSoundFromDescription(description, function (sound: Sound) {
 			Reflect.setField(sounds, name, sound);
 			done(sound);
-		});
+		}, reporter(failed, pos));
 	}
-	
-	public static function loadSoundFromPath(path: String, done: Sound -> Void): Void {
+
+	public static function loadSoundFromPath(path: String, done: Sound -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
-		return LoaderImpl.loadSoundFromDescription(description, done);
+		return LoaderImpl.loadSoundFromDescription(description, done, reporter(failed, pos));
 	}
-	
+
 	public static var soundFormats(get, null): Array<String>;
-	
+
 	private static function get_soundFormats(): Array<String> {
 		return LoaderImpl.getSoundFormats();
 	}
-	
-	public static function loadFont(name: String, done: Font -> Void): Void {
+
+	public static function loadFont(name: String, done: Font -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(fonts, name + "Description");
 		return LoaderImpl.loadFontFromDescription(description, function (font: Font) {
 			Reflect.setField(fonts, name, font);
 			done(font);
-		});
+		}, reporter(failed, pos));
 	}
-	
-	public static function loadFontFromPath(path: String, done: Font -> Void): Void {
+
+	public static function loadFontFromPath(path: String, done: Font -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
-		return LoaderImpl.loadFontFromDescription(description, done);
+		return LoaderImpl.loadFontFromDescription(description, done, reporter(failed, pos));
 	}
-	
+
 	public static var fontFormats(get, null): Array<String>;
-	
+
 	private static function get_fontFormats(): Array<String> {
 		return ["ttf"];
 	}
-	
-	public static function loadVideo(name: String, done: Video -> Void): Void {
+
+	public static function loadVideo(name: String, done: Video -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(videos, name + "Description");
 		return LoaderImpl.loadVideoFromDescription(description, function (video: Video) {
 			Reflect.setField(videos, name, video);
 			done(video);
-		});
+		}, reporter(failed, pos));
 	}
-	
-	public static function loadVideoFromPath(path: String, done: Video -> Void): Void {
+
+	public static function loadVideoFromPath(path: String, done: Video -> Void, ?failed: AssetError -> Void, ?pos: haxe.PosInfos): Void {
 		var description = { files: [ path ] };
-		return LoaderImpl.loadVideoFromDescription(description, done);
+		return LoaderImpl.loadVideoFromDescription(description, done, reporter(failed, pos));
 	}
-	
+
 	public static var videoFormats(get, null): Array<String>;
-	
+
 	private static function get_videoFormats(): Array<String> {
 		return LoaderImpl.getVideoFormats();
 	}
+
+	public static inline function reporter(custom: AssetError -> Void, ?pos: haxe.PosInfos)
+		return custom != null ? custom : haxe.Log.trace.bind(_, pos);
 }
