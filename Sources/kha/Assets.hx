@@ -134,7 +134,8 @@ class Assets {
 						reporter(failed);
 						onLoaded();
 					});
-				} else {
+				}
+				else {
 					onLoaded();
 				}
 			}
@@ -149,7 +150,8 @@ class Assets {
 						reporter(failed);
 						onLoaded();
 					});
-				} else {
+				}
+				else {
 					onLoaded();
 				}
 			}
@@ -163,11 +165,13 @@ class Assets {
 						if (uncompressSoundsFilter == null || uncompressSoundsFilter(description)) {
 							var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
 							sound.uncompress(onLoaded);
-						} else {
+						}
+						else {
 							onLoaded();
 						}
 					}, reporter(failed));
-				} else {
+				}
+				else {
 					onLoaded();
 				}
 			}
@@ -181,7 +185,8 @@ class Assets {
 						reporter(failed);
 						onLoaded();
 					});
-				} else {
+				}
+				else {
 					onLoaded();
 				}
 			}
@@ -195,7 +200,8 @@ class Assets {
 						reporter(failed);
 						onLoaded();
 					});
-				} else {
+				}
+				else {
 					onLoaded();
 				}
 			}

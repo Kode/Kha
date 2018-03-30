@@ -141,17 +141,20 @@ class LoaderImpl {
 				if (arrayBuffer != null) {
 					var byteArray: Dynamic = untyped __js__("new Uint8Array(arrayBuffer)");
 					bytes = Bytes.ofData(byteArray);
-				} else if (request.responseBody != null) {
+				}
+				else if (request.responseBody != null) {
 					var data: Dynamic = untyped __js__("VBArray(request.responseBody).toArray()");
 					bytes = Bytes.alloc(data.length);
 					for (i in 0...data.length) bytes.set(i, data[i]);
-				} else {
+				}
+				else {
 					failed({ url: desc.files[0] });
 					return;
 				}
 
 				done(new Blob(bytes));
-			} else {
+			}
+			else {
 				failed({ url: desc.files[0] });
 			}
 		}
@@ -164,7 +167,8 @@ class LoaderImpl {
 
 		if (isUrl) {
 			loadRemote(desc, done, failed);
-		} else {
+		}
+		else {
 			var fs = untyped __js__("require('fs')");
 			var path = untyped __js__("require('path')");
 			var app = untyped __js__("require('electron').remote.require('electron').app");

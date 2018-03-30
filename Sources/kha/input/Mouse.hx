@@ -105,10 +105,12 @@ class Mouse extends Controller {
 			if (windowDownListeners != null) {
 				if (windowId < windowDownListeners.length) {
 					windowDownListeners[windowId].remove(downListener);
-				} else {
+				}
+				else {
 					trace('no downListeners for window "${windowId}" are registered');
 				}
-			} else {
+			}
+			else {
 				trace('no downListeners were ever registered');
 			}
 		}
@@ -117,10 +119,12 @@ class Mouse extends Controller {
 			if (windowUpListeners != null) {
 				if (windowId < windowUpListeners.length) {
 					windowUpListeners[windowId].remove(upListener);
-				} else {
+				}
+				else {
 					trace('no upListeners for window "${windowId}" are registered');
 				}
-			} else {
+			}
+			else {
 				trace('no upListeners were ever registered');
 			}
 		}
@@ -129,10 +133,12 @@ class Mouse extends Controller {
 			if (windowMoveListeners != null) {
 				if (windowId < windowMoveListeners.length) {
 					windowMoveListeners[windowId].remove(moveListener);
-				} else {
+				}
+				else {
 					trace('no moveListeners for window "${windowId}" are registered');
 				}
-			} else {
+			}
+			else {
 				trace('no moveListeners were ever registered');
 			}
 		}
@@ -141,10 +147,12 @@ class Mouse extends Controller {
 			if (windowWheelListeners != null) {
 				if (windowId < windowWheelListeners.length) {
 					windowWheelListeners[windowId].remove(wheelListener);
-				} else {
+				}
+				else {
 					trace('no wheelListeners for window "${windowId}" are registered');
 				}
-			} else {
+			}
+			else {
 				trace('no wheelListeners were ever registered');
 			}
 		}
@@ -153,10 +161,12 @@ class Mouse extends Controller {
 			if (windowLeaveListeners != null) {
 				if (windowId < windowLeaveListeners.length) {
 					windowLeaveListeners[windowId].remove(leaveListener);
-				} else {
+				}
+				else {
 					trace('no leaveListeners for window "${windowId}" are registered');
 				}
-			} else {
+			}
+			else {
 				trace('no leaveListeners were ever registered');
 			}
 		}

@@ -39,7 +39,7 @@ class LoaderImpl {
 	}
 
 	public static function loadVideoFromDescription(desc: Dynamic, done: Video -> Void, failed: AssetError -> Void) {
-		done(new kha.kore.Video(desc.files[0]))
+		done(new kha.kore.Video(desc.files[0]));
 	}
 
 	@:functionCode('return ::String(Kore::System::videoFormats()[0]);')
