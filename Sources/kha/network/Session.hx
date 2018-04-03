@@ -381,16 +381,16 @@ class Session {
 			}
 		});
 		#else
-		// network = new Network(address, port, errorCallback, function() {
-		// 	closeCallback();
-		// 	reset();
-		// });
-		// network.listen(function (bytes: Bytes) {
-		// 	receive(bytes);
-		// });
-		// updateTaskId = Scheduler.addFrameTask(update, 0);
-		// ping = 1;
-		// pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
+		network = new Network(address, port, errorCallback, function() {
+			closeCallback();
+			reset();
+		});
+		network.listen(function (bytes: Bytes) {
+			receive(bytes);
+		});
+		updateTaskId = Scheduler.addFrameTask(update, 0);
+		ping = 1;
+		pingTaskId = Scheduler.addTimeTask(sendPing, 0, 1);
 		#end
 	}
 
