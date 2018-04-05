@@ -1,8 +1,6 @@
 package kha.korehl.graphics4;
 
-import haxe.ds.Vector;
-import kha.Blob;
-import kha.Color;
+import kha.arrays.Float32Array;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
@@ -20,17 +18,15 @@ import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.Image;
 import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
-import kha.math.Matrix4;
-import kha.math.Vector2;
-import kha.math.Vector3;
-import kha.math.Vector4;
+import kha.Image;
 import kha.Video;
+import kha.Blob;
+import kha.Color;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Image;
