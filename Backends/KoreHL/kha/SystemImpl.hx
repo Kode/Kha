@@ -2,6 +2,7 @@ package kha;
 
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
+import kha.input.KeyCode;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.MouseImpl;
@@ -10,6 +11,8 @@ import kha.System;
 
 class SystemImpl {
 	private static var framebuffer: Framebuffer;
+	private static var keyboard: Keyboard;
+	private static var mouse: kha.input.Mouse;
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
 		init_kore(StringHelper.convert(options.title), options.width, options.height);
@@ -19,6 +22,10 @@ class SystemImpl {
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
 		//kha.audio2.Audio._init();
 		//kha.audio1.Audio._init();
+		keyboard = new kha.input.Keyboard();
+		mouse = new kha.input.MouseImpl();
+		kore_register_keyboard(keyDown, keyUp, keyPress);
+		kore_register_mouse(mouseDown, mouseUp, mouseMove);
 		Scheduler.init();
 		Scheduler.start();
 		callback();
@@ -71,11 +78,13 @@ class SystemImpl {
 	}
 	
 	public static function getMouse(num: Int): Mouse {
-		return null;
+		if (num != 0) return null;
+		return mouse;
 	}
 	
 	public static function getKeyboard(num: Int): Keyboard {
-		return null;
+		if (num != 0) return null;
+		return keyboard;
 	}
 		
 	public static function lockMouse(): Void {
@@ -100,6 +109,30 @@ class SystemImpl {
 
 	public static function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
 		
+	}
+
+	public static function keyDown(code: KeyCode): Void {
+		keyboard.sendDownEvent(code);
+	}
+
+	public static function keyUp(code: KeyCode): Void {
+		keyboard.sendUpEvent(code);
+	}
+
+	public static function keyPress(char: Int): Void {
+		keyboard.sendPressEvent(String.fromCharCode(char));
+	}
+
+	public static function mouseDown(windowId: Int, button: Int, x: Int, y: Int): Void {
+		mouse.sendDownEvent(windowId, button, x, y);
+	}
+
+	public static function mouseUp(windowId: Int, button: Int, x: Int, y: Int): Void {
+		mouse.sendUpEvent(windowId, button, x, y);
+	}
+
+	public static function mouseMove(windowId: Int, x: Int, y: Int, movementX: Int, movementY: Int): Void {
+		mouse.sendMoveEvent(windowId, x, y, movementX, movementY);
 	}
 
 	static function unload(): Void {
@@ -151,4 +184,6 @@ class SystemImpl {
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
+	@:hlNative("std", "kore_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void, keyPress: Int->Void): Void { }
+	@:hlNative("std", "kore_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void, mouseMove: Int->Int->Int->Int->Int->Void): Void { }
 }
