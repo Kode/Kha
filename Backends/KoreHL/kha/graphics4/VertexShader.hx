@@ -13,6 +13,10 @@ class VertexShader {
 	private function initVertexShader(source: Blob): Void {
 		_shader = kore_create_vertexshader(source.bytes.getData(), source.bytes.getData().length);
 	}
+
+	public static function fromSource(source: String): VertexShader {
+		return null;
+	}
 	
 	public function unused(): Void {
 		var include: Bytes = Bytes.ofString("");

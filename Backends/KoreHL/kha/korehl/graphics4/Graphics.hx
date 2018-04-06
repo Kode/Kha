@@ -228,7 +228,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
-		kore_graphics_set_floats(cast (location, kha.korehl.graphics4.ConstantLocation)._location, values._data.getData().bytes, values._data.getData().length);
+		kore_graphics_set_floats(cast (location, kha.korehl.graphics4.ConstantLocation)._location, values.getData().bytes, values.getData().length);
 	}
 	
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {

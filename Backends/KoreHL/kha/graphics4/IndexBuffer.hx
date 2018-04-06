@@ -5,28 +5,31 @@ import haxe.io.BytesData;
 
 class IndexBuffer {
 	public var _buffer: Pointer;
-	private var data: Array<Int>;
+	public var _data: kha.arrays.Uint32Array;
 	private var myCount: Int;
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
-		data = new Array<Int>();
-		data[myCount - 1] = 0;
+		_data = new kha.arrays.Uint32Array(myCount);
 		init(indexCount);
 	}
 	
 	private function init(count: Int) {
 		_buffer = kore_create_indexbuffer(count);
 	}
+
+	public function delete() {
+		
+	}
 	
-	public function lock(): Array<Int> {
-		return data;
+	public function lock(): kha.arrays.Uint32Array {
+		return _data;
 	}
 	
 	public function unlock(): Void {
 		var bytes = Bytes.ofData(new BytesData(kore_indexbuffer_lock(_buffer), myCount * 4));
 		for (i in 0...myCount) {
-			bytes.setInt32(i * 4, data[i]);
+			bytes.setInt32(i * 4, _data[i]);
 		}
 		kore_indexbuffer_unlock(_buffer);
 	}

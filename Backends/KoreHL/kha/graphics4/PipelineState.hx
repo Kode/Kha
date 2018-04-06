@@ -17,6 +17,10 @@ class PipelineState extends PipelineStateBase {
 	private function init(): Void {
 		pipeline = kore_create_pipeline();
 	}
+
+	public function delete() {
+		
+	}
 	
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
 		kore_pipeline_set_vertex_shader(pipeline, vertexShader._shader);

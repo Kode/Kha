@@ -13,6 +13,10 @@ class FragmentShader {
 	private function initFragmentShader(source: Blob): Void {
 		_shader = kore_create_fragmentshader(source.bytes.getData(), source.bytes.getData().length); 
 	}
+
+	public static function fromSource(source: String): FragmentShader {
+		return null;
+	}
 	
 	public function unused(): Void {
 		var include: Bytes = Bytes.ofString("");
