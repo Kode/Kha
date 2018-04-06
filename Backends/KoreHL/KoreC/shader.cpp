@@ -3,6 +3,50 @@
 #include <Kore/Graphics4/PipelineState.h>
 #include <hl.h>
 
+Kore::Graphics4::ZCompareMode convertCompareMode(int mode) {
+	switch (mode) {
+	case 0:
+		return Kore::Graphics4::ZCompareAlways;
+	case 1:
+		return Kore::Graphics4::ZCompareNever;
+	case 2:
+		return Kore::Graphics4::ZCompareEqual;
+	case 3:
+		return Kore::Graphics4::ZCompareNotEqual;
+	case 4:
+		return Kore::Graphics4::ZCompareLess;
+	case 5:
+		return Kore::Graphics4::ZCompareLessEqual;
+	case 6:
+		return Kore::Graphics4::ZCompareGreater;
+	case 7:
+	default:
+		return Kore::Graphics4::ZCompareGreaterEqual;
+	}
+}
+
+Kore::Graphics4::StencilAction convertStencilAction(int action) {
+	switch (action) {
+	case 0:
+		return Kore::Graphics4::Keep;
+	case 1:
+		return Kore::Graphics4::Zero;
+	case 2:
+		return Kore::Graphics4::Replace;
+	case 3:
+		return Kore::Graphics4::Increment;
+	case 4:
+		return Kore::Graphics4::IncrementWrap;
+	case 5:
+		return Kore::Graphics4::Decrement;
+	case 6:
+		return Kore::Graphics4::DecrementWrap;
+	case 7:
+	default:
+		return Kore::Graphics4::Invert;	
+	}
+}
+
 extern "C" vbyte *hl_kore_create_vertexshader(vbyte *data, int length) {
 	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::VertexShader);
 }
@@ -30,8 +74,79 @@ extern "C" void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *sha
 extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure) {
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
 	Kore::Graphics4::VertexStructure* struc = (Kore::Graphics4::VertexStructure*)structure;
-	//pipe->inputLayout = struc; // TODO
+	pipe->inputLayout[0] = struc;
+	pipe->inputLayout[1] = nullptr;
 	pipe->compile();
+}
+
+extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
+	int cullMode, int depthMode, int stencilMode, int stencilBothPass, int stencilDepthFail, int stencilFail,
+	int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination,
+	bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask,
+	bool colorWriteMaskRed, bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha,
+	bool conservativeRasterization) {
+	
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	
+	switch (cullMode) {
+	case 0:
+		pipe->cullMode = Kore::Graphics4::Clockwise;
+		break;
+	case 1:
+		pipe->cullMode = Kore::Graphics4::CounterClockwise;
+		break;
+	case 2:
+		pipe->cullMode = Kore::Graphics4::NoCulling;
+		break;
+	}
+
+	switch (depthMode) {
+	case 0:
+		pipe->depthMode = Kore::Graphics4::ZCompareAlways;
+		break;
+	case 1:
+		pipe->depthMode = Kore::Graphics4::ZCompareNever;
+		break;
+	case 2:
+		pipe->depthMode = Kore::Graphics4::ZCompareEqual;
+		break;
+	case 3:
+		pipe->depthMode = Kore::Graphics4::ZCompareNotEqual;
+		break;
+	case 4:
+		pipe->depthMode = Kore::Graphics4::ZCompareLess;
+		break;
+	case 5:
+		pipe->depthMode = Kore::Graphics4::ZCompareLessEqual;
+		break;
+	case 6:
+		pipe->depthMode = Kore::Graphics4::ZCompareGreater;
+		break;
+	case 7:
+		pipe->depthMode = Kore::Graphics4::ZCompareGreaterEqual;
+		break;
+	}
+	pipe->depthWrite = depthWrite;
+	
+	pipe->stencilMode = convertCompareMode(stencilMode);
+	pipe->stencilBothPass = convertStencilAction(stencilBothPass);
+	pipe->stencilDepthFail = convertStencilAction(stencilDepthFail);
+	pipe->stencilFail = convertStencilAction(stencilFail);
+	pipe->stencilReferenceValue = stencilReferenceValue;
+	pipe->stencilReadMask = stencilReadMask;
+	pipe->stencilWriteMask = stencilWriteMask;
+	
+	pipe->blendSource = (Kore::Graphics4::BlendingOperation)blendSource;
+	pipe->blendDestination = (Kore::Graphics4::BlendingOperation)blendDestination;
+	pipe->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
+	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
+	
+	pipe->colorWriteMaskRed = colorWriteMaskRed;
+	pipe->colorWriteMaskGreen = colorWriteMaskGreen;
+	pipe->colorWriteMaskBlue = colorWriteMaskBlue;
+	pipe->colorWriteMaskAlpha = colorWriteMaskAlpha;
+	
+	pipe->conservativeRasterization = conservativeRasterization;
 }
 
 extern "C" void hl_kore_pipeline_set(vbyte *pipeline) {

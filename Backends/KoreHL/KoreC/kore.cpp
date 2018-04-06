@@ -63,7 +63,7 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height) {
 	height = Kore::min(height, Kore::System::desktopHeight());
 
 	Kore::WindowOptions options;
-	options.title = "";
+	options.title = (char*)title;
 	options.width = width;
 	options.height = height;
 	options.x = Kore::System::desktopWidth() / 2 - width / 2;

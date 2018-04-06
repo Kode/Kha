@@ -17,6 +17,10 @@ class PipelineState extends PipelineStateBase {
 	private function init(): Void {
 		pipeline = kore_create_pipeline();
 	}
+
+	public function delete() {
+		
+	}
 	
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
 		kore_pipeline_set_vertex_shader(pipeline, vertexShader._shader);
@@ -44,6 +48,12 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
+		kore_pipeline_set_states(pipeline,
+			cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
+			getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
+			depthWrite, stencilReferenceValue, stencilReadMask, stencilWriteMask,
+			colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha,
+			conservativeRasterization);
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
 			inputLayout.length > 1 ? inputLayout[1] : null,
@@ -59,6 +69,33 @@ class PipelineState extends PipelineStateBase {
 	
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		return new kha.korehl.graphics4.TextureUnit(kore_pipeline_get_textureunit(pipeline, StringHelper.convert(name)));
+	}
+
+	private static function getBlendFunc(factor: BlendingFactor): Int {
+		switch (factor) {
+		case BlendOne, Undefined:
+			return 0;
+		case BlendZero:
+			return 1;
+		case SourceAlpha:
+			return 2;
+		case DestinationAlpha:
+			return 3;
+		case InverseSourceAlpha:
+			return 4;
+		case InverseDestinationAlpha:
+			return 5;
+		case SourceColor:
+			return 6;
+		case DestinationColor:
+			return 7;
+		case InverseSourceColor:
+			return 8;
+		case InverseDestinationColor:
+			return 9;
+		default:
+			return 0;
+		}
 	}
 	
 	public function set(): Void {
@@ -80,5 +117,11 @@ class PipelineState extends PipelineStateBase {
 	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer,
+		cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int,
+		blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int,
+		depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int,
+		colorWriteMaskRed: Bool, colorWriteMaskGreen: Bool, colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool,
+		conservativeRasterization: Bool): Void { }
 	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void { }
 }

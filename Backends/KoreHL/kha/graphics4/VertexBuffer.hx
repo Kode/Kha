@@ -35,6 +35,10 @@ class VertexBuffer {
 		}
 		_buffer = kore_create_vertexbuffer(vertexCount, structure2, instanceDataStepRate);
 	}
+
+	public function delete() {
+		
+	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		//data._data.getData().b = kore_vertexbuffer_lock(_buffer);

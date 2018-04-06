@@ -37,27 +37,12 @@ class LoaderImpl {
 		done(null); //new kha.kore.Video(desc.files[0]));
 	}
 	
-	@:functionCode('return ::String(Kore::System::videoFormats()[0]);')
+	// @:functionCode('return ::String(Kore::System::videoFormats()[0]);')
 	private static function videoFormat(): String {
 		return "";
 	}
 	
 	public static function getVideoFormats(): Array<String> {
 		return [videoFormat()];
-	}
-
-	@:functionCode('Kore::System::showKeyboard();')
-	public static function showKeyboard(): Void {
-
-	}
-
-	@:functionCode('Kore::System::hideKeyboard();')
-	public static function hideKeyboard(): Void {
-
-	}
-
-	@:functionCode('Kore::System::loadURL(url);')
-	public static function loadURL(url: String): Void {
-
 	}
 }
