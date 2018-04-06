@@ -4,8 +4,82 @@ import haxe.io.Bytes;
 
 class CubeMap implements Canvas implements Resource {
 
+	public var _texture: Pointer;
+	public var _renderTarget: Pointer;
+
+	private var format: TextureFormat;
+	private var graphics4: kha.graphics4.Graphics;
+
+	private function new() {
+
+	}
+
 	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
-		return null;
+		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
+	}
+
+	public static function create2(size: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): CubeMap {
+		var cubeMap = new CubeMap();
+		cubeMap.format = format;
+		if (renderTarget) cubeMap.initRenderTarget(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
+		return cubeMap;
+	}
+
+	private function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
+		_renderTarget =  kore_cubemap_create(cubeMapSize, depthBufferBits, format, stencilBufferBits, contextId);
+		_texture = null;
+	}
+
+	private static function getRenderTargetFormat(format: TextureFormat): Int {
+		switch (format) {
+		case RGBA32:	// Target32Bit
+			return 0;
+		case RGBA64:	// Target64BitFloat
+			return 1;
+		case RGBA128:	// Target128BitFloat
+			return 3;
+		case DEPTH16:	// Target16BitDepth
+			return 4;
+		default:
+			return 0;
+		}
+	}
+
+	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: 24;
+			case DepthAutoStencilAuto: 24;
+			case Depth24Stencil8: 24;
+			case Depth32Stencil8: 32;
+			case Depth16: 16;
+		}
+	}
+
+	private static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: -1;
+			case DepthOnly: -1;
+			case DepthAutoStencilAuto: 8;
+			case Depth24Stencil8: 8;
+			case Depth32Stencil8: 8;
+			case Depth16: 0;
+		}
+	}
+	
+	private static function getTextureFormat(format: TextureFormat): Int {
+		switch (format) {
+		case RGBA32:
+			return 0;
+		case RGBA128:
+			return 3;
+		case RGBA64:
+			return 4;
+		case A32:
+			return 5;
+		default:
+			return 1; // Grey 8
+		}
 	}
 
 	public function unload(): Void { }
@@ -13,14 +87,31 @@ class CubeMap implements Canvas implements Resource {
 	public function unlock(): Void { }
 
 	public var width(get, null): Int;
-	private function get_width(): Int { return 0; }
 	public var height(get, null): Int;
-	private function get_height(): Int { return 0; }
+
+	public function get_width(): Int {
+		return _texture != null ? kore_cubemap_texture_get_width(_texture) : kore_cubemap_target_get_width(_renderTarget);
+	}
+
+	public function get_height(): Int {
+		return _texture != null ? kore_cubemap_texture_get_height(_texture) : kore_cubemap_target_get_height(_renderTarget);
+	}
 
 	public var g1(get, null): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
 	public var g2(get, null): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return null; }
 	public var g4(get, null): kha.graphics4.Graphics;
-	private function get_g4(): kha.graphics4.Graphics { return null; }
+	private function get_g4(): kha.graphics4.Graphics {
+		if (graphics4 == null) {
+			graphics4 = new kha.korehl.graphics4.Graphics(this);
+		}
+		return graphics4;
+	}
+
+	@:hlNative("std", "kore_cubemap_create") static function kore_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Pointer { return null; }
+	@:hlNative("std", "kore_cubemap_texture_get_width") static function kore_cubemap_texture_get_width(texture: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_cubemap_texture_get_height") static function kore_cubemap_texture_get_height(texture: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_cubemap_target_get_width") static function kore_cubemap_target_get_width(target: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_cubemap_target_get_height") static function kore_cubemap_target_get_height(target: Pointer): Int { return 0; }
 }

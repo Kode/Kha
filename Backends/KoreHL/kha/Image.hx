@@ -93,9 +93,9 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	//@:functionCode('renderTarget = new Kore::RenderTarget(width, height, depthBufferBits, false, (Kore::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
 	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-
+		_renderTarget = kore_render_target_create(width, height, depthBufferBits, format, stencilBufferBits, contextId);
+		_texture = null;
 	}
 
 	private function init(width: Int, height: Int, format: Int): Void {
@@ -164,14 +164,12 @@ class Image implements Canvas implements Resource {
 	public var height(get, null): Int;
 	public var depth(get, null): Int;
 
-	//@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
 	public function get_width(): Int {
-		return kore_texture_get_width(_texture);
+		return _texture != null ? kore_texture_get_width(_texture) : kore_render_target_get_width(_renderTarget);
 	}
 
-	//@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
 	public function get_height(): Int {
-		return kore_texture_get_height(_texture);
+		return _texture != null ? kore_texture_get_height(_texture) : kore_render_target_get_height(_renderTarget);
 	}
 
 	public function get_depth(): Int {
@@ -181,14 +179,12 @@ class Image implements Canvas implements Resource {
 	public var realWidth(get, null): Int;
 	public var realHeight(get, null): Int;
 
-	//@:functionCode("if (texture != nullptr) return texture->texWidth; else return renderTarget->texWidth;")
 	public function get_realWidth(): Int {
-		return kore_texture_get_real_width(_texture);
+		return _texture != null ? kore_texture_get_real_width(_texture) : kore_render_target_get_real_width(_renderTarget);
 	}
 
-	//@:functionCode("if (texture != nullptr) return texture->texHeight; else return renderTarget->texHeight;")
 	public function get_realHeight(): Int {
-		return kore_texture_get_real_height(_texture);
+		return _texture != null ? kore_texture_get_real_height(_texture) : kore_render_target_get_real_height(_renderTarget);
 	}
 
 	//@:functionCode("return (texture->at(x, y) & 0xff) != 0;")
@@ -244,7 +240,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
-		
+		kore_render_target_set_depth_stencil_from(_renderTarget, image._renderTarget);
 	}
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
@@ -258,4 +254,10 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_real_width") static function kore_texture_get_real_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_real_height") static function kore_texture_get_real_height(texture: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_create") static function kore_render_target_create(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Pointer { return null; }
+	@:hlNative("std", "kore_render_target_get_width") static function kore_render_target_get_width(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_set_depth_stencil_from") static function kore_render_target_set_depth_stencil_from(renderTarget: Pointer, from: Pointer): Int { return 0; }
 }

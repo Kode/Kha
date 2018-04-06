@@ -46,6 +46,36 @@ extern "C" void hl_kore_graphics_set_texture(vbyte *unit, vbyte *texture) {
 	Kore::Graphics4::setTexture(*u, tex);
 }
 
+extern "C" void hl_kore_graphics_set_texture_depth(vbyte *unit, vbyte *renderTarget) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	rt->useDepthAsTexture(*u);
+}
+
+extern "C" void hl_kore_graphics_set_render_target(vbyte *unit, vbyte *renderTarget) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	rt->useColorAsTexture(*u);
+}
+
+extern "C" void hl_kore_graphics_set_cubemap_texture(vbyte *unit, vbyte *texture) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::Texture* tex = (Kore::Graphics4::Texture*)texture;
+	Kore::Graphics4::setTexture(*u, tex);
+}
+
+extern "C" void hl_kore_graphics_set_cubemap_depth(vbyte *unit, vbyte *renderTarget) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	rt->useDepthAsTexture(*u);
+}
+
+extern "C" void hl_kore_graphics_set_cubemap_target(vbyte *unit, vbyte *renderTarget) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	rt->useColorAsTexture(*u);
+}
+
 extern "C" void hl_kore_graphics_set_bool(vbyte *location, bool value) {
 	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
 	Kore::Graphics4::setBool(*loc, value);
@@ -125,6 +155,29 @@ extern "C" void hl_kore_graphics_draw_indexed_vertices_instanced(int instanceCou
 
 extern "C" void hl_kore_graphics_restore_render_target() {
 	Kore::Graphics4::restoreRenderTarget();
+}
+
+extern "C" void hl_kore_graphics_render_to_texture(vbyte *renderTarget) {
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	Kore::Graphics4::setRenderTarget(rt);
+}
+
+extern "C" void hl_kore_graphics_render_to_textures(vbyte *rt0, vbyte *rt1, vbyte *rt2, vbyte *rt3, vbyte *rt4, vbyte *rt5, vbyte *rt6, vbyte *rt7, int count) {
+	Kore::Graphics4::RenderTarget* t0 = (Kore::Graphics4::RenderTarget*)rt0;
+	Kore::Graphics4::RenderTarget* t1 = (Kore::Graphics4::RenderTarget*)rt1;
+	Kore::Graphics4::RenderTarget* t2 = (Kore::Graphics4::RenderTarget*)rt2;
+	Kore::Graphics4::RenderTarget* t3 = (Kore::Graphics4::RenderTarget*)rt3;
+	Kore::Graphics4::RenderTarget* t4 = (Kore::Graphics4::RenderTarget*)rt4;
+	Kore::Graphics4::RenderTarget* t5 = (Kore::Graphics4::RenderTarget*)rt5;
+	Kore::Graphics4::RenderTarget* t6 = (Kore::Graphics4::RenderTarget*)rt6;
+	Kore::Graphics4::RenderTarget* t7 = (Kore::Graphics4::RenderTarget*)&rt7;
+	Kore::Graphics4::RenderTarget* targets[8] = { t0, t1, t2, t3, t4, t5, t6, t7 };
+	Kore::Graphics4::setRenderTargets(targets, count);
+}
+
+extern "C" void hl_kore_graphics_render_to_face(vbyte *renderTarget, int face) {
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	Kore::Graphics4::setRenderTargetFace(rt, face);
 }
 
 extern "C" void hl_kore_graphics_flush() {

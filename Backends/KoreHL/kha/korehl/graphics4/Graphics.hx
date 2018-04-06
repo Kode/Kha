@@ -13,14 +13,15 @@ import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
+import kha.Canvas;
 import kha.Image;
 import kha.Video;
 import kha.Color;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var target: Image;
+	private var target: Canvas;
 	
-	public function new(target: Image = null) {
+	public function new(target: Canvas = null) {
 		this.target = target;
 	}
 	
@@ -82,12 +83,15 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 	
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
+	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		if (cubeMap == null) return;
+		if (cubeMap._texture != null) kore_graphics_set_cubemap_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._texture);
+		else kore_graphics_set_cubemap_target(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._renderTarget);
 	}
 	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
+	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+		if (cubeMap == null) return;
+		kore_graphics_set_cubemap_depth(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._renderTarget);
 	}
 	
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
@@ -167,7 +171,8 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
-		kore_graphics_set_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._texture);
+		if (texture._texture != null) kore_graphics_set_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._texture);
+		else kore_graphics_set_render_target(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._renderTarget);
 	}
 
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
@@ -175,7 +180,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
+		if (texture == null) return;
+		kore_graphics_set_texture_depth(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._renderTarget);
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -257,18 +263,21 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
-		/*if (additionalRenderTargets != null) {
+		if (additionalRenderTargets != null) {
 			var len = additionalRenderTargets.length;
-			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, len)");
-			for (i in 0...len) {
-				var image = cast(additionalRenderTargets[i], Image);
-				var num = i + 1;
-				untyped __cpp__("Kore::Graphics::setRenderTarget(image->renderTarget, num, len)");
-			}
+			var rt0 = cast(target, Image)._renderTarget;
+			var rt1 = len > 0 ? cast(additionalRenderTargets[0], Image)._renderTarget : null;
+			var rt2 = len > 1 ? cast(additionalRenderTargets[1], Image)._renderTarget : null;
+			var rt3 = len > 2 ? cast(additionalRenderTargets[2], Image)._renderTarget : null;
+			var rt4 = len > 3 ? cast(additionalRenderTargets[3], Image)._renderTarget : null;
+			var rt5 = len > 4 ? cast(additionalRenderTargets[4], Image)._renderTarget : null;
+			var rt6 = len > 5 ? cast(additionalRenderTargets[5], Image)._renderTarget : null;
+			var rt7 = len > 6 ? cast(additionalRenderTargets[6], Image)._renderTarget : null;
+			kore_graphics_render_to_textures(rt0, rt1, rt2, rt3, rt4, rt5, rt6, rt7, len + 1);
 		}
 		else {
-			untyped __cpp__("Kore::Graphics::setRenderTarget(target->renderTarget, 0, 0)");
-		}*/
+			kore_graphics_render_to_texture(cast(target, Image)._renderTarget);
+		}
 	}
 	
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
@@ -277,7 +286,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function beginFace(face: Int): Void {
-
+		kore_graphics_render_to_face(cast(target, CubeMap)._renderTarget, face);
 	}
 
 	public function beginEye(eye: Int): Void {
@@ -302,6 +311,11 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_disable_scissor") static function kore_graphics_disable_scissor(): Void { }
 	@:hlNative("std", "kore_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool { return false; }
 	@:hlNative("std", "kore_graphics_set_texture") static function kore_graphics_set_texture(unit: Pointer, texture: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_texture_depth") static function kore_graphics_set_texture_depth(unit: Pointer, renderTarget: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_render_target") static function kore_graphics_set_render_target(unit: Pointer, renderTarget: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_cubemap_texture") static function kore_graphics_set_cubemap_texture(unit: Pointer, texture: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_cubemap_target") static function kore_graphics_set_cubemap_target(unit: Pointer, renderTarget: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_cubemap_depth") static function kore_graphics_set_cubemap_depth(unit: Pointer, renderTarget: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void { }
 	@:hlNative("std", "kore_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: Float): Void { }
@@ -323,5 +337,8 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_draw_all_indexed_vertices_instanced") static function kore_graphics_draw_all_indexed_vertices_instanced(instanceCount: Int): Void { }
 	@:hlNative("std", "kore_graphics_draw_indexed_vertices_instanced") static function kore_graphics_draw_indexed_vertices_instanced(instanceCount: Int, start: Int, count: Int): Void { }
 	@:hlNative("std", "kore_graphics_restore_render_target") static function kore_graphics_restore_render_target(): Void { }
+	@:hlNative("std", "kore_graphics_render_to_texture") static function kore_graphics_render_to_texture(renderTarget: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_render_to_textures") static function kore_graphics_render_to_textures(rt0: Pointer, rt1: Pointer, rt2: Pointer, rt3: Pointer, rt4: Pointer, rt5: Pointer, rt6: Pointer, rt7: Pointer, count: Int): Void { }
+	@:hlNative("std", "kore_graphics_render_to_face") static function kore_graphics_render_to_face(renderTarget: Pointer, face: Int): Void { }
 	@:hlNative("std", "kore_graphics_flush") static function kore_graphics_flush(): Void { }
 }
