@@ -7,10 +7,10 @@ class VertexShader {
 	public var _shader: Pointer;
 	
 	public function new(sources: Array<Blob>, files: Array<String>) {
-		initVertexShader(sources[0]);
+		initShader(sources[0]);
 	}
 	
-	private function initVertexShader(source: Blob): Void {
+	private function initShader(source: Blob): Void {
 		_shader = kore_create_vertexshader(source.bytes.getData(), source.bytes.getData().length);
 	}
 

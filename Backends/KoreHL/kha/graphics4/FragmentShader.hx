@@ -7,10 +7,10 @@ class FragmentShader {
 	public var _shader: Pointer;
 	
 	public function new(sources: Array<Blob>, files: Array<String>) {
-		initFragmentShader(sources[0]);
+		initShader(sources[0]);
 	}
 	
-	private function initFragmentShader(source: Blob): Void {
+	private function initShader(source: Blob): Void {
 		_shader = kore_create_fragmentshader(source.bytes.getData(), source.bytes.getData().length); 
 	}
 

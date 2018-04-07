@@ -24,8 +24,11 @@ class PipelineState extends PipelineStateBase {
 	
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
 		kore_pipeline_set_vertex_shader(pipeline, vertexShader._shader);
-		kore_pipeline_set_fragment_shader(pipeline, fragmentShader._shader);
-		
+		kore_pipeline_set_fragment_shader(pipeline, fragmentShader._shader);		
+		if (geometryShader != null) kore_pipeline_set_geometry_shader(pipeline, geometryShader._shader);
+		if (tessellationControlShader != null) kore_pipeline_set_tesscontrol_shader(pipeline, tessellationControlShader._shader);
+		if (tessellationEvaluationShader != null) kore_pipeline_set_tesseval_shader(pipeline, tessellationEvaluationShader._shader);
+
 		var kore_structure = VertexBuffer.kore_create_vertexstructure();
 		for (i in 0...structure0.size()) {
 			var data: Int = 0;
@@ -114,6 +117,9 @@ class PipelineState extends PipelineStateBase {
 	@:hlNative("std", "kore_create_pipeline") static function kore_create_pipeline(): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_set_geometry_shader") static function kore_pipeline_set_geometry_shader(pipeline: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_set_tesscontrol_shader") static function kore_pipeline_set_tesscontrol_shader(pipeline: Pointer, shader: Pointer): Void { }
+	@:hlNative("std", "kore_pipeline_set_tesseval_shader") static function kore_pipeline_set_tesseval_shader(pipeline: Pointer, shader: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure: Pointer): Void { }
 	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }

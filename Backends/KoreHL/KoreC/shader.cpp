@@ -55,6 +55,18 @@ extern "C" vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
 	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::FragmentShader);
 }
 
+extern "C" vbyte *hl_kore_create_geometryshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::GeometryShader);
+}
+
+extern "C" vbyte *hl_kore_create_tesscontrolshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationControlShader);
+}
+
+extern "C" vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
+}
+
 extern "C" vbyte *hl_kore_create_pipeline() {
 	return (vbyte*)new Kore::Graphics4::PipelineState();
 }
@@ -69,6 +81,24 @@ extern "C" void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *sha
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
 	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
 	pipe->fragmentShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->geometryShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->tessellationControlShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->tessellationEvaluationShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure) {
