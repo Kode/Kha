@@ -71,6 +71,11 @@ extern "C" vbyte *hl_kore_create_pipeline() {
 	return (vbyte*)new Kore::Graphics4::PipelineState();
 }
 
+extern "C" void hl_kore_delete_pipeline(vbyte *pipeline) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	delete pipe;
+}
+
 extern "C" void hl_kore_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
 	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;

@@ -16,6 +16,11 @@ extern "C" vbyte *hl_kore_create_vertexbuffer(int vertexCount, vbyte *structure,
 	return (vbyte*)new Kore::Graphics4::VertexBuffer(vertexCount, *struc, stepRate);
 }
 
+extern "C" void hl_kore_delete_vertexbuffer(vbyte *buffer) {
+	Kore::Graphics4::VertexBuffer* buf = (Kore::Graphics4::VertexBuffer*)buffer;
+	delete buf;
+}
+
 extern "C" vbyte *hl_kore_vertexbuffer_lock(vbyte *buffer) {
 	Kore::Graphics4::VertexBuffer* buf = (Kore::Graphics4::VertexBuffer*)buffer;
 	return (vbyte*)buf->lock();

@@ -283,8 +283,28 @@ class Image implements Canvas implements Resource {
 		bytes = null;
 	}
 
+	private var pixels: Bytes = null;
 	public function getPixels(): Bytes {
-		return null;
+		if (_renderTarget == null) return null;
+		if (pixels == null) {
+			var size = formatByteSize(format) * width * height;
+			pixels = Bytes.alloc(size);
+		}
+		kore_render_target_get_pixels(_renderTarget, pixels.getData().bytes);
+		return pixels;
+	}
+
+	private static function formatByteSize(format: TextureFormat): Int {
+		return switch(format) {
+			case RGBA32: 4;
+			case L8: 1;
+			case RGBA128: 16;
+			case DEPTH16: 2;
+			case RGBA64: 8;
+			case A32: 4;
+			case A16: 2;
+			default: 4;
+		}
 	}
 
 	public function generateMipmaps(levels: Int): Void {
@@ -325,6 +345,7 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kore_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_render_target_get_pixels") static function kore_render_target_get_pixels(renderTarget: Pointer, pixels: Pointer): Void { }
 	@:hlNative("std", "kore_generate_mipmaps_texture") static function kore_generate_mipmaps_texture(texture: Pointer, levels: Int): Void { }
 	@:hlNative("std", "kore_generate_mipmaps_target") static function kore_generate_mipmaps_target(renderTarget: Pointer, levels: Int): Void { }
 	@:hlNative("std", "kore_set_mipmap_texture") static function kore_set_mipmap_texture(texture: Pointer, mipmap: Pointer, level: Int): Void { }

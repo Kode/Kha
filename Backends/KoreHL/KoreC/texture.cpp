@@ -85,6 +85,11 @@ extern "C" int hl_kore_render_target_get_real_height(vbyte *renderTarget) {
 	return rt->texHeight;
 }
 
+extern "C" void hl_kore_render_target_get_pixels(vbyte *renderTarget, vbyte *pixels) {
+	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
+	rt->getPixels(pixels);
+}
+
 extern "C" void hl_kore_generate_mipmaps_texture(vbyte *texture, int levels) {
 	Kore::Graphics4::Texture* tex = (Kore::Graphics4::Texture*)texture;
 	return tex->generateMipmaps(levels);

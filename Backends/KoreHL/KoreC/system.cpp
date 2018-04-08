@@ -1,8 +1,13 @@
 #include <Kore/pch.h>
 #include <Kore/System.h>
+#include <Kore/Log.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/Mouse.h>
 #include <hl.h>
+
+extern "C" void hl_kore_log(vbyte *v) {
+	Kore::log(Kore::Info, (char*)v);
+}
 
 extern "C" double hl_kore_get_time() {
 	return Kore::System::time();

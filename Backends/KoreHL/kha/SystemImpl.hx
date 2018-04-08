@@ -22,6 +22,9 @@ class SystemImpl {
 	private static var surface: Surface;
 	
 	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+		// haxe.Log.trace = function(v, ?infos) {
+			// kore_log(StringHelper.convert(v));
+		// };
 		init_kore(StringHelper.convert(options.title), options.width, options.height);
 		Shaders.init();
 		var g4 = new kha.korehl.graphics4.Graphics();
@@ -255,6 +258,7 @@ class SystemImpl {
 	}
 	
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int): Void { }
+	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
