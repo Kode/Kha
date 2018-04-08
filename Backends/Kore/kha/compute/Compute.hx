@@ -102,7 +102,11 @@ class Compute {
 	}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
-		untyped __cpp__('Kore::Compute::setBuffer(buffer->buffer, index);');
+		untyped __cpp__('
+			#ifdef KORE_OPENGL
+			Kore::Compute::setBuffer(buffer->buffer, index);
+			#endif
+		');
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {

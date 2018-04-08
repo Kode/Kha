@@ -7,7 +7,10 @@ import kha.graphics4.VertexData;
 #include <Kore/Compute/Compute.h>
 ')
 
-@:headerClassCode("Kore::ShaderStorageBuffer* buffer;")
+@:headerClassCode("
+#ifdef KORE_OPENGL
+Kore::ShaderStorageBuffer* buffer;
+#endif")
 class ShaderStorageBuffer {
 	private var data: Array<Int>;
 	private var myCount: Int;
@@ -20,6 +23,7 @@ class ShaderStorageBuffer {
 	}
   
   @:functionCode("
+	#ifdef KORE_OPENGL
 		Kore::Graphics4::VertexData type2;
     switch (type->index) {
     case 0:
@@ -39,6 +43,7 @@ class ShaderStorageBuffer {
       break;
     }
 		buffer = new Kore::ShaderStorageBuffer(indexCount, type2);
+	#endif
 	")
 	private function init(indexCount: Int, type: VertexData) {
 		myCount = indexCount;
@@ -47,7 +52,10 @@ class ShaderStorageBuffer {
 	}
 	
 	public function delete(): Void {
-		untyped __cpp__('delete buffer; buffer = nullptr;');
+		untyped __cpp__('
+		#ifdef KORE_OPENGL
+		delete buffer; buffer = nullptr;
+		#endif');
 	}
 	
 	public function lock(): Array<Int> {
@@ -55,11 +63,13 @@ class ShaderStorageBuffer {
 	}
 	
 	@:functionCode("
+		#ifdef KORE_OPENGL
 		int* indices = buffer->lock();
 		for (int i = 0; i < myCount; ++i) {
 			indices[i] = data[i];
 		}
 		buffer->unlock();
+		#endif
 	")
 	public function unlock(): Void {
 		
