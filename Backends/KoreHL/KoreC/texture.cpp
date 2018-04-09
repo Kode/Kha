@@ -1,5 +1,6 @@
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
+#include <Kore/Video.h>
 #include <hl.h>
 
 extern "C" vbyte *hl_kore_texture_create(int width, int height, int format, bool readable) {
@@ -14,12 +15,20 @@ extern "C" vbyte *hl_kore_texture_create3d(int width, int height, int depth, int
 	return (vbyte*)new Kore::Graphics4::Texture(width, height, depth, (Kore::Graphics4::Image::Format)format, readable);
 }
 
+extern "C" vbyte *hl_kore_video_get_current_image(vbyte *video) {
+	return (vbyte*)((Kore::Video*)video)->currentImage();
+}
+
 extern "C" vbyte *hl_kore_texture_from_bytes(vbyte *bytes, int width, int height, int format, bool readable) {
 	return (vbyte*)new Kore::Graphics4::Texture(bytes, width, height, (Kore::Graphics4::Image::Format)format, readable);
 }
 
 extern "C" vbyte *hl_kore_texture_from_bytes3d(vbyte *bytes, int width, int height, int depth, int format, bool readable) {
 	return (vbyte*)new Kore::Graphics4::Texture(bytes, width, height, depth, (Kore::Graphics4::Image::Format)format, readable);
+}
+
+extern "C" vbyte *hl_kore_texture_from_encoded_bytes(vbyte *bytes, int length, vbyte *format, bool readable) {
+	return (vbyte*)new Kore::Graphics4::Texture(bytes, length, (char*)format, readable);
 }
 
 extern "C" bool hl_kore_non_pow2_textures_supported() {
@@ -83,6 +92,34 @@ extern "C" int hl_kore_render_target_get_real_width(vbyte *renderTarget) {
 extern "C" int hl_kore_render_target_get_real_height(vbyte *renderTarget) {
 	Kore::Graphics4::RenderTarget* rt = (Kore::Graphics4::RenderTarget*)renderTarget;
 	return rt->texHeight;
+}
+
+extern "C" void hl_kore_texture_unlock(vbyte *texture, vbyte *bytes) {
+	Kore::Graphics4::Texture* tex = (Kore::Graphics4::Texture*)texture;
+	Kore::u8* b = (Kore::u8*)bytes;
+	Kore::u8* btex = tex->lock();
+	int size = tex->sizeOf(tex->format);
+	int stride = tex->stride();
+	for (int y = 0; y < tex->height; ++y) {
+		for (int x = 0; x < tex->width; ++x) {
+#ifdef KORE_DIRECT3D
+			if (tex->format == Kore::Graphics4::Image::RGBA32) {
+				//RBGA->BGRA
+				btex[y * stride + x * size + 0] = b[(y * tex->width + x) * size + 2];
+				btex[y * stride + x * size + 1] = b[(y * tex->width + x) * size + 1];
+				btex[y * stride + x * size + 2] = b[(y * tex->width + x) * size + 0];
+				btex[y * stride + x * size + 3] = b[(y * tex->width + x) * size + 3];
+			}
+			else
+#endif
+			{
+				for (int i = 0; i < size; ++i) {
+					btex[y * stride + x * size + i] = b[(y * tex->width + x) * size + i];
+				}
+			}
+		}
+	}
+	tex->unlock();
 }
 
 extern "C" void hl_kore_render_target_get_pixels(vbyte *renderTarget, vbyte *pixels) {

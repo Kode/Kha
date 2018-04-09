@@ -30,8 +30,9 @@ class SystemImpl {
 		var g4 = new kha.korehl.graphics4.Graphics();
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
-		//kha.audio2.Audio._init();
-		//kha.audio1.Audio._init();
+		kha.audio2.Audio._init();
+		kha.audio1.Audio._init();
+		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample);
 		keyboard = new kha.input.Keyboard();
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
@@ -258,6 +259,7 @@ class SystemImpl {
 	}
 	
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int): Void { }
+	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback:Int->Void, readSample:Void->FastFloat): Void { }
 	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }

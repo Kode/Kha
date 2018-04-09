@@ -23,6 +23,16 @@ extern "C" void hl_kore_graphics_set_vertexbuffer(vbyte *buffer) {
 	Kore::Graphics4::setVertexBuffer(*buf);
 }
 
+extern "C" void hl_kore_graphics_set_vertexbuffers(vbyte *b0, vbyte *b1, vbyte *b2, vbyte *b3, int count) {
+	Kore::Graphics4::VertexBuffer* vertexBuffers[4] = {
+		(Kore::Graphics4::VertexBuffer*)b0,
+		(Kore::Graphics4::VertexBuffer*)b1,
+		(Kore::Graphics4::VertexBuffer*)b2,
+		(Kore::Graphics4::VertexBuffer*)b3
+	};
+	Kore::Graphics4::setVertexBuffers(vertexBuffers, count);
+}
+
 extern "C" void hl_kore_graphics_set_indexbuffer(vbyte *buffer) {
 	Kore::Graphics4::IndexBuffer* buf = (Kore::Graphics4::IndexBuffer*)buffer;
 	Kore::Graphics4::setIndexBuffer(*buf);

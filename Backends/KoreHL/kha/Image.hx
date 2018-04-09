@@ -23,7 +23,7 @@ class Image implements Canvas implements Resource {
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
 		image.format = TextureFormat.RGBA32;
-		//image.initVideo(cast(video, kha.kore.Video));
+		image.initVideo(cast(video, kha.korehl.Video));
 		return image;
 	}
 
@@ -70,13 +70,17 @@ class Image implements Canvas implements Resource {
 		_texture = kore_texture_from_bytes3d(bytes.bytes, width, height, depth, format, readable);
 	}
 
-	// public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
-		// var image = new Image(readable);
-		// var isFloat = format == "hdr" || format == "HDR";
-		// image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
-		// image.initFromEncodedBytes(bytes.getData(), format);
-		// doneCallback(image);
-	// }
+	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
+		var image = new Image(readable);
+		var isFloat = format == "hdr" || format == "HDR";
+		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.initFromEncodedBytes(bytes.getData(), format);
+		doneCallback(image);
+	}
+
+	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
+		_texture = kore_texture_from_encoded_bytes(bytes.bytes, bytes.length, StringHelper.convert(format), readable);
+	}
 
 	private function new(readable: Bool) {
 		this.readable = readable;
@@ -166,10 +170,10 @@ class Image implements Canvas implements Resource {
 		_renderTarget = null;
 	}
 
-	//@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
-	//private function initVideo(video: kha.kore.Video): Void {
-	//
-	//}
+	private function initVideo(video: kha.korehl.Video): Void {
+		_texture = kore_video_get_current_image(video._video);
+		_renderTarget = null;
+	}
 
 	public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
@@ -269,17 +273,12 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes = null;
 
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		bytes = Bytes.alloc(formatByteSize(format) * width * height);
 		return bytes;
 	}
 
-	/*@:functionCode('
-		Kore::u8* b = bytes->b->Pointer();
-		Kore::u8* tex = texture->lock();
-		for (int i = 0; i < ((texture->format == Kore::Image::RGBA32) ? (4 * texture->width * texture->height) : (texture->width * texture->height)); ++i) tex[i] = b[i];
-		texture->unlock();
-	')*/
 	public function unlock(): Void {
+		kore_texture_unlock(_texture, bytes.getData().bytes);
 		bytes = null;
 	}
 
@@ -330,8 +329,10 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create3d") static function kore_texture_create3d(width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_video_get_current_image") static function kore_video_get_current_image(video: Pointer): Pointer { return null; }
 	@:hlNative("std", "kore_texture_from_bytes") static function kore_texture_from_bytes(bytes: Pointer, width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_from_bytes3d") static function kore_texture_from_bytes3d(bytes: Pointer, width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_from_encoded_bytes") static function kore_texture_from_encoded_bytes(bytes: Pointer, length: Int, format: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool { return false; }
 	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }
@@ -345,6 +346,7 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kore_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_texture_unlock") static function kore_texture_unlock(texture: Pointer, bytes: Pointer): Void { }
 	@:hlNative("std", "kore_render_target_get_pixels") static function kore_render_target_get_pixels(renderTarget: Pointer, pixels: Pointer): Void { }
 	@:hlNative("std", "kore_generate_mipmaps_texture") static function kore_generate_mipmaps_texture(texture: Pointer, levels: Int): Void { }
 	@:hlNative("std", "kore_generate_mipmaps_target") static function kore_generate_mipmaps_target(renderTarget: Pointer, levels: Int): Void { }

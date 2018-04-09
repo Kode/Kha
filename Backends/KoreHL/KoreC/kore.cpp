@@ -1,17 +1,9 @@
 #include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
-#include <Kore/Input/Gamepad.h>
-#include <Kore/Input/Keyboard.h>
-#include <Kore/Input/Mouse.h>
-#include <Kore/Input/Sensor.h>
-#include <Kore/Input/Surface.h>
-#include <Kore/Audio1/Audio.h>
-#include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
-#include <Kore/Threads/Mutex.h>
-#include <Kore/Math/Random.h>
 #include <Kore/System.h>
-#include <Kore/Math/Core.h>
+#include <Kore/Graphics4/Graphics.h>
+#include <Kore/Audio2/Audio.h>
+#include <Kore/Math/Random.h>
 
 #include <hl.h>
 #ifdef min
@@ -22,18 +14,18 @@
 #endif
 
 #include <limits>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef ANDROID
-#include <Kore/Vr/VrInterface.h>
-#endif
 
 extern "C" void frame();
 
 namespace {
 	bool visible = true;
 	bool paused = false;
+
+	typedef void(*FN_AUDIO_CALL_CALLBACK)(int);
+	typedef float(*FN_AUDIO_READ_SAMPLE)();
+
+	void (*audioCallCallback)(int);
+	float (*audioReadSample)();
 
 	void update() {
 		if (paused) return;
@@ -48,6 +40,26 @@ namespace {
 				Kore::Graphics4::end(windowIndex);
 				Kore::Graphics4::swapBuffers(windowIndex);
 			}
+		}
+	}
+
+	void mix(int samples) {
+		using namespace Kore;
+
+// #ifdef KORE_MULTITHREADED_AUDIO
+// 		if (!mixThreadregistered) {
+// 			__hxcpp_register_current_thread();
+// 			mixThreadregistered = true;
+// 		}
+// #endif
+
+		audioCallCallback(samples);
+
+		for (int i = 0; i < samples; ++i) {
+			float value = audioReadSample();
+			*(float*)&Audio2::buffer.data[Audio2::buffer.writeLocation] = value;
+			Audio2::buffer.writeLocation += 4;
+			if (Audio2::buffer.writeLocation >= Audio2::buffer.dataSize) Audio2::buffer.writeLocation = 0;
 		}
 	}
 }
@@ -78,6 +90,13 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height) {
 	Kore::System::initWindow(options);
 
 	Kore::System::setCallback(update);
+}
+
+extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample) {
+	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK*)(&callCallback->fun));
+	audioReadSample = *((FN_AUDIO_READ_SAMPLE*)(&readSample->fun));
+	Kore::Audio2::audioCallback = mix;
+	Kore::Audio2::init();
 }
 
 extern "C" void run_kore() {

@@ -106,11 +106,13 @@ extern "C" void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *sha
 	pipe->tessellationEvaluationShader = sh;
 }
 
-extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure) {
+extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::VertexStructure* struc = (Kore::Graphics4::VertexStructure*)structure;
-	pipe->inputLayout[0] = struc;
-	pipe->inputLayout[1] = nullptr;
+	pipe->inputLayout[0] = (Kore::Graphics4::VertexStructure*)structure0;
+	pipe->inputLayout[1] = (Kore::Graphics4::VertexStructure*)structure1;
+	pipe->inputLayout[2] = (Kore::Graphics4::VertexStructure*)structure2;
+	pipe->inputLayout[3] = (Kore::Graphics4::VertexStructure*)structure3;
+	pipe->inputLayout[4] = nullptr;
 	pipe->compile();
 }
 

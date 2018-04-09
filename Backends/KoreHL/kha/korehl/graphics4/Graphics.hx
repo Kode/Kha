@@ -49,25 +49,12 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_set_vertexbuffer(vertexBuffer._buffer);
 	}
 	
-	/*@:functionCode('
-		Kore::VertexBuffer* vertexBuffers[4] = {
-			vb0 == null() ? nullptr : vb0->buffer,
-			vb1 == null() ? nullptr : vb1->buffer,
-			vb2 == null() ? nullptr : vb2->buffer,
-			vb3 == null() ? nullptr : vb3->buffer
-		};
-		Kore::Graphics::setVertexBuffers(vertexBuffers, count);
-	')*/
-	private function setVertexBuffersInternal(vb0: VertexBuffer, vb1: VertexBuffer, vb2: VertexBuffer, vb3: VertexBuffer, count: Int): Void {
-		
-	}
-	
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		setVertexBuffersInternal(
-			vertexBuffers.length > 0 ? vertexBuffers[0] : null,
-			vertexBuffers.length > 1 ? vertexBuffers[1] : null,
-			vertexBuffers.length > 2 ? vertexBuffers[2] : null,
-			vertexBuffers.length > 3 ? vertexBuffers[3] : null,
+		kore_graphics_set_vertexbuffers(
+			vertexBuffers.length > 0 ? vertexBuffers[0]._buffer : null,
+			vertexBuffers.length > 1 ? vertexBuffers[1]._buffer : null,
+			vertexBuffers.length > 2 ? vertexBuffers[2]._buffer : null,
+			vertexBuffers.length > 3 ? vertexBuffers[3]._buffer : null,
 			vertexBuffers.length);
 	}
 	
@@ -289,6 +276,7 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_refreshrate") static function kore_graphics_refreshrate(): Int { return 0; }
 	@:hlNative("std", "kore_graphics_viewport") static function kore_graphics_viewport(x: Int, y: Int, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_vertexbuffer") static function kore_graphics_set_vertexbuffer(buffer: Pointer): Void { }
+	@:hlNative("std", "kore_graphics_set_vertexbuffers") static function kore_graphics_set_vertexbuffers(b0: Pointer, b1: Pointer, b2: Pointer, b3: Pointer, count: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_scissor") static function kore_graphics_scissor(x: Int, y: Int, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_graphics_disable_scissor") static function kore_graphics_disable_scissor(): Void { }
