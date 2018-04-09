@@ -1,6 +1,5 @@
 package kha.krom;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 
 class Sound extends kha.Sound {
@@ -19,7 +18,7 @@ class Sound extends kha.Sound {
 
 		var soundBytes = compressedData;
 		var count = Std.int(soundBytes.length / 4);
-		uncompressedData = new Vector<Float>(count);
+		uncompressedData = new kha.arrays.Float32Array(count);
 		for (i in 0...count) {
 			uncompressedData[i] = soundBytes.getFloat(i * 4);
 			//if (i < 10) Krom.log(" " + uncompressedData[i]);

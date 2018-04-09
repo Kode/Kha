@@ -106,7 +106,7 @@ class Reader {
         var header = decoder.header;
         var count = 0;
 		var bufferSize = 4096;
-		var buffer = new Vector<FastFloat>(bufferSize * header.channel);
+		var buffer = new kha.arrays.Float32Array(bufferSize * header.channel);
         while (true) {
             var n = decoder.read(buffer, bufferSize, header.channel, header.sampleRate, useFloat);
 			for (i in 0...n * header.channel) {
@@ -118,7 +118,7 @@ class Reader {
         return decoder.header;
     }
 
-    public function read(output:Vector<FastFloat>, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
+    public function read(output:kha.arrays.Float32Array, ?samples:Int, ?channels:Int, ?sampleRate:Int, useFloat:Bool = false) {
         decoder.ensurePosition(seekFunc);
 
         if (samples == null) {

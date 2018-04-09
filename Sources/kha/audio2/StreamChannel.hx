@@ -1,11 +1,10 @@
 package kha.audio2;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import kha.audio2.ogg.vorbis.Reader;
 
-#if !cpp
+#if (!cpp && !hl)
 class StreamChannel implements kha.audio1.AudioChannel {
 	private var reader: Reader;
 	private var atend: Bool = false;
@@ -19,7 +18,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		reader = Reader.openFromBytes(data);
 	}
 
-	public function nextSamples(samples: Vector<FastFloat>, length: Int, sampleRate: Int): Void {
+	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
 		if (paused) {
 			for (i in 0...length) {
 				samples[i] = 0;
