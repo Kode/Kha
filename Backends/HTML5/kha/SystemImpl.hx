@@ -1047,4 +1047,8 @@ class SystemImpl {
 			return null;
 		}
 	}
+
+	public static function getPen(num: Int = 0): kha.input.Pen {
+		return null;
+	}
 }
