@@ -1,6 +1,5 @@
 package kha.graphics4;
 
-import haxe.io.Bytes;
 import kha.Blob;
 
 class GeometryShader {
@@ -14,13 +13,12 @@ class GeometryShader {
 		_shader = kore_create_geometryshader(source.bytes.getData(), source.bytes.getData().length); 
 	}
 
-	public static function fromSource(source: String): FragmentShader {
-		return null;
-	}
-	
-	public function unused(): Void {
-		var include: Bytes = Bytes.ofString("");
+	public static function fromSource(source: String): GeometryShader {
+		var sh = new GeometryShader(null, null);
+		sh._shader = kore_geometryshader_from_source(StringHelper.convert(source));
+		return sh;
 	}
 	
 	@:hlNative("std", "kore_create_geometryshader") static function kore_create_geometryshader(data: hl.Bytes, length: Int): Pointer { return null; }
+	@:hlNative("std", "kore_geometryshader_from_source") static function kore_geometryshader_from_source(source: hl.Bytes): Pointer { return null; }
 }

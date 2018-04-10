@@ -64,8 +64,8 @@ namespace {
 	}
 }
 
-extern "C" void hl_init_kore(vbyte *title, int width, int height) {
-	Kore::log(Kore::Info, "Starting Kore");
+extern "C" void hl_init_kore(vbyte *title, int width, int height, int antialiasing, bool vSync, int windowMode, bool resizable, bool maximizable, bool minimizable) {
+	Kore::log(Kore::Info, "Starting KoreHL");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
 	Kore::System::setName((char*)title);
@@ -81,11 +81,14 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height) {
 	options.x = Kore::System::desktopWidth() / 2 - width / 2;
 	options.y = Kore::System::desktopHeight() / 2 - height / 2;
 	options.targetDisplay = -1;
-	options.mode = Kore::WindowModeWindow;
+	options.mode = (Kore::WindowMode)windowMode;
+	options.resizable = resizable;
+	options.maximizable = maximizable;
+	options.minimizable = minimizable;
 	options.rendererOptions.depthBufferBits = 16;
 	options.rendererOptions.stencilBufferBits = 8;
 	options.rendererOptions.textureFormat = 0;
-	options.rendererOptions.antialiasing = 1;
+	options.rendererOptions.antialiasing = antialiasing;
 
 	Kore::System::initWindow(options);
 

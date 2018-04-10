@@ -67,6 +67,26 @@ extern "C" vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
 	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
 }
 
+extern "C" vbyte *hl_kore_vertexshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::VertexShader);
+}
+
+extern "C" vbyte *hl_kore_fragmentshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::FragmentShader);
+}
+
+extern "C" vbyte *hl_kore_geometryshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::GeometryShader);
+}
+
+extern "C" vbyte *hl_kore_tesscontrolshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationControlShader);
+}
+
+extern "C" vbyte *hl_kore_tessevalshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationEvaluationShader);
+}
+
 extern "C" vbyte *hl_kore_create_pipeline() {
 	return (vbyte*)new Kore::Graphics4::PipelineState();
 }

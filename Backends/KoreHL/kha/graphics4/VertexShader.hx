@@ -1,6 +1,5 @@
 package kha.graphics4;
 
-import haxe.io.Bytes;
 import kha.Blob;
 
 class VertexShader {
@@ -15,12 +14,11 @@ class VertexShader {
 	}
 
 	public static function fromSource(source: String): VertexShader {
-		return null;
-	}
-	
-	public function unused(): Void {
-		var include: Bytes = Bytes.ofString("");
+		var sh = new VertexShader(null, null);
+		sh._shader = kore_vertexshader_from_source(StringHelper.convert(source));
+		return sh;
 	}
 	
 	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.Bytes, length: Int): Pointer { return null; }
+	@:hlNative("std", "kore_vertexshader_from_source") static function kore_vertexshader_from_source(source: hl.Bytes): Pointer { return null; }
 }

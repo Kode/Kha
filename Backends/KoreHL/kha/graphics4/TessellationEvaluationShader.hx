@@ -1,6 +1,5 @@
 package kha.graphics4;
 
-import haxe.io.Bytes;
 import kha.Blob;
 
 class TessellationEvaluationShader {
@@ -14,13 +13,12 @@ class TessellationEvaluationShader {
 		_shader = kore_create_tessevalshader(source.bytes.getData(), source.bytes.getData().length); 
 	}
 
-	public static function fromSource(source: String): FragmentShader {
-		return null;
-	}
-	
-	public function unused(): Void {
-		var include: Bytes = Bytes.ofString("");
+	public static function fromSource(source: String): TessellationEvaluationShader {
+		var sh = new TessellationEvaluationShader(null, null);
+		sh._shader = kore_tessevalshader_from_source(StringHelper.convert(source));
+		return sh;
 	}
 	
 	@:hlNative("std", "kore_create_tessevalshader") static function kore_create_tessevalshader(data: hl.Bytes, length: Int): Pointer { return null; }
+	@:hlNative("std", "kore_tessevalshader_from_source") static function kore_tessevalshader_from_source(source: hl.Bytes): Pointer { return null; }
 }
