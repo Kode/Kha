@@ -80,6 +80,7 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height, int antialiasi
 	options.height = height;
 	options.x = Kore::System::desktopWidth() / 2 - width / 2;
 	options.y = Kore::System::desktopHeight() / 2 - height / 2;
+	options.vSync = vSync;
 	options.targetDisplay = -1;
 	options.mode = (Kore::WindowMode)windowMode;
 	options.resizable = resizable;
