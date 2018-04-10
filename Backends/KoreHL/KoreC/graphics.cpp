@@ -61,12 +61,12 @@ extern "C" void hl_kore_graphics_set_texture_parameters(vbyte *unit, int uAddres
 
 extern "C" void hl_kore_graphics_set_texture3d_parameters(vbyte *unit, int uAddressing, int vAddressing,int wAddressing, int minificationFilter, int magnificationFilter, int mipmapFilter) {
 	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
-	Kore::Graphics4::setTextureAddressing(*u, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uAddressing);
-	Kore::Graphics4::setTextureAddressing(*u, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vAddressing);
-	Kore::Graphics4::setTextureAddressing(*u, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wAddressing);
-	Kore::Graphics4::setTextureMinificationFilter(*u, (Kore::Graphics4::TextureFilter)minificationFilter);
-	Kore::Graphics4::setTextureMagnificationFilter(*u, (Kore::Graphics4::TextureFilter)magnificationFilter);
-	Kore::Graphics4::setTextureMipmapFilter(*u, (Kore::Graphics4::MipmapFilter)mipmapFilter);
+	Kore::Graphics4::setTexture3DAddressing(*u, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uAddressing);
+	Kore::Graphics4::setTexture3DAddressing(*u, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vAddressing);
+	Kore::Graphics4::setTexture3DAddressing(*u, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wAddressing);
+	Kore::Graphics4::setTexture3DMinificationFilter(*u, (Kore::Graphics4::TextureFilter)minificationFilter);
+	Kore::Graphics4::setTexture3DMagnificationFilter(*u, (Kore::Graphics4::TextureFilter)magnificationFilter);
+	Kore::Graphics4::setTexture3DMipmapFilter(*u, (Kore::Graphics4::MipmapFilter)mipmapFilter);
 }
 
 extern "C" void hl_kore_graphics_set_texture(vbyte *unit, vbyte *texture) {

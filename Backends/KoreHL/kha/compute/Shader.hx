@@ -1,29 +1,28 @@
 package kha.compute;
 
-import haxe.io.Bytes;
 import kha.Blob;
 
 class Shader {
-	public var shader_: Dynamic;
+	public var _shader: Pointer;
 
 	public function new(sources: Array<Blob>, files: Array<String>) {
-		// shader_ = Krom.createShaderCompute(sources[0].toBytes().getData());
+		_shader = kore_compute_create_shader(sources[0].bytes.getData(), sources[0].bytes.getData().length);
 	}
 	
 	public function delete(): Void {
-		// Krom.deleteShaderCompute(shader_);
-		shader_ = null;
+		kore_compute_delete_shader(_shader);
 	}
 	
-	// public function getConstantLocation(name: String): ConstantLocation {
-	public function getConstantLocation(name: String): Dynamic {
-		// return Krom.getConstantLocationCompute(shader_, name);
-		return null;
+	public function getConstantLocation(name: String): ConstantLocation {
+		return new ConstantLocation(kore_compute_get_constantlocation(_shader, StringHelper.convert(name)));
 	}
 	
-	// public function getTextureUnit(name: String): TextureUnit {
-	public function getTextureUnit(name: String): Dynamic {
-		// return Krom.getTextureUnitCompute(shader_, name);
-		return null;
+	public function getTextureUnit(name: String): TextureUnit {
+		return new TextureUnit(kore_compute_get_textureunit(_shader, StringHelper.convert(name)));
 	}
+
+	@:hlNative("std", "kore_compute_create_shader") static function kore_compute_create_shader(data: hl.Bytes, length: Int): Pointer { return null; }
+	@:hlNative("std", "kore_compute_delete_shader") static function kore_compute_delete_shader(shader: Pointer): Void { }
+	@:hlNative("std", "kore_compute_get_constantlocation") static function kore_compute_get_constantlocation(shader: Pointer, name: hl.Bytes): Pointer { return null; }
+	@:hlNative("std", "kore_compute_get_textureunit") static function kore_compute_get_textureunit(shader: Pointer, name: hl.Bytes): Pointer { return null; }
 }

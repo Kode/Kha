@@ -208,7 +208,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		kore_graphics_set_matrix(cast(location, ConstantLocation)._location,
+		kore_graphics_set_matrix(cast (location, kha.korehl.graphics4.ConstantLocation)._location,
 			matrix._00, matrix._10, matrix._20, matrix._30,
 			matrix._01, matrix._11, matrix._21, matrix._31,
 			matrix._02, matrix._12, matrix._22, matrix._32,
@@ -216,7 +216,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		kore_graphics_set_matrix3(cast(location, ConstantLocation)._location,
+		kore_graphics_set_matrix3(cast (location, kha.korehl.graphics4.ConstantLocation)._location,
 			matrix._00, matrix._10, matrix._20,
 			matrix._01, matrix._11, matrix._21,
 			matrix._02, matrix._12, matrix._22);
