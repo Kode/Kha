@@ -573,7 +573,9 @@ class SystemImpl {
 		var source = MobileWebAudio._context.createBufferSource();
 		source.buffer = buffer;
 		source.connect(MobileWebAudio._context.destination);
-		untyped(if (source.noteOn) source.noteOn(0));
+		//untyped(if (source.noteOn) source.noteOn(0));
+		source.start();
+		source.stop();
 
 		iosSoundEnabled = true;
 	}
