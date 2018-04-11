@@ -72,6 +72,7 @@ class SystemImpl {
 		}
 	}
 	
+	@:keep
 	public static function frame(): Void {
 		Scheduler.executeFrame();
 		System.render(0, framebuffer);
