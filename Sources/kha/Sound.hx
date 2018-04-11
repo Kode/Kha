@@ -1,6 +1,5 @@
 package kha;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import kha.audio2.ogg.vorbis.Reader;
@@ -10,7 +9,7 @@ import kha.audio2.ogg.vorbis.Reader;
  */
 class Sound implements Resource {
 	public var compressedData: Bytes;
-	public var uncompressedData: Vector<Float>;
+	public var uncompressedData: kha.arrays.Float32Array;
 	
 	public function new() {
 		
@@ -27,14 +26,14 @@ class Sound implements Resource {
 		var soundBytes = output.getBytes();
 		var count = Std.int(soundBytes.length / 4);
 		if (header.channel == 1) {
-			uncompressedData = new Vector<Float>(count * 2);
+			uncompressedData = new kha.arrays.Float32Array(count * 2);
 			for (i in 0...count) {
 				uncompressedData[i * 2 + 0] = soundBytes.getFloat(i * 4);
 				uncompressedData[i * 2 + 1] = soundBytes.getFloat(i * 4);
 			}
 		}
 		else {
-			uncompressedData = new Vector<Float>(count);
+			uncompressedData = new kha.arrays.Float32Array(count);
 			for (i in 0...count) {
 				uncompressedData[i] = soundBytes.getFloat(i * 4);
 			}

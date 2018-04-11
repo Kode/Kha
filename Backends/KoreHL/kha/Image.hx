@@ -1,6 +1,7 @@
 package kha;
 
 import haxe.io.Bytes;
+import haxe.io.BytesData;
 import kha.korehl.graphics4.TextureUnit;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
@@ -9,6 +10,8 @@ import kha.graphics4.Usage;
 class Image implements Canvas implements Resource {
 	public var _texture: Pointer;
 	public var _renderTarget: Pointer;
+	public var _textureArray: Pointer;
+	public var _textureArrayTextures: Pointer;
 	
 	private var format: TextureFormat;
 	private var readable: Bool;
@@ -20,7 +23,7 @@ class Image implements Canvas implements Resource {
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
 		image.format = TextureFormat.RGBA32;
-		//image.initVideo(cast(video, kha.kore.Video));
+		image.initVideo(cast(video, kha.korehl.Video));
 		return image;
 	}
 
@@ -29,19 +32,54 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		return create3(width, height, depth, format == null ? TextureFormat.RGBA32 : format, false, 0);
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
+
+	// public static function createArray(images: Array<Image>, format: TextureFormat = null): Image {
+		// var image = new Image(false);
+		// image.format = (format == null) ? TextureFormat.RGBA32 : format;
+		// initArrayTexture(image, images);
+		// return image;
+	// }
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		var readable = true;
+		var image = new Image(readable);
+		image.format = format;
+		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
+		return image;
+	}
+
+	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
+		_texture = kore_texture_from_bytes(bytes.bytes, width, height, format, readable);
 	}
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return null;
+		var readable = true;
+		var image = new Image(readable);
+		image.format = format;
+		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
+		return image;
+	}
+
+	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
+		_texture = kore_texture_from_bytes3d(bytes.bytes, width, height, depth, format, readable);
+	}
+
+	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
+		var image = new Image(readable);
+		var isFloat = format == "hdr" || format == "HDR";
+		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.initFromEncodedBytes(bytes.getData(), format);
+		doneCallback(image);
+	}
+
+	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
+		_texture = kore_texture_from_encoded_bytes(bytes.bytes, bytes.length, StringHelper.convert(format), readable);
 	}
 
 	private function new(readable: Bool) {
@@ -85,11 +123,35 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
+	private static function getTextureFormat(format: TextureFormat): Int {
+		switch (format) {
+		case RGBA32:
+			return 0;
+		case RGBA128:
+			return 3;
+		case RGBA64:
+			return 4;
+		case A32:
+			return 5;
+		case A16:
+			return 7;
+		default:
+			return 1; // Grey8
+		}
+	}
+
 	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): Image {
 		var image = new Image(readable);
 		image.format = format;
 		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+		return image;
+	}
+
+	public static function create3(width: Int, height: Int, depth: Int, format: TextureFormat, readable: Bool, contextId: Int): Image {
+		var image = new Image(readable);
+		image.format = format;
+		image.init3D(width, height, depth, getTextureFormat(format));
 		return image;
 	}
 
@@ -103,10 +165,15 @@ class Image implements Canvas implements Resource {
 		_renderTarget = null;
 	}
 
-	//@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
-	//private function initVideo(video: kha.kore.Video): Void {
-	//
-	//}
+	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
+		_texture = kore_texture_create3d(width, height, depth, format, readable);
+		_renderTarget = null;
+	}
+
+	private function initVideo(video: kha.korehl.Video): Void {
+		_texture = kore_video_get_current_image(video._video);
+		_renderTarget = null;
+	}
 
 	public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
@@ -187,56 +254,68 @@ class Image implements Canvas implements Resource {
 		return _texture != null ? kore_texture_get_real_height(_texture) : kore_render_target_get_real_height(_renderTarget);
 	}
 
-	//@:functionCode("return (texture->at(x, y) & 0xff) != 0;")
 	public function isOpaque(x: Int, y: Int): Bool {
-		return true;
+		return atInternal(x, y) & 0xff != 0;
 	}
 
-	//@:functionCode('return texture->at(x, y);')
 	private function atInternal(x: Int, y: Int): Int {
-		return 0;
+		return kore_texture_at(_texture, x, y);
 	}
 
 	public inline function at(x: Int, y: Int): Color {
 		return Color.fromValue(atInternal(x, y));
 	}
 
-	//@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr;")
 	public function unload(): Void {
-
+		_texture != null ? kore_texture_unload(_texture) : kore_render_target_unload(_renderTarget);
 	}
 
 	private var bytes: Bytes = null;
 
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		bytes = Bytes.alloc(formatByteSize(format) * width * height);
 		return bytes;
 	}
 
-	/*@:functionCode('
-		Kore::u8* b = bytes->b->Pointer();
-		Kore::u8* tex = texture->lock();
-		for (int i = 0; i < ((texture->format == Kore::Image::RGBA32) ? (4 * texture->width * texture->height) : (texture->width * texture->height)); ++i) tex[i] = b[i];
-		texture->unlock();
-	')*/
 	public function unlock(): Void {
+		kore_texture_unlock(_texture, bytes.getData().bytes);
 		bytes = null;
 	}
 
+	private var pixels: Bytes = null;
 	public function getPixels(): Bytes {
-		return null;
+		if (_renderTarget == null) return null;
+		if (pixels == null) {
+			var size = formatByteSize(format) * width * height;
+			pixels = Bytes.alloc(size);
+		}
+		kore_render_target_get_pixels(_renderTarget, pixels.getData().bytes);
+		return pixels;
+	}
+
+	private static function formatByteSize(format: TextureFormat): Int {
+		return switch(format) {
+			case RGBA32: 4;
+			case L8: 1;
+			case RGBA128: 16;
+			case DEPTH16: 2;
+			case RGBA64: 8;
+			case A32: 4;
+			case A16: 2;
+			default: 4;
+		}
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		//untyped __cpp__("texture->generateMipmaps(levels)");
+		_texture != null ? kore_generate_mipmaps_texture(_texture, levels) : kore_generate_mipmaps_target(_renderTarget, levels);
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
-		/*for (i in 0...mipmaps.length) {
+		for (i in 0...mipmaps.length) {
 			var image = mipmaps[i];
 			var level = i + 1;
-			untyped __cpp__("texture->setMipmap(image->texture, level)");
-		}*/
+			kore_set_mipmap_texture(_texture, image._texture, level);
+		}
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
@@ -244,20 +323,34 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
+		kore_texture_clear(_texture, x, y, z, width, height, depth, color);
 	}
 	
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_create3d") static function kore_texture_create3d(width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_video_get_current_image") static function kore_video_get_current_image(video: Pointer): Pointer { return null; }
+	@:hlNative("std", "kore_texture_from_bytes") static function kore_texture_from_bytes(bytes: Pointer, width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_from_bytes3d") static function kore_texture_from_bytes3d(bytes: Pointer, width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }
+	@:hlNative("std", "kore_texture_from_encoded_bytes") static function kore_texture_from_encoded_bytes(bytes: Pointer, length: Int, format: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool { return false; }
 	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_real_width") static function kore_texture_get_real_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_real_height") static function kore_texture_get_real_height(texture: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_texture_at") static function kore_texture_at(texture: Pointer, x: Int, y: Int): Int { return 0; }
+	@:hlNative("std", "kore_texture_unload") static function kore_texture_unload(texture: Pointer): Void { }
+	@:hlNative("std", "kore_render_target_unload") static function kore_render_target_unload(renderTarget: Pointer): Void { }
 	@:hlNative("std", "kore_render_target_create") static function kore_render_target_create(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Pointer { return null; }
 	@:hlNative("std", "kore_render_target_get_width") static function kore_render_target_get_width(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_texture_unlock") static function kore_texture_unlock(texture: Pointer, bytes: Pointer): Void { }
+	@:hlNative("std", "kore_render_target_get_pixels") static function kore_render_target_get_pixels(renderTarget: Pointer, pixels: Pointer): Void { }
+	@:hlNative("std", "kore_generate_mipmaps_texture") static function kore_generate_mipmaps_texture(texture: Pointer, levels: Int): Void { }
+	@:hlNative("std", "kore_generate_mipmaps_target") static function kore_generate_mipmaps_target(renderTarget: Pointer, levels: Int): Void { }
+	@:hlNative("std", "kore_set_mipmap_texture") static function kore_set_mipmap_texture(texture: Pointer, mipmap: Pointer, level: Int): Void { }
 	@:hlNative("std", "kore_render_target_set_depth_stencil_from") static function kore_render_target_set_depth_stencil_from(renderTarget: Pointer, from: Pointer): Int { return 0; }
+	@:hlNative("std", "kore_texture_clear") static function kore_texture_clear(texture: Pointer, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void { }
 }

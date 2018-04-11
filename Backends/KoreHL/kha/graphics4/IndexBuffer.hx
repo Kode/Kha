@@ -5,32 +5,24 @@ import haxe.io.BytesData;
 
 class IndexBuffer {
 	public var _buffer: Pointer;
-	public var _data: kha.arrays.Uint32Array;
 	private var myCount: Int;
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
-		_data = new kha.arrays.Uint32Array(myCount);
-		init(indexCount);
-	}
-	
-	private function init(count: Int) {
-		_buffer = kore_create_indexbuffer(count);
+		_buffer = kore_create_indexbuffer(indexCount);
 	}
 
 	public function delete() {
-		
+		kore_delete_indexbuffer(_buffer);
 	}
 	
 	public function lock(): kha.arrays.Uint32Array {
-		return _data;
+		var u32array = new kha.arrays.Uint32Array();
+		u32array.setData(kore_indexbuffer_lock(_buffer), myCount);
+		return u32array;
 	}
 	
 	public function unlock(): Void {
-		var bytes = Bytes.ofData(new BytesData(kore_indexbuffer_lock(_buffer), myCount * 4));
-		for (i in 0...myCount) {
-			bytes.setInt32(i * 4, _data[i]);
-		}
 		kore_indexbuffer_unlock(_buffer);
 	}
 	
@@ -39,6 +31,7 @@ class IndexBuffer {
 	}
 	
 	@:hlNative("std", "kore_create_indexbuffer") static function kore_create_indexbuffer(count: Int): Pointer { return null; }
+	@:hlNative("std", "kore_delete_indexbuffer") static function kore_delete_indexbuffer(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_indexbuffer_lock") static function kore_indexbuffer_lock(buffer: Pointer): hl.Bytes { return null; }
 	@:hlNative("std", "kore_indexbuffer_unlock") static function kore_indexbuffer_unlock(buffer: Pointer): Void { }
 }

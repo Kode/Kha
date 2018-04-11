@@ -2,7 +2,6 @@ package kha.flash;
 
 import flash.media.SoundTransform;
 import flash.utils.ByteArray;
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
@@ -40,7 +39,7 @@ class Sound extends kha.Sound {
 			var length = 44100 * _mp3.length;
 			var array = new ByteArray();
 			var extractedLength: Int = cast (_mp3.extract(array, length));
-			uncompressedData = new Vector<Float>(extractedLength);
+			uncompressedData = new kha.arrays.Float32Array(extractedLength);
 			array.position = 0;
 			for (i in 0...extractedLength) {
 				uncompressedData.set(i, array.readFloat());

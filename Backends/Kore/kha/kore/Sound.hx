@@ -1,6 +1,5 @@
 package kha.kore;
 
-import haxe.ds.Vector;
 import sys.io.File;
 
 using StringTools;
@@ -17,9 +16,9 @@ class Sound extends kha.Sound {
 		this->_createData(sound->size * 2);
 		Kore::s16* left = (Kore::s16*)&sound->left[0];
 		Kore::s16* right = (Kore::s16*)&sound->right[0];
-		for (int i = 0; i < sound->size; i += 2) {
-			uncompressedData[i * 2 + 0] = left [i] / 32767.0;
-			uncompressedData[i * 2 + 1] = right[i] / 32767.0;
+		for (int i = 0; i < sound->size; i += 1) {
+			uncompressedData->self.data[i * 2 + 0] = (float)(left [i] / 32767.0);
+			uncompressedData->self.data[i * 2 + 1] = (float)(right[i] / 32767.0);
 		}
 		delete sound;
 	')
@@ -45,6 +44,6 @@ class Sound extends kha.Sound {
 	}
 	
 	function _createData(size: Int): Void {
-		uncompressedData = new Vector<Float>(size);
+		uncompressedData = new kha.arrays.Float32Array(size);
 	}
 }

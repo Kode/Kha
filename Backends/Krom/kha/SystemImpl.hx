@@ -78,11 +78,11 @@ class SystemImpl {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
-	private static var audioOutputData: Vector<Float>;
+	private static var audioOutputData: kha.arrays.Float32Array;
 	private static function audioCallback(samples: Int) : Void {
 		//Krom.log("Samples " + samples);
 		
-		audioOutputData = new Vector<Float>(samples);
+		audioOutputData = new kha.arrays.Float32Array(samples);
 		
 		// lock mutex
 		//Krom.audioThread(true);

@@ -1,78 +1,37 @@
 package kha.korehl;
 
 import haxe.ds.Vector;
+import sys.io.File;
 
+using StringTools;
+
+@:keep
 class Sound extends kha.Sound {
-	public var _sound: Pointer;
-	private var filename: String;
+
+	function initWav(filename: String) {
+		uncompressedData = new kha.arrays.Float32Array();
+		var dataSize = new kha.arrays.Uint32Array(1);
+		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData());
+		uncompressedData.setData(data, dataSize[0]);
+		dataSize.free();
+	}
+
+	function initOgg(filename: String) {
+		compressedData = File.getBytes(filename);
+	}
 	
 	public function new(filename: String) {
 		super();
-		this.filename = filename;
-	}
-	
-	/*@:functionCode('
-		sound = new Kore::Sound(filename.c_str());
-		if (sound->format.channels == 1) {
-			if (sound->format.bitsPerSample == 8) {
-				this->_createData(sound->size * 2);
-				for (int i = 0; i < sound->size; ++i) {
-					uncompressedData[i * 2 + 0] = sound->data[i] / 255.0 * 2.0 - 1.0;
-					uncompressedData[i * 2 + 1] = sound->data[i] / 255.0 * 2.0 - 1.0;
-				}
-			}
-			else if (sound->format.bitsPerSample == 16) {
-				this->_createData(sound->size);
-				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
-				for (int i = 0; i < sound->size / 2; ++i) {
-					uncompressedData[i * 2 + 0] = sdata[i] / 32767.0;
-					uncompressedData[i * 2 + 1] = sdata[i] / 32767.0;
-				}
-			}
-			else {
-				this->_createData(2);
-			}
+		if (filename.endsWith(".wav")) {
+			initWav(filename);
+		}
+		else if (filename.endsWith(".ogg")) {
+			initOgg(filename);
 		}
 		else {
-			if (sound->format.bitsPerSample == 8) {
-				this->_createData(sound->size);
-				for (int i = 0; i < sound->size; ++i) {
-					uncompressedData[i] = sound->data[i] / 255.0 * 2.0 - 1.0;
-				}
-			}
-			else if (sound->format.bitsPerSample == 16) {
-				this->_createData(sound->size / 2);
-				Kore::s16* sdata = (Kore::s16*)&sound->data[0];
-				for (int i = 0; i < sound->size / 2; ++i) {
-					uncompressedData[i] = sdata[i] / 32767.0;
-				}
-			}
-			else {
-				this->_createData(2);
-			}
+			trace("Unknown sound format: " + filename);
 		}
-	')*/
-	private function uncompress2(): Void {
-		
 	}
 
-	override public function uncompress(done: Void->Void): Void {
-		uncompress2();
-		compressedData = null;
-		done();
-	}
-	
-	//@:functionCode("delete sound; sound = nullptr;")
-	private function unload2(): Void {
-		
-	}
-		
-	override public function unload(): Void {
-		super.unload();
-		unload2();
-	}
-	
-	private function _createData(size: Int): Void {
-		uncompressedData = new Vector<Float>(size);
-	}
+	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer): Pointer { return null; }
 }

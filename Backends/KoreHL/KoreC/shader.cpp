@@ -55,8 +55,45 @@ extern "C" vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
 	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::FragmentShader);
 }
 
+extern "C" vbyte *hl_kore_create_geometryshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::GeometryShader);
+}
+
+extern "C" vbyte *hl_kore_create_tesscontrolshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationControlShader);
+}
+
+extern "C" vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
+	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
+}
+
+extern "C" vbyte *hl_kore_vertexshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::VertexShader);
+}
+
+extern "C" vbyte *hl_kore_fragmentshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::FragmentShader);
+}
+
+extern "C" vbyte *hl_kore_geometryshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::GeometryShader);
+}
+
+extern "C" vbyte *hl_kore_tesscontrolshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationControlShader);
+}
+
+extern "C" vbyte *hl_kore_tessevalshader_from_source(vbyte *source) {
+	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationEvaluationShader);
+}
+
 extern "C" vbyte *hl_kore_create_pipeline() {
 	return (vbyte*)new Kore::Graphics4::PipelineState();
+}
+
+extern "C" void hl_kore_delete_pipeline(vbyte *pipeline) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	delete pipe;
 }
 
 extern "C" void hl_kore_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
@@ -71,11 +108,31 @@ extern "C" void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *sha
 	pipe->fragmentShader = sh;
 }
 
-extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure) {
+extern "C" void hl_kore_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::VertexStructure* struc = (Kore::Graphics4::VertexStructure*)structure;
-	pipe->inputLayout[0] = struc;
-	pipe->inputLayout[1] = nullptr;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->geometryShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->tessellationControlShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	pipe->tessellationEvaluationShader = sh;
+}
+
+extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
+	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	pipe->inputLayout[0] = (Kore::Graphics4::VertexStructure*)structure0;
+	pipe->inputLayout[1] = (Kore::Graphics4::VertexStructure*)structure1;
+	pipe->inputLayout[2] = (Kore::Graphics4::VertexStructure*)structure2;
+	pipe->inputLayout[3] = (Kore::Graphics4::VertexStructure*)structure3;
+	pipe->inputLayout[4] = nullptr;
 	pipe->compile();
 }
 

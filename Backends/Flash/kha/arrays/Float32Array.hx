@@ -28,6 +28,16 @@ abstract Float32Array(ByteArray) {
 		this.position = index * elementSize;
 		return this.readFloat();
 	}
+
+	@:arrayAccess
+	public inline function arrayRead(index: Int): FastFloat {
+		return get(index);
+	}
+
+	@:arrayAccess
+	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
+		return set(index, value);
+	}
 	
 	public inline function data(): ByteArray {
 		return this;
