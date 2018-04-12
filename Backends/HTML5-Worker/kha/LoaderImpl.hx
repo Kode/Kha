@@ -75,6 +75,6 @@ class LoaderImpl {
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Kravur(blob));
-		});
+		}, failed);
 	}
 }
