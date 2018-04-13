@@ -108,6 +108,8 @@ extern class Krom {
 	static function fileSaveBytes(path: String, bytes: haxe.io.BytesData): Void;
 	static function sysCommand(cmd: String, ?args: Array<String>): Int;
 	static function savePath(): String;
+	static function getArgCount(): Int;
+	static function getArg(index: Int): String;
 
 	static function setBoolCompute(location: kha.compute.ConstantLocation, value: Bool): Void;
 	static function setIntCompute(location: kha.compute.ConstantLocation, value: Int): Void;
