@@ -10,7 +10,6 @@ class IndexBuffer {
 	
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;
-		_data = new Uint32Array(indexCount);
 		buffer = Krom.createIndexBuffer(indexCount);
 	}
 
@@ -20,13 +19,14 @@ class IndexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Uint32Array {
+		_data = Krom.lockIndexBuffer(buffer);
 		if (start == null) start = 0;
 		if (count == null) count = indexCount;
 		return _data.subarray(start, start + count);
 	}
 	
 	public function unlock(): Void {
-		Krom.setIndices(buffer, _data);
+		Krom.unlockIndexBuffer(buffer);
 	}
 	
 	public function set(): Void {
