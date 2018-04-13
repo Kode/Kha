@@ -27,8 +27,8 @@ extern class Krom {
 	static function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
 	static function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void;
-	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
-	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
+	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: kha.arrays.Float32Array): Void;
+	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: kha.arrays.Float32Array): Void;
 	
 	static function begin(renderTarget: kha.Canvas, additionalRenderTargets: Array<kha.Canvas>): Void;
 	static function beginFace(renderTarget: kha.Canvas, face: Int): Void;
@@ -52,11 +52,13 @@ extern class Krom {
 	static function clearTexture(target: Dynamic, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Int): Void;
 	static function createIndexBuffer(count: Int): Dynamic;
 	static function deleteIndexBuffer(buffer: Dynamic): Dynamic;
-	static function setIndices(buffer: Dynamic, indices: kha.arrays.Uint32Array): Void;
+	static function lockIndexBuffer(buffer: Dynamic): kha.arrays.Uint32Array;
+	static function unlockIndexBuffer(buffer: Dynamic): Void;
 	static function setIndexBuffer(buffer: Dynamic): Void;
 	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, instanceDataStepRate: Int): Dynamic;
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
-	static function setVertices(buffer: Dynamic, vertices: kha.arrays.Float32Array): Void;
+	static function lockVertexBuffer(buffer: Dynamic): kha.arrays.Float32Array;
+	static function unlockVertexBuffer(buffer: Dynamic): Void;
 	static function setVertexBuffer(buffer: Dynamic): Void;
 	static function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	static function drawIndexedVertices(start: Int, count: Int): Void;
@@ -118,8 +120,8 @@ extern class Krom {
 	static function setFloat3Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
 	static function setFloatsCompute(location: kha.compute.ConstantLocation, values: kha.arrays.Float32Array): Void;
-	static function setMatrixCompute(location: kha.compute.ConstantLocation, matrix: kha.math.FastMatrix4): Void;
-	static function setMatrix3Compute(location: kha.compute.ConstantLocation, matrix: kha.math.FastMatrix3): Void;
+	static function setMatrixCompute(location: kha.compute.ConstantLocation, matrix: kha.arrays.Float32Array): Void;
+	static function setMatrix3Compute(location: kha.compute.ConstantLocation, matrix: kha.arrays.Float32Array): Void;
 	static function setTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas, access: Int): Void;
 	static function setSampledTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas): Void;
 	static function setSampledDepthTextureCompute(unit: kha.compute.TextureUnit, texture: kha.Canvas): Void;

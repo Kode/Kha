@@ -55,12 +55,20 @@ class Compute {
 		Compute.setFloat4(location, value.x, value.y, value.z, value.w);
 	}
 
-	public static function setMatrix(location: ConstantLocation, value: FastMatrix4): Void {
-		Krom.setMatrixCompute(location, value);
+	static var mat = new kha.arrays.Float32Array(16);
+	public static function setMatrix(location: ConstantLocation, matrix: FastMatrix4): Void {
+		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02; mat[3] = matrix._03;
+		mat[4] = matrix._10; mat[5] = matrix._11; mat[6] = matrix._12; mat[7] = matrix._13;
+		mat[8] = matrix._20; mat[9] = matrix._21; mat[10] = matrix._22; mat[11] = matrix._23;
+		mat[12] = matrix._30; mat[13] = matrix._31; mat[14] = matrix._32; mat[15] = matrix._33;
+		Krom.setMatrixCompute(location, mat);
 	}
 
-	public static function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {
-		Krom.setMatrix3Compute(location, value);
+	public static function setMatrix3(location: ConstantLocation, matrix: FastMatrix3): Void {
+		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02;
+		mat[3] = matrix._10; mat[4] = matrix._11; mat[5] = matrix._12;
+		mat[6] = matrix._20; mat[7] = matrix._21; mat[8] = matrix._22;
+		Krom.setMatrix3Compute(location, mat);
 	}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
