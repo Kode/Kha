@@ -51,7 +51,14 @@ class LoaderImpl {
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void): Void {
 		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
-			done(Blob._fromBuffer(data));
+			if (error != null) {
+				failed({
+					url: desc.files[0],
+					error: error,
+				});
+			} else {
+				done(Blob._fromBuffer(data));
+			}
 		});
 	}
 
