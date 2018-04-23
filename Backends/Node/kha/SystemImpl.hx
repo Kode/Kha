@@ -205,4 +205,8 @@ class SystemImpl {
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
 	}
+
+	public static function getPen(num: Int): kha.input.Pen {
+		return null;
+	}
 }
