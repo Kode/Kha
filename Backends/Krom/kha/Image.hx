@@ -147,15 +147,12 @@ class Image implements Canvas implements Resource {
 		renderTarget_ = null;
 	}
 
-	private var bytes: Bytes = null;
-
-	public function lock(level: Int = 0): Bytes { 
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
-		return bytes;
+	public function lock(level: Int = 0): Bytes {
+		return Bytes.ofData(Krom.lockTexture(texture_, level));
 	}
 
 	public function unlock(): Void {
-		Krom.unlockTexture(texture_, bytes.getData());
+		Krom.unlockTexture(texture_);
 	}
 
 	private var pixels: Bytes = null;
