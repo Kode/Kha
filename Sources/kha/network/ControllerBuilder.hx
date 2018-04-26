@@ -38,7 +38,7 @@ class ControllerBuilder {
 								size += 8;
 							case "Bool":
 								size += 1;
-							case "Key":
+							case "KeyCode":
 								size += 1;
 							}
 						default:
@@ -82,11 +82,11 @@ class ControllerBuilder {
 									bytes.set($v { index } , $i { argname } ? 1 : 0);
 								};
 								index += 1;
-							case "Key":
+							case "KeyCode":
 								var argname = arg.name;
 								expr = macro @:mergeBlock {
 									$expr;
-									bytes.set($v { index } , Type.enumIndex($i { argname } ));
+									bytes.set($v { index } , $i { argname });
 								};
 								index += 1;
 							}
