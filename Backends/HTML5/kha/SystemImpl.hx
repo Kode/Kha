@@ -566,7 +566,7 @@ class SystemImpl {
 
 	private static var iosSoundEnabled: Bool = false;
 
-	private static function unlockSoundOnIOS(): Void {
+	private static function unlockiOSSound(): Void {
 		if (!ios || iosSoundEnabled) return;
 		
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
@@ -580,13 +580,24 @@ class SystemImpl {
 		iosSoundEnabled = true;
 	}
 
+	static var soundEnabled = false;
+
+	static function unlockSound(): Void {
+		if (!soundEnabled && kha.audio2.Audio._context != null) {
+			kha.audio2.Audio._context.resume().then(function (c) {
+				soundEnabled = true;
+			});
+		}
+		unlockiOSSound();
+	}
+
 	private static function mouseLeave():Void {
 		mouse.sendLeaveEvent(0);
 	}
 	
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		event.preventDefault();
 
@@ -615,7 +626,7 @@ class SystemImpl {
 
 	private static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		setMouseXY(event);
 		if (event.which == 1) { //left button
@@ -648,7 +659,7 @@ class SystemImpl {
 	}
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 	
 		if (event.which != 1) return;
 		
@@ -671,7 +682,7 @@ class SystemImpl {
 	}
 
 	private static function mouseMiddleUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 
 		if (event.which != 2) return;
 		
@@ -682,7 +693,7 @@ class SystemImpl {
 	}
 
 	private static function mouseRightUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 
 		if (event.which != 3) return;
 		
@@ -699,7 +710,7 @@ class SystemImpl {
 	
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
@@ -735,7 +746,7 @@ class SystemImpl {
 
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		event.stopPropagation();
 		event.preventDefault();
@@ -757,7 +768,7 @@ class SystemImpl {
 
 	private static function touchUp(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
@@ -775,7 +786,7 @@ class SystemImpl {
 
 	private static function touchMove(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		var index = 0;
 		for (touch in event.changedTouches) {
@@ -799,7 +810,7 @@ class SystemImpl {
 
 	private static function touchCancel(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
