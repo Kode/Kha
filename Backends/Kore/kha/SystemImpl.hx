@@ -257,6 +257,14 @@ class SystemImpl {
 		}
 	}
 
+	public static function hideSystemCursor(): Void {
+		untyped __cpp__("Kore::Mouse::the()->show(false);");
+	}
+
+	public static function showSystemCursor(): Void {
+		untyped __cpp__("Kore::Mouse::the()->show(true);");
+	}
+
 	public static function frame(id: Int) {
 		/*
 		#if !ANDROID
