@@ -168,6 +168,14 @@ class SystemImpl {
 		}
 	}
 
+	public static function hideSystemCursor(): Void {
+		kore_show_mouse(false);
+	}
+
+	public static function showSystemCursor(): Void {
+		kore_show_mouse(true);
+	}
+
 	public static function keyDown(code: KeyCode): Void {
 		keyboard.sendDownEvent(code);
 	}
@@ -381,6 +389,7 @@ class SystemImpl {
 	@:hlNative("std", "kore_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void { }
 	@:hlNative("std", "kore_can_lock_mouse") static function kore_can_lock_mouse(windowId: Int): Bool { return false; }
 	@:hlNative("std", "kore_is_mouse_locked") static function kore_is_mouse_locked(windowId: Int): Bool { return false; }
+	@:hlNative("std", "kore_show_mouse") static function kore_show_mouse(show: Bool): Void { }
 	@:hlNative("std", "kore_system_is_fullscreen") static function kore_system_is_fullscreen(): Bool { return false; }
 	@:hlNative("std", "kore_system_request_fullscreen") static function kore_system_request_fullscreen(): Void { }
 	@:hlNative("std", "kore_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void { }
