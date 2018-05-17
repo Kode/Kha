@@ -54,6 +54,10 @@ extern "C" bool hl_kore_is_mouse_locked(int windowId) {
 	return Kore::Mouse::the()->isLocked(windowId);
 }
 
+extern "C" void hl_kore_show_mouse(bool show) {
+	Kore::Mouse::the()->show(show);
+}
+
 extern "C" bool hl_kore_system_is_fullscreen() {
 	return Kore::System::isFullscreen();
 }

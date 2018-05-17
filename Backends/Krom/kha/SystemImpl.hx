@@ -251,6 +251,14 @@ class SystemImpl {
 		}
 	}
 
+	public static function hideSystemCursor(): Void {
+		Krom.showMouse(false);
+	}
+
+	public static function showSystemCursor(): Void {
+		Krom.showMouse(true);
+	}
+
 	static function unload(): Void {
 		
 	}
