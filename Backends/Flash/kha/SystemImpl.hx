@@ -56,9 +56,6 @@ class SystemImpl {
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, onReady);
 
 		stage3D.requestContext3D(cast Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
-
-		// TODO: Move?
-		kha.EnvironmentVariables.instance = new kha.flash.EnvironmentVariables();
 	}
 
 	public static function initEx( title  : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
