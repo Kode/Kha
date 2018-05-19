@@ -55,7 +55,6 @@ using StringTools;
 		}
 	}
 }*/
-
 class Sound extends kha.Sound {
 	private var filenames: Array<String>;
 	static var loading: Array<Sound> = new Array();
@@ -95,7 +94,6 @@ class Sound extends kha.Sound {
 	//	}
 	//	return new SoundChannel(element);
 	//}
-
 	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
 			for (i in 0...filenames.length - 1) {

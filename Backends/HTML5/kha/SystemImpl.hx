@@ -264,7 +264,6 @@ class SystemImpl {
 		Scheduler.init();
 
 		loadFinished();
-		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 
 	public static function getMouse(num: Int): Mouse {
@@ -421,7 +420,6 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-
 			var sysGamepads = getGamepads();
 			if (sysGamepads != null) {
 				for (i in 0...sysGamepads.length) {
@@ -471,7 +469,10 @@ class SystemImpl {
 		canvas.focus();
 
 		// disable context menu
-		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
+		canvas.oncontextmenu = function (event: Dynamic) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
@@ -719,9 +720,9 @@ class SystemImpl {
 		var movementX = event.movementX;
 		var movementY = event.movementY;
 
-		if(event.movementX == null) {
-		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
-		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		if (event.movementX == null) {
+			movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+			movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
 		}
 
 		// this ensures same behaviour across browser until they fix it
@@ -1015,7 +1016,6 @@ class SystemImpl {
 		js.Browser.document.addEventListener('webkitfullscreenerror', error, false);
 		js.Browser.document.addEventListener('MSFullscreenError', error, false);
 	}
-
 
 	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.removeEventListener('fullscreenchange', func, false);

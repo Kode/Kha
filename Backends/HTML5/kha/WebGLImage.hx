@@ -215,7 +215,7 @@ class WebGLImage extends Image {
 
 				// TODO: Multisampling
 				//var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-        		//SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+				//SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
 				//untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER, 4, GL.RGBA8, realWidth, realHeight);
 				//SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
 			}
@@ -258,7 +258,7 @@ class WebGLImage extends Image {
 
 	private function initDepthStencilBuffer(depthStencilFormat: DepthStencilFormat) {
 		switch (depthStencilFormat) {
-		case NoDepthAndStencil: {}
+		case NoDepthAndStencil:
 		case DepthOnly, Depth16: {
 			if (SystemImpl.depthTexture == null) {
 				renderBuffer = SystemImpl.gl.createRenderbuffer();

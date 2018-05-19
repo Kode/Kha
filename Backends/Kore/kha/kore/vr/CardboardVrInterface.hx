@@ -28,7 +28,6 @@ import kha.vr.TimeWarpParms;
 
 import kha.Loader;
 
-
 #if ANDROID
 
 @:headerCode('
@@ -41,7 +40,6 @@ import kha.Loader;
 #if VR_CARDBOARD
 
 class CardboardVrInterfaceTest extends kha.vr.VrInterface {
-	
 	// We draw directly to the screen
 	public var framebuffer: Framebuffer;
 	
@@ -53,9 +51,7 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 	private function GetGaze(): Quaternion {
 		return null;		
 	}
-	
-	
-	
+		
 	public override function GetSensorState(): SensorState {
 		// Return from cardboard api
 		
@@ -66,31 +62,24 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		
 		return s;
 	}
-	
-	
-	
+		
 	public override function GetPredictedSensorState(time: Float): SensorState {
 		// Return using cardboard api
 		return GetSensorState();
 	}
-	
-	
+		
 	public override function WarpSwapBlack(): Void {
 		// Oculus-specific
 	}
-	
-	
-	
+		
 	public override function WarpSwapLoadingIcon(): Void {
 		// Oculus-specific
 	}
-	
-	
+		
 	public override function WarpSwap(parms: TimeWarpParms): Void {
 		// Draw the two images, side-by-side
 		//parms.LeftImage.Image = Loader.the.getImage("use.png");
-		
-		
+				
 		if (image == null) {
 			image = Image.createRenderTarget(Sys.pixelWidth, Sys.pixelHeight, TextureFormat.RGBA32);
 		}
@@ -102,25 +91,19 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		
 		g.setCullMode(CullMode.None);
 		// g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendZero);
-		
-		
-		
-		
+				
 		g.setProgram(program);
 		g.setVertexBuffer(vb);
 		g.setIndexBuffer(ib);
-		
-		
+				
 		var texture: TextureUnit = program.getTextureUnit("tex");
 		var matrixLocation: ConstantLocation = program.getConstantLocation("projectionMatrix");
-		
-		
+				
 		var t: Matrix4 = Matrix4.translation( -0.5, 0, 0);
 		var s: Matrix4 = Matrix4.scale(0.5, 1, 1);
 		var m: Matrix4 = s.multmat(t);
 		g.setMatrix(matrixLocation, m);
-		
-		
+				
 		g.setTexture(texture, parms.LeftImage.Image);
 		g.drawIndexedVertices();
 		
@@ -128,14 +111,10 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		m = s.multmat(t);
 		
 		g.setMatrix(matrixLocation, m);
-		
-		
+				
 		g.setTexture(texture, parms.RightImage.Image);
 		g.drawIndexedVertices();
-		
-		
-		
-		
+				
 		g.end();
 		
 		framebuffer.g4.begin();
@@ -144,16 +123,12 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		framebuffer.g4.end();
 	}
 	
-	@:functionCode('
-	Kore::VrInterface::DistortTexture(image.mPtr);
-	')
+	@:functionCode('Kore::VrInterface::DistortTexture(image.mPtr);')
 	private function SendTextureToDistortion(image: Image) {
 		// TODO: Add a function to CPP VrInterface
 		// TODO: Check how large the texture should be
-		
 	}
-	
-	
+		
 	public override function GetTimeInSeconds(): Float {
 		return Sys.getTime();
 	}
@@ -176,17 +151,11 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 			a[base + i] = color.get(i);
 		}
 	}
-	
-	
-	
+		
 	public function new() {
 		super();
-		
-		
+				
 		var structure: VertexStructure = new VertexStructure();
-		
-		
-		
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
 		structure.add("vertexColor", VertexData.Float4);
@@ -210,8 +179,7 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		indices[3] = 1;
 		indices[4] = 3;
 		indices[5] = 2;
-		
-		
+				
 		ib.unlock(); 
 		
 		program = new Program();
@@ -220,7 +188,6 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 		program.setFragmentShader(new FragmentShader(Loader.the.getShader("painter-image.frag")));
 		program.link(structure);
 	}
-	
 }
 
 #end

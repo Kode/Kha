@@ -204,7 +204,6 @@ class SystemImpl {
 		#end
 		*/
 
-
 		// (DK) moved
 /*		Shaders.init();
 
@@ -436,7 +435,9 @@ class SystemImpl {
 	}
 
 	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode, resizable, maximizable, minimizable);')
-	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {}
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {
+		
+	}
 
 	static function translatePosition(value: Null<WindowOptions.Position>): Int {
 		if (value == null) {
@@ -612,7 +613,7 @@ class SystemImpl {
 				listener();
 			}
 		}
-  	}
+	}
 
 	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		if (canSwitchFullscreen() && func != null) {

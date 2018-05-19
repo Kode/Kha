@@ -37,7 +37,7 @@ class VrInterface extends kha.vr.VrInterface {
 			vrEnabled = true;
 			getVRDisplays();
 			trace("Display enabled.");
-        }
+		}
 	}
 
 	private function getVRDisplays() {
@@ -221,5 +221,4 @@ class VrInterface extends kha.vr.VrInterface {
 		}
 		return quaternion;
 	}
-
 }

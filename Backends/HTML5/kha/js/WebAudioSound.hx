@@ -56,7 +56,6 @@ class WebAudioChannel extends kha.SoundChannel {
 	}
 }
 */
-
 class WebAudioSound extends kha.Sound {
 	public function new(filename: String, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		super();
@@ -90,8 +89,10 @@ class WebAudioSound extends kha.Sound {
 				var idx = 0;
 				var i = 0;
 				var lidx = len * 2;
-				var uncompressInner = function() {};
-				uncompressInner = function() {
+				var uncompressInner = function () {
+
+				};
+				uncompressInner = function () {
 					var chk_len = idx + 11025;
 					var next_chk = chk_len > lidx ? lidx : chk_len;
 					while(idx < next_chk) {
@@ -114,8 +115,10 @@ class WebAudioSound extends kha.Sound {
 				var idx = 0;
 				var i = 0;
 				var lidx = len * 2;
-				var uncompressInner = function() {};
-				uncompressInner = function() {
+				var uncompressInner = function () {
+
+				};
+				uncompressInner = function () {
 					var chk_len = idx + 11025;
 					var next_chk = chk_len > lidx ? lidx : chk_len;
 					while(idx < next_chk) {

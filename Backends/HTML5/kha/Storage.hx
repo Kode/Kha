@@ -6,14 +6,13 @@ import haxe.io.BytesData;
 
 using StringTools;
 
-typedef WebStorage = 
-{
-	var length : Int;
-    var key : Int -> String;
-	var getItem : String -> String;
-	var setItem : String -> String -> Void;
-	var removeItem : String -> Void;
-	var clear : Void -> Void;
+typedef WebStorage = {
+	var length: Int;
+	var key: Int->String;
+	var getItem: String->String;
+	var setItem: String->String->Void;
+	var removeItem: String->Void;
+	var clear: Void->Void;
 }
 
 class LocalStorageFile extends StorageFile {
@@ -28,7 +27,9 @@ class LocalStorageFile extends StorageFile {
 		try {
 			storage = untyped __js__("window.localStorage");
 		}
-		catch (e: Dynamic) { }
+		catch (e: Dynamic) {
+
+		}
 		if (storage == null) return null;
 		var value: String = storage.getItem(System.title + "_" + name);
 		if (value == null) {
@@ -43,7 +44,9 @@ class LocalStorageFile extends StorageFile {
 		try {
 			storage = untyped __js__("window.localStorage");
 		}
-		catch (e: Dynamic) { }
+		catch (e: Dynamic) {
+
+		}
 		if (storage == null) return;
 		storage.setItem(System.title + "_" + name, encode(data.bytes.getData()));
 	}
@@ -63,7 +66,8 @@ class LocalStorageFile extends StorageFile {
 			converted = (ele + 42) % 256;
 			if (!Lambda.has(reserved, converted)) {
 				output += String.fromCharCode(converted);
-			} else {
+			}
+			else {
 				converted = (converted + 64) % 256;
 				output += "=" + String.fromCharCode(converted);
 			}
@@ -83,7 +87,9 @@ class LocalStorageFile extends StorageFile {
 		for (i in 0...source.length) {
 			c = source.fastCodeAt(i);
 			// ignore newlines
-			if (c == 13 || c == 10) { continue; }
+			if (c == 13 || c == 10) {
+				continue;
+			}
 			// if we're an "=" and we haven't been flagged, set flag
 			if (c == 61 && !ck) {
 				ck = true;

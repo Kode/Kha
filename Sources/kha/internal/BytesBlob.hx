@@ -196,7 +196,7 @@ class BytesBlob implements Resource {
 		return value;
 	}
 	
-	 function readUtf8Block(buffer: Vector<Int>, position: { value: Int }): String {
+	function readUtf8Block(buffer: Vector<Int>, position: { value: Int }): String {
 		var bufferindex: Int = 0;
 		if (position.value >= length) return "";
 		while (bufferindex < bufferSize) {

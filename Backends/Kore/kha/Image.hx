@@ -41,7 +41,6 @@ class Image implements Canvas implements Resource {
 		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
 	}
 	
-	
 	/**
 	 * Textures in array mast be readable!
 	 */
@@ -62,8 +61,6 @@ class Image implements Canvas implements Resource {
 	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
 		
 	}
-	
-	
 	
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
