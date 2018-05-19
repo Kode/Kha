@@ -326,7 +326,8 @@ class SystemImpl {
 
 		#if kha_webgl
 		try {
-			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+			
+			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
 			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
@@ -349,7 +350,7 @@ class SystemImpl {
 
 		if (!gl2) {
 			try {
-				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
 				if (SystemImpl.gl != null) {
 					SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 					SystemImpl.gl.getExtension("OES_texture_float");
