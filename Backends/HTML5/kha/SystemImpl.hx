@@ -584,23 +584,23 @@ class SystemImpl {
 	static var soundEnabled = false;
 
 	static function unlockSound(): Void {
-        if (!soundEnabled) {
-            var context = kha.audio2.Audio._context;
- 
-            if (context == null) {
-                context = untyped __js__('kha_audio2_Audio1._context');
-            }
- 
-            if (context != null) {
-                context.resume().then(function (c) {
-                    soundEnabled = true;
-                }).catchError(function( err ) {
-                    trace(err);
-                });
-            }
-        }
-        unlockiOSSound();
-    }
+		if (!soundEnabled) {
+			var context = kha.audio2.Audio._context;
+
+			if (context == null) {
+				context = untyped __js__('kha_audio2_Audio1._context');
+			}
+
+			if (context != null) {
+				context.resume().then(function(c) {
+					soundEnabled = true;
+				}).catchError(function(err) {
+					trace(err);
+				});
+			}
+		}
+		unlockiOSSound();
+	}
 	
 	private static function mouseLeave():Void {
 		mouse.sendLeaveEvent(0);
