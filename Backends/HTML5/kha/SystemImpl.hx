@@ -60,7 +60,9 @@ class SystemImpl {
 		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
 		var electron = untyped __js__("require('electron')");
-		electron.webFrame.setZoomLevelLimits(1, 1);
+		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
+			electron.webFrame.setZoomLevelLimits(1, 1);
+		}
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
