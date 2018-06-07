@@ -142,7 +142,7 @@ class Kravur implements Resource {
 	}
 	
 	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
-		if (glyphs == null) glyphs = kha.graphics2.Graphics._glyphs;
+		if (glyphs == null) glyphs = kha.graphics2.Graphics.fontGlyphs;
 
 		if (glyphs != oldGlyphs) {
 			oldGlyphs = glyphs;

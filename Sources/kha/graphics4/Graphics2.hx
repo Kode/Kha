@@ -956,14 +956,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawString(text, opacity, color, x, y, transformation, fontGlyphs);
+		textPainter.drawString(text, opacity, color, x, y, transformation, kha.graphics2.Graphics.fontGlyphs);
 	}
 
 	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
 		
-		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, fontGlyphs);
+		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, kha.graphics2.Graphics.fontGlyphs);
 	}
 
 	override public function get_font(): Font {

@@ -175,15 +175,15 @@ class CanvasGraphics extends Graphics {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 		
-		var image = webfont.getImage(fontSize, myColor, fontGlyphs);
+		var image = webfont.getImage(fontSize, myColor, kha.graphics2.Graphics.fontGlyphs);
 		if (image.width > 0) {
 			// the image created in getImage() is not imediately useable
 			var xpos = x;
 			var ypos = y;
 			for (i in 0...text.length) {
 				var q;
-				if (fontGlyphs != null)
-					q = webfont.kravur._get(fontSize, fontGlyphs).getBakedQuad(bakedQuadCache, fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
+				if (kha.graphics2.Graphics.fontGlyphs != null)
+					q = webfont.kravur._get(fontSize, kha.graphics2.Graphics.fontGlyphs).getBakedQuad(bakedQuadCache, kha.graphics2.Graphics.fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
 				else
 					q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, text.charCodeAt(i) - 32, xpos, ypos);
 
