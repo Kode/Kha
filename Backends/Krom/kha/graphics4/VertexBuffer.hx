@@ -15,7 +15,6 @@ class VertexBuffer {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
 		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, instanceDataStepRate);
-		_data = new Float32Array(vertexCount * Std.int(structure.byteSize() / 4));
 	}
 
 	public function delete() {
@@ -24,11 +23,12 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
+		_data = Krom.lockVertexBuffer(buffer);
 		return _data;
 	}
 	
 	public function unlock(): Void {
-		Krom.setVertices(buffer, _data);
+		Krom.unlockVertexBuffer(buffer);
 	}
 	
 	public function stride(): Int {

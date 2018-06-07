@@ -1,0 +1,1 @@
+haxelib run checkstyle -s Sources -s Backends/HTML5 -s Backends/Kore/kha

@@ -23,8 +23,8 @@ class IndexBuffer {
 	}
 	
 	@:functionCode('
-		data.data = (unsigned int*)buffer->lock() + start;
-		data.myLength = count;
+		data->self.data = (unsigned int*)buffer->lock() + start;
+		data->self.myLength = count;
 		return data;
 	')
 	private function lock2(start: Int, count: Int): Uint32Array {

@@ -1,5 +1,6 @@
 package kha.math;
 
+@:structInit
 class Vector2i {
 	public inline function new(x: Int = 0, y: Int = 0): Void {
 		this.x = x;

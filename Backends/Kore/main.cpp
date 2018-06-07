@@ -4,6 +4,7 @@
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/Mouse.h>
+#include <Kore/Input/Pen.h>
 #include <Kore/Input/Sensor.h>
 #include <Kore/Input/Surface.h>
 #include <Kore/Audio2/Audio.h>
@@ -65,6 +66,18 @@ namespace {
 
 	void mouseLeave(int windowId) {
 		SystemImpl_obj::mouseLeave(windowId);
+	}
+
+	void penDown(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penDown(windowId, x, y, pressure);
+	}
+
+	void penUp(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penUp(windowId, x, y, pressure);
+	}
+
+	void penMove(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penMove(windowId, x, y, pressure);
 	}
 
 	void accelerometerChanged(float x, float y, float z) {
@@ -308,6 +321,9 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::Mouse::the()->Move = mouseMove;
 	Kore::Mouse::the()->Scroll = mouseWheel;
 	Kore::Mouse::the()->Leave = mouseLeave;
+	Kore::Pen::the()->Press = penDown;
+	Kore::Pen::the()->Release = penUp;
+	Kore::Pen::the()->Move = penMove;
 	Kore::Gamepad::get(0)->Axis = gamepad1Axis;
 	Kore::Gamepad::get(0)->Button = gamepad1Button;
 	Kore::Gamepad::get(1)->Axis = gamepad2Axis;

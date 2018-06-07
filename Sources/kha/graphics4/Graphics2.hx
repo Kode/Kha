@@ -836,14 +836,16 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var height = canvas.height;
 		if (Std.is(canvas, Framebuffer)) {
 			projectionMatrix = FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
-		} else {
+		}
+		else {
 			if (!Image.nonPow2Supported) {
 				width = upperPowerOfTwo(width);
 				height = upperPowerOfTwo(height);
 			}
 			if (g.renderTargetsInvertedY()) {
 				projectionMatrix = FastMatrix4.orthogonalProjection(0, width, 0, height, 0.1, 1000);
-			} else {
+			}
+			else {
 				projectionMatrix = FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000);
 			}
 		}
@@ -1098,7 +1100,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		shaderPipeline.inputLayout = [structure];
 		shaderPipeline.blendSource = BlendingFactor.BlendOne;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
 		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 		return shaderPipeline;
 	}

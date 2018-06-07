@@ -40,7 +40,7 @@ static void regexp_finalize( ereg *e ) {
 	free(e->matches);
 }
 
-HL_PRIM ereg *regexp_regexp_new_options( vbyte *str, vbyte *opts ) {
+HL_PRIM ereg *hl_regexp_new_options( vbyte *str, vbyte *opts ) {
 	ereg *r;
 	const char *error;
 	int err_offset;
@@ -72,11 +72,13 @@ HL_PRIM ereg *regexp_regexp_new_options( vbyte *str, vbyte *opts ) {
 	p = pcre16_compile2((PCRE_SPTR16)str,options,&errorcode,&error,&err_offset,NULL);
 	if( p == NULL ) {
 		hl_buffer *b = hl_alloc_buffer();
+		vdynamic *d = hl_alloc_dynamic(&hlt_bytes);
 		hl_buffer_str(b,USTR("Regexp compilation error : "));
 		hl_buffer_cstr(b,error);
 		hl_buffer_str(b,USTR(" in "));
 		hl_buffer_str(b,(uchar*)str);
-		hl_error_msg(USTR("%s"),hl_buffer_content(b,NULL));
+		d->v.bytes = (vbyte*)hl_buffer_content(b,NULL);
+		hl_throw(d);
 	}
 	r = (ereg*)hl_gc_alloc_finalizer(sizeof(ereg));
 	r->finalize = regexp_finalize;
@@ -91,18 +93,18 @@ HL_PRIM ereg *regexp_regexp_new_options( vbyte *str, vbyte *opts ) {
 	return r;
 }
 
-HL_PRIM int regexp_regexp_matched_pos( ereg *e, int m, int *len ) {
+HL_PRIM int hl_regexp_matched_pos( ereg *e, int m, int *len ) {
 	int start;
 	if( !e->matched )
 		hl_error("Calling matchedPos() on an unmatched regexp"); 
 	if( m < 0 || m >= e->nmatches )
 		hl_error_msg(USTR("Matched index %d outside bounds"),m);
 	start = e->matches[m*2];
-	*len = e->matches[m*2+1] - start;
+	if( len ) *len = e->matches[m*2+1] - start;
 	return start;
 }
 
-HL_PRIM bool regexp_regexp_match( ereg *e, vbyte *s, int pos, int len ) {
+HL_PRIM bool hl_regexp_match( ereg *e, vbyte *s, int pos, int len ) {
 	int res = pcre16_exec(e->p,&limit,(PCRE_SPTR16)s,pos+len,pos,0,e->matches,e->nmatches * 3);
 	e->matched = res >= 0;
 	if( res >= 0 )
@@ -111,4 +113,9 @@ HL_PRIM bool regexp_regexp_match( ereg *e, vbyte *s, int pos, int len ) {
 		hl_error("An error occured while running pcre_exec");
 	return false;
 }
+
+#define _EREG _ABSTRACT(ereg)
+DEFINE_PRIM( _EREG, regexp_new_options, _BYTES _BYTES);
+DEFINE_PRIM( _I32, regexp_matched_pos, _EREG _I32 _REF(_I32));
+DEFINE_PRIM( _BOOL, regexp_match, _EREG _BYTES _I32 _I32);
 

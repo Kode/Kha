@@ -1,7 +1,7 @@
 package kha.android;
 
 import android.opengl.GLES20;
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import java.NativeArray;
 import kha.android.graphics4.ConstantLocation;
 import kha.android.graphics4.TextureUnit;
@@ -324,7 +324,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	private var valuesCache = new NativeArray<Single>(128);
 
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		for (i in 0...values.length) {
 			valuesCache[i] = values[i];
 		}

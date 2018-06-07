@@ -23,6 +23,7 @@ class WebGLImage extends Image {
 	private var myHeight: Int;
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
+	private var samples: Int;
 	public var frameBuffer: Dynamic = null;
 	public var renderBuffer: Dynamic = null;
 	public var texture: Dynamic = null;
@@ -59,11 +60,12 @@ class WebGLImage extends Image {
 		}
 	}
 
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int) {
 		myWidth = width;
 		myHeight = height;
 		this.format = format;
 		this.renderTarget = renderTarget;
+		this.samples = samples;
 		image = null;
 		video = null;
 		this.depthStencilFormat = depthStencilFormat;
@@ -210,6 +212,12 @@ class WebGLImage extends Image {
 			}
 			else {
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+
+				// TODO: Multisampling
+				//var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
+				//SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+				//untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER, 4, GL.RGBA8, realWidth, realHeight);
+				//SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
 			}
 
 			initDepthStencilBuffer(depthStencilFormat);
@@ -250,12 +258,12 @@ class WebGLImage extends Image {
 
 	private function initDepthStencilBuffer(depthStencilFormat: DepthStencilFormat) {
 		switch (depthStencilFormat) {
-		case NoDepthAndStencil: {}
+		case NoDepthAndStencil:
 		case DepthOnly, Depth16: {
 			if (SystemImpl.depthTexture == null) {
 				renderBuffer = SystemImpl.gl.createRenderbuffer();
 				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
+				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight); 
 				SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 			}
 			else {

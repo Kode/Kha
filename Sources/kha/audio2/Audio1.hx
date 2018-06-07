@@ -12,8 +12,8 @@ class Audio1 {
 	
 	private static var internalSoundChannels: Vector<AudioChannel>;
 	private static var internalStreamChannels: Vector<StreamChannel>;
-	private static var sampleCache1: Vector<FastFloat>;
-	private static var sampleCache2: Vector<FastFloat>;
+	private static var sampleCache1: kha.arrays.Float32Array;
+	private static var sampleCache2: kha.arrays.Float32Array;
 	#if cpp
 	private static var mutex: Mutex;
 	#end
@@ -27,8 +27,8 @@ class Audio1 {
 		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
 		internalStreamChannels = new Vector<StreamChannel>(channelCount);
-		sampleCache1 = new Vector<FastFloat>(512);
-		sampleCache2 = new Vector<FastFloat>(512);
+		sampleCache1 = new kha.arrays.Float32Array(512);
+		sampleCache2 = new kha.arrays.Float32Array(512);
 		Audio.audioCallback = mix;
 	}
 	
@@ -42,8 +42,8 @@ class Audio1 {
 	
 	public static function mix(samples: Int, buffer: Buffer): Void {
 		if (sampleCache1.length < samples) {
-			sampleCache1 = new Vector<FastFloat>(samples);
-			sampleCache2 = new Vector<FastFloat>(samples);
+			sampleCache1 = new kha.arrays.Float32Array(samples);
+			sampleCache2 = new kha.arrays.Float32Array(samples);
 		}
 		for (i in 0...samples) {
 			sampleCache2[i] = 0;

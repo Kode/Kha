@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Blob;
 import kha.Color;
 import kha.FastFloat;
@@ -54,7 +54,7 @@ interface Graphics {
 	function setFloat2(location: ConstantLocation, value1: FastFloat, value2: FastFloat): Void;
 	function setFloat3(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void;
 	function setFloat4(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void;
-	function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void;
+	function setFloats(location: ConstantLocation, floats: Float32Array): Void;
 	function setVector2(location: ConstantLocation, value: FastVector2): Void;
 	function setVector3(location: ConstantLocation, value: FastVector3): Void;
 	function setVector4(location: ConstantLocation, value: FastVector4): Void;

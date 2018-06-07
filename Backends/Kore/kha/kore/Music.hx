@@ -1,4 +1,5 @@
 package kha.kore;
+
 import haxe.io.Bytes;
 
 @:headerCode('

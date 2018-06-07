@@ -3,6 +3,7 @@ package kha.math;
 import kha.math.Vector3;
 import kha.math.Matrix4;
 
+@:structInit
 class Quaternion {
 	private var values: Array<Float>;
 

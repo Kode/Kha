@@ -32,10 +32,10 @@ class MouseImpl extends kha.input.Mouse {
 	}
 
 	override public function hideSystemCursor(): Void {
-		
+		SystemImpl.hideSystemCursor();
 	}
 
 	override public function showSystemCursor(): Void {
-		
+		SystemImpl.showSystemCursor();
 	}
 }

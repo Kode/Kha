@@ -24,7 +24,6 @@ echo " * ios"
 echo " * html5"
 echo " * flash"
 echo " * wpf"
-echo " * xna"
 echo " * java"
 echo " * psm"
 echo " * dalvik"
@@ -55,7 +54,6 @@ if  [ "$target" == "windows" ] ||
 	[ "$target" == "html5" ] ||
 	[ "$target" == "flash" ] ||
 	[ "$target" == "wpf" ] ||
-	[ "$target" == "xna" ] ||
 	[ "$target" == "java" ] ||
 	[ "$target" == "psm" ] ||
 	[ "$target" == "dalvik" ] ||

@@ -16,9 +16,7 @@ import kha.vr.TimeWarpParms;
  * ...
  * @author Florian Mehm
  */
-class VrInterfaceRift extends VrInterface
-{
-
+class VrInterfaceRift extends VrInterface {
 	// Returns the current sensor state
 	#if VR_RIFT	
 	@:functionCode('
@@ -59,11 +57,8 @@ class VrInterfaceRift extends VrInterface
 	public override function GetTimeInSeconds(): Float {
 		return Sys.getTime();
 	}
-	
-	
-	public function new() 
-	{
+		
+	public function new() {
 		super();
 	}
-	
 }

@@ -22,42 +22,49 @@ class LoaderImpl {
 	public static function getSoundFormats(): Array<String> {
 		return ["nix"];
 	}
-	
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void): Void {
+
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void): Void {
 		Node.setTimeout(function () {
 			done(new Sound());
 		}, 0);
-	}		
-	
+	}
+
 	public static function getImageFormats(): Array<String> {
 		return ["nix"];
 	}
-	
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void): Void {
+
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: AssetError -> Void): Void {
 		Node.setTimeout(function () {
 			done(new Image(100, 100, TextureFormat.RGBA32));
 		}, 0);
 	}
-	
+
 	public static function getVideoFormats(): Array<String> {
 		return ["nix"];
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void): Void {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {
 		Node.setTimeout(function () {
 			done(new Video());
 		}, 0);
 	}
-	
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void): Void {
+
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void): Void {
 		Fs.readFile(desc.files[0], function (error: Error, data: Buffer) {
-			done(Blob._fromBuffer(data));
+			if (error != null) {
+				failed({
+					url: desc.files[0],
+					error: error,
+				});
+			} else {
+				done(Blob._fromBuffer(data));
+			}
 		});
 	}
-	
-	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void): Void {
+
+	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
 		loadBlobFromDescription(desc, function (blob: Blob) {
 			done(new Kravur(blob));
-		});
+		}, failed);
 	}
 }

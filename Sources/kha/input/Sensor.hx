@@ -1,6 +1,6 @@
 package kha.input;
 
-#if cpp
+#if (cpp || hl)
 
 extern class Sensor {
 	public static function get(type: SensorType): Sensor;

@@ -1,6 +1,6 @@
 package kha.krom;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Blob;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
@@ -154,10 +154,8 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setFloat4(location, value1, value2, value3, value4);
 	}
 
-	public function setFloats(location: kha.graphics4.ConstantLocation, values: Vector<FastFloat>): Void {
-		var vals = new kha.arrays.Float32Array(values.length);
-		for (i in 0...values.length) vals.set(i, values[i]);
-		Krom.setFloats(location, vals);
+	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
+		Krom.setFloats(location, values);
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
@@ -172,12 +170,20 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setFloat4(location, value.x, value.y, value.z, value.w);
 	}
 
+	static var mat = new kha.arrays.Float32Array(16);
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		Krom.setMatrix(location, matrix);
+		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02; mat[3] = matrix._03;
+		mat[4] = matrix._10; mat[5] = matrix._11; mat[6] = matrix._12; mat[7] = matrix._13;
+		mat[8] = matrix._20; mat[9] = matrix._21; mat[10] = matrix._22; mat[11] = matrix._23;
+		mat[12] = matrix._30; mat[13] = matrix._31; mat[14] = matrix._32; mat[15] = matrix._33;
+		Krom.setMatrix(location, mat);
 	}
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		Krom.setMatrix3(location, matrix);
+		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02;
+		mat[3] = matrix._10; mat[4] = matrix._11; mat[5] = matrix._12;
+		mat[6] = matrix._20; mat[7] = matrix._21; mat[8] = matrix._22;
+		Krom.setMatrix3(location, mat);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {

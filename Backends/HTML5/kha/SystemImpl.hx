@@ -60,7 +60,9 @@ class SystemImpl {
 		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
 		var electron = untyped __js__("require('electron')");
-		electron.webFrame.setZoomLevelLimits(1, 1);
+		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
+			electron.webFrame.setZoomLevelLimits(1, 1);
+		}
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
@@ -264,7 +266,6 @@ class SystemImpl {
 		Scheduler.init();
 
 		loadFinished();
-		EnvironmentVariables.instance = new kha.js.EnvironmentVariables();
 	}
 
 	public static function getMouse(num: Int): Mouse {
@@ -327,7 +328,8 @@ class SystemImpl {
 
 		#if kha_webgl
 		try {
-			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+			
+			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
 			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
@@ -350,7 +352,7 @@ class SystemImpl {
 
 		if (!gl2) {
 			try {
-				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true, preserveDrawingBuffer: true } );
+				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
 				if (SystemImpl.gl != null) {
 					SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 					SystemImpl.gl.getExtension("OES_texture_float");
@@ -421,7 +423,6 @@ class SystemImpl {
 			if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
 			else requestAnimationFrame(animate);
 
-
 			var sysGamepads = getGamepads();
 			if (sysGamepads != null) {
 				for (i in 0...sysGamepads.length) {
@@ -471,7 +472,10 @@ class SystemImpl {
 		canvas.focus();
 
 		// disable context menu
-		canvas.oncontextmenu = function(event: Dynamic) { event.stopPropagation(); event.preventDefault(); }
+		canvas.oncontextmenu = function (event: Dynamic) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
@@ -566,25 +570,48 @@ class SystemImpl {
 
 	private static var iosSoundEnabled: Bool = false;
 
-	private static function unlockSoundOnIOS(): Void {
+	private static function unlockiOSSound(): Void {
 		if (!ios || iosSoundEnabled) return;
 		
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
 		var source = MobileWebAudio._context.createBufferSource();
 		source.buffer = buffer;
 		source.connect(MobileWebAudio._context.destination);
-		untyped(if (source.noteOn) source.noteOn(0));
+		//untyped(if (source.noteOn) source.noteOn(0));
+		source.start();
+		source.stop();
 
 		iosSoundEnabled = true;
 	}
 
+	static var soundEnabled = false;
+
+	static function unlockSound(): Void {
+		if (!soundEnabled) {
+			var context = kha.audio2.Audio._context;
+
+			if (context == null) {
+				context = untyped __js__('kha_audio2_Audio1._context');
+			}
+
+			if (context != null) {
+				context.resume().then(function(c) {
+					soundEnabled = true;
+				}).catchError(function(err) {
+					trace(err);
+				});
+			}
+		}
+		unlockiOSSound();
+	}
+	
 	private static function mouseLeave():Void {
 		mouse.sendLeaveEvent(0);
 	}
 	
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		event.preventDefault();
 
@@ -613,7 +640,7 @@ class SystemImpl {
 
 	private static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		setMouseXY(event);
 		if (event.which == 1) { //left button
@@ -646,7 +673,7 @@ class SystemImpl {
 	}
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 	
 		if (event.which != 1) return;
 		
@@ -669,7 +696,7 @@ class SystemImpl {
 	}
 
 	private static function mouseMiddleUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 
 		if (event.which != 2) return;
 		
@@ -680,7 +707,7 @@ class SystemImpl {
 	}
 
 	private static function mouseRightUp(event: MouseEvent): Void {
-		unlockSoundOnIOS();
+		unlockSound();
 
 		if (event.which != 3) return;
 		
@@ -697,7 +724,7 @@ class SystemImpl {
 	
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
@@ -706,9 +733,9 @@ class SystemImpl {
 		var movementX = event.movementX;
 		var movementY = event.movementY;
 
-		if(event.movementX == null) {
-		   movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
-		   movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
+		if (event.movementX == null) {
+			movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX  - lastMouseX));
+			movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY  - lastMouseY));
 		}
 
 		// this ensures same behaviour across browser until they fix it
@@ -733,7 +760,7 @@ class SystemImpl {
 
 	private static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		event.stopPropagation();
 		event.preventDefault();
@@ -755,7 +782,7 @@ class SystemImpl {
 
 	private static function touchUp(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
@@ -773,7 +800,7 @@ class SystemImpl {
 
 	private static function touchMove(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		var index = 0;
 		for (touch in event.changedTouches) {
@@ -797,7 +824,7 @@ class SystemImpl {
 
 	private static function touchCancel(event: TouchEvent): Void {
 		insideInputEvent = true;
-		unlockSoundOnIOS();
+		unlockSound();
 
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
@@ -910,6 +937,8 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
+		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
+			&& (event.key != null && event.key.length != 1)) event.preventDefault();
 		event.stopPropagation();
 
 		// prevent key repeat
@@ -938,8 +967,9 @@ class SystemImpl {
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		if (event.which == 0) return; //for Firefox and Safari
+		event.preventDefault();
 		event.stopPropagation();
-		if (firefox && (event.which == 0 || event.which == 8)) return; // Firefox bug 968056
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 	}
 
@@ -1000,7 +1030,6 @@ class SystemImpl {
 		js.Browser.document.addEventListener('MSFullscreenError', error, false);
 	}
 
-
 	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.removeEventListener('fullscreenchange', func, false);
 		js.Browser.document.removeEventListener('mozfullscreenchange', func, false);
@@ -1043,5 +1072,9 @@ class SystemImpl {
 		else {
 			return null;
 		}
+	}
+
+	public static function getPen(num: Int): kha.input.Pen {
+		return null;
 	}
 }

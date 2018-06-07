@@ -11,27 +11,27 @@ namespace Kore { namespace Display {
 }}
 ')
 class DisplayImpl {
-    public static function count() : Int {
-        return untyped __cpp__('Kore::Display::count()');
-    }
+	public static function count() : Int {
+		return untyped __cpp__('Kore::Display::count()');
+	}
 
-    public static function width(index: Int): Int {
-        return untyped __cpp__('Kore::Display::width(index)');
-    }
+	public static function width(index: Int): Int {
+		return untyped __cpp__('Kore::Display::width(index)');
+	}
 
-    public static function height(index: Int): Int {
-        return untyped __cpp__('Kore::Display::height(index)');
-    }
+	public static function height(index: Int): Int {
+		return untyped __cpp__('Kore::Display::height(index)');
+	}
 
-    public static function x(index: Int): Int {
-        return untyped __cpp__('Kore::Display::x(index)');
-    }
+	public static function x(index: Int): Int {
+		return untyped __cpp__('Kore::Display::x(index)');
+	}
 
-    public static function y(index: Int): Int {
-        return untyped __cpp__('Kore::Display::y(index)');
-    }
+	public static function y(index: Int): Int {
+		return untyped __cpp__('Kore::Display::y(index)');
+	}
 
-    public static function isPrimary(index: Int): Bool {
-        return untyped __cpp__('Kore::Display::isPrimary(index)');
-    }
+	public static function isPrimary(index: Int): Bool {
+		return untyped __cpp__('Kore::Display::isPrimary(index)');
+	}
 }

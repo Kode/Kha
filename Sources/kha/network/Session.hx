@@ -28,7 +28,7 @@ class Session {
 	public static inline var CONTROLLER_UPDATES = 2;
 	public static inline var REMOTE_CALL = 3;
 	public static inline var PING = 4;
-	public static inline var ERROR = 5;
+	public static inline var SESSION_ERROR = 5;
 	public static inline var PLAYER_UPDATES = 6;
 	
 	public static inline var RPC_SERVER = 0;
@@ -212,7 +212,7 @@ class Session {
 		case PING:
 			var sendTime = bytes.getFloat(1);
 			ping = Scheduler.realTime() - sendTime;
-		case ERROR:
+		case SESSION_ERROR:
 			refusedCallback();
 		case PLAYER_UPDATES:
 			currentPlayers = bytes.getInt32(1);
@@ -339,7 +339,7 @@ class Session {
 		server.onConnection(function (client: Client) {
 			if (!isJoinable) {
 				var bytes = Bytes.alloc(1);
-				bytes.set(0, ERROR);
+				bytes.set(0, SESSION_ERROR);
 				client.send(bytes, true);
 				return;
 			}

@@ -185,12 +185,12 @@ class SystemImpl {
 		
   	}
 
-	public function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
 		
 	}
 
 
-	public function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
 		
 	}
 	
@@ -204,5 +204,9 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
+	}
+
+	public static function getPen(num: Int): kha.input.Pen {
+		return null;
 	}
 }

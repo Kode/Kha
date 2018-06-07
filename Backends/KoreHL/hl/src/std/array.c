@@ -23,22 +23,24 @@
 
 HL_PRIM varray *hl_alloc_array( hl_type *at, int size ) {
 	int esize = hl_type_size(at);
-	varray *a = (varray*)hl_gc_alloc(sizeof(varray) + esize*size + sizeof(hl_type));
+	varray *a;
+	if( size < 0 ) hl_error("Invalid array size");
+	a = (varray*)hl_gc_alloc_gen(&hlt_array, sizeof(varray) + esize*size, (hl_is_ptr(at) ? MEM_KIND_DYNAMIC : MEM_KIND_NOPTR) | MEM_ZERO);
 	a->t = &hlt_array;
 	a->at = at;
 	a->size = size;
-	memset(hl_aptr(a,void*),0,size*esize);
 	return a;
 }
 
 HL_PRIM void hl_array_blit( varray *dst, int dpos, varray *src, int spos, int len ) {
-	memcpy( hl_aptr(dst,void*) + dpos, hl_aptr(src,void*) + spos, len * sizeof(void*)); 
+	int size = hl_type_size(dst->at); 
+	memmove( hl_aptr(dst,vbyte) + dpos * size, hl_aptr(src,vbyte) + spos * size, len * size); 
 }
 
 HL_PRIM hl_type *hl_array_type( varray *a ) {
 	return a->at;
 }
 
-DEFINE_PRIM(_ARR(_DYN),hl_aalloc,_TYPE _I32);
-DEFINE_PRIM(_VOID,hl_ablit,_ARR(_DYN) _I32 _ARR(_DYN) _I32 _I32);
-DEFINE_PRIM(_TYPE,hl_atype,_ARR);
+DEFINE_PRIM(_ARR,alloc_array,_TYPE _I32);
+DEFINE_PRIM(_VOID,array_blit,_ARR _I32 _ARR _I32 _I32);
+DEFINE_PRIM(_TYPE,array_type,_ARR);

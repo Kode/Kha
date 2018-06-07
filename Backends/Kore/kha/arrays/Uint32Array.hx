@@ -17,42 +17,60 @@ extern class Uint32ArrayData {
 	function get_length(): Int {
 		return 0;
 	}
+
+	public function alloc(elements: Int): Void;
+
+	public function free(): Void;
 	
 	public function get(index: Int): Int;
 		
 	public function set(index: Int, value: Int): Int;
 }
 
-abstract Uint32Array(Uint32ArrayData) {
-	public inline function new() {
-		this = Uint32ArrayData.create();
+class Uint32ArrayPrivate {
+
+	public var self: Uint32ArrayData;
+
+	public inline function new(elements: Int = 0) {
+		self = Uint32ArrayData.create();
+		if (elements > 0) self.alloc(elements);
+	}
+}
+
+abstract Uint32Array(Uint32ArrayPrivate) {
+	public inline function new(elements: Int = 0) {
+		this = new Uint32ArrayPrivate(elements);
+	}
+
+	public inline function free(): Void {
+		this.self.free();
 	}
 	
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
-		return this.length;
+		return this.self.length;
 	}
 	
 	public inline function set(index: Int, value: Int): Int {
-		return this.set(index, value);
+		return this.self.set(index, value);
 	}
 	
 	public inline function get(index: Int): Int {
-		return this.get(index);
+		return this.self.get(index);
 	}
 	
 	@:arrayAccess
 	public inline function arrayRead(index: Int): Int {
-		return this.get(index);
+		return this.self.get(index);
 	}
 
 	@:arrayAccess
 	public inline function arrayWrite(index: Int, value: Int): Int {
-		return this.set(index, value);
+		return this.self.set(index, value);
 	}
 
 	//public inline function subarray(start: Int, ?end: Int): Uint32Array {
-	//	return cast this.subarray(start, end);
+	//	return cast this.self.subarray(start, end);
 	//}
 }

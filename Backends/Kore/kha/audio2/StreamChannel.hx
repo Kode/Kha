@@ -1,14 +1,13 @@
 package kha.audio2;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 
-@:headerCode('#include <Kore/Audio/stb_vorbis.h>')
+@:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <Kore/Audio1/stb_vorbis.c>')
 
 @:headerClassCode('stb_vorbis* vorbis;')
-class MusicChannel implements kha.audio1.MusicChannel {
+class StreamChannel implements kha.audio1.AudioChannel {
 	private var atend: Bool = false;
-	private var loop: Bool;
+	@:keep private var loop: Bool;
 	private var myVolume: Float;
 	private var paused: Bool = false;
 	
@@ -24,7 +23,7 @@ class MusicChannel implements kha.audio1.MusicChannel {
 	}
 	
 	@:functionCode('
-		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->Pointer(), length);
+		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
 		if (read < length / 2) {
 			if (loop) {
 				stb_vorbis_seek_start(vorbis);
@@ -33,15 +32,15 @@ class MusicChannel implements kha.audio1.MusicChannel {
 				atend = true;
 			}
 			for (int i = read; i < length; ++i) {
-				samples->Pointer()[i] = 0;
+				samples->self.data[i] = 0;
 			}
 		}
 	')
-	private function nextVorbisSamples(samples: Vector<FastFloat>, length: Int): Void {
+	private function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {
 		
 	}
 
-	public function nextSamples(samples: Vector<FastFloat>, length: Int, sampleRate: Int): Void {
+	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
 		if (paused) {
 			for (i in 0...length) {
 				samples[i] = 0;

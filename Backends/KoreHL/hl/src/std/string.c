@@ -29,8 +29,15 @@ HL_PRIM vbyte *hl_itos( int i, int *len ) {
 }
 
 HL_PRIM vbyte *hl_ftos( double d, int *len ) {
-	uchar tmp[48];
-	int k = (int)usprintf(tmp,48,USTR("%.16g"),d); // don't use the last digit (eg 5.1 = 5.09999..996)
+	uchar tmp[24];
+	int k;
+	if( d != d ) {
+		*len = 3;
+		return hl_copy_bytes((vbyte*)USTR("NaN"),8);
+	}
+	// don't use the last digit (eg 5.1 = 5.09999..996)
+	// also cut one more digit for some numbers (eg 86.57 and 85.18) <- to fix since we lose one PI digit
+	k = (int)usprintf(tmp,24,USTR("%.15g"),d);
 	*len = k;
 	return hl_copy_bytes((vbyte*)tmp,(k + 1) << 1);
 }
@@ -58,7 +65,7 @@ HL_PRIM int hl_ucs2length( vbyte *str, int pos ) {
 	return (int)ustrlen((uchar*)(str + pos));
 }
 
-HL_PRIM int hl_utf8_length( vbyte *s, int pos ) {
+HL_PRIM int hl_utf8_length( const vbyte *s, int pos ) {
 	int len = 0;
 	s += pos;
 	while( true ) {
@@ -71,12 +78,15 @@ HL_PRIM int hl_utf8_length( vbyte *s, int pos ) {
 			}
 			s++;
 		} else if( c < 0xC0 )
-			return len;
-		else if( c < 0xE0 )
-			s+=2;
-		else if( c < 0xF0 )
+			return len - 1;
+		else if( c < 0xE0 ) {
+			if( (s[1]&0x80) == 0 ) return len - 1;
+			s += 2;
+		} else if( c < 0xF0 ) {
+			if( ((s[1]&s[2])&0x80) == 0 ) return len - 1;
 			s+=3;
-		else if( c < 0xF8 ) {
+		} else if( c < 0xF8 ) {
+			if( ((s[1]&s[2]&s[3])&0x80) == 0 ) return len - 1;
 			len++; // surrogate pair
 			s+=4;
 		} else
@@ -85,17 +95,13 @@ HL_PRIM int hl_utf8_length( vbyte *s, int pos ) {
 	return len;
 }
 
-HL_PRIM vbyte* hl_utf8_to_utf16( vbyte *str, int pos, int *size ) {
-	int ulen = hl_utf8_length(str, pos);
-	uchar *s = (uchar*)hl_gc_alloc_noptr((ulen + 1)*sizeof(uchar));
-	uchar *cur = s;
+HL_PRIM int hl_from_utf8( uchar *out, int outLen, const char *str ) {
+	int p = 0;
 	unsigned int c, c2, c3;
-	str += pos;
-	while( true ) {
-		c = (unsigned)*str++;
-		if( c == 0 )
-			break;
-		else if( c < 0x80 ) {
+	while( p++ < outLen ) {
+		c = *(unsigned char *)str++;
+		if( c < 0x80 ) {
+			if( c == 0 ) break;
 			// nothing
 		} else if( c < 0xE0 ) {
 			c = ((c & 0x3F) << 6) | ((*str++)&0x7F);
@@ -107,25 +113,40 @@ HL_PRIM vbyte* hl_utf8_to_utf16( vbyte *str, int pos, int *size ) {
 			c3 = (unsigned)*str++;
 			c = ((c & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | ((*str++) & 0x7F);
 			// surrogate pair
-			*cur++ = (uchar)((c >> 10) + 0xD7C0);
-			*cur++ = (uchar)((c & 0x3FF) | 0xDC00);
+			if( p++ == outLen ) break;
+			*out++ = (uchar)((c >> 10) + 0xD7C0);
+			*out++ = (uchar)((c & 0x3FF) | 0xDC00);
 			continue;
 		}
-		*cur++ = (uchar)c;
+		*out++ = (uchar)c;
 	}
-	*cur = 0;
+	*out = 0;
+	return --p;
+}
+
+HL_PRIM uchar *hl_to_utf16( const char *str ) {
+	int len = hl_utf8_length((vbyte*)str,0);
+	uchar *out = (uchar*)hl_gc_alloc_noptr((len + 1) * sizeof(uchar));
+	hl_from_utf8(out,len,str);
+	return out;
+}
+
+HL_PRIM vbyte* hl_utf8_to_utf16( vbyte *str, int pos, int *size ) {
+	int ulen = hl_utf8_length(str, pos);
+	uchar *s = (uchar*)hl_gc_alloc_noptr((ulen + 1)*sizeof(uchar));
+	hl_from_utf8(s,ulen,(char*)(str+pos));
 	*size = ulen << 1;
 	return (vbyte*)s;
 }
 
-#include "unicase.c"
+#include "unicase.h"
 
 HL_PRIM vbyte* hl_ucs2_upper( vbyte *str, int pos, int len ) {
 	uchar *cstr = (uchar*)(str + pos);
 	uchar *out = (uchar*)hl_gc_alloc_noptr((len + 1) * sizeof(uchar));
 	int i;
 	uchar *cout = out;
-	memcpy(out,cstr,(len + 1) << 1);
+	memcpy(out,cstr,len << 1);
 	for(i=0;i<len;i++) {
 		unsigned int c = *cstr++;
 		int up = c >> UL_BITS;
@@ -135,6 +156,7 @@ HL_PRIM vbyte* hl_ucs2_upper( vbyte *str, int pos, int len ) {
 		}
 		cout++;
 	}
+	*cout = 0;
 	return (vbyte*)out;
 }
 
@@ -143,7 +165,7 @@ HL_PRIM vbyte* hl_ucs2_lower( vbyte *str, int pos, int len ) {
 	uchar *out = (uchar*)hl_gc_alloc_noptr((len + 1) * sizeof(uchar));
 	uchar *cout = out;
 	int i;
-	memcpy(out,cstr,(len + 1) << 1);
+	memcpy(out,cstr,len << 1);
 	for(i=0;i<len;i++) {
 		unsigned int c = *cstr++;
 		int up = c >> UL_BITS;
@@ -153,10 +175,10 @@ HL_PRIM vbyte* hl_ucs2_lower( vbyte *str, int pos, int len ) {
 		}
 		cout++;
 	}
+	*cout = 0;
 	return (vbyte*)out;
 }
 
-// TODO : currently it is actually ucs2_to_utf8...
 HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
 	vbyte *out;
 	uchar *c = (uchar*)(str + pos);
@@ -169,7 +191,10 @@ HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
 			utf8bytes++;
 		else if( v < 0x800 )
 			utf8bytes += 2;
-		else
+		else if( v >= 0xD800 && v <= 0xDFFF ) {
+			utf8bytes += 4;
+			c++;
+		} else
 			utf8bytes += 3;
 		c++;
 	}
@@ -183,6 +208,12 @@ HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
 		} else if( v < 0x800 ) {
 			out[p++] = (vbyte)(0xC0|(v>>6));
 			out[p++] = (vbyte)(0x80|(v&63));
+		} else if( v >= 0xD800 && v <= 0xDFFF ) {
+			int k = ((((int)v - 0xD800) << 10) | (((int)*++c) - 0xDC00)) + 0x10000;
+			out[p++] = (vbyte)(0xF0|(k>>18));
+			out[p++] = (vbyte)(0x80 | ((k >> 12) & 63));
+			out[p++] = (vbyte)(0x80 | ((k >> 6) & 63));
+			out[p++] = (vbyte)(0x80 | (k & 63));
 		} else {
 			out[p++] = (vbyte)(0xE0|(v>>12));
 			out[p++] = (vbyte)(0x80|((v>>6)&63));
@@ -190,8 +221,13 @@ HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
 		}
 		c++;
 	}
-	*size = utf8bytes;
+	if( size ) *size = utf8bytes;
 	return out;
+}
+
+HL_PRIM char *hl_to_utf8( const uchar *bytes ) {
+	int size;
+	return (char*)hl_utf16_to_utf8((vbyte*)bytes, 0, &size);
 }
 
 HL_PRIM vbyte *hl_url_encode( vbyte *str, int *len ) {
@@ -242,7 +278,7 @@ static uchar decode_hex_char( uchar c ) {
 	else if( c >= 'A' && c <= 'F' )
 		c -= 'A' - 10;
 	else
-		return -1;
+		return (uchar)-1;
 	return c;
 }
 
@@ -250,9 +286,9 @@ static uchar decode_hex( uchar **cstr ) {
 	uchar *c = *cstr;
 	uchar p1 = decode_hex_char(c[0]);
 	uchar p2;
-	if( p1 < 0 ) return -1;
+	if( p1 == (uchar)-1 ) return p1;
 	p2 = decode_hex_char(c[1]);
-	if( p2 < 0 ) return -1;
+	if( p2 == (uchar)-1 ) return p2;
 	*cstr = c + 2;
 	return (p1 << 4) | p2;
 }
@@ -268,7 +304,7 @@ HL_PRIM vbyte *hl_url_decode( vbyte *str, int *len ) {
 			c = ' ';
 		else if( c == '%' ) {
 			uchar p1 = decode_hex(&cstr);
-			if( p1 < 0 ) {
+			if( p1 == (uchar)-1 ) {
 				hl_buffer_char(b,'%');
 				continue;
 			}
@@ -297,12 +333,15 @@ HL_PRIM vbyte *hl_url_decode( vbyte *str, int *len ) {
 	hl_error("Malformed URL encoded");
 	return NULL;
 }
-	
 
-DEFINE_PRIM(_BYTES,hl_itos,_I32 _REF(_I32));
-DEFINE_PRIM(_BYTES,hl_ftos,_F64 _REF(_I32));
-DEFINE_PRIM(_BYTES,hl_value_to_string,_DYN _REF(_I32));
-DEFINE_PRIM(_I32,hl_ucs2length,_BYTES _I32);
-DEFINE_PRIM(_BYTES,hl_utf8_to_utf16,_BYTES _I32 _REF(_I32));
-DEFINE_PRIM(_BYTES,hl_ucs2_upper,_BYTES _I32 _I32);
-DEFINE_PRIM(_BYTES,hl_ucs2_lower,_BYTES _I32 _I32);
+DEFINE_PRIM(_BYTES,itos,_I32 _REF(_I32));
+DEFINE_PRIM(_BYTES,ftos,_F64 _REF(_I32));
+DEFINE_PRIM(_BYTES,value_to_string,_DYN _REF(_I32));
+DEFINE_PRIM(_I32,ucs2length,_BYTES _I32);
+DEFINE_PRIM(_BYTES,utf8_to_utf16,_BYTES _I32 _REF(_I32));
+DEFINE_PRIM(_BYTES,utf16_to_utf8,_BYTES _I32 _REF(_I32));
+DEFINE_PRIM(_BYTES,ucs2_upper,_BYTES _I32 _I32);
+DEFINE_PRIM(_BYTES,ucs2_lower,_BYTES _I32 _I32);
+DEFINE_PRIM(_BYTES,url_encode,_BYTES _REF(_I32));
+DEFINE_PRIM(_BYTES,url_decode,_BYTES _REF(_I32));
+

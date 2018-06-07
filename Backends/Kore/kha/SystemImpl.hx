@@ -4,6 +4,7 @@ import kha.input.Gamepad;
 import kha.input.KeyCode;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Pen;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
@@ -32,6 +33,7 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/pch.h>
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
+#include <Kore/Input/Pen.h>
 #include <Kore/Window.h>
 
 void init_kore(const char* name, int width, int height, int antialiasing, bool vsync, int windowMode, bool resizable, bool maximizable, bool minimizable);
@@ -48,6 +50,11 @@ class SystemImpl {
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
+	}
+
+	public static function getPen(num: Int): Pen {
+		if (num != 0) return null;
+		return pen;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
@@ -98,6 +105,7 @@ class SystemImpl {
 	private static var framebuffers: Array<Framebuffer> = new Array();
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
+	private static var pen: kha.input.Pen;
 	private static var gamepad1: Gamepad;
 	private static var gamepad2: Gamepad;
 	private static var gamepad3: Gamepad;
@@ -159,6 +167,7 @@ class SystemImpl {
 		Sensor.get(SensorType.Accelerometer); // force compilation
 		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.MouseImpl();
+		pen = new kha.input.Pen();
 		gamepad1 = new Gamepad(0);
 		gamepad2 = new Gamepad(1);
 		gamepad3 = new Gamepad(2);
@@ -194,7 +203,6 @@ class SystemImpl {
 			#end
 		#end
 		*/
-
 
 		// (DK) moved
 /*		Shaders.init();
@@ -246,6 +254,14 @@ class SystemImpl {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.remove(func);
 		}
+	}
+
+	public static function hideSystemCursor(): Void {
+		untyped __cpp__("Kore::Mouse::the()->show(false);");
+	}
+
+	public static function showSystemCursor(): Void {
+		untyped __cpp__("Kore::Mouse::the()->show(true);");
 	}
 
 	public static function frame(id: Int) {
@@ -312,6 +328,18 @@ class SystemImpl {
 	
 	public static function mouseLeave(windowId: Int): Void {
 		mouse.sendLeaveEvent(windowId);
+	}
+
+	public static function penDown(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendDownEvent(windowId, x, y, pressure);
+	}
+
+	public static function penUp(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendUpEvent(windowId, x, y, pressure);
+	}
+
+	public static function penMove(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
@@ -407,7 +435,9 @@ class SystemImpl {
 	}
 
 	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode, resizable, maximizable, minimizable);')
-	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {}
+	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {
+		
+	}
 
 	static function translatePosition(value: Null<WindowOptions.Position>): Int {
 		if (value == null) {
@@ -583,15 +613,15 @@ class SystemImpl {
 				listener();
 			}
 		}
-  	}
+	}
 
-	public function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.push(func);
 		}
 	}
 
-	public function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		if (canSwitchFullscreen() && func != null) {
 			fullscreenListeners.remove(func);
 		}

@@ -29,15 +29,21 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Dedicated IDE : Kode Studio.
 
 ### Supported platforms
-* HTML5 (Canvas or WebGL)
-* Flash
-* Windows (Direct3D 9, Direct3D 11 or OpenGL)
-* OSX
-* Linux
-* Android
-* iOS (OpenGL or Metal)
+* HTML5 (WebGL 2, WebGL and canvas)
+* Windows (Direct3D 12, Direct3D 11, Direct3D 9, Vulkan or OpenGL)
+* Universal Windows Platform (Direct3D 12 or Direct3D 11)
+* macOS (Metal or OpenGL)
+* Linux (Vulkan or OpenGL)
+* Android (via C++ or via Java)
+* iOS (Metal or OpenGL)
+* tvOS
+* Raspberry Pi
+* PlayStation 4
+* Xbox One
+* Nintendo Switch
 * Tizen
+* Flash
 * Unity 3D
-* PlayStation Vita (PlayStationMobile)
-* Xbox 360 (XNA)
-* Potential (modern) console/handheld support
+* Node.js (for automatically created server versions)
+* Java and AWT
+* C# and Windows Presentation Foundation

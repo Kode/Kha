@@ -1,6 +1,6 @@
 package kha.compute;
 
-import haxe.ds.Vector;
+import kha.arrays.Float32Array;
 import kha.Image;
 import kha.FastFloat;
 import kha.math.FastMatrix3;
@@ -54,8 +54,8 @@ class Compute {
 		untyped __cpp__('Kore::Compute::setFloat4(location->location, value1, value2, value3, value4);');
 	}
 
-	public static function setFloats(location: ConstantLocation, values: Vector<FastFloat>) {
-		untyped __cpp__('Kore::Compute::setFloats(location->location, values->Pointer(), values->length);');
+	public static function setFloats(location: ConstantLocation, values: Float32Array) {
+		untyped __cpp__('Kore::Compute::setFloats(location->location, values->self.data, values->self.length());');
 	}
 
 	public static function setVector2(location: ConstantLocation, value: FastVector2): Void {
@@ -102,7 +102,11 @@ class Compute {
 	}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
-		untyped __cpp__('Kore::Compute::setBuffer(buffer->buffer, index);');
+		untyped __cpp__('
+			#ifdef KORE_OPENGL
+			Kore::Compute::setBuffer(buffer->buffer, index);
+			#endif
+		');
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
