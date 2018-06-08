@@ -304,7 +304,7 @@ class GraphicsExtension {
 
 	static public function drawAlignedCharacters(g2:Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
 		var kravur:Kravur = cast(g2.font, Kravur);
-		var font = kravur._get(g2.fontSize, g2.fontGlyphs);
+		var font = kravur._get(g2.fontSize, Graphics.fontGlyphs);
 		var xoffset = 0.0;
 		if(horAlign == TextCenter || horAlign == TextRight) {
 			var width = font.charactersWidth(text, start, length);
