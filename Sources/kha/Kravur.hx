@@ -171,7 +171,7 @@ class Kravur implements Resource {
 			var pixels: Blob = null;
 
 			var status: Int = -1;
-			while (status < 0) {
+			while (status <= 0) {
 				if (height < width) height *= 2;
 				else width *= 2;
 				pixels = Blob.alloc(width * height);
