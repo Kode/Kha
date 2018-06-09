@@ -276,13 +276,11 @@ class GraphicsExtension {
 		return p;
 	}
 
-	static public function drawAlignedString(g2:Graphics, text: String, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
-		var kravur:Kravur = cast(g2.font, Kravur);
-		var font = kravur._get(g2.fontSize, Graphics.fontGlyphs);
+	static public function drawAlignedString(g2: Graphics, text: String, x: Float, y: Float, horAlign: HorTextAlignment, verAlign: VerTextAlignment): Void {
 		var xoffset = 0.0;
-		if(horAlign == TextCenter || horAlign == TextRight) {
-			var width = font.stringWidth(text);
-			if(horAlign == TextCenter) {
+		if (horAlign == TextCenter || horAlign == TextRight) {
+			var width = g2.font.width(g2.fontSize, text);
+			if (horAlign == TextCenter) {
 				xoffset = -width * 0.5;
 			}
 			else {
@@ -290,8 +288,8 @@ class GraphicsExtension {
 			}
 		}
 		var yoffset = 0.0;
-		if(verAlign == TextMiddle || verAlign == TextBottom) {
-			var height = font.getHeight();
+		if (verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = g2.font.height(g2.fontSize);
 			if(verAlign == TextMiddle) {
 				yoffset = -height * 0.5;
 			}
@@ -299,16 +297,14 @@ class GraphicsExtension {
 				yoffset = -height;
 			}
 		}
-		g2.drawString(text, x+xoffset, y+yoffset);
+		g2.drawString(text, x + xoffset, y + yoffset);
 	}
 
-	static public function drawAlignedCharacters(g2:Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign:HorTextAlignment, verAlign:VerTextAlignment):Void {
-		var kravur:Kravur = cast(g2.font, Kravur);
-		var font = kravur._get(g2.fontSize, Graphics.fontGlyphs);
+	static public function drawAlignedCharacters(g2: Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign: HorTextAlignment, verAlign: VerTextAlignment): Void {
 		var xoffset = 0.0;
-		if(horAlign == TextCenter || horAlign == TextRight) {
-			var width = font.charactersWidth(text, start, length);
-			if(horAlign == TextCenter) {
+		if (horAlign == TextCenter || horAlign == TextRight) {
+			var width = g2.font.widthOfCharacters(g2.fontSize, text, start, length);
+			if (horAlign == TextCenter) {
 				xoffset = -width * 0.5;
 			}
 			else {
@@ -316,15 +312,15 @@ class GraphicsExtension {
 			}
 		}
 		var yoffset = 0.0;
-		if(verAlign == TextMiddle || verAlign == TextBottom) {
-			var height = font.getHeight();
-			if(verAlign == TextMiddle) {
+		if (verAlign == TextMiddle || verAlign == TextBottom) {
+			var height = g2.font.height(g2.fontSize);
+			if (verAlign == TextMiddle) {
 				yoffset = -height * 0.5;
 			}
 			else {
 				yoffset = -height;
 			}
 		}
-		g2.drawCharacters(text, start, length, x+xoffset, y+yoffset);
+		g2.drawCharacters(text, start, length, x + xoffset, y + yoffset);
 	}
 }
