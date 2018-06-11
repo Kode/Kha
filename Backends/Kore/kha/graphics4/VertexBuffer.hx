@@ -46,9 +46,22 @@ class VertexBuffer {
 			}
 			structure2.add(structure->get(i)->name, data);
 		}
-		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, instanceDataStepRate);
+		Kore::Graphics4::Usage usage2;
+		switch (usage->index)
+		{
+			case 0:
+				usage2 = Kore::Graphics4::StaticUsage;
+				break;
+			case 1:
+				usage2 = Kore::Graphics4::DynamicUsage;
+				break;
+			case 2:
+				usage2 = Kore::Graphics4::ReadableUsage;
+				break;
+		}
+		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, usage2, instanceDataStepRate);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, instanceDataStepRate: Int) {
+	private function init(vertexCount: Int, structure: VertexStructure, usage:Usage, instanceDataStepRate: Int)
 		
 	}
 
