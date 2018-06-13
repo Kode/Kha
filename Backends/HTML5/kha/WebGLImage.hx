@@ -4,6 +4,7 @@ import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
 import js.html.Uint8Array;
+import js.html.Uint16Array;
 import js.html.Float32Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
@@ -393,13 +394,39 @@ class WebGLImage extends Image {
 		}
 	}
 
-	private var pixels: Uint8Array = null;
+	private var pixels: js.html.ArrayBufferView = null;
 	
 	override public function getPixels(): Bytes {
 		if (frameBuffer == null) return null;
-		if (pixels == null) pixels = new Uint8Array(formatByteSize(format) * width * height);
+		if (pixels == null) {
+			switch (format) {
+			case RGBA128, A32:
+				pixels = new Float32Array(Std.int(formatByteSize(format) / 4) * width * height);
+			case RGBA64, A16:
+				pixels = new Uint16Array(Std.int(formatByteSize(format) / 2) * width * height);
+			case RGBA32, L8:
+				pixels = new Uint8Array(formatByteSize(format) * width * height);
+			default:
+				pixels = new Uint8Array(formatByteSize(format) * width * height);
+			}
+		}
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-		SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixels);
+		switch (format) {
+		case RGBA128:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.FLOAT, pixels);
+		case RGBA64:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, pixels);
+		case RGBA32:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixels);
+		case A32:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, SystemImpl.gl2 ? GL_RED : GL.ALPHA, GL.FLOAT, pixels);
+		case A16:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, SystemImpl.gl2 ? GL_RED : GL.ALPHA, SystemImpl.halfFloat.HALF_FLOAT_OES, pixels);
+		case L8:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, SystemImpl.gl2 ? GL_RED : GL.ALPHA, GL.UNSIGNED_BYTE, pixels);
+		default:
+			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixels);
+		}
 		return Bytes.ofData(pixels.buffer);
 	}
 
