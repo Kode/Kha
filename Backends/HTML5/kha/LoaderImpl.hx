@@ -1,18 +1,12 @@
 package kha;
 
-import js.Boot;
 import js.Browser;
-import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
-import js.Lib;
 import js.html.XMLHttpRequest;
 import haxe.io.Bytes;
-import haxe.io.BytesData;
-import kha.FontStyle;
 import kha.Blob;
 import kha.js.WebAudioSound;
 import kha.js.MobileWebAudioSound;
-import kha.Kravur;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
@@ -53,8 +47,8 @@ class LoaderImpl {
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		if (SystemImpl._hasWebAudio) {
-			var element = Browser.document.createAudioElement();
 			#if !kha_debug_html5
+			var element = Browser.document.createAudioElement();
 			if (element.canPlayType("audio/mp4") != "") {
 				for (i in 0...desc.files.length) {
 					var file: String = desc.files[i];

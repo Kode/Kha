@@ -1,6 +1,5 @@
 package kha.js;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 import js.Browser;
 import js.html.XMLHttpRequest;

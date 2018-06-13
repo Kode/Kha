@@ -1,14 +1,9 @@
 package kha.js;
 
-import js.Browser;
 import kha.Color;
-import kha.FontStyle;
 import kha.graphics2.Graphics;
 import kha.graphics2.ImageScaleQuality;
-import kha.Kravur;
 import kha.math.FastMatrix3;
-import kha.math.Matrix3;
-import kha.Rotation;
 
 class CanvasGraphics extends Graphics {
 	private var canvas: Dynamic;

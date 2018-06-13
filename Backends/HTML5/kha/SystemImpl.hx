@@ -14,7 +14,6 @@ import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
-import kha.js.AEAudioChannel;
 import kha.js.CanvasGraphics;
 import kha.js.MobileWebAudio;
 import kha.js.vr.VrInterface;

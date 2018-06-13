@@ -1,6 +1,5 @@
 package kha.network;
 
-import haxe.io.Bytes;
 import js.html.XMLHttpRequest;
 
 class Http {
