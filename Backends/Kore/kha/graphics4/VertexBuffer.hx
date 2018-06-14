@@ -15,7 +15,7 @@ class VertexBuffer {
 	private var data: Float32Array;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
-		init(vertexCount, structure, instanceDataStepRate);
+		init(vertexCount, structure, usage.getIndex(), instanceDataStepRate);
 		data = new Float32Array();
 	}
 	
@@ -46,9 +46,9 @@ class VertexBuffer {
 			}
 			structure2.add(structure->get(i)->name, data);
 		}
-		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, instanceDataStepRate);
+		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, (Kore::Graphics4::Usage)usage, instanceDataStepRate);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, instanceDataStepRate: Int) {
+	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
 		
 	}
 
