@@ -4,7 +4,6 @@ import js.html.webgl.GL;
 import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
-import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	private var buffer: Dynamic;

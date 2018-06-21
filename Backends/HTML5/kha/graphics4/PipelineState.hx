@@ -1,10 +1,7 @@
 package kha.graphics4;
 
 import js.html.webgl.GL;
-import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexData;
-import kha.graphics4.VertexShader;
-import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
 	private var program: Dynamic = null;

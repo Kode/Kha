@@ -2,35 +2,26 @@ package kha.js.graphics4;
 
 import kha.arrays.Float32Array;
 import js.html.webgl.GL;
-import kha.Blob;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
-import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
 import kha.graphics4.StencilAction;
-import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
-import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexBuffer;
 import kha.graphics4.VertexStructure;
-import kha.graphics4.VertexShader;
 import kha.Image;
 import kha.math.FastMatrix3;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.FastVector4;
-import kha.math.Matrix4;
-import kha.math.Vector2;
-import kha.math.Vector3;
-import kha.math.Vector4;
 import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {

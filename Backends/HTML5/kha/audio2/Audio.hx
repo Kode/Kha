@@ -6,7 +6,6 @@ import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ScriptProcessorNode;
 import kha.js.AEAudioChannel;
-import kha.js.WebAudioSound;
 import kha.Sound;
 
 class Audio {

@@ -2,7 +2,6 @@ package kha;
 
 import haxe.io.Bytes;
 import js.Browser;
-import js.html.ImageElement;
 import js.html.Uint8Array;
 import js.html.Uint16Array;
 import js.html.Float32Array;
@@ -10,7 +9,6 @@ import js.html.VideoElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
-import kha.js.CanvasGraphics;
 import kha.js.graphics4.Graphics;
 
 class WebGLImage extends Image {

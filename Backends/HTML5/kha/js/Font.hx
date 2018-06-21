@@ -4,7 +4,6 @@ import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
 import kha.Color;
-import kha.FontStyle;
 import kha.Kravur;
 
 @:keep
