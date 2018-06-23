@@ -178,9 +178,31 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.depthMask(depthMask);
 	}
 
-	public function viewport(x: Int, y: Int, width: Int, height: Int): Void{
-		var h: Int = renderTarget == null ? System.windowHeight(0) : renderTarget.height;
-		SystemImpl.gl.viewport(x, h - y - height, width, height);
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
+		if (renderTarget == null) {
+			SystemImpl.gl.viewport(x, System.windowHeight(0) - y - height, width, height);
+		}
+		else {
+			SystemImpl.gl.viewport(x, y, width, height);
+		}
+	}
+
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+		SystemImpl.gl.enable(GL.SCISSOR_TEST);
+		if (renderTarget == null) {
+			SystemImpl.gl.scissor(x, System.windowHeight(0) - y - height, width, height);
+		}
+		else {
+			SystemImpl.gl.scissor(x, y, width, height);
+		}
+	}
+
+	public function disableScissor(): Void {
+		SystemImpl.gl.disable(GL.SCISSOR_TEST);
+	}
+
+	public function renderTargetsInvertedY(): Bool {
+		return true;
 	}
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
@@ -562,24 +584,6 @@ class Graphics implements kha.graphics4.Graphics {
 			SystemImpl.gl.stencilOp(convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
 			SystemImpl.gl.stencilFunc(stencilFunc, referenceValue, readMask);
 		}
-	}
-
-	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		SystemImpl.gl.enable(GL.SCISSOR_TEST);
-		if (renderTarget == null) {
-			SystemImpl.gl.scissor(x, System.windowHeight(0) - y - height, width, height);
-		}
-		else {
-			SystemImpl.gl.scissor(x, y, width, height);
-		}
-	}
-
-	public function disableScissor(): Void {
-		SystemImpl.gl.disable(GL.SCISSOR_TEST);
-	}
-
-	public function renderTargetsInvertedY(): Bool {
-		return true;
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
