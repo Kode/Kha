@@ -56,7 +56,7 @@ extern class Krom {
 	static function lockIndexBuffer(buffer: Dynamic): kha.arrays.Uint32Array;
 	static function unlockIndexBuffer(buffer: Dynamic): Void;
 	static function setIndexBuffer(buffer: Dynamic): Void;
-	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, instanceDataStepRate: Int): Dynamic;
+	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, usage: Int, instanceDataStepRate: Int): Dynamic;
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
 	static function lockVertexBuffer(buffer: Dynamic): kha.arrays.Float32Array;
 	static function unlockVertexBuffer(buffer: Dynamic): Void;

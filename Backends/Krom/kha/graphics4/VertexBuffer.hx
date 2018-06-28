@@ -14,7 +14,7 @@ class VertexBuffer {
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
-		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, instanceDataStepRate);
+		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, usage.getIndex(), instanceDataStepRate);
 	}
 
 	public function delete() {
