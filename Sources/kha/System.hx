@@ -174,7 +174,7 @@ class System {
 	/**
 	 * The IS0 639 system current language identifier.
 	 */
-	public static var language(get, null): String;
+	public static var language(get, never): String;
 
 	private static function get_language(): String {
 		return SystemImpl.getLanguage();
