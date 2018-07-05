@@ -97,6 +97,10 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return '';
 	}
+	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
 
 	public static function requestShutdown() {
 		untyped __cpp__('Kore::System::stop()');

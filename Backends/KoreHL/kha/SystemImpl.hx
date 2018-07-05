@@ -111,6 +111,10 @@ class SystemImpl {
 		return 'HL';
 	}
 	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
+	
 	public static function requestShutdown(): Void {
 		kore_request_shutdown();
 	}

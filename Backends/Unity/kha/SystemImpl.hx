@@ -84,6 +84,10 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return "unity";
 	}
+	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
 
 	private static var frame: Framebuffer;
 

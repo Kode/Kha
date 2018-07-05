@@ -171,6 +171,15 @@ class System {
 		return SystemImpl.getSystemId();
 	}
 
+	/**
+	 * The IS0 639 system current language identifier.
+	 */
+	public static var language(get, null): String;
+
+	private static function get_language(): String {
+		return SystemImpl.getLanguage();
+	}
+
 	public static function requestShutdown(): Void {
 		SystemImpl.requestShutdown();
 	}

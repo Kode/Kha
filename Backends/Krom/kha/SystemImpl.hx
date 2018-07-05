@@ -197,6 +197,10 @@ class SystemImpl {
 		return Krom.systemId();
 	}
 	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
+	
 	public static function requestShutdown(): Void {
 		Krom.requestShutdown();
 	}

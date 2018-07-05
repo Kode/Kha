@@ -440,6 +440,10 @@ class SystemImpl {
 		return "WPF";
 	}
 	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
+	
 	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
 	public static function requestShutdown(): Void {
 		
