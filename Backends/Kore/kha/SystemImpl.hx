@@ -469,8 +469,8 @@ class SystemImpl {
 
 		return switch (value) {
 			case Window: 0;
-			case BorderlessWindow: 1;
-			case Fullscreen: 2;
+			case Fullscreen: 1;
+			case ExclusiveFullscreen: 2;
 		}
 	}
 
