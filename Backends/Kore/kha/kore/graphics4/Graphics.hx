@@ -36,6 +36,8 @@ import kha.Video;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
+#include <Kore/Display.h>
+#include <Kore/Window.h>
 ')
 
 @:headerClassCode("Kore::Graphics4::RenderTarget* renderTarget;")
@@ -60,14 +62,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	@:functionCode('
-		return Kore::Graphics4::vsynced();
+		return Kore::Window::get(0)->vsynced();
 	')
 	public function vsynced(): Bool {
 		return true;
 	}
 
 	@:functionCode('
-		return (Int)Kore::Graphics4::refreshRate();
+		return Kore::Display::primary()->frequency();
 	')
 	public function refreshRate(): Int {
 		return 0;

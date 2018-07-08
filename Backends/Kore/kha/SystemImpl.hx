@@ -34,6 +34,7 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/System.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Pen.h>
+#include <Kore/Display.h>
 #include <Kore/Window.h>
 
 void init_kore(const char* name, int width, int height, int antialiasing, bool vsync, int windowMode, bool resizable, bool maximizable, bool minimizable);
@@ -78,7 +79,7 @@ class SystemImpl {
 	}
 	
 	public static function screenDpi(): Int {
-		return untyped __cpp__('Kore::System::screenDpi()');
+		return untyped __cpp__('Kore::Display::primary()->pixelsPerInch()');
 	}
 
 	public static function getVsync(): Bool {
@@ -527,20 +528,29 @@ class SystemImpl {
 		wo.width = width;
 		wo.height = height;
 		//wo.mode = mode;
-		wo.targetDisplay = targetDisplay;
-		wo.rendererOptions.textureFormat = textureFormat;
-		wo.rendererOptions.depthBufferBits = depthBufferBits;
-		wo.rendererOptions.stencilBufferBits = stencilBufferBits;
+		wo.display = targetDisplay;
 
-		wo.resizable = resizable;
-		wo.maximizable = maximizable;
-		wo.minimizable = minimizable;
+		Kore::FramebufferOptions frame;
+		frame.colorBufferBits = 32;
+		frame.depthBufferBits = depthBufferBits;
+		frame.stencilBufferBits = stencilBufferBits;
+
+		wo.windowFeatures = 0;
+		if (resizable) {
+			wo.windowFeatures |= Kore::WindowFeatureResizable;
+		}
+		if (maximizable) {
+			wo.windowFeatures |= Kore::WindowFeatureMaximizable;
+		}
+		if (minimizable) {
+			wo.windowFeatures |= Kore::WindowFeatureMinimizable;
+		}
 
 		switch (mode) {
-			default: // fall through
+			default:
 			case 0: wo.mode = Kore::WindowModeWindow; break;
-			case 1: wo.mode = Kore::WindowModeBorderless; break;
-			case 2: wo.mode = Kore::WindowModeFullscreen; break;
+			case 1: wo.mode = Kore::WindowModeFullscreen; break;
+			case 2: wo.mode = Kore::WindowModeExclusiveFullscreen; break;
 		}
 
 		return init_window(wo);
@@ -587,14 +597,14 @@ class SystemImpl {
 	}
 
 	public static function isFullscreen(): Bool {
-		return untyped __cpp__('Kore::System::isFullscreen()');
+		return untyped __cpp__('Kore::Window::get(0)->mode() == Kore::WindowModeFullscreen');
 	}
 
 	public static function requestFullscreen(): Void {
 		if(!isFullscreen()){
 			previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
 			previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
-			untyped __cpp__("Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true)");
+			untyped __cpp__("Kore::Window::get(0)->changeWindowMode(Kore::WindowModeFullscreen);");
 			for (listener in fullscreenListeners) {
 				listener();
 			}
@@ -608,7 +618,7 @@ class SystemImpl {
 				previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
 				previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
 			}
-			untyped __cpp__("Kore::System::changeResolution(previousWidth, previousHeight, false)");
+			untyped __cpp__("Kore::Window::get(0)->changeWindowMode(Kore::WindowModeWindow);");
 			for (listener in fullscreenListeners) {
 				listener();
 			}
