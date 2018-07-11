@@ -61,16 +61,12 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 	
-	@:functionCode('
-		return Kore::Window::get(0)->vsynced();
-	')
+	@:functionCode('return Kore::Window::get(0)->vSynced();')
 	public function vsynced(): Bool {
 		return true;
 	}
 
-	@:functionCode('
-		return Kore::Display::primary()->frequency();
-	')
+	@:functionCode('return Kore::Display::primary()->frequency();')
 	public function refreshRate(): Int {
 		return 0;
 	}

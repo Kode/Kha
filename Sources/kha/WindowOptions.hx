@@ -18,8 +18,8 @@ class WindowOptions {
 	@:optional public var windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
 	@:optional public var mode: WindowMode = Window;
 
-	public function new(title: String = "Kha", x: Int = -1, y: Int = -1, width: Int = 800, height: Int = 600, display: Display = null,
-	visible: Bool = true, windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable, mode: WindowMode = WindowMode.Window) {
+	public function new(title: String = "Kha", ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, display: Display = null,
+	?visible: Bool = true, ?windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable, ?mode: WindowMode = WindowMode.Window) {
 		this.title = title;
 		this.x = x;
 		this.y = y;

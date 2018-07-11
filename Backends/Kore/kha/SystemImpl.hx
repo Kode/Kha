@@ -99,8 +99,9 @@ class SystemImpl {
 		return '';
 	}
 
-	public static function requestShutdown() {
+	public static function requestShutdown(): Bool {
 		untyped __cpp__('Kore::System::stop()');
+		return true;
 	}
 
 	private static var framebuffers: Array<Framebuffer> = new Array();
@@ -114,8 +115,9 @@ class SystemImpl {
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
 
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		initKore(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode), options.resizable, options.maximizable, options.minimizable);
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
+		initKore(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, 0, true, true, true);
+		Window._init();
 
 		kha.Worker._mainThread = cpp.vm.Thread.current();
 		//Shaders.init();
@@ -134,7 +136,7 @@ class SystemImpl {
 		postInit(callback);
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+	/*public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		untyped __cpp__('init_kore_ex(title)');
 
 		//Shaders.init();
@@ -160,9 +162,9 @@ class SystemImpl {
 		untyped __cpp__('post_kore_init()');
 
 		postInit(callback);
-	}
+	}*/
 
-	static function postInit(callback: Void -> Void) {
+	static function postInit(callback: Window -> Void) {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -178,7 +180,7 @@ class SystemImpl {
 		kha.audio1.Audio._init();
 		Scheduler.init();
 		loadFinished();
-		callback();
+		callback(Window.get(0));
 
 		untyped __cpp__('run_kore()');
 	}
@@ -285,7 +287,7 @@ class SystemImpl {
 			Scheduler.executeFrame();
 		}
 
-		System.render(id, framebuffers[id]);
+		System.render(framebuffers);
 	}
 
 	public static function keyDown(code: KeyCode): Void {
@@ -440,7 +442,7 @@ class SystemImpl {
 		
 	}
 
-	static function translatePosition(value: Null<WindowOptions.Position>): Int {
+	/*static function translatePosition(value: Null<WindowOptions.Position>): Int {
 		if (value == null) {
 			return -1;
 		}
@@ -472,7 +474,7 @@ class SystemImpl {
 			case Fullscreen: 1;
 			case ExclusiveFullscreen: 2;
 		}
-	}
+	}*/
 
 	static function translateDepthBufferFormat(value: Null<DepthStencilFormat>): Int {
 		if (value == null) {
@@ -520,7 +522,7 @@ class SystemImpl {
 		}
 	}
 	
-	@:functionCode('
+	/*@:functionCode('
 		Kore::WindowOptions wo;
 		wo.title = title;
 		wo.x = x;
@@ -586,7 +588,7 @@ class SystemImpl {
 		if (callback != null) {
 			callback(windowId);
 		}
-	}
+	}*/
 
 	private static var fullscreenListeners: Array<Void->Void> = new Array();
 	private static var previousWidth: Int = 0;
