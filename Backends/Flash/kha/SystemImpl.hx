@@ -37,10 +37,10 @@ class SystemImpl {
 	private static var stage3D: Stage3D;
 	private static var keyboard: Keyboard;
 	private static var mouse: Mouse;
-	private static var callback: Void -> Void;
+	private static var callback: Window -> Void;
 	public static var context: Context3D;
 
-	public static function init(options: SystemOptions, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Window -> Void) {
 		SystemImpl.callback = callback;
 		SystemImpl.width = options.width;
 		SystemImpl.height = options.height;
@@ -58,15 +58,6 @@ class SystemImpl {
 		stage3D.requestContext3D(cast Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
 
-	public static function initEx( title  : String, options : Array<WindowOptions>, windowCallback : Int -> Void, callback : Void -> Void ) {
-		trace('initEx is not supported on the flash-target, running init() with first window options');
-		init({ title : title, width : options[0].width, height : options[0].height}, callback);
-
-		if (windowCallback != null) {
-			windowCallback(0);
-		}
-	}
-
 	private static function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, true);
@@ -77,6 +68,7 @@ class SystemImpl {
 		context.enableErrorChecking = true;
 		#end
 
+		new Window();
 		Shaders.init();
 		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		kha.flash.graphics4.Graphics.initContext(context);
@@ -89,7 +81,7 @@ class SystemImpl {
 
 		Scheduler.start();
 
-		callback();
+		callback(Window.get(0));
 
 		resizeHandler(null);
 
@@ -112,7 +104,7 @@ class SystemImpl {
 		Scheduler.executeFrame();
 		context.setRenderToBackBuffer();
 		context.clear(0, 0, 0, 0);
-		System.render(0, frame);
+		System.render([frame]);
 		context.present();
 	}
 
@@ -207,67 +199,19 @@ class SystemImpl {
 	public static function getTime(): Float {
 		return Lib.getTimer() / 1000;
 	}
-
-	public static function windowWidth( windowId : Int = 0 ): Int {
-		return Lib.current.stage.stageWidth;
-	}
-
-	public static function windowHeight( windowId : Int = 0 ): Int {
-		return Lib.current.stage.stageHeight;
-	}
 	
-	public static function screenDpi(): Int {
-		return Std.int(Capabilities.screenDPI);
-	}
-
-	public static function getVsync(): Bool {
-		return true;
-	}
-
-	public static function getRefreshRate(): Int {
-		return 60;
-	}
-
 	public static function getSystemId(): String {
 		return "Flash";
 	}
 
-	public static function requestShutdown(): Void {
+	public static function requestShutdown(): Bool {
 		System.pause();
 		System.background();
 		System.shutdown();
 		flash.Lib.fscommand("quit");
+		return true;
 	}
 
-	public static function canSwitchFullscreen(): Bool{
-		return false;
-	}
-
-	public static function isFullscreen(): Bool{
-		return false;
-	}
-
-	public static function requestFullscreen(): Void {
-
-	}
-
-	public static function exitFullscreen(): Void {
-
-  	}
-
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-	
 	public static function setKeepScreenOn(on: Bool): Void {
 		
 	}
