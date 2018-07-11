@@ -528,7 +528,7 @@ class SystemImpl {
 		wo.width = width;
 		wo.height = height;
 		//wo.mode = mode;
-		wo.display = targetDisplay;
+		//wo.display = targetDisplay;
 
 		Kore::FramebufferOptions frame;
 		frame.colorBufferBits = 32;

@@ -272,7 +272,7 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 		options.height = height;
 		options.x = x;
 		options.y = y;
-		options.display = display;
+		//options.display = display;
 		options.mode = windowMode;
 		options.windowFeatures = 0;
 		if (resizable) {
