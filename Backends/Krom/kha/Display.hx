@@ -1,7 +1,5 @@
 package kha;
 
-import flash.system.Capabilities;
-
 class Display {
 	static var instance: Display = new Display();
 
@@ -48,13 +46,13 @@ class Display {
 	public var width(get, never): Int;
 
 	function get_width(): Int {
-		return flash.Lib.current.stage.fullScreenWidth;
+		return 1000;
 	}
 
 	public var height(get, never): Int;
 
 	function get_height(): Int {
-		return flash.Lib.current.stage.fullScreenHeight;
+		return 1000;
 	}
 
 	public var frequency(get, never): Int;
@@ -66,7 +64,7 @@ class Display {
 	public var pixelsPerInch(get, never): Int;
 
 	function get_pixelsPerInch(): Int {
-		return Std.int(Capabilities.screenDPI);
+		return Krom.screenDpi();
 	}
 
 	public var modes(get, never): Array<DisplayMode>;
