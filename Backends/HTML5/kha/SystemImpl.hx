@@ -48,13 +48,14 @@ class SystemImpl {
 	private static var firefox: Bool = false;
 	private static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
+	static var window: Window;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error(error.stack);
 		return true;
 	}
 
-	public static function init(options: SystemOptions, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		SystemImpl.options = options;
 		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
@@ -65,8 +66,8 @@ class SystemImpl {
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
-			init2();
-			callback();
+			init2(options.window.width, options.window.height);
+			callback(window);
 		}, 1000);
 		#else
 		mobile = isMobile();
@@ -74,19 +75,9 @@ class SystemImpl {
 		chrome = isChrome();
 		firefox = isFirefox();
 		ie = isIE();
-		init2();
-		callback();
+		init2(options.window.width, options.window.height);
+		callback(window);
 		#end
-	}
-
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
-		trace('initEx is not supported on the html5 target, running init() with first window options');
-
-		init({title : title, width : options[0].width, height : options[0].height}, callback);
-
-		if (windowCallback != null) {
-			windowCallback(0);
-		}
 	}
 
 	private static function isMobile(): Bool {
@@ -136,27 +127,6 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function windowWidth(windowId: Int = 0): Int {
-		return (khanvas.width == 0 && options.width != null) ? options.width : khanvas.width;
-	}
-
-	public static function windowHeight(windowId: Int = 0): Int {
-		return (khanvas.height == 0 && options.height != null) ? options.height : khanvas.height;
-	}
-
-	public static function screenDpi(): Int {
-		var dpiElement = Browser.document.createElement('div');
-		dpiElement.style.position = "absolute";
-		dpiElement.style.width = "1in";
-		dpiElement.style.height = "1in";
-		dpiElement.style.left = "-100%";
-		dpiElement.style.top = "-100%";
-		Browser.document.body.appendChild(dpiElement);
-		var dpi:Int = dpiElement.offsetHeight;
-		dpiElement.remove();
-		return dpi;
-	}
-
 	public static function setCanvas(canvas: CanvasElement): Void {
 		khanvas = canvas;
 	}
@@ -170,20 +140,13 @@ class SystemImpl {
 		return performance.now() / 1000;
 	}
 
-	public static function getVsync(): Bool {
-		return true;
-	}
-
-	public static function getRefreshRate(): Int {
-		return 60;
-	}
-
 	public static function getSystemId(): String {
 		return "HTML5";
 	}
 
-	public static function requestShutdown(): Void {
+	public static function requestShutdown(): Bool {
 		Browser.window.close();
+		return true;
 	}
 
 	private static inline var maxGamepads: Int = 4;
@@ -204,7 +167,7 @@ class SystemImpl {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	public static function init2(?backbufferFormat: TextureFormat) {
+	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 		
 		#if !kha_no_keyboard 
@@ -264,7 +227,7 @@ class SystemImpl {
 		//Loader.init(new kha.js.Loader());
 		Scheduler.init();
 
-		loadFinished();
+		loadFinished(defaultWidth, defaultHeight);
 	}
 
 	public static function getMouse(num: Int): Mouse {
@@ -311,7 +274,7 @@ class SystemImpl {
 	//	Loader.the.loadProject(loadFinished);
 	//}
 
-	private static function loadFinished() {
+	private static function loadFinished(defaultWidth: Int, defaultHeight: Int) {
 		// Only consider custom canvas ID for release builds
 		var canvas: Dynamic = khanvas;
 		if (canvas == null) {
@@ -328,7 +291,7 @@ class SystemImpl {
 		#if kha_webgl
 		try {
 			
-			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
+			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); Warning: preserveDrawingBuffer can cause huge performance issues on mobile browsers
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
 			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
@@ -351,7 +314,7 @@ class SystemImpl {
 
 		if (!gl2) {
 			try {
-				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
+				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
 				if (SystemImpl.gl != null) {
 					SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 					SystemImpl.gl.getExtension("OES_texture_float");
@@ -376,6 +339,8 @@ class SystemImpl {
 		#end
 
 		setCanvas(canvas);
+		window = new Window(defaultWidth, defaultHeight, canvas);
+
 		//var widthTransform: Float = canvas.width / Loader.the.width;
 		//var heightTransform: Float = canvas.height / Loader.the.height;
 		//var transform: Float = Math.min(widthTransform, heightTransform);
@@ -450,7 +415,7 @@ class SystemImpl {
 					canvas.height = displayHeight;
 				}
 
-				System.render(0, frame);
+				System.render([frame]);
 				if (SystemImpl.gl != null) {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
@@ -980,43 +945,6 @@ class SystemImpl {
 		");
 	}
 
-	public static function isFullscreen(): Bool {
-		return untyped __js__("document.fullscreenElement === this.khanvas ||
-			document.mozFullScreenElement === this.khanvas ||
-			document.webkitFullscreenElement === this.khanvas ||
-			document.msFullscreenElement === this.khanvas ");
-	}
-
-	public static function requestFullscreen(): Void {
-		untyped if (khanvas.requestFullscreen) {
-			khanvas.requestFullscreen();
-		}
-		else if (khanvas.msRequestFullscreen) {
-			khanvas.msRequestFullscreen();
-		}
-		else if (khanvas.mozRequestFullScreen) {
-			khanvas.mozRequestFullScreen();
-		}
-		else if(khanvas.webkitRequestFullscreen){
-			khanvas.webkitRequestFullscreen();
-		}
-	}
-
-	public static function exitFullscreen(): Void {
-		untyped if (document.exitFullscreen) {
-			document.exitFullscreen();
-		}
-		else if (document.msExitFullscreen) {
-			document.msExitFullscreen();
-		}
-		else if (document.mozCancelFullScreen) {
-			document.mozCancelFullScreen();
-		}
-		else if (document.webkitExitFullscreen) {
-			document.webkitExitFullscreen();
-		}
-	}
-
 	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
 		js.Browser.document.addEventListener('fullscreenchange', func, false);
 		js.Browser.document.addEventListener('mozfullscreenchange', func, false);
@@ -1039,10 +967,6 @@ class SystemImpl {
 		js.Browser.document.removeEventListener('mozfullscreenerror', error, false);
 		js.Browser.document.removeEventListener('webkitfullscreenerror', error, false);
 		js.Browser.document.removeEventListener('MSFullscreenError', error, false);
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
 	}
 
 	public static function setKeepScreenOn(on: Bool): Void {

@@ -1,12 +1,7 @@
 package kha;
 
 /**
- * Class representing a color, based on Int.
- * Provides a variety of methods for creating and converting colors.
- * 
- * Color's can be written as Ints. This means you can pass a hex value such as
- * 0xff123456 to a function expecting a Color, and it will automatically become a Color object.
- * Similarly, Colors may be treated as Ints.
+ * A 32 bit ARGB color value which is represented as an Integer.
  */
 @:expose
 abstract Color(Int) from Int from UInt to Int to UInt {
@@ -24,7 +19,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	
 	public static inline var Transparent: Color = 0x00000000;
 	
-	private static inline var invMaxChannelValue: FastFloat = 1 / 255;
+	static inline var invMaxChannelValue: FastFloat = 1 / 255;
 	
 	/**
 	 * Creates a new Color object from a packed 32 bit ARGB value.
@@ -48,7 +43,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 	
 	/**
-	 * Creates a new Color object from #AARRGGBB string.
+	 * Creates a new Color object from an HTML style #AARRGGBB string.
 	 */
 	public static function fromString(value: String) {
 		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {

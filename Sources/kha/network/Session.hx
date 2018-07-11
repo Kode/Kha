@@ -422,7 +422,7 @@ class Session {
 				bytes.setDouble(5, Scheduler.time());
 				bytes.setInt32(13, System.windowWidth(0));
 				bytes.setInt32(17, System.windowHeight(0));
-				bytes.set(21, System.screenRotation.getIndex());
+				bytes.set(21, 0); //System.screenRotation.getIndex());
 
 				bytes.blit(22, controller._inputBuffer, 0, controller._inputBufferIndex);
 
