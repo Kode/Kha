@@ -1,38 +1,22 @@
 package kha;
 
 class Display {
-	static var displays: Array<Display> = [];
-	var num: Int;
-	var isPrimary: Bool;
-	
-	function new(num: Int, isPrimary: Bool) {
-		this.num = num;
-		this.isPrimary = isPrimary;
-	}
-	
-	static function init(): Void {
-		for (i in 0...Krom.displayCount()) {
-			displays.push(new Display(i, Krom.displayIsPrimary(i)));
-		}
+	static var instance: Display = new Display();
+
+	function new() {
+
 	}
 
 	public static var primary(get, never): Display;
 
 	static function get_primary(): Display {
-		init();
-		for (display in displays) {
-			if (display.isPrimary) {
-				return display;
-			}
-		}
-		return null;
+		return instance;
 	}
 
 	public static var all(get, never): Array<Display>;
 
 	static function get_all(): Array<Display> {
-		init();
-		return displays;
+		return [primary];
 	}
 
 	public var available(get, never): Bool;
@@ -50,25 +34,25 @@ class Display {
 	public var x(get, never): Int;
 
 	function get_x(): Int {
-		return Krom.displayX(num);
+		return 0;
 	}
 
 	public var y(get, never): Int;
 
 	function get_y(): Int {
-		return Krom.displayY(num);
+		return 0;
 	}
 
 	public var width(get, never): Int;
 
 	function get_width(): Int {
-		return Krom.displayWidth(num);
+		return 1000;
 	}
 
 	public var height(get, never): Int;
 
 	function get_height(): Int {
-		return Krom.displayHeight(num);
+		return 1000;
 	}
 
 	public var frequency(get, never): Int;
@@ -79,8 +63,13 @@ class Display {
 
 	public var pixelsPerInch(get, never): Int;
 
-	function get_pixelsPerInch(): Int {
-		return Krom.screenDpi();
+	@:functionCode('
+		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		return (int)(metrics.density * android.util.DisplayMetrics.DENSITY_DEFAULT);
+	')
+	public function get_pixelsPerInch(): Int {
+		return 0;
 	}
 
 	public var modes(get, never): Array<DisplayMode>;
