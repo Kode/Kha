@@ -459,6 +459,24 @@ class SystemImpl {
 		canvas.addEventListener("touchmove", touchMove, false);
 		canvas.addEventListener("touchcancel", touchCancel, false);
 
+#if kha_debug_html5
+		Browser.document.addEventListener('dragover', function( event ) {
+			event.preventDefault();
+		});
+
+		Browser.document.addEventListener('drop', function( event: js.html.DragEvent ) {
+			event.preventDefault();
+
+			if (event.dataTransfer != null && event.dataTransfer.files != null) {
+				for (file in event.dataTransfer.files) {
+					// https://developer.mozilla.org/en-US/docs/Web/API/File
+					//  - use mozFullPath or webkitRelativePath?
+					System.dropFiles(untyped __js__('file.path'));
+				}
+			}
+		});
+#end
+
 		Browser.window.addEventListener("unload", unload);
 	}
 
