@@ -69,8 +69,6 @@ class System {
 
 	public static function start(options: SystemOptions, callback: Window -> Void): Void {
 		theTitle = options.title;
-		trace("Width: " + options.width);
-		trace("Samples: " + options.framebuffer.samplesPerPixel);
 		SystemImpl.init(options, callback);
 	}
 
