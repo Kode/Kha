@@ -183,11 +183,11 @@ class System {
 		return Window.all[window].height;
 	}
 	
-	/*public static var screenRotation(get, null): ScreenRotation;
+	public static var screenRotation(get, null): ScreenRotation;
 
-	private static function get_screenRotation(): ScreenRotation {
-		return SystemImpl.getScreenRotation();
-	}*/
+	static function get_screenRotation(): ScreenRotation {
+		return RotationNone;
+	}
 
 	public static var systemId(get, null): String;
 
