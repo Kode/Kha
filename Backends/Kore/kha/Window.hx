@@ -9,33 +9,6 @@ package kha;
 namespace {
 	char windowTitles[10][256];
 	int titleIndex = 0;
-
-	Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
-		Kore::WindowOptions window;
-		strcpy(windowTitles[titleIndex], win->title.c_str());
-		window.title = windowTitles[titleIndex];
-		++titleIndex;
-		window.x = win->x;
-		window.y = win->y;
-		window.width = win->width;
-		window.height = win->height;
-		window.display = Kore::Display::get(win->display->num);
-		window.visible = win->visible;
-		window.windowFeatures = win->windowFeatures;
-		window.mode = (Kore::WindowMode)win->mode;
-		return window;
-	}
-
-	Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame) {
-		Kore::FramebufferOptions framebuffer;
-		framebuffer.frequency = frame->frequency;
-		framebuffer.verticalSync = frame->verticalSync;
-		framebuffer.colorBufferBits = frame->colorBufferBits;
-		framebuffer.depthBufferBits = frame->depthBufferBits;
-		framebuffer.stencilBufferBits = frame->stencilBufferBits;
-		framebuffer.samplesPerPixel = frame->samplesPerPixel;
-		return framebuffer;
-	}
 	
 	void resizeCallback(int width, int height, void* data) {
 		::kha::Window_obj::callResizeCallbacks((int)data, width, height);
@@ -44,6 +17,33 @@ namespace {
 	void ppiCallback(int ppi, void* data) {
 		::kha::Window_obj::callPpiCallbacks((int)data, ppi);
 	}
+}
+
+Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
+	Kore::WindowOptions window;
+	strcpy(windowTitles[titleIndex], win->title.c_str());
+	window.title = windowTitles[titleIndex];
+	++titleIndex;
+	window.x = win->x;
+	window.y = win->y;
+	window.width = win->width;
+	window.height = win->height;
+	window.display = Kore::Display::get(win->display->num);
+	window.visible = win->visible;
+	window.windowFeatures = win->windowFeatures;
+	window.mode = (Kore::WindowMode)win->mode;
+	return window;
+}
+
+Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame) {
+	Kore::FramebufferOptions framebuffer;
+	framebuffer.frequency = frame->frequency;
+	framebuffer.verticalSync = frame->verticalSync;
+	framebuffer.colorBufferBits = frame->colorBufferBits;
+	framebuffer.depthBufferBits = frame->depthBufferBits;
+	framebuffer.stencilBufferBits = frame->stencilBufferBits;
+	framebuffer.samplesPerPixel = frame->samplesPerPixel;
+	return framebuffer;
 }
 ')
 
