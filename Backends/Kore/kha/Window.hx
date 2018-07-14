@@ -11,11 +11,11 @@ namespace {
 	int titleIndex = 0;
 	
 	void resizeCallback(int width, int height, void* data) {
-		::kha::Window_obj::callResizeCallbacks((int)data, width, height);
+		::kha::Window_obj::callResizeCallbacks(*((int*)&data), width, height);
 	}
 	
 	void ppiCallback(int ppi, void* data) {
-		::kha::Window_obj::callPpiCallbacks((int)data, ppi);
+		::kha::Window_obj::callPpiCallbacks(*((int*)&data), ppi);
 	}
 }
 
