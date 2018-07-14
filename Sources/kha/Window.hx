@@ -17,5 +17,6 @@ extern class Window {
 	public var visible(get, set): Bool;
 	public var title(get, set): String;
 	public function notifyOnResize(callback: Int->Int->Void): Void;
+	public function notifyOnPpiChange(callback: Int->Void): Void;
 	public var vSynced(get, never): Bool;
 }

@@ -5,32 +5,92 @@ package kha;
 #include <Kore/Window.h>
 ')
 
+@:cppFileCode('
+namespace {
+	char windowTitles[10][256];
+	int titleIndex = 0;
+
+	Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
+		Kore::WindowOptions window;
+		strcpy(windowTitles[titleIndex], win->title.c_str());
+		window.title = windowTitles[titleIndex];
+		++titleIndex;
+		window.x = win->x;
+		window.y = win->y;
+		window.width = win->width;
+		window.height = win->height;
+		window.display = Kore::Display::get(win->display->num);
+		window.visible = win->visible;
+		window.windowFeatures = win->windowFeatures;
+		window.mode = (Kore::WindowMode)win->mode;
+		return window;
+	}
+
+	Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame) {
+		Kore::FramebufferOptions framebuffer;
+		framebuffer.frequency = frame->frequency;
+		framebuffer.verticalSync = frame->verticalSync;
+		framebuffer.colorBufferBits = frame->colorBufferBits;
+		framebuffer.depthBufferBits = frame->depthBufferBits;
+		framebuffer.stencilBufferBits = frame->stencilBufferBits;
+		framebuffer.samplesPerPixel = frame->samplesPerPixel;
+		return framebuffer;
+	}
+	
+	void resizeCallback(int width, int height, void* data) {
+		::kha::Window_obj::callResizeCallbacks((int)data, width, height);
+	}
+	
+	void ppiCallback(int ppi, void* data) {
+		::kha::Window_obj::callPpiCallbacks((int)data, ppi);
+	}
+}
+')
+
 class Window {
 	static var windows: Array<Window> = [];
+	static var resizeCallbacks: Array<Array<Int->Int->Void>> = [];
+	static var ppiCallbacks: Array<Array<Int->Void>> = [];
 	var num: Int;
+	var visibility: Bool;
+	var windowTitle: String;
 
 	@:noCompletion
 	@:noDoc
-	public function new(num: Int) {
+	public function new(num: Int, win: WindowOptions) {
 		this.num = num;
+		visibility = win != null && win.visible;
+		windowTitle = win == null ? "Kha" : win.title;
+		resizeCallbacks[num] = [];
+		ppiCallbacks[num] = [];
+	}
+	
+	@:noCompletion
+	@:noDoc
+	static function unused(): Void {
+		Display.primary.x;
 	}
 	
 	@:noCompletion
 	@:noDoc
 	public static function _init(win: WindowOptions = null, frame: FramebufferOptions = null): Void {
-		var window = new Window(windows.length);
+		var window = new Window(windows.length, win);
 		windows.push(window);
 	}
 
 	public static function create(win: WindowOptions = null, frame: FramebufferOptions = null): Window {
-		koreCreate();
-		var window = new Window(windows.length);
+		koreCreate(win == null ? {} : win, frame == null ? frame : {});
+		var window = new Window(windows.length, win);
 		windows.push(window);
 		return window;
 	}
 
-	@:functionCode('Kore::Window::create();')
-	static function koreCreate() {
+	@:functionCode('
+		Kore::WindowOptions window = convertWindowOptions(win);
+		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
+		Kore::Window::create(&window, &framebuffer);
+	')
+	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {
 
 	}
 
@@ -61,7 +121,10 @@ class Window {
 	@:functionCode('Kore::Window::get(this->num)->changeWindowFeatures(features);')
 	public function changeWindowFeatures(features: Int): Void {}
 
-	@:functionCode('')
+	@:functionCode('
+		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
+		Kore::Window::get(this->num)->changeFramebuffer(&framebuffer);
+	')
 	public function changeFramebuffer(frame: FramebufferOptions): Void {}
 
 	public var x(get, set): Int;
@@ -132,26 +195,52 @@ class Window {
 	public var visible(get, set): Bool;
 
 	function get_visible(): Bool {
-		return true;
+		return visibility;
 	}
 
+	@:functionCode('if (value) Kore::Window::get(this->num)->show(); else Kore::Window::get(this->num)->hide();')
 	function set_visible(value: Bool): Bool {
-		return true;
+		visibility = value;
+		return value;
 	}
 
 	public var title(get, set): String;
 
-	//@:functionCode('return ::String(Kore::Window::get(this->num)->title());')
 	function get_title(): String {
-		return "Kha";
+		return windowTitle;
 	}
 
 	@:functionCode('Kore::Window::get(this->num)->setTitle(value.c_str());')
 	function set_title(value: String): String {
-		return "Kha";
+		windowTitle = value;
+		return windowTitle;
 	}
 
-	public function notifyOnResize(callback: Int->Int->Void): Void {}
+	@:functionCode('Kore::Window::get(this->num)->setResizeCallback(resizeCallback, (void*)this->num);')
+	public function notifyOnResize(callback: Int->Int->Void): Void {
+		resizeCallbacks[num].push(callback);
+	}
+	
+	@:noCompletion
+	@:noDoc
+	public static function callResizeCallbacks(num: Int, width: Int, height: Int) {
+		for (callback in resizeCallbacks[num]) {
+			callback(width, height);
+		}
+	}
+	
+	@:functionCode('Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);')
+	public function notifyOnPpiChange(callback: Int->Void): Void {
+		ppiCallbacks[num].push(callback);
+	}
+	
+	@:noCompletion
+	@:noDoc
+	public static function callPpiCallbacks(num: Int, ppi: Int) {
+		for (callback in ppiCallbacks[num]) {
+			callback(ppi);
+		}
+	}
 
 	public var vSynced(get, never): Bool;
 
