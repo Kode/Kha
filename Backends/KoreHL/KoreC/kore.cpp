@@ -31,15 +31,18 @@ namespace {
 		if (paused) return;
 		//Kore::Audio::update();
 
-		int windowCount = Kore::System::windowCount();
+		int windowCount = Kore::Window::count();
 
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
 				Kore::Graphics4::begin(windowIndex);
 				frame();
 				Kore::Graphics4::end(windowIndex);
-				Kore::Graphics4::swapBuffers(windowIndex);
 			}
+		}
+
+		if (!Kore::Graphics4::swapBuffers()) {
+			Kore::log(Kore::Error, "Graphics context lost.");
 		}
 	}
 
@@ -64,34 +67,23 @@ namespace {
 	}
 }
 
-extern "C" void hl_init_kore(vbyte *title, int width, int height, int antialiasing, bool vSync, int windowMode, bool resizable, bool maximizable, bool minimizable) {
+extern "C" void hl_init_kore(vbyte *title, int width, int height, int samplesPerPixel, bool vSync, int windowMode, int windowFeatures) {
 	Kore::log(Kore::Info, "Starting KoreHL");
 
 	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
-	Kore::System::setName((char*)title);
-	Kore::System::setup();
 
-	width = Kore::min(width, Kore::System::desktopWidth());
-	height = Kore::min(height, Kore::System::desktopHeight());
-
-	Kore::WindowOptions options;
-	options.title = (char*)title;
-	options.width = width;
-	options.height = height;
-	options.x = Kore::System::desktopWidth() / 2 - width / 2;
-	options.y = Kore::System::desktopHeight() / 2 - height / 2;
-	options.vSync = vSync;
-	options.targetDisplay = -1;
-	options.mode = (Kore::WindowMode)windowMode;
-	options.resizable = resizable;
-	options.maximizable = maximizable;
-	options.minimizable = minimizable;
-	options.rendererOptions.depthBufferBits = 16;
-	options.rendererOptions.stencilBufferBits = 8;
-	options.rendererOptions.textureFormat = 0;
-	options.rendererOptions.antialiasing = antialiasing;
-
-	Kore::System::initWindow(options);
+	Kore::WindowOptions win;
+	win.title = (char*)title;
+	win.width = width;
+	win.height = height;
+	win.x = -1;
+	win.y = -1;
+	win.mode = Kore::WindowMode(windowMode);
+	win.windowFeatures = windowFeatures;
+	Kore::FramebufferOptions frame;
+	frame.verticalSync = vSync;
+	frame.samplesPerPixel = samplesPerPixel;
+	Kore::System::init((char*)title, width, height, &win, &frame);
 
 	Kore::System::setCallback(update);
 }
