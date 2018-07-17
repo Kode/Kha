@@ -1,4 +1,4 @@
-
+#include <Kore/pch.h>
 #include <Kore/Display.h>
 #include <Kore/System.h>
 
