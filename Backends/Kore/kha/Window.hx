@@ -67,6 +67,7 @@ class Window {
 	
 	@:noCompletion
 	@:noDoc
+	@:keep
 	static function unused(): Void {
 		Display.primary.x;
 	}
@@ -223,6 +224,7 @@ class Window {
 	
 	@:noCompletion
 	@:noDoc
+	@:keep
 	public static function callResizeCallbacks(num: Int, width: Int, height: Int) {
 		for (callback in resizeCallbacks[num]) {
 			callback(width, height);
@@ -236,6 +238,7 @@ class Window {
 	
 	@:noCompletion
 	@:noDoc
+	@:keep
 	public static function callPpiCallbacks(num: Int, ppi: Int) {
 		for (callback in ppiCallbacks[num]) {
 			callback(ppi);
