@@ -11,9 +11,9 @@ extern "C" void hl_kore_vertexstructure_add(vbyte *structure, vbyte *name, int d
 	struc->add((char*)name, (Kore::Graphics4::VertexData)data);
 }
 
-extern "C" vbyte *hl_kore_create_vertexbuffer(int vertexCount, vbyte *structure, int stepRate) {
+extern "C" vbyte *hl_kore_create_vertexbuffer(int vertexCount, vbyte *structure, int usage, int stepRate) {
 	Kore::Graphics4::VertexStructure* struc = (Kore::Graphics4::VertexStructure*)structure;
-	return (vbyte*)new Kore::Graphics4::VertexBuffer(vertexCount, *struc, stepRate);
+	return (vbyte*)new Kore::Graphics4::VertexBuffer(vertexCount, *struc, (Kore::Graphics4::Usage)usage, stepRate);
 }
 
 extern "C" void hl_kore_delete_vertexbuffer(vbyte *buffer) {

@@ -7,11 +7,11 @@ extern "C" void hl_kore_graphics_clear(int flags, int color, float z, int stenci
 }
 
 extern "C" bool hl_kore_graphics_vsynced() {
-	return Kore::Graphics4::vsynced();
+	return true;// Kore::Graphics4::vsynced();
 }
 
 extern "C" int hl_kore_graphics_refreshrate() {
-	return Kore::Graphics4::refreshRate();
+	return 60;// Kore::Graphics4::refreshRate();
 }
 
 extern "C" void hl_kore_graphics_viewport(int x, int y, int width, int height) {
