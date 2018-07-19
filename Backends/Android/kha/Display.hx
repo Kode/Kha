@@ -65,7 +65,7 @@ class Display {
 
 	@:functionCode('
 		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return (int)(metrics.density * android.util.DisplayMetrics.DENSITY_DEFAULT);
 	')
 	public function get_pixelsPerInch(): Int {

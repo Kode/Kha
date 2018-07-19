@@ -57,7 +57,7 @@ class Window {
 
 	@:functionCode('
 		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return metrics.widthPixels;
 	')
 	public function get_width(): Int {
@@ -72,7 +72,7 @@ class Window {
 	
 	@:functionCode('
 		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-		com.ktxsoftware.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return metrics.heightPixels;
 	')
 	public function get_height(): Int {

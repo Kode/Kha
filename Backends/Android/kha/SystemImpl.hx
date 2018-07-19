@@ -2,7 +2,7 @@ package kha;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.ktxsoftware.kha.KhaActivity;
+import tech.kode.kha.KhaActivity;
 import kha.android.Graphics;
 import kha.android.Keyboard;
 import kha.graphics4.Graphics2;

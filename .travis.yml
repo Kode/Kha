@@ -10,7 +10,7 @@ addons:
 language: cpp
 before_script:
   - git submodule update --init --recursive
-  - git clone https://github.com/ktxsoftware/nodejs_bin.git --depth 1
+  - git clone https://github.com/Kode/nodejs_bin.git --depth 1
   - nodejs_bin/copysysbin.sh
 script:
   - nodejs_bin/node make.js html5 --kha . --from Tests/Empty
