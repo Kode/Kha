@@ -243,9 +243,9 @@ class SystemImpl {
 	static function checkGamepad(pad: js.html.Gamepad) {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
-				if (gamepadStates[pad.index].axes[i] != pad.axes[i]) {
-					var axis = pad.axes[i];
-					if (i % 2 == 1) axis = -axis;
+				var axis = pad.axes[i];
+				if (i % 2 == 1) axis = -axis;
+				if (gamepadStates[pad.index].axes[i] != axis) {
 					gamepadStates[pad.index].axes[i] = axis;
 					gamepads[pad.index].sendAxisEvent(i, axis);
 				}
