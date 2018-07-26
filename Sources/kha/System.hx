@@ -8,7 +8,7 @@ class SystemOptions {
 	@:optional public var window: WindowOptions = null;
 	@:optional public var framebuffer: FramebufferOptions = null;
 
-	public function new(title: String = "Kha", width: Int = 800, height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+	public function new(title: String = "Kha", ?width: Int = 800, ?height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
 		this.width = width;
 		this.height = height;
