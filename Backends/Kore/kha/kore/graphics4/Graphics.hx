@@ -43,6 +43,7 @@ import kha.Video;
 @:headerClassCode("Kore::Graphics4::RenderTarget* renderTarget;")
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
+	public var window: Null<Int>;
 	
 	public function new(target: Canvas = null) {
 		this.target = target;
@@ -521,7 +522,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-		if (target == null) renderToBackbuffer();
+		if (target == null) {
+			if (window != null) {
+				untyped __cpp__('Kore::Graphics4::begin(window);');
+			}
+			renderToBackbuffer();
+		}
 		else renderToTexture(additionalRenderTargets);
 	}
 	
@@ -534,7 +540,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		
+		if (window != null) {
+			untyped __cpp__('Kore::Graphics4::end(window);');
+		}
 	}
 	
 	@:functionCode('Kore::Graphics4::flush();')
