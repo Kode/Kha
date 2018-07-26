@@ -139,7 +139,9 @@ namespace {
 		if (paused) return;
 		Kore::Audio2::update();
 
-		int windowCount = Kore::Window::count();
+		SystemImpl_obj::frame();
+
+		/*int windowCount = Kore::Window::count();
 
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
@@ -165,7 +167,7 @@ namespace {
 
 				
 			}
-		}
+		}*/
 
 #ifndef VR_RIFT
 		if (!Kore::Graphics4::swapBuffers()) {
