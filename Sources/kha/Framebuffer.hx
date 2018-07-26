@@ -10,22 +10,25 @@ class Framebuffer implements Canvas {
 	var graphics1: kha.graphics1.Graphics;
 	var graphics2: kha.graphics2.Graphics;
 	var graphics4: kha.graphics4.Graphics;
+	var graphics5: kha.graphics5.Graphics;
 
 	@:noCompletion
 	@:noDoc
-	public function new(window: Int, g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics) {
+	public function new(window: Int, g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, g5: kha.graphics5.Graphics) {
 		this.window = window;
 		this.graphics1 = g1;
 		this.graphics2 = g2;
 		this.graphics4 = g4;
+		this.graphics5 = g5;
 	}
 
 	@:noCompletion
 	@:noDoc
-	public function init(g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics): Void {
+	public function init(g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, g5: kha.graphics5.Graphics): Void {
 		this.graphics1 = g1;
 		this.graphics2 = g2;
 		this.graphics4 = g4;
+		this.graphics5 = g5;
 	}
 
 	/**
@@ -53,6 +56,15 @@ class Framebuffer implements Canvas {
 
 	private function get_g4(): kha.graphics4.Graphics {
 		return graphics4;
+	}
+
+	/**
+	 * Returns a kha.graphics5.Graphics interface for the framebuffer.
+	 */
+	public var g5(get, never): kha.graphics5.Graphics;
+
+	private function get_g5(): kha.graphics5.Graphics {
+		return graphics5;
 	}
 
 	/**

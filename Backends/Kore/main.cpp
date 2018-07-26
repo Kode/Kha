@@ -1,6 +1,10 @@
 #include <Kore/pch.h>
 //#include <Kore/Application.h>
+// #ifdef KORE_G4ONG5
+// #include <Kore/Graphics5/Graphics.h>
+// #else
 #include <Kore/Graphics4/Graphics.h>
+// #endif
 #include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Keyboard.h>
 #include <Kore/Input/Mouse.h>
