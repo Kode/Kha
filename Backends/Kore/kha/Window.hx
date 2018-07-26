@@ -80,7 +80,7 @@ class Window {
 	}
 
 	public static function create(win: WindowOptions = null, frame: FramebufferOptions = null): Window {
-		koreCreate(win == null ? {} : win, frame == null ? frame : {});
+		koreCreate(win == null ? {} : win, frame == null ? {} : frame);
 		var window = new Window(windows.length, win);
 		windows.push(window);
 		return window;
