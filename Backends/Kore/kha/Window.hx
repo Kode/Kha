@@ -79,10 +79,12 @@ class Window {
 		windows.push(window);
 	}
 
+	@:access(kha.SystemImpl)
 	public static function create(win: WindowOptions = null, frame: FramebufferOptions = null): Window {
 		koreCreate(win == null ? {} : win, frame == null ? {} : frame);
 		var window = new Window(windows.length, win);
-		windows.push(window);
+		var index = windows.push(window) - 1;
+		kha.SystemImpl.onWindowCreated(index);
 		return window;
 	}
 

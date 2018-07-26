@@ -128,12 +128,21 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
+		g4.window = 0;
 		var framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
 		framebuffers.push(framebuffer);
 #end
 
 		postInit(callback);
+	}
+
+	static function onWindowCreated(index: Int) {
+		var g4 = new kha.kore.graphics4.Graphics();
+		g4.window = index;
+		var framebuffer = new Framebuffer(index, null, null, g4);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		framebuffers.push(framebuffer);
 	}
 
 	static function postInit(callback: Window -> Void) {
@@ -239,7 +248,7 @@ class SystemImpl {
 		untyped __cpp__("Kore::Mouse::the()->show(true);");
 	}
 
-	public static function frame(id: Int) {
+	public static function frame() {
 		/*
 		#if !ANDROID
 		#if !VR_RIFT
@@ -255,10 +264,7 @@ class SystemImpl {
 		#end
 		*/
 
-		if (id == 0) {
-			Scheduler.executeFrame();
-		}
-
+		Scheduler.executeFrame();
 		System.render(framebuffers);
 	}
 
