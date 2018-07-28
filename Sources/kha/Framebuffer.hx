@@ -14,7 +14,7 @@ class Framebuffer implements Canvas {
 
 	@:noCompletion
 	@:noDoc
-	public function new(window: Int, g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, g5: kha.graphics5.Graphics) {
+	public function new(window: Int, g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, ?g5: kha.graphics5.Graphics) {
 		this.window = window;
 		this.graphics1 = g1;
 		this.graphics2 = g2;
@@ -24,7 +24,7 @@ class Framebuffer implements Canvas {
 
 	@:noCompletion
 	@:noDoc
-	public function init(g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, g5: kha.graphics5.Graphics): Void {
+	public function init(g1: kha.graphics1.Graphics, g2: kha.graphics2.Graphics, g4: kha.graphics4.Graphics, ?g5: kha.graphics5.Graphics): Void {
 		this.graphics1 = g1;
 		this.graphics2 = g2;
 		this.graphics4 = g4;
