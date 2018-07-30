@@ -2,10 +2,12 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
+	var num: Int;
 
 	@:noCompletion
 	@:noDoc
-	public function new() {
+	public function new(num: Int) {
+		this.num = num;
 		windows.push(this);
 	}
 
@@ -55,28 +57,18 @@ class Window {
 
 	public var width(get, set): Int;
 
-	@:functionCode('
-		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		return metrics.widthPixels;
-	')
-	public function get_width(): Int {
-		return 0;
+	function get_width(): Int {
+		return 800;
 	}
-
+	
 	function set_width(value: Int): Int {
 		return 800;
 	}
 
 	public var height(get, set): Int;
-	
-	@:functionCode('
-		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		return metrics.heightPixels;
-	')
-	public function get_height(): Int {
-		return 0;
+
+	function get_height(): Int {
+		return 600;
 	}
 
 	function set_height(value: Int): Int {
@@ -86,11 +78,11 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Fullscreen;
+		return Window;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {
-		return Fullscreen;
+		return Window;
 	}
 
 	public var visible(get, set): Bool;

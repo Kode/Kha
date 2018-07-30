@@ -102,7 +102,7 @@ class SystemImpl {
 	}
 	
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, true, true, true);
+		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
 
 		start = Krom.getTime();
 		

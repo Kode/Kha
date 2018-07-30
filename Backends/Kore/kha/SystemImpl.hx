@@ -37,11 +37,12 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/Display.h>
 #include <Kore/Window.h>
 
-void init_kore(const char* name, int width, int height, int antialiasing, bool vsync, int windowMode, bool resizable, bool maximizable, bool minimizable);
-void init_kore_ex(const char* name);
+Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win);
+Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame);
+
+void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame);
 void post_kore_init();
 void run_kore();
-int init_window(Kore::WindowOptions windowOptions);
 const char* getGamepadId(int index);
 ')
 @:keep
@@ -116,11 +117,10 @@ class SystemImpl {
 	private static var mouseLockListeners: Array<Void->Void>;
 
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		initKore(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, 0, true, true, true);
+		initKore(options.title, options.width, options.height, options.window, options.framebuffer);
 		Window._init();
 
 		kha.Worker._mainThread = cpp.vm.Thread.current();
-		//Shaders.init();
 
 		untyped __cpp__('post_kore_init()');
 
@@ -135,34 +135,6 @@ class SystemImpl {
 
 		postInit(callback);
 	}
-
-	/*public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
-		untyped __cpp__('init_kore_ex(title)');
-
-		//Shaders.init();
-		var windowIds: Array<Int> = [];
-
-		Lambda.iter(options, initWindow.bind(_, function(windowId: Int) {
-			windowIds.push(windowId);
-			windowCallback(windowId);
-		}));
-
-		Shaders.init();
-
-#if (!VR_GEAR_VR && !VR_RIFT)
-		for (index in 0 ... windowIds.length) {
-			var windowId = windowIds[index];
-			var g4 = new kha.kore.graphics4.Graphics();
-			var framebuffer = new Framebuffer(index, null, null, g4);
-			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-			framebuffers[windowId] = framebuffer;
-		}
-#end
-
-		untyped __cpp__('post_kore_init()');
-
-		postInit(callback);
-	}*/
 
 	static function postInit(callback: Window -> Void) {
 		mouseLockListeners = new Array();
@@ -437,212 +409,15 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode('init_kore(name, width, height, antialiasing, vSync, windowMode, resizable, maximizable, minimizable);')
-	private static function initKore(name: String, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void {
+	@:functionCode('
+		Kore::WindowOptions window = convertWindowOptions(win);
+		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
+		init_kore(name, width, height, &window, &framebuffer);
+	')
+	private static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {
 		
 	}
-
-	/*static function translatePosition(value: Null<WindowOptions.Position>): Int {
-		if (value == null) {
-			return -1;
-		}
-
-		return switch (value) {
-			case Center: -1;
-			case Fixed(v): v;
-		}
-	}
-
-	static function translateDisplay(value: Null<WindowOptions.TargetDisplay>): Int {
-		if (value == null) {
-			return -1;
-		}
-
-		return switch (value) {
-			case Primary: -1;
-			case ById(id): id;
-		}
-	}
-
-	static function translateWindowMode(value: Null<WindowMode>): Int {
-		if (value == null) {
-			return 0;
-		}
-
-		return switch (value) {
-			case Window: 0;
-			case Fullscreen: 1;
-			case ExclusiveFullscreen: 2;
-		}
-	}*/
-
-	static function translateDepthBufferFormat(value: Null<DepthStencilFormat>): Int {
-		if (value == null) {
-			return 16;
-		}
-
-		return switch (value) {
-			case NoDepthAndStencil: -1;
-			case DepthOnly: 16;
-			case DepthAutoStencilAuto: 16;
-			case Depth24Stencil8: 24;
-			case Depth32Stencil8: 32;
-			case Depth16: 16;
-		}
-	}
-
-	static function translateStencilBufferFormat(value: Null<DepthStencilFormat>): Int {
-		if (value == null) {
-			return -1;
-		}
-
-		return switch (value) {
-			case NoDepthAndStencil: -1;
-			case DepthOnly: -1;
-			case DepthAutoStencilAuto: 8;
-			case Depth24Stencil8: 8;
-			case Depth32Stencil8: 8;
-			case Depth16: 0;
-		}
-	}
-
-	static function translateTextureFormat(value: Null<TextureFormat>): Int {
-		if (value == null) {
-			return 0;
-		}
-
-		return switch(value) {
-			case RGBA32: 0;
-			case L8: 1;
-			case RGBA128: 2;
-			case DEPTH16: 3;
-			case RGBA64: 4;
-			case A32: 5;
-			case A16: 6;
-		}
-	}
 	
-	/*@:functionCode('
-		Kore::WindowOptions wo;
-		wo.title = title;
-		wo.x = x;
-		wo.y = y;
-		wo.width = width;
-		wo.height = height;
-		//wo.mode = mode;
-		//wo.display = targetDisplay;
-
-		Kore::FramebufferOptions frame;
-		frame.colorBufferBits = 32;
-		frame.depthBufferBits = depthBufferBits;
-		frame.stencilBufferBits = stencilBufferBits;
-
-		wo.windowFeatures = 0;
-		if (resizable) {
-			wo.windowFeatures |= Kore::WindowFeatureResizable;
-		}
-		if (maximizable) {
-			wo.windowFeatures |= Kore::WindowFeatureMaximizable;
-		}
-		if (minimizable) {
-			wo.windowFeatures |= Kore::WindowFeatureMinimizable;
-		}
-
-		switch (mode) {
-			default:
-			case 0: wo.mode = Kore::WindowModeWindow; break;
-			case 1: wo.mode = Kore::WindowModeFullscreen; break;
-			case 2: wo.mode = Kore::WindowModeExclusiveFullscreen; break;
-		}
-
-		return init_window(wo);
-	')
-	private static function initWindow2(title: String, x: Int, y: Int, width: Int, height: Int, targetDisplay: Int, textureFormat: Int, depthBufferBits: Int, stencilBufferBits: Int,
-		resizable: Bool, maximizable: Bool, minimizable: Bool, mode: Int): Int {
-		return 0;
-	}
-
-	private static function initWindow(options: WindowOptions, callback: Int -> Void) {
-		var x = translatePosition(options.x);
-		var y = translatePosition(options.y);
-		var mode = translateWindowMode(options.mode != null ? options.mode : WindowMode.Window);
-		var targetDisplay = translateDisplay(options.targetDisplay != null ? options.targetDisplay : WindowOptions.TargetDisplay.Primary);
-		var depthBufferBits = translateDepthBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
-		var stencilBufferBits = translateStencilBufferFormat(options.rendererOptions != null ? options.rendererOptions.depthStencilFormat : DepthStencilFormat.DepthOnly);
-		var textureFormat = translateTextureFormat(options.rendererOptions != null ? options.rendererOptions.textureFormat : TextureFormat.RGBA32);
-		var title = options.title;
-		var width = options.width;
-		var height = options.height;
-		var resizable = options.windowedModeOptions != null ? options.windowedModeOptions.resizable : false;
-		var maximizable = options.windowedModeOptions != null ? options.windowedModeOptions.maximizable : false;
-		var minimizable = options.windowedModeOptions != null ? options.windowedModeOptions.minimizable : true;
-
-		var windowId = initWindow2(title, x, y, width, height, targetDisplay, textureFormat, depthBufferBits, stencilBufferBits, resizable, maximizable, minimizable, mode);
-//#if (!VR_GEAR_VR && !VR_RIFT)
-		//var g4 = new kha.kore.graphics4.Graphics();
-		//var framebuffer = new Framebuffer(width, height, null, null, g4);
-		//framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
-		//framebuffers[windowId] = framebuffer;
-//#end
-
-		if (callback != null) {
-			callback(windowId);
-		}
-	}*/
-
-	private static var fullscreenListeners: Array<Void->Void> = new Array();
-	private static var previousWidth: Int = 0;
-	private static var previousHeight: Int = 0;
-
-	public static function canSwitchFullscreen(): Bool {
-		return true;
-	}
-
-	public static function isFullscreen(): Bool {
-		return untyped __cpp__('Kore::Window::get(0)->mode() == Kore::WindowModeFullscreen');
-	}
-
-	public static function requestFullscreen(): Void {
-		if(!isFullscreen()){
-			previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
-			previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
-			untyped __cpp__("Kore::Window::get(0)->changeWindowMode(Kore::WindowModeFullscreen);");
-			for (listener in fullscreenListeners) {
-				listener();
-			}
-		}
-
-	}
-
-	public static function exitFullscreen(): Void {
-		if (isFullscreen()) {
-			if (previousWidth == 0 || previousHeight == 0){
-				previousWidth = untyped __cpp__("Kore::System::windowWidth(0)");
-				previousHeight = untyped __cpp__("Kore::System::windowHeight(0)");
-			}
-			untyped __cpp__("Kore::Window::get(0)->changeWindowMode(Kore::WindowModeWindow);");
-			for (listener in fullscreenListeners) {
-				listener();
-			}
-		}
-	}
-
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		if (canSwitchFullscreen() && func != null) {
-			fullscreenListeners.push(func);
-		}
-	}
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		if (canSwitchFullscreen() && func != null) {
-			fullscreenListeners.remove(func);
-		}
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");
 	}

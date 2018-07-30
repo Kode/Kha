@@ -1,4 +1,4 @@
-package com.ktxsoftware.kha;
+package tech.kode.kha;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

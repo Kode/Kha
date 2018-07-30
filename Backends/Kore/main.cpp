@@ -260,49 +260,12 @@ namespace {
 	}
 }
 
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync, bool resizable, bool maximizable, bool minimizable) {
+void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame) {
 	Kore::log(Kore::Info, "Starting Kore");
-
 	
-
-	if (!ex) {
-		Kore::WindowOptions options;
-		options.title = name;
-		options.width = width;
-		options.height = height;
-		options.x = x;
-		options.y = y;
-		//options.display = display;
-		options.mode = windowMode;
-		options.windowFeatures = 0;
-		if (resizable) {
-			options.windowFeatures |= Kore::WindowFeatureResizable;
-		}
-		if (maximizable) {
-			options.windowFeatures |= Kore::WindowFeatureMaximizable;
-		}
-		if (minimizable) {
-			options.windowFeatures |= Kore::WindowFeatureMinimizable;
-		}
-
-		Kore::FramebufferOptions frame;
-		frame.verticalSync = vSync;
-		frame.depthBufferBits = 16;
-		frame.stencilBufferBits = 8;
-		frame.colorBufferBits = 32;
-		frame.samplesPerPixel = antialiasing;
-
-		Kore::System::init(name, width, height, &options, &frame);
-		Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
-	}
-
-	//Kore::Mixer::init();
+	Kore::System::init(name, width, height, win, frame);
+	
 	mutex.create();
-
-	// (DK) moved to post_kore_init
-//#ifndef VR_RIFT
-//	Kore::Graphics::setRenderState(Kore::DepthTest, false);
-//#endif
 
 	Kore::System::setOrientationCallback(orientation);
 	Kore::System::setForegroundCallback(foreground);
@@ -340,24 +303,10 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::Surface::the()->Move = touchMove;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
-
-	// (DK) moved to post_kore_init
-//#ifdef VR_GEAR_VR
-//	// Enter VR mode
-//	Kore::VrInterface::Initialize();
-//#endif
 }
 
 const char* getGamepadId(int index) {
 	return Kore::Gamepad::get(index)->productName;
-}
-
-void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode, bool resizable, bool maximizable, bool minimizable) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync, resizable, maximizable, minimizable);
-}
-
-void init_kore_ex(const char* name) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0, false, false, false, true);
 }
 
 void post_kore_init() {
@@ -368,10 +317,6 @@ void post_kore_init() {
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
 #endif
-}
-
-int init_window(Kore::WindowOptions options) {
-	return 0; //** Kore::System::initWindow(options);
 }
 
 void run_kore() {

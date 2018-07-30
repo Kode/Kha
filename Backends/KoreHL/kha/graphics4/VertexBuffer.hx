@@ -26,7 +26,7 @@ class VertexBuffer {
 			}
 			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);
 		}
-		_buffer = kore_create_vertexbuffer(vertexCount, structure2, instanceDataStepRate);
+		_buffer = kore_create_vertexbuffer(vertexCount, structure2, usage.getIndex(), instanceDataStepRate);
 	}
 
 	public function delete() {
@@ -53,7 +53,7 @@ class VertexBuffer {
 	
 	@:hlNative("std", "kore_create_vertexstructure") public static function kore_create_vertexstructure(): Pointer { return null; }
 	@:hlNative("std", "kore_vertexstructure_add") public static function kore_vertexstructure_add(structure: Pointer, name: hl.Bytes, data: Int): Void { }
-	@:hlNative("std", "kore_create_vertexbuffer") static function kore_create_vertexbuffer(vertexCount: Int, structure: Pointer, stepRate: Int): Pointer { return null; }
+	@:hlNative("std", "kore_create_vertexbuffer") static function kore_create_vertexbuffer(vertexCount: Int, structure: Pointer, usage: Int, stepRate: Int): Pointer { return null; }
 	@:hlNative("std", "kore_delete_vertexbuffer") static function kore_delete_vertexbuffer(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_vertexbuffer_lock") static function kore_vertexbuffer_lock(buffer: Pointer): Pointer { return null; }
 	@:hlNative("std", "kore_vertexbuffer_unlock") static function kore_vertexbuffer_unlock(buffer: Pointer): Void { }
