@@ -78,9 +78,9 @@ class SystemImpl {
 		init2(options.window.width, options.window.height);
 		callback(window);
 		
-		if(ios){	//Safari for iOS the direction are reversed on axes x and y
+		if(ios){	//Safari for iOS the direction are reversed on axes x,y and z
 			Browser.window.ondevicemotion = function(event:js.html.DeviceMotionEvent ) {
-				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, -event.accelerationIncludingGravity.z);
 			};
 		}else{
 			Browser.window.ondevicemotion = function(event:js.html.DeviceMotionEvent ) {
