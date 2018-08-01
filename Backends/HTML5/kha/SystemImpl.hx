@@ -77,13 +77,20 @@ class SystemImpl {
 		ie = isIE();
 		init2(options.window.width, options.window.height);
 		callback(window);
-		#end
-		Browser.window.ondevicemotion = function(event:js.html.DeviceMotionEvent ) {
-			Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
-		};
+		
+		if(ios){	//Safari for iOS the direction are reversed on axes x and y
+			Browser.window.ondevicemotion = function(event:js.html.DeviceMotionEvent ) {
+				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+			};
+		}else{
+			Browser.window.ondevicemotion = function(event:js.html.DeviceMotionEvent ) {
+				Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+			};
+		}
 		Browser.window.ondeviceorientation= function(event:js.html.DeviceOrientationEvent) {
 			Sensor._changed(1, event.beta, event.gamma, event.alpha);
 		};
+		#end
 
 	}
 
