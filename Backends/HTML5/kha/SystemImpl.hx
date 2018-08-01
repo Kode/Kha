@@ -82,7 +82,7 @@ class SystemImpl {
 			Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
 		};
 		Browser.window.ondeviceorientation= function(event:js.html.DeviceOrientationEvent) {
-			Sensor._changed(1, event.alpha, event.beta, event.gamma);
+			Sensor._changed(1, event.beta, event.gamma, event.alpha);
 		};
 
 	}
