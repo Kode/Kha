@@ -23,7 +23,7 @@ class SystemImpl {
 	
 	private static function renderCallback(): Void {
 		Scheduler.executeFrame();
-		System.render(0, framebuffer);
+		System.render([framebuffer]);
 	}
 
 	private static function dropFilesCallback(filePath: String): Void {
@@ -101,8 +101,8 @@ class SystemImpl {
 		}
 	}
 	
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode), options.resizable, options.maximizable, options.minimizable);
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
+		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
 
 		start = Krom.getTime();
 		
@@ -110,6 +110,7 @@ class SystemImpl {
 			Krom.log(v);
 		};
 
+		new Window(0);
 		Scheduler.init();
 		Shaders.init();
 		
@@ -146,7 +147,7 @@ class SystemImpl {
 		
 		Scheduler.start();
 		
-		callback();
+		callback(Window.get(0));
 	}
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
@@ -160,8 +161,8 @@ class SystemImpl {
 
 		return switch (value) {
 			case Window: 0;
-			case BorderlessWindow: 1;
-			case Fullscreen: 2;
+			case Fullscreen: 1;
+			case ExclusiveFullscreen: 2;
 		}
 	}
 	
@@ -172,19 +173,7 @@ class SystemImpl {
 	public static function getTime(): Float {
 		return Krom.getTime() - start;
 	}
-	
-	public static function windowWidth(id: Int): Int {
-		return Krom.windowWidth(id);
-	}
-	
-	public static function windowHeight(id: Int): Int {
-		return Krom.windowHeight(id);
-	}
-	
-	public static function screenDpi(): Int {
-		return Krom.screenDpi();
-	}
-	
+		
 	public static function getVsync(): Bool {
 		return true;
 	}
@@ -201,8 +190,9 @@ class SystemImpl {
 		return "en"; //TODO: Implement
 	}
 	
-	public static function requestShutdown(): Void {
+	public static function requestShutdown(): Bool {
 		Krom.requestShutdown();
+		return true;
 	}
 	
 	public static function getMouse(num: Int): Mouse {

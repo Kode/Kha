@@ -1,7 +1,8 @@
 package kha;
 
-enum WindowMode {
-	Window;				// Window with borders
-	BorderlessWindow;	// Window without borders
-	Fullscreen;			// Exclusive fullscreen mode (switches monitor resolution), (a win32 feature only?)
+@:enum
+abstract WindowMode(Int) {
+	var Window = 0;              // Window with borders
+	var Fullscreen = 1;          // Window without borders
+	var ExclusiveFullscreen = 2; // Exclusive fullscreen mode (switches monitor resolution, Windows only)
 }

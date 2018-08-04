@@ -22,12 +22,16 @@ class SystemImpl {
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
 	
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		// haxe.Log.trace = function(v, ?infos) {
 			// kore_log(StringHelper.convert(v));
 		// };
-		init_kore(StringHelper.convert(options.title), options.width, options.height, options.samplesPerPixel, options.vSync, translateWindowMode(options.windowMode), options.resizable, options.maximizable, options.minimizable);
+		init_kore(StringHelper.convert(options.title), options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
+		
+		new Window(0);
+		Scheduler.init();
 		Shaders.init();
+
 		var g4 = new kha.korehl.graphics4.Graphics();
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
@@ -54,28 +58,19 @@ class SystemImpl {
 		kore_register_callbacks(foreground, resume, pause, background, shutdown);
 		kore_register_dropfiles(dropFiles);
 		kore_register_copycutpaste(copy, cut, paste);
-		Scheduler.init();
+		
 		Scheduler.start();
-		callback();
+		callback(Window.get(0));
 	}
 	
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 
 	}
-
-	static function translateWindowMode(value: Null<WindowMode>): Int {
-		if (value == null) return 0;
-		return switch (value) {
-			case Window: 0;
-			case BorderlessWindow: 1;
-			case Fullscreen: 2;
-		}
-	}
 	
 	@:keep
 	public static function frame(): Void {
 		Scheduler.executeFrame();
-		System.render(0, framebuffer);
+		System.render([framebuffer]);
 	}
 	
 	public static function getTime(): Float {
@@ -88,18 +83,6 @@ class SystemImpl {
 
 	public static function windowHeight(windowId: Int): Int {
 		return kore_get_window_height(windowId);
-	}
-
-	public static function screenDpi(): Int {
-		return kore_get_screen_dpi();
-	}
-	
-	public static function getVsync(): Bool {
-		return true;
-	}
-
-	public static function getRefreshRate(): Int {
-		return 60;
 	}
 
 	public static function getScreenRotation(): ScreenRotation {
@@ -115,8 +98,9 @@ class SystemImpl {
 		return "en"; //TODO: Implement
 	}
 	
-	public static function requestShutdown(): Void {
+	public static function requestShutdown(): Bool {
 		kore_request_shutdown();
+		return true;
 	}
 	
 	public static function getMouse(num: Int): Mouse {
@@ -380,13 +364,12 @@ class SystemImpl {
 		return "";//kore_get_gamepad_id(index);
 	}
 	
-	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, antialiasing: Int, vSync: Bool, windowMode: Int, resizable: Bool, maximizable: Bool, minimizable: Bool): Void { }
+	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
 	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback:Int->Void, readSample:Void->FastFloat): Void { }
 	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
-	@:hlNative("std", "kore_get_screen_dpi") static function kore_get_screen_dpi(): Int { return 0; }
 	@:hlNative("std", "kore_get_system_id") static function kore_get_system_id(): hl.Bytes { return null; }
 	@:hlNative("std", "kore_request_shutdown") static function kore_request_shutdown(): Void { }
 	@:hlNative("std", "kore_mouse_lock") static function kore_mouse_lock(windowId: Int): Void { }

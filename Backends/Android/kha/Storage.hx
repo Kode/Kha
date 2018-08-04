@@ -1,7 +1,7 @@
 package kha;
 
 import android.content.Context;
-import com.ktxsoftware.kha.KhaActivity;
+import tech.kode.kha.KhaActivity;
 import haxe.io.Bytes;
 import java.NativeArray;
 import java.io.ByteArrayOutputStream;

@@ -4,16 +4,16 @@
 Kha is a low level sdk for building games and media applications in a portable way. Think SDL, but super-charged. Based on the Haxe programming language and the krafix shader-compiler it can cross-compile your code and optimize your assets for even the most obscure systems. Kha is so portable, it can in fact run on top of other game engines and its generational graphics and audio api design gets the best out of every target, supporting super fast 2D graphics just as well as high end 3D graphics. Also, Kha probably added a new target while you were reading this text. 
 
 * [Get Started](http://kha.tech/download)
-* [Wiki](https://github.com/KTXSoftware/Kha/wiki/)
-* [Examples](https://github.com/KTXSoftware/Kha/wiki/Examples)
-* [License](https://github.com/KTXSoftware/Kha/blob/master/license.txt)
+* [Wiki](https://github.com/Kode/Kha/wiki/)
+* [Examples](https://github.com/Kode/Kha/wiki/Examples)
+* [License](https://github.com/Kode/Kha/blob/master/license.txt)
 
 ### Community
 * [Blog](http://kode.tech)
 * [Forum](http://forum.kode.tech)
-* [Kha channel at ktxsoftware.com](https://kiwiirc.com/client/irc.ktxsoftware.com/#kha)
-* [Games](https://github.com/KTXSoftware/Kha/wiki/Games-Built-With-Kha) built with Kha
-* [Engines](https://github.com/KTXSoftware/Kha/wiki/Engines-using-Kha) using Kha
+* [Kha channel at kode.tech](https://kiwiirc.com/client/irc.kode.tech/#kha)
+* [Games](https://github.com/Kode/Kha/wiki/Games-Built-With-Kha) built with Kha
+* [Engines](https://github.com/Kode/Kha/wiki/Engines-using-Kha) using Kha
 
 ### Features
 * Great performance on each platform.

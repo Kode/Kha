@@ -18,17 +18,14 @@ class VrInterface {
 	
 	// Sends a black image to the warp swap thread
 	public function WarpSwapBlack(): Void {
-		return null;
 	}
 	
 	// Sends the Oculus loading symbol to the warp swap thread
 	public function WarpSwapLoadingIcon(): Void {
-		return null;
 	}
 	
 	// Sends the set of images to the warp swap thread
 	public function WarpSwap(parms: TimeWarpParms): Void {
-		return null;
 	}
 
 	// Return true if VR displays are presenting
@@ -59,17 +56,14 @@ class VrInterface {
 
 	// Browsers will only allow to enter WebVR if requestPresent is called in response to user interaction. 
 	public function onVRRequestPresent(): Void {
-		return null;
 	}
 
 	// Exit WebVR
 	public function onVRExitPresent(): Void {
-		return null;
 	}
 
 	// Reset position and orientation
 	public function onResetPose(): Void {
-		return null;
 	}
 
 	private function new() {

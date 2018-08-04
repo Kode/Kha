@@ -25,10 +25,6 @@ extern "C" int hl_kore_get_window_height(int window) {
 	return Kore::System::windowHeight(window);
 }
 
-extern "C" int hl_kore_get_screen_dpi() {
-	return Kore::System::screenDpi();
-}
-
 extern "C" vbyte* hl_kore_get_system_id() {
 	return NULL;
 	// return (vbyte*)Kore::System::systemId();
@@ -59,19 +55,19 @@ extern "C" void hl_kore_show_mouse(bool show) {
 }
 
 extern "C" bool hl_kore_system_is_fullscreen() {
-	return Kore::System::isFullscreen();
+	return false; //Kore::System::isFullscreen();
 }
 
 extern "C" void hl_kore_system_request_fullscreen() {
-	Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true);
+	//Kore::System::changeResolution(Kore::System::desktopWidth(), Kore::System::desktopHeight(), true);
 }
 
 extern "C" void hl_kore_system_exit_fullscreen(int previousWidth, int previousHeight) {
-	Kore::System::changeResolution(previousWidth, previousHeight, false);
+	//Kore::System::changeResolution(previousWidth, previousHeight, false);
 }
 
 extern "C" void hl_kore_system_change_resolution(int width, int height) {
-	Kore::System::changeResolution(width, height, false);
+	//Kore::System::changeResolution(width, height, false);
 }
 
 extern "C" void hl_kore_system_set_keepscreenon(bool on) {

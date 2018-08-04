@@ -56,4 +56,8 @@ class Vector2 {
 	@:extern public inline function angle(v: Vector2): Float {
 		return Math.atan2(y,x) - Math.atan2(v.y,v.x);
 	}
+
+	@:extern public inline function fast(): FastVector2 {
+		return new FastVector2(x, y);
+	}
 }

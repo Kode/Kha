@@ -36,11 +36,14 @@ import kha.Video;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
+#include <Kore/Display.h>
+#include <Kore/Window.h>
 ')
 
 @:headerClassCode("Kore::Graphics4::RenderTarget* renderTarget;")
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
+	public var window: Null<Int>;
 	
 	public function new(target: Canvas = null) {
 		this.target = target;
@@ -59,16 +62,12 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 	
-	@:functionCode('
-		return Kore::Graphics4::vsynced();
-	')
+	@:functionCode('return Kore::Window::get(0)->vSynced();')
 	public function vsynced(): Bool {
 		return true;
 	}
 
-	@:functionCode('
-		return (Int)Kore::Graphics4::refreshRate();
-	')
+	@:functionCode('return Kore::Display::primary()->frequency();')
 	public function refreshRate(): Int {
 		return 0;
 	}
@@ -523,7 +522,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-		if (target == null) renderToBackbuffer();
+		if (target == null) {
+			if (window != null) {
+				untyped __cpp__('Kore::Graphics4::begin(window);');
+			}
+			renderToBackbuffer();
+		}
 		else renderToTexture(additionalRenderTargets);
 	}
 	
@@ -536,7 +540,9 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		
+		if (window != null) {
+			untyped __cpp__('Kore::Graphics4::end(window);');
+		}
 	}
 	
 	@:functionCode('Kore::Graphics4::flush();')

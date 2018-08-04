@@ -1,9 +1,23 @@
 package kha;
 
-import kha.WindowMode;
-import kha.WindowOptions;
+@:structInit
+class SystemOptions {
+	@:optional public var title: String = "Kha";
+	@:optional public var width: Int = 800;
+	@:optional public var height: Int = 600;
+	@:optional public var window: WindowOptions = null;
+	@:optional public var framebuffer: FramebufferOptions = null;
 
-typedef SystemOptions = {
+	public function new(title: String = "Kha", ?width: Int = 800, ?height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+		this.title = title;
+		this.width = width;
+		this.height = height;
+		this.window = window == null ? {} : window;
+		this.framebuffer = framebuffer == null ? {} : framebuffer;
+	}
+}
+
+typedef OldSystemOptions = {
 	?title: String,
 	?width: Int,
 	?height: Int,
@@ -17,52 +31,80 @@ typedef SystemOptions = {
 
 @:allow(kha.SystemImpl)
 class System {
-	private static var renderListeners: Array<Array<Framebuffer -> Void>> = new Array();
-	private static var foregroundListeners: Array<Void -> Void> = new Array();
-	private static var resumeListeners: Array<Void -> Void> = new Array();
-	private static var pauseListeners: Array<Void -> Void> = new Array();
-	private static var backgroundListeners: Array<Void -> Void> = new Array();
-	private static var shutdownListeners: Array<Void -> Void> = new Array();
-	private static var dropFilesListeners: Array<String -> Void> = new Array();
+	static var renderListeners: Array<Array<Framebuffer> -> Void> = [];
+	static var foregroundListeners: Array<Void -> Void> = [];
+	static var resumeListeners: Array<Void -> Void> = [];
+	static var pauseListeners: Array<Void -> Void> = [];
+	static var backgroundListeners: Array<Void -> Void> = [];
+	static var shutdownListeners: Array<Void -> Void> = [];
+	static var dropFilesListeners: Array<String -> Void> = [];
 	static var cutListener: Void->String = null;
 	static var copyListener: Void->String = null;
 	static var pasteListener: String->Void = null;
-	private static var theTitle: String;
+	static var theTitle: String;
 
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
-		if (options.title == null) options.title = "Kha";
-		if (options.width == null) options.width = 800;
-		if (options.height == null) options.height = 600;
-		if (options.samplesPerPixel == null) options.samplesPerPixel = 1;
-		if (options.vSync == null) options.vSync = true;
-		if (options.windowMode == null) options.windowMode = WindowMode.Window;
-		if (options.resizable == null) options.resizable = false;
-		if (options.maximizable == null) options.maximizable = false;
-		if (options.minimizable == null) options.minimizable = true;
+	@:deprecated("Use System.start instead")
+	public static function init(options: OldSystemOptions, callback: Void -> Void): Void {
+		var features: Int = 0;
+		if (options.resizable) features |= WindowOptions.FeatureResizable;
+		if (options.maximizable) features |= WindowOptions.FeatureMaximizable;
+		if (options.minimizable) features |= WindowOptions.FeatureMinimizable;
+		var newOptions: SystemOptions = {
+			title: options.title,
+			width: options.width,
+			height: options.height,
+			window: {
+				mode: options.windowMode,
+				windowFeatures: features
+			},
+			framebuffer: {
+				samplesPerPixel: options.samplesPerPixel,
+				verticalSync: options.vSync
+			}
+		};
+		start(newOptions, function (_) {
+			callback();
+		});
+	}
+
+	public static function start(options: SystemOptions, callback: Window -> Void): Void {
 		theTitle = options.title;
 		SystemImpl.init(options, callback);
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
-		theTitle = title;
-		SystemImpl.initEx(title, options, windowCallback, callback);
-	}
-
-	public static var title(get, null): String;
+	public static var title(get, never): String;
 
 	private static function get_title(): String {
 		return theTitle;
 	}
 
+	@:deprecated("Use System.notifyOnFrames instead")
 	public static function notifyOnRender(listener: Framebuffer -> Void, id: Int = 0): Void {
-		while (id >= renderListeners.length) {
-			renderListeners.push(new Array());
-		}
-		renderListeners[id].push(listener);
+		renderListeners.push(function (framebuffers: Array<Framebuffer>) {
+			if (id < framebuffers.length) {
+				listener(framebuffers[id]);
+			}
+		});
 	}
 
-	public static function removeRenderListener(listener: Framebuffer -> Void, id: Int = 0): Void {
-		renderListeners[id].remove(listener);
+	/**
+	 * The provided listener is called when new framebuffers are ready for rendering into.
+	 * Each framebuffer corresponds to the kha.Window of the same index, single-window
+	 * applications always receive an array of only one framebuffer.
+	 * @param listener
+	 * The callback to add
+	 */
+	public static function notifyOnFrames(listener: Array<Framebuffer> -> Void): Void {
+		renderListeners.push(listener);
+	}
+
+	/**
+	 * Removes a previously set frames listener.
+	 * @param listener
+	 * The callback to remove
+	 */
+	public static function removeFramesListener(listener: Array<Framebuffer> -> Void): Void {
+		renderListeners.remove(listener);
 	}
 
 	public static function notifyOnApplicationState(foregroundListener: Void -> Void, resumeListener: Void -> Void,	pauseListener: Void -> Void, backgroundListener: Void-> Void, shutdownListener: Void -> Void): Void {
@@ -83,13 +125,9 @@ class System {
 		System.pasteListener = pasteListener;
 	}
 
-	private static function render(id: Int, framebuffer: Framebuffer): Void {
-		if (renderListeners.length == 0) {
-			return;
-		}
-
-		for (listener in renderListeners[id]) {
-			listener(framebuffer);
+	static function render(framebuffers: Array<Framebuffer>): Void {
+		for (listener in renderListeners) {
+			listener(framebuffers);
 		}
 	}
 
@@ -135,39 +173,23 @@ class System {
 		return SystemImpl.getTime();
 	}
 
-	public static function windowWidth(windowId: Int = 0): Int {
-		return SystemImpl.windowWidth(windowId);
+	public static function windowWidth(window: Int = 0): Int {
+		return Window.get(window).width;
 	}
 
-	public static function windowHeight(windowId: Int = 0): Int {
-		return SystemImpl.windowHeight(windowId);
+	public static function windowHeight(window: Int = 0): Int {
+		return Window.all[window].height;
 	}
 	
-	public static function screenDpi(): Int {
-		return SystemImpl.screenDpi();
-	}
-
 	public static var screenRotation(get, null): ScreenRotation;
 
-	private static function get_screenRotation(): ScreenRotation {
-		return SystemImpl.getScreenRotation();
-	}
-
-	public static var vsync(get, null): Bool;
-
-	private static function get_vsync(): Bool {
-		return SystemImpl.getVsync();
-	}
-
-	public static var refreshRate(get, null): Int;
-
-	private static function get_refreshRate(): Int {
-		return SystemImpl.getRefreshRate();
+	static function get_screenRotation(): ScreenRotation {
+		return RotationNone;
 	}
 
 	public static var systemId(get, null): String;
 
-	private static function get_systemId(): String {
+	static function get_systemId(): String {
 		return SystemImpl.getSystemId();
 	}
 
@@ -180,39 +202,74 @@ class System {
 		return SystemImpl.getLanguage();
 	}
 
-	public static function requestShutdown(): Void {
-		SystemImpl.requestShutdown();
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-		SystemImpl.changeResolution(width, height);
+  /**
+	 * Schedules the application to stop as soon as possible. This is not possible on all targets.
+	 * @return Returns true if the application can be stopped
+	 */
+	public static function stop(): Bool {
+		return SystemImpl.requestShutdown();
 	}
 
 	public static function loadUrl(url: String): Void {
 		SystemImpl.loadUrl(url);
 	}
 
+	@:deprecated("This only returns a default value")
 	public static function canSwitchFullscreen(): Bool {
-		return SystemImpl.canSwitchFullscreen();
+		return true;
 	}
 
+	@:deprecated("Use the kha.Window API instead")
 	public static function isFullscreen(): Bool {
-		return SystemImpl.isFullscreen();
+		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.Fullscreen;
 	}
 
+	@:deprecated("Use the kha.Window API instead")
 	public static function requestFullscreen(): Void {
-		SystemImpl.requestFullscreen();
+		Window.get(0).mode = WindowMode.Fullscreen;
 	}
 
+	@:deprecated("Use the kha.Window API instead")
 	public static function exitFullscreen(): Void {
-		SystemImpl.exitFullscreen();
+		Window.get(0).mode = WindowMode.Window;
 	}
 
+	@:deprecated("This does nothing")
 	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		SystemImpl.notifyOfFullscreenChange(func, error);
+		
 	}
 
+	@:deprecated("This does nothing")
 	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {
-		SystemImpl.removeFromFullscreenChange(func, error);
+		
+	}
+
+	@:deprecated("This does nothing. On Windows you can use Window.resize instead after setting the mode to ExclusiveFullscreen")
+	public static function changeResolution(width: Int, height: Int): Void {
+		
+	}
+
+	@:deprecated("Use System.stop instead")
+	public static function requestShutdown(): Void {
+		stop();
+	}
+
+	@:deprecated("Use the kha.Window API instead")
+	public static var vsync(get, null): Bool;
+
+	private static function get_vsync(): Bool {
+		return Window.get(0).vSynced;
+	}
+
+	@:deprecated("Use the kha.Display API instead")
+	public static var refreshRate(get, null): Int;
+
+	private static function get_refreshRate(): Int {
+		return Display.primary.frequency;
+	}
+
+	@:deprecated("Use the kha.Display API instead")
+	public static function screenDpi(): Int {
+		return Display.primary.pixelsPerInch;
 	}
 }

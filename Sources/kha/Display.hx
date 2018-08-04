@@ -1,29 +1,15 @@
 package kha;
 
-class Display {
-	public static var count(get, never): Int;
-
-	public static inline function width(index: Int): Int {
-		return DisplayImpl.width(index);
-	}
-
-	public static inline function height(index: Int): Int {
-		return DisplayImpl.height(index);
-	}
-
-	public static inline function x(index: Int): Int {
-		return DisplayImpl.x(index);
-	}
-
-	public static inline function y(index: Int): Int {
-		return DisplayImpl.y(index);
-	}
-
-	public static inline function isPrimary(index: Int): Bool {
-		return DisplayImpl.isPrimary(index);
-	}
-
-	static inline function get_count(): Int {
-		return DisplayImpl.count();
-	}
+extern class Display {
+	public static var primary(get, never): Display;
+	public static var all(get, never): Array<Display>;
+	public var available(get, never): Bool;
+	public var name(get, never): String;
+	public var x(get, never): Int;
+	public var y(get, never): Int;
+	public var width(get, never): Int;
+	public var height(get, never): Int;
+	public var frequency(get, never): Int;
+	public var pixelsPerInch(get, never): Int;
+	public var modes(get, never): Array<DisplayMode>;
 }

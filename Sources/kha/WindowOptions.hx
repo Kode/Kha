@@ -1,45 +1,33 @@
 package kha;
 
-import kha.graphics4.TextureFormat;
-import kha.graphics4.DepthStencilFormat;
-
-enum Position {
-	Center;				// Centered on TargetDisplay
-	Fixed(v: Int);		// Fixed position relative to TargetDisplay
-}
-
-enum TargetDisplay {
-	Primary;			// Whatever monitor is set as 'Use this as primary display' your system settings
-	ById(id: Int);		// id = the number that shows up on 'identify screen' in your system settings
-}
-
-@:structInit
-class RendererOptions {
-	@:optional public var textureFormat: TextureFormat; // TextureFormat.RGBA32
-	@:optional public var depthStencilFormat: DepthStencilFormat; // DepthStencilFormat.DepthOnly
-	@:optional public var samplesPerPixel: Int; // 0
-}
-
-@:structInit
-class WindowedModeOptions {
-	@:optional public var minimizable: Bool; // true
-	@:optional public var maximizable: Bool; // false
-	@:optional public var resizable: Bool; // false
-}
-
-// These options are hints only, the target may reject or ignore specific settings when not applicable
-// They are pretty much intended for desktop targets only
 @:structInit
 class WindowOptions {
-	public var width: Int;
-	public var height: Int;
+	public static inline var FeatureResizable = 1;
+	public static inline var FeatureMinimizable = 2;
+	public static inline var FeatureMaximizable = 4;
+	public static inline var FeatureBorderless = 8;
+	public static inline var FeatureOnTop = 16;
 
-	@:optional public var mode: WindowMode; // Windowed
-	@:optional public var title: String; // added to applications title
-	@:optional public var x: Position; // Center
-	@:optional public var y: Position; // Center
-	@:optional public var targetDisplay: TargetDisplay; // Primary
+	@:optional public var title: String = "Kha";
+	@:optional public var x: Int = -1;
+	@:optional public var y: Int = -1;
+	@:optional public var width: Int = 800;
+	@:optional public var height: Int = 600;
+	@:optional public var display: Display = null;
+	@:optional public var visible: Bool = true;
+	@:optional public var windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
+	@:optional public var mode: WindowMode = Window;
 
-	@:optional public var rendererOptions: RendererOptions;
-	@:optional public var windowedModeOptions: WindowedModeOptions;
+	public function new(title: String = "Kha", ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, display: Display = null,
+	?visible: Bool = true, ?windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable, ?mode: WindowMode = WindowMode.Window) {
+		this.title = title;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.display = display == null ? Display.primary : display;
+		this.visible = visible;
+		this.windowFeatures = windowFeatures;
+		this.mode = mode;
+	}
 }

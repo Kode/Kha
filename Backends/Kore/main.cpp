@@ -139,7 +139,9 @@ namespace {
 		if (paused) return;
 		Kore::Audio2::update();
 
-		int windowCount = Kore::System::windowCount();
+		SystemImpl_obj::frame();
+
+		/*int windowCount = Kore::Window::count();
 
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
@@ -163,14 +165,15 @@ namespace {
 				//	Kore::VrInterface::DistortionAfter();
 				#endif
 
-				#ifndef VR_RIFT
-				if (!Kore::Graphics4::swapBuffers(windowIndex)) {
-					Kore::log(Kore::Error, "Graphics context lost.");
-					break;
-				}
-				#endif
+				
 			}
+		}*/
+
+#ifndef VR_RIFT
+		if (!Kore::Graphics4::swapBuffers()) {
+			Kore::log(Kore::Error, "Graphics context lost.");
 		}
+#endif
 	}
 	
 	void foreground() {
@@ -259,47 +262,12 @@ namespace {
 	}
 }
 
-void init_kore_impl(bool ex, const char* name, int width, int height, int x, int y, int display, Kore::WindowMode windowMode, int antialiasing, bool vSync, bool resizable, bool maximizable, bool minimizable) {
+void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame) {
 	Kore::log(Kore::Info, "Starting Kore");
-
-	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
-	Kore::System::setName(name);
-	Kore::System::setup();
-
-	if (ex) {
-
-	}
-	else {
-		width = Kore::min(width, Kore::System::desktopWidth());
-		height = Kore::min(height, Kore::System::desktopHeight());
-
-		Kore::WindowOptions options;
-		options.title = name;
-		options.width = width;
-		options.height = height;
-		options.x = x;
-		options.y = y;
-		options.vSync = vSync;
-		options.targetDisplay = display;
-		options.mode = windowMode;
-		options.resizable = resizable;
-		options.maximizable = maximizable;
-		options.minimizable = minimizable;
-		options.rendererOptions.depthBufferBits = 16;
-		options.rendererOptions.stencilBufferBits = 8;
-		options.rendererOptions.textureFormat = 0;
-		options.rendererOptions.antialiasing = antialiasing;
-
-		/*int windowId =*/ Kore::System::initWindow(options); // TODO (DK) save window id anywhere?
-	}
-
-	//Kore::Mixer::init();
+	
+	Kore::System::init(name, width, height, win, frame);
+	
 	mutex.create();
-
-	// (DK) moved to post_kore_init
-//#ifndef VR_RIFT
-//	Kore::Graphics::setRenderState(Kore::DepthTest, false);
-//#endif
 
 	Kore::System::setOrientationCallback(orientation);
 	Kore::System::setForegroundCallback(foreground);
@@ -337,30 +305,13 @@ void init_kore_impl(bool ex, const char* name, int width, int height, int x, int
 	Kore::Surface::the()->Move = touchMove;
 	Kore::Sensor::the(Kore::SensorAccelerometer)->Changed = accelerometerChanged;
 	Kore::Sensor::the(Kore::SensorGyroscope)->Changed = gyroscopeChanged;
-
-	// (DK) moved to post_kore_init
-//#ifdef VR_GEAR_VR
-//	// Enter VR mode
-//	Kore::VrInterface::Initialize();
-//#endif
 }
 
 const char* getGamepadId(int index) {
 	return Kore::Gamepad::get(index)->productName;
 }
 
-void init_kore(const char* name, int width, int height, int antialiasing, bool vSync, int windowMode, bool resizable, bool maximizable, bool minimizable) {
-	init_kore_impl(false, name, width, height, -1, -1, -1, (Kore::WindowMode)windowMode, antialiasing, vSync, resizable, maximizable, minimizable);
-}
-
-void init_kore_ex(const char* name) {
-	init_kore_impl(true, name, -1, -1, -1, -1, -1, Kore::WindowModeWindow, 0, false, false, false, true);
-}
-
 void post_kore_init() {
-	// (DK) make main window context current, all assets bind to it and are shared
-	Kore::System::makeCurrent(0);
-
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
 
@@ -368,10 +319,6 @@ void post_kore_init() {
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
 #endif
-}
-
-int init_window(Kore::WindowOptions options) {
-	return Kore::System::initWindow(options);
 }
 
 void run_kore() {
