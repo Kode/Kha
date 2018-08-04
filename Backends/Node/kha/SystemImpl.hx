@@ -82,6 +82,10 @@ class SystemImpl {
 		return "nodejs";
 	}
 	
+	public static function getLanguage(): String {
+		return "en";
+	}
+	
 	public static function requestShutdown(): Void {
 		Node.process.exit(0);
 	}

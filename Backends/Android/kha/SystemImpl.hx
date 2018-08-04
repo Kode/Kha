@@ -48,6 +48,10 @@ class SystemImpl {
 		return "Android";
 	}
 
+	public static function getLanguage(): String {
+		return java.util.Locale.getDefault().getLanguage();
+	}
+
 	public static function requestShutdown(): Bool {
 		shutdown();
 		untyped __java__("java.lang.System.exit(0)");	

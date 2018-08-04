@@ -144,6 +144,10 @@ class SystemImpl {
 		return "HTML5";
 	}
 
+	public static function getLanguage(): String {
+		return Browser.navigator.language;
+	}
+
 	public static function requestShutdown(): Bool {
 		Browser.window.close();
 		return true;

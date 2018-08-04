@@ -110,6 +110,10 @@ class SystemImpl {
 		return "HTML5-Worker";
 	}
 
+	public static function getLanguage(): String {
+		return js.Browser.navigator.language;
+	}
+
 	public static function requestShutdown(): Void {
 		
 	}

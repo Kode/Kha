@@ -345,6 +345,10 @@ class SystemImpl {
 		return "java";
 	}
 	
+	public static function getLanguage(): String {
+		return java.util.Locale.getDefault().getLanguage();
+	}
+	
 	private static var myPixelWidth: Int = 640;
 	private static var myPixelHeight: Int = 480;
 	
