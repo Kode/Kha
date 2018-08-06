@@ -9,11 +9,15 @@ class MobileWebAudio {
 	@:noCompletion public static var _globalGain: GainNode;
 
 	public static function mute() {
-		_globalGain.gain.setTargetAtTime(0, _context.currentTime, 0);
+		if (_globalGain != null) {
+			_globalGain.gain.setTargetAtTime(0, _context.currentTime, 0);
+		}
 	}
 
 	public static function unmute() {
-		_globalGain.gain.setTargetAtTime(1, _context.currentTime, 0);
+		if (_globalGain != null) {
+			_globalGain.gain.setTargetAtTime(1, _context.currentTime, 0);
+		}
 	}
 
 	@:noCompletion public static function _init(): Void {

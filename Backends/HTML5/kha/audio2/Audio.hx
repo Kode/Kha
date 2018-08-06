@@ -16,11 +16,19 @@ class Audio {
 	private static var processingNode: ScriptProcessorNode;
 
 	public static function mute() {
-		_globalGain.gain.setValueAtTime(0, _context.currentTime);
+		if (_globalGain != null) {
+			_globalGain.gain.setValueAtTime(0, _context.currentTime);
+		}
+
+		kha.js.MobileWebAudio.mute();
 	}
 
 	public static function unmute() {
-		_globalGain.gain.setValueAtTime(1, _context.currentTime);
+		if (_globalGain != null) {
+			_globalGain.gain.setValueAtTime(1, _context.currentTime);
+		}
+
+		kha.js.MobileWebAudio.unmute();
 	}
 
 	private static function initContext(): Void {
