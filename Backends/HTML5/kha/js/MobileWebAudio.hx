@@ -32,6 +32,8 @@ class MobileWebAudio {
 		}
 		try {
 			untyped __js__('this._context = new webkitAudioContext();');
+			_globalGain = _context.createGain();
+			_globalGain.connect(_context.destination);
 			return;
 		}
 		catch (e: Dynamic) {
