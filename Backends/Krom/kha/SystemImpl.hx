@@ -107,7 +107,7 @@ class SystemImpl {
 		start = Krom.getTime();
 		
 		haxe.Log.trace = function(v, ?infos) {
-			Krom.log(v);
+			Krom.log(Std.string(v));
 		};
 
 		new Window(0);
