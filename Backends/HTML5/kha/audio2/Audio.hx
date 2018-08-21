@@ -174,10 +174,10 @@ class Audio {
 	@:noCompletion public static var _hrtfContainer: Container;
 	private static var processingNode: ScriptProcessorNode;
 	
-	public static function _initHrtf(hrir: Blob): Void { //, sourceNode: Dynamic): Void {
+	public static function _initHrtf(hrir: Blob, sourceNode: Dynamic): Void {
 		_hrtfContainer = new Container();
 		_hrtfContainer.loadHrir(hrir);
-		/*var gain = _context.createGain();
+		var gain = _context.createGain();
 		gain.gain.value = 0.3;
 		sourceNode.connect(gain);
 		var panner = new Panner(_context, gain, _hrtfContainer);
@@ -192,7 +192,7 @@ class Audio {
 			t += 0.05;
 			var cords = Utils.cartesianToInteraural(x, y, z);
 			panner.update(cords.azm, cords.elv);			
-		}, 0, 0.05);*/
+		}, 0, 0.05);
 	}
 	
 	private static function initContext(): Void {
@@ -252,7 +252,7 @@ class Audio {
 		//processingNode.connect(_context.destination);
 		
 		Assets.blobs.kemar_L_binLoad(function () {
-			_initHrtf(Assets.blobs.kemar_L_bin);// , processingNode);
+			_initHrtf(Assets.blobs.kemar_L_bin , processingNode);
 		});
 		
 		return true;
