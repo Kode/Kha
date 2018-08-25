@@ -142,7 +142,7 @@ typedef enum {
 #	define W64(wv)	W(wv)
 #endif
 
-static int SIB_MULT[] = {-1, 0, 1, -1, 2, -1, -1, -1, 3};
+static const int SIB_MULT[] = {-1, 0, 1, -1, 2, -1, -1, -1, 3};
 
 #define MOD_RM(mod,reg,rm)		B(((mod) << 6) | (((reg)&7) << 3) | ((rm)&7))
 #define SIB(mult,rmult,rbase)	B((SIB_MULT[mult]<<6) | (((rmult)&7)<<3) | ((rbase)&7))
@@ -215,14 +215,14 @@ struct vreg {
 #		define CALL_NREGS			4
 #		define RCPU_SCRATCH_COUNT	7
 #		define RFPU_SCRATCH_COUNT	6
-static int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx, R8, R9, R10, R11 };
-static CpuReg CALL_REGS[] = { Ecx, Edx, R8, R9 };
+static const int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx, R8, R9, R10, R11 };
+static const CpuReg CALL_REGS[] = { Ecx, Edx, R8, R9 };
 #	else
 #		define CALL_NREGS			6 // TODO : XMM6+XMM7 are FPU reg parameters
 #		define RCPU_SCRATCH_COUNT	9
 #		define RFPU_SCRATCH_COUNT	16
-static int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx, Esi, Edi, R8, R9, R10, R11 };
-static CpuReg CALL_REGS[] = { Edi, Esi, Edx, Ecx, R8, R9 };
+static const int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx, Esi, Edi, R8, R9, R10, R11 };
+static const CpuReg CALL_REGS[] = { Edi, Esi, Edx, Ecx, R8, R9 };
 #	endif
 #else
 #	define CALL_NREGS	0
@@ -230,7 +230,7 @@ static CpuReg CALL_REGS[] = { Edi, Esi, Edx, Ecx, R8, R9 };
 #	define RFPU_COUNT	8
 #	define RCPU_SCRATCH_COUNT	3
 #	define RFPU_SCRATCH_COUNT	8
-static int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx };
+static const int RCPU_SCRATCH_REGS[] = { Eax, Ecx, Edx };
 #endif
 
 #define XMM(i)			((i) + RCPU_COUNT)
@@ -1446,18 +1446,14 @@ static int prepare_call_args( jit_ctx *ctx, int count, int *args, vreg *vregs, i
 	return paddedSize;
 }
 
-// prevent remove of push ebp which would prevent our stack from being correctly reported
 #ifdef HL_VCC
 #	pragma optimize( "", off )
 #endif
-#ifdef HL_GCC
-__attribute__((optimize("-O0")))
-#endif
-
-static void hl_null_access() {
-	hl_error_msg(USTR("Null access"));
+HL_NO_OPT static void hl_null_access() {
+	vdynamic *d = hl_alloc_dynamic(&hlt_bytes);
+	d->v.ptr = USTR("Null access");
+	hl_throw(d);
 }
-
 #ifdef HL_VCC
 #	pragma optimize( "", on )
 #endif
@@ -1671,14 +1667,17 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 		case OUMod:
 			{
 				preg *out = op->op == OSMod || op->op == OUMod ? REG_AT(Edx) : PEAX;
-				preg *r = alloc_cpu(ctx,b,true);
+				preg *r;
 				int jz, jend;
+				if( pa->kind == RCPU && pa->id == Eax ) RLOCK(pa);
+				r = alloc_cpu(ctx,b,true);
 				// integer div 0 => 0
 				op32(ctx,TEST,r,r);
 				XJump_small(JNotZero,jz);
 				op32(ctx,XOR,out,out);
 				XJump_small(JAlways,jend);
 				patch_jump(ctx,jz);
+				pa = fetch(a);
 				if( pa->kind != RCPU || pa->id != Eax ) {
 					scratch(PEAX);
 					scratch(pa);
@@ -2704,6 +2703,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 	unsigned short *debug16 = NULL;
 	int *debug32 = NULL;
 	call_regs cregs = {0};
+	hl_thread_info *tinf = NULL;
 	preg p;
 	ctx->f = f;
 	ctx->allocOffset = 0;
@@ -3814,40 +3814,51 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 		case OTrap:
 			{
 				int size, jenter, jtrap;
+				int offset = 0;
 				int trap_size = (sizeof(hl_trap_ctx) + 15) & 0xFFF0;
 				hl_trap_ctx *t = NULL;
-				// trap pad
+#				ifndef HL_THREADS
+				if( tinf == NULL ) tinf = hl_get_thread(); // single thread
+#				endif
+
 #				ifdef HL_64
 				preg *trap = REG_AT(CALL_REGS[0]);
-				RLOCK(trap);
-				preg *tmp = alloc_reg(ctx,RCPU);
-				op64(ctx,MOV,tmp,pconst64(&p,(int_val)&hl_current_trap));
-				op64(ctx,MOV,trap,pmem(&p,tmp->id,0));
-				op64(ctx,SUB,PESP,pconst(&p,trap_size));
-				op64(ctx,MOV,pmem(&p,Esp,(int)(int_val)&t->prev),trap);
-				op64(ctx,MOV,trap,PESP);
-				op64(ctx,MOV,pmem(&p,tmp->id,0),trap);
 #				else
 				preg *trap = PEAX;
-				op64(ctx,MOV,trap,paddr(&p,&hl_current_trap));
+#				endif
+				RLOCK(trap);
+
+				preg *treg = alloc_reg(ctx, RCPU);
+				if( !tinf ) {
+					call_native(ctx, hl_get_thread, 0);
+					op64(ctx,MOV,treg,PEAX);
+					offset = (int)(int_val)&tinf->trap_current;
+				} else {
+					offset = 0;
+					op64(ctx,MOV,treg,pconst64(&p,(int_val)&tinf->trap_current));
+				}
+				op64(ctx,MOV,trap,pmem(&p,treg->id,offset));
 				op64(ctx,SUB,PESP,pconst(&p,trap_size));
 				op64(ctx,MOV,pmem(&p,Esp,(int)(int_val)&t->prev),trap);
 				op64(ctx,MOV,trap,PESP);
-				op64(ctx,MOV,paddr(&p,&hl_current_trap),trap);
-#				endif
+				op64(ctx,MOV,pmem(&p,treg->id,offset),trap);
+
 				size = begin_native_call(ctx, 1);
 				set_native_arg(ctx,trap);
 				call_native(ctx,setjmp,size);
 				op64(ctx,TEST,PEAX,PEAX);
 				XJump_small(JZero,jenter);
+				call_native(ctx, hl_get_thread, 0);
 				op64(ctx,ADD,PESP,pconst(&p,trap_size));
-#				ifdef HL_64
-				op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&hl_current_exc));
-				op64(ctx,MOV,PEAX,pmem(&p,Eax,0));
-#				else
-				op64(ctx,MOV,PEAX,paddr(&p,&hl_current_exc));
-#				endif
+				if( !tinf ) {
+					call_native(ctx, hl_get_thread, 0);
+					op64(ctx,MOV,PEAX,pmem(&p, Eax, (int)(int_val)&tinf->exc_value));
+				} else {
+					op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&tinf->trap_current));
+					op64(ctx,MOV,PEAX,pmem(&p, Eax, 0));
+				}
 				store(ctx,dst,PEAX,false);
+
 				jtrap = do_jump(ctx,OJAlways,false);
 				register_jump(ctx,jtrap,(opCount + 1) + o->p2);
 				patch_jump(ctx,jenter);
@@ -3856,18 +3867,33 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 		case OEndTrap:
 			{
 				int trap_size = (sizeof(hl_trap_ctx) + 15) & 0xFFF0;
-				preg *r = alloc_reg(ctx, RCPU);
 				hl_trap_ctx *tmp = NULL;
-#				ifdef HL_64
-				preg *addr = alloc_reg(ctx,RCPU);
-				op64(ctx, MOV, addr, pconst64(&p,(int_val)&hl_current_trap));
-				op64(ctx, MOV, r, pmem(&p,addr->id,0));
+				preg *addr,*r;
+				int offset;
+				if (!tinf) {
+					call_native(ctx, hl_get_thread, 0);
+					addr = PEAX;
+					RLOCK(addr);
+					offset = (int)(int_val)&tinf->trap_current;
+				} else {
+					offset = 0;
+					addr = alloc_reg(ctx, RCPU);
+					op64(ctx, MOV, addr, pconst64(&p, (int_val)&tinf->trap_current));
+				}
+				r = alloc_reg(ctx, RCPU);
+				op64(ctx, MOV, r, pmem(&p,addr->id,offset));
 				op64(ctx, MOV, r, pmem(&p,r->id,(int)(int_val)&tmp->prev));
-				op64(ctx, MOV, pmem(&p,addr->id,0), r);
-#				else
-				op64(ctx, MOV, r, paddr(&p,&hl_current_trap));
-				op64(ctx, MOV, r, pmem(&p,r->id,(int)(int_val)&tmp->prev));
-				op64(ctx, MOV, paddr(&p,&hl_current_trap), r);
+				op64(ctx, MOV, pmem(&p,addr->id, offset), r);
+#				ifdef HL_WIN
+				// erase eip (prevent false positive)
+				{
+					_JUMP_BUFFER *b = NULL;
+#					ifdef HL_64
+					op64(ctx,MOV,pmem(&p,Esp,(int)(int_val)&(b->Rip)),PEAX);
+#					else
+					op64(ctx,MOV,pmem(&p,Esp,(int)&(b->Eip)),PEAX);
+#					endif
+				}
 #				endif
 				op64(ctx,ADD,PESP,pconst(&p,trap_size));
 			}

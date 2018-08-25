@@ -164,7 +164,9 @@ HL_PRIM int hl_socket_recv( hl_socket *s, vbyte *buf, int pos, int len ) {
 	int	ret;
 	if( !s )
 		return -2;
+	hl_blocking(true);
 	ret = recv(s->sock, (char*)buf + pos, len, MSG_NOSIGNAL);
+	hl_blocking(false);
 	if( ret == SOCKET_ERROR )
 		return block_error();
 	return ret;
@@ -174,7 +176,9 @@ HL_PRIM int hl_socket_recv_char( hl_socket *s ) {
 	char cc;
 	int ret;
 	if( !s ) return -2;
+	hl_blocking(true);
 	ret = recv(s->sock,&cc,1,MSG_NOSIGNAL);
+	hl_blocking(false);
 	if( ret == SOCKET_ERROR )
 		return block_error();
 	if( ret == 0 )
@@ -184,6 +188,7 @@ HL_PRIM int hl_socket_recv_char( hl_socket *s ) {
 
 HL_PRIM int hl_host_resolve( vbyte *host ) {
 	unsigned int ip;
+	hl_blocking(true);
 	ip = inet_addr((char*)host);
 	if( ip == INADDR_NONE ) {
 		struct hostent *h;
@@ -195,10 +200,13 @@ HL_PRIM int hl_host_resolve( vbyte *host ) {
 		int errcode;
 		gethostbyname_r((char*)host,&hbase,buf,1024,&h,&errcode);
 #	endif
-		if( h == NULL )
+		if( h == NULL ) {
+			hl_blocking(false);
 			return 0;
+		}
 		ip = *((unsigned int*)h->h_addr_list[0]);
 	}
+	hl_blocking(false);
 	return ip;
 }
 
@@ -210,6 +218,7 @@ HL_PRIM vbyte *hl_host_to_string( int ip ) {
 
 HL_PRIM vbyte *hl_host_reverse( int ip ) {
 	struct hostent *h;
+	hl_blocking(true);
 #	if defined(HL_WIN) || defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS) || defined(HL_CYGWIN) || defined(HL_CONSOLE)
 	h = gethostbyaddr((char *)&ip,4,AF_INET);
 #	elif defined(__ANDROID__)
@@ -220,6 +229,7 @@ HL_PRIM vbyte *hl_host_reverse( int ip ) {
 	char buf[1024];
 	gethostbyaddr_r((char*)&ip,4,AF_INET,&htmp,buf,1024,&h,&errcode);
 #	endif
+	hl_blocking(false);
 	if( h == NULL )
 		return NULL;
 	return (vbyte*)h->h_name;
@@ -239,11 +249,14 @@ HL_PRIM bool hl_socket_connect( hl_socket *s, int host, int port ) {
 	addr.sin_port = htons((unsigned short)port);
 	*(int*)&addr.sin_addr.s_addr = host;
 	if( !s ) return false;
+	hl_blocking(true);
 	if( connect(s->sock,(struct sockaddr*)&addr,sizeof(addr)) != 0 ) {
 		int err = block_error();
+		hl_blocking(false);
 		if( err == -1 ) return true; // in progress
 		return false;
 	}
+	hl_blocking(false);
 	return true;
 }
 
@@ -272,7 +285,9 @@ HL_PRIM hl_socket *hl_socket_accept( hl_socket *s ) {
 	SOCKET nsock;
 	hl_socket *hs;
 	if( !s ) return NULL;
+	hl_blocking(true);
 	nsock = accept(s->sock,(struct sockaddr*)&addr,&addrlen);
+	hl_blocking(false);
 	if( nsock == INVALID_SOCKET )
 		return NULL;
 	hs = (hl_socket*)hl_gc_alloc_noptr(sizeof(hl_socket));
@@ -370,7 +385,9 @@ HL_PRIM int hl_socket_recv_from( hl_socket *s, char *data, int len, int *host, i
 	struct sockaddr_in saddr;
 	socklen_t slen = sizeof(saddr);
 	if( !s ) return -2;
+	hl_blocking(true);
 	len = recvfrom(s->sock, data, len, MSG_NOSIGNAL, (struct sockaddr*)&saddr, &slen);
+	hl_blocking(false);
 	if( len == SOCKET_ERROR ) {
 #ifdef	HL_WIN
 		if( WSAGetLastError() == WSAECONNRESET )
@@ -446,8 +463,12 @@ HL_PRIM bool hl_socket_select( varray *ra, varray *wa, varray *ea, char *tmp, in
 		tt = &tval;
 		init_timeval(timeout,tt);
 	}
-	if( select((int)(max+1),ra?rs:NULL,wa?ws:NULL,ea?es:NULL,tt) == SOCKET_ERROR )
+	hl_blocking(true);
+	if( select((int)(max+1),ra?rs:NULL,wa?ws:NULL,ea?es:NULL,tt) == SOCKET_ERROR ) {
+		hl_blocking(false);
 		return false;
+	}
+	hl_blocking(false);
 	make_array_result(rs,ra);
 	make_array_result(ws,wa);
 	make_array_result(es,ea);

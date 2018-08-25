@@ -56,7 +56,7 @@ namespace {
 // 		}
 // #endif
 
-		audioCallCallback(samples);
+		//audioCallCallback(samples); // TODO: HL throws "Can't lock GC in unregistered thread"
 
 		for (int i = 0; i < samples; ++i) {
 			float value = audioReadSample();

@@ -194,9 +194,23 @@ typedef struct {
 } hl_ho_value;
 
 static vdynamic *hl_hofilter( vdynamic *key ) {
-	// erase virtual (prevent mismatch once virtualized)
-	if( key && key->t->kind == HVIRTUAL )
-		key = hl_virtual_make_value((vvirtual*)key);
+	if( key )
+		switch( key->t->kind ) {
+		// erase virtual (prevent mismatch once virtualized)
+		case HVIRTUAL:
+			key = hl_virtual_make_value((vvirtual*)key);
+			break;
+		// store real pointer instead of dynamic wrapper
+		case HBYTES:
+		case HTYPE:
+		case HABSTRACT:
+		case HREF:
+		case HENUM:
+			key = (vdynamic*)key->v.ptr;
+			break;
+		default:
+			break;
+		}
 	return key;
 }
 

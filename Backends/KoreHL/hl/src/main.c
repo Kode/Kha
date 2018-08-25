@@ -94,12 +94,14 @@ int main(int argc, pchar *argv[]) {
 	struct {
 		hl_code *code;
 		hl_module *m;
-		vdynamic *exc;
+		vdynamic *ret;
+		vclosure c;
 	} ctx;
-	hl_trap_ctx trap;
+	bool isExc = false;
 	int first_boot_arg = -1;
 	argv++;
 	argc--;
+
 	while( argc ) {
 		pchar *arg = *argv++;
 		argc--;
@@ -133,7 +135,7 @@ int main(int argc, pchar *argv[]) {
 		file = PSTR("hlboot.dat");
 		fchk = pfopen(file,"rb");
 		if( fchk == NULL ) {
-			printf("HL/JIT %d.%d.%d (c)2015-2017 Haxe Foundation\n  Usage : hl [--debug <port>] <file>\n",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
+			printf("HL/JIT %d.%d.%d (c)2015-2018 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
 			return 1;
 		}
 		fclose(fchk);
@@ -142,51 +144,39 @@ int main(int argc, pchar *argv[]) {
 			argc = first_boot_arg;
 		}
 	}
-#	ifdef HL_WIN
-	setlocale(LC_CTYPE,""); // printf to current locale
-#	endif
-	hl_global_init(&ctx);
+	hl_global_init();
 	hl_sys_init((void**)argv,argc,file);
-	setbuf(stdout,NULL); // disable stdout buffering
+	hl_register_thread(&ctx);
 	ctx.code = load_code(file);
 	if( ctx.code == NULL )
 		return 1;
 	ctx.m = hl_module_alloc(ctx.code);
 	if( ctx.m == NULL )
 		return 2;
-	if( !hl_module_init(ctx.m, &argc) )
+	if( !hl_module_init(ctx.m) )
 		return 3;
 	hl_code_free(ctx.code);
 	if( debug_port > 0 && !hl_module_debug(ctx.m,debug_port,debug_wait) ) {
 		fprintf(stderr,"Could not start debugger on port %d",debug_port);
 		return 4;
 	}
-	hl_trap(trap, ctx.exc, on_exception);
-#	ifdef HL_VCC
-	__try {
-#	endif
-		vclosure c;
-		c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
-		c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
-		c.hasValue = 0;
-		hl_dyn_call(&c,NULL,0);
-#	ifdef HL_VCC
-	} __except( throw_handler(GetExceptionCode()) ) {}
-#	endif
+	ctx.c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
+	ctx.c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
+	ctx.c.hasValue = 0;
+	ctx.ret = hl_dyn_call_safe(&ctx.c,NULL,0,&isExc);
+	if( isExc ) {
+		varray *a = hl_exception_stack();
+		int i;
+		uprintf(USTR("Uncaught exception: %s\n"), hl_to_string(ctx.ret));
+		for(i=0;i<a->size;i++)
+			uprintf(USTR("Called from %s\n"), hl_aptr(a,uchar*)[i]);
+		hl_debug_break();
+		hl_global_free();
+		return 1;
+	}
 	hl_module_free(ctx.m);
 	hl_free(&ctx.code->alloc);
 	hl_global_free();
 	return 0;
-on_exception:
-	{
-		varray *a = hl_exception_stack();
-		int i;
-		uprintf(USTR("Uncaught exception: %s\n"), hl_to_string(ctx.exc));
-		for(i=0;i<a->size;i++)
-			uprintf(USTR("Called from %s\n"), hl_aptr(a,uchar*)[i]);
-		hl_debug_break();
-	}
-	hl_global_free();
-	return 1;
 }
 
