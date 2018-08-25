@@ -41,7 +41,7 @@ class PipelineState extends PipelineStateBase {
 			for (element in input.elements) {
 				elements.push({
 					name: element.name,
-					data: element.data.getIndex()
+					data: element.data
 				});
 			}
 			layout.push({
