@@ -37,16 +37,16 @@ class PipelineState extends PipelineStateBase {
 			kore_structures.push(kore_structure);
 			for (j in 0...structures[i].size()) {
 				var data: Int = 0;
-				switch (structures[i].get(j).data.getIndex()) {
-				case 0:
+				switch (structures[i].get(j).data) {
+				case VertexData.Float1:
 					data = 1; // Kore::Graphics4::Float1VertexData;
-				case 1:
+				case VertexData.Float2:
 					data = 2;
-				case 2:
+				case VertexData.Float3:
 					data = 3;
-				case 3:
+				case VertexData.Float4:
 					data = 4;
-				case 4:
+				case VertexData.Float4x4:
 					data = 5; // Kore::Graphics4::Float4x4VertexData;
 				}
 				VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(structures[i].get(j).name), data);

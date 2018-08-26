@@ -83,7 +83,7 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			elements.push({
 				name: element.name,
-				data: element.data.getIndex()
+				data: element.data
 			});
 		}
 		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}, usage: usage.getIndex()});
