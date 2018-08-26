@@ -227,7 +227,8 @@ class VorbisDecodeState
 
 
 
-    public inline function readBits(n:Int):Int
+    // public inline function readBits(n:Int):Int
+    public function readBits(n:Int):Int // Kha: reduce output size
     {
         if (validBits < 0) {
             return 0;
