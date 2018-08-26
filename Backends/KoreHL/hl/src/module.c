@@ -30,11 +30,6 @@
 #endif
 
 static hl_module *cur_module;
-static void *stack_top;
-
-void *hl_module_stack_top() {
-	return stack_top;
-}
 
 static bool module_resolve_pos( void *addr, int *fidx, int *fpos ) {
 	int code_pos = ((int)(int_val)((unsigned char*)addr - (unsigned char*)cur_module->jit_code));
@@ -104,6 +99,7 @@ static uchar *module_resolve_symbol( void *addr, uchar *out, int *outSize ) {
 static int module_capture_stack( void **stack, int size ) {
 	void **stack_ptr = (void**)&stack;
 	void *stack_bottom = stack_ptr;
+	void *stack_top = hl_get_thread()->stack_top;
 	int count = 0;
 	unsigned char *code = cur_module->jit_code;
 	int code_size = cur_module->codesize;
@@ -220,9 +216,25 @@ static void append_type( char **p, hl_type *t ) {
 	}
 }
 
+#define DISABLED_LIB_PTR ((void*)(int_val)2)
+
 static void *resolve_library( const char *lib ) {
 	char tmp[256];	
 	void *h;
+
+#	ifndef HL_CONSOLE
+	static char *DISABLED_LIBS = NULL;
+	if( !DISABLED_LIBS ) {
+		DISABLED_LIBS = getenv("HL_DISABLED_LIBS");
+		if( !DISABLED_LIBS ) DISABLED_LIBS = "";
+	}
+	char *disPart = strstr(DISABLED_LIBS, lib);
+	if( disPart ) {
+		disPart += strlen(lib);
+		if( *disPart == 0 || *disPart == ',' )
+			return DISABLED_LIB_PTR;
+	}
+#	endif
 
 	if( strcmp(lib,"builtin") == 0 )
 		return dlopen(NULL,RTLD_LAZY);
@@ -257,7 +269,11 @@ static void *resolve_library( const char *lib ) {
 	return h;
 }
 
-int hl_module_init( hl_module *m, void *stack_top_val ) {
+static void disabled_primitive() {
+	hl_error("This library primitive has been disabled");
+}
+
+int hl_module_init( hl_module *m ) {
 	int i;
 	jit_ctx *ctx;
 	// RESET globals
@@ -280,6 +296,11 @@ int hl_module_init( hl_module *m, void *stack_top_val ) {
 				curlib = n->lib;
 				libHandler = resolve_library(n->lib);
 			}
+			if( libHandler == DISABLED_LIB_PTR ) {
+				m->functions_ptrs[n->findex] = disabled_primitive;
+				continue;
+			}
+
 			strcpy(p,"hlp_");
 			p += 4;
 			strcpy(p,n->name);
@@ -370,8 +391,53 @@ int hl_module_init( hl_module *m, void *stack_top_val ) {
 		hl_function *f = m->code->functions + i;
 		m->functions_ptrs[f->findex] = ((unsigned char*)m->jit_code) + ((int_val)m->functions_ptrs[f->findex]);
 	}
+	// INIT constants
+	for (i = 0; i<m->code->nconstants; i++) {
+		int j;
+		hl_constant *c = m->code->constants + i;
+		hl_type *t = m->code->globals[c->global];
+		hl_runtime_obj *rt;
+		vdynamic **global = (vdynamic**)(m->globals_data + m->globals_indexes[c->global]);
+		vdynamic *v = NULL;
+		switch (t->kind) {
+		case HOBJ:
+			rt = hl_get_obj_rt(t);
+			v = (vdynamic*)hl_malloc(&m->ctx.alloc,rt->size);
+			v->t = t;
+			for (j = 0; j<c->nfields; j++) {
+				int idx = c->fields[j];
+				hl_type *ft = t->obj->fields[j].t;
+				void *addr = (char*)v + rt->fields_indexes[j];
+				switch (ft->kind) {
+				case HI32:
+					*(int*)addr = m->code->ints[idx];
+					break;
+				case HBOOL:
+					*(bool*)addr = idx != 0;
+					break;
+				case HF64:
+					*(double*)addr = m->code->floats[idx];
+					break;
+				case HBYTES:
+					*(const void**)addr = hl_get_ustring(m->code, idx);
+					break;
+				case HTYPE:
+					*(hl_type**)addr = m->code->types + idx;
+					break;
+				default:
+					*(void**)addr = *(void**)(m->globals_data + m->globals_indexes[idx]);
+					break;
+				}
+			}
+			break;
+		default:
+			hl_fatal("assert");
+		}
+		*global = v;
+		hl_remove_root(global);
+	}
+	// DONE
 	cur_module = m;
-	stack_top = stack_top_val;
 	hl_setup_exception(module_resolve_symbol, module_capture_stack);
 	hl_gc_set_dump_types(hl_module_types_dump);
 	hl_jit_free(ctx);

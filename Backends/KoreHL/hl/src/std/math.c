@@ -36,7 +36,11 @@ HL_PRIM double hl_math_abs( double a ) {
 }
 
 HL_PRIM bool hl_math_isnan( double a ) {
-	return a != a;
+#ifdef HL_WIN
+	return isnan(a);
+#else
+	return a != a; //does not work on some platforms
+#endif
 }
 
 typedef union {
