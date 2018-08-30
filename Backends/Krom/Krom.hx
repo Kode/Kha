@@ -73,7 +73,7 @@ extern class Krom {
 	static function loadBlob(file: String): js.html.ArrayBuffer;
 	
 	static function init(title: String, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void;
-	static function log(string: String): Void;
+	static function log(v: Dynamic): Void;
 	static function setCallback(callback: Void->Void): Void;
 	static function setDropFilesCallback(callback: String->Void): Void;
 	static function setKeyboardDownCallback(callback: Int->Void): Void;

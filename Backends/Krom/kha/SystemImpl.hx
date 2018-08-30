@@ -106,8 +106,8 @@ class SystemImpl {
 
 		start = Krom.getTime();
 		
-		haxe.Log.trace = function(v, ?infos) {
-			Krom.log(Std.string(v));
+		haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
+			infos != null ? Krom.log(infos.fileName + ":" + infos.lineNumber + ": " + v) : Krom.log(v);
 		};
 
 		new Window(0);
