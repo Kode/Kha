@@ -231,7 +231,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function exitFullscreen(): Void {
-		Window.get(0).mode = WindowMode.Window;
+		Window.get(0).mode = WindowMode.Windowed;
 	}
 
 	@:deprecated("This does nothing")

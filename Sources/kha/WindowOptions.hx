@@ -16,10 +16,10 @@ class WindowOptions {
 	@:optional public var display: Display = null;
 	@:optional public var visible: Bool = true;
 	@:optional public var windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
-	@:optional public var mode: WindowMode = Window;
+	@:optional public var mode: WindowMode = Windowed;
 
 	public function new(title: String = "Kha", ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, display: Display = null,
-	?visible: Bool = true, ?windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable, ?mode: WindowMode = WindowMode.Window) {
+	?visible: Bool = true, ?windowFeatures: Int = FeatureResizable | FeatureMaximizable | FeatureMinimizable, ?mode: WindowMode = WindowMode.Windowed) {
 		this.title = title;
 		this.x = x;
 		this.y = y;
