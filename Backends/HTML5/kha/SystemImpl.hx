@@ -172,8 +172,6 @@ class SystemImpl {
 	private static var lastFirstTouchY: Int = 0;
 
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
-		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
 		#if !kha_no_keyboard 
 		keyboard = new Keyboard();
 		#end
