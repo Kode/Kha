@@ -312,9 +312,6 @@ const char* getGamepadId(int index) {
 }
 
 void post_kore_init() {
-	Kore::Audio2::audioCallback = mix;
-	Kore::Audio2::init();
-
 #ifdef VR_GEAR_VR
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
@@ -323,6 +320,8 @@ void post_kore_init() {
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
+	Kore::Audio2::audioCallback = mix;
+	Kore::Audio2::init();
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
