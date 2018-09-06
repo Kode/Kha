@@ -268,8 +268,11 @@ class SystemImpl {
 		#end
 		*/
 
+		kha.kore.graphics4.Graphics.lastWindow = -1;
 		Scheduler.executeFrame();
 		System.render(framebuffers);
+		var win = kha.kore.graphics4.Graphics.lastWindow;
+		untyped __cpp__('Kore::Graphics4::end(win);');
 	}
 
 	public static function keyDown(code: KeyCode): Void {
