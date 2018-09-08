@@ -12,10 +12,17 @@
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
 #include <Kore/Math/Random.h>
+#if HXCPP_API_LEVEL >= 332
+#include <hxinc/kha/SystemImpl.h>
+#include <hxinc/kha/input/Sensor.h>
+#include <hxinc/kha/ScreenRotation.h>
+#include <hxinc/kha/audio2/Audio.h>
+#else
 #include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
 #include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
+#endif
 
 #include <limits>
 #include <stdio.h>

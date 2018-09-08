@@ -90,7 +90,6 @@ if (platform === Platform.OSX) {
 if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 // project:addDefine('HXCPP_SCRIPTABLE');
-project.addDefine('HXCPP_API_LEVEL=330');
 project.addDefine('STATIC_LINK');
 project.addDefine('PCRE_STATIC');
 project.addDefine('HXCPP_SET_PROP');
