@@ -23,9 +23,10 @@ class SystemImpl {
 	private static var mouseLockListeners: Array<Void->Void>;
 	
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		// haxe.Log.trace = function(v, ?infos) {
-			// kore_log(StringHelper.convert(v));
-		// };
+		haxe.Log.trace = function(v: Dynamic, ?infos: haxe.PosInfos) {
+			var message = infos != null ? infos.className + ":" + infos.lineNumber + ": " + v : Std.string(v);
+			kore_log(StringHelper.convert(message));
+		};
 		init_kore(StringHelper.convert(options.title), options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
 		
 		new Window(0);
