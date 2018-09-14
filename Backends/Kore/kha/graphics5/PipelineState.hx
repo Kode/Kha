@@ -13,7 +13,7 @@ import kha.graphics5.VertexStructure;
 ')
 
 @:cppFileCode('
-Kore::Graphics5::ZCompareMode convertCompareMode(int mode) {
+static Kore::Graphics5::ZCompareMode convertCompareMode(int mode) {
 	switch (mode) {
 	case 0:
 		return Kore::Graphics5::ZCompareAlways;
@@ -35,7 +35,7 @@ Kore::Graphics5::ZCompareMode convertCompareMode(int mode) {
 	}
 }
 
-Kore::Graphics5::StencilAction convertStencilAction(int action) {
+static Kore::Graphics5::StencilAction convertStencilAction(int action) {
 	switch (action) {
 	case 0:
 		return Kore::Graphics5::Keep;
