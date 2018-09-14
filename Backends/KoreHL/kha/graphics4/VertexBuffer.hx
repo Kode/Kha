@@ -12,16 +12,16 @@ class VertexBuffer {
 		var structure2 = kore_create_vertexstructure();
 		for (i in 0...structure.size()) {
 			var data: Int = 0;
-			switch (structure.get(i).data.getIndex()) {
-			case 0:
+			switch (structure.get(i).data) {
+			case VertexData.Float1:
 				data = 1;
-			case 1:
+			case VertexData.Float2:
 				data = 2;
-			case 2:
+			case VertexData.Float3:
 				data = 3;
-			case 3:
+			case VertexData.Float4:
 				data = 4;
-			case 4:
+			case VertexData.Float4x4:
 				data = 5;
 			}
 			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);

@@ -47,7 +47,7 @@ HL_PRIM ereg *hl_regexp_new_options( vbyte *str, vbyte *opts ) {
 	int errorcode;
 	pcre16 *p;
 	uchar *o = (uchar*)opts;
-	int options = 0;
+	int options = PCRE_JAVASCRIPT_COMPAT;
 	while( *o ) {
 		switch( *o++ ) {
 		case 'i':
@@ -98,7 +98,7 @@ HL_PRIM int hl_regexp_matched_pos( ereg *e, int m, int *len ) {
 	if( !e->matched )
 		hl_error("Calling matchedPos() on an unmatched regexp"); 
 	if( m < 0 || m >= e->nmatches )
-		hl_error_msg(USTR("Matched index %d outside bounds"),m);
+		hl_error("Matched index %d outside bounds",m);
 	start = e->matches[m*2];
 	if( len ) *len = e->matches[m*2+1] - start;
 	return start;

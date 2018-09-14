@@ -49,6 +49,10 @@ class SystemImpl {
 		return "Empty";
 	}
 	
+	public static function getLanguage(): String {
+		return "en";
+	}
+	
 	public static function requestShutdown(): Void {
 		
 	}

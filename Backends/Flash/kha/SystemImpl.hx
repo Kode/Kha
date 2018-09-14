@@ -204,6 +204,10 @@ class SystemImpl {
 		return "Flash";
 	}
 
+	public static function getLanguage(): String {
+		return Capabilities.language;
+	}
+
 	public static function requestShutdown(): Bool {
 		System.pause();
 		System.background();

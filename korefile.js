@@ -1,41 +1,52 @@
-var project = new Project('Kha', __dirname);
+let project = new Project('Kha');
+
+const pcreVersion = '8.42';
+const tlsVersion = '2.9.0';
+const zlibVersion = '1.2.11';
 
 project.addFiles('Backends/Kore/khacpp/src/**.h', 'Backends/Kore/khacpp/src/**.cpp', 'Backends/Kore/khacpp/include/**.h');
-//'Backends/Kore/khacpp/project/libs/nekoapi/**.cpp'
 project.addFiles('Backends/Kore/khacpp/project/libs/common/**.h', 'Backends/Kore/khacpp/project/libs/common/**.cpp');
 if (platform === Platform.Windows || platform === Platform.WindowsApp) project.addFiles('Backends/Kore/khacpp/project/libs/msvccompat/**.cpp');
 if (platform === Platform.Linux) project.addFiles('Backends/Kore/khacpp/project/libs/linuxcompat/**.cpp');
 project.addFiles('Backends/Kore/khacpp/project/libs/regexp/**.h', 'Backends/Kore/khacpp/project/libs/regexp/**.cpp', 'Backends/Kore/khacpp/project/libs/std/**.h', 'Backends/Kore/khacpp/project/libs/std/**.cpp');
-//project.addFiles('Backends/Kore/khacpp/project/thirdparty/mbedtls-2.2.1/library/*.c');
-//'Backends/Kore/khacpp/project/libs/zlib/**.cpp'
-project.addFiles('Backends/Kore/khacpp/project/thirdparty/pcre-7.8/**.h', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/**.c');
-//'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/**.cc'
-project.addFiles('Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/**.h',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/adler32.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/compress.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/crc32.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/gzio.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/uncompr.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/deflate.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/trees.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/zutil.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/inflate.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/infback.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/inftrees.c',
-'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3/inffast.c'
-);
-project.addFiles('Backends/Kore/khacpp/project/thirdparty/mbedtls-2.2.1/**');
+
+project.addFiles('Backends/Kore/khacpp/project/thirdparty/pcre-' + pcreVersion + '/**.h', 'Backends/Kore/khacpp/project/thirdparty/pcre-' + pcreVersion + '/**.c');
+
+const zlibFiles = [
+	'**.h',
+	'adler32.c',
+	'compress.c',
+	'crc32.c',
+	'gzio.c',
+	'uncompr.c',
+	'deflate.c',
+	'trees.c',
+	'zutil.c',
+	'inflate.c',
+	'infback.c',
+	'inftrees.c',
+	'inffast.c'
+];
+
+for (const file of zlibFiles) {
+	project.addFile('Backends/Kore/khacpp/project/thirdparty/zlib-' + zlibVersion + '/' + file);
+}
+
+project.addFiles('Backends/Kore/khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/**');
 
 project.addFiles('Backends/Kore/*.cpp', 'Backends/Kore/*.h');
 
-project.addExcludes('Backends/Kore/khacpp/project/thirdparty/pcre-7.8/dftables.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcredemo.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcregrep.c', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8/pcretest.c');
+const pcreExcludes = ['dftables.c', 'pcredemo.c', 'pcregrep.c', 'pcretest.c', 'pcre_jit_test.c', 'sljit/**'];
+for (const file of pcreExcludes) {
+	project.addExclude('Backends/Kore/khacpp/project/thirdparty/pcre-' + pcreVersion + '/' + file);
+}
 project.addExcludes('Backends/Kore/khacpp/src/ExampleMain.cpp', 'Backends/Kore/khacpp/src/hx/Scriptable.cpp', 'Backends/Kore/khacpp/src/hx/NoFiles.cpp', 'Backends/Kore/khacpp/src/hx/cppia/**');
 project.addExcludes('Backends/Kore/khacpp/src/hx/Debugger.cpp', 'Backends/Kore/khacpp/src/hx/Profiler.cpp', 'Backends/Kore/khacpp/src/hx/Telemetry.cpp');
 project.addExcludes('Backends/Kore/khacpp/src/hx/NekoAPI.cpp');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/sqlite/**');
 project.addExcludes('Backends/Kore/khacpp/src/hx/libs/mysql/**');
 
-project.addIncludeDirs('Backends/Kore/khacpp/include', 'Backends/Kore/khacpp/project/thirdparty/pcre-7.8', 'Backends/Kore/khacpp/project/thirdparty/zlib-1.2.3', 'Backends/Kore/khacpp/project/libs/nekoapi', 'Backends/Kore/khacpp/project/thirdparty/mbedtls-2.2.1/include');
+project.addIncludeDirs('Backends/Kore/khacpp/include', 'Backends/Kore/khacpp/project/thirdparty/pcre-' + pcreVersion, 'Backends/Kore/khacpp/project/thirdparty/zlib-' + zlibVersion, 'Backends/Kore/khacpp/project/libs/nekoapi', 'Backends/Kore/khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
 
 //if (options.vrApi == "rift") {
 //	out += "project.addIncludeDirs('C:/khaviar/LibOVRKernel/Src/');\n";
@@ -79,13 +90,13 @@ if (platform === Platform.OSX) {
 if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 // project:addDefine('HXCPP_SCRIPTABLE');
-project.addDefine('HXCPP_API_LEVEL=330');
 project.addDefine('STATIC_LINK');
 project.addDefine('PCRE_STATIC');
 project.addDefine('HXCPP_SET_PROP');
 project.addDefine('HXCPP_VISIT_ALLOCS');
 project.addDefine('KORE');
 project.addDefine('ROTATE90');
+project.addDefine('HAVE_CONFIG_H');
 
 //if (Options.vrApi === "gearvr") {
 //	out += "project.addDefine('VR_GEAR_VR');\n";

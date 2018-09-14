@@ -8,12 +8,6 @@ import kha.Blob;
 #include <Kore/Compute/Compute.h>
 ')
 
-@:cppFileCode('
-#ifndef INCLUDED_haxe_io_Bytes
-#include <haxe/io/Bytes.h>
-#endif
-')
-
 @:headerClassCode("Kore::ComputeShader* shader;")
 class Shader {
 	public function new(sources: Array<Blob>, files: Array<String>) {
@@ -52,5 +46,9 @@ class Shader {
 	')
 	private function initTextureUnit(unit: TextureUnit, name: String): Void {
 		
+	}
+
+	function _forceInclude(): Void {
+		Bytes.alloc(0);
 	}
 }

@@ -80,7 +80,7 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Window;
+		return Windowed;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {

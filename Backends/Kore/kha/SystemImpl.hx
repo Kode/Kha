@@ -99,6 +99,10 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return '';
 	}
+	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
+	}
 
 	public static function requestShutdown(): Bool {
 		untyped __cpp__('Kore::System::stop()');
@@ -128,6 +132,7 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
+    g4.window = 0;
 		var g5 = new kha.kore.graphics5.Graphics();
 		var framebuffer = new Framebuffer(0, null, null, g4, g5);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4, g5);
@@ -135,6 +140,14 @@ class SystemImpl {
 #end
 
 		postInit(callback);
+	}
+
+	static function onWindowCreated(index: Int) {
+		var g4 = new kha.kore.graphics4.Graphics();
+		g4.window = index;
+		var framebuffer = new Framebuffer(index, null, null, g4);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4);
+		framebuffers.push(framebuffer);
 	}
 
 	static function postInit(callback: Window -> Void) {
@@ -240,7 +253,7 @@ class SystemImpl {
 		untyped __cpp__("Kore::Mouse::the()->show(true);");
 	}
 
-	public static function frame(id: Int) {
+	public static function frame() {
 		/*
 		#if !ANDROID
 		#if !VR_RIFT
@@ -256,11 +269,11 @@ class SystemImpl {
 		#end
 		*/
 
-		if (id == 0) {
-			Scheduler.executeFrame();
-		}
-
+		kha.kore.graphics4.Graphics.lastWindow = -1;
+		Scheduler.executeFrame();
 		System.render(framebuffers);
+		var win = kha.kore.graphics4.Graphics.lastWindow;
+		untyped __cpp__('Kore::Graphics4::end(win);');
 	}
 
 	public static function keyDown(code: KeyCode): Void {

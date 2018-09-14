@@ -59,4 +59,8 @@ class Vector3 {
 	@:extern public inline function normalize(): Void {
 		length = 1;
 	}
+
+	@:extern public inline function fast(): FastVector3 {
+		return new FastVector3(x, y, z);
+	}
 }

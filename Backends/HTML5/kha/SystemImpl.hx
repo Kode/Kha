@@ -12,6 +12,7 @@ import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Sensor;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
@@ -66,8 +67,7 @@ class SystemImpl {
 		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
 		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
-			init2(options.window.width, options.window.height);
-			callback(window);
+			initSecondStep(callback);
 		}, 1000);
 		#else
 		mobile = isMobile();
@@ -75,9 +75,26 @@ class SystemImpl {
 		chrome = isChrome();
 		firefox = isFirefox();
 		ie = isIE();
+		initSecondStep(callback);
+		#end
+	}
+
+	static function initSecondStep(callback: Window -> Void): Void {
 		init2(options.window.width, options.window.height);
 		callback(window);
-		#end
+		if (ios) { // In Safari for iOS the directions are reversed on axes x, y and z
+			Browser.window.ondevicemotion = function (event:js.html.DeviceMotionEvent) {
+				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, -event.accelerationIncludingGravity.z);
+			};
+		}
+		else {
+			Browser.window.ondevicemotion = function (event:js.html.DeviceMotionEvent) {
+				Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+			};
+		}
+		Browser.window.ondeviceorientation= function (event:js.html.DeviceOrientationEvent) {
+			Sensor._changed(1, event.beta, event.gamma, event.alpha);
+		};
 	}
 
 	private static function isMobile(): Bool {
@@ -144,6 +161,10 @@ class SystemImpl {
 		return "HTML5";
 	}
 
+	public static function getLanguage(): String {
+		return Browser.navigator.language;
+	}
+
 	public static function requestShutdown(): Bool {
 		Browser.window.close();
 		return true;
@@ -168,8 +189,6 @@ class SystemImpl {
 	private static var lastFirstTouchY: Int = 0;
 
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
-		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
 		#if !kha_no_keyboard 
 		keyboard = new Keyboard();
 		#end

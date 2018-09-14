@@ -19,14 +19,14 @@ class SystemImpl {
 
 	private static inline var networkSendRate = 0.05;
 	
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		SystemImpl.width = options.width;
 		SystemImpl.height = options.height;
 		init2();
-		callback();
+		callback(null);
 	}
 	
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Window -> Void) {
 		trace('initEx is not supported on the node target, running init() with first window options');
 
 		init({ title : title, width : options[0].width, height : options[0].height}, callback);
@@ -82,8 +82,13 @@ class SystemImpl {
 		return "nodejs";
 	}
 	
-	public static function requestShutdown(): Void {
+	public static function getLanguage(): String {
+		return "en";
+	}
+	
+	public static function requestShutdown(): Bool {
 		Node.process.exit(0);
+		return true;
 	}
 	
 	private static var frame: Framebuffer = null;

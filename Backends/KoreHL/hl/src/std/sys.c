@@ -23,8 +23,8 @@
 
 #ifdef HL_CONSOLE
 #	include <posix/posix.h>
-#else
-
+#endif
+#if !defined(HL_CONSOLE) || defined(HL_WIN)
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -101,7 +101,9 @@ HL_PRIM bool hl_sys_utf8_path() {
 }
 
 HL_PRIM vbyte *hl_sys_string() {
-#if defined(HL_WIN) || defined(HL_CYGWIN) || defined(HL_MINGW)
+#if defined(HL_CONSOLE)
+	return (vbyte*)sys_platform_name();
+#elif defined(HL_WIN) || defined(HL_CYGWIN) || defined(HL_MINGW)
 	return (vbyte*)USTR("Windows");
 #elif defined(HL_GNUKBSD)
 	return (vbyte*)USTR("GNU/kFreeBSD");
@@ -111,8 +113,6 @@ HL_PRIM vbyte *hl_sys_string() {
 	return (vbyte*)USTR("BSD");
 #elif defined(HL_MAC)
 	return (vbyte*)USTR("Mac");
-#elif defined(HL_CONSOLE)
-	return (vbyte*)sys_platform_name();
 #elif defined(HL_IOS)
 	return (vbyte*)USTR("iOS");
 #elif defined(HL_TVOS)
@@ -125,7 +125,7 @@ HL_PRIM vbyte *hl_sys_string() {
 }
 
 HL_PRIM vbyte *hl_sys_locale() {
-#ifdef HL_WIN
+#ifdef HL_WIN_DESKTOP
 	wchar_t loc[LOCALE_NAME_MAX_LENGTH];
 	int len = GetSystemDefaultLocaleName(loc,LOCALE_NAME_MAX_LENGTH);
 	return len == 0 ? NULL : hl_copy_bytes((vbyte*)loc,(len+1)*2);
@@ -136,7 +136,12 @@ HL_PRIM vbyte *hl_sys_locale() {
 
 HL_PRIM void hl_sys_print( vbyte *msg ) {
 	hl_blocking(true);
+#	ifdef HL_XBO
+	OutputDebugStringW((LPCWSTR)msg);
+#	else
 	uprintf(USTR("%s"),(uchar*)msg);
+	fflush(stdout);
+#	endif
 	hl_blocking(false);
 }
 
@@ -183,7 +188,7 @@ HL_PRIM bool hl_sys_put_env( vbyte *e, vbyte *v ) {
 #	define environ (*_NSGetEnviron())
 #endif
 
-#ifdef HL_WIN
+#ifdef HL_WIN_DESKTOP
 #	undef environ
 #	define environ _wenviron
 #else
@@ -529,7 +534,7 @@ HL_PRIM vbyte *hl_sys_exe_path() {
 		return NULL;
 	return (vbyte*)pstrdup(path,-1);
 #elif defined(HL_CONSOLE)
-	return (vbyte*)sys_exe_path();
+	return sys_exe_path();
 #else
 	const pchar *p = getenv("_");
 	if( p != NULL )
@@ -546,7 +551,7 @@ HL_PRIM vbyte *hl_sys_exe_path() {
 }
 
 HL_PRIM int hl_sys_get_char( bool b ) {
-#	if defined(HL_WIN)
+#	if defined(HL_WIN_DESKTOP)
 	return b?getche():getch();
 #	elif defined(HL_CONSOLE)
 	return -1;
@@ -584,10 +589,13 @@ HL_PRIM void hl_sys_init(void **args, int nargs, void *hlfile) {
 	sys_args = (pchar**)args;
 	sys_nargs = nargs;
 	hl_file = hlfile;
+#	ifdef HL_WIN
+	setlocale(LC_CTYPE, ""); // printf to current locale
+#	endif
 }
 
 HL_PRIM vbyte *hl_sys_hl_file() {
-	return hl_file;
+	return (vbyte*)hl_file;
 }
 
 #ifndef HL_MOBILE

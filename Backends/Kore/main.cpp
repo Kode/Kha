@@ -12,10 +12,17 @@
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
 #include <Kore/Math/Random.h>
+#if HXCPP_API_LEVEL >= 332
+#include <hxinc/kha/SystemImpl.h>
+#include <hxinc/kha/input/Sensor.h>
+#include <hxinc/kha/ScreenRotation.h>
+#include <hxinc/kha/audio2/Audio.h>
+#else
 #include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
 #include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
+#endif
 
 #include <limits>
 #include <stdio.h>
@@ -139,7 +146,9 @@ namespace {
 		if (paused) return;
 		Kore::Audio2::update();
 
-		int windowCount = Kore::Window::count();
+		SystemImpl_obj::frame();
+
+		/*int windowCount = Kore::Window::count();
 
 		for (int windowIndex = 0; windowIndex < windowCount; ++windowIndex) {
 			if (visible) {
@@ -165,7 +174,7 @@ namespace {
 
 				
 			}
-		}
+		}*/
 
 #ifndef VR_RIFT
 		if (!Kore::Graphics4::swapBuffers()) {
@@ -310,9 +319,6 @@ const char* getGamepadId(int index) {
 }
 
 void post_kore_init() {
-	Kore::Audio2::audioCallback = mix;
-	Kore::Audio2::init();
-
 #ifdef VR_GEAR_VR
 	// Enter VR mode
 	Kore::VrInterface::Initialize();
@@ -321,6 +327,8 @@ void post_kore_init() {
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
+	Kore::Audio2::audioCallback = mix;
+	Kore::Audio2::init();
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)

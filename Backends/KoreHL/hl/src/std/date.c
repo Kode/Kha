@@ -56,7 +56,7 @@ HL_PRIM vbyte *hl_date_to_string( int date, int *len ) {
 	int size;
 	uchar *out;
 	if( !localtime_r(&d,&t) )
-		hl_error("invalid date");
+		hl_error("Invalid date");
 	size = (int)strftime(buf,127,"%Y-%m-%d %H:%M:%S",&t);
 	out = (uchar*)hl_gc_alloc_noptr((size + 1) << 1);
 	hl_from_utf8(out,size,buf);

@@ -109,92 +109,11 @@ int ucmp( const uchar *a, const uchar *b ) {
 	}
 }
 
-int uvsprintf( uchar *out, const uchar *fmt, va_list arglist ) {
-	uchar *start = out;
-	char cfmt[20];
-	char tmp[32];
-	uchar c;
-	while(true) {
-sprintf_loop:
-		c = *fmt++;
-		switch( c ) {
-		case 0:
-			*out = 0;
-			return (int)(out - start);
-		case '%':
-			{
-				int i = 0, size = 0;
-				cfmt[i++] = '%';
-				while( true ) {
-					c = *fmt++;
-					cfmt[i++] = (char)c;
-					switch( c ) {
-					case 'd':
-						cfmt[i++] = 0;
-						size = sprintf(tmp,cfmt,va_arg(arglist,int));
-						goto sprintf_add;
-					case 'f':
-						cfmt[i++] = 0;
-						size = sprintf(tmp,cfmt,va_arg(arglist,double)); // according to GCC warning, float is promoted to double in var_args
-						goto sprintf_add;
-					case 'g':
-						cfmt[i++] = 0;
-						size = sprintf(tmp,cfmt,va_arg(arglist,double));
-						goto sprintf_add;
-					case 'x':
-					case 'X':
-						cfmt[i++] = 0;
-						if( cfmt[i-3] == 'l' )
-							size = sprintf(tmp,cfmt,va_arg(arglist,void*));
-						else
-							size = sprintf(tmp,cfmt,va_arg(arglist,int));
-						goto sprintf_add;
-					case 's':
-						if( i != 2 ) hl_fatal("Unsupported printf format"); // no support for precision qualifier
-						{
-							uchar *s = va_arg(arglist,uchar *);
-							while( *s )
-								*out++ = *s++;
-							goto sprintf_loop;
-						}
-					case '.':
-					case '0':
-					case '1':
-					case '2':
-					case '3':
-					case '4':
-					case '5':
-					case '6':
-					case '7':
-					case '8':
-					case '9':
-					case 'l':
-						break;
-					default:
-						hl_fatal("Unsupported printf format");
-						break;
-					}
-				}
-sprintf_add:
-				// copy from c string to u string
-				i = 0;
-				while( i < size )
-					*out++ = tmp[i++];
-			}
-			break;
-		default:
-			*out++ = c;
-			break;
-		}
-	}
-	return 0;
-}
-
 int usprintf( uchar *out, int out_size, const uchar *fmt, ... ) {
 	va_list args;
 	int ret;
 	va_start(args, fmt);
-	ret = uvsprintf(out, fmt, args);
+	ret = uvszprintf(out, out_size, fmt, args);
 	va_end(args);
 	return ret;
 }
@@ -242,6 +161,93 @@ void uprintf( const uchar *fmt, const uchar *str ) {
 #endif
 	free(cfmt);
 	free(cstr);
+}
+
+#endif
+
+#if !defined(HL_NATIVE_UCHAR_FUN) || defined(HL_WIN)
+
+HL_PRIM int uvszprintf( uchar *out, int out_size, const uchar *fmt, va_list arglist ) {
+	uchar *start = out;
+	uchar *end = out + out_size - 1;
+	char cfmt[20];
+	char tmp[32];
+	uchar c;
+	while(true) {
+sprintf_loop:
+		c = *fmt++;
+		if( out == end ) c = 0;
+		switch( c ) {
+		case 0:
+			*out = 0;
+			return (int)(out - start);
+		case '%':
+			{
+				int i = 0, size = 0;
+				cfmt[i++] = '%';
+				while( true ) {
+					c = *fmt++;
+					cfmt[i++] = (char)c;
+					switch( c ) {
+					case 'd':
+						cfmt[i++] = 0;
+						size = sprintf(tmp,cfmt,va_arg(arglist,int));
+						goto sprintf_add;
+					case 'f':
+						cfmt[i++] = 0;
+						size = sprintf(tmp,cfmt,va_arg(arglist,double)); // according to GCC warning, float is promoted to double in var_args
+						goto sprintf_add;
+					case 'g':
+						cfmt[i++] = 0;
+						size = sprintf(tmp,cfmt,va_arg(arglist,double));
+						goto sprintf_add;
+					case 'x':
+					case 'X':
+						cfmt[i++] = 0;
+						if( cfmt[i-3] == 'l' )
+							size = sprintf(tmp,cfmt,va_arg(arglist,void*));
+						else
+							size = sprintf(tmp,cfmt,va_arg(arglist,int));
+						goto sprintf_add;
+					case 's':
+						if( i != 2 ) hl_fatal("Unsupported printf format"); // no support for precision qualifier
+						{
+							uchar *s = va_arg(arglist,uchar *);
+							while( *s && out < end )
+								*out++ = *s++;
+							goto sprintf_loop;
+						}
+					case '.':
+					case '0':
+					case '1':
+					case '2':
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7':
+					case '8':
+					case '9':
+					case 'l':
+						break;
+					default:
+						hl_fatal("Unsupported printf format");
+						break;
+					}
+				}
+sprintf_add:
+				// copy from c string to u string
+				i = 0;
+				while( i < size && out < end )
+					*out++ = tmp[i++];
+			}
+			break;
+		default:
+			*out++ = c;
+			break;
+		}
+	}
+	return 0;
 }
 
 #endif

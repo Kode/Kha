@@ -106,8 +106,9 @@ class SystemImpl {
 
 		start = Krom.getTime();
 		
-		haxe.Log.trace = function(v, ?infos) {
-			Krom.log(v);
+		haxe.Log.trace = function(v: Dynamic, ?infos: haxe.PosInfos) {
+			var message = infos != null ? infos.className + ":" + infos.lineNumber + ": " + v : Std.string(v);
+			Krom.log(message.substr(0, 512 - 1));
 		};
 
 		new Window(0);
@@ -160,7 +161,7 @@ class SystemImpl {
 		}
 
 		return switch (value) {
-			case Window: 0;
+			case Windowed: 0;
 			case Fullscreen: 1;
 			case ExclusiveFullscreen: 2;
 		}
@@ -184,6 +185,10 @@ class SystemImpl {
 	
 	public static function getSystemId(): String {
 		return Krom.systemId();
+	}
+	
+	public static function getLanguage(): String {
+		return "en"; //TODO: Implement
 	}
 	
 	public static function requestShutdown(): Bool {

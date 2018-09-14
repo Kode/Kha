@@ -8,7 +8,7 @@ class SystemOptions {
 	@:optional public var window: WindowOptions = null;
 	@:optional public var framebuffer: FramebufferOptions = null;
 
-	public function new(title: String = "Kha", width: Int = 800, height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+	public function new(title: String = "Kha", ?width: Int = 800, ?height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
 		this.width = width;
 		this.height = height;
@@ -194,6 +194,15 @@ class System {
 	}
 
 	/**
+	 * The IS0 639 system current language identifier.
+	 */
+	public static var language(get, never): String;
+
+	private static function get_language(): String {
+		return SystemImpl.getLanguage();
+	}
+
+  /**
 	 * Schedules the application to stop as soon as possible. This is not possible on all targets.
 	 * @return Returns true if the application can be stopped
 	 */
@@ -222,7 +231,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function exitFullscreen(): Void {
-		Window.get(0).mode = WindowMode.Window;
+		Window.get(0).mode = WindowMode.Windowed;
 	}
 
 	@:deprecated("This does nothing")

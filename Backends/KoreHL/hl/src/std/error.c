@@ -23,17 +23,13 @@
 #include <stdarg.h>
 #include <string.h>
 
-HL_PRIM hl_trap_ctx *hl_current_trap = NULL;
-HL_PRIM vdynamic *hl_current_exc = NULL;
-HL_PRIM vdynamic **hl_debug_exc = NULL;
-
-static void *stack_trace[0x1000];
-static int stack_count = 0;
-static bool exc_rethrow = false;
+#ifdef HL_CONSOLE
+#include <posix/posix.h>
+#endif
 
 HL_PRIM void *hl_fatal_error( const char *msg, const char *file, int line ) {
 	hl_blocking(true);
-#	ifdef _WIN32
+#	ifdef HL_WIN_DESKTOP
     HWND consoleWnd = GetConsoleWindow();
     DWORD pid;
     GetWindowThreadProcessId(consoleWnd, &pid);
@@ -51,7 +47,6 @@ typedef int (*capture_stack_type)( void **stack, int size );
 
 static resolve_symbol_type resolve_symbol_func = NULL;
 static capture_stack_type capture_stack_func = NULL;
-static vclosure *hl_error_handler = NULL;
 
 int hl_internal_capture_stack( void **stack, int size ) {
 	return capture_stack_func(stack,size);
@@ -73,31 +68,35 @@ HL_PRIM void hl_setup_exception( void *resolve_symbol, void *capture_stack ) {
 }
 
 HL_PRIM void hl_set_error_handler( vclosure *d ) {
-	if( d == hl_error_handler )
-		return;
-	hl_error_handler = d;
-	if( d )
-		hl_add_root(&hl_error_handler);
-	else
-		hl_remove_root(&hl_error_handler);
+	hl_thread_info *t = hl_get_thread();
+	t->trap_uncaught = t->trap_current;
+	t->exc_handler = d;
 }
 
 HL_PRIM void hl_throw( vdynamic *v ) {
-	hl_trap_ctx *t = hl_current_trap;
-	if( exc_rethrow )
-		exc_rethrow = false;
+	hl_thread_info *t = hl_get_thread();
+	hl_trap_ctx *trap = t->trap_current;
+	if( t->exc_flags & HL_EXC_RETHROW )
+		t->exc_flags &= ~HL_EXC_RETHROW;
 	else
-		stack_count = capture_stack_func(stack_trace, 0x1000);
-	hl_current_exc = v;
-	hl_current_trap = t->prev;
-	if( hl_current_trap == NULL ) {
-		hl_debug_exc = &v;
+		t->exc_stack_count = capture_stack_func(t->exc_stack_trace, HL_EXC_MAX_STACK);
+	t->exc_value = v;
+	t->trap_current = trap->prev;
+	if( trap == t->trap_uncaught || t->trap_current == NULL || (t->exc_flags&HL_EXC_CATCH_ALL) ) {
+		if( trap == t->trap_uncaught ) t->trap_uncaught = NULL;
+		t->exc_flags |= HL_EXC_IS_THROW;
 		hl_debug_break();
-		hl_debug_exc = NULL;
-		if( hl_error_handler ) hl_dyn_call(hl_error_handler,&v,1);
+		t->exc_flags &= ~HL_EXC_IS_THROW;
+		if( t->exc_handler ) hl_dyn_call(t->exc_handler,&v,1);
 	}
 	if( throw_jump == NULL ) throw_jump = longjmp;
-	throw_jump(t->buf,1);
+	throw_jump(trap->buf,1);
+}
+
+HL_PRIM void hl_throw_buffer( hl_buffer *b ) {
+	vdynamic *d = hl_alloc_dynamic(&hlt_bytes);	
+	d->v.ptr = hl_buffer_content(b,NULL);
+	hl_throw(d);
 }
 
 HL_PRIM void hl_dump_stack() {
@@ -118,12 +117,12 @@ HL_PRIM void hl_dump_stack() {
 	}
 }
 
-
 HL_PRIM varray *hl_exception_stack() {
-	varray *a = hl_alloc_array(&hlt_bytes, stack_count);
+	hl_thread_info *t = hl_get_thread();
+	varray *a = hl_alloc_array(&hlt_bytes, t->exc_stack_count);
 	int i;
-	for(i=0;i<stack_count;i++) {
-		void *addr = stack_trace[i];
+	for(i=0;i<t->exc_stack_count;i++) {
+		void *addr = t->exc_stack_trace[i];
 		uchar sym[512];
 		int size = 512;
 		uchar *str = resolve_symbol_func(addr, sym, &size);
@@ -138,21 +137,30 @@ HL_PRIM varray *hl_exception_stack() {
 }
 
 HL_PRIM void hl_rethrow( vdynamic *v ) {
-	exc_rethrow = true;
+	hl_get_thread()->exc_flags |= HL_EXC_RETHROW;
 	hl_throw(v);
 }
 
-HL_PRIM void hl_error_msg( const uchar *fmt, ... ) {
-	uchar buf[256];
+HL_PRIM vdynamic *hl_alloc_strbytes( const uchar *fmt, ... ) {
+	uchar _buf[256];
 	vdynamic *d;
 	int len;
+	uchar *buf = _buf;
+	int bsize = sizeof(_buf) / sizeof(uchar);
 	va_list args;
-	va_start(args, fmt);
-	len = uvsprintf(buf,fmt,args);
-	va_end(args);
+	while( true ) {
+		va_start(args, fmt);
+		len = uvszprintf(buf,bsize,fmt,args);
+		va_end(args);
+		if( (len + 2) << 1 < bsize ) break;
+		if( buf != _buf ) free(buf);
+		bsize <<= 1;
+		buf = (uchar*)malloc(bsize * sizeof(uchar));
+	}
 	d = hl_alloc_dynamic(&hlt_bytes);
 	d->v.ptr = hl_copy_bytes((vbyte*)buf,(len + 1) << 1);
-	hl_throw(d);
+	if( buf != _buf ) free(buf);
+	return d;
 }
 
 HL_PRIM void hl_fatal_fmt( const char *file, int line, const char *fmt, ...) {
@@ -164,9 +172,15 @@ HL_PRIM void hl_fatal_fmt( const char *file, int line, const char *fmt, ...) {
 	hl_fatal_error(buf,file,line);
 }
 
-HL_PRIM void hl_breakpoint() {
+#ifdef HL_VCC
+#	pragma optimize( "", off )
+#endif
+HL_PRIM HL_NO_OPT void hl_breakpoint() {
 	hl_debug_break();
 }
+#ifdef HL_VCC
+#	pragma optimize( "", on )
+#endif
 
 #ifdef HL_LINUX__
 #include <signal.h>
@@ -192,10 +206,16 @@ HL_PRIM bool hl_detect_debugger() {
 #	endif
 }
 
-HL_PRIM void hl_assert() {
+#ifdef HL_VCC
+#	pragma optimize( "", off )
+#endif
+HL_PRIM HL_NO_OPT void hl_assert() {
 	hl_debug_break();
-	hl_error("Assert");
+	hl_error("assert");
 }
+#ifdef HL_VCC
+#	pragma optimize( "", on )
+#endif
 
 #define _SYMBOL _ABSTRACT(hl_symbol)
 
