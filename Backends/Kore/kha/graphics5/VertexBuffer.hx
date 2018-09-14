@@ -27,7 +27,7 @@ class VertexBuffer {
 		Kore::Graphics4::VertexStructure structure2;
 		for (int i = 0; i < structure->size(); ++i) {
 			Kore::Graphics4::VertexData data;
-			switch (structure->get(i)->data->index) {
+			switch (structure->get(i)->data) {
 			case 0:
 				data = Kore::Graphics4::Float1VertexData;
 				break;
@@ -91,6 +91,6 @@ class VertexBuffer {
 	@:noCompletion
 	@:keep
 	public static function _unused2(): VertexData {
-		return null;
+		return Float1;
 	}
 }

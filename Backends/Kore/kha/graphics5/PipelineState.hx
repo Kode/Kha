@@ -83,7 +83,7 @@ class PipelineState extends PipelineStateBase {
 			structures2[i1]->instanced = (*structures[i1])->instanced;
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
 				Kore::Graphics4::VertexData data;
-				switch ((*structures[i1])->get(i2)->data->index) {
+				switch ((*structures[i1])->get(i2)->data) {
 				case 0:
 					data = Kore::Graphics4::Float1VertexData;
 					break;
@@ -255,7 +255,7 @@ class PipelineState extends PipelineStateBase {
 	
 	@:noCompletion
 	public static function _unused2(): VertexData {
-		return null;
+		return Float1;
 	}
 	
 	@:noCompletion
