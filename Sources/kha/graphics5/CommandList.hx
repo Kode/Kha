@@ -1,6 +1,12 @@
 package kha.graphics5;
 
 interface CommandList {
+	function begin(): Void;
+	function end(): Void;
+	function setRenderTargets(targets: Array<RenderTarget>): Void;
+	function setPipelineLayout(): Void;
+	function clear(target: RenderTarget, ?color: Color, ?depth: Float, ?stencil: Int): Void;
+
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
