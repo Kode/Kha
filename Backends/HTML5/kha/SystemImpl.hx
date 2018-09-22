@@ -421,9 +421,8 @@ class SystemImpl {
 			if (untyped canvas.getContext) {
 
 				// Lookup the size the browser is displaying the canvas.
-				//TODO deal with window.devicePixelRatio ?
-				var displayWidth  = canvas.clientWidth;
-				var displayHeight = canvas.clientHeight;
+				var displayWidth  = canvas.width;
+				var displayHeight = canvas.height;
 
 				// Check if the canvas is not the same size.
 				if (canvas.width  != displayWidth ||
