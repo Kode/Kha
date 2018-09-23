@@ -3,16 +3,44 @@ package kha;
 @:structInit
 class SystemOptions {
 	@:optional public var title: String = "Kha";
-	@:optional public var width: Int = 800;
-	@:optional public var height: Int = 600;
+	@:optional public var width: Int = -1;
+	@:optional public var height: Int = -1;
 	@:optional public var window: WindowOptions = null;
 	@:optional public var framebuffer: FramebufferOptions = null;
 
-	public function new(title: String = "Kha", ?width: Int = 800, ?height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+	/**
+	 * Used to provide parameters for System.start
+	 * @param title The application title is the default window title (unless the window parameter provides a title of its own)
+	 * and is used for various other purposes - for example for save data locations
+	 * @param width Just a shortcut which overwrites window.width if set
+	 * @param height Just a shortcut which overwrites window.height if set
+	 * @param window Optionally provide window options
+	 * @param framebuffer Optionally provide framebuffer options
+	 */
+	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
-		this.width = width;
-		this.height = height;
 		this.window = window == null ? {} : window;
+
+		if (width > 0) {
+			this.window.width = width;
+			this.width = width;
+		}
+		else {
+			this.width = this.window.width;
+		}
+
+		if (height > 0) {
+			this.window.height = height;
+			this.height = height;
+		}
+		else {
+			this.height = this.window.height;
+		}
+
+		if (this.window.title == null) {
+			this.window.title = title;
+		}
+
 		this.framebuffer = framebuffer == null ? {} : framebuffer;
 	}
 }

@@ -10,6 +10,8 @@ class Window {
 	@:noDoc
 	public function new(defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
 		this.canvas = canvas;
+		this.defaultWidth = defaultWidth;
+		this.defaultHeight = defaultHeight;
 		windows.push(this);
 	}
 

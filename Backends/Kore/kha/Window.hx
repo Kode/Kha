@@ -60,7 +60,7 @@ class Window {
 	public function new(num: Int, win: WindowOptions) {
 		this.num = num;
 		visibility = win != null && win.visible;
-		windowTitle = win == null ? "Kha" : win.title;
+		windowTitle = win == null ? "Kha" : (win.title == null ? "Kha" : win.title);
 		resizeCallbacks[num] = [];
 		ppiCallbacks[num] = [];
 	}
