@@ -6,7 +6,9 @@ import kha.audio2.ogg.vorbis.Reader;
 
 #if (!cpp && !hl)
 class StreamChannel implements kha.audio1.AudioChannel {
+	#if (!kha_no_ogg)
 	private var reader: Reader;
+	#end
 	private var atend: Bool = false;
 	private var loop: Bool;
 	private var myVolume: Float;
@@ -15,7 +17,9 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
 		this.loop = loop;
+		#if (!kha_no_ogg)
 		reader = Reader.openFromBytes(data);
+		#end
 	}
 
 	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
@@ -26,6 +30,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			return;
 		}
 		
+		#if (!kha_no_ogg)
 		var count = reader.read(samples, Std.int(length / 2), 2, sampleRate, true) * 2;
 		if (count < length) {
 			if (loop) {
@@ -38,6 +43,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 				samples[i] = 0;
 			}
 		}
+		#end
 	}
 	
 	public function play(): Void {
@@ -55,13 +61,13 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	public var length(get, null): Float; // Seconds
 	
 	private function get_length(): Float {
-		return reader.totalMillisecond / 1000.0;
+		#if (kha_no_ogg) return 0.0; #else return reader.totalMillisecond / 1000.0; #end
 	}
 
 	public var position(get, null): Float; // Seconds
 	
 	private function get_position(): Float {
-		return reader.currentMillisecond / 1000.0;
+		#if (kha_no_ogg) return 0.0; #else return reader.currentMillisecond / 1000.0; #end
 	}
 	
 	public var volume(get, set): Float;

@@ -16,6 +16,7 @@ class Sound implements Resource {
 	}
 
 	public function uncompress(done: Void->Void): Void {
+		#if (!kha_no_ogg)
 		if (uncompressedData != null) {
 			done();
 			return;
@@ -40,6 +41,7 @@ class Sound implements Resource {
 		}
 		compressedData = null;
 		done();
+		#end
 	}
 
 	public function unload() {
