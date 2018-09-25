@@ -189,7 +189,7 @@ class SystemImpl {
 	private static var lastFirstTouchY: Int = 0;
 
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
-		#if !kha_no_keyboard 
+		#if !kha_no_keyboard
 		keyboard = new Keyboard();
 		#end
 		mouse = new kha.input.MouseImpl();
@@ -202,7 +202,7 @@ class SystemImpl {
 		}
 		js.Browser.window.addEventListener("gamepadconnected", function(e_) {
 			Gamepad.sendConnectEvent(e_.gamepad.index);
-		}); 
+		});
 		js.Browser.window.addEventListener("gamepaddisconnected", function(e_) {
 			Gamepad.sendDisconnectEvent(e_.gamepad.index);
 		});
@@ -309,7 +309,7 @@ class SystemImpl {
 
 		#if kha_webgl
 		try {
-			
+
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); Warning: preserveDrawingBuffer can cause huge performance issues on mobile browsers
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
@@ -322,7 +322,7 @@ class SystemImpl {
 			SystemImpl.gl.getExtension("OES_texture_half_float_linear");
 			anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
 			if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-			
+
 			gl = true;
 			gl2 = true;
 			Shaders.init();
@@ -390,9 +390,9 @@ class SystemImpl {
 			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
-		
+
 		kha.vr.VrInterface.instance = new VrInterface();
-		
+
 		Scheduler.start();
 
 		var window: Dynamic = Browser.window;
@@ -449,9 +449,6 @@ class SystemImpl {
 		else requestAnimationFrame(animate);
 
 		// Autofocus
-		if (canvas.getAttribute("tabindex") == null) {
-			canvas.setAttribute("tabindex", "0"); // needed for keypress events
-		}
 		canvas.focus();
 
 		// disable context menu
@@ -496,7 +493,9 @@ class SystemImpl {
 		});
 #end
 
-		Browser.window.addEventListener("unload", unload);
+		Browser.window.addEventListener("unload", function () {
+			System.shutdown();
+		});
 	}
 
 	public static function lockMouse(): Void {
@@ -555,12 +554,6 @@ class SystemImpl {
 		js.Browser.document.removeEventListener('webkitpointerlockerror', error, false);
 	}
 
-	static function unload(_): Void {
-		//Game.the.onPause();
-		//Game.the.onBackground();
-		//Game.the.onShutdown();
-	}
-
 	private static function setMouseXY(event: MouseEvent): Void {
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
@@ -573,7 +566,7 @@ class SystemImpl {
 
 	private static function unlockiOSSound(): Void {
 		if (!ios || iosSoundEnabled) return;
-		
+
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
 		var source = MobileWebAudio._context.createBufferSource();
 		source.buffer = buffer;
@@ -605,11 +598,11 @@ class SystemImpl {
 		}
 		unlockiOSSound();
 	}
-	
+
 	private static function mouseLeave():Void {
 		mouse.sendLeaveEvent(0);
 	}
-	
+
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
 		unlockSound();
@@ -675,9 +668,9 @@ class SystemImpl {
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
 		unlockSound();
-	
+
 		if (event.which != 1) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
 		if (khanvas.releaseCapture != null) {
@@ -700,7 +693,7 @@ class SystemImpl {
 		unlockSound();
 
 		if (event.which != 2) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
@@ -711,7 +704,7 @@ class SystemImpl {
 		unlockSound();
 
 		if (event.which != 3) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
@@ -722,7 +715,7 @@ class SystemImpl {
 		event.stopPropagation();
 		mouseMove(event);
 	}
-	
+
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
 		unlockSound();
@@ -1019,7 +1012,7 @@ class SystemImpl {
 		if (sysGamepads != null &&  untyped sysGamepads[index]) {
 				return sysGamepads[index].id;
 		}
-	
+
 		return "unkown";
 	}
 
