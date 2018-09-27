@@ -48,6 +48,7 @@ class Shader {
 		
 	}
 
+	@:keep
 	function _forceInclude(): Void {
 		Bytes.alloc(0);
 	}
