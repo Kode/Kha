@@ -10,10 +10,10 @@ import sys.io.File;
 
 using haxe.macro.ExprTools;
 
-#if (kha_html5 || kha_debug_html5)
+#if kha_html5
 class Worker {
 	#if kha_in_worker
-	
+
 	public static function notifyWorker(func: Dynamic->Void): Void {
 		#if !macro
 		untyped __js__("self").addEventListener("message", function (e) {
@@ -29,7 +29,7 @@ class Worker {
 	}
 
 	#else
-	
+
 	#if macro
 	static var threads = new Array<String>();
 	#else
@@ -60,7 +60,7 @@ class Worker {
 		worker.postMessage(message);
 		#end
 	}
-	
+
 	public static macro function create(expr: Expr) {
 		var name: String = expr.toString();
 		if (threads.indexOf(name) < 0) {
@@ -101,7 +101,7 @@ class Worker {
 			if (message != null) {
 				func(message);
 			}
-		}, 0);		
+		}, 0);
 	}
 
 	public function post(message: Dynamic): Void {

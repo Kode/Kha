@@ -11,27 +11,27 @@ class Graphics1 implements kha.graphics1.Graphics {
 	private var canvas: Canvas;
 	private var texture: Image;
 	private var pixels: Bytes;
-	
+
 	public function new(canvas: Canvas) {
 		this.canvas = canvas;
 	}
-	
+
 	public function begin(): Void {
 		if (texture == null) {
 			texture = Image.create(canvas.width, canvas.height, TextureFormat.RGBA32, Usage.ReadableUsage);
 		}
 		pixels = texture.lock();
 	}
-	
+
 	public function end(): Void {
 		texture.unlock();
 		canvas.g2.begin();
 		canvas.g2.drawImage(texture, 0, 0);
 		canvas.g2.end();
 	}
-	
+
 	public function setPixel(x: Int, y: Int, color: Color): Void {
-		#if (kha_html5 || kha_debug_html5)
+		#if kha_html5
 		pixels.setInt32(y * texture.realWidth * 4 + x * 4, Color.fromBytes(color.Bb, color.Gb, color.Rb, color.Ab));
 		#else
 		pixels.setInt32(y * texture.realWidth * 4 + x * 4, color);
