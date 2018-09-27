@@ -30,6 +30,7 @@ class FragmentShader {
 		untyped __cpp__('delete shader; shader = nullptr;');
 	}
 
+	@:keep
 	function _forceInclude(): Void {
 		Bytes.alloc(0);
 	}
