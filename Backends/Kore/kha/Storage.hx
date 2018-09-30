@@ -9,14 +9,14 @@ using StringTools;
 #include <Kore/IO/FileReader.h>
 #include <Kore/IO/FileWriter.h>
 ')
-
+@:ifFeature("kha.Storage.*")
 class KoreStorageFile extends StorageFile {
 	private var name: String;
-	
+
 	public function new(name: String) {
 		this.name = name;
 	}
-	
+
 	@:functionCode('
 		Kore::FileReader reader;
 		if (!reader.open(name, Kore::FileReader::Save)) return null();
@@ -29,7 +29,7 @@ class KoreStorageFile extends StorageFile {
 	override public function read(): Blob {
 		return null;
 	}
-	
+
 	@:functionCode('
 		Kore::FileWriter writer;
 		if (!writer.open(name)) return;
@@ -44,17 +44,17 @@ class KoreStorageFile extends StorageFile {
 			writeInternal(data);
 		}
 	}
-	
+
 	private static function createBlob(size: Int): Blob {
 		return Blob.alloc(size);
 	}
-	
+
 	private static function unused(): Void {
 		Bytes.alloc(0);
 	}
 }
 
-class Storage {	
+class Storage {
 	public static function namedFile(name: String): StorageFile {
 		name = name.replace("\\", ".");
 		name = name.replace("/", ".");
