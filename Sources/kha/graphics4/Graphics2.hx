@@ -722,18 +722,23 @@ class TextShaderPainter {
 		text = null;
 	}
 
-	//TODO: Make this fast
-	private static function findIndex(charcode: Int, fontGlyphs: Array<Int>): Int {
-		for (i in 0...fontGlyphs.length) {
-			if (fontGlyphs[i] == charcode) return i;
+	private static function findIndex(charCode: Int): Int {
+		var glyphs = kha.graphics2.Graphics.fontGlyphs;
+		var blocks = Kravur.KravurImage.charBlocks;
+		var offset = 0;
+		for (i in 0...Std.int(blocks.length / 2)) {
+			var start = blocks[i * 2];
+			var end = blocks[i * 2 + 1];
+			if (charCode >= start && charCode <= end) return offset + charCode - start;
+			offset += end - start + 1;
 		}
 		return 0;
 	}
 
 	var bakedQuadCache = new kha.Kravur.AlignedQuad();
 
-	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
-		var font = this.font._get(fontSize, fontGlyphs);
+	public function drawString(text: String, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
+		var font = this.font._get(fontSize);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -742,7 +747,7 @@ class TextShaderPainter {
 		var ypos = y;
 		startString(text);
 		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCodeAt(i), fontGlyphs), xpos, ypos);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCodeAt(i)), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -759,8 +764,8 @@ class TextShaderPainter {
 		endString();
 	}
 
-	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3, fontGlyphs: Array<Int>): Void {
-		var font = this.font._get(fontSize, fontGlyphs);
+	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
+		var font = this.font._get(fontSize);
 		var tex = font.getTexture();
 		if (lastTexture != null && tex != lastTexture) drawBuffer();
 		lastTexture = tex;
@@ -768,7 +773,7 @@ class TextShaderPainter {
 		var xpos = x;
 		var ypos = y;
 		for (i in start...start + length) {
-			var q = font.getBakedQuad(bakedQuadCache, findIndex(text[i], fontGlyphs), xpos, ypos);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(text[i]), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -959,14 +964,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		coloredPainter.end();
 
-		textPainter.drawString(text, opacity, color, x, y, transformation, kha.graphics2.Graphics.fontGlyphs);
+		textPainter.drawString(text, opacity, color, x, y, transformation);
 	}
 
 	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
 
-		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation, kha.graphics2.Graphics.fontGlyphs);
+		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation);
 	}
 
 	override public function get_font(): Font {

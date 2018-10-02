@@ -141,25 +141,25 @@ class Kravur implements Resource {
 		return new Kravur(Blob.fromBytes(bytes));
 	}
 
-	public function _get(fontSize: Int, glyphs: Array<Int> = null): KravurImage {
-		if (glyphs == null) glyphs = kha.graphics2.Graphics.fontGlyphs;
+	public function _get(fontSize: Int): KravurImage {
+		var glyphs = kha.graphics2.Graphics.fontGlyphs;
 
 		if (glyphs != oldGlyphs) {
 			oldGlyphs = glyphs;
-			//save first/last block chars
+			// save first/last chars of sequences
 			KravurImage.charBlocks = [glyphs[0]];
-			var next = KravurImage.charBlocks[0] + 1;
+			var nextChar = KravurImage.charBlocks[0] + 1;
 			for (i in 1...glyphs.length) {
-				if (glyphs[i] != next) {
-					KravurImage.charBlocks.push(glyphs[i-1]);
+				if (glyphs[i] != nextChar) {
+					KravurImage.charBlocks.push(glyphs[i - 1]);
 					KravurImage.charBlocks.push(glyphs[i]);
-					next = glyphs[i] + 1;
-				} else next++;
+					nextChar = glyphs[i] + 1;
+				} else nextChar++;
 			}
 			KravurImage.charBlocks.push(glyphs[glyphs.length - 1]);
 		}
 
-		var imageIndex = glyphs == null ? fontSize : fontSize * 10000 + glyphs.length;
+		var imageIndex = fontSize * 10000 + glyphs.length;
 		if (!images.exists(imageIndex)) {
 			var width: Int = 64;
 			var height: Int = 32;
