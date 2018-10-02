@@ -3,54 +3,31 @@ package kha;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import haxe.io.BytesData;
+import js.Browser;
 
 using StringTools;
 
-typedef WebStorage = {
-	var length: Int;
-	var key: Int->String;
-	var getItem: String->String;
-	var setItem: String->String->Void;
-	var removeItem: String->Void;
-	var clear: Void->Void;
-}
-
 class LocalStorageFile extends StorageFile {
 	private var name: String;
-	
+
 	public function new(name: String) {
 		this.name = name;
 	}
-	
-	override public function read(): Blob {
-		var storage: WebStorage = null;
-		try {
-			storage = untyped __js__("window.localStorage");
-		}
-		catch (e: Dynamic) {
 
-		}
+	override public function read(): Blob {
+		var storage = Browser.getLocalStorage();
 		if (storage == null) return null;
 		var value: String = storage.getItem(System.title + "_" + name);
-		if (value == null) {
-			value = storage.getItem(name); // For backwards-compatibility. Delete in 2018.
-			return null;
-		}
+		if (value == null) return null;
 		else return Blob.fromBytes(decode(value));
 	}
-	
-	override public function write(data: Blob): Void {
-		var storage: WebStorage = null;
-		try {
-			storage = untyped __js__("window.localStorage");
-		}
-		catch (e: Dynamic) {
 
-		}
+	override public function write(data: Blob): Void {
+		var storage = Browser.getLocalStorage();
 		if (storage == null) return;
 		storage.setItem(System.title + "_" + name, encode(data.bytes.getData()));
 	}
-	
+
 	/**
 	 * Encodes byte array to yEnc string (from SASStore).
 	 * @param  {Array}  source Byte array to convert to yEnc.
