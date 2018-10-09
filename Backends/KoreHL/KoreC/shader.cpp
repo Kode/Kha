@@ -198,10 +198,10 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	pipe->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
 	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
 	
-	pipe->colorWriteMaskRed = colorWriteMaskRed;
-	pipe->colorWriteMaskGreen = colorWriteMaskGreen;
-	pipe->colorWriteMaskBlue = colorWriteMaskBlue;
-	pipe->colorWriteMaskAlpha = colorWriteMaskAlpha;
+	pipe->colorWriteMaskRed[0] = colorWriteMaskRed;
+	pipe->colorWriteMaskGreen[0] = colorWriteMaskGreen;
+	pipe->colorWriteMaskBlue[0] = colorWriteMaskBlue;
+	pipe->colorWriteMaskAlpha[0] = colorWriteMaskAlpha;
 	
 	pipe->conservativeRasterization = conservativeRasterization;
 }

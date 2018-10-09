@@ -41,10 +41,10 @@ class PipelineState extends PipelineStateBase {
 			blendDestination: convertBlendingFactor(blendDestination),
 			alphaBlendSource: convertBlendingFactor(alphaBlendSource),
 			alphaBlendDestination: convertBlendingFactor(alphaBlendDestination),
-			colorWriteMaskRed: colorWriteMaskRed,
-			colorWriteMaskGreen: colorWriteMaskGreen,
-			colorWriteMaskBlue: colorWriteMaskBlue,
-			colorWriteMaskAlpha: colorWriteMaskAlpha,
+			colorWriteMaskRed: colorWriteMasksRed,
+			colorWriteMaskGreen: colorWriteMasksGreen,
+			colorWriteMaskBlue: colorWriteMasksBlue,
+			colorWriteMaskAlpha: colorWriteMasksAlpha,
 			conservativeRasterization: conservativeRasterization
 		});
 	}

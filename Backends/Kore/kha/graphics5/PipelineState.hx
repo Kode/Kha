@@ -227,10 +227,12 @@ class PipelineState extends PipelineStateBase {
 		pipeline->alphaBlendSource = (Kore::Graphics5::BlendingOperation)alphaBlendSource;
 		pipeline->alphaBlendDestination = (Kore::Graphics5::BlendingOperation)alphaBlendDestination;
 		
-		pipeline->colorWriteMaskRed = colorWriteMaskRed;
-		pipeline->colorWriteMaskGreen = colorWriteMaskGreen;
-		pipeline->colorWriteMaskBlue = colorWriteMaskBlue;
-		pipeline->colorWriteMaskAlpha = colorWriteMaskAlpha;
+		for (int i = 0; i < 8; ++i) {
+			pipeline->colorWriteMaskRed[i] = colorWriteMasksRed[i];
+			pipeline->colorWriteMaskGreen[i] = colorWriteMasksGreen[i];
+			pipeline->colorWriteMaskBlue[i] = colorWriteMasksBlue[i];
+			pipeline->colorWriteMaskAlpha[i] = colorWriteMasksAlpha[i];
+		}
 		
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
