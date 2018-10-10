@@ -76,6 +76,7 @@ extern class Krom {
 	static function log(v: Dynamic): Void;
 	static function setCallback(callback: Void->Void): Void;
 	static function setDropFilesCallback(callback: String->Void): Void;
+	static function setCutCopyPasteCallback(cutCallback: Void->String, copyCallback: Void->String, pasteCallback: String->Void): Void;
 	static function setKeyboardDownCallback(callback: Int->Void): Void;
 	static function setKeyboardUpCallback(callback: Int->Void): Void;
 	static function setKeyboardPressCallback(callback: Int->Void): Void;
