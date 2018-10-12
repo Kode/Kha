@@ -318,6 +318,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setPipeline(pipe: PipelineState): Void {
 		pipe.set();
 	}
+
+	public function setStencilReferenceValue(value: Int): Void {
+
+	}
 	
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		setBoolPrivate(cast location, value);

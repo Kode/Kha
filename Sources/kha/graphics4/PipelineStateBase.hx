@@ -18,7 +18,7 @@ class PipelineStateBase {
 		stencilBothPass = StencilAction.Keep;
 		stencilDepthFail = StencilAction.Keep;
 		stencilFail = StencilAction.Keep;
-		stencilReferenceValue = 0;
+		stencilReferenceValue = Static(0);
 		stencilReadMask = 0xff;
 		stencilWriteMask = 0xff;
 
@@ -50,7 +50,7 @@ class PipelineStateBase {
 	public var stencilBothPass: StencilAction;
 	public var stencilDepthFail: StencilAction;
 	public var stencilFail: StencilAction;
-	public var stencilReferenceValue: Int;
+	public var stencilReferenceValue: StencilValue;
 	public var stencilReadMask: Int;
 	public var stencilWriteMask: Int;
 

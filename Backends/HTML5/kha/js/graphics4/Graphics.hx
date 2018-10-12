@@ -1,5 +1,6 @@
 package kha.js.graphics4;
 
+import kha.graphics4.StencilValue;
 import kha.arrays.Float32Array;
 import js.html.webgl.GL;
 import kha.graphics4.BlendingFactor;
@@ -25,6 +26,7 @@ import kha.math.FastVector4;
 import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
+	var currentPipeline: PipelineState = null;
 	private var depthTest: Bool = false;
 	private var depthMask: Bool = false;
 	private var colorMaskRed: Bool = true;
@@ -456,6 +458,10 @@ class Graphics implements kha.graphics4.Graphics {
 		colorMaskAlpha = pipe.colorWriteMaskAlpha;
 	}
 
+	public function setStencilReferenceValue(value: Int): Void {
+		SystemImpl.gl.stencilFunc(convertCompareMode(currentPipeline.stencilMode), value, currentPipeline.stencilReadMask);
+	}
+
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		SystemImpl.gl.uniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
 	}
@@ -554,35 +560,43 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+	function convertCompareMode(compareMode: CompareMode) {
+		switch (compareMode) {
+			case Always:
+				return GL.ALWAYS;
+			case Equal:
+				return GL.EQUAL;
+			case Greater:
+				return GL.GREATER;
+			case GreaterEqual:
+				return GL.GEQUAL;
+			case Less:
+				return GL.LESS;
+			case LessEqual:
+				return GL.LEQUAL;
+			case Never:
+				return GL.NEVER;
+			case NotEqual:
+				return GL.NOTEQUAL;
+		}
+	}
+
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: StencilValue, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
 		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep
 			&& depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
 				SystemImpl.gl.disable(GL.STENCIL_TEST);
 			}
 		else {
 			SystemImpl.gl.enable(GL.STENCIL_TEST);
-			var stencilFunc = 0;
-			switch (compareMode) {
-				case CompareMode.Always:
-					stencilFunc = GL.ALWAYS;
-				case CompareMode.Equal:
-					stencilFunc = GL.EQUAL;
-				case CompareMode.Greater:
-					stencilFunc = GL.GREATER;
-				case CompareMode.GreaterEqual:
-					stencilFunc = GL.GEQUAL;
-				case CompareMode.Less:
-					stencilFunc = GL.LESS;
-				case CompareMode.LessEqual:
-					stencilFunc = GL.LEQUAL;
-				case CompareMode.Never:
-					stencilFunc = GL.NEVER;
-				case CompareMode.NotEqual:
-					stencilFunc = GL.NOTEQUAL;
-			}
+			var stencilFunc = convertCompareMode(compareMode);
 			SystemImpl.gl.stencilMask(writeMask);
 			SystemImpl.gl.stencilOp(convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
-			SystemImpl.gl.stencilFunc(stencilFunc, referenceValue, readMask);
+			switch (referenceValue) {
+				case Static(value):
+					SystemImpl.gl.stencilFunc(stencilFunc, value, readMask);
+				case Dynamic:
+					SystemImpl.gl.stencilFunc(stencilFunc, 0, readMask);
+			}
 		}
 	}
 

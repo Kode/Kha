@@ -26,6 +26,12 @@ class PipelineState extends PipelineStateBase {
 		var gs = geometryShader != null ? geometryShader.shader : null;
 		var tcs = tessellationControlShader != null ? tessellationControlShader.shader : null;
 		var tes = tessellationEvaluationShader != null ? tessellationEvaluationShader.shader : null;
+		var stencilReferenceValue = 0;
+		switch (this.stencilReferenceValue) {
+			case Static(value):
+				stencilReferenceValue = value;
+			default:
+		}
 		Krom.compilePipeline(pipeline, structure0, structure1, structure2, structure3, inputLayout.length, vertexShader.shader, fragmentShader.shader, gs, tcs, tes, {
 			cullMode: convertCullMode(cullMode),
 			depthWrite: this.depthWrite,

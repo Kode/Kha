@@ -41,6 +41,7 @@ interface Graphics {
 	function setCubeMapDepth(unit: TextureUnit, cubeMap: CubeMap): Void;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;
+	function setStencilReferenceValue(value: Int): Void;
 	
 	function renderTargetsInvertedY(): Bool;
 	function instancedRenderingAvailable(): Bool;

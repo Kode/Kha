@@ -88,6 +88,10 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 
+	public function setStencilReferenceValue(value: Int) {
+
+	}
+
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		
 	}
