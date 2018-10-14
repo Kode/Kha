@@ -13,9 +13,7 @@ extern class Float32ArrayData {
 	public var length(get, never): Int;
 
 	@:native("length")
-	function get_length(): Int {
-		return 0;
-	}
+	function get_length(): Int;
 	
 	public function alloc(elements: Int): Void;
 
