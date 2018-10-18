@@ -11,6 +11,7 @@ class CanvasGraphics extends Graphics {
 	private var webfont: kha.js.Font;
 	private var myColor: Color;
 	private var scaleQuality: ImageScaleQuality;
+	private var clipping: Bool = false;
 	private static var instance: CanvasGraphics;
 
 	public function new(canvas: CanvasRenderingContext2D) {
@@ -18,7 +19,6 @@ class CanvasGraphics extends Graphics {
 		this.canvas = canvas;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
-		canvas.save();
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 		//canvas.globalCompositeOperation = "normal";
 	}
@@ -188,6 +188,24 @@ class CanvasGraphics extends Graphics {
 		}
 	}
 
+	override public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+		var image = webfont.getImage(fontSize, myColor);
+		if (image.width > 0) {
+			// the image created in getImage() is not imediately useable
+			var xpos = x;
+			var ypos = y;
+			for (i in start...start + length) {
+				var q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, kha.graphics2.Graphics.fontGlyphs.indexOf(text[i]), xpos, ypos);
+
+				if (q != null) {
+					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
+						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+					xpos += q.xadvance;
+				}
+			}
+		}
+	}
+
 	override public function set_font(font: kha.Font): kha.Font {
 		webfont = cast(font, kha.js.Font);
 		//canvas.font = webfont.size + "px " + webfont.name;
@@ -217,13 +235,20 @@ class CanvasGraphics extends Graphics {
 	}
 
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+		if (!clipping) {
+			canvas.save();
+			clipping = true;
+		}
 		canvas.beginPath();
 		canvas.rect(x, y, width, height);
 		canvas.clip();
 	}
 
 	override public function disableScissor(): Void {
-		canvas.restore();
+		if (clipping) {
+			canvas.restore();
+			clipping = false;
+		}
 	}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
