@@ -9,12 +9,8 @@ import kha.input.Surface;
 import kha.System;
 
 class SystemImpl {
-	public static function init(options: SystemOptions, callback: Void -> Void): Void {
+	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		
-	}
-
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
-
 	}
 	
 	public static function getScreenRotation(): ScreenRotation {
@@ -53,8 +49,8 @@ class SystemImpl {
 		return "en";
 	}
 	
-	public static function requestShutdown(): Void {
-		
+	public static function requestShutdown(): Bool {
+		return true;
 	}
 	
 	public static function getMouse(num: Int): Mouse {
@@ -132,5 +128,9 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
+	}
+
+	public static function getPen(num: Int): kha.input.Pen {
+		return null;
 	}
 }

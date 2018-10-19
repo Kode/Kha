@@ -124,6 +124,10 @@ class Graphics4 implements kha.graphics4.Graphics {
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
 	}
+
+	public function setStencilReferenceValue(value: Int): Void {
+
+	}
 	
 	public function setBool(location: ConstantLocation, value: Bool): Void {
 		

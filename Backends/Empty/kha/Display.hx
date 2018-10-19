@@ -1,7 +1,5 @@
 package kha;
 
-import js.Browser;
-
 class Display {
 	static var instance: Display = new Display();
 
@@ -36,25 +34,25 @@ class Display {
 	public var x(get, never): Int;
 
 	function get_x(): Int {
-		return js.Browser.window.screen.left;
+		return 0;
 	}
 
 	public var y(get, never): Int;
 
 	function get_y(): Int {
-		return js.Browser.window.screen.top;
+		return 0;
 	}
 
 	public var width(get, never): Int;
 
 	function get_width(): Int {
-		return js.Browser.window.screen.width;
+		return 1920;
 	}
 
 	public var height(get, never): Int;
 
 	function get_height(): Int {
-		return js.Browser.window.screen.height;
+		return 1080;
 	}
 
 	public var frequency(get, never): Int;
@@ -66,16 +64,7 @@ class Display {
 	public var pixelsPerInch(get, never): Int;
 
 	function get_pixelsPerInch(): Int {
-		var dpiElement = Browser.document.createElement('div');
-		dpiElement.style.position = "absolute";
-		dpiElement.style.width = "1in";
-		dpiElement.style.height = "1in";
-		dpiElement.style.left = "-100%";
-		dpiElement.style.top = "-100%";
-		Browser.document.body.appendChild(dpiElement);
-		var dpi:Int = dpiElement.offsetHeight;
-		dpiElement.remove();
-		return dpi;
+		return 96;
 	}
 
 	public var modes(get, never): Array<DisplayMode>;

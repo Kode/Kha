@@ -39,8 +39,12 @@ class Globals {
 		return map.get(id);
 	}
 
-	static var ALL;
-	static var MAP;
+	static var ALL: Array<String>;
+#if flash
+	static var ALL: haxe.ds.UnsafeStringMap<Int>;
+#else
+	static var MAP: Map<String, Int>;
+#end
 	public static function allocID( path : String ) {
 		if( MAP == null ) {
 			#if flash

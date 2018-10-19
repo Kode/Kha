@@ -2,14 +2,12 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
-	var canvas: js.html.CanvasElement;
 	var defaultWidth: Int;
 	var defaultHeight: Int;
 
 	@:noCompletion
 	@:noDoc
-	public function new(defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
-		this.canvas = canvas;
+	public function new(defaultWidth: Int, defaultHeight: Int) {
 		windows.push(this);
 	}
 
@@ -60,7 +58,7 @@ class Window {
 	public var width(get, set): Int;
 
 	function get_width(): Int {
-		return canvas.width == 0 ? defaultWidth : canvas.width;
+		return 800;
 	}
 
 	function set_width(value: Int): Int {
@@ -70,7 +68,7 @@ class Window {
 	public var height(get, set): Int;
 
 	function get_height(): Int {
-		return canvas.height == 0 ? defaultHeight : canvas.height;
+		return 600;
 	}
 
 	function set_height(value: Int): Int {
@@ -80,7 +78,7 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Window;
+		return Windowed;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {
@@ -98,40 +96,15 @@ class Window {
 	}
 
 	function isFullscreen(): Bool {
-		return untyped __js__("document.fullscreenElement === this.canvas ||
-			document.mozFullScreenElement === this.canvas ||
-			document.webkitFullscreenElement === this.canvas ||
-			document.msFullscreenElement === this.canvas ");
+		return false;
 	}
 
 	function requestFullscreen(): Void {
-		untyped if (canvas.requestFullscreen) {
-			canvas.requestFullscreen();
-		}
-		else if (canvas.msRequestFullscreen) {
-			canvas.msRequestFullscreen();
-		}
-		else if (canvas.mozRequestFullScreen) {
-			canvas.mozRequestFullScreen();
-		}
-		else if(canvas.webkitRequestFullscreen){
-			canvas.webkitRequestFullscreen();
-		}
+		
 	}
 
 	function exitFullscreen(): Void {
-		untyped if (document.exitFullscreen) {
-			document.exitFullscreen();
-		}
-		else if (document.msExitFullscreen) {
-			document.msExitFullscreen();
-		}
-		else if (document.mozCancelFullScreen) {
-			document.mozCancelFullScreen();
-		}
-		else if (document.webkitExitFullscreen) {
-			document.webkitExitFullscreen();
-		}
+		
 	}
 
 	public var visible(get, set): Bool;
