@@ -128,6 +128,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setPipeline(pipe: PipelineState): Void {
 		Worker.postMessage({ command: 'setPipeline', id: pipe._id });
 	}
+	
+	public function setStencilReferenceValue(value: Int): Void {
+		
+	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		Worker.postMessage({ command: 'setBool', location: cast(location, kha.html5worker.ConstantLocation)._id,
