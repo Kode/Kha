@@ -1,10 +1,16 @@
 package kha;
-@:enum abstract WindowFeatures(Int) from Int to Int {
-	var FeatureResizable = 1;
-	var FeatureMinimizable = 2;
-	var FeatureMaximizable = 4;
-	var FeatureBorderless = 8;
-	var FeatureOnTop = 16;
+@:enum abstract WindowFeatures(Int) to Int {
+    var FeatureResizable = 1;
+    var FeatureMinimizable = 2;
+    var FeatureMaximizable = 4;
+    var FeatureBorderless = 8;
+    var FeatureOnTop = 16;	
+	
+    function new (value:Int) {
+        this = value;
+    }
+    
+    @:op(A | B) static function or( a:WindowFeatures, b:WindowFeatures) : WindowFeatures;
 }
 
 @:structInit
