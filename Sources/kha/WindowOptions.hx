@@ -27,7 +27,7 @@ class WindowOptions {
 	@:optional public var mode: WindowMode = Windowed;
 
 	public function new(title: String = null, ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, display: Display = null,
-	?visible: Bool = true, ?windowFeatures:WindowFeatures = FeatureResizable | FeatureMaximizable | FeatureMinimizable, ?mode: WindowMode = WindowMode.Windowed) {
+	?visible: Bool = true, ?windowFeatures:WindowFeatures, ?mode: WindowMode = WindowMode.Windowed) {
 		this.title = title;
 		this.x = x;
 		this.y = y;
@@ -35,7 +35,7 @@ class WindowOptions {
 		this.height = height;
 		this.display = display == null ? Display.primary : display;
 		this.visible = visible;
-		this.windowFeatures = windowFeatures;
+		this.windowFeatures = (windowFeatures == null) ? WindowFeatures.FeatureResizable | WindowFeatures.FeatureMaximizable | WindowFeatures.FeatureMinimizable : windowFeatures;
 		this.mode = mode;
 	}
 }
