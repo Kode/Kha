@@ -1,5 +1,7 @@
 package kha;
 
+import kha.WindowOptions;
+
 @:structInit
 class SystemOptions {
 	@:optional public var title: String = "Kha";
@@ -73,10 +75,11 @@ class System {
 
 	@:deprecated("Use System.start instead")
 	public static function init(options: OldSystemOptions, callback: Void -> Void): Void {
-		var features: Int = 0;
-		if (options.resizable) features |= WindowOptions.FeatureResizable;
-		if (options.maximizable) features |= WindowOptions.FeatureMaximizable;
-		if (options.minimizable) features |= WindowOptions.FeatureMinimizable;
+		var features:WindowFeatures = None;
+		if (options.resizable) features |= WindowFeatures.FeatureResizable;
+		if (options.maximizable) features |= WindowFeatures.FeatureMaximizable;
+		if (options.minimizable) features |= WindowFeatures.FeatureMinimizable;
+		
 		var newOptions: SystemOptions = {
 			title: options.title,
 			width: options.width,
