@@ -1,5 +1,6 @@
 package kha;
 @:enum abstract WindowFeatures(Int) to Int {
+    var None = 0;
     var FeatureResizable = 1;
     var FeatureMinimizable = 2;
     var FeatureMaximizable = 4;
