@@ -1,4 +1,4 @@
-package kha.network;
+package kha.netsync;
 
 @:autoBuild(kha.network.SyncBuilder.build())
 interface Sync {

@@ -1,4 +1,4 @@
-package kha.network;
+package kha.netsync;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;

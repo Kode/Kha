@@ -1,4 +1,4 @@
-package kha.network;
+package kha.netsync;
 
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
@@ -95,9 +95,9 @@ class ControllerBuilder {
 					}
 					var original = f.expr;
 					expr = macro {
-						if (kha.network.Session.the() != null) {
+						if (kha.netsync.Session.the() != null) {
 							$expr;
-							kha.network.Session.the().sendControllerUpdate(_id(), bytes);
+							kha.netsync.Session.the().sendControllerUpdate(_id(), bytes);
 						}
 						$original;
 					};

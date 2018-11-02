@@ -1,4 +1,4 @@
-package kha.network;
+package kha.netsync;
 
 import haxe.io.Bytes;
 #if sys_server
@@ -135,7 +135,7 @@ class Session {
 	private function sendPing() {
 		#if !sys_server
 		var bytes = haxe.io.Bytes.alloc(5);
-		bytes.set(0, kha.network.Session.PING);
+		bytes.set(0, kha.netsync.Session.PING);
 		bytes.setFloat(1, Scheduler.realTime());
 
 		sendToServer(bytes);
@@ -417,7 +417,7 @@ class Session {
 		for (controller in controllers) {
 			if (controller._inputBufferIndex > 0) {
 				var bytes = haxe.io.Bytes.alloc(22 + controller._inputBufferIndex);
-				bytes.set(0, kha.network.Session.CONTROLLER_UPDATES);
+				bytes.set(0, kha.netsync.Session.CONTROLLER_UPDATES);
 				bytes.setInt32(1, controller._id());
 				bytes.setDouble(5, Scheduler.time());
 				bytes.setInt32(13, System.windowWidth(0));

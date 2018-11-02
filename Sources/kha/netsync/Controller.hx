@@ -1,8 +1,8 @@
-package kha.network;
+package kha.netsync;
 
 import haxe.io.Bytes;
 
-@:autoBuild(kha.network.ControllerBuilder.build())
+@:autoBuild(kha.netsync.ControllerBuilder.build())
 class Controller {
 	private var __id: Int;
 	public var _inputBufferIndex: Int;
