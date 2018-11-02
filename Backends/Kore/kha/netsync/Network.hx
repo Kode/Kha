@@ -1,4 +1,4 @@
-package kha.network;
+package kha.netsync;
 
 import haxe.io.Bytes;
 
