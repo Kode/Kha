@@ -98,6 +98,7 @@ extern class Krom {
 	static function getTime(): Float;
 	static function windowWidth(id: Int): Int;
 	static function windowHeight(id: Int): Int;
+	static function setWindowTitle(id: Int, title: String): Void;
 	static function screenDpi(): Int;
 	static function systemId(): String;
 	static function requestShutdown(): Void;
