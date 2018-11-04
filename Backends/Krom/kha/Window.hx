@@ -3,6 +3,7 @@ package kha;
 class Window {
 	static var windows: Array<Window> = [];
 	var num: Int;
+	var windowTitle: String;
 
 	@:noCompletion
 	@:noDoc
@@ -98,11 +99,13 @@ class Window {
 	public var title(get, set): String;
 
 	function get_title(): String {
-		return "Kha";
+		return windowTitle;
 	}
 
 	function set_title(value: String): String {
-		return "Kha";
+		Krom.setWindowTitle(num, value);
+		windowTitle = value;
+		return windowTitle;
 	}
 
 	public function notifyOnResize(callback: Int->Int->Void): Void {}
