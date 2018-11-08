@@ -5,6 +5,8 @@ import kha.WindowOptions;
 @:structInit
 class SystemOptions {
 	@:optional public var title: String = "Kha";
+	@:optional public var x: Int = -1;
+	@:optional public var y: Int = -1;
 	@:optional public var width: Int = -1;
 	@:optional public var height: Int = -1;
 	@:optional public var window: WindowOptions = null;
@@ -22,6 +24,9 @@ class SystemOptions {
 	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
 		this.window = window == null ? {} : window;
+
+		this.x = this.window.x;
+		this.y = this.window.y;
 
 		if (width > 0) {
 			this.window.width = width;
