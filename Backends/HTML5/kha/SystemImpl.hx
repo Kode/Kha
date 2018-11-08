@@ -66,11 +66,10 @@ class SystemImpl {
 		}
 		var wndOpts = {
 			type: 'showWindow', title: options.title,
-			x: options.x, y: options.y,
+			x: options.window.x, y: options.window.y,
 			width: options.width, height: options.height,
 		}
-		electron.ipcRenderer.send('asynchronous-message', wndOpts);
-		// Wait a second so the debugger can attach
+		electron.ipcRenderer.send('asynchronous-message', wndOpts);		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
 			initSecondStep(callback);
 		}, 1000);
