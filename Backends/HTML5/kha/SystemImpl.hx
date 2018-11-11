@@ -64,8 +64,12 @@ class SystemImpl {
 		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
 			electron.webFrame.setZoomLevelLimits(1, 1);
 		}
-		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
-		// Wait a second so the debugger can attach
+		var wndOpts = {
+			type: 'showWindow', title: options.title,
+			x: options.window.x, y: options.window.y,
+			width: options.width, height: options.height,
+		}
+		electron.ipcRenderer.send('asynchronous-message', wndOpts);		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
 			initSecondStep(callback);
 		}, 1000);
