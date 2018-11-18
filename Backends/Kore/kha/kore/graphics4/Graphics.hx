@@ -154,8 +154,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("if (cubeMap->texture != nullptr) Kore::Graphics4::setTexture(koreUnit->unit, cubeMap->texture)");
-		untyped __cpp__("else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)");
+		untyped __cpp__(
+			"if (cubeMap->texture != nullptr) Kore::Graphics4::setTexture(koreUnit->unit, cubeMap->texture);
+			else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)"
+		);
 	}
 	
 	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
