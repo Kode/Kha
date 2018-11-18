@@ -237,7 +237,7 @@ namespace {
 
 #ifdef KORE_MULTITHREADED_AUDIO
 		if (!mixThreadregistered) {
-			__hxcpp_register_current_thread();
+			HX_TOP_OF_STACK
 			mixThreadregistered = true;
 		}
 #endif
