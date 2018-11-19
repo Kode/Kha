@@ -25,7 +25,7 @@ class ShaderStorageBuffer {
 	@:functionCode("
 	#ifdef KORE_OPENGL
 	Kore::Graphics4::VertexData type2;
-	switch (type->index) {
+	switch (type) {
 	case 0:
 		type2 = Kore::Graphics4::Float1VertexData;
 		break;
