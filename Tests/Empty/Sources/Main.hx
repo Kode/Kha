@@ -15,7 +15,7 @@ class Main {
 	}
 
 	public static function main() {
-		System.start({title: "' + name + '", width: 1024, height: 768}, function (_) {
+		System.start({title: "Test", width: 1024, height: 768}, function (_) {
 			// Just loading everything is ok for small projects
 			Assets.loadEverything(function () {
 				// Avoid passing update/render directly,
