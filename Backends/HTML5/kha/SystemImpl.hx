@@ -83,9 +83,12 @@ class SystemImpl {
 		#end
 	}
 
-	static function initSecondStep(callback: Window -> Void): Void {
+	private static function initSecondStep(callback: Window -> Void): Void {
 		init2(options.window.width, options.window.height);
 		callback(window);
+	}
+
+	public static function initSensor(): Void {
 		if (ios) { // In Safari for iOS the directions are reversed on axes x, y and z
 			Browser.window.ondevicemotion = function (event:js.html.DeviceMotionEvent) {
 				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, -event.accelerationIncludingGravity.z);
@@ -96,7 +99,7 @@ class SystemImpl {
 				Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
 			};
 		}
-		Browser.window.ondeviceorientation= function (event:js.html.DeviceOrientationEvent) {
+		Browser.window.ondeviceorientation = function (event:js.html.DeviceOrientationEvent) {
 			Sensor._changed(1, event.beta, event.gamma, event.alpha);
 		};
 	}
@@ -607,7 +610,6 @@ class SystemImpl {
 
 	private static function mouseWheel(event: WheelEvent): Bool {
 		insideInputEvent = true;
-		unlockSound();
 
 		event.preventDefault();
 
@@ -720,7 +722,6 @@ class SystemImpl {
 
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSound();
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
