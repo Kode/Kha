@@ -13,16 +13,16 @@ import kha.graphics4.VertexStructure;
 @:headerClassCode("Kore::Graphics4::VertexBuffer* buffer;")
 class VertexBuffer {
 	private var data: Float32Array;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
-		init(vertexCount, structure, usage.getIndex(), instanceDataStepRate);
+		init(vertexCount, structure, usage, instanceDataStepRate);
 		data = new Float32Array();
 	}
-	
+
 	public function delete(): Void {
 		untyped __cpp__('delete buffer; buffer = nullptr;');
 	}
-	
+
 	@:functionCode("
 		Kore::Graphics4::VertexStructure structure2;
 		for (int i = 0; i < structure->size(); ++i) {
@@ -49,7 +49,7 @@ class VertexBuffer {
 		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, (Kore::Graphics4::Usage)usage, instanceDataStepRate);
 	")
 	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
-		
+
 	}
 
 	@:functionCode('
@@ -66,28 +66,28 @@ class VertexBuffer {
 		if (count == null) count = this.count();
 		return lock2(start, count);
 	}
-	
+
 	@:functionCode('buffer->unlock();')
 	public function unlock(): Void {
-		
+
 	}
-	
+
 	@:functionCode("return buffer->stride();")
 	public function stride(): Int {
 		return 0;
 	}
-	
+
 	@:functionCode("return buffer->count();")
 	public function count(): Int {
 		return 0;
 	}
-	
+
 	@:noCompletion
 	@:keep
 	public static function _unused1(): VertexElement {
 		return null;
 	}
-	
+
 	@:noCompletion
 	@:keep
 	public static function _unused2(): VertexData {

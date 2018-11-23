@@ -53,7 +53,7 @@ static Kore::Graphics4::StencilAction convertStencilAction(int action) {
 		return Kore::Graphics4::DecrementWrap;
 	case 7:
 	default:
-		return Kore::Graphics4::Invert;	
+		return Kore::Graphics4::Invert;
 	}
 }
 ')
@@ -65,11 +65,11 @@ class PipelineState extends PipelineStateBase {
 		super();
 		untyped __cpp__('pipeline = new Kore::Graphics4::PipelineState;');
 	}
-	
+
 	public function delete(): Void {
 		untyped __cpp__('delete pipeline; pipeline = nullptr;');
 	}
-	
+
 	@:functionCode('
 		pipeline->vertexShader = vertexShader->shader;
 		pipeline->fragmentShader = fragmentShader->shader;
@@ -110,9 +110,9 @@ class PipelineState extends PipelineStateBase {
 		pipeline->compile();
 	')
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
-		
+
 	}
-	
+
 	public function compile(): Void {
 		var stencilReferenceValue = 0;
 		switch (this.stencilReferenceValue) {
@@ -120,7 +120,7 @@ class PipelineState extends PipelineStateBase {
 				stencilReferenceValue = value;
 			default:
 		}
-		setStates(cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
+		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail,
 		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
@@ -129,29 +129,29 @@ class PipelineState extends PipelineStateBase {
 			inputLayout.length > 3 ? inputLayout[3] : null,
 			inputLayout.length);
 	}
-	
+
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		var location = new kha.kore.graphics4.ConstantLocation();
 		initConstantLocation(location, name);
 		return location;
 	}
-	
+
 	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str());')
 	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
-		
+
 	}
-		
+
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.kore.graphics4.TextureUnit();
 		initTextureUnit(unit, name);
 		return unit;
 	}
-	
+
 	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str());')
 	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
-		
+
 	}
-	
+
 	private static function getBlendFunc(factor: BlendingFactor): Int {
 		switch (factor) {
 		case BlendOne, Undefined:
@@ -178,7 +178,7 @@ class PipelineState extends PipelineStateBase {
 			return 0;
 		}
 	}
-	
+
 	@:functionCode('
 		switch (cullMode) {
 		case 0:
@@ -219,7 +219,7 @@ class PipelineState extends PipelineStateBase {
 			break;
 		}
 		pipeline->depthWrite = depthWrite;
-		
+
 		pipeline->stencilMode = convertCompareMode(stencilMode);
 		pipeline->stencilBothPass = convertStencilAction(stencilBothPass);
 		pipeline->stencilDepthFail = convertStencilAction(stencilDepthFail);
@@ -227,65 +227,65 @@ class PipelineState extends PipelineStateBase {
 		pipeline->stencilReferenceValue = stencilReferenceValue;
 		pipeline->stencilReadMask = stencilReadMask;
 		pipeline->stencilWriteMask = stencilWriteMask;
-		
+
 		pipeline->blendSource = (Kore::Graphics4::BlendingOperation)blendSource;
 		pipeline->blendDestination = (Kore::Graphics4::BlendingOperation)blendDestination;
 		pipeline->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
 		pipeline->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
-		
+
 		for (int i = 0; i < 8; ++i) {
 			pipeline->colorWriteMaskRed[i] = colorWriteMasksRed[i];
 			pipeline->colorWriteMaskGreen[i] = colorWriteMasksGreen[i];
 			pipeline->colorWriteMaskBlue[i] = colorWriteMasksBlue[i];
 			pipeline->colorWriteMaskAlpha[i] = colorWriteMasksAlpha[i];
 		}
-		
+
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
 	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int,
 	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {
-		
+
 	}
-	
+
 	@:functionCode('Kore::Graphics4::setPipeline(pipeline);')
 	private function set2(): Void {
-		
+
 	}
-	
+
 	public function set(): Void {
 		set2();
 	}
-	
+
 	@:noCompletion
 	public static function _unused1(): VertexElement {
 		return null;
 	}
-	
+
 	@:noCompletion
 	public static function _unused2(): VertexData {
 		return VertexData.Float1;
 	}
-	
+
 	@:noCompletion
 	public static function _unused3(): VertexShader {
 		return null;
 	}
-	
+
 	@:noCompletion
 	public static function _unused4(): FragmentShader {
 		return null;
 	}
-	
+
 	@:noCompletion
 	public static function _unused5(): GeometryShader {
 		return null;
 	}
-	
+
 	@:noCompletion
 	public static function _unused6(): TessellationControlShader {
 		return null;
 	}
-	
+
 	@:noCompletion
 	public static function _unused7(): TessellationEvaluationShader {
 		return null;
