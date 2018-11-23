@@ -10,35 +10,35 @@ class VertexBuffer {
 	public var _data: Float32Array;
 	private var vertexCount: Int;
 	private var structure: VertexStructure;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
-		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, usage.getIndex(), instanceDataStepRate);
+		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, usage, instanceDataStepRate);
 	}
 
 	public function delete() {
 		Krom.deleteVertexBuffer(buffer);
 		buffer = null;
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		_data = Krom.lockVertexBuffer(buffer);
 		return _data;
 	}
-	
+
 	public function unlock(): Void {
 		Krom.unlockVertexBuffer(buffer);
 	}
-	
+
 	public function stride(): Int {
 		return structure.byteSize();
 	}
-	
+
 	public function count(): Int {
 		return vertexCount;
 	}
-	
+
 	public function set(offset: Int): Int {
 		Krom.setVertexBuffer(buffer);
 		return 0;
