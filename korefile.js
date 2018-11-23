@@ -105,6 +105,8 @@ project.addDefine('STATIC_LINK');
 project.addDefine('PCRE_STATIC');
 project.addDefine('HXCPP_SET_PROP');
 project.addDefine('HXCPP_VISIT_ALLOCS');
+project.addDefine('HXCPP');
+project.addDefine('KHA');
 project.addDefine('KORE');
 project.addDefine('ROTATE90');
 project.addDefine('HAVE_CONFIG_H');
