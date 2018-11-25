@@ -18,6 +18,10 @@ class VertexShader {
 		sh._shader = kore_vertexshader_from_source(StringHelper.convert(source));
 		return sh;
 	}
+
+	public function delete(): Void {
+		
+	}
 	
 	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.Bytes, length: Int): Pointer { return null; }
 	@:hlNative("std", "kore_vertexshader_from_source") static function kore_vertexshader_from_source(source: hl.Bytes): Pointer { return null; }

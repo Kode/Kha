@@ -18,6 +18,10 @@ class FragmentShader {
 		sh._shader = kore_fragmentshader_from_source(StringHelper.convert(source));
 		return sh;
 	}
+
+	public function delete(): Void {
+		
+	}
 	
 	@:hlNative("std", "kore_create_fragmentshader") static function kore_create_fragmentshader(data: hl.Bytes, length: Int): Pointer { return null; }
 	@:hlNative("std", "kore_fragmentshader_from_source") static function kore_fragmentshader_from_source(source: hl.Bytes): Pointer { return null; }
