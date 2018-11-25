@@ -47,7 +47,7 @@ HL_PRIM ereg *hl_regexp_new_options( vbyte *str, vbyte *opts ) {
 	int errorcode;
 	pcre16 *p;
 	uchar *o = (uchar*)opts;
-	int options = PCRE_JAVASCRIPT_COMPAT;
+	int options = PCRE_JAVASCRIPT_COMPAT | PCRE_UCP | PCRE_UTF16;
 	while( *o ) {
 		switch( *o++ ) {
 		case 'i':
@@ -60,7 +60,6 @@ HL_PRIM ereg *hl_regexp_new_options( vbyte *str, vbyte *opts ) {
 			options |= PCRE_MULTILINE;
 			break;
 		case 'u':
-			options |= PCRE_UTF8;
 			break;
 		case 'g':
 			options |= PCRE_UNGREEDY;

@@ -68,19 +68,9 @@ static hl_code *load_code( const pchar *file ) {
 }
 
 #ifdef HL_VCC
-static int throw_handler( int code ) {
-	switch( code ) {
-	case EXCEPTION_ACCESS_VIOLATION: hl_error("Access violation");
-	case EXCEPTION_STACK_OVERFLOW: hl_error("Stack overflow");
-	default: hl_error("Unknown runtime error");
-	}
-	return EXCEPTION_CONTINUE_SEARCH;
-}
-
 // this allows some runtime detection to switch to high performance mode
 __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-
 #endif
 
 #ifdef HL_WIN

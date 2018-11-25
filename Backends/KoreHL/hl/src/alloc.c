@@ -209,8 +209,6 @@ static void gc_global_lock( bool lock ) {
 	if( lock ) {
 		if( !t )
 			hl_fatal("Can't lock GC in unregistered thread");
-		if( t->gc_blocking )
-			hl_fatal("Can't lock GC in hl_blocking section");
 		if( mt ) gc_save_context(t);
 		t->gc_blocking++;
 		if( mt ) hl_mutex_acquire(gc_threads.global_lock);

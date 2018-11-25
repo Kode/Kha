@@ -1,12 +1,15 @@
 #define COMPILE_PCRE16
 #undef SUPPORT_JIT
 #define PCRE_STATIC
+#define SUPPORT_UCP
 
 #ifdef _MSC_VER
 #	pragma warning(disable:4710) // inline disabled
 #	pragma warning(disable:4711) // inline activated
 #	pragma warning(disable:4242) // loss of data
 #	pragma warning(disable:4244) // loss of data
+#	pragma warning(disable:4701) // potentially uninitialized local var
+#	pragma warning(disable:4703) // potentially uninitialized local ptr
 #else
 #	pragma GCC diagnostic ignored "-Wunused-function"
 #endif

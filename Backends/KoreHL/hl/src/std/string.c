@@ -184,7 +184,7 @@ HL_PRIM vbyte* hl_ucs2_lower( vbyte *str, int pos, int len ) {
 	for(i=0;i<len;i++) {
 		unsigned int c = *cstr++;
 		int up = c >> UL_BITS;
-		if( up < UMAX ) {
+		if( up < LMAX ) {
 			unsigned int c2 = LOWER[up][c&((1<<UL_BITS)-1)];
 			if( c2 != 0 ) *cout = (uchar)c2;
 		}
@@ -339,7 +339,7 @@ HL_PRIM vbyte *hl_url_decode( vbyte *str, int *len ) {
 				p3 = decode_hex(&cstr);
 				if( p3 < 0 ) break;
 				c = ((p1 & 0x1F) << 12) | ((p2 & 0x7F) << 6) | (p3 & 0x7F);
-			} else {			
+			} else {
 				int k;
 				uchar p2, p3, p4;
 				if( *cstr++ != '%' ) break;

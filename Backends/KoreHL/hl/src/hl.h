@@ -23,11 +23,11 @@
 #define HL_H
 
 /**
-	Detailed documentation can be found here: 
+	Detailed documentation can be found here:
 	https://github.com/HaxeFoundation/hashlink/wiki/
 **/
 
-#define HL_VERSION	0x170
+#define HL_VERSION	0x180
 
 #if defined(_WIN32)
 #	define HL_WIN
@@ -204,8 +204,10 @@ typedef unsigned long long uint64;
 // -------------- UNICODE -----------------------------------
 
 #if defined(HL_WIN) && !defined(HL_LLVM)
-#ifdef HL_WIN_DESKTOP
+#if defined(HL_WIN_DESKTOP) && !defined(HL_MINGW)
 #	include <Windows.h>
+#elif defined(HL_WIN_DESKTOP) && defined(HL_MINGW)
+#	include<windows.h>
 #else
 #	include <xdk.h>
 #endif
@@ -758,9 +760,9 @@ typedef struct {
 #	endif
 #elif defined(LIBHL_STATIC)
 #	ifdef __cplusplus
-#		define	HL_PRIM				extern "C" 
+#		define	HL_PRIM				extern "C"
 #	else
-#		define	HL_PRIM				
+#		define	HL_PRIM
 #	endif
 #define DEFINE_PRIM_WITH_NAME(t,name,args,realName)
 #else
@@ -799,8 +801,9 @@ typedef struct _hl_trap_ctx hl_trap_ctx;
 struct _hl_trap_ctx {
 	jmp_buf buf;
 	hl_trap_ctx *prev;
+	vdynamic *tcheck;
 };
-#define hl_trap(ctx,r,label) { hl_thread_info *__tinf = hl_get_thread(); ctx.prev = __tinf->trap_current; __tinf->trap_current = &ctx; if( setjmp(ctx.buf) ) { r = __tinf->exc_value; goto label; } }
+#define hl_trap(ctx,r,label) { hl_thread_info *__tinf = hl_get_thread(); ctx.tcheck = NULL; ctx.prev = __tinf->trap_current; __tinf->trap_current = &ctx; if( setjmp(ctx.buf) ) { r = __tinf->exc_value; goto label; } }
 #define hl_endtrap(ctx)	hl_get_thread()->trap_current = ctx.prev
 
 #define HL_EXC_MAX_STACK	0x100
