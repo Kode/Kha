@@ -95,6 +95,6 @@ extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample)
 	Kore::Audio2::init();
 }
 
-extern "C" void run_kore() {
+extern "C" void hl_run_kore() {
 	Kore::System::start();
 }

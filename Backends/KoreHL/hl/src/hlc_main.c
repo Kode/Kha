@@ -107,7 +107,6 @@ static int throw_handler( int code ) {
 #endif
 
 #ifdef KOREC
-extern void run_kore();
 int kore(int argc, char *argv[]) {
 #else
 	#ifdef HL_WIN_DESKTOP
@@ -133,9 +132,6 @@ int kore(int argc, char *argv[]) {
 	cl.t = &clt;
 	cl.fun = hl_entry_point;
 	ret = hl_dyn_call_safe(&cl, NULL, 0, &isExc);
-#ifdef KOREC
-	run_kore();
-#endif
 	if( isExc ) {
 		varray *a = hl_exception_stack();
 		int i;
