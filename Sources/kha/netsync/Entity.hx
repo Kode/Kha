@@ -2,7 +2,7 @@ package kha.netsync;
 
 import haxe.io.Bytes;
 
-@:autoBuild(kha.network.EntityBuilder.build())
+@:autoBuild(kha.netsync.EntityBuilder.build())
 interface Entity {
 	function _id(): Int;
 	function _size(): Int;

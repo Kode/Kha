@@ -13,7 +13,7 @@ class EntityBuilder {
 		var isBaseEntity = false;
 		for (i in Context.getLocalClass().get().interfaces) {
 			var intf = i.t.get();
-			if (intf.module == "kha.network.Entity") {
+			if (intf.module == "kha.netsync.Entity") {
 				isBaseEntity = true;
 				break;
 			}
@@ -191,7 +191,7 @@ class EntityBuilder {
 				doc: null,
 				meta: [],
 				access: [APublic],
-				kind: FVar(macro: Int, macro kha.network.EntityBuilder.nextId++),
+				kind: FVar(macro: Int, macro kha.netsync.EntityBuilder.nextId++),
 				pos: Context.currentPos()
 			});
 		}
