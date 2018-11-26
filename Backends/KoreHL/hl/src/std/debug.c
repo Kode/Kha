@@ -188,6 +188,8 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 		case 0xE06D7363: // C++ EH EXCEPTION
 			ContinueDebugEvent(e.dwProcessId, e.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
 			break;
+		case EXCEPTION_STACK_OVERFLOW:
+			return 5;
 		default:
 			return 3;
 		}

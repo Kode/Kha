@@ -200,6 +200,12 @@ HL_PRIM varray *hl_sys_env() {
 	pchar **e = environ;
 	pchar **arr;
 	int count = 0;
+#	ifdef HL_WIN_DESKTOP
+	if( e == NULL ) {
+		_wgetenv(L"");
+		e = environ;
+	}
+#	endif
 	while( *e ) {
 		pchar *x = pstrchr(*e,'=');
 		if( x == NULL ) {

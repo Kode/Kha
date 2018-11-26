@@ -167,6 +167,10 @@ class Graphics implements kha.graphics4.Graphics {
 		pipe.set();
 	}
 
+	public function setStencilReferenceValue(value: Int): Void {
+
+	}
+
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		kore_graphics_set_bool(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}

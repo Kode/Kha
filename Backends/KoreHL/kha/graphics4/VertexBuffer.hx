@@ -26,7 +26,7 @@ class VertexBuffer {
 			}
 			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);
 		}
-		_buffer = kore_create_vertexbuffer(vertexCount, structure2, usage.getIndex(), instanceDataStepRate);
+		_buffer = kore_create_vertexbuffer(vertexCount, structure2, usage, instanceDataStepRate);
 	}
 
 	public function delete() {

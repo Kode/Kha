@@ -57,8 +57,14 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
+		var stencilReferenceValue = 0;
+		switch (this.stencilReferenceValue) {
+			case Static(value):
+				stencilReferenceValue = value;
+			default:
+		}
 		kore_pipeline_set_states(_pipeline,
-			cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
+			cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail,
 			getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
 			depthWrite, stencilReferenceValue, stencilReadMask, stencilWriteMask,
 			colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha,

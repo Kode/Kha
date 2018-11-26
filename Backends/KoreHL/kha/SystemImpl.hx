@@ -62,6 +62,8 @@ class SystemImpl {
 		
 		Scheduler.start();
 		callback(Window.get(0));
+
+		run_kore();
 	}
 	
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
@@ -366,6 +368,7 @@ class SystemImpl {
 	}
 	
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
+	@:hlNative("std", "run_kore") static function run_kore(): Void { }
 	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback:Int->Void, readSample:Void->FastFloat): Void { }
 	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
