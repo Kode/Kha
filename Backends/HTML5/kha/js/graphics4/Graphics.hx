@@ -42,6 +42,12 @@ class Graphics implements kha.graphics4.Graphics {
 	private var instancedExtension: Dynamic;
 	private var blendMinMaxExtension: Dynamic;
 
+	// WebGL2 constants
+	// https://www.khronos.org/registry/webgl/specs/2.0.0/
+	private static inline var GL_TEXTURE_COMPARE_MODE = 0x884C;
+	private static inline var GL_TEXTURE_COMPARE_FUNC = 0x884D;
+	private static inline var GL_COMPARE_REF_TO_TEXTURE = 0x884E;
+
 	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
 		init();
@@ -417,6 +423,26 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 	
+	}
+
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		if (enabled) {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+		}
+		else {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+		}
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		if (enabled) {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+		}
+		else {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+		}
 	}
 
 	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {

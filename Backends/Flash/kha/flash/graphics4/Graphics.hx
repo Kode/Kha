@@ -213,6 +213,14 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	}
 
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		
+	}
+
 	private function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
 		switch (op) {
 			case BlendZero, Undefined:

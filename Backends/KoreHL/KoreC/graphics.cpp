@@ -69,6 +69,16 @@ extern "C" void hl_kore_graphics_set_texture3d_parameters(vbyte *unit, int uAddr
 	Kore::Graphics4::setTexture3DMipmapFilter(*u, (Kore::Graphics4::MipmapFilter)mipmapFilter);
 }
 
+extern "C" void hl_kore_graphics_set_texture_compare_mode(vbyte *unit, bool enabled) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::setTextureCompareMode(*u, enabled);
+}
+
+extern "C" void hl_kore_graphics_set_cube_map_compare_mode(vbyte *unit, bool enabled) {
+	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
+	Kore::Graphics4::setCubeMapCompareMode(*u, enabled);
+}
+
 extern "C" void hl_kore_graphics_set_texture(vbyte *unit, vbyte *texture) {
 	Kore::Graphics4::TextureUnit* u = (Kore::Graphics4::TextureUnit*)unit;
 	Kore::Graphics4::Texture* tex = (Kore::Graphics4::Texture*)texture;
