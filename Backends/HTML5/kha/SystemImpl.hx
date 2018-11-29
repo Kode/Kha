@@ -8,6 +8,9 @@ import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.html.Touch;
 import js.html.TouchEvent;
+import js.html.ClipboardEvent;
+import js.html.DeviceMotionEvent;
+import js.html.DeviceOrientationEvent;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
@@ -90,16 +93,16 @@ class SystemImpl {
 
 	public static function initSensor(): Void {
 		if (ios) { // In Safari for iOS the directions are reversed on axes x, y and z
-			Browser.window.ondevicemotion = function (event:js.html.DeviceMotionEvent) {
+			Browser.window.ondevicemotion = function (event: DeviceMotionEvent) {
 				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, -event.accelerationIncludingGravity.z);
 			};
 		}
 		else {
-			Browser.window.ondevicemotion = function (event:js.html.DeviceMotionEvent) {
+			Browser.window.ondevicemotion = function (event: DeviceMotionEvent) {
 				Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
 			};
 		}
-		Browser.window.ondeviceorientation = function (event:js.html.DeviceOrientationEvent) {
+		Browser.window.ondeviceorientation = function (event: DeviceOrientationEvent) {
 			Sensor._changed(1, event.beta, event.gamma, event.alpha);
 		};
 	}
@@ -207,11 +210,11 @@ class SystemImpl {
 			gamepads[i] = new Gamepad(i);
 			gamepadStates[i] = new GamepadStates();
 		}
-		js.Browser.window.addEventListener("gamepadconnected", function(e_) {
-			Gamepad.sendConnectEvent(e_.gamepad.index);
+		js.Browser.window.addEventListener("gamepadconnected", function(e) {
+			Gamepad.sendConnectEvent(e.gamepad.index);
 		});
-		js.Browser.window.addEventListener("gamepaddisconnected", function(e_) {
-			Gamepad.sendDisconnectEvent(e_.gamepad.index);
+		js.Browser.window.addEventListener("gamepaddisconnected", function(e) {
+			Gamepad.sendDisconnectEvent(e.gamepad.index);
 		});
 		if (ie) {
 			pressedKeys = new Array<Bool>();
@@ -219,38 +222,56 @@ class SystemImpl {
 			for (i in 0...256) pressedKeys.push(null);
 		}
 
-		js.Browser.document.addEventListener("copy", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onCopy(e: ClipboardEvent):Void {
 			if (System.copyListener != null) {
 				var data = System.copyListener();
-				if (data != null) {
-					e.clipboardData.setData("text/plain", data);
-				}
+				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
 			}
-		});
+		}
 
-		js.Browser.document.addEventListener("cut", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onCut(e: ClipboardEvent):Void {
 			if (System.cutListener != null) {
 				var data = System.cutListener();
-				if (data != null) {
-					e.clipboardData.setData("text/plain", data);
-				}
+				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
 			}
-		});
+		}
 
-		js.Browser.document.addEventListener("paste", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onPaste(e: ClipboardEvent):Void {
 			if (System.pasteListener != null) {
 				System.pasteListener(e.clipboardData.getData("text/plain"));
 				e.preventDefault();
 			}
-		});
+		}
+
+		var document = Browser.document;
+		document.addEventListener("copy", onCopy);
+		document.addEventListener("cut", onCut);
+		document.addEventListener("paste", onPaste);
+
+		if (firefox) {
+			var canvas = document.getElementById("khanvas");
+			function onPreTextEvents(e: KeyboardEvent):Void {
+				if (!(e.ctrlKey || e.metaKey)) return;
+				var isEvent = e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86;
+				if (!isEvent) return;
+
+				var input = document.createTextAreaElement();
+				var onEvent = function(e: ClipboardEvent) {
+					document.body.removeChild(input);
+					canvas.focus();
+				};
+				if (e.keyCode == 67) input.oncopy = onEvent;
+				else if (e.keyCode == 88) input.oncut = onEvent;
+				else if (e.keyCode == 86) input.onpaste = onEvent;
+				document.body.appendChild(input);
+				input.select();
+			}
+			canvas.addEventListener("keydown", onPreTextEvents);
+		}
 
 		CanvasImage.init();
-		//Loader.init(new kha.js.Loader());
 		Scheduler.init();
 
 		loadFinished(defaultWidth, defaultHeight);
