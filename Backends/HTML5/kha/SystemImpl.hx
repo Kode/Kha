@@ -251,7 +251,7 @@ class SystemImpl {
 		document.addEventListener("paste", onPaste);
 
 		if (firefox) {
-			var canvas = document.getElementById("khanvas");
+			var canvas = getCanvasElement();
 			function onPreTextEvents(e: KeyboardEvent):Void {
 				if (!(e.ctrlKey || e.metaKey)) return;
 				var isEvent = e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86;
@@ -315,29 +315,24 @@ class SystemImpl {
 		}
 	}
 
-	//public function start(game: Game): Void {
-	//	gameToStart = game;
-	//	Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-	//	Loader.the.loadProject(loadFinished);
-	//}
+	private static function getCanvasElement(): CanvasElement {
+		if (khanvas != null) return khanvas;
+		// Only consider custom canvas ID for release builds
+		#if (kha_debug_html5 || !canvas_id)
+		return Browser.document.getElementById("khanvas");
+		#else
+		return cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		#end
+	}
 
 	private static function loadFinished(defaultWidth: Int, defaultHeight: Int) {
-		// Only consider custom canvas ID for release builds
-		var canvas: Dynamic = khanvas;
-		if (canvas == null) {
-			#if (kha_debug_html5 || !canvas_id)
-			canvas = Browser.document.getElementById("khanvas");
-			#else
-			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-			#end
-		}
+		var canvas: CanvasElement = getCanvasElement();
 		canvas.style.cursor = "default";
 
 		var gl: Bool = false;
 
 		#if kha_webgl
 		try {
-
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); Warning: preserveDrawingBuffer can cause huge performance issues on mobile browsers
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
