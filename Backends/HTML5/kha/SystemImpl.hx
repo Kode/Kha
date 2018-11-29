@@ -319,7 +319,7 @@ class SystemImpl {
 		if (khanvas != null) return khanvas;
 		// Only consider custom canvas ID for release builds
 		#if (kha_debug_html5 || !canvas_id)
-		return Browser.document.getElementById("khanvas");
+		return cast Browser.document.getElementById("khanvas");
 		#else
 		return cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
 		#end
