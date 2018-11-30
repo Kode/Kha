@@ -140,6 +140,14 @@ class EmptyGraphics4 implements Graphics {
 	
 	}
 
+	public function setTextureCompareMode(texunit: TextureUnit, enabled: Bool): Void {
+
+	}
+
+	public function setCubeMapCompareMode(texunit: TextureUnit, enabled: Bool): Void {
+		
+	}
+
 	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		
 	}

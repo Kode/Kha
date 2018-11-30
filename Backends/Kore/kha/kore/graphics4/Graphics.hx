@@ -262,6 +262,16 @@ class Graphics implements kha.graphics4.Graphics {
 		setTexture3DWrapNative(cast texunit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing));
 		setTexture3DFiltersNative(cast texunit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
 	}
+
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("Kore::Graphics4::setTextureCompareMode(koreUnit->unit, enabled);");
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("Kore::Graphics4::setCubeMapCompareMode(koreUnit->unit, enabled);");
+	}
 	
 	@:functionCode('
 		if (texture->texture != nullptr) Kore::Graphics4::setTexture(unit->unit, texture->texture);

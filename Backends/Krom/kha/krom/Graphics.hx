@@ -131,6 +131,14 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setTexture3DParameters(texunit, uAddressing, vAddressing, wAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		Krom.setTextureCompareMode(texunit, enabled);
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		Krom.setCubeMapCompareMode(texunit, enabled);
+	}
+
 	public function setPipeline(pipeline: PipelineState): Void {
 		pipeline.set();
 	}

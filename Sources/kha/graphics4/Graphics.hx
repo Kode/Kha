@@ -37,6 +37,8 @@ interface Graphics {
 	function setImageTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	function setTextureCompareMode(texunit: TextureUnit, enabled: Bool): Void;
+	function setCubeMapCompareMode(texunit: TextureUnit, enabled: Bool): Void;
 	function setCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	function setCubeMapDepth(unit: TextureUnit, cubeMap: CubeMap): Void;
 	//function maxTextureSize(): Int;
