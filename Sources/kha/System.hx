@@ -150,6 +150,10 @@ class System {
 		dropFilesListeners.push(dropFilesListener);
 	}
 
+	public static function removeDropListerer(listener: String -> Void): Void {
+		dropFilesListeners.remove(listener);
+	}
+
 	public static function notifyOnCutCopyPaste(cutListener: Void->String, copyListener: Void->String, pasteListener: String->Void): Void {
 		System.cutListener = cutListener;
 		System.copyListener = copyListener;
