@@ -101,6 +101,12 @@ class Image implements Canvas implements Resource {
 		image.texture_ = Krom.createTextureFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format), readable);
 		return image;
 	}
+
+	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image->Void, errorCallback: String->Void, readable: Bool = false): Void {
+		var image = new Image(null);
+		image.texture_ = Krom.createTextureFromEncodedBytes(bytes.getData(), format, readable);
+		doneCallback(image);
+	}
 	
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
