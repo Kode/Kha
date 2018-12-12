@@ -33,7 +33,7 @@ class PipelineState extends PipelineStateBase {
 		var kore_structures:Array<Pointer> = [];
 
 		for (i in 0...count) {
-			var kore_structure = VertexBuffer.kore_create_vertexstructure();
+			var kore_structure = VertexBuffer.kore_create_vertexstructure(structures[i].instanced);
 			kore_structures.push(kore_structure);
 			for (j in 0...structures[i].size()) {
 				var data: Int = 0;

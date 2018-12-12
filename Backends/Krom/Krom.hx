@@ -13,7 +13,7 @@ extern class Krom {
 	static function deleteShader(shader: Dynamic): Dynamic;
 	static function createPipeline(): Dynamic;
 	static function deletePipeline(pipeline: Dynamic): Dynamic;
-	static function compilePipeline(pipeline: Dynamic, structure0: Array<kha.graphics4.VertexElement>, structure1: Array<kha.graphics4.VertexElement>, structure2: Array<kha.graphics4.VertexElement>, structure3: Array<kha.graphics4.VertexElement>, length: Int, vertexShader: Dynamic, fragmentShader: Dynamic, geometryShader: Dynamic, tessellationControlShader: Dynamic, tessellationEvaluationShader: Dynamic, state: Dynamic): Void;
+	static function compilePipeline(pipeline: Dynamic, structure0: Dynamic, structure1: Dynamic, structure2: Dynamic, structure3: Dynamic, length: Int, vertexShader: Dynamic, fragmentShader: Dynamic, geometryShader: Dynamic, tessellationControlShader: Dynamic, tessellationEvaluationShader: Dynamic, state: Dynamic): Void;
 	static function setPipeline(pipeline: Dynamic): Void;
 	static function getConstantLocation(pipeline: Dynamic, name: String): Dynamic;
 	static function getTextureUnit(pipeline: Dynamic, name: String): Dynamic;
