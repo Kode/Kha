@@ -2,6 +2,7 @@ package kha.graphics4;
 
 import js.html.webgl.GL;
 import kha.arrays.Float32Array;
+import kha.arrays.Int16Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 
@@ -110,6 +111,10 @@ class VertexBuffer {
 		if (start == null) start = 0;
 		if (count == null) count = mySize;
 		return _data.subarray(start * stride(), (start + count) * stride());
+	}
+
+	public function lockInt16(?start: Int, ?count: Int): Int16Array {
+		return new Int16Array(untyped lock(start, count).buffer);
 	}
 	
 	public function unlock(): Void {
