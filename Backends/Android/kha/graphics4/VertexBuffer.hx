@@ -35,6 +35,10 @@ class VertexBuffer {
 				myStride += 4 * 4;
 			case VertexData.Float4x4:
 				myStride += 4 * 4 * 4;
+			case VertexData.Short2Norm:
+				myStride += 2 * 2;
+			case VertexData.Short4Norm:
+				myStride += 2 * 4;
 			}
 		}
 	
@@ -61,6 +65,10 @@ class VertexBuffer {
 				size = 4;
 			case VertexData.Float4x4:
 				size = 4 * 4;
+			case VertexData.Short2Norm:
+				size = 2;
+			case VertexData.Short4Norm:
+				size = 4;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
@@ -75,6 +83,10 @@ class VertexBuffer {
 				offset += 4 * 4;
 			case VertexData.Float4x4:
 				offset += 4 * 4 * 4;
+			case VertexData.Short2Norm:
+				offset += 2 * 2;
+			case VertexData.Short4Norm:
+				offset += 2 * 4;
 			}
 			++index;
 		}
