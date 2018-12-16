@@ -1,7 +1,5 @@
 package kha;
 
-import haxe.io.Bytes;
-
 using StringTools;
 
 @:headerCode('
@@ -45,13 +43,11 @@ class KoreStorageFile extends StorageFile {
 		}
 	}
 
+	@:keep
 	private static function createBlob(size: Int): Blob {
 		return Blob.alloc(size);
 	}
 
-	private static function unused(): Void {
-		Bytes.alloc(0);
-	}
 }
 
 class Storage {
