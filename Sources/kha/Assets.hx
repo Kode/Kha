@@ -5,7 +5,6 @@ import haxe.Unserializer;
 
 using StringTools;
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("image"))
 private class ImageList {
 	public function new() {
@@ -17,7 +16,6 @@ private class ImageList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("sound"))
 private class SoundList {
 	public function new() {
@@ -29,7 +27,6 @@ private class SoundList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("blob"))
 private class BlobList {
 	public function new() {
@@ -41,7 +38,6 @@ private class BlobList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("font"))
 private class FontList {
 	public function new() {
@@ -53,7 +49,6 @@ private class FontList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("video"))
 private class VideoList {
 	public function new() {
@@ -65,7 +60,6 @@ private class VideoList {
 	}
 }
 
-@:keep
 class Assets {
 	public static var images: ImageList = new ImageList();
 	public static var sounds: SoundList = new SoundList();
