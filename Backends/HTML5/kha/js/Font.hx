@@ -6,7 +6,7 @@ import js.html.ImageElement;
 import kha.Color;
 import kha.Kravur;
 
-@:keep
+@:keepInit
 class Font implements Resource {
 	public var kravur: Kravur;
 	private var images: Map<Int, Map<Int, ImageElement>> = new Map();

@@ -2,7 +2,6 @@ package kha.input;
 
 import kha.SystemImpl;
 
-@:keep
 class Sensor {
 	private static var isInited: Bool = false;
 	private static var accelerometer: Sensor = new Sensor();
