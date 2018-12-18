@@ -188,7 +188,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	static var mat = new kha.arrays.Float32Array(16);
-	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
+	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02; mat[3] = matrix._03;
 		mat[4] = matrix._10; mat[5] = matrix._11; mat[6] = matrix._12; mat[7] = matrix._13;
 		mat[8] = matrix._20; mat[9] = matrix._21; mat[10] = matrix._22; mat[11] = matrix._23;
@@ -196,7 +196,7 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setMatrix(location, mat.buffer);
 	}
 
-	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
 		mat[0] = matrix._00; mat[1] = matrix._01; mat[2] = matrix._02;
 		mat[3] = matrix._10; mat[4] = matrix._11; mat[5] = matrix._12;
 		mat[6] = matrix._20; mat[7] = matrix._21; mat[8] = matrix._22;

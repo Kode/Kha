@@ -125,7 +125,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var error = SystemImpl.gl.getError();
 		switch (error) {
 			case GL.NO_ERROR:
-				
+
 			case GL.INVALID_ENUM:
 				trace("WebGL error: Invalid enum");
 			case GL.INVALID_VALUE:
@@ -291,7 +291,7 @@ class Graphics implements kha.graphics4.Graphics {
 			return 0x8008;
 		}
 	}
-	
+
 	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation,
 		alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
@@ -345,11 +345,11 @@ class Graphics implements kha.graphics4.Graphics {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		cast(texture, WebGLImage).setDepth(cast(stage, TextureUnit).value);
 	}
-	
+
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		//not implemented yet.
 	}
@@ -422,7 +422,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
+
 	}
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
@@ -454,7 +454,7 @@ class Graphics implements kha.graphics4.Graphics {
 			cubeMap.set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		cubeMap.setDepth(cast(stage, TextureUnit).value);
 	}
@@ -542,7 +542,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	private var matrixCache = new Float32Array(16);
 
-	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
+	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
 		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
@@ -552,7 +552,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	private var matrix3Cache = new Float32Array(9);
 
-	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
 		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
 		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
 		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
