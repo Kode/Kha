@@ -2,8 +2,10 @@
 #include <Kore/Graphics4/Graphics.h>
 #include <hl.h>
 
-extern "C" vbyte *hl_kore_create_vertexstructure() {
-	return (vbyte*)new Kore::Graphics4::VertexStructure();
+extern "C" vbyte *hl_kore_create_vertexstructure(bool instanced) {
+	Kore::Graphics4::VertexStructure* struc = new Kore::Graphics4::VertexStructure();
+	struc->instanced = instanced;
+	return (vbyte*)struc;
 }
 
 extern "C" void hl_kore_vertexstructure_add(vbyte *structure, vbyte *name, int data) {
