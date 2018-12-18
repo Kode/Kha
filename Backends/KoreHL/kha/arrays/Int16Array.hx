@@ -1,22 +1,22 @@
 package kha.arrays;
 
-class Uint32ArrayPrivate {
+class Int16ArrayPrivate {
 	// Has to be wrapped in class..
 	public var self: Pointer;
 	public var length: Int;
 	public inline function new() {}
 }
 
-abstract Uint32Array(Uint32ArrayPrivate) {
+abstract Int16Array(Int16ArrayPrivate) {
 	
 	public inline function new(elements: Int = 0) {
-		this = new Uint32ArrayPrivate();
+		this = new Int16ArrayPrivate();
 		this.length = elements;
-		if (elements > 0) this.self = kore_uint32array_alloc(elements);
+		if (elements > 0) this.self = kore_int16array_alloc(elements);
 	}
 
 	public inline function free(): Void {
-		kore_uint32array_free(this.self);
+		kore_int16array_free(this.self);
 	}
 	
 	public var length(get, never): Int;
@@ -35,12 +35,12 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 	}
 	
 	public inline function set(index: Int, value: Int): Int {
-		kore_uint32array_set(this.self, index, value);
+		kore_int16array_set(this.self, index, value);
 		return value;
 	}
 	
 	public inline function get(index: Int): Int {
-		return kore_uint32array_get(this.self, index);
+		return kore_int16array_get(this.self, index);
 	}
 
 	@:arrayAccess
@@ -53,8 +53,8 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 		return set(index, value);
 	}
 
-	@:hlNative("std", "kore_uint32array_alloc") static function kore_uint32array_alloc(elements: Int): Pointer { return null; }
-	@:hlNative("std", "kore_uint32array_free") static function kore_uint32array_free(u32array: Pointer): Void { }
-	@:hlNative("std", "kore_uint32array_set") static function kore_uint32array_set(u32array: Pointer, index: Int, value: Int): Void { }
-	@:hlNative("std", "kore_uint32array_get") static function kore_uint32array_get(u32array: Pointer, index: Int): Int { return 0; }
+	@:hlNative("std", "kore_int16array_alloc") static function kore_int16array_alloc(elements: Int): Pointer { return null; }
+	@:hlNative("std", "kore_int16array_free") static function kore_int16array_free(u16array: Pointer): Void { }
+	@:hlNative("std", "kore_int16array_set") static function kore_int16array_set(u16array: Pointer, index: Int, value: Int): Void { }
+	@:hlNative("std", "kore_int16array_get") static function kore_int16array_get(u16array: Pointer, index: Int): Int { return 0; }
 }

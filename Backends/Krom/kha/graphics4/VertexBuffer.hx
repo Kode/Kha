@@ -1,6 +1,7 @@
 package kha.graphics4;
 
 import kha.arrays.Float32Array;
+import kha.arrays.Int16Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
@@ -25,6 +26,10 @@ class VertexBuffer {
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		_data = Krom.lockVertexBuffer(buffer);
 		return _data;
+	}
+
+	public function lockInt16(?start: Int, ?count: Int): Int16Array {
+		return new Int16Array(untyped lock(start, count).buffer);
 	}
 
 	public function unlock(): Void {
