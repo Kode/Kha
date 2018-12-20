@@ -73,7 +73,10 @@ class Assets {
 	public static var fonts: FontList = new FontList();
 	public static var videos: VideoList = new VideoList();
 
-	public static var progress: Float; // moves from 0 to 1, use for loading screens
+	/**
+	 * Moves from 0 to 1. Use for loading screens.
+	 */
+	public static var progress: Float;
 
 	/**
 	Loads all assets which were detected by khamake. When running khamake (doing so is Kha's standard build behavior)
