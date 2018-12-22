@@ -47,6 +47,7 @@ class SystemImpl {
 		gamepad3 = new kha.input.Gamepad(2);
 		gamepad4 = new kha.input.Gamepad(3);
 		surface = new kha.input.Surface();
+		mouseLockListeners = new Array();
 		kore_register_keyboard(keyDown, keyUp, keyPress);
 		kore_register_mouse(mouseDown, mouseUp, mouseMove, mouseWheel);
 		kore_register_pen(penDown, penUp, penMove);
