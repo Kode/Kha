@@ -1,6 +1,6 @@
 package kha.arrays;
 
-import cpp.RawPointer;
+import cpp.vm.Gc;
 import haxe.ds.Vector;
 
 @:unreflective
@@ -26,12 +26,18 @@ extern class Uint32ArrayData {
 }
 
 class Uint32ArrayPrivate {
-
 	public var self: Uint32ArrayData;
 
 	public inline function new(elements: Int = 0) {
 		self = Uint32ArrayData.create();
-		if (elements > 0) self.alloc(elements);
+		if (elements > 0) {
+			self.alloc(elements);
+			Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+		}
+	}
+
+	@:void static function finalize(arr: Uint32ArrayPrivate): Void {
+		arr.self.free();
 	}
 }
 
