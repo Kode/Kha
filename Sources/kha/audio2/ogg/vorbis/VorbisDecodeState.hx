@@ -356,7 +356,7 @@ class VorbisDecodeState
         return val;
     }
 
-    public function decodeRaw(c:Codebook)
+    public inline function decodeRaw(c:Codebook)
     {
         if (validBits < Setting.FAST_HUFFMAN_LENGTH){
             prepHuffman();
