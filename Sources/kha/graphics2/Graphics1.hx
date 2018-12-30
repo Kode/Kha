@@ -17,7 +17,7 @@ class Graphics1 implements kha.graphics1.Graphics {
 	}
 
 	public function begin(): Void {
-		if (texture == null) {
+		if (texture == null || (texture.realWidth != canvas.width || texture.realHeight != canvas.height)) {
 			texture = Image.create(canvas.width, canvas.height, TextureFormat.RGBA32, Usage.ReadableUsage);
 		}
 		pixels = texture.lock();

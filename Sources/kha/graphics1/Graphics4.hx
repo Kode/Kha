@@ -260,7 +260,8 @@ class Graphics4 implements kha.graphics4.Graphics {
 							untyped vsinput[element.name] = data4;
 							vindex += 4;
 						case VertexData.Float4x4:
-							
+						case Short2Norm:
+						case Short4Norm:
 					}
 				}
 				vsinputs.push(vsinput);
