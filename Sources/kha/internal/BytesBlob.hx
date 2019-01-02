@@ -170,44 +170,6 @@ class BytesBlob implements Resource {
 		}
 	}
 	
-	function readUtf8Char(position: { value: Int }): Int {
-		if (position.value >= length) return -1;
-		var c: Int = readU8(position.value);
-		++position.value;
-		var value: Int = 0;
-		if (!bit(c, 7)) {
-			value = c;
-		}
-		else if (bit(c, 7) && bit(c, 6) && !bit(c, 5)) { //110xxxxx 10xxxxxx
-			var a = c & 0x1f;
-			var c2 = readU8(position.value);
-			++position.value;
-			var b = c2 & 0x3f;
-			value = (a << 6) | b;
-		}
-		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && !bit(c, 4)) { //1110xxxx 10xxxxxx 10xxxxxx
-			//currently ignored
-			position.value += 2;
-		}
-		else if (bit(c, 7) && bit(c, 6) && bit(c, 5) && bit(c, 4) && !bit(c, 3)) { //11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-			//currently ignored
-			position.value += 3;
-		}
-		return value;
-	}
-	
-	function readUtf8Block(buffer: Vector<Int>, position: { value: Int }): String {
-		var bufferindex: Int = 0;
-		if (position.value >= length) return "";
-		while (bufferindex < bufferSize) {
-			var c = readUtf8Char(position);
-			if (c < 0) break;
-			buffer[bufferindex] = c;
-			++bufferindex;
-		}
-		return toText(buffer, bufferindex);
-	}
-	
 	static function toText(chars: Vector<Int>, length: Int): String {
 		var value = "";
 		for (i in 0...length) value += String.fromCharCode(chars[i]);
@@ -215,15 +177,7 @@ class BytesBlob implements Resource {
 	}
 
 	public function readUtf8String(): String {
-		var buffer = new Vector<Int>(bufferSize);
-		var text = "";
-		var start = 0;
-		if (length >= 3 && bytes.get(0) == 0xef && bytes.get(1) == 0xbb && bytes.get(2) == 0xbf) {
-			start = 3;
-		}
-		var position: { value: Int } = { value: start };
-		while (position.value < length) text += readUtf8Block(buffer, position);
-		return text;
+		return bytes.toString();
 	}
 	
 	public function toBytes(): Bytes {
