@@ -2,11 +2,7 @@ package kha.js;
 
 @:keep
 class AudioElementAudio {
-	@:noCompletion
-	public static function _compile(): Void {
-		
-	}
-	
+
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		return stream(sound, loop);
 	}

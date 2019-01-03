@@ -408,7 +408,6 @@ class SystemImpl {
 		}
 		else {
 			SystemImpl._hasWebAudio = false;
-			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
 
