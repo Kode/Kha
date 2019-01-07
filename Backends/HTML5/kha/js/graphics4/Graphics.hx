@@ -125,7 +125,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var error = SystemImpl.gl.getError();
 		switch (error) {
 			case GL.NO_ERROR:
-				
+
 			case GL.INVALID_ENUM:
 				trace("WebGL error: Invalid enum");
 			case GL.INVALID_VALUE:
@@ -291,7 +291,7 @@ class Graphics implements kha.graphics4.Graphics {
 			return 0x8008;
 		}
 	}
-	
+
 	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation,
 		alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
@@ -345,11 +345,11 @@ class Graphics implements kha.graphics4.Graphics {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		cast(texture, WebGLImage).setDepth(cast(stage, TextureUnit).value);
 	}
-	
+
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		//not implemented yet.
 	}
@@ -422,7 +422,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
+
 	}
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
@@ -454,7 +454,7 @@ class Graphics implements kha.graphics4.Graphics {
 			cubeMap.set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		cubeMap.setDepth(cast(stage, TextureUnit).value);
 	}
@@ -477,6 +477,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
+		currentPipeline = pipe;
 		pipe.set();
 		colorMaskRed = pipe.colorWriteMaskRed;
 		colorMaskGreen = pipe.colorWriteMaskGreen;
