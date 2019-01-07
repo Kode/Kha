@@ -477,6 +477,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
+		currentPipeline = pipe;
 		pipe.set();
 		colorMaskRed = pipe.colorWriteMaskRed;
 		colorMaskGreen = pipe.colorWriteMaskGreen;
