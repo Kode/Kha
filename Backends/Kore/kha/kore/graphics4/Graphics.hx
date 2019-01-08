@@ -331,6 +331,9 @@ class Graphics implements kha.graphics4.Graphics {
 		pipe.set();
 	}
 
+	@:functionCode('
+		Kore::Graphics4::setStencilReferenceValue(value);
+	')
 	public function setStencilReferenceValue(value: Int): Void {
 
 	}
