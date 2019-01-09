@@ -120,11 +120,9 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	public function compile(): Void {
-		var stencilReferenceValue = 0;
-		switch (this.stencilReferenceValue) {
-			case Static(value):
-				stencilReferenceValue = value;
-			default:
+		var stencilReferenceValue = switch (this.stencilReferenceValue) {
+			case Static(value): value;
+			default: 0;
 		}
 		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail,
 		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
@@ -198,34 +196,7 @@ class PipelineState extends PipelineStateBase {
 			break;
 		}
 
-		switch (depthMode) {
-		case 0:
-			pipeline->depthMode = Kore::Graphics4::ZCompareAlways;
-			break;
-		case 1:
-			pipeline->depthMode = Kore::Graphics4::ZCompareNever;
-			break;
-		case 2:
-			pipeline->depthMode = Kore::Graphics4::ZCompareEqual;
-			break;
-		case 3:
-			pipeline->depthMode = Kore::Graphics4::ZCompareNotEqual;
-			break;
-		case 4:
-			pipeline->depthMode = Kore::Graphics4::ZCompareLess;
-			break;
-		case 5:
-			pipeline->depthMode = Kore::Graphics4::ZCompareLessEqual;
-			break;
-		case 6:
-			pipeline->depthMode = Kore::Graphics4::ZCompareGreater;
-			break;
-		case 7:
-			pipeline->depthMode = Kore::Graphics4::ZCompareGreaterEqual;
-			break;
-		}
-		pipeline->depthWrite = depthWrite;
-
+		pipeline->depthWrite = convertCompareMode(depthWrite);
 		pipeline->stencilMode = convertCompareMode(stencilMode);
 		pipeline->stencilBothPass = convertStencilAction(stencilBothPass);
 		pipeline->stencilDepthFail = convertStencilAction(stencilDepthFail);
