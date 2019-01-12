@@ -24,7 +24,10 @@ class LoaderImpl {
 	}
 	
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
-		done(new Blob(File.getBytes(desc.files[0])));
+		// done(new Blob(File.getBytes(desc.files[0])));
+		var size = 0;
+		var bytes = kore_file_contents(StringHelper.convert(desc.files[0]), size);
+		done(new Blob(@:privateAccess new haxe.io.Bytes(bytes, size)));
 	}
 	
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
@@ -45,4 +48,6 @@ class LoaderImpl {
 	public static function getVideoFormats(): Array<String> {
 		return [videoFormat()];
 	}
+
+	@:hlNative("std", "kore_file_contents") static function kore_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer { return null; }
 }

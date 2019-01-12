@@ -98,3 +98,25 @@ extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample)
 extern "C" void hl_run_kore() {
 	Kore::System::start();
 }
+
+#include <Kore/IO/FileReader.h>
+
+extern "C" vbyte *hl_kore_file_contents(vbyte *name, int *size) {
+	int len;
+	int p = 0;
+	vbyte *content;
+	Kore::FileReader file;
+	if (!file.open((char*)name))
+		return NULL;
+	hl_blocking(true);
+	len = file.size();
+	if (size) *size = len;
+	hl_blocking(false);
+	content = (vbyte*)hl_gc_alloc_noptr(size ? len : len+1);
+	hl_blocking(true);
+	if (!size) content[len] = 0; // final 0 for UTF8
+	file.read(content, len);
+	file.close();
+	hl_blocking(false);
+	return content;
+}
