@@ -164,10 +164,14 @@ class Image implements Canvas implements Resource {
 	private var pixels: Bytes = null;
 
 	public function getPixels(): Bytes {
-		if (renderTarget_ == null) return null;
-		if (pixels == null) pixels = Bytes.alloc(formatByteSize(format) * width * height);
-		Krom.getRenderTargetPixels(renderTarget_, pixels.getData());
-		return pixels;
+		if (renderTarget_ != null) {
+			if (pixels == null) pixels = Bytes.alloc(formatByteSize(format) * width * height);
+			Krom.getRenderTargetPixels(renderTarget_, pixels.getData());
+			return pixels;
+		}
+		else {
+			return Bytes.ofData(Krom.getTexturePixels(texture_));
+		}
 	}
 
 	private static function formatByteSize(format: TextureFormat): Int {
