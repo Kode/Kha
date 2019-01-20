@@ -7,6 +7,9 @@ project.addIncludeDirs('hl/src', 'hl/include/pcre');
 
 if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx-hl"');
 if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios-hl"');
+if (platform !== Platform.Windows || audio !== AudioApi.DirectSound) {
+	project.addDefine('KORE_MULTITHREADED_AUDIO');
+}
 
 project.addDefine('KORE');
 project.addDefine('KOREC');
