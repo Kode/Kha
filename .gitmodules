@@ -9,11 +9,11 @@
 [submodule "Backends/Kore/khacpp"]
 	path = Backends/Kore/khacpp
 	url = https://github.com/Kode/khacpp.git
-	branch = master
+	branch = jscompat
 [submodule "Tools/haxe"]
 	path = Tools/haxe
 	url = https://github.com/Kode/haxe_bin.git
-	branch = master
+	branch = jscompat
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
 	url = https://github.com/Kode/oggenc_bin.git
