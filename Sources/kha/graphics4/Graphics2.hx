@@ -48,9 +48,6 @@ class ImageShaderPainter {
 	var textureLocation: TextureUnit;
 	public var pipeline(get, set): PipelineState;
 
-	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
-	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
-
 	public function new(g4: Graphics) {
 		this.g = g4;
 		bufferIndex = 0;
@@ -178,12 +175,6 @@ class ImageShaderPainter {
 		g.setTexture(textureLocation, lastTexture);
 		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
 		g.setMatrix(projectionLocation, projectionMatrix);
-		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
-		//	g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
-		//}
-		//else {
-		//	g.setBlendingMode(sourceBlend, destinationBlend);
-		//}
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -275,9 +266,6 @@ class ColoredShaderPainter {
 	var myPipeline: PipelineState = null;
 	var projectionLocation: ConstantLocation;
 	public var pipeline(get, set): PipelineState;
-
-	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
-	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -446,12 +434,6 @@ class ColoredShaderPainter {
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
 		g.setMatrix(projectionLocation, projectionMatrix);
-		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
-		//	g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
-		//}
-		//else {
-		//	g.setBlendingMode(sourceBlend, destinationBlend);
-		//}
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -467,12 +449,6 @@ class ColoredShaderPainter {
 		g.setIndexBuffer(triangleIndexBuffer);
 		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
 		g.setMatrix(projectionLocation, projectionMatrix);
-		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
-		//	g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
-		//}
-		//else {
-		//	g.setBlendingMode(sourceBlend, destinationBlend);
-		//}
 
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
@@ -539,9 +515,6 @@ class TextShaderPainter {
 	public var pipeline(get, set): PipelineState;
 	public var fontSize: Int;
 	var bilinear: Bool = false;
-
-	public var sourceBlend: BlendingFactor = BlendingFactor.Undefined;
-	public var destinationBlend: BlendingFactor = BlendingFactor.Undefined;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -671,12 +644,6 @@ class TextShaderPainter {
 		g.setTexture(textureLocation, lastTexture);
 		g.setMatrix(projectionLocation, projectionMatrix);
 		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
-		//if (sourceBlend == BlendingOperation.Undefined || destinationBlend == BlendingOperation.Undefined) {
-		//	g.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
-		//}
-		//else {
-		//	g.setBlendingMode(sourceBlend, destinationBlend);
-		//}
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
