@@ -37,17 +37,13 @@ class LoaderImpl {
 	}
 	
 	public static function loadVideoFromDescription(desc: Dynamic, done: Video -> Void, failed: AssetError -> Void) {
-		done(null); //new kha.kore.Video(desc.files[0]));
-	}
-	
-	// @:functionCode('return ::String(Kore::System::videoFormats()[0]);')
-	private static function videoFormat(): String {
-		return "";
+		done(new kha.korehl.Video(desc.files[0]));
 	}
 	
 	public static function getVideoFormats(): Array<String> {
-		return [videoFormat()];
+		return [StringHelper.fromBytes(kore_video_format())];
 	}
 
 	@:hlNative("std", "kore_file_contents") static function kore_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer { return null; }
+	@:hlNative("std", "kore_video_format") static function kore_video_format(): Pointer { return null; }
 }
