@@ -372,25 +372,30 @@ class ColoredShaderPainter {
 
 	public function setRectColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
+		
 		var a: FastFloat = opacity * color.A;
-		rectVertices.set(baseIndex +  3, color.R);
-		rectVertices.set(baseIndex +  4, color.G);
-		rectVertices.set(baseIndex +  5, color.B);
+		var r: FastFloat = a * color.R;
+		var g: FastFloat = a * color.G;
+		var b: FastFloat = a * color.B;
+
+		rectVertices.set(baseIndex +  3, r);
+		rectVertices.set(baseIndex +  4, g);
+		rectVertices.set(baseIndex +  5, b);
 		rectVertices.set(baseIndex +  6, a);
 
-		rectVertices.set(baseIndex + 10, color.R);
-		rectVertices.set(baseIndex + 11, color.G);
-		rectVertices.set(baseIndex + 12, color.B);
+		rectVertices.set(baseIndex + 10, r);
+		rectVertices.set(baseIndex + 11, g);
+		rectVertices.set(baseIndex + 12, b);
 		rectVertices.set(baseIndex + 13, a);
 
-		rectVertices.set(baseIndex + 17, color.R);
-		rectVertices.set(baseIndex + 18, color.G);
-		rectVertices.set(baseIndex + 19, color.B);
+		rectVertices.set(baseIndex + 17, r);
+		rectVertices.set(baseIndex + 18, g);
+		rectVertices.set(baseIndex + 19, b);
 		rectVertices.set(baseIndex + 20, a);
 
-		rectVertices.set(baseIndex + 24, color.R);
-		rectVertices.set(baseIndex + 25, color.G);
-		rectVertices.set(baseIndex + 26, color.B);
+		rectVertices.set(baseIndex + 24, r);
+		rectVertices.set(baseIndex + 25, g);
+		rectVertices.set(baseIndex + 26, b);
 		rectVertices.set(baseIndex + 27, a);
 	}
 
@@ -411,20 +416,25 @@ class ColoredShaderPainter {
 
 	private function setTriColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+
 		var a: FastFloat = opacity * color.A;
-		triangleVertices.set(baseIndex +  3, color.R);
-		triangleVertices.set(baseIndex +  4, color.G);
-		triangleVertices.set(baseIndex +  5, color.B);
+		var r: FastFloat = a * color.R;
+		var g: FastFloat = a * color.G;
+		var b: FastFloat = a * color.B;
+
+		triangleVertices.set(baseIndex +  3, r);
+		triangleVertices.set(baseIndex +  4, g);
+		triangleVertices.set(baseIndex +  5, b);
 		triangleVertices.set(baseIndex +  6, a);
 
-		triangleVertices.set(baseIndex + 10, color.R);
-		triangleVertices.set(baseIndex + 11, color.G);
-		triangleVertices.set(baseIndex + 12, color.B);
+		triangleVertices.set(baseIndex + 10, r);
+		triangleVertices.set(baseIndex + 11, g);
+		triangleVertices.set(baseIndex + 12, b);
 		triangleVertices.set(baseIndex + 13, a);
 
-		triangleVertices.set(baseIndex + 17, color.R);
-		triangleVertices.set(baseIndex + 18, color.G);
-		triangleVertices.set(baseIndex + 19, color.B);
+		triangleVertices.set(baseIndex + 17, r);
+		triangleVertices.set(baseIndex + 18, g);
+		triangleVertices.set(baseIndex + 19, b);
 		triangleVertices.set(baseIndex + 20, a);
 	}
 
@@ -1125,9 +1135,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 		shaderPipeline.fragmentShader = Shaders.painter_colored_frag;
 		shaderPipeline.vertexShader = Shaders.painter_colored_vert;
 		shaderPipeline.inputLayout = [structure];
-		shaderPipeline.blendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.blendSource = BlendingFactor.BlendOne;
 		shaderPipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
-		shaderPipeline.alphaBlendSource = BlendingFactor.SourceAlpha;
+		shaderPipeline.alphaBlendSource = BlendingFactor.BlendOne;
 		shaderPipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 		return shaderPipeline;
 	}
