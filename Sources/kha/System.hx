@@ -256,7 +256,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function isFullscreen(): Bool {
-		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.Fullscreen;
+		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.ExclusiveFullscreen;
 	}
 
 	@:deprecated("Use the kha.Window API instead")
