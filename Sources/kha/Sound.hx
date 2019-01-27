@@ -10,6 +10,7 @@ import kha.audio2.ogg.vorbis.Reader;
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
+	public var length: Float = 0; // in seconds
 	
 	public function new() {
 		
@@ -27,6 +28,7 @@ class Sound implements Resource {
 		var soundBytes = output.getBytes();
 		var count = Std.int(soundBytes.length / 4);
 		if (header.channel == 1) {
+			length = count / header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count * 2);
 			for (i in 0...count) {
 				uncompressedData[i * 2 + 0] = soundBytes.getFloat(i * 4);
@@ -34,6 +36,7 @@ class Sound implements Resource {
 			}
 		}
 		else {
+			length = count / 2 / header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count);
 			for (i in 0...count) {
 				uncompressedData[i] = soundBytes.getFloat(i * 4);
