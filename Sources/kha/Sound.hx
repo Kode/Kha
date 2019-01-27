@@ -28,7 +28,7 @@ class Sound implements Resource {
 		var soundBytes = output.getBytes();
 		var count = Std.int(soundBytes.length / 4);
 		if (header.channel == 1) {
-			length = count / header.sampleRate;
+			length = count / kha.audio2.Audio.samplesPerSecond;// header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count * 2);
 			for (i in 0...count) {
 				uncompressedData[i * 2 + 0] = soundBytes.getFloat(i * 4);
@@ -36,7 +36,7 @@ class Sound implements Resource {
 			}
 		}
 		else {
-			length = count / 2 / header.sampleRate;
+			length = count / 2 / kha.audio2.Audio.samplesPerSecond; //header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count);
 			for (i in 0...count) {
 				uncompressedData[i] = soundBytes.getFloat(i * 4);
