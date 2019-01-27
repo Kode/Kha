@@ -2,6 +2,11 @@ package kha.audio2;
 
 extern class Audio {
 	/**
+	 * The samples per second natively used by the target system.
+	 */
+	public static var samplesPerSecond: Int;
+
+	/**
 	 * Requests additional audio data.
 	 * Beware: This is called from a separate audio thread on some targets.
 	 * See kha.audio2.Audio1 for sample code.

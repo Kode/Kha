@@ -329,6 +329,7 @@ void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
+	::kha::audio2::Audio_obj::samplesPerSecond = Kore::Audio2::samplesPerSecond;
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
