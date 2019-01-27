@@ -68,13 +68,18 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	public var length(get, null): Float; // Seconds
 	
 	private function get_length(): Float {
-		return data.length / 44100 / 2; // 44.1 khz in stereo
+		return data.length / kha.audio2.Audio.samplesPerSecond / 2; // 44.1 khz in stereo
 	}
 
-	public var position(get, null): Float; // Seconds
+	public var position(get, set): Float; // Seconds
 	
 	private function get_position(): Float {
-		return myPosition / 44100 / 2;
+		return myPosition / kha.audio2.Audio.samplesPerSecond / 2;
+	}
+
+	private function set_position(value: Float): Float {
+		myPosition = Math.round(value * kha.audio2.Audio.samplesPerSecond * 2);
+		return value;
 	}
 	
 	public var volume(get, set): Float;
