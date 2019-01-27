@@ -63,24 +63,28 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		atend = true;
 	}
 
-	public var length(get, null): Int; // Miliseconds
+	public var length(get, null): Float; // Seconds
 	
 	@:functionCode('
 		if (vorbis == NULL) return 0;
-		return stb_vorbis_stream_length_in_seconds(vorbis) * 1000;
+		return stb_vorbis_stream_length_in_seconds(vorbis);
 	')
 	private function get_length(): Int {
 		return 0;
 	}
 
-	public var position(get, null): Int; // Miliseconds
+	public var position(get, set): Float; // Seconds
 	
 	@:functionCode('
 		 if (vorbis == NULL) return 0;
-		return stb_vorbis_get_sample_offset(vorbis) / stb_vorbis_stream_length_in_samples(vorbis) * 1000;
+		return stb_vorbis_get_sample_offset(vorbis) / stb_vorbis_stream_length_in_samples(vorbis);
 	')
-	private function get_position(): Int {
+	private function get_position(): Float {
 		return 0;
+	}
+
+	private function set_position(value: Float): Float {
+		return value;
 	}
 	
 	public var volume(get, set): Float;
