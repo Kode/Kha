@@ -782,6 +782,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	private static var videoPipeline: PipelineState;
 	private var canvas: Canvas;
 	private var g: Graphics;
+	static var current: Graphics2 = null;
 
 	public function new(canvas: Canvas) {
 		super();
@@ -1039,6 +1040,13 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		g.begin();
 		if (clear) this.clear(clearColor);
 		setProjection();
@@ -1058,6 +1066,13 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function end(): Void {
 		flush();
 		g.end();
+
+		if (current == this) {
+			current = null;
+		}
+		else {
+			throw "Begin before you end";
+		}
 	}
 
 	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
