@@ -103,6 +103,17 @@ class Image implements Canvas implements Resource {
 
 	private function new(readable: Bool) {
 		this.readable = readable;
+		nullify();
+		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+	}
+
+	@:functionCode("texture = nullptr; renderTarget = nullptr; textureArray = nullptr; textureArrayTextures = nullptr;")
+	function nullify() {
+
+	}
+
+	@:void static function finalize(image: Image): Void {
+		image.unload();
 	}
 
 	private static function getRenderTargetFormat(format: TextureFormat): Int {
