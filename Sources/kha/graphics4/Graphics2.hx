@@ -29,9 +29,21 @@ import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
 
+class PipelineCache {
+	public var pipeline: PipelineState;
+	public var projectionLocation: ConstantLocation;
+	public var textureLocation: TextureUnit;
+
+	public function new(pipeline: PipelineState) {
+		this.pipeline = pipeline;
+		projectionLocation = pipeline.getConstantLocation("projectionMatrix");
+		textureLocation = pipeline.getTextureUnit("tex");
+	}
+}
+
 class ImageShaderPainter {
 	var projectionMatrix: FastMatrix4;
-	static var shaderPipeline: PipelineState = null;
+	static var standardImagePipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1500;
 	static inline var vertexSize: Int = 9;
@@ -43,34 +55,24 @@ class ImageShaderPainter {
 	var bilinear: Bool = false;
 	var bilinearMipmaps: Bool = false;
 	var g: Graphics;
-	var myPipeline: PipelineState = null;
-	var projectionLocation: ConstantLocation;
-	var textureLocation: TextureUnit;
-	public var pipeline(get, set): PipelineState;
+	var myPipeline: PipelineCache = null;
+	public var pipeline(get, set): PipelineCache;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
 		bufferIndex = 0;
 		initShaders();
+		myPipeline = standardImagePipeline;
 		initBuffers();
-		projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
-		textureLocation = shaderPipeline.getTextureUnit("tex");
 	}
 
-	private function get_pipeline(): PipelineState {
+	private function get_pipeline(): PipelineCache {
 		return myPipeline;
 	}
 
-	private function set_pipeline(pipe: PipelineState): PipelineState {
-		if (pipe == null) {
-			projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
-			textureLocation = shaderPipeline.getTextureUnit("tex");
-		}
-		else {
-			projectionLocation = pipe.getConstantLocation("projectionMatrix");
-			textureLocation = pipe.getTextureUnit("tex");
-		}
-		return myPipeline = pipe;
+	private function set_pipeline(pipe: PipelineCache): PipelineCache {
+		myPipeline = pipe != null ? pipe : standardImagePipeline;
+		return myPipeline;
 	}
 
 	public function setProjection(projectionMatrix: FastMatrix4): Void {
@@ -81,9 +83,10 @@ class ImageShaderPainter {
 		if (structure == null) {
 			structure = Graphics2.createImageVertexStructure();
 		}
-		if (shaderPipeline == null) {
-			shaderPipeline = Graphics2.createImagePipeline(structure);
-			shaderPipeline.compile();
+		if (standardImagePipeline == null) {
+			var pipeline = Graphics2.createImagePipeline(structure);
+			pipeline.compile();
+			standardImagePipeline = new PipelineCache(pipeline);
 		}
 	}
 
@@ -171,14 +174,14 @@ class ImageShaderPainter {
 		rectVertexBuffer.unlock();
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
-		g.setTexture(textureLocation, lastTexture);
-		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
-		g.setMatrix(projectionLocation, projectionMatrix);
+		g.setPipeline(myPipeline.pipeline);
+		g.setTexture(myPipeline.textureLocation, lastTexture);
+		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
+		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
-		g.setTexture(textureLocation, null);
+		g.setTexture(myPipeline.textureLocation, null);
 		bufferIndex = 0;
 		rectVertices = rectVertexBuffer.lock();
 	}
@@ -247,7 +250,7 @@ class ImageShaderPainter {
 
 class ColoredShaderPainter {
 	var projectionMatrix: FastMatrix4;
-	static var shaderPipeline: PipelineState = null;
+	static var standardColorPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 
 	static inline var bufferSize: Int = 100;
@@ -263,31 +266,25 @@ class ColoredShaderPainter {
 	static var triangleIndexBuffer: IndexBuffer;
 
 	var g: Graphics;
-	var myPipeline: PipelineState = null;
-	var projectionLocation: ConstantLocation;
-	public var pipeline(get, set): PipelineState;
+	var myPipeline: PipelineCache = null;
+	public var pipeline(get, set): PipelineCache;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
 		bufferIndex = 0;
 		triangleBufferIndex = 0;
 		initShaders();
+		myPipeline = standardColorPipeline;
 		initBuffers();
-		projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
 	}
 
-	private function get_pipeline(): PipelineState {
+	private function get_pipeline(): PipelineCache {
 		return myPipeline;
 	}
 
-	private function set_pipeline(pipe: PipelineState): PipelineState {
-		if (pipe == null) {
-			projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
-		}
-		else {
-			projectionLocation = pipe.getConstantLocation("projectionMatrix");
-		}
-		return myPipeline = pipe;
+	private function set_pipeline(pipe: PipelineCache): PipelineCache {
+		myPipeline = pipe != null ? pipe : standardColorPipeline;
+		return myPipeline;
 	}
 
 	public function setProjection(projectionMatrix: FastMatrix4): Void {
@@ -298,9 +295,10 @@ class ColoredShaderPainter {
 		if (structure == null) {
 			structure = Graphics2.createColoredVertexStructure();
 		}
-		if (shaderPipeline == null) {
-			shaderPipeline = Graphics2.createColoredPipeline(structure);
-			shaderPipeline.compile();
+		if (standardColorPipeline == null) {
+			var pipeline = Graphics2.createColoredPipeline(structure);
+			pipeline.compile();
+			standardColorPipeline = new PipelineCache(pipeline);
 		}
 	}
 
@@ -432,8 +430,8 @@ class ColoredShaderPainter {
 		rectVertexBuffer.unlock();
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
-		g.setMatrix(projectionLocation, projectionMatrix);
+		g.setPipeline(myPipeline.pipeline);
+		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -447,8 +445,8 @@ class ColoredShaderPainter {
 		triangleVertexBuffer.unlock();
 		g.setVertexBuffer(triangleVertexBuffer);
 		g.setIndexBuffer(triangleIndexBuffer);
-		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
-		g.setMatrix(projectionLocation, projectionMatrix);
+		g.setPipeline(myPipeline.pipeline);
+		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
@@ -499,7 +497,7 @@ class ColoredShaderPainter {
 #end
 class TextShaderPainter {
 	var projectionMatrix: FastMatrix4;
-	static var shaderPipeline: PipelineState = null;
+	static var standardTextPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 100;
 	static var bufferIndex: Int;
@@ -509,10 +507,8 @@ class TextShaderPainter {
 	var font: Kravur;
 	static var lastTexture: Image;
 	var g: Graphics;
-	var myPipeline: PipelineState = null;
-	var projectionLocation: ConstantLocation;
-	var textureLocation: TextureUnit;
-	public var pipeline(get, set): PipelineState;
+	var myPipeline: PipelineCache = null;
+	public var pipeline(get, set): PipelineCache;
 	public var fontSize: Int;
 	var bilinear: Bool = false;
 
@@ -520,25 +516,17 @@ class TextShaderPainter {
 		this.g = g4;
 		bufferIndex = 0;
 		initShaders();
+		myPipeline = standardTextPipeline;
 		initBuffers();
-		projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
-		textureLocation = shaderPipeline.getTextureUnit("tex");
 	}
 
-	private function get_pipeline(): PipelineState {
+	private function get_pipeline(): PipelineCache {
 		return myPipeline;
 	}
 
-	private function set_pipeline(pipe: PipelineState): PipelineState {
-		if (pipe == null) {
-			projectionLocation = shaderPipeline.getConstantLocation("projectionMatrix");
-			textureLocation = shaderPipeline.getTextureUnit("tex");
-		}
-		else {
-			projectionLocation = pipe.getConstantLocation("projectionMatrix");
-			textureLocation = pipe.getTextureUnit("tex");
-		}
-		return myPipeline = pipe;
+	private function set_pipeline(pipe: PipelineCache): PipelineCache {
+		myPipeline = pipe != null ? pipe : standardTextPipeline;
+		return myPipeline;
 	}
 
 	public function setProjection(projectionMatrix: FastMatrix4): Void {
@@ -549,9 +537,10 @@ class TextShaderPainter {
 		if (structure == null) {
 			structure = Graphics2.createTextVertexStructure();
 		}
-		if (shaderPipeline == null) {
-			shaderPipeline = Graphics2.createTextPipeline(structure);
-			shaderPipeline.compile();
+		if (standardTextPipeline == null) {
+			var pipeline = Graphics2.createTextPipeline(structure);
+			pipeline.compile();
+			standardTextPipeline = new PipelineCache(pipeline);
 		}
 	}
 
@@ -640,14 +629,14 @@ class TextShaderPainter {
 		rectVertexBuffer.unlock();
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setPipeline(pipeline == null ? shaderPipeline : pipeline);
-		g.setTexture(textureLocation, lastTexture);
-		g.setMatrix(projectionLocation, projectionMatrix);
-		g.setTextureParameters(textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
+		g.setPipeline(myPipeline.pipeline);
+		g.setTexture(myPipeline.textureLocation, lastTexture);
+		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
+		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
-		g.setTexture(textureLocation, null);
+		g.setTexture(myPipeline.textureLocation, null);
 		bufferIndex = 0;
 		rectVertices = rectVertexBuffer.lock();
 	}
@@ -1021,12 +1010,25 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myMipmapScaleQuality = value;
 	}
 
+	var pipelineCache = new Map<PipelineState, PipelineCache>();
+
 	override private function setPipeline(pipeline: PipelineState): Void {
 		flush();
-		imagePainter.pipeline = pipeline;
-		coloredPainter.pipeline = pipeline;
-		textPainter.pipeline = pipeline;
-		if (pipeline != null) g.setPipeline(pipeline);
+		if (pipeline == null) {
+			imagePainter.pipeline = null;
+			coloredPainter.pipeline = null;
+			textPainter.pipeline = null;	
+		}
+		else {
+			var cache = pipelineCache[pipeline];
+			if (cache == null) {
+				cache = new PipelineCache(pipeline);
+				pipelineCache[pipeline] = cache;
+			}
+			imagePainter.pipeline = cache;
+			coloredPainter.pipeline = cache;
+			textPainter.pipeline = cache;
+		}
 	}
 
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
