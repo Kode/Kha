@@ -29,7 +29,7 @@ namespace {
 
 	void update() {
 		if (paused) return;
-		//Kore::Audio::update();
+		Kore::Audio2::update();
 
 		int windowCount = Kore::Window::count();
 
@@ -46,17 +46,21 @@ namespace {
 		}
 	}
 
+	bool mixThreadregistered = false;
+
 	void mix(int samples) {
 		using namespace Kore;
 
-// #ifdef KORE_MULTITHREADED_AUDIO
-// 		if (!mixThreadregistered) {
-// 			__hxcpp_register_current_thread();
-// 			mixThreadregistered = true;
-// 		}
-// #endif
+#ifdef KORE_MULTITHREADED_AUDIO
+		if (!mixThreadregistered) {
+			vdynamic *ret;
+			hl_register_thread(&ret);
+			mixThreadregistered = true;
+		}
+		hl_blocking(true);
+#endif
 
-		//audioCallCallback(samples); // TODO: HL throws "Can't lock GC in unregistered thread"
+		audioCallCallback(samples);
 
 		for (int i = 0; i < samples; ++i) {
 			float value = audioReadSample();
@@ -64,6 +68,10 @@ namespace {
 			Audio2::buffer.writeLocation += 4;
 			if (Audio2::buffer.writeLocation >= Audio2::buffer.dataSize) Audio2::buffer.writeLocation = 0;
 		}
+
+#ifdef KORE_MULTITHREADED_AUDIO
+		hl_blocking(false);
+#endif
 	}
 }
 

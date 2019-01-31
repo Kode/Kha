@@ -68,7 +68,11 @@ if (platform !== Platform.Android) {
 	project.addExcludes('Backends/Kore/khacpp/src/hx/AndroidCompat.cpp');
 }
 
-if (platform === Platform.Windows) project.addDefine('HX_WINDOWS');
+if (platform === Platform.Windows) {
+	project.addDefine('HX_WINDOWS');
+	project.addLib('Shlwapi');
+	project.addLib('Crypt32');
+}
 if (platform === Platform.WindowsApp) {
 	project.addDefine('HX_WINDOWS');
 	project.addDefine('HX_WINRT');
@@ -103,9 +107,7 @@ if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 // project:addDefine('HXCPP_SCRIPTABLE');
 project.addDefine('STATIC_LINK');
 project.addDefine('PCRE_STATIC');
-project.addDefine('HXCPP_SET_PROP');
 project.addDefine('HXCPP_VISIT_ALLOCS');
-project.addDefine('HXCPP');
 project.addDefine('KHA');
 project.addDefine('KORE');
 project.addDefine('ROTATE90');
