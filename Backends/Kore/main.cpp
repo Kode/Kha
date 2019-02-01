@@ -32,10 +32,6 @@
 	//#include <Kore/Vr/VrInterface.h>
 #endif
 
-extern "C" const char* hxRunLibrary();
-extern "C" void hxcpp_set_top_of_stack();
-void __hxcpp_register_current_thread();
-
 namespace {
 	using kha::SystemImpl_obj;
 	using kha::input::Sensor_obj;
@@ -241,6 +237,8 @@ namespace {
 			mixThreadregistered = true;
 		}
 #endif
+		//int addr = 0;
+		//Kore::log(Info, "mix address is %x", &addr);
 
 		::kha::audio2::Audio_obj::_callCallback(samples);
 
@@ -337,13 +335,23 @@ void run_kore() {
 #endif
 }
 
-int kore(int argc, char** argv) {
-	Kore::log(Kore::Info, "Initializing Haxe libraries");
-	hxcpp_set_top_of_stack();
-	const char* err = hxRunLibrary();
-	if (err) {
-		Kore::log(Kore::Error, "Error %s", err);
-		return 1;
+extern "C" void __hxcpp_main();
+extern int _hxcpp_argc;
+extern char **_hxcpp_argv;
+
+int kore(int argc, char **argv) {
+	_hxcpp_argc = argc;
+	_hxcpp_argv = argv;
+	HX_TOP_OF_STACK
+	hx::Boot();
+	try {
+		__boot_all();
+		__hxcpp_main();
+	}
+	catch (Dynamic e) {
+		__hx_dump_stack();
+		Kore::log(Kore::Error, "Error %s", e == null() ? "null" : e->toString().__CStr());
+		return -1;
 	}
 	return 0;
 }
