@@ -129,55 +129,57 @@ class SystemImpl {
 	}
 
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures, Krom.KROM_API);
-
-		start = Krom.getTime();
-
 		haxe.Log.trace = function(v: Dynamic, ?infos: haxe.PosInfos) {
 			var message = infos != null ? infos.className + ":" + infos.lineNumber + ": " + v : Std.string(v);
 			Krom.log(message.substr(0, 512 - 1));
 		};
 
-		new Window(0);
-		Scheduler.init();
-		Shaders.init();
+		kha.Assets.loadKhabindJsLibs(() -> {
+			Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures, Krom.KROM_API);
 
-		var g4 = new kha.krom.Graphics();
-		framebuffer = new Framebuffer(0, null, null, g4);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.graphics4.Graphics2(framebuffer), g4);
-		Krom.setCallback(renderCallback);
-		Krom.setDropFilesCallback(dropFilesCallback);
-		Krom.setCutCopyPasteCallback(cutCallback, copyCallback, pasteCallback);
-		Krom.setApplicationStateCallback(foregroundCallback, resumeCallback, pauseCallback, backgroundCallback, shutdownCallback);
+			start = Krom.getTime();
+			
+			new Window(0);
+			Scheduler.init();
+			Shaders.init();
 
-		keyboard = new Keyboard();
-		mouse = new MouseImpl();
-		pen = new Pen();
-		gamepads = new Array<Gamepad>();
-		for (i in 0...maxGamepads) {
-			gamepads[i] = new Gamepad(i);
-		}
+			var g4 = new kha.krom.Graphics();
+			framebuffer = new Framebuffer(0, null, null, g4);
+			framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.graphics4.Graphics2(framebuffer), g4);
+			Krom.setCallback(renderCallback);
+			Krom.setDropFilesCallback(dropFilesCallback);
+			Krom.setCutCopyPasteCallback(cutCallback, copyCallback, pasteCallback);
+			Krom.setApplicationStateCallback(foregroundCallback, resumeCallback, pauseCallback, backgroundCallback, shutdownCallback);
 
-		Krom.setKeyboardDownCallback(keyboardDownCallback);
-		Krom.setKeyboardUpCallback(keyboardUpCallback);
-		Krom.setKeyboardPressCallback(keyboardPressCallback);
-		Krom.setMouseDownCallback(mouseDownCallback);
-		Krom.setMouseUpCallback(mouseUpCallback);
-		Krom.setMouseMoveCallback(mouseMoveCallback);
-		Krom.setMouseWheelCallback(mouseWheelCallback);
-		Krom.setPenDownCallback(penDownCallback);
-		Krom.setPenUpCallback(penUpCallback);
-		Krom.setPenMoveCallback(penMoveCallback);
-		Krom.setGamepadAxisCallback(gamepadAxisCallback);
-		Krom.setGamepadButtonCallback(gamepadButtonCallback);
+			keyboard = new Keyboard();
+			mouse = new MouseImpl();
+			pen = new Pen();
+			gamepads = new Array<Gamepad>();
+			for (i in 0...maxGamepads) {
+				gamepads[i] = new Gamepad(i);
+			}
 
-		kha.audio2.Audio._init();
-		kha.audio1.Audio._init();
-		Krom.setAudioCallback(audioCallback);
+			Krom.setKeyboardDownCallback(keyboardDownCallback);
+			Krom.setKeyboardUpCallback(keyboardUpCallback);
+			Krom.setKeyboardPressCallback(keyboardPressCallback);
+			Krom.setMouseDownCallback(mouseDownCallback);
+			Krom.setMouseUpCallback(mouseUpCallback);
+			Krom.setMouseMoveCallback(mouseMoveCallback);
+			Krom.setMouseWheelCallback(mouseWheelCallback);
+			Krom.setPenDownCallback(penDownCallback);
+			Krom.setPenUpCallback(penUpCallback);
+			Krom.setPenMoveCallback(penMoveCallback);
+			Krom.setGamepadAxisCallback(gamepadAxisCallback);
+			Krom.setGamepadButtonCallback(gamepadButtonCallback);
 
-		Scheduler.start();
+			kha.audio2.Audio._init();
+			kha.audio1.Audio._init();
+			Krom.setAudioCallback(audioCallback);
 
-		callback(Window.get(0));
+			Scheduler.start();
+
+			callback(Window.get(0));
+		});
 	}
 
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {

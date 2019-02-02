@@ -30,3 +30,7 @@
 	path = Kinc
 	url = https://github.com/Kode/Kinc.git
 	branch = master
+[submodule "Tools/webidl"]
+	path = Tools/webidl
+	url = https://github.com/ncannasse/webidl.git
+	branch = master

@@ -65,8 +65,8 @@ private class VideoList {
 	}
 }
 
-class Assets {
-	public static var images: ImageList = new ImageList();
+@:build(kha.internal.AssetsBuilder.buildAssets())
+class Assets {	public static var images: ImageList = new ImageList();
 	public static var sounds: SoundList = new SoundList();
 	public static var blobs: BlobList = new BlobList();
 	public static var fonts: FontList = new FontList();

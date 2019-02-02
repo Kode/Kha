@@ -60,38 +60,40 @@ class SystemImpl {
 	}
 
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		SystemImpl.options = options;
-		#if kha_debug_html5
-		Browser.window.onerror = cast errorHandler;
-		var electron = untyped __js__("require('electron')");
-		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
-			electron.webFrame.setZoomLevelLimits(1, 1);
-		}
-		var wndOpts = {
-			type: 'showWindow', title: options.title,
-			x: options.window.x, y: options.window.y,
-			width: options.width, height: options.height,
-		}
-		electron.ipcRenderer.send('asynchronous-message', wndOpts);		// Wait a second so the debugger can attach
-		Browser.window.setTimeout(function () {
+		kha.Assets.loadKhabindJsLibs(() -> {
+			SystemImpl.options = options;
+			#if kha_debug_html5
+			Browser.window.onerror = cast errorHandler;
+			var electron = untyped __js__("require('electron')");
+			if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
+				electron.webFrame.setZoomLevelLimits(1, 1);
+			}
+			var wndOpts = {
+				type: 'showWindow', title: options.title,
+				x: options.window.x, y: options.window.y,
+				width: options.width, height: options.height,
+			}
+			electron.ipcRenderer.send('asynchronous-message', wndOpts);		// Wait a second so the debugger can attach
+			Browser.window.setTimeout(function () {
+				initSecondStep(callback);
+			}, 1000);
+			#else
+			mobile = isMobile();
+			ios = isIOS();
+			chrome = isChrome();
+			firefox = isFirefox();
+			ie = isIE();
+
+			if (mobile || chrome) {
+				mobileAudioPlaying = false;
+			}
+			else {
+				mobileAudioPlaying = true;
+			}
+
 			initSecondStep(callback);
-		}, 1000);
-		#else
-		mobile = isMobile();
-		ios = isIOS();
-		chrome = isChrome();
-		firefox = isFirefox();
-		ie = isIE();
-
-		if (mobile || chrome) {
-			mobileAudioPlaying = false;
-		}
-		else {
-			mobileAudioPlaying = true;
-		}
-
-		initSecondStep(callback);
-		#end
+			#end
+		});
 	}
 
 	private static function initSecondStep(callback: Window -> Void): Void {

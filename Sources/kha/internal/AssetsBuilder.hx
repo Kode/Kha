@@ -11,6 +11,12 @@ import sys.io.File;
 
 using StringTools;
 
+typedef AssetFile = {
+	name:String,
+	files:Array<String>,
+	type:String
+}
+
 class AssetsBuilder {
 	public static function findResources(): String {
 		#if macro
@@ -47,7 +53,7 @@ class AssetsBuilder {
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
 		var content = Json.parse(File.getContent(findResources() + "files.json"));
-		var files: Iterable<Dynamic> = content.files;
+		var files: Iterable<AssetFile> = content.files;
 
 		var names = new Array<Expr>();
 
@@ -200,6 +206,57 @@ class AssetsBuilder {
 			kind: FVar(macro: Array<String>, macro $a { names }),
 			pos: Context.currentPos()
 		});
+
+		return fields;
+	}
+
+	static public macro function buildAssets():Array<Field> {
+		var fields = Context.getBuildFields();
+		var khabindLibs:Iterable<Dynamic> = Json.parse(File.getContent(findResources() + "khabindLibs.json"));
+
+		// Add the `loadKhabindJsLibs` function to the `Assets` class
+		if (Context.defined("js")) {
+			var expr = macro {
+				var tasks = 1;
+			};
+
+			for (lib in khabindLibs) {
+				var libName = lib.options.nativeLib;
+
+				expr = macro {
+					$expr;
+					untyped tasks++;
+
+					untyped var loaded = (lib) -> {
+						__js__("{0} = lib;", $i{libName});
+						tasks--;
+						if (tasks < 1) done();
+					};
+
+					untyped __js__("{0} = {0}().then(loaded);", $i{libName});
+				}
+			}
+
+			expr = macro {
+				$expr;
+				untyped tasks--;
+				untyped if (tasks < 1) done();
+			}
+
+			fields.push({
+				name: "loadKhabindJsLibs",
+				doc: null,
+				meta: [],
+				access: [APublic, AStatic],
+				kind: FFun({
+					ret: null,
+					params: null,
+					expr: expr,
+					args: [{name: "done", type: macro:Void->Void}]
+				}),
+				pos: Context.currentPos()
+			});
+		}
 
 		return fields;
 	}
