@@ -17,16 +17,20 @@ class NodeAudioChannel implements AudioChannel {
 		
 	}
 
-	public var length(get, null): Int;
+	public var length(get, null): Float;
 	
-	private function get_length(): Int {
+	private function get_length(): Float {
 		return 0;
 	}
 	
-	public var position(get, null): Int;
+	public var position(get, set): Float;
 	
-	private function get_position(): Int {
+	private function get_position(): Float {
 		return 0;
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 	
 	public var volume(get, set): Float;

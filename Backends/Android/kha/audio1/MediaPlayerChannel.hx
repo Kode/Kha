@@ -75,7 +75,7 @@ class MediaPlayerChannel implements AudioChannel {
 		}
 	}
 
-	public var position(get, null): Float;
+	public var position(get, set): Float;
 
 	private function get_position(): Float {
 		try {
@@ -85,6 +85,10 @@ class MediaPlayerChannel implements AudioChannel {
 			trace(e);
 			return 0;
 		}
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 
 	@:isVar

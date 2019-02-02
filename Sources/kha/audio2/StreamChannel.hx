@@ -64,10 +64,14 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		#if (kha_no_ogg) return 0.0; #else return reader.totalMillisecond / 1000.0; #end
 	}
 
-	public var position(get, null): Float; // Seconds
+	public var position(get, set): Float; // Seconds
 	
 	private function get_position(): Float {
 		#if (kha_no_ogg) return 0.0; #else return reader.currentMillisecond / 1000.0; #end
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 	
 	public var volume(get, set): Float;

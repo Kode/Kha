@@ -13,6 +13,9 @@ class Audio {
 	//private static var buffersizeInBytes: Int;
 	//public static var buffer: Buffer;
 	//
+
+	public static var samplesPerSecond: Int;
+
 	public static var audioCallback: Int->Buffer->Void;
 	//
 	//public static function initAudioTrack(): Void {
