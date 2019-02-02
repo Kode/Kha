@@ -14,15 +14,19 @@
 	path = Tools/haxe
 	url = https://github.com/Kode/haxe_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
 	url = https://github.com/Kode/oggenc_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/kravur"]
 	path = Tools/kravur
 	url = https://github.com/Kode/kravur_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/lame"]
 	path = Tools/lame
 	url = https://github.com/Kode/lame_bin.git
 	branch = master
+	shallow = true
