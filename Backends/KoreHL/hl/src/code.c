@@ -154,10 +154,11 @@ static void hl_read_type( hl_reader *r, hl_type *t ) {
 	t->kind = READ();
 	switch( (int)t->kind ) {
 	case HFUN:
+	case HMETHOD:
 		{
 			int i;
 			int nargs = READ(); 
-			t->fun = (hl_type_fun*)hl_malloc(&r->code->alloc,sizeof(hl_type_fun));
+			t->fun = (hl_type_fun*)hl_zalloc(&r->code->alloc,sizeof(hl_type_fun));
 			t->fun->nargs = nargs;
 			t->fun->args = (hl_type**)hl_malloc(&r->code->alloc,sizeof(hl_type*)*nargs);
 			for(i=0;i<nargs;i++)
@@ -426,6 +427,7 @@ hl_code *hl_code_read( const unsigned char *data, int size ) {
 	hl_alloc alloc;
 	int i;
 	int flags;
+	int max_version = 5;
 	hl_alloc_init(&alloc);
 	c = hl_zalloc(&alloc,sizeof(hl_code));
 	c->alloc = alloc;
@@ -434,14 +436,16 @@ hl_code *hl_code_read( const unsigned char *data, int size ) {
 		EXIT("Invalid header");
 	r->code = c;
 	c->version = READ();
-	if( c->version <= 1 || c->version > 4 ) {
-		printf("VER=%d\n",c->version);
+	if( c->version <= 1 || c->version > max_version ) {
+		printf("Found version %d while HL %d.%d supports up to %d\n",c->version,HL_VERSION>>8,(HL_VERSION>>4)&15,max_version);
 		EXIT("Unsupported bytecode version");
 	}
 	flags = UINDEX();
 	c->nints = UINDEX();
 	c->nfloats = UINDEX();
 	c->nstrings = UINDEX();
+	if( c->version >= 5 ) 
+		c->nbytes = UINDEX();
 	c->ntypes = UINDEX();
 	c->nglobals = UINDEX();
 	c->nnatives = UINDEX();
@@ -461,6 +465,16 @@ hl_code *hl_code_read( const unsigned char *data, int size ) {
 	c->strings = hl_read_strings(r, c->nstrings, &c->strings_lens);
 	ALLOC(c->ustrings,uchar*,c->nstrings);
 	CHK_ERROR();
+	if( c->version >= 5 ) {
+		int size = hl_read_i32(r);
+		c->bytes = hl_malloc(&c->alloc,size);
+		hl_read_bytes(r,c->bytes,size);
+		ALLOC(c->bytes_pos,int,c->nbytes);
+		CHK_ERROR();
+		for(i=0;i<c->nbytes;i++)
+			c->bytes_pos[i] = UINDEX();
+		CHK_ERROR();
+	}
 	if( c->hasdebug ) {
 		c->ndebugfiles = UINDEX();
 		c->debugfiles = hl_read_strings(r, c->ndebugfiles, &c->debugfiles_lens);

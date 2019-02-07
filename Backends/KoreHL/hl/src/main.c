@@ -73,6 +73,29 @@ __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 #endif
 
+#if defined(HL_LINUX) || defined(HL_OSX)
+#include <signal.h>
+static void handle_signal( int signum ) {
+	signal(signum, SIG_DFL);
+	printf("SIGNAL %d\n",signum);
+	hl_dump_stack();
+	fflush(stdout);
+	raise(signum);
+}
+static void setup_handler() {
+	struct sigaction act;
+	act.sa_sigaction = NULL;
+	act.sa_handler = handle_signal;
+	act.sa_flags = 0;
+	sigemptyset(&act.sa_mask);
+	sigaction(SIGSEGV,&act,NULL);
+	sigaction(SIGTERM,&act,NULL);
+}
+#else
+static void setup_handler() {
+}
+#endif
+
 #ifdef HL_WIN
 int wmain(int argc, pchar *argv[]) {
 #else
@@ -153,6 +176,7 @@ int main(int argc, pchar *argv[]) {
 	ctx.c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
 	ctx.c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
 	ctx.c.hasValue = 0;
+	setup_handler();
 	ctx.ret = hl_dyn_call_safe(&ctx.c,NULL,0,&isExc);
 	if( isExc ) {
 		varray *a = hl_exception_stack();

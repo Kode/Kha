@@ -105,10 +105,6 @@ HL_PRIM vbyte *hl_sys_string() {
 	return (vbyte*)sys_platform_name();
 #elif defined(HL_WIN) || defined(HL_CYGWIN) || defined(HL_MINGW)
 	return (vbyte*)USTR("Windows");
-#elif defined(HL_GNUKBSD)
-	return (vbyte*)USTR("GNU/kFreeBSD");
-#elif defined(HL_LINUX)
-	return (vbyte*)USTR("Linux");
 #elif defined(HL_BSD)
 	return (vbyte*)USTR("BSD");
 #elif defined(HL_MAC)
@@ -119,6 +115,10 @@ HL_PRIM vbyte *hl_sys_string() {
 	return (vbyte*)USTR("tvOS");
 #elif defined(HL_ANDROID)
 	return (vbyte*)USTR("Android");
+#elif defined(HL_GNUKBSD)
+	return (vbyte*)USTR("GNU/kFreeBSD");
+#elif defined(HL_LINUX)
+	return (vbyte*)USTR("Linux");
 #else
 #error Unknown system string
 #endif

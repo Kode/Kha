@@ -88,6 +88,7 @@ HL_PRIM void hl_throw( vdynamic *v ) {
 	hl_thread_info *t = hl_get_thread();
 	hl_trap_ctx *trap = t->trap_current;
 	bool was_rethrow = false;
+	bool call_handler = false;
 	if( t->exc_flags & HL_EXC_RETHROW ) {
 		was_rethrow = true;
 		t->exc_flags &= ~HL_EXC_RETHROW;
@@ -95,15 +96,17 @@ HL_PRIM void hl_throw( vdynamic *v ) {
 		t->exc_stack_count = capture_stack_func(t->exc_stack_trace, HL_EXC_MAX_STACK);
 	t->exc_value = v;
 	t->trap_current = trap->prev;
+	call_handler = (t->exc_flags&HL_EXC_CATCH_ALL) || trap == t->trap_uncaught || t->trap_current == NULL;
 	if( (t->exc_flags&HL_EXC_CATCH_ALL) || break_on_trap(t,trap,v) ) {
 		if( trap == t->trap_uncaught ) t->trap_uncaught = NULL;
 		t->exc_flags |= HL_EXC_IS_THROW;
 		hl_debug_break();
 		t->exc_flags &= ~HL_EXC_IS_THROW;
-		if( t->exc_handler && !was_rethrow ) hl_dyn_call(t->exc_handler,&v,1);
 	}
+	if( t->exc_handler && call_handler ) hl_dyn_call(t->exc_handler,&v,1);
 	if( throw_jump == NULL ) throw_jump = longjmp;
 	throw_jump(trap->buf,1);
+	HL_UNREACHABLE;
 }
 
 HL_PRIM void hl_throw_buffer( hl_buffer *b ) {

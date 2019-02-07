@@ -491,14 +491,18 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 			for(i=0;i<vt->virt->nfields;i++) {
 				hl_field_lookup *f = obj_resolve_field(obj->t->obj,vt->virt->fields[i].hashed_name);
 				if( f && f->field_index < 0 ) {
+					hl_type *ft = vt->virt->fields[i].t;
 					hl_type tmp;
 					hl_type_fun tf;
-					tmp.kind = HFUN;
+					tmp.kind = HMETHOD;
 					tmp.fun = &tf;
 					tf.args = f->t->fun->args + 1;
 					tf.nargs = f->t->fun->nargs - 1;
 					tf.ret = f->t->fun->ret;
-					hl_vfields(v)[i] = hl_same_type(&tmp,vt->virt->fields[i].t) ? obj->t->obj->rt->methods[-f->field_index-1] : NULL;
+					if( hl_safe_cast(&tmp,ft) )
+						hl_vfields(v)[i] = obj->t->obj->rt->methods[-f->field_index-1];
+					else
+						hl_vfields(v)[i] = NULL;
 				} else
 					hl_vfields(v)[i] = f == NULL || !hl_same_type(f->t,vt->virt->fields[i].t) ? NULL : (char*)obj + f->field_index;
 			}

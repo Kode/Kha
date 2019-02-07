@@ -106,6 +106,14 @@ static bucket *bucket_find_insert( unsigned int hash, void **stack, int count ) 
 	return b;
 }
 
+static void init_lock() {
+	hl_thread_info *tinf = hl_get_thread();
+	tinf->exc_flags |= HL_TRACK_DISABLE;
+	track_lock = hl_mutex_alloc(true);
+	hl_add_root(&track_lock);
+	tinf->exc_flags &= ~HL_TRACK_DISABLE;
+}
+
 static void on_alloc( hl_type *t, int size, int flags, void *ptr ) {
 	static unsigned int prev_hash = 0, prev_hash2 = 0;
 	static bucket *prev_b = NULL, *prev_b2 = NULL;
@@ -113,12 +121,7 @@ static void on_alloc( hl_type *t, int size, int flags, void *ptr ) {
 	unsigned int hash;
 	bucket *b;
 	hl_thread_info *tinf = hl_get_thread();
-	if( track_lock == NULL ) {
-		tinf->exc_flags |= HL_TRACK_DISABLE;
-		track_lock = hl_mutex_alloc(true);
-		hl_add_root(&track_lock);
-		tinf->exc_flags &= HL_TRACK_DISABLE;
-	}
+	if( track_lock == NULL ) init_lock();
 	count = hl_internal_capture_stack(tinf->exc_stack_trace,track_depth);
 	hash = -count;
 	for(i=0;i<count;i++)
@@ -151,6 +154,7 @@ HL_PRIM void hl_track_stop() {
 }
 
 HL_PRIM void hl_track_lock( bool lock ) {
+	if( !track_lock ) init_lock();
 	if( lock )
 		hl_mutex_acquire(track_lock);
 	else

@@ -61,6 +61,7 @@ typedef struct {
 	int nints;
 	int nfloats;
 	int nstrings;
+	int nbytes;
 	int ntypes;
 	int nglobals;
 	int nnatives;
@@ -73,6 +74,8 @@ typedef struct {
 	double*		floats;
 	char**		strings;
 	int*		strings_lens;
+	char*		bytes;
+	int*		bytes_pos;
 	char**		debugfiles;
 	int*		debugfiles_lens;
 	uchar**		ustrings;

@@ -1723,6 +1723,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 	case HVIRTUAL:
 	case HOBJ:
 	case HFUN:
+	case HMETHOD:
 	case HBYTES:
 	case HNULL:
 	case HENUM:
@@ -1761,6 +1762,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 	case HDYNOBJ:
 	case HVIRTUAL:
 	case HFUN:
+	case HMETHOD:
 	case HBYTES:
 	case HNULL:
 	case HENUM:
@@ -3088,8 +3090,11 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			store(ctx,dst,dst->current,false);
 			break;
 		case OBytes:
-			op64(ctx,MOV,alloc_cpu(ctx,dst,false),pconst64(&p,(int_val)m->code->strings[o->p2]));
-			store(ctx,dst,dst->current,false);
+			{
+				char *b = m->code->version >= 5 ? m->code->bytes + m->code->bytes_pos[o->p2] : m->code->strings[o->p2];
+				op64(ctx,MOV,alloc_cpu(ctx,dst,false),pconst64(&p,(int_val)b));
+				store(ctx,dst,dst->current,false);
+			}
 			break;
 		case ONull:
 			{
@@ -3908,13 +3913,12 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 				call_native(ctx,setjmp,size);
 				op64(ctx,TEST,PEAX,PEAX);
 				XJump_small(JZero,jenter);
-				call_native(ctx, hl_get_thread, 0);
 				op64(ctx,ADD,PESP,pconst(&p,trap_size));
 				if( !tinf ) {
 					call_native(ctx, hl_get_thread, 0);
 					op64(ctx,MOV,PEAX,pmem(&p, Eax, (int)(int_val)&tinf->exc_value));
 				} else {
-					op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&tinf->trap_current));
+					op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&tinf->exc_value));
 					op64(ctx,MOV,PEAX,pmem(&p, Eax, 0));
 				}
 				store(ctx,dst,PEAX,false);
