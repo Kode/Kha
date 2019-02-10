@@ -24,9 +24,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		
 		var requestedSamplesIndex = 0;
 		while (requestedSamplesIndex < requestedLength) {
-			var samplesLeftBeforeLoop = data.length - myPosition;
-			var requestedSamplesRemaining = requestedLength - requestedSamplesIndex;
-			for (i in 0...min(samplesLeftBeforeLoop, requestedSamplesRemaining)) {
+			for (i in 0...min(data.length - myPosition, requestedLength - requestedSamplesIndex)) {
 				requestedSamples[requestedSamplesIndex++] = data[myPosition++];
 			}
 
@@ -41,17 +39,13 @@ class AudioChannel implements kha.audio1.AudioChannel {
 
 		while (requestedSamplesIndex < requestedLength) {
 			requestedSamples[requestedSamplesIndex++] = 0;
-			++requestedSamplesIndex;
 		}
 	}
 	
 	public function play(): Void {
 		paused = false;
 		stopped = false;
-		if (finished) {
-			myPosition = 0;
-			kha.audio1.Audio._playAgain(this);
-		}
+		kha.audio1.Audio._playAgain(this);
 	}
 
 	public function pause(): Void {
