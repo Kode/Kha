@@ -6,7 +6,7 @@ import cpp.vm.Mutex;
 import haxe.ds.Vector;
 
 class Audio1 {
-	private static inline var channelCount: Int = 16;
+	private static inline var channelCount: Int = 32;
 	private static var soundChannels: Vector<AudioChannel>;
 	private static var streamChannels: Vector<StreamChannel>;
 
