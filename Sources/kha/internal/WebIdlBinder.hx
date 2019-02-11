@@ -1,7 +1,9 @@
 package kha.internal;
 
+#if macro
 import haxe.Json;
 import haxe.macro.Printer;
+import haxe.macro.Expr;
 
 import sys.io.File;
 import sys.FileSystem;
@@ -17,8 +19,6 @@ typedef KhabindOptions = {
     nativeLib:String,
     sourcesDir:String,
     chopPrefix:String,
-    hxPackageName:String,
-    hxModuleName:String,
     autoGC:Bool,
     includes:Array<String>
 }
@@ -58,18 +58,26 @@ class WebIdlBinder {
 
             // Genterate Haxe externs
             var printer = new Printer("    ");
-            FileSystem.createDirectory(["Sources", bindOpts.hxPackageName.replace(".", "/")].join("/"));
+            FileSystem.createDirectory("Sources/" + bindOpts.nativeLib);
 
-            var content = 'package ${bindOpts.hxPackageName};\n\n#if hl\n' + Module.buildTypes(webIdlOpts, true).map((type) -> {
-                    return printer.printTypeDefinition(type);
-                }).join("\n") + "\n#elseif js\n" + Module.buildTypes(webIdlOpts).map((type) -> {
-                    return printer.printTypeDefinition(type);
-                }).join("\n") + "#end\n";
+            var hlTypes = Module.buildTypes(webIdlOpts, true);
+            var jsTypes = Module.buildTypes(webIdlOpts, false);
 
-            File.saveContent(
-                ["Sources", bindOpts.hxPackageName.replace(".", "/"), capitalize(bindOpts.hxModuleName) + ".hx"].join("/"),
-                content
-            );
+            for (i in 0...hlTypes.length) {
+                var hlType = hlTypes[i];
+                var jsType = jsTypes[i];
+
+                var moduleContent = 'package ${bindOpts.nativeLib};\n\n#if hl\n';
+                moduleContent += printer.printTypeDefinition(hlType) + "\n";
+                moduleContent += "#elseif js\n";
+                moduleContent += printer.printTypeDefinition(jsType) + "\n";
+                moduleContent += "#end\n";
+
+                File.saveContent(
+                    ["Sources", bindOpts.nativeLib, hlType.name + ".hx"].join("/"),
+                    moduleContent
+                );
+            }
         }
     }
 
@@ -81,3 +89,4 @@ class WebIdlBinder {
 		return text.charAt(0).toUpperCase() + text.substring(1);
 	}
 }
+#end
