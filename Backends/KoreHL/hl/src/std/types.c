@@ -37,7 +37,7 @@ static const uchar *TSTR[] = {
 	USTR("void"), USTR("i8"), USTR("i16"), USTR("i32"), USTR("i64"), USTR("f32"), USTR("f64"),
 	USTR("bool"), USTR("bytes"), USTR("dynamic"), NULL, NULL,
 	USTR("array"), USTR("type"), NULL, NULL, USTR("dynobj"),
-	NULL, NULL, NULL
+	NULL, NULL, NULL, NULL
 };
 
 static int T_SIZES[] = {
@@ -61,6 +61,7 @@ static int T_SIZES[] = {
 	HL_WSIZE, // ABSTRACT
 	HL_WSIZE, // ENUM
 	HL_WSIZE, // NULL
+	HL_WSIZE, // METHOD
 };
 
 HL_PRIM int hl_type_size( hl_type *t ) {
@@ -124,6 +125,7 @@ HL_PRIM bool hl_same_type( hl_type *a, hl_type *b ) {
 	case HNULL:
 		return hl_same_type(a->tparam, b->tparam);
 	case HFUN:
+	case HMETHOD:
 		{
 			int i;
 			if( a->fun->nargs != b->fun->nargs )
@@ -169,6 +171,7 @@ HL_PRIM bool hl_is_dynamic( hl_type *t ) {
 		false, // HABSTRACT
 		true, // HENUM
 		true, // HNULL
+		false, // HMETHOD
 	};
 	return T_IS_DYNAMIC[t->kind];
 }
@@ -205,6 +208,7 @@ HL_PRIM bool hl_safe_cast( hl_type *t, hl_type *to ) {
 			}
 		}
 	case HFUN:
+	case HMETHOD:
 		if( t->fun->nargs == to->fun->nargs ) {
 			int i;
 			if( !hl_safe_cast(t->fun->ret,to->fun->ret) )
@@ -250,6 +254,7 @@ static void hl_type_str_rec( hl_buffer *b, hl_type *t, tlist *parents ) {
 	l = &cur;
 	switch( t->kind ) {
 	case HFUN:
+	case HMETHOD:
 		hl_buffer_char(b,'(');
 		hl_type_str_rec(b,t->fun->ret,l);
 		hl_buffer_char(b,' ');
@@ -383,7 +388,7 @@ HL_PRIM varray* hl_type_enum_values( hl_type *t ) {
 }
 
 HL_PRIM int hl_type_args_count( hl_type *t ) {
-	if( t->kind == HFUN )
+	if( t->kind == HFUN || t->kind == HMETHOD )
 		return t->fun->nargs;
 	return 0;
 }
