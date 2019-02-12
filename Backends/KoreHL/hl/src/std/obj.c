@@ -385,7 +385,23 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 	return t;
 }
 
-void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
+HL_API void hl_flush_proto( hl_type *ot ) {
+	int i;
+	hl_type_obj *o = ot->obj;
+	hl_runtime_obj *rt = ot->obj->rt;
+	hl_module_context *m = o->m;
+	if( !rt ) return;
+	for(i=0;i<o->nbindings;i++) {
+		hl_runtime_binding *b = rt->bindings + i;
+		int mid = o->bindings[(i<<1)|1];
+		if( b->closure )
+			b->ptr = m->functions_ptrs[mid];
+		else
+			((vclosure*)b->ptr)->fun = m->functions_ptrs[mid];
+	}
+}
+
+HL_API void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
 	int i;
 	int vsize = sizeof(vvirtual) + sizeof(void*) * vt->virt->nfields;
 	int size = vsize;

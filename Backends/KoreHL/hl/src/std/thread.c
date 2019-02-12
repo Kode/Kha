@@ -365,6 +365,10 @@ HL_PRIM int hl_thread_id() {
 	return 0;
 #elif defined(HL_WIN)
 	return (int)GetCurrentThreadId();
+#elif defined(HL_MAC)
+	uint64_t tid64;
+	pthread_threadid_np(NULL, &tid64);
+	return (pid_t)tid64;
 #elif defined(SYS_gettid) && !defined(HL_TVOS)
 	return syscall(SYS_gettid);
 #else

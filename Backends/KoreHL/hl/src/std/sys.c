@@ -604,6 +604,17 @@ HL_PRIM vbyte *hl_sys_hl_file() {
 	return (vbyte*)hl_file;
 }
 
+static void *reload_fun = NULL;
+static void *reload_param = NULL;
+HL_PRIM void hl_setup_reload_check( void *freload, void *param ) {
+	reload_fun = freload;
+	reload_param = param;
+}
+
+HL_PRIM bool hl_sys_check_reload() {
+	return reload_fun && ((bool(*)(void*))reload_fun)(reload_param);
+}
+
 #ifndef HL_MOBILE
 const char *hl_sys_special( const char *key ) {
 	 hl_error("Unknown sys_special key");
@@ -643,3 +654,4 @@ DEFINE_PRIM(_BYTES, sys_exe_path, _NO_ARG);
 DEFINE_PRIM(_I32, sys_get_char, _BOOL);
 DEFINE_PRIM(_ARR, sys_args, _NO_ARG);
 DEFINE_PRIM(_I32, sys_getpid, _NO_ARG);
+DEFINE_PRIM(_BOOL, sys_check_reload, _NO_ARG);

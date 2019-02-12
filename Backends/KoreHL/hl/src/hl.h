@@ -426,6 +426,7 @@ HL_API int hl_pad_struct( int size, hl_type *t );
 
 HL_API hl_runtime_obj *hl_get_obj_rt( hl_type *ot );
 HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot );
+HL_API void hl_flush_proto( hl_type *ot );
 HL_API void hl_init_enum( hl_type *et, hl_module_context *m );
 
 /* -------------------- VALUES ------------------------------ */
@@ -804,6 +805,7 @@ HL_API void *hl_fatal_error( const char *msg, const char *file, int line );
 HL_API void hl_fatal_fmt( const char *file, int line, const char *fmt, ...);
 HL_API void hl_sys_init(void **args, int nargs, void *hlfile);
 HL_API void hl_setup_callbacks(void *sc, void *gw);
+HL_API void hl_setup_reload_check( void *freload, void *param );
 
 #include <setjmp.h>
 typedef struct _hl_trap_ctx hl_trap_ctx;

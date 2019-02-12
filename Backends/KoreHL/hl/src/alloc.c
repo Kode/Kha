@@ -1204,7 +1204,7 @@ static void *gc_alloc_page_memory( int size ) {
 #elif defined(HL_CONSOLE)
 	return sys_alloc_align(size, GC_PAGE_SIZE);
 #else
-	int i;
+	int i = 0;
 	while( gc_will_collide(base_addr,size) ) {
 		base_addr = (char*)base_addr + GC_PAGE_SIZE;
 		i++;
