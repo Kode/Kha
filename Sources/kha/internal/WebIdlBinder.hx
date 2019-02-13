@@ -25,7 +25,7 @@ typedef KhabindOptions = {
 
 class WebIdlBinder {
 
-    public static function generate() {
+    public static function generate(noCache:Bool = false) {
         var bindOpts:KhabindOptions = Json.parse(File.getContent("khabind.json"));
         var includeCode = bindOpts.includes.map((inc) -> {return "#include " + inc;}).join("\n");
         var webIdlOpts:WebIdlOptions = {
@@ -36,18 +36,20 @@ class WebIdlBinder {
             autoGC: bindOpts.autoGC,
         }
 
-        var invalidateCache = false;
+        var invalidateCache = noCache;
         var sourceFile = bindOpts.idlFile;
 
-        var targetFile = "khabind/" + bindOpts.nativeLib + ".cpp";
-        var sourceModTime = 0.;
-        var targetModTime = 0.; 
-        if (FileSystem.exists(targetFile)) {
-            sourceModTime = FileSystem.stat(sourceFile).mtime.getTime();
-            targetModTime = FileSystem.stat(targetFile).mtime.getTime();
-            if (sourceModTime > targetModTime) invalidateCache = true;
-        } else {
-            invalidateCache = true;
+        if (!invalidateCache) {
+            var targetFile = "khabind/" + bindOpts.nativeLib + ".cpp";
+            var sourceModTime = 0.;
+            var targetModTime = 0.;
+            if (FileSystem.exists(targetFile)) {
+                sourceModTime = FileSystem.stat(sourceFile).mtime.getTime();
+                targetModTime = FileSystem.stat(targetFile).mtime.getTime();
+                if (sourceModTime > targetModTime) invalidateCache = true;
+            } else {
+                invalidateCache = true;
+            }
         }
 
         if (invalidateCache) {
