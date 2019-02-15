@@ -102,27 +102,10 @@ class SystemImpl {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
-	private static var audioOutputData: kha.arrays.Float32Array;
 	private static function audioCallback(samples: Int) : Void {
-		//Krom.log("Samples " + samples);
-		
-		audioOutputData = new kha.arrays.Float32Array(samples);
-		
-		// lock mutex
-		//Krom.audioThread(true);
-
 		kha.audio2.Audio._callCallback(samples);
-		for (i in 0...samples) {
-			var value: Float = kha.audio2.Audio._readSample();
-			audioOutputData[i] = value;
-		}
-		// unlock mutex
-		//Krom.audioThread(false);
-
-		// write to buffer
-		for (i in 0...samples) {
-			Krom.writeAudioBuffer(audioOutputData[i]);
-		}
+		var buffer = @:privateAccess kha.audio2.Audio.buffer;
+		Krom.writeAudioBuffer(buffer.data.buffer, samples);
 	}
 	
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
