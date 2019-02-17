@@ -96,7 +96,13 @@ class CanvasImage extends Image {
 			if (context == null) return Color.Black;
 			else createImageData();
 		}
-		return Color.fromValue(data.data[y * Std.int(image.width) * 4 + x * 4 + 0]);
+
+		var r = data.data[y * Std.int(image.width) * 4 + x * 4];
+		var g = data.data[y * Std.int(image.width) * 4 + x * 4 + 1];
+		var b = data.data[y * Std.int(image.width) * 4 + x * 4 + 2];
+		var a = data.data[y * Std.int(image.width) * 4 + x * 4 + 3];
+
+		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 	}
 	
 	function createImageData() {
