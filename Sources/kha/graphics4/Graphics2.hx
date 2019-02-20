@@ -171,7 +171,7 @@ class ImageShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
-		rectVertexBuffer.unlock();
+		rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -427,7 +427,7 @@ class ColoredShaderPainter {
 	private function drawBuffer(trisDone: Bool): Void {
 		if (!trisDone) endTris(true);
 
-		rectVertexBuffer.unlock();
+		rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -442,7 +442,7 @@ class ColoredShaderPainter {
 	private function drawTriBuffer(rectsDone: Bool): Void {
 		if (!rectsDone) endRects(true);
 
-		triangleVertexBuffer.unlock();
+		triangleVertexBuffer.unlock(triangleBufferIndex * 3);
 		g.setVertexBuffer(triangleVertexBuffer);
 		g.setIndexBuffer(triangleIndexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -626,7 +626,7 @@ class TextShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
-		rectVertexBuffer.unlock();
+		rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -1014,8 +1014,13 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	var pipelineCache = new Map<PipelineState, PipelineCache>();
+	var lastPipeline: PipelineState = null;
 
 	override private function setPipeline(pipeline: PipelineState): Void {
+		if (pipeline == lastPipeline) {
+			return;
+		}
+		lastPipeline = pipeline;
 		flush();
 		if (pipeline == null) {
 			imagePainter.pipeline = null;
