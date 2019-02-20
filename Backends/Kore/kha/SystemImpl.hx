@@ -253,6 +253,8 @@ class SystemImpl {
 		untyped __cpp__("Kore::Mouse::the()->show(true);");
 	}
 
+	public static var frameTime: Float = 0.0;
+
 	public static function frame() {
 		/*
 		#if !ANDROID

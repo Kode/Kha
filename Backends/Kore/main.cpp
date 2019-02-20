@@ -138,7 +138,13 @@ namespace {
 	bool visible = true;
 	bool paused = false;
 
+	double lastTime = 0.0;
+
 	void update() {
+		double time = Kore::System::time();
+		SystemImpl_obj::frameTime = time - lastTime;
+		lastTime = time;
+
 		if (paused) return;
 		Kore::Audio2::update();
 
@@ -273,6 +279,8 @@ void init_kore(const char* name, int width, int height, Kore::WindowOptions* win
 	Kore::System::init(name, width, height, win, frame);
 	
 	mutex.create();
+
+	lastTime = Kore::System::time();
 
 	Kore::System::setOrientationCallback(orientation);
 	Kore::System::setForegroundCallback(foreground);
