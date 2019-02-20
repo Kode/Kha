@@ -1,7 +1,7 @@
 [submodule "Kore"]
 	path = Kore
 	url = https://github.com/Kode/Kore.git
-	branch = master
+	branch = jscompat
 [submodule "Tools/khamake"]
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git

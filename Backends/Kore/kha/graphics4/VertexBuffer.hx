@@ -69,9 +69,12 @@ class VertexBuffer {
 		return data;
 	}
 
+	var lastLockCount: Int = 0;
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		if (start == null) start = 0;
 		if (count == null) count = this.count();
+		lastLockCount = count;
 		return lockPrivate(start, count);
 	}
 
@@ -91,9 +94,13 @@ class VertexBuffer {
 		return lockInt16Private(start, count);
 	}
 
-	@:functionCode('buffer->unlock();')
-	public function unlock(): Void {
+	@:functionCode('buffer->unlock(count);')
+	function unlockPrivate(count: Int): Void {
 
+	}
+
+	public function unlock(?count: Int): Void {
+		unlockPrivate(count == null ? lastLockCount : count);
 	}
 
 	@:functionCode("return buffer->stride();")
