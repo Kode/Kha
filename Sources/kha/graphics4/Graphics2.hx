@@ -52,7 +52,7 @@ class ImageShaderPainter {
 	static var rectVertices: Float32Array;
 	static var indexBuffer: IndexBuffer;
 	static var lastTexture: Image;
-	var bilinear: Bool = false;
+	var bilinear: Bool = true;
 	var bilinearMipmaps: Bool = false;
 	var g: Graphics;
 	var myPipeline: PipelineCache = null;
@@ -510,7 +510,7 @@ class TextShaderPainter {
 	var myPipeline: PipelineCache = null;
 	public var pipeline(get, set): PipelineCache;
 	public var fontSize: Int;
-	var bilinear: Bool = false;
+	var bilinear: Bool = true;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -993,6 +993,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+		if (value == myImageScaleQuality) {
+			return value;
+		}
 		imagePainter.setBilinearFilter(value == ImageScaleQuality.High);
 		textPainter.setBilinearFilter(value == ImageScaleQuality.High);
 		return myImageScaleQuality = value;
