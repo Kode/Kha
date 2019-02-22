@@ -49,7 +49,12 @@ class Image implements Canvas implements Resource {
 			img.createTexture();
 			return img;
 		}
-		return null;
+		var img = new CanvasImage(width, height, format, false);
+		var g2 : kha.js.CanvasGraphics = cast img.g2;
+		@:privateAccess var canvas = g2.canvas;
+		var imageData = new js.html.ImageData(new js.html.Uint8ClampedArray(bytes.getData()), width, height);
+		canvas.putImageData(imageData, 0, 0);
+		return img;
 	}
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
