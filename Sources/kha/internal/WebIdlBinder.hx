@@ -25,8 +25,8 @@ typedef KhabindOptions = {
 
 class WebIdlBinder {
 
-    public static function generate(noCache:Bool = false) {
-        var bindOpts:KhabindOptions = Json.parse(File.getContent("khabind.json"));
+    public static function generate(optionJsonString:String, noCache:Bool = false) {
+        var bindOpts:KhabindOptions = Json.parse(optionJsonString);
         var includeCode = bindOpts.includes.map((inc) -> {return "#include " + inc;}).join("\n");
         var webIdlOpts:WebIdlOptions = {
             idlFile: bindOpts.idlFile,
