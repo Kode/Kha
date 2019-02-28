@@ -194,6 +194,16 @@ class CanvasImage extends Image {
 		}
 	}
 	
+	override public function getPixels(): Bytes {
+		@:privateAccess var context: js.html.CanvasRenderingContext2D = g2canvas.canvas;
+		var imageData: js.html.ImageData = context.getImageData(0, 0, width, height);
+		var bytes = Bytes.alloc(imageData.data.length);
+		for(i in 0...imageData.data.length) {
+			bytes.set(i, imageData.data[i]);
+		}
+		return bytes;
+	}
+
 	override public function unload(): Void {
 		image = null;
 		video = null;
