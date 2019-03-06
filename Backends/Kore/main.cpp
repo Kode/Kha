@@ -344,14 +344,18 @@ int kore(int argc, char **argv) {
 	_hxcpp_argv = argv;
 	HX_TOP_OF_STACK
 	hx::Boot();
+#ifdef NDEBUG
 	try {
+#endif
 		__boot_all();
 		__hxcpp_main();
+#ifdef NDEBUG
 	}
 	catch (Dynamic e) {
 		__hx_dump_stack();
 		Kore::log(Kore::Error, "Error %s", e == null() ? "null" : e->toString().__CStr());
 		return -1;
 	}
+#endif
 	return 0;
 }
