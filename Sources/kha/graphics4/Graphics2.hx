@@ -1046,7 +1046,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	var scissorH: Int = -1;
 
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		if (!scissorEnabled || x != scissorX || y != scissorY || width != scissorW || height != scissorH) {
+		//if (!scissorEnabled || x != scissorX || y != scissorY || width != scissorW || height != scissorH) {
 			scissorEnabled = true;
 			scissorX = x;
 			scissorY = y;
@@ -1054,15 +1054,15 @@ class Graphics2 extends kha.graphics2.Graphics {
 			scissorH = height;
 			flush();
 			g.scissor(x, y, width, height);
-		}
+		//}
 	}
 
 	override public function disableScissor(): Void {
-		if (scissorEnabled) {
+		//if (scissorEnabled) {
 			scissorEnabled = false;
 			flush();
 			g.disableScissor();
-		}
+		//}
 	}
 
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
