@@ -228,6 +228,10 @@ namespace {
 	
 	bool mixThreadregistered = false;
 
+	extern "C" void Sleep(
+		DWORD dwMilliseconds
+	);
+
 	void mix(int samples) {
 		using namespace Kore;
 
@@ -235,6 +239,7 @@ namespace {
 		if (!mixThreadregistered) {
 			HX_TOP_OF_STACK
 			mixThreadregistered = true;
+			Sleep(100);
 		}
 #endif
 		//int addr = 0;
