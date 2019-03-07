@@ -11,6 +11,7 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Log.h>
 #include <Kore/Threads/Mutex.h>
+#include <Kore/Threads/Thread.h>
 #include <Kore/Math/Random.h>
 #if HXCPP_API_LEVEL >= 332
 #include <hxinc/kha/SystemImpl.h>
@@ -234,10 +235,6 @@ namespace {
 	
 	bool mixThreadregistered = false;
 
-	extern "C" void Sleep(
-		DWORD dwMilliseconds
-	);
-
 	void mix(int samples) {
 		using namespace Kore;
 
@@ -245,7 +242,7 @@ namespace {
 		if (!mixThreadregistered) {
 			HX_TOP_OF_STACK
 			mixThreadregistered = true;
-			Sleep(100);
+			threadSleep(100);
 		}
 #endif
 		//int addr = 0;
