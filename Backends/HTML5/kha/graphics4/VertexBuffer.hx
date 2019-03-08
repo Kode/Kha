@@ -117,7 +117,7 @@ class VertexBuffer {
 		return new Int16Array(untyped lock(start, count).buffer);
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast _data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}

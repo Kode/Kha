@@ -102,9 +102,9 @@ class VertexBuffer {
 		return data;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffer);
-		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mySize * myStride, data.data(), usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
+		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, (count != null ? count : mySize) * myStride, data.data(), usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
