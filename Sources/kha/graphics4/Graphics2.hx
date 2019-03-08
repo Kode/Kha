@@ -52,7 +52,7 @@ class ImageShaderPainter {
 	static var rectVertices: Float32Array;
 	static var indexBuffer: IndexBuffer;
 	static var lastTexture: Image;
-	var bilinear: Bool = true;
+	var bilinear: Bool = false;
 	var bilinearMipmaps: Bool = false;
 	var g: Graphics;
 	var myPipeline: PipelineCache = null;
@@ -510,7 +510,7 @@ class TextShaderPainter {
 	var myPipeline: PipelineCache = null;
 	public var pipeline(get, set): PipelineCache;
 	public var fontSize: Int;
-	var bilinear: Bool = true;
+	var bilinear: Bool = false;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
@@ -986,7 +986,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 
-	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.Low;
 
 	override private function get_imageScaleQuality(): ImageScaleQuality {
 		return myImageScaleQuality;
@@ -1001,7 +1001,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myImageScaleQuality = value;
 	}
 
-	private var myMipmapScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+	private var myMipmapScaleQuality: ImageScaleQuality = ImageScaleQuality.Low;
 
 	override private function get_mipmapScaleQuality(): ImageScaleQuality {
 		return myMipmapScaleQuality;
