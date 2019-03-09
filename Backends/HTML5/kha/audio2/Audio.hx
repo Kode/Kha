@@ -91,20 +91,14 @@ class Audio {
 		element.loop = loop;
 		var channel = new AEAudioChannel(element, loop);
 
-		if (SystemImpl.mobile) {
-			if (SystemImpl.mobileAudioPlaying) {
-				channel.play();
-				return channel;
-			}
-			else {
-				var virtualChannel = new VirtualStreamChannel(channel, loop);
-				virtualChannels.push(virtualChannel);
-				return virtualChannel;
-			}
-		}
-		else {
+		if (SystemImpl.mobileAudioPlaying) {
 			channel.play();
 			return channel;
+		}
+		else {
+			var virtualChannel = new VirtualStreamChannel(channel, loop);
+			virtualChannels.push(virtualChannel);
+			return virtualChannel;
 		}
 	}
 }

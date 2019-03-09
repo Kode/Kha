@@ -56,7 +56,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	function set_position(value: Float): Float {
-		return value;
+		return element.currentTime = value;
 	}
 
 	public var volume(get, set): Float;
