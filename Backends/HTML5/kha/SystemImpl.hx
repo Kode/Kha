@@ -82,6 +82,14 @@ class SystemImpl {
 		chrome = isChrome();
 		firefox = isFirefox();
 		ie = isIE();
+
+		if (mobile || chrome) {
+			mobileAudioPlaying = false;
+		}
+		else {
+			mobileAudioPlaying = true;
+		}
+
 		initSecondStep(callback);
 		#end
 	}
