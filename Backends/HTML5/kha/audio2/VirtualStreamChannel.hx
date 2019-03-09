@@ -24,7 +24,8 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public function wake(): Void {
-		aeChannel.position = position;
+		updatePosition();
+		aeChannel.position = lastPosition;
 		aeChannel.play();
 	}
 

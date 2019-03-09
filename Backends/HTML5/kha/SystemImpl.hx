@@ -960,6 +960,9 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
 			&& (event.key != null && event.key.length != 1)) event.preventDefault();
 		event.stopPropagation();
@@ -978,22 +981,33 @@ class SystemImpl {
 		}
 
 		keyboard.sendDownEvent(cast event.keyCode);
+		insideInputEvent = false;
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		event.preventDefault();
 		event.stopPropagation();
 
 		if (ie) pressedKeys[event.keyCode] = false;
 
 		keyboard.sendUpEvent(cast event.keyCode);
+
+		insideInputEvent = false;
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if (event.which == 0) return; //for Firefox and Safari
 		event.preventDefault();
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
+
+		insideInputEvent = false;
 	}
 
 	public static function canSwitchFullscreen(): Bool {
