@@ -615,6 +615,8 @@ class SystemImpl {
 					trace(err);
 				});
 			}
+			
+			kha.audio2.Audio.wakeChannels();
 		}
 		unlockiOSSound();
 	}
@@ -624,6 +626,7 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Bool {
+		unlockSound();
 		insideInputEvent = true;
 
 		event.preventDefault();
