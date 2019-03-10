@@ -22,6 +22,7 @@ class CompilerDefinesBuilder {
 
 		for (k in defines.keys()) {
 			var key = $v{k};
+			if (key == "true" || key == "static" || key.indexOf("-") != -1) continue;
 			addField(fields, key, $v{Std.string(defines.get(key))});
 		}
 
