@@ -479,12 +479,6 @@ class SystemImpl {
 		// Autofocus
 		canvas.focus();
 
-		// disable context menu
-		canvas.oncontextmenu = function (event: Dynamic) {
-			event.stopPropagation();
-			event.preventDefault();
-		}
-
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
 		if(keyboard != null) {
