@@ -87,22 +87,25 @@ class Audio1 {
 	}
 
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		var channel: kha.audio2.AudioChannel = new AudioChannel(loop);
+		channel.data = sound.uncompressedData;
+		var foundChannel = false;
+
 		#if cpp
 		mutex.acquire();
 		#end
-		var channel: kha.audio2.AudioChannel = null;
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
-				channel = new AudioChannel(loop);
-				channel.data = sound.uncompressedData;
 				soundChannels[i] = channel;
+				foundChannel = true;
 				break;
 			}
 		}
 		#if cpp
 		mutex.release();
 		#end
-		return channel;
+
+		return foundChannel ? channel : null;
 	}
 
 	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
@@ -127,20 +130,23 @@ class Audio1 {
 			if (hardwareChannel != null) return hardwareChannel;
 		}
 
+		var channel: StreamChannel = new StreamChannel(sound.compressedData, loop);
+		var foundChannel = false;
+
 		#if cpp
 		mutex.acquire();
 		#end
-		var channel: StreamChannel = null;
 		for (i in 0...channelCount) {
 			if (streamChannels[i] == null || streamChannels[i].finished) {
-				channel = new StreamChannel(sound.compressedData, loop);
 				streamChannels[i] = channel;
+				foundChannel = true;
 				break;
 			}
 		}
 		#if cpp
 		mutex.release();
 		#end
-		return channel;
+
+		return foundChannel ? channel : null;
 	}
 }
