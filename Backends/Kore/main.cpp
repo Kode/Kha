@@ -238,11 +238,12 @@ namespace {
 	void mix(int samples) {
 		using namespace Kore;
 
+		int t0 = 99;
 #ifdef KORE_MULTITHREADED_AUDIO
 		if (!mixThreadregistered) {
-			HX_TOP_OF_STACK
+			hx::SetTopOfStack(&t0, true);
 			mixThreadregistered = true;
-			threadSleep(100);
+			//threadSleep(100);
 		}
 #endif
 		//int addr = 0;
