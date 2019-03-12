@@ -479,6 +479,13 @@ class SystemImpl {
 		// Autofocus
 		canvas.focus();
 
+		#if kha_disable_context_menu
+		canvas.oncontextmenu = function (event: Dynamic) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
+		#end
+
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
 		if(keyboard != null) {
