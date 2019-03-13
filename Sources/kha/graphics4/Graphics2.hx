@@ -358,7 +358,7 @@ class ColoredShaderPainter {
 
 	public function setRectColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
-		
+
 		var a: FastFloat = opacity * color.A;
 		var r: FastFloat = a * color.R;
 		var g: FastFloat = a * color.G;
@@ -492,9 +492,6 @@ class ColoredShaderPainter {
 	}
 }
 
-#if cpp
-@:headerClassCode("const wchar_t* wtext;")
-#end
 class TextShaderPainter {
 	var projectionMatrix: FastMatrix4;
 	static var standardTextPipeline: PipelineCache = null;
@@ -650,44 +647,6 @@ class TextShaderPainter {
 		this.font = cast(font, Kravur);
 	}
 
-	private var text: String;
-
-	#if cpp
-	@:functionCode('
-		wtext = text.__WCStr();
-	')
-	#end
-	private function startString(text: String): Void {
-		this.text = text;
-	}
-
-	#if cpp
-	@:functionCode('
-		return wtext[position];
-	')
-	#end
-	private function charCodeAt(position: Int): Int {
-		return text.charCodeAt(position);
-	}
-
-	#if cpp
-	@:functionCode('
-		return wcslen(wtext);
-	')
-	#end
-	private function stringLength(): Int {
-		return text.length;
-	}
-
-	#if cpp
-	@:functionCode('
-		wtext = 0;
-	')
-	#end
-	private function endString(): Void {
-		text = null;
-	}
-
 	private static function findIndex(charCode: Int): Int {
 		var glyphs = kha.graphics2.Graphics.fontGlyphs;
 		var blocks = Kravur.KravurImage.charBlocks;
@@ -711,9 +670,9 @@ class TextShaderPainter {
 
 		var xpos = x;
 		var ypos = y;
-		startString(text);
-		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCodeAt(i)), xpos, ypos);
+		for (i in 0...text.length) {
+			var charCode = StringTools.fastCodeAt(text, i);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCode), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -727,7 +686,6 @@ class TextShaderPainter {
 				++bufferIndex;
 			}
 		}
-		endString();
 	}
 
 	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
@@ -1025,7 +983,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		if (pipeline == null) {
 			imagePainter.pipeline = null;
 			coloredPainter.pipeline = null;
-			textPainter.pipeline = null;	
+			textPainter.pipeline = null;
 		}
 		else {
 			var cache = pipelineCache[pipeline];
