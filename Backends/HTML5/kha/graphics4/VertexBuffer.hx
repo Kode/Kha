@@ -2,6 +2,7 @@ package kha.graphics4;
 
 import js.html.webgl.GL;
 import kha.arrays.Float32Array;
+import kha.arrays.Int16Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 
@@ -12,6 +13,7 @@ class VertexBuffer {
 	private var myStride: Int;
 	private var sizes: Array<Int>;
 	private var offsets: Array<Int>;
+	private var types: Array<Int>;
 	private var usage: Usage;
 	private var instanceDataStepRate: Int;
 	
@@ -32,6 +34,10 @@ class VertexBuffer {
 				myStride += 4 * 4;
 			case Float4x4:
 				myStride += 4 * 4 * 4;
+			case Short2Norm:
+				myStride += 2 * 2;
+			case Short4Norm:
+				myStride += 2 * 4;
 			}
 		}
 	
@@ -40,27 +46,42 @@ class VertexBuffer {
 		
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
+		types = new Array<Int>();
 		sizes[structure.elements.length - 1] = 0;
 		offsets[structure.elements.length - 1] = 0;
+		types[structure.elements.length - 1] = 0;
 		
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
 			var size;
+			var type;
 			switch (element.data) {
 			case Float1:
 				size = 1;
+				type = GL.FLOAT;
 			case Float2:
 				size = 2;
+				type = GL.FLOAT;
 			case Float3:
 				size = 3;
+				type = GL.FLOAT;
 			case Float4:
 				size = 4;
+				type = GL.FLOAT;
 			case Float4x4:
 				size = 4 * 4;
+				type = GL.FLOAT;
+			case Short2Norm:
+				size = 2;
+				type = GL.SHORT;
+			case Short4Norm:
+				size = 4;
+				type = GL.SHORT;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
+			types[index] = type;
 			switch (element.data) {
 			case Float1:
 				offset += 4 * 1;
@@ -72,6 +93,10 @@ class VertexBuffer {
 				offset += 4 * 4;
 			case Float4x4:
 				offset += 4 * 4 * 4;
+			case Short2Norm:
+				offset += 2 * 2;
+			case Short4Norm:
+				offset += 2 * 4;
 			}
 			++index;
 		}
@@ -87,8 +112,12 @@ class VertexBuffer {
 		if (count == null) count = mySize;
 		return _data.subarray(start * stride(), (start + count) * stride());
 	}
+
+	public function lockInt16(?start: Int, ?count: Int): Int16Array {
+		return new Int16Array(untyped lock(start, count).buffer);
+	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast _data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
@@ -126,8 +155,9 @@ class VertexBuffer {
 				}
 			}
 			else {
+				var normalized = types[i] == GL.FLOAT ? false : true;
 				SystemImpl.gl.enableVertexAttribArray(offset + attributesOffset);
-				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], GL.FLOAT, false, myStride, offsets[i]);
+				SystemImpl.gl.vertexAttribPointer(offset + attributesOffset, sizes[i], types[i], normalized, myStride, offsets[i]);
 				if (ext) {
 					if (SystemImpl.gl2) {
 						untyped SystemImpl.gl.vertexAttribDivisor(offset + attributesOffset, instanceDataStepRate);

@@ -3,28 +3,19 @@ package kha.krom;
 import haxe.io.Bytes;
 
 class Sound extends kha.Sound {
-
 	public function new(bytes: Bytes) {
 		super();
-		compressedData = bytes;
-		uncompressedData = null;
-	}
-	
-	override public function uncompress(done: Void->Void): Void {
-		if (uncompressedData != null) {
-			done();
-			return;
-		}
 
-		var soundBytes = compressedData;
-		var count = Std.int(soundBytes.length / 4);
+		var count = Std.int(bytes.length / 4);
 		uncompressedData = new kha.arrays.Float32Array(count);
 		for (i in 0...count) {
-			uncompressedData[i] = soundBytes.getFloat(i * 4);
-			//if (i < 10) Krom.log(" " + uncompressedData[i]);
+			uncompressedData[i] = bytes.getFloat(i * 4);
 		}
 		
 		compressedData = null;
+	}
+	
+	override public function uncompress(done: Void->Void): Void {
 		done();
 	}
 

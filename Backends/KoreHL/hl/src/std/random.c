@@ -22,7 +22,7 @@
 #include <hl.h>
 #include <time.h>
 #include <string.h>
-#if defined(HL_WIN)
+#if defined(HL_WIN_DESKTOP)
 #	include <windows.h>
 #	include <process.h>
 #elif defined(HL_CONSOLE)

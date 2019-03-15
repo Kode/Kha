@@ -6,10 +6,10 @@ import cpp.vm.Mutex;
 import haxe.ds.Vector;
 
 class Audio1 {
-	private static inline var channelCount: Int = 16;
+	private static inline var channelCount: Int = 32;
 	private static var soundChannels: Vector<AudioChannel>;
 	private static var streamChannels: Vector<StreamChannel>;
-	
+
 	private static var internalSoundChannels: Vector<AudioChannel>;
 	private static var internalStreamChannels: Vector<StreamChannel>;
 	private static var sampleCache1: kha.arrays.Float32Array;
@@ -17,7 +17,7 @@ class Audio1 {
 	#if cpp
 	private static var mutex: Mutex;
 	#end
-	
+
 	@:noCompletion
 	public static function _init(): Void {
 		#if cpp
@@ -31,15 +31,15 @@ class Audio1 {
 		sampleCache2 = new kha.arrays.Float32Array(512);
 		Audio.audioCallback = mix;
 	}
-	
+
 	private static inline function max(a: Float, b: Float): Float {
 		return a > b ? a : b;
 	}
-	
+
 	private static inline function min(a: Float, b: Float): Float {
 		return a < b ? a : b;
 	}
-	
+
 	public static function mix(samples: Int, buffer: Buffer): Void {
 		if (sampleCache1.length < samples) {
 			sampleCache1 = new kha.arrays.Float32Array(samples);
@@ -85,7 +85,7 @@ class Audio1 {
 			}
 		}
 	}
-	
+
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		#if cpp
 		mutex.acquire();
@@ -119,14 +119,14 @@ class Audio1 {
 		mutex.release();
 		#end
 	}
-	
+
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		{
 			// try to use hardware accelerated audio decoding
 			var hardwareChannel = Audio.stream(sound, loop);
 			if (hardwareChannel != null) return hardwareChannel;
 		}
-	
+
 		#if cpp
 		mutex.acquire();
 		#end

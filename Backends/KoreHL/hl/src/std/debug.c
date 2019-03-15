@@ -20,8 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include <hl.h>
+#ifdef HL_LINUX
+#	include <sys/ptrace.h>
+#	include <sys/wait.h>
+#	include <sys/user.h>
+#	include <signal.h>
+#	define USE_PTRACE
+#endif
 
-#ifdef HL_WIN
+#if defined(HL_WIN)
 static HANDLE last_process = NULL, last_thread = NULL;
 static int last_pid = -1;
 static int last_tid = -1;
@@ -52,58 +59,116 @@ static void CleanHandles() {
 #endif
 
 HL_API bool hl_debug_start( int pid ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	last_pid = -1;
 	return (bool)DebugActiveProcess(pid);
+#	elif defined(USE_PTRACE)
+	return ptrace(PTRACE_ATTACH,pid,0,0) >= 0;
 #	else
 	return false;
 #	endif
 }
 
 HL_API bool hl_debug_stop( int pid ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	BOOL b = DebugActiveProcessStop(pid);
 	CleanHandles();
 	return (bool)b;
+#	elif defined(USE_PTRACE)
+	return ptrace(PTRACE_DETACH,pid,0,0) >= 0;
 #	else
 	return false;
 #	endif
 }
 
 HL_API bool hl_debug_breakpoint( int pid ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	return (bool)DebugBreakProcess(OpenPID(pid));
+#	elif defined(USE_PTRACE)
+	return kill(pid,SIGTRAP) == 0;
 #	else
 	return false;
 #	endif
 }
 
 HL_API bool hl_debug_read( int pid, vbyte *addr, vbyte *buffer, int size ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	return (bool)ReadProcessMemory(OpenPID(pid),addr,buffer,size,NULL);
+#	elif defined(USE_PTRACE)
+	while( size ) {
+		long v = ptrace(PTRACE_PEEKDATA,pid,addr,0);
+		if( size >= sizeof(long) )
+			*(long*)buffer = v;
+		else {
+			memcpy(buffer,&v,size);
+			break;
+		}
+		addr += sizeof(long);
+		size -= sizeof(long);
+		buffer += sizeof(long);
+	}
+	return true;
 #	else
 	return false;
 #	endif
 }
 
 HL_API bool hl_debug_write( int pid, vbyte *addr, vbyte *buffer, int size ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	return (bool)WriteProcessMemory(OpenPID(pid),addr,buffer,size,NULL);
+#	elif defined(USE_PTRACE)
+	while( size ) {
+		int sz = size >= sizeof(long) ? sizeof(long) : size;
+		long v = *(long*)buffer;
+		if( sz != sizeof(long) ) {
+			long cur = ptrace(PTRACE_PEEKDATA,pid,addr);
+			memcpy((char*)&v+sz,(char*)&cur+sz,sizeof(long)-sz);
+		}
+		if( ptrace(PTRACE_POKEDATA,pid,addr,v) < 0 )
+			return false;
+		addr += sz;
+		size -= sz;
+		buffer += sz;
+	}
+	return true;
 #	else
 	return false;
 #	endif
 }
 
 HL_API bool hl_debug_flush( int pid, vbyte *addr, int size ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	return (bool)FlushInstructionCache(OpenPID(pid),addr,size);
+#	elif defined(USE_PTRACE)
+	return true;
 #	else
 	return false;
 #	endif
 }
 
+#ifdef USE_PTRACE
+static void *get_reg( int r ) {
+		struct user_regs_struct *regs = NULL;
+		struct user *user = NULL;
+		switch( r ) {
+#		ifdef HL_64
+		case 0: return &regs->rsp;
+		case 1: return &regs->rbp;
+		case 2: return &regs->rip;
+#		else
+		case 0: return &regs->esp;
+		case 1: return &regs->ebp;
+		case 2: return &regs->eip;
+#		endif
+		case 3: return &regs->eflags;
+		default: return &user->u_debugreg[r-4];
+		}
+		return NULL;
+}
+#endif
+
 HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	DEBUG_EVENT e;
 	if( !WaitForDebugEvent(&e,timeout) )
 		return -1;
@@ -117,6 +182,15 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 		case EXCEPTION_SINGLE_STEP:
 		case 0x4000001E: // STATUS_WX86_SINGLE_STEP
 			return 2;
+		case 0x406D1388: // MS_VC_EXCEPTION (see SetThreadName)
+			ContinueDebugEvent(e.dwProcessId, e.dwThreadId, DBG_CONTINUE);
+			break;
+		case 0xE06D7363: // C++ EH EXCEPTION
+		case 0x6BA: // File Dialog EXCEPTION
+			ContinueDebugEvent(e.dwProcessId, e.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+			break;
+		case EXCEPTION_STACK_OVERFLOW:
+			return 5;
 		default:
 			return 3;
 		}
@@ -127,14 +201,31 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 		break;
 	}
 	return 4;
+#	elif defined(USE_PTRACE)
+	int status;
+	int ret = waitpid(pid,&status,0);
+	//printf("WAITPID=%X %X\n",ret,status);
+	*thread = ret;
+	if( WIFEXITED(status) )
+		return 0;
+	if( WIFSTOPPED(status) ) {
+		int sig = WSTOPSIG(status);
+		//printf(" STOPSIG=%d\n",sig);
+		if( sig == SIGSTOP || sig == SIGTRAP )
+			return 1;
+		return 3;
+	}
+	return 4;
 #	else
 	return 0;
 #	endif
 }
 
 HL_API bool hl_debug_resume( int pid, int thread ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 	return (bool)ContinueDebugEvent(pid, thread, DBG_CONTINUE);
+#	elif defined(USE_PTRACE)
+	return ptrace(PTRACE_CONT,pid,0,0) >= 0;
 #	else
 	return false;
 #	endif
@@ -172,9 +263,8 @@ DefineGetReg(CONTEXT,GetContextReg);
 
 #endif
 
-
 HL_API void *hl_debug_read_register( int pid, int thread, int reg, bool is64 ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 #	ifdef HL_64
 	if( !is64 ) {
 		WOW64_CONTEXT c;
@@ -195,13 +285,15 @@ HL_API void *hl_debug_read_register( int pid, int thread, int reg, bool is64 ) {
 	if( reg == 3 )
 		return (void*)(int_val)c.EFlags;
 	return (void*)*GetContextReg(&c,reg);
+#	elif defined(USE_PTRACE)
+	return (void*)ptrace(PTRACE_PEEKUSER,thread,get_reg(reg),0);
 #	else
 	return NULL;
 #	endif
 }
 
 HL_API bool hl_debug_write_register( int pid, int thread, int reg, void *value, bool is64 ) {
-#	ifdef HL_WIN
+#	if defined(HL_WIN)
 #	ifdef HL_64
 	if( !is64 ) {
 		WOW64_CONTEXT c;
@@ -226,6 +318,8 @@ HL_API bool hl_debug_write_register( int pid, int thread, int reg, void *value, 
 	else
 		*GetContextReg(&c,reg) = (REGDATA)value;
 	return (bool)SetThreadContext(OpenTID(thread),&c);
+#	elif defined(USE_PTRACE)
+	return ptrace(PTRACE_POKEUSER,thread,get_reg(reg),value) >= 0;
 #	else
 	return false;
 #	endif

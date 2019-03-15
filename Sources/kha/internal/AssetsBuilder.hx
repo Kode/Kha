@@ -4,8 +4,10 @@ import haxe.Json;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
-import haxe.macro.Expr.Field;
+
+#if macro
 import sys.io.File;
+#end
 
 using StringTools;
 

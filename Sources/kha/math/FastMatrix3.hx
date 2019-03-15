@@ -16,7 +16,7 @@ class FastMatrix3 {
 		this._02 = _02; this._12 = _12; this._22 = _22;
 	}
 	
-	public static function fromMatrix3(m: Matrix3): FastMatrix3 {
+	public static inline function fromMatrix3(m: Matrix3): FastMatrix3 {
 		return new FastMatrix3(m._00, m._10, m._20,
 								m._01, m._11, m._21,
 								m._02, m._12, m._22);

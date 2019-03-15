@@ -176,3 +176,7 @@ extern "C" void hl_kore_register_copycutpaste(vclosure *copy, vclosure *cut, vcl
 	// Kore::System::setCutCallback(*((FN_CB_CUT*)(&cut->fun)));
 	// Kore::System::setPasteCallback(*((FN_CB_PASTE*)(&paste->fun)));
 }
+
+extern "C" const char *hl_kore_video_format() {
+	return Kore::System::videoFormats()[0];
+}

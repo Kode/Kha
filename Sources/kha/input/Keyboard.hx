@@ -1,6 +1,6 @@
 package kha.input;
 
-import kha.network.Controller;
+import kha.netsync.Controller;
 
 @:allow(kha.SystemImpl)
 @:expose

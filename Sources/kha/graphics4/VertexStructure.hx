@@ -40,6 +40,10 @@ class VertexStructure {
 				return 4 * 4;
 			case Float4x4:
 				return 4 * 4 * 4;
+			case Short2Norm:
+				return 2 * 2;
+			case Short4Norm:
+				return 2 * 4;
 		}
 		return 0;
 	}

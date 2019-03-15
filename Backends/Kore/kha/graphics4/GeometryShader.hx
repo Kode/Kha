@@ -8,12 +8,6 @@ import kha.Blob;
 #include <Kore/Graphics4/Graphics.h>
 ')
 
-@:cppFileCode('
-#ifndef INCLUDED_haxe_io_Bytes
-#include <haxe/io/Bytes.h>
-#endif
-')
-
 @:headerClassCode("Kore::Graphics4::Shader* shader;")
 class GeometryShader {
 	public function new(sources: Array<Blob>, files: Array<String>) {
@@ -26,5 +20,10 @@ class GeometryShader {
 	
 	public function delete(): Void {
 		untyped __cpp__('delete shader; shader = nullptr;');
+	}
+
+	@:keep
+	function _forceInclude(): Void {
+		Bytes.alloc(0);
 	}
 }

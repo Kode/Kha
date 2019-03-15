@@ -7,7 +7,7 @@ extern class Window {
 	public static var all(get, never): Array<Window>;
 	public function resize(width: Int, height: Int): Void;
 	public function move(x: Int, y: Int): Void;
-	public function changeWindowFeatures(features: Int): Void;
+	public function changeWindowFeatures(features: WindowOptions.WindowFeatures): Void;
 	public function changeFramebuffer(frame: FramebufferOptions): Void;
 	public var x(get, set): Int;
 	public var y(get, set): Int;

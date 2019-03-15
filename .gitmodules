@@ -1,28 +1,32 @@
 [submodule "Kore"]
 	path = Kore
-	url = https://github.com/Kode/Kore.git
+	url = ../Kore.git
 	branch = master
 [submodule "Tools/khamake"]
 	path = Tools/khamake
-	url = https://github.com/Kode/khamake.git
+	url = ../khamake.git
 	branch = master
 [submodule "Backends/Kore/khacpp"]
 	path = Backends/Kore/khacpp
-	url = https://github.com/Kode/khacpp.git
+	url = ../khacpp.git
 	branch = master
 [submodule "Tools/haxe"]
 	path = Tools/haxe
-	url = https://github.com/Kode/haxe_bin.git
+	url = ../haxe_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
-	url = https://github.com/Kode/oggenc_bin.git
+	url = ../oggenc_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/kravur"]
 	path = Tools/kravur
-	url = https://github.com/Kode/kravur_bin.git
+	url = ../kravur_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/lame"]
 	path = Tools/lame
-	url = https://github.com/Kode/lame_bin.git
+	url = ../lame_bin.git
 	branch = master
+	shallow = true

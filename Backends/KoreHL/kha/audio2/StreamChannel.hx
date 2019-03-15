@@ -39,16 +39,20 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		atend = true;
 	}
 
-	public var length(get, null): Int; // Miliseconds
+	public var length(get, null): Float; // Seconds
 	
-	private function get_length(): Int {
+	private function get_length(): Float {
 		return kore_sound_vorbis_get_length(_vorbis);
 	}
 
-	public var position(get, null): Int; // Miliseconds
+	public var position(get, set): Float; // Seconds
 	
-	private function get_position(): Int {
+	private function get_position(): Float {
 		return kore_sound_vorbis_get_position(_vorbis);
+	}
+
+	private function set_position(value: Float): Float {
+		return value;
 	}
 	
 	public var volume(get, set): Float;

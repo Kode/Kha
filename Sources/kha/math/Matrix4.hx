@@ -19,6 +19,13 @@ class Matrix4 {
 		this._03 = _03; this._13 = _13; this._23 = _23; this._33 = _33;
 	}
 
+	public static inline function fromFastMatrix4(m: FastMatrix4): Matrix4 {
+		return new Matrix4(m._00, m._10, m._20, m._30,
+								m._01, m._11, m._21, m._31,
+								m._02, m._12, m._22, m._32,
+								m._03, m._13, m._23, m._33);
+	}
+
 	@:extern public inline function setFrom(m: Matrix4): Void {
 		this._00 = m._00; this._10 = m._10; this._20 = m._20; this._30 = m._30;
 		this._01 = m._01; this._11 = m._11; this._21 = m._21; this._31 = m._31;

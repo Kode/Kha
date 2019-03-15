@@ -58,7 +58,7 @@ class Window {
 	public var width(get, set): Int;
 
 	function get_width(): Int {
-		return 800;
+		return SystemImpl.windowWidth(num);
 	}
 	
 	function set_width(value: Int): Int {
@@ -68,7 +68,7 @@ class Window {
 	public var height(get, set): Int;
 
 	function get_height(): Int {
-		return 600;
+		return SystemImpl.windowHeight(num);
 	}
 
 	function set_height(value: Int): Int {
@@ -78,11 +78,11 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Window;
+		return Windowed;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {
-		return Window;
+		return Windowed;
 	}
 
 	public var visible(get, set): Bool;

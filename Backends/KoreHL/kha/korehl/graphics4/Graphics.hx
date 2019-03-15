@@ -138,6 +138,14 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_set_texture3d_parameters(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
 	}
 	
+	public function setTextureCompareMode(unit: kha.graphics4.TextureUnit, enabled: Bool) {
+		kore_graphics_set_texture_compare_mode(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, enabled);
+	}
+
+	public function setCubeMapCompareMode(unit: kha.graphics4.TextureUnit, enabled: Bool) {
+		kore_graphics_set_cube_map_compare_mode(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, enabled);
+	}
+
 	public function setTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		if (texture._texture != null) kore_graphics_set_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._texture);
@@ -165,6 +173,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	public function setPipeline(pipe: PipelineState): Void {
 		pipe.set();
+	}
+
+	public function setStencilReferenceValue(value: Int): Void {
+
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
@@ -283,6 +295,8 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool { return false; }
 	@:hlNative("std", "kore_graphics_set_texture_parameters") static function kore_graphics_set_texture_parameters(unit: Pointer, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_texture3d_parameters") static function kore_graphics_set_texture3d_parameters(unit: Pointer, uAddressing: Int, vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_texture_compare_mode") static function kore_graphics_set_texture_compare_mode(unit: Pointer, enabled: Bool): Void { }
+	@:hlNative("std", "kore_graphics_set_cube_map_compare_mode") static function kore_graphics_set_cube_map_compare_mode(unit: Pointer, enabled: Bool): Void { }
 	@:hlNative("std", "kore_graphics_set_texture") static function kore_graphics_set_texture(unit: Pointer, texture: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_texture_depth") static function kore_graphics_set_texture_depth(unit: Pointer, renderTarget: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_texture_array") static function kore_graphics_set_texture_array(unit: Pointer, textureArray: Pointer): Void { }

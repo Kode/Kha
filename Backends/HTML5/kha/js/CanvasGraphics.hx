@@ -4,24 +4,25 @@ import kha.Color;
 import kha.graphics2.Graphics;
 import kha.graphics2.ImageScaleQuality;
 import kha.math.FastMatrix3;
+import js.html.CanvasRenderingContext2D;
 
 class CanvasGraphics extends Graphics {
-	private var canvas: Dynamic;
+	private var canvas: CanvasRenderingContext2D;
 	private var webfont: kha.js.Font;
 	private var myColor: Color;
 	private var scaleQuality: ImageScaleQuality;
+	private var clipping: Bool = false;
 	private static var instance: CanvasGraphics;
-	
-	public function new(canvas: Dynamic) { 
+
+	public function new(canvas: CanvasRenderingContext2D) {
 		super();
 		this.canvas = canvas;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
-		canvas.save();
 		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
 		//canvas.globalCompositeOperation = "normal";
 	}
-	
+
 	public static function stringWidth(font: kha.Font, text: String): Float {
 		if (instance == null) return 5 * text.length;
 		else {
@@ -29,11 +30,11 @@ class CanvasGraphics extends Graphics {
 			return instance.canvas.measureText(text).width;
 		}
 	}
-	
+
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
 		if (clear) this.clear(clearColor);
 	}
-	
+
 	override public function clear(color: Color = null): Void {
 		if (color == null) color = 0x00000000;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
@@ -44,22 +45,22 @@ class CanvasGraphics extends Graphics {
 			canvas.fillRect(0, 0, canvas.canvas.width, canvas.canvas.height);
 		this.color = myColor;
 	}
-	
+
 	override public function end(): Void {
-		
+
 	}
-	
+
 	/*override public function translate(x: Float, y: Float) {
 		tx = x;
 		ty = y;
 	}*/
-	
+
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
 		canvas.globalAlpha = opacity;
 		canvas.drawImage(cast(img, CanvasImage).image, x, y);
 		canvas.globalAlpha = 1;
 	}
-	
+
 	override public function drawScaledSubImage(image: kha.Image, sx: Float, sy: Float, sw: Float, sh: Float, dx: Float, dy: Float, dw: Float, dh: Float) {
 		canvas.globalAlpha = opacity;
 		try {
@@ -84,42 +85,42 @@ class CanvasGraphics extends Graphics {
 			}
 		}
 		catch (ex: Dynamic) {
-			
+
 		}
 		canvas.globalAlpha = 1;
 	}
-	
+
 	override public function set_color(color: Color): Color {
 		myColor = color;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		return color;
 	}
-	
+
 	override public function get_color(): Color {
 		return myColor;
 	}
-	
+
 	override private function get_imageScaleQuality(): ImageScaleQuality {
 		return scaleQuality;
 	}
-	
+
 	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
 		if (value == ImageScaleQuality.Low) {
-			canvas.mozImageSmoothingEnabled = false;
-			canvas.webkitImageSmoothingEnabled = false;
-			canvas.msImageSmoothingEnabled = false;
+			untyped canvas.mozImageSmoothingEnabled = false;
+			untyped canvas.webkitImageSmoothingEnabled = false;
+			untyped canvas.msImageSmoothingEnabled = false;
 			canvas.imageSmoothingEnabled = false;
 		}
 		else {
-			canvas.mozImageSmoothingEnabled = true;
-			canvas.webkitImageSmoothingEnabled = true;
-			canvas.msImageSmoothingEnabled = true;
+			untyped canvas.mozImageSmoothingEnabled = true;
+			untyped canvas.webkitImageSmoothingEnabled = true;
+			untyped canvas.msImageSmoothingEnabled = true;
 			canvas.imageSmoothingEnabled = true;
 		}
 		return scaleQuality = value;
 	}
-	
+
 	override public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0) {
 		canvas.beginPath();
 		var oldStrength = canvas.lineWidth;
@@ -128,7 +129,7 @@ class CanvasGraphics extends Graphics {
 		canvas.stroke();
 		canvas.lineWidth = oldStrength;
 	}
-	
+
 	override public function fillRect(x: Float, y: Float, width: Float, height: Float) {
 		canvas.globalAlpha = opacity * myColor.A;
 		canvas.fillRect(x, y, width, height);
@@ -163,24 +164,38 @@ class CanvasGraphics extends Graphics {
 		canvas.arc(cx, cy, radius, 0, 2 * Math.PI, false);
 		canvas.fill();
 	}
-	
+
 	var bakedQuadCache = new kha.Kravur.AlignedQuad();
-	
+
 	override public function drawString(text: String, x: Float, y: Float) {
 		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
 		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
-		
-		var image = webfont.getImage(fontSize, myColor, kha.graphics2.Graphics.fontGlyphs);
+
+		var image = webfont.getImage(fontSize, myColor);
 		if (image.width > 0) {
 			// the image created in getImage() is not imediately useable
 			var xpos = x;
 			var ypos = y;
 			for (i in 0...text.length) {
-				var q;
-				if (kha.graphics2.Graphics.fontGlyphs != null)
-					q = webfont.kravur._get(fontSize, kha.graphics2.Graphics.fontGlyphs).getBakedQuad(bakedQuadCache, kha.graphics2.Graphics.fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
-				else
-					q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, text.charCodeAt(i) - 32, xpos, ypos);
+				var q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, kha.graphics2.Graphics.fontGlyphs.indexOf(text.charCodeAt(i)), xpos, ypos);
+
+				if (q != null) {
+					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
+						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+					xpos += q.xadvance;
+				}
+			}
+		}
+	}
+
+	override public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+		var image = webfont.getImage(fontSize, myColor);
+		if (image.width > 0) {
+			// the image created in getImage() is not imediately useable
+			var xpos = x;
+			var ypos = y;
+			for (i in start...start + length) {
+				var q = webfont.kravur._get(fontSize).getBakedQuad(bakedQuadCache, kha.graphics2.Graphics.fontGlyphs.indexOf(text[i]), xpos, ypos);
 
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
@@ -196,7 +211,7 @@ class CanvasGraphics extends Graphics {
 		//canvas.font = webfont.size + "px " + webfont.name;
 		return cast webfont;
 	}
-	
+
 	override public function get_font(): kha.Font {
 		return cast webfont;
 	}
@@ -214,25 +229,32 @@ class CanvasGraphics extends Graphics {
 
 	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
 		canvas.beginPath();
-		
+
 		canvas.closePath();
 		canvas.fill();
 	}
-	
+
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+		if (!clipping) {
+			canvas.save();
+			clipping = true;
+		}
 		canvas.beginPath();
 		canvas.rect(x, y, width, height);
 		canvas.clip();
 	}
-	
+
 	override public function disableScissor(): Void {
-		canvas.restore();
+		if (clipping) {
+			canvas.restore();
+			clipping = false;
+		}
 	}
-	
+
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		canvas.drawImage(cast(video, Video).element, x, y, width, height);
 	}
-	
+
 	override public function setTransformation(transformation: FastMatrix3): Void {
 		canvas.setTransform(transformation._00, transformation._01, transformation._10,
 			transformation._11, transformation._20, transformation._21);

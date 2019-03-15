@@ -30,6 +30,10 @@ class VertexBuffer {
 				myStride += 4;
 			case VertexData.Float4x4:
 				myStride += 4 * 4;
+			case VertexData.Short2Norm:
+				myStride += 2;
+			case VertexData.Short4Norm:
+				myStride += 4;
 			}
 		}
 		myStructure = structure;
@@ -41,8 +45,8 @@ class VertexBuffer {
 		return vertices;
 	}
 	
-	public function unlock(): Void {
-		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, vertexCount);
+	public function unlock(?count: Int): Void {
+		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, count != null ? count : vertexCount);
 	}
 	
 	public function stride(): Int {
@@ -80,6 +84,14 @@ class VertexBuffer {
 					offset += 4;
 					++index;
 				}
+			case VertexData.Short2Norm:
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_2);
+				offset += 2;
+				++index;
+			case VertexData.Short4Norm:
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_4);
+				offset += 4;
+				++index;
 			}
 		}
 		for (i in index...8) kha.flash.graphics4.Graphics.context.setVertexBufferAt(i, null);

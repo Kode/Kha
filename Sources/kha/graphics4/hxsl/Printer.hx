@@ -253,6 +253,7 @@ class Printer {
 		case OpAssignOp(op):opStr(op) + "=";
 		case OpArrow:"=>";
 		case OpInterval:"...";
+		case OpIn: throw "assert";
 		}
 	}
 

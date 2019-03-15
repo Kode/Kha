@@ -7,7 +7,7 @@ import kha.audio1.AudioChannel;
 		private java.util.ArrayList<Sound> sounds = new java.util.ArrayList<Sound>();
 		private java.util.Queue<Integer> queue = new java.util.ArrayDeque<Integer>();
 		private java.util.ArrayDeque<Sound> soundqueue = new java.util.ArrayDeque<Sound>();
-		
+
 		@Override
 		public void run() {
 			for (;;) {
@@ -53,37 +53,37 @@ import kha.audio1.AudioChannel;
 						wait();
 					}
 					catch (InterruptedException e) {
-						
+
 					}
 				}
 			}
 		}
-		
+
 		public synchronized int addSound(Sound sound) {
 			sounds.add(sound);
 			return sounds.size() - 1;
 		}
-		
+
 		public synchronized void play(int index) {
 			queue.add(index);
 			notify();
 		}
-		
+
 		public synchronized void stop(int index) {
 			queue.remove(index);
 			notify();
 		}
 	}
-	
+
 	private static SoundThread thread;
 	private javax.sound.sampled.Clip clip;
-	
+
 	public javax.sound.sampled.Clip unloadit() {
 		javax.sound.sampled.Clip clip = this.clip;
 		this.clip = null;
 		return clip;
 	}
-	
+
 	public void load(javax.sound.sampled.Clip clip) {
 		this.clip = clip;
 		javax.sound.sampled.AudioInputStream stream;
@@ -97,15 +97,18 @@ import kha.audio1.AudioChannel;
 		}
 	}
 ')
+@:nativeGen
+@:keep
+@:native("kha.java.Sound")
 class Sound extends kha.Sound {
 	var index: Int;
 	var filename: String;
-	
+
 	public function new(filename: String) {
 		super();
 		init(filename);
 	}
-	
+
 	@:functionCode('
 		this.filename = filename;
 		if (thread == null) {
@@ -116,9 +119,9 @@ class Sound extends kha.Sound {
 		index = thread.addSound(this);
 	')
 	function init(filename : String) {
-		
+
 	}
-	
+
 	@:functionCode('
 		thread.play(index);
 		return null;
@@ -126,7 +129,7 @@ class Sound extends kha.Sound {
 	public function play(): AudioChannel {
 		return null;
 	}
-	
+
 	@:functionCode('
 		if (clip.isRunning()) {
 			clip.stop();
@@ -134,16 +137,16 @@ class Sound extends kha.Sound {
 		thread.stop(index);
 	')
 	public function stop() : Void {
-		
+
 	}
-	
+
 	@:functionCode('
 		return clip != null;
 	')
 	public function isLoaded() : Bool {
 		return true;
 	}
-	
+
 	@:functionCode('
 		if (!clip.isRunning()) {
 			clip.setFramePosition(0);
@@ -152,9 +155,9 @@ class Sound extends kha.Sound {
 		else clip.setFramePosition(0);
 	')
 	public function realplay() : Void {
-		
+
 	}
-	
+
 	@:functionCode('
 		return clip.isRunning();
 	')

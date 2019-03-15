@@ -25,7 +25,7 @@
 #define TK2(a,b)		((a) | ((b)<<5))
 
 static void invalid_cast( hl_type *from, hl_type *to ) {
-	hl_error_msg(USTR("Can't cast %s to %s"),hl_type_str(from),hl_type_str(to));
+	hl_error("Can't cast %s to %s",hl_type_str(from),hl_type_str(to));
 }
 
 HL_PRIM vdynamic *hl_make_dyn( void *data, hl_type *t ) {
@@ -313,6 +313,12 @@ static int dcompare( double a, double b ) {
  	return d == 0. ? 0 : (d > 0. ? 1 : -1);
 }
 
+HL_PRIM int hl_ptr_compare( vdynamic *a, vdynamic *b ) {
+	if( a == b )
+		return 0;
+	return a > b ? 1 : -1;
+}
+
 HL_PRIM int hl_dyn_compare( vdynamic *a, vdynamic *b ) {
 	if( a == b )
 		return 0;
@@ -341,7 +347,7 @@ HL_PRIM int hl_dyn_compare( vdynamic *a, vdynamic *b ) {
 	case TK2(HI32, HF64):
 		return dcompare((double)a->v.i,b->v.d);
 	case TK2(HOBJ,HOBJ):
-		if( a->t->obj == b->t->obj && a->t->obj->rt->compareFun )
+		if( a->t->obj->rt->compareFun )
 			return a->t->obj->rt->compareFun(a,b);
 		return a > b ? 1 : -1;
 	case TK2(HENUM,HENUM):
@@ -435,7 +441,7 @@ static bool is_number( hl_type *t ) {
 
 HL_PRIM vdynamic *hl_dyn_op( int op, vdynamic *a, vdynamic *b ) {
 	static uchar *op_names[] = { USTR("+"), USTR("-"), USTR("*"), USTR("%"), USTR("/"), USTR("<<"), USTR(">>"), USTR(">>>"), USTR("&"), USTR("|"), USTR("^") };
-	if( op < 0 || op >= OpLast ) hl_error_msg(USTR("Invalid op %d"),op);
+	if( op < 0 || op >= OpLast ) hl_error("Invalid op %d",op);
 	if( !a && !b ) return op == OP_DIV || op == OP_MOD ? hl_dynf64(hl_nan()) : NULL;
 	if( (!a || is_number(a->t)) && (!b || is_number(b->t)) ) {
 		switch( op ) {
@@ -460,7 +466,7 @@ HL_PRIM vdynamic *hl_dyn_op( int op, vdynamic *a, vdynamic *b ) {
 		case OP_XOR: IOP(^);
 		}
 	}
-	hl_error_msg(USTR("Can't perform dyn op %s %s %s"),hl_type_str(a->t),op_names[op],hl_type_str(b->t));
+	hl_error("Can't perform dyn op %s %s %s",hl_type_str(a->t),op_names[op],hl_type_str(b->t));
 	return NULL;
 }
 
@@ -468,3 +474,5 @@ DEFINE_PRIM(_I32, dyn_compare, _DYN _DYN);
 DEFINE_PRIM(_DYN, value_cast, _DYN _TYPE);
 DEFINE_PRIM(_BOOL, type_safe_cast, _TYPE _TYPE);
 DEFINE_PRIM(_DYN, dyn_op, _I32 _DYN _DYN);
+DEFINE_PRIM(_I32, ptr_compare, _DYN _DYN);
+

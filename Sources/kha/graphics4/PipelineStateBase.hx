@@ -18,7 +18,7 @@ class PipelineStateBase {
 		stencilBothPass = StencilAction.Keep;
 		stencilDepthFail = StencilAction.Keep;
 		stencilFail = StencilAction.Keep;
-		stencilReferenceValue = 0;
+		stencilReferenceValue = Static(0);
 		stencilReadMask = 0xff;
 		stencilWriteMask = 0xff;
 
@@ -29,7 +29,14 @@ class PipelineStateBase {
 		alphaBlendDestination = BlendingFactor.BlendZero;
 		alphaBlendOperation = BlendingOperation.Add;
 		
-		colorWriteMask = true;
+		colorWriteMasksRed = [];
+		colorWriteMasksGreen = [];
+		colorWriteMasksBlue = [];
+		colorWriteMasksAlpha = [];
+		for (i in 0...8) colorWriteMasksRed.push(true);
+		for (i in 0...8) colorWriteMasksGreen.push(true);
+		for (i in 0...8) colorWriteMasksBlue.push(true);
+		for (i in 0...8) colorWriteMasksAlpha.push(true);
 
 		conservativeRasterization = false;
 	}
@@ -50,7 +57,7 @@ class PipelineStateBase {
 	public var stencilBothPass: StencilAction;
 	public var stencilDepthFail: StencilAction;
 	public var stencilFail: StencilAction;
-	public var stencilReferenceValue: Int;
+	public var stencilReferenceValue: StencilValue;
 	public var stencilReadMask: Int;
 	public var stencilWriteMask: Int;
 
@@ -63,13 +70,50 @@ class PipelineStateBase {
 	public var alphaBlendOperation: BlendingOperation;
 	
 	public var colorWriteMask(never, set): Bool;
-	public var colorWriteMaskRed: Bool;
-	public var colorWriteMaskGreen: Bool;
-	public var colorWriteMaskBlue: Bool;
-	public var colorWriteMaskAlpha: Bool;
+	public var colorWriteMaskRed(get, set): Bool;
+	public var colorWriteMaskGreen(get, set): Bool;
+	public var colorWriteMaskBlue(get, set): Bool;
+	public var colorWriteMaskAlpha(get, set): Bool;
 
-	inline function set_colorWriteMask(value: Bool ): Bool {
+	public var colorWriteMasksRed: Array<Bool>;
+	public var colorWriteMasksGreen: Array<Bool>;
+	public var colorWriteMasksBlue: Array<Bool>;
+	public var colorWriteMasksAlpha: Array<Bool>;
+
+	inline function set_colorWriteMask(value: Bool): Bool {
 		return colorWriteMaskRed = colorWriteMaskBlue = colorWriteMaskGreen = colorWriteMaskAlpha = value;
+	}
+
+	inline function get_colorWriteMaskRed(): Bool {
+		return colorWriteMasksRed[0];
+	}
+
+	inline function set_colorWriteMaskRed(value: Bool): Bool {
+		return colorWriteMasksRed[0] = value;
+	}
+
+	inline function get_colorWriteMaskGreen(): Bool {
+		return colorWriteMasksGreen[0];
+	}
+
+	inline function set_colorWriteMaskGreen(value: Bool): Bool {
+		return colorWriteMasksGreen[0] = value;
+	}
+
+	inline function get_colorWriteMaskBlue(): Bool {
+		return colorWriteMasksBlue[0];
+	}
+
+	inline function set_colorWriteMaskBlue(value: Bool): Bool {
+		return colorWriteMasksBlue[0] = value;
+	}
+
+	inline function get_colorWriteMaskAlpha(): Bool {
+		return colorWriteMasksAlpha[0];
+	}
+
+	inline function set_colorWriteMaskAlpha(value: Bool): Bool {
+		return colorWriteMasksAlpha[0] = value;
 	}
 
 	public var conservativeRasterization: Bool;

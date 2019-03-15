@@ -87,7 +87,7 @@ class Graphics4 implements kha.graphics4.Graphics {
 
 	public function setTextureArray(unit: TextureUnit, texture: Image): Void {
 
-	};
+	}
 
 	public function setVideoTexture(unit: TextureUnit, texture: Video): Void {
 		
@@ -95,13 +95,21 @@ class Graphics4 implements kha.graphics4.Graphics {
 
 	public function setImageTexture(unit: TextureUnit, texture: Image): Void {
 
-	};
+	}
 
 	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		
 	}
 
 	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		
+	}
+
+	public function setTextureCompareMode(texunit: TextureUnit, enabled: Bool): Void {
+
+	}
+
+	public function setCubeMapCompareMode(texunit: TextureUnit, enabled: Bool): Void {
 		
 	}
 
@@ -123,6 +131,10 @@ class Graphics4 implements kha.graphics4.Graphics {
 	
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
+	}
+
+	public function setStencilReferenceValue(value: Int): Void {
+
 	}
 	
 	public function setBool(location: ConstantLocation, value: Bool): Void {
@@ -248,7 +260,8 @@ class Graphics4 implements kha.graphics4.Graphics {
 							untyped vsinput[element.name] = data4;
 							vindex += 4;
 						case VertexData.Float4x4:
-							
+						case Short2Norm:
+						case Short4Norm:
 					}
 				}
 				vsinputs.push(vsinput);

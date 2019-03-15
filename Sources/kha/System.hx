@@ -1,18 +1,48 @@
 package kha;
 
+import kha.WindowOptions;
+
 @:structInit
 class SystemOptions {
 	@:optional public var title: String = "Kha";
-	@:optional public var width: Int = 800;
-	@:optional public var height: Int = 600;
+	@:optional public var width: Int = -1;
+	@:optional public var height: Int = -1;
 	@:optional public var window: WindowOptions = null;
 	@:optional public var framebuffer: FramebufferOptions = null;
 
-	public function new(title: String = "Kha", ?width: Int = 800, ?height: Int = 600, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+	/**
+	 * Used to provide parameters for System.start
+	 * @param title The application title is the default window title (unless the window parameter provides a title of its own)
+	 * and is used for various other purposes - for example for save data locations
+	 * @param width Just a shortcut which overwrites window.width if set
+	 * @param height Just a shortcut which overwrites window.height if set
+	 * @param window Optionally provide window options
+	 * @param framebuffer Optionally provide framebuffer options
+	 */
+	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
-		this.width = width;
-		this.height = height;
 		this.window = window == null ? {} : window;
+
+		if (width > 0) {
+			this.window.width = width;
+			this.width = width;
+		}
+		else {
+			this.width = this.window.width;
+		}
+
+		if (height > 0) {
+			this.window.height = height;
+			this.height = height;
+		}
+		else {
+			this.height = this.window.height;
+		}
+
+		if (this.window.title == null) {
+			this.window.title = title;
+		}
+
 		this.framebuffer = framebuffer == null ? {} : framebuffer;
 	}
 }
@@ -45,10 +75,11 @@ class System {
 
 	@:deprecated("Use System.start instead")
 	public static function init(options: OldSystemOptions, callback: Void -> Void): Void {
-		var features: Int = 0;
-		if (options.resizable) features |= WindowOptions.FeatureResizable;
-		if (options.maximizable) features |= WindowOptions.FeatureMaximizable;
-		if (options.minimizable) features |= WindowOptions.FeatureMinimizable;
+		var features:WindowFeatures = None;
+		if (options.resizable) features |= WindowFeatures.FeatureResizable;
+		if (options.maximizable) features |= WindowFeatures.FeatureMaximizable;
+		if (options.minimizable) features |= WindowFeatures.FeatureMinimizable;
+		
 		var newOptions: SystemOptions = {
 			title: options.title,
 			width: options.width,
@@ -117,6 +148,10 @@ class System {
 
 	public static function notifyOnDropFiles(dropFilesListener: String -> Void): Void {
 		dropFilesListeners.push(dropFilesListener);
+	}
+
+	public static function removeDropListerer(listener: String -> Void): Void {
+		dropFilesListeners.remove(listener);
 	}
 
 	public static function notifyOnCutCopyPaste(cutListener: Void->String, copyListener: Void->String, pasteListener: String->Void): Void {
@@ -221,7 +256,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function isFullscreen(): Bool {
-		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.Fullscreen;
+		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.ExclusiveFullscreen;
 	}
 
 	@:deprecated("Use the kha.Window API instead")
@@ -231,7 +266,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function exitFullscreen(): Void {
-		Window.get(0).mode = WindowMode.Window;
+		Window.get(0).mode = WindowMode.Windowed;
 	}
 
 	@:deprecated("This does nothing")

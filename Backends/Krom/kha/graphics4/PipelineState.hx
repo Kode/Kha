@@ -19,13 +19,19 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
-		var structure0 = inputLayout.length > 0 ? inputLayout[0].elements : null;
-		var structure1 = inputLayout.length > 1 ? inputLayout[1].elements : null;
-		var structure2 = inputLayout.length > 2 ? inputLayout[2].elements : null;
-		var structure3 = inputLayout.length > 3 ? inputLayout[3].elements : null;
+		var structure0 = inputLayout.length > 0 ? inputLayout[0] : null;
+		var structure1 = inputLayout.length > 1 ? inputLayout[1] : null;
+		var structure2 = inputLayout.length > 2 ? inputLayout[2] : null;
+		var structure3 = inputLayout.length > 3 ? inputLayout[3] : null;
 		var gs = geometryShader != null ? geometryShader.shader : null;
 		var tcs = tessellationControlShader != null ? tessellationControlShader.shader : null;
 		var tes = tessellationEvaluationShader != null ? tessellationEvaluationShader.shader : null;
+		var stencilReferenceValue = 0;
+		switch (this.stencilReferenceValue) {
+			case Static(value):
+				stencilReferenceValue = value;
+			default:
+		}
 		Krom.compilePipeline(pipeline, structure0, structure1, structure2, structure3, inputLayout.length, vertexShader.shader, fragmentShader.shader, gs, tcs, tes, {
 			cullMode: convertCullMode(cullMode),
 			depthWrite: this.depthWrite,
@@ -41,10 +47,10 @@ class PipelineState extends PipelineStateBase {
 			blendDestination: convertBlendingFactor(blendDestination),
 			alphaBlendSource: convertBlendingFactor(alphaBlendSource),
 			alphaBlendDestination: convertBlendingFactor(alphaBlendDestination),
-			colorWriteMaskRed: colorWriteMaskRed,
-			colorWriteMaskGreen: colorWriteMaskGreen,
-			colorWriteMaskBlue: colorWriteMaskBlue,
-			colorWriteMaskAlpha: colorWriteMaskAlpha,
+			colorWriteMaskRed: colorWriteMasksRed,
+			colorWriteMaskGreen: colorWriteMasksGreen,
+			colorWriteMaskBlue: colorWriteMasksBlue,
+			colorWriteMaskAlpha: colorWriteMasksAlpha,
 			conservativeRasterization: conservativeRasterization
 		});
 	}

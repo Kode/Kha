@@ -25,32 +25,36 @@ class VertexBuffer {
 				myStride += 4 * 4;
 			case Float4x4:
 				myStride += 4 * 4 * 4;
+			case Short2Norm:
+				myStride += 2 * 2;
+			case Short4Norm:
+				myStride += 2 * 4;
 			}
 		}
-	
+
 		data = new Float32Array(Std.int(vertexCount * myStride / 4));
 	}
 
 	public function delete(): Void {
 		data = null;
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return data;
 	}
-	
-	public function unlock(): Void {
+
+	public function unlock(?count: Int): Void {
 
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return mySize;
 	}
-	
+
 	public function set(offset: Int): Int {
 		return 0;
 	}

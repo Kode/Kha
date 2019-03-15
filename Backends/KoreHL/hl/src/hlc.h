@@ -42,19 +42,25 @@
 #undef NO_ERROR
 #undef EOF
 #undef STRICT
+#undef TRUE
+#undef FALSE
 
 // disable some warnings triggered by HLC code generator
 
 #ifdef HL_VCC
-#	pragma warning(disable:4702) // unreachable code
 #	pragma warning(disable:4100) // unreferenced param
 #	pragma warning(disable:4101) // unreferenced local var
 #	pragma warning(disable:4102) // unreferenced label
+#	pragma warning(disable:4204) // nonstandard extension
+#	pragma warning(disable:4221) // nonstandard extension
+#	pragma warning(disable:4244) // possible loss of data
 #	pragma warning(disable:4700) // uninitialized local variable used
+#	pragma warning(disable:4701) // potentially uninitialized local variable
+#	pragma warning(disable:4702) // unreachable code
 #	pragma warning(disable:4703) // potentially uninitialized local
-#	pragma warning(disable:4723) // potential divide by 0
 #	pragma warning(disable:4715) // control paths must return a value
 #	pragma warning(disable:4716) // must return a value (ends with throw)
+#	pragma warning(disable:4723) // potential divide by 0
 #else
 #	pragma GCC diagnostic ignored "-Wunused-variable"
 #	pragma GCC diagnostic ignored "-Wunused-function"
@@ -69,7 +75,8 @@
 #endif
 
 static void hl_null_access() {
-	hl_error_msg(USTR("Null access"));
+	hl_error("Null access");
+	HL_UNREACHABLE;
 }
 
 #endif

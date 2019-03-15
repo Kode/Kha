@@ -33,21 +33,25 @@ class PipelineState extends PipelineStateBase {
 		var kore_structures:Array<Pointer> = [];
 
 		for (i in 0...count) {
-			var kore_structure = VertexBuffer.kore_create_vertexstructure();
+			var kore_structure = VertexBuffer.kore_create_vertexstructure(structures[i].instanced);
 			kore_structures.push(kore_structure);
 			for (j in 0...structures[i].size()) {
 				var data: Int = 0;
-				switch (structures[i].get(j).data.getIndex()) {
-				case 0:
+				switch (structures[i].get(j).data) {
+				case VertexData.Float1:
 					data = 1; // Kore::Graphics4::Float1VertexData;
-				case 1:
+				case VertexData.Float2:
 					data = 2;
-				case 2:
+				case VertexData.Float3:
 					data = 3;
-				case 3:
+				case VertexData.Float4:
 					data = 4;
-				case 4:
+				case VertexData.Float4x4:
 					data = 5; // Kore::Graphics4::Float4x4VertexData;
+				case VertexData.Short2Norm:
+					data = 6;
+				case VertexData.Short4Norm:
+					data = 7;
 				}
 				VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(structures[i].get(j).name), data);
 			}
@@ -57,8 +61,14 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
+		var stencilReferenceValue = 0;
+		switch (this.stencilReferenceValue) {
+			case Static(value):
+				stencilReferenceValue = value;
+			default:
+		}
 		kore_pipeline_set_states(_pipeline,
-			cullMode.getIndex(), depthMode.getIndex(), stencilMode.getIndex(), stencilBothPass.getIndex(), stencilDepthFail.getIndex(), stencilFail.getIndex(),
+			cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail,
 			getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
 			depthWrite, stencilReferenceValue, stencilReadMask, stencilWriteMask,
 			colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha,

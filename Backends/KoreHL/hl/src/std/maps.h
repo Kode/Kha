@@ -72,6 +72,8 @@ static void _MNAME(resize)( t_map *m ) {
 	// save
 	t_map old = *m;
 
+	if( m->nentries != m->maxentries ) hl_error("assert");
+
 	// resize
 	int i = 0;
 	int nentries = m->maxentries ? ((m->maxentries * 3) + 1) >> 1 : H_SIZE_INIT;
@@ -108,7 +110,7 @@ static void _MNAME(resize)( t_map *m ) {
 				c = old.entries[c].next;
 			}
 		}
-		hl_pop_root();
+		hl_remove_root(&old);
 	}
 }
 

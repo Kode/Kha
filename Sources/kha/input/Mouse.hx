@@ -1,6 +1,6 @@
 package kha.input;
 
-import kha.network.Controller;
+import kha.netsync.Controller;
 
 @:allow(kha.SystemImpl)
 @:expose
@@ -15,8 +15,8 @@ class Mouse extends Controller {
 
 	/**
 	 * Creates event handlers from passed functions.
-	 * @param downListener function with `x:Int`,`y:Int`,`button:Int` arguments, fired when a mouse is pressed down. `button:Int` is `0` for left button, `1` for right and `2` for middle.
-	 * @param upListener function with `x:Int`,`y:Int`,`button:Int` arguments, fired when a mouse is released.
+	 * @param downListener function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is pressed down. `button:Int` is `0` for left button, `1` for right and `2` for middle.
+	 * @param upListener function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is released.
 	 * @param moveListener function with `x:Int`,`y:Int`,`moveX:Int`,`moveY:Int` arguments, fired when a mouse is moved. `moveX`/`moveY` is the difference between the current coordinates and the last position of the mouse.
 	 * @param wheelListener function with `delta:Int` argument, fired when the wheel rotates. It can have a value of `1` or `-1` depending on the rotation.
 	 * @param leaveListener (optional) function without` arguments, when fired mouse leave canvas.

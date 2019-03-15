@@ -10,6 +10,8 @@ class Window {
 	@:noDoc
 	public function new(defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
 		this.canvas = canvas;
+		this.defaultWidth = defaultWidth;
+		this.defaultHeight = defaultHeight;
 		windows.push(this);
 	}
 
@@ -60,7 +62,7 @@ class Window {
 	public var width(get, set): Int;
 
 	function get_width(): Int {
-		return canvas.width == 0 ? defaultWidth : canvas.width;
+		return canvas.clientWidth == 0 ? defaultWidth : canvas.clientWidth;
 	}
 
 	function set_width(value: Int): Int {
@@ -70,7 +72,7 @@ class Window {
 	public var height(get, set): Int;
 
 	function get_height(): Int {
-		return canvas.height == 0 ? defaultHeight : canvas.height;
+		return canvas.clientHeight == 0 ? defaultHeight : canvas.clientHeight;
 	}
 
 	function set_height(value: Int): Int {
@@ -80,7 +82,7 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Window;
+		return Windowed;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {

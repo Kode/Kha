@@ -20,6 +20,7 @@ class Sound extends kha.Sound {
 			uncompressedData->self.data[i * 2 + 0] = (float)(left [i] / 32767.0);
 			uncompressedData->self.data[i * 2 + 1] = (float)(right[i] / 32767.0);
 		}
+		this->length = sound->length;
 		delete sound;
 	')
 	function initWav(filename: String) {

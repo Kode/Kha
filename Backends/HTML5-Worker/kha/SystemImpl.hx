@@ -19,7 +19,9 @@ class GamepadStates {
 
 class SystemImpl {
 	static var options: SystemOptions;
+	@:allow(kha.Window)
 	static var width: Int = 800;
+	@:allow(kha.Window)
 	static var height: Int = 600;
 	static var dpi: Int = 96;
 	static inline var maxGamepads: Int = 4;
@@ -29,7 +31,7 @@ class SystemImpl {
 	static var surface: Surface;
 	static var gamepads: Array<Gamepad>;
 
-	public static function init(options: SystemOptions, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Window -> Void) {
 		Worker.handleMessages(messageHandler);
 		
 		Shaders.init();
@@ -65,25 +67,15 @@ class SystemImpl {
 		Scheduler.init();
 		Scheduler.start();
 		
-		callback();
+		callback(new Window());
 	}
 	
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
-		trace('initEx is not supported on the html5 target, running init() with first window options');
-
-		init({title : title, width : options[0].width, height : options[0].height}, callback);
-
-		if (windowCallback != null) {
-			windowCallback(0);
-		}
-	}
-
 	public static function windowWidth(windowId: Int = 0): Int {
-		return width;
+		return Window.get(0).width;
 	}
 
 	public static function windowHeight(windowId: Int = 0): Int {
-		return height;
+		return Window.get(0).height;
 	}
 
 	public static function screenDpi(): Int {
@@ -114,8 +106,8 @@ class SystemImpl {
 		return js.Browser.navigator.language;
 	}
 
-	public static function requestShutdown(): Void {
-		
+	public static function requestShutdown(): Bool {
+		return false;
 	}
 
 	public static function getMouse(num: Int): Mouse {
@@ -212,7 +204,7 @@ class SystemImpl {
 			if (frame != null) {
 				Scheduler.executeFrame();
 				Worker.postMessage({ command: 'beginFrame' });
-				System.render(0, frame);
+				System.render([frame]);
 				Worker.postMessage({ command: 'endFrame' });
 			}
 		case 'setWindowSize':

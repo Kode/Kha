@@ -12,7 +12,7 @@ import system.windows.FrameworkElement;
 @:classCode('
 		protected override void OnRender(global::System.Windows.Media.DrawingContext drawingContext) {
 			base.OnRender(drawingContext);
-			
+
 			if (kha.SystemImpl.painter != null) {
 				kha.SystemImpl.painter.context = drawingContext;
 				//Starter.painter.begin();
@@ -32,7 +32,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 	private var mousePosX: Int;
 	private var mousePosY: Int;
 	public var drawMousePos: Bool;
-	
+
 	public function setMousePos(posX: Int, posY: Int): Void {
 		mousePosX = posX;
 		mousePosY = posY;
@@ -51,12 +51,12 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		canvas.InvalidateVisual();
 		InvalidateVisual();
 	}
-	
+
 	protected override void OnTextInput(global::System.Windows.Input.TextCompositionEventArgs e) {
 		base.OnTextInput(e);
 		kha.SystemImpl.OnTextInput(e);
 	}
-	
+
 	protected override void OnKeyDown(global::System.Windows.Input.KeyEventArgs e) {
 		base.OnKeyDown(e);
 		kha.SystemImpl.OnKeyDown(e);
@@ -66,10 +66,10 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		base.OnKeyUp(e);
 		kha.SystemImpl.OnKeyUp(e);
 	}
-	
+
 	protected override void OnClosed(global::System.EventArgs e) {
 		base.OnClosed(e);
-		
+
 		//Game.the.onPause();
 		//Game.the.onBackground();
 		//Game.the.onShutdown();
@@ -89,7 +89,7 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 		base.OnMouseMove(e);
 		kha.SystemImpl.OnMouseMove(e);
 	}
-	
+
 	protected override void OnMouseWheel(global::System.Windows.Input.MouseWheelEventArgs e) {
 		base.OnMouseWheel(e);
 		kha.SystemImpl.OnMouseWheel(e);
@@ -97,31 +97,31 @@ class StoryPublishCanvas extends system.windows.controls.Canvas {
 ')
 class MainWindow extends system.windows.Window {
 	public var canvas: StoryPublishCanvas;
-	
+
 	@:functionCode('
 		canvas = new StoryPublishCanvas();
 		AddChild(canvas);
-		
+
 		Title = title;
 		resize(width, height);
-		
+
 		// Go fullscreen
 		//WindowStyle = global::System.Windows.WindowStyle.None;
 		//WindowState = global::System.Windows.WindowState.Maximized;
-		
+
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
 	public function new(title: String, width: Int, height: Int) {
-		
+
 	}
-	
+
 	@:functionCode('
 		Width = width + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
 		Height = height + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 	')
 	public function resize(width: Int, height: Int): Void {
-		
+
 	}
 }
 
@@ -141,7 +141,7 @@ class MainWindow extends system.windows.Window {
 			}
 		}
 	}
-	
+
 	public static void OnKeyDown(global::System.Windows.Input.KeyEventArgs e) {
 		if (pressedKeys.Contains(e.Key)) return;
 		pressedKeys.Add(e.Key);
@@ -173,7 +173,7 @@ class MainWindow extends system.windows.Window {
 				break;
 		}
 	}
-	
+
 	public static void OnKeyDown(Key key, string c) {
 		//Game.the.keyDown(key, c);
 	}
@@ -216,7 +216,7 @@ class MainWindow extends system.windows.Window {
 		else if (e.ChangedButton == global::System.Windows.Input.MouseButton.Right) {
 			kha.SystemImpl.rightMouseDown((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 		}
-		
+
 	}
 
 	public static void OnMouseUp(global::System.Windows.Input.MouseButtonEventArgs e) {
@@ -231,24 +231,24 @@ class MainWindow extends system.windows.Window {
 	public static void OnMouseMove(global::System.Windows.Input.MouseEventArgs e) {
 		kha.SystemImpl.mouseMove((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y);
 	}
-	
+
 	public static void OnMouseWheel(global::System.Windows.Input.MouseWheelEventArgs e) {
 		kha.SystemImpl.mouseWheel((int)e.GetPosition(frameworkElement).X, (int)e.GetPosition(frameworkElement).Y, e.Delta / 120);
 	}
 ')
 class SystemImpl {
 	private static var watch: Stopwatch;
-	
+
 	public static var graphics(default, null): kha.wpf.Graphics;
-	
+
 	public static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
-	
+
 	public static function init2(): Void {
 		graphics = new Graphics();
 		watch = new Stopwatch();
 		watch.Start();
 	}
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -258,7 +258,7 @@ class SystemImpl {
 		if (num != 0) return null;
 		return keyboard;
 	}
-	
+
 	private static var mainWindow: MainWindow;
 	private static var openWindow: Bool = true;
 	private static var autostartGame: Bool = true;
@@ -269,14 +269,14 @@ class SystemImpl {
 	private static var mouse: kha.input.Mouse;
 	private static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
-	
+
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		title = options.title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		init2();
 		Scheduler.init();
-		
+
 		if (openWindow) {
 			mainWindow = new MainWindow(title, options.width, options.height);
 			frameworkElement = mainWindow.canvas;
@@ -289,9 +289,9 @@ class SystemImpl {
 		framebuffer = new Framebuffer(0, null, painter, null);
 		Scheduler.start();
 		//if (autostartGame) gameToStart.loadFinished();
-		
+
 		callback();
-		
+
 		if (openWindow) {
 			startWindow();
 		}
@@ -299,7 +299,7 @@ class SystemImpl {
 			frameworkElement.drawMousePos = SystemImpl.showMousePos;
 		}
 	}
-	
+
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
 		trace('initEx is not supported on the WPF target, running init() with first window options');
 
@@ -309,7 +309,7 @@ class SystemImpl {
 			windowCallback(0);
 		}
 	}
-	
+
 	public static function configure(path: String, openWindow: Bool, autostartGame: Bool, showMousePos: Bool, forceBusyCursor: Bool) {
 		SystemImpl.openWindow = openWindow;
 		SystemImpl.autostartGame = autostartGame;
@@ -317,18 +317,18 @@ class SystemImpl {
 		LoaderImpl.path = path;
 		LoaderImpl.forceBusyCursor = forceBusyCursor;
 	}
-	
+
 	@:functionCode('global::System.Windows.MessageBox.Show(msg, "Exeption", global::System.Windows.MessageBoxButton.OK, global::System.Windows.MessageBoxImage.Error);')
 	private static function displayErrorMessage(msg: String) {
-		
+
 	}
-	
+
 	public static function lockMouse(): Void {
-		
+
 	}
-	
+
 	public static function unlockMouse(): Void {
-		
+
 	}
 
 	public static function canLockMouse(): Bool {
@@ -340,11 +340,11 @@ class SystemImpl {
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	@:functionCode('
@@ -353,12 +353,12 @@ class SystemImpl {
 		}
 	')
 	static function startWindow(): Void {
-		
+
 	}
-	
+
 	public static var mouseX: Int;
 	public static var mouseY: Int;
-	
+
 	public static function mouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
@@ -372,21 +372,21 @@ class SystemImpl {
 		mouse.sendUpEvent(0, 0, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
-	
+
 	public static function rightMouseDown(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		mouse.sendDownEvent(0, 1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
-	
+
 	public static function rightMouseUp(x: Int, y: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		mouse.sendUpEvent(0, 1, x, y);
 		frameworkElement.setMousePos(x, y);
 	}
-	
+
 	public static function mouseMove(x: Int, y: Int): Void {
 		var movementX = x - mouseX;
 		var movementY = y - mouseY;
@@ -395,43 +395,43 @@ class SystemImpl {
 		mouse.sendMoveEvent(0, x, y, movementX, movementY);
 		frameworkElement.setMousePos(x, y);
 	}
-	
+
 	public static function mouseWheel(x: Int, y: Int, delta: Int): Void {
 		mouseX = x;
 		mouseY = y;
 		mouse.sendWheelEvent(0, delta);
 		frameworkElement.setMousePos(x, y);
 	}
-	
+
 	@:functionCode('
 		return watch.ElapsedMilliseconds / 1000.0;
 	')
 	public static function getTime(): Float {
 		return 0;
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
-	
+
 	@:functionCode('return mainWindow == null ? (int)frameworkElement.Width : (int)mainWindow.canvas.ActualWidth;')
 	public static function windowWidth(windowId: Int = 0): Int {
 		return 0;
 	}
-	
+
 	@:functionCode('return mainWindow == null ? (int)frameworkElement.Height : (int)mainWindow.canvas.ActualHeight;')
 	public static function windowHeight(windowId: Int = 0): Int {
 		return 0;
 	}
-	
+
 	public static function screenDpi(): Int {
 		return 96;
 	}
@@ -439,14 +439,15 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return "WPF";
 	}
-	
+
 	public static function getLanguage(): String {
-		return "en"; //TODO: Implement
+		var id = cs.system.globalization.CultureInfo.CurrentCulture.Name;
+		return ~/-/.replace(id, "_");
 	}
-	
+
 	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
 	public static function requestShutdown(): Void {
-		
+
 	}
 
 	public static function canSwitchFullscreen(): Bool {
@@ -458,33 +459,33 @@ class SystemImpl {
 	}
 
 	public static function requestFullscreen(): Void {
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
-		
+
   	}
 
 	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
-	
+
 	//@:functionCode('mainWindow.resize(width, height);')
 	public static function changeResolution(width: Int, height: Int): Void {
 		painter.width = width;
 		painter.height = height;
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 
 	public static function loadUrl(url: String): Void {
-		
+
 	}
 
 	public static function getGamepadId(index: Int): String {

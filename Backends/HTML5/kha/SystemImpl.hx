@@ -8,10 +8,14 @@ import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.html.Touch;
 import js.html.TouchEvent;
+import js.html.ClipboardEvent;
+import js.html.DeviceMotionEvent;
+import js.html.DeviceOrientationEvent;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Sensor;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
@@ -63,11 +67,14 @@ class SystemImpl {
 		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
 			electron.webFrame.setZoomLevelLimits(1, 1);
 		}
-		electron.ipcRenderer.send('asynchronous-message', {type: 'showWindow', title: options.title, width: options.width, height: options.height});
-		// Wait a second so the debugger can attach
+		var wndOpts = {
+			type: 'showWindow', title: options.title,
+			x: options.window.x, y: options.window.y,
+			width: options.width, height: options.height,
+		}
+		electron.ipcRenderer.send('asynchronous-message', wndOpts);		// Wait a second so the debugger can attach
 		Browser.window.setTimeout(function () {
-			init2(options.window.width, options.window.height);
-			callback(window);
+			initSecondStep(callback);
 		}, 1000);
 		#else
 		mobile = isMobile();
@@ -75,9 +82,37 @@ class SystemImpl {
 		chrome = isChrome();
 		firefox = isFirefox();
 		ie = isIE();
+
+		if (mobile || chrome) {
+			mobileAudioPlaying = false;
+		}
+		else {
+			mobileAudioPlaying = true;
+		}
+
+		initSecondStep(callback);
+		#end
+	}
+
+	private static function initSecondStep(callback: Window -> Void): Void {
 		init2(options.window.width, options.window.height);
 		callback(window);
-		#end
+	}
+
+	public static function initSensor(): Void {
+		if (ios) { // In Safari for iOS the directions are reversed on axes x, y and z
+			Browser.window.ondevicemotion = function (event: DeviceMotionEvent) {
+				Sensor._changed(0, -event.accelerationIncludingGravity.x, -event.accelerationIncludingGravity.y, -event.accelerationIncludingGravity.z);
+			};
+		}
+		else {
+			Browser.window.ondevicemotion = function (event: DeviceMotionEvent) {
+				Sensor._changed(0, event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+			};
+		}
+		Browser.window.ondeviceorientation = function (event: DeviceOrientationEvent) {
+			Sensor._changed(1, event.beta, event.gamma, event.alpha);
+		};
 	}
 
 	private static function isMobile(): Bool {
@@ -172,9 +207,7 @@ class SystemImpl {
 	private static var lastFirstTouchY: Int = 0;
 
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
-		haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
-		#if !kha_no_keyboard 
+		#if !kha_no_keyboard
 		keyboard = new Keyboard();
 		#end
 		mouse = new kha.input.MouseImpl();
@@ -185,11 +218,11 @@ class SystemImpl {
 			gamepads[i] = new Gamepad(i);
 			gamepadStates[i] = new GamepadStates();
 		}
-		js.Browser.window.addEventListener("gamepadconnected", function(e_) {
-			Gamepad.sendConnectEvent(e_.gamepad.index);
-		}); 
-		js.Browser.window.addEventListener("gamepaddisconnected", function(e_) {
-			Gamepad.sendDisconnectEvent(e_.gamepad.index);
+		js.Browser.window.addEventListener("gamepadconnected", function(e) {
+			Gamepad.sendConnectEvent(e.gamepad.index);
+		});
+		js.Browser.window.addEventListener("gamepaddisconnected", function(e) {
+			Gamepad.sendDisconnectEvent(e.gamepad.index);
 		});
 		if (ie) {
 			pressedKeys = new Array<Bool>();
@@ -197,38 +230,56 @@ class SystemImpl {
 			for (i in 0...256) pressedKeys.push(null);
 		}
 
-		js.Browser.document.addEventListener("copy", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onCopy(e: ClipboardEvent):Void {
 			if (System.copyListener != null) {
 				var data = System.copyListener();
-				if (data != null) {
-					e.clipboardData.setData("text/plain", data);
-				}
+				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
 			}
-		});
+		}
 
-		js.Browser.document.addEventListener("cut", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onCut(e: ClipboardEvent):Void {
 			if (System.cutListener != null) {
 				var data = System.cutListener();
-				if (data != null) {
-					e.clipboardData.setData("text/plain", data);
-				}
+				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
 			}
-		});
+		}
 
-		js.Browser.document.addEventListener("paste", function (e_) {
-			var e: js.html.ClipboardEvent = cast e_;
+		function onPaste(e: ClipboardEvent):Void {
 			if (System.pasteListener != null) {
 				System.pasteListener(e.clipboardData.getData("text/plain"));
 				e.preventDefault();
 			}
-		});
+		}
+
+		var document = Browser.document;
+		document.addEventListener("copy", onCopy);
+		document.addEventListener("cut", onCut);
+		document.addEventListener("paste", onPaste);
+
+		if (firefox) {
+			var canvas = getCanvasElement();
+			function onPreTextEvents(e: KeyboardEvent):Void {
+				if (!(e.ctrlKey || e.metaKey)) return;
+				var isEvent = e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86;
+				if (!isEvent) return;
+
+				var input = document.createTextAreaElement();
+				var onEvent = function(e: ClipboardEvent) {
+					document.body.removeChild(input);
+					canvas.focus();
+				};
+				if (e.keyCode == 67) input.oncopy = onEvent;
+				else if (e.keyCode == 88) input.oncut = onEvent;
+				else if (e.keyCode == 86) input.onpaste = onEvent;
+				document.body.appendChild(input);
+				input.select();
+			}
+			canvas.addEventListener("keydown", onPreTextEvents);
+		}
 
 		CanvasImage.init();
-		//Loader.init(new kha.js.Loader());
 		Scheduler.init();
 
 		loadFinished(defaultWidth, defaultHeight);
@@ -272,29 +323,24 @@ class SystemImpl {
 		}
 	}
 
-	//public function start(game: Game): Void {
-	//	gameToStart = game;
-	//	Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
-	//	Loader.the.loadProject(loadFinished);
-	//}
+	private static function getCanvasElement(): CanvasElement {
+		if (khanvas != null) return khanvas;
+		// Only consider custom canvas ID for release builds
+		#if (kha_debug_html5 || !canvas_id)
+		return cast Browser.document.getElementById("khanvas");
+		#else
+		return cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		#end
+	}
 
 	private static function loadFinished(defaultWidth: Int, defaultHeight: Int) {
-		// Only consider custom canvas ID for release builds
-		var canvas: Dynamic = khanvas;
-		if (canvas == null) {
-			#if (kha_debug_html5 || !canvas_id)
-			canvas = Browser.document.getElementById("khanvas");
-			#else
-			canvas = Browser.document.getElementById(kha.CompilerDefines.canvas_id);
-			#end
-		}
+		var canvas: CanvasElement = getCanvasElement();
 		canvas.style.cursor = "default";
 
 		var gl: Bool = false;
 
 		#if kha_webgl
 		try {
-			
 			SystemImpl.gl = canvas.getContext("webgl2", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); Warning: preserveDrawingBuffer can cause huge performance issues on mobile browsers
 			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
@@ -307,7 +353,7 @@ class SystemImpl {
 			SystemImpl.gl.getExtension("OES_texture_half_float_linear");
 			anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
 			if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-			
+
 			gl = true;
 			gl2 = true;
 			Shaders.init();
@@ -319,25 +365,23 @@ class SystemImpl {
 		if (!gl2) {
 			try {
 				SystemImpl.gl = canvas.getContext("experimental-webgl", { alpha: false, antialias: options.framebuffer.samplesPerPixel > 1, stencil: true}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
-				if (SystemImpl.gl != null) {
-					SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-					SystemImpl.gl.getExtension("OES_texture_float");
-					SystemImpl.gl.getExtension("OES_texture_float_linear");
-					halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");
-					SystemImpl.gl.getExtension("OES_texture_half_float_linear");
-					depthTexture = SystemImpl.gl.getExtension("WEBGL_depth_texture");
-					SystemImpl.gl.getExtension("EXT_shader_texture_lod");
-					SystemImpl.gl.getExtension("OES_standard_derivatives");
-					anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
-					if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-					drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
-					elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
-					gl = true;
-					Shaders.init();
-				}
+				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+				SystemImpl.gl.getExtension("OES_texture_float");
+				SystemImpl.gl.getExtension("OES_texture_float_linear");
+				halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");
+				SystemImpl.gl.getExtension("OES_texture_half_float_linear");
+				depthTexture = SystemImpl.gl.getExtension("WEBGL_depth_texture");
+				SystemImpl.gl.getExtension("EXT_shader_texture_lod");
+				SystemImpl.gl.getExtension("OES_standard_derivatives");
+				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
+				if (anisotropicFilter == null) anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
+				elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
+				gl = true;
+				Shaders.init();
 			}
 			catch (e: Dynamic) {
-				trace("Could not initialize WebGL, falling back to Canvas.");
+				trace("Could not initialize WebGL, falling back to <canvas>.");
 			}
 		}
 		#end
@@ -372,12 +416,11 @@ class SystemImpl {
 		}
 		else {
 			SystemImpl._hasWebAudio = false;
-			AudioElementAudio._compile();
 			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
-		
+
 		kha.vr.VrInterface.instance = new VrInterface();
-		
+
 		Scheduler.start();
 
 		var window: Dynamic = Browser.window;
@@ -434,16 +477,14 @@ class SystemImpl {
 		else requestAnimationFrame(animate);
 
 		// Autofocus
-		if (canvas.getAttribute("tabindex") == null) {
-			canvas.setAttribute("tabindex", "0"); // needed for keypress events
-		}
 		canvas.focus();
 
-		// disable context menu
+		#if kha_disable_context_menu
 		canvas.oncontextmenu = function (event: Dynamic) {
 			event.stopPropagation();
 			event.preventDefault();
 		}
+		#end
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
@@ -481,7 +522,9 @@ class SystemImpl {
 		});
 #end
 
-		Browser.window.addEventListener("unload", unload);
+		Browser.window.addEventListener("unload", function () {
+			System.shutdown();
+		});
 	}
 
 	public static function lockMouse(): Void {
@@ -540,12 +583,6 @@ class SystemImpl {
 		js.Browser.document.removeEventListener('webkitpointerlockerror', error, false);
 	}
 
-	static function unload(_): Void {
-		//Game.the.onPause();
-		//Game.the.onBackground();
-		//Game.the.onShutdown();
-	}
-
 	private static function setMouseXY(event: MouseEvent): Void {
 		var rect = SystemImpl.khanvas.getBoundingClientRect();
 		var borderWidth = SystemImpl.khanvas.clientLeft;
@@ -558,7 +595,7 @@ class SystemImpl {
 
 	private static function unlockiOSSound(): Void {
 		if (!ios || iosSoundEnabled) return;
-		
+
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
 		var source = MobileWebAudio._context.createBufferSource();
 		source.buffer = buffer;
@@ -587,17 +624,19 @@ class SystemImpl {
 					trace(err);
 				});
 			}
+			
+			kha.audio2.Audio.wakeChannels();
 		}
 		unlockiOSSound();
 	}
-	
+
 	private static function mouseLeave():Void {
 		mouse.sendLeaveEvent(0);
 	}
-	
+
 	private static function mouseWheel(event: WheelEvent): Bool {
-		insideInputEvent = true;
 		unlockSound();
+		insideInputEvent = true;
 
 		event.preventDefault();
 
@@ -660,9 +699,9 @@ class SystemImpl {
 
 	private static function mouseLeftUp(event: MouseEvent): Void {
 		unlockSound();
-	
+
 		if (event.which != 1) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
 		if (khanvas.releaseCapture != null) {
@@ -685,7 +724,7 @@ class SystemImpl {
 		unlockSound();
 
 		if (event.which != 2) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
@@ -696,7 +735,7 @@ class SystemImpl {
 		unlockSound();
 
 		if (event.which != 3) return;
-		
+
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
@@ -707,10 +746,9 @@ class SystemImpl {
 		event.stopPropagation();
 		mouseMove(event);
 	}
-	
+
 	private static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
-		unlockSound();
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
@@ -923,6 +961,9 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
 			&& (event.key != null && event.key.length != 1)) event.preventDefault();
 		event.stopPropagation();
@@ -941,22 +982,33 @@ class SystemImpl {
 		}
 
 		keyboard.sendDownEvent(cast event.keyCode);
+		insideInputEvent = false;
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		event.preventDefault();
 		event.stopPropagation();
 
 		if (ie) pressedKeys[event.keyCode] = false;
 
 		keyboard.sendUpEvent(cast event.keyCode);
+
+		insideInputEvent = false;
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if (event.which == 0) return; //for Firefox and Safari
 		event.preventDefault();
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
+
+		insideInputEvent = false;
 	}
 
 	public static function canSwitchFullscreen(): Bool {
@@ -1004,7 +1056,7 @@ class SystemImpl {
 		if (sysGamepads != null &&  untyped sysGamepads[index]) {
 				return sysGamepads[index].id;
 		}
-	
+
 		return "unkown";
 	}
 

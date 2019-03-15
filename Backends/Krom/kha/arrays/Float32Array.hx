@@ -6,6 +6,12 @@ abstract Float32Array(js.html.Float32Array) {
 	public inline function new(elements: Int) {
 		this = new js.html.Float32Array(elements);
 	}
+
+	public var buffer(get, never): js.html.ArrayBuffer;
+
+	inline function get_buffer(): js.html.ArrayBuffer {
+		return this.buffer;
+	}
 	
 	public var length(get, never): Int;
 
