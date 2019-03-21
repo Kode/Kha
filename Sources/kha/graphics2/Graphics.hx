@@ -228,6 +228,12 @@ class Graphics {
 		setPipeline(pipeline);
 		return pipe = pipeline;
 	}
+
+	public var g4(get, never): kha.graphics4.Graphics;
+	
+	private function get_g4(): kha.graphics4.Graphics {
+		return null;
+	}
 	#end
 
 	private var transformations: Array<FastMatrix3>;

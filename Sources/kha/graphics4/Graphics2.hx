@@ -751,6 +751,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 	}
 
+	override private function get_g4(): kha.graphics4.Graphics {
+		return g;
+	}
+
 	private static function upperPowerOfTwo(v: Int): Int {
 		v--;
 		v |= v >>> 1;
