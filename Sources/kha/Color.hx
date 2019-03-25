@@ -45,7 +45,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Creates a new Color object from an HTML style #AARRGGBB string.
 	 */
-	public static function fromString(value: String) {
+	@:from public static function fromString(value: String) {
 		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
 			var colorValue = Std.parseInt("0x" + value.substr(1));
 			if (value.length == 7) {
