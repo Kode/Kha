@@ -12,23 +12,23 @@ using StringTools;
 
 class JavaStorageFile extends StorageFile {
 	private var file: Path;
-	
+
 	public function new(filename: String) {
 		this.file = new Path(filename);
 		//if (file.dir != null) Directory.CreateDirectory(file.dir);
 	}
-	
+
 	override public function read(): Blob {
 		try {
 			if (file == null) return null;
 			if (File.getContent(file.toString()) == null) return null;
-			return new Blob(File.getBytes(file.toString()));
+			return Blob.fromBytes(File.getBytes(file.toString()));
 		}
 		catch (e: Dynamic) {
 			return null;
 		}
 	}
-	
+
 	override public function write(data: Blob): Void {
 		var file = File.write(file.toString(), true);
 		file.writeBytes(data.toBytes(), 0, data.toBytes().length);

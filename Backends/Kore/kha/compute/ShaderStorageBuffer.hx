@@ -25,7 +25,7 @@ class ShaderStorageBuffer {
 	@:functionCode("
 	#ifdef KORE_OPENGL
 	Kore::Graphics4::VertexData type2;
-	switch (type->index) {
+	switch (type) {
 	case 0:
 		type2 = Kore::Graphics4::Float1VertexData;
 		break;
@@ -51,11 +51,13 @@ class ShaderStorageBuffer {
 		data[myCount - 1] = 0;
 	}
 
-	public function delete(): Void {
-		untyped __cpp__('
+	@:functionCode("
 		#ifdef KORE_OPENGL
 		delete buffer; buffer = nullptr;
-		#endif');
+		#endif
+	")
+	public function delete(): Void {
+		
 	}
 
 	public function lock(): Array<Int> {

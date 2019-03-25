@@ -33,7 +33,7 @@ import kha.math.Vector4;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var renderTarget: kha.Canvas;
-	
+
 	public function new(renderTarget: kha.Canvas = null) {
 		this.renderTarget = renderTarget;
 	}
@@ -47,7 +47,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function beginEye(eye: Int): Void {
-		
+
 	}
 
 	public function end(): Void {
@@ -94,7 +94,7 @@ class Graphics implements kha.graphics4.Graphics {
 		if (cubeMap == null) return;
 		cubeMap.texture_ != null ? Krom.setTexture(unit, cubeMap.texture_) : Krom.setRenderTarget(unit, cubeMap.renderTarget_);
 	}
-	
+
 	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		Krom.setTextureDepth(unit, cubeMap.renderTarget_);
@@ -104,14 +104,14 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		texture.texture_ != null ? Krom.setTexture(unit, texture.texture_) : Krom.setRenderTarget(unit, texture.renderTarget_);
 	}
-	
+
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		Krom.setTextureDepth(unit, texture.renderTarget_);
 	}
-	
+
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
+
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -124,11 +124,19 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		Krom.setTextureParameters(texunit, uAddressing.getIndex(), vAddressing.getIndex(), minificationFilter.getIndex(), magnificationFilter.getIndex(), mipmapFilter.getIndex());
+		Krom.setTextureParameters(texunit, uAddressing, vAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		Krom.setTexture3DParameters(texunit, uAddressing.getIndex(), vAddressing.getIndex(), wAddressing.getIndex(), minificationFilter.getIndex(), magnificationFilter.getIndex(), mipmapFilter.getIndex());
+		Krom.setTexture3DParameters(texunit, uAddressing, vAddressing, wAddressing, minificationFilter, magnificationFilter, mipmapFilter);
+	}
+
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		Krom.setTextureCompareMode(texunit, enabled);
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		Krom.setCubeMapCompareMode(texunit, enabled);
 	}
 
 	public function setPipeline(pipeline: PipelineState): Void {
@@ -204,7 +212,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function instancedRenderingAvailable(): Bool {
-		return false;
+		return true;
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {

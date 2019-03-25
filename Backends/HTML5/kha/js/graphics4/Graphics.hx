@@ -42,6 +42,12 @@ class Graphics implements kha.graphics4.Graphics {
 	private var instancedExtension: Dynamic;
 	private var blendMinMaxExtension: Dynamic;
 
+	// WebGL2 constants
+	// https://www.khronos.org/registry/webgl/specs/2.0.0/
+	private static inline var GL_TEXTURE_COMPARE_MODE = 0x884C;
+	private static inline var GL_TEXTURE_COMPARE_FUNC = 0x884D;
+	private static inline var GL_COMPARE_REF_TO_TEXTURE = 0x884E;
+
 	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
 		init();
@@ -119,7 +125,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var error = SystemImpl.gl.getError();
 		switch (error) {
 			case GL.NO_ERROR:
-				
+
 			case GL.INVALID_ENUM:
 				trace("WebGL error: Invalid enum");
 			case GL.INVALID_VALUE:
@@ -285,7 +291,7 @@ class Graphics implements kha.graphics4.Graphics {
 			return 0x8008;
 		}
 	}
-	
+
 	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation,
 		alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
@@ -339,11 +345,11 @@ class Graphics implements kha.graphics4.Graphics {
 			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		cast(texture, WebGLImage).setDepth(cast(stage, TextureUnit).value);
 	}
-	
+
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		//not implemented yet.
 	}
@@ -416,7 +422,27 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
+
+	}
+
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		if (enabled) {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+		}
+		else {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+		}
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		if (enabled) {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+		}
+		else {
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+		}
 	}
 
 	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
@@ -428,7 +454,7 @@ class Graphics implements kha.graphics4.Graphics {
 			cubeMap.set(cast(stage, TextureUnit).value);
 		}
 	}
-	
+
 	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		cubeMap.setDepth(cast(stage, TextureUnit).value);
 	}
@@ -451,6 +477,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
+		currentPipeline = pipe;
 		pipe.set();
 		colorMaskRed = pipe.colorWriteMaskRed;
 		colorMaskGreen = pipe.colorWriteMaskGreen;

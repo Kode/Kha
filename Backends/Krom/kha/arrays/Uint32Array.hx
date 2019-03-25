@@ -15,7 +15,7 @@ abstract Uint32Array(js.html.Uint32Array) {
 		return this[index] = value;
 	}
 	
-	public inline function get(index: Int): FastFloat {
+	public inline function get(index: Int): Int {
 		return this[index];
 	}
 	

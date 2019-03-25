@@ -29,6 +29,30 @@ class SystemImpl {
 	private static function dropFilesCallback(filePath: String): Void {
 		System.dropFiles(filePath);
 	}
+
+	private static function copyCallback(): String {
+		if (System.copyListener != null) {
+			return System.copyListener();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	private static function cutCallback(): String {
+		if (System.cutListener != null) {
+			return System.cutListener();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	private static function pasteCallback(data: String): Void {
+		if (System.pasteListener != null) {
+			System.pasteListener(data);
+		}
+	}
 		
 	private static function keyboardDownCallback(code: Int): Void {
 		keyboard.sendDownEvent(cast code);
@@ -78,31 +102,14 @@ class SystemImpl {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
-	private static var audioOutputData: kha.arrays.Float32Array;
 	private static function audioCallback(samples: Int) : Void {
-		//Krom.log("Samples " + samples);
-		
-		audioOutputData = new kha.arrays.Float32Array(samples);
-		
-		// lock mutex
-		//Krom.audioThread(true);
-
 		kha.audio2.Audio._callCallback(samples);
-		for (i in 0...samples) {
-			var value: Float = kha.audio2.Audio._readSample();
-			audioOutputData[i] = value;
-		}
-		// unlock mutex
-		//Krom.audioThread(false);
-
-		// write to buffer
-		for (i in 0...samples) {
-			Krom.writeAudioBuffer(audioOutputData[i]);
-		}
+		var buffer = @:privateAccess kha.audio2.Audio.buffer;
+		Krom.writeAudioBuffer(buffer.data.buffer, samples);
 	}
 	
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
+		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures, Krom.KROM_API);
 
 		start = Krom.getTime();
 		
@@ -120,6 +127,7 @@ class SystemImpl {
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.graphics4.Graphics2(framebuffer), g4);
 		Krom.setCallback(renderCallback);
 		Krom.setDropFilesCallback(dropFilesCallback);
+		Krom.setCutCopyPasteCallback(cutCallback, copyCallback, pasteCallback);
 		
 		keyboard = new Keyboard();
 		mouse = new MouseImpl();

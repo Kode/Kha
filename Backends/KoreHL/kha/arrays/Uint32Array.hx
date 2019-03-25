@@ -54,7 +54,7 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 	}
 
 	@:hlNative("std", "kore_uint32array_alloc") static function kore_uint32array_alloc(elements: Int): Pointer { return null; }
-	@:hlNative("std", "kore_uint32array_free") static function kore_uint32array_free(f32array: Pointer): Void { }
-	@:hlNative("std", "kore_uint32array_set") static function kore_uint32array_set(f32array: Pointer, index: Int, value: Int): Void { }
-	@:hlNative("std", "kore_uint32array_get") static function kore_uint32array_get(f32array: Pointer, index: Int): Int { return 0; }
+	@:hlNative("std", "kore_uint32array_free") static function kore_uint32array_free(u32array: Pointer): Void { }
+	@:hlNative("std", "kore_uint32array_set") static function kore_uint32array_set(u32array: Pointer, index: Int, value: Int): Void { }
+	@:hlNative("std", "kore_uint32array_get") static function kore_uint32array_get(u32array: Pointer, index: Int): Int { return 0; }
 }

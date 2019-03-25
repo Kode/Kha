@@ -107,7 +107,7 @@ HL_API bool hl_debug_read( int pid, vbyte *addr, vbyte *buffer, int size ) {
 		size -= sizeof(long);
 		buffer += sizeof(long);
 	}
-	return true;	
+	return true;
 #	else
 	return false;
 #	endif
@@ -186,8 +186,11 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 			ContinueDebugEvent(e.dwProcessId, e.dwThreadId, DBG_CONTINUE);
 			break;
 		case 0xE06D7363: // C++ EH EXCEPTION
+		case 0x6BA: // File Dialog EXCEPTION
 			ContinueDebugEvent(e.dwProcessId, e.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
 			break;
+		case EXCEPTION_STACK_OVERFLOW:
+			return 5;
 		default:
 			return 3;
 		}
@@ -211,7 +214,7 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 		if( sig == SIGSTOP || sig == SIGTRAP )
 			return 1;
 		return 3;
-	}	
+	}
 	return 4;
 #	else
 	return 0;

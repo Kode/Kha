@@ -7,7 +7,7 @@ import kha.math.Matrix4;
 class Quaternion {
 	private var values: Array<Float>;
 
-	public function new(x: Float = 0, y: Float = 0, z: Float = 0, w: Float = 1): Void {
+	public inline function new(x: Float = 0, y: Float = 0, z: Float = 0, w: Float = 1): Void {
 		values = new Array<Float>();
 		values.push(x);
 		values.push(y);
@@ -16,7 +16,7 @@ class Quaternion {
 	}
 	
 	// Axis has to be normalized
-	public static function fromAxisAngle(axis: Vector3, radians: Float): Quaternion {
+	public inline static function fromAxisAngle(axis: Vector3, radians: Float): Quaternion {
 		var q: Quaternion = new Quaternion();
 		q.w = Math.cos(radians / 2.0);
 		q.x = q.y = q.z = Math.sin(radians / 2.0);
@@ -53,7 +53,7 @@ class Quaternion {
 	}
 	
 	// TODO: This should be multiplication
-	public function rotated(b: Quaternion): Quaternion {
+	public inline function rotated(b: Quaternion): Quaternion {
 		var q: Quaternion = new Quaternion();
 		q.w = w * b.w - x * b.x - y * b.y - z * b.z;
 		q.x = w * b.x + x * b.w + y * b.z - z * b.y;
@@ -63,18 +63,18 @@ class Quaternion {
 		return q;
 	}
 	
-	public function scaled(scale: Float): Quaternion {
+	public inline function scaled(scale: Float): Quaternion {
 		return new Quaternion(x * scale, y * scale, z * scale, w * scale);
 	}
 	
-	public function scale(scale: Float) {
+	public inline function scale(scale: Float) {
 		x = x * scale;
 		y = y * scale;
 		z = z * scale;
 		w = w * scale;
 	}
 	
-	public function matrix(): Matrix4 {
+	public inline function matrix(): Matrix4 {
 		var s: Float = 2.0;
 		
 		var xs: Float = x * s;
@@ -98,11 +98,11 @@ class Quaternion {
 		);
 	}	
 	
-	public function get(index: Int): Float {
+	public inline function get(index: Int): Float {
 		return values[index];
 	}
 	
-	public function set(index: Int, value: Float): Void {
+	public inline function set(index: Int, value: Float): Void {
 		values[index] = value;
 	}
 	
@@ -159,7 +159,7 @@ class Quaternion {
 	}
 	
 	// For adding a (scaled) axis-angle representation of a quaternion
-	public function addVector(vec: Vector3): Quaternion {
+	public inline function addVector(vec: Vector3): Quaternion {
 		var result: Quaternion = new Quaternion(x, y, z, w);
 		var q1: Quaternion = new Quaternion(0, vec.x, vec.y, vec.z);
 	
@@ -172,16 +172,16 @@ class Quaternion {
 		return result;
 	}
 	
-	public function add(q: Quaternion): Quaternion {
+	public inline function add(q: Quaternion): Quaternion {
 		return new Quaternion(x + q.x, y + q.y, z + q.z, w + q.w);
 	}
 	
-	public function sub(q: Quaternion): Quaternion {
+	public inline function sub(q: Quaternion): Quaternion {
 		return new Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
 	}
 
 	// TODO: Check again, but I think the code in Kore is wrong
-	public function mult(r: Quaternion): Quaternion {
+	public inline function mult(r: Quaternion): Quaternion {
 		var q: Quaternion = new Quaternion();
 		q.x = w * r.x + x * r.w + y * r.z - z * r.y;
 		q.y = w * r.y - x * r.z + y * r.w + z * r.x;
@@ -190,11 +190,11 @@ class Quaternion {
 		return q;
 	}
 	
-	public function normalize() {
+	public inline function normalize() {
 		scale(1.0 / length);
 	}
 	
-	public function dot(q: Quaternion) {
+	public inline function dot(q: Quaternion) {
 		return x * q.x + y * q.y + z * q.z + w * q.w;
 	}
 

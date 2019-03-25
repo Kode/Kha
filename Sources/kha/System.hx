@@ -150,6 +150,10 @@ class System {
 		dropFilesListeners.push(dropFilesListener);
 	}
 
+	public static function removeDropListerer(listener: String -> Void): Void {
+		dropFilesListeners.remove(listener);
+	}
+
 	public static function notifyOnCutCopyPaste(cutListener: Void->String, copyListener: Void->String, pasteListener: String->Void): Void {
 		System.cutListener = cutListener;
 		System.copyListener = copyListener;
@@ -252,7 +256,7 @@ class System {
 
 	@:deprecated("Use the kha.Window API instead")
 	public static function isFullscreen(): Bool {
-		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.Fullscreen;
+		return Window.get(0).mode == WindowMode.Fullscreen || Window.get(0).mode == WindowMode.ExclusiveFullscreen;
 	}
 
 	@:deprecated("Use the kha.Window API instead")

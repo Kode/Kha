@@ -30,6 +30,7 @@ HL_PRIM vclosure *hl_alloc_closure_void( hl_type *t, void *fvalue ) {
 	c->t = t;
 	c->fun = fvalue;
 	c->hasValue = false;
+	c->value = NULL;
 	return c;
 }
 
@@ -80,11 +81,13 @@ HL_PRIM vdynamic *hl_make_closure( vdynamic *c, vdynamic *v ) {
 
 HL_PRIM vdynamic* hl_get_closure_value( vdynamic *c ) {
 	vclosure *cl = (vclosure*)c;
+	if( !cl->hasValue )
+		return NULL;
 	if( cl->hasValue == 2 )
 		return hl_get_closure_value((vdynamic*)((vclosure_wrapper*)c)->wrappedFun);
-	if( cl->hasValue && cl->fun != fun_var_args )
-		return hl_make_dyn(&cl->value, cl->t->fun->parent->fun->args[0]);
-	return (vdynamic*)cl->value;
+	if( cl->fun == fun_var_args )
+		return NULL;
+	return hl_make_dyn(&cl->value, cl->t->fun->parent->fun->args[0]);
 }
 
 HL_PRIM bool hl_fun_compare( vdynamic *a, vdynamic *b ) {
@@ -329,18 +332,26 @@ HL_PRIM void *hl_dyn_call_obj( vdynamic *o, hl_type *ft, int hfield, void **args
 			hl_runtime_obj *rt = o->t->obj->rt;
 			while( true ) {
 				hl_field_lookup *l = hl_lookup_find(rt->lookup,rt->nlookup, hfield);
-				if( l != NULL && l->field_index < 0 ) {
-					vclosure tmp;
+				if( l != NULL && l->t->kind != HFUN )
+					hl_error("Field %s is of type %s and cannot be called", hl_field_name(hfield), hl_type_str(l->t));
+				if( l != NULL ) {
 					vclosure_wrapper w;
-					tmp.t = hl_get_closure_type(l->t);
-					tmp.fun = rt->methods[-l->field_index-1];
-					tmp.hasValue = 1;
-					tmp.value = o;
+					vclosure tmp;
 					w.cl.t = ft;
 					w.cl.fun = hlc_get_wrapper(ft);
 					w.cl.hasValue = 2;
 					w.cl.value = &w;
-					w.wrappedFun = &tmp;
+					if( l->field_index < 0 ) {
+						tmp.t = hl_get_closure_type(l->t);
+						tmp.fun = o->t->obj->rt->methods[-l->field_index-1];
+						tmp.hasValue = 1;
+						tmp.value = o;
+						w.wrappedFun = &tmp;
+					} else {
+						vclosure *tmp = *(vclosure**)((char*)o + l->field_index);
+						if( !tmp ) break;
+						w.wrappedFun = tmp;
+					}
 					return hl_wrapper_call(&w,args,ret);
 				}
 				rt = rt->parent;

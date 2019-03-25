@@ -29,7 +29,7 @@ namespace {
 
 	void update() {
 		if (paused) return;
-		//Kore::Audio::update();
+		Kore::Audio2::update();
 
 		int windowCount = Kore::Window::count();
 
@@ -46,17 +46,21 @@ namespace {
 		}
 	}
 
+	bool mixThreadregistered = false;
+
 	void mix(int samples) {
 		using namespace Kore;
 
-// #ifdef KORE_MULTITHREADED_AUDIO
-// 		if (!mixThreadregistered) {
-// 			__hxcpp_register_current_thread();
-// 			mixThreadregistered = true;
-// 		}
-// #endif
+#ifdef KORE_MULTITHREADED_AUDIO
+		if (!mixThreadregistered) {
+			vdynamic *ret;
+			hl_register_thread(&ret);
+			mixThreadregistered = true;
+		}
+		hl_blocking(true);
+#endif
 
-		//audioCallCallback(samples); // TODO: HL throws "Can't lock GC in unregistered thread"
+		audioCallCallback(samples);
 
 		for (int i = 0; i < samples; ++i) {
 			float value = audioReadSample();
@@ -64,6 +68,10 @@ namespace {
 			Audio2::buffer.writeLocation += 4;
 			if (Audio2::buffer.writeLocation >= Audio2::buffer.dataSize) Audio2::buffer.writeLocation = 0;
 		}
+
+#ifdef KORE_MULTITHREADED_AUDIO
+		hl_blocking(false);
+#endif
 	}
 }
 
@@ -88,13 +96,36 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height, int samplesPer
 	Kore::System::setCallback(update);
 }
 
-extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample) {
+extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
 	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK*)(&callCallback->fun));
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE*)(&readSample->fun));
+	*outSamplesPerSecond = Kore::Audio2::samplesPerSecond;
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
 }
 
-extern "C" void run_kore() {
+extern "C" void hl_run_kore() {
 	Kore::System::start();
+}
+
+#include <Kore/IO/FileReader.h>
+
+extern "C" vbyte *hl_kore_file_contents(vbyte *name, int *size) {
+	int len;
+	int p = 0;
+	vbyte *content;
+	Kore::FileReader file;
+	if (!file.open((char*)name))
+		return NULL;
+	hl_blocking(true);
+	len = file.size();
+	if (size) *size = len;
+	hl_blocking(false);
+	content = (vbyte*)hl_gc_alloc_noptr(size ? len : len+1);
+	hl_blocking(true);
+	if (!size) content[len] = 0; // final 0 for UTF8
+	file.read(content, len);
+	file.close();
+	hl_blocking(false);
+	return content;
 }

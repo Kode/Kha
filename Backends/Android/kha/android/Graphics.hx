@@ -277,6 +277,14 @@ class Graphics implements kha.graphics4.Graphics {
 	
 	}
 
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+		
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:

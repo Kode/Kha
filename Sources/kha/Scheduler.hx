@@ -177,7 +177,7 @@ class Scheduler {
 		var frameEnd: Float = current;
 		
 		if (delta >= 0) {
-			if (kha.network.Session.the() == null) {
+			if (kha.netsync.Session.the() == null) {
 				//tdif = 1.0 / 60.0; //force fixed frame rate
 				
 				if (delta > maxframetime) {

@@ -45,6 +45,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
 	public var window: Null<Int>;
 	public static var lastWindow: Int = -1;
+	static var current: Graphics = null;
 	
 	public function new(target: Canvas = null) {
 		this.target = target;
@@ -154,8 +155,10 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("if (cubeMap->texture != nullptr) Kore::Graphics4::setTexture(koreUnit->unit, cubeMap->texture)");
-		untyped __cpp__("else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)");
+		untyped __cpp__(
+			"if (cubeMap->texture != nullptr) Kore::Graphics4::setTexture(koreUnit->unit, cubeMap->texture);
+			else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)"
+		);
 	}
 	
 	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
@@ -260,6 +263,16 @@ class Graphics implements kha.graphics4.Graphics {
 		setTexture3DWrapNative(cast texunit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing));
 		setTexture3DFiltersNative(cast texunit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
 	}
+
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("Kore::Graphics4::setTextureCompareMode(koreUnit->unit, enabled);");
+	}
+
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
+		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
+		untyped __cpp__("Kore::Graphics4::setCubeMapCompareMode(koreUnit->unit, enabled);");
+	}
 	
 	@:functionCode('
 		if (texture->texture != nullptr) Kore::Graphics4::setTexture(unit->unit, texture->texture);
@@ -319,6 +332,9 @@ class Graphics implements kha.graphics4.Graphics {
 		pipe.set();
 	}
 
+	@:functionCode('
+		Kore::Graphics4::setStencilReferenceValue(value);
+	')
 	public function setStencilReferenceValue(value: Int): Void {
 
 	}
@@ -527,6 +543,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		var win: Int = window == null ? 0 : window;
 		if (win != lastWindow) {
 			if (lastWindow != -1) {
@@ -550,7 +573,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function end(): Void {
-		
+		if (current == this) {
+			current = null;
+		}
+		else {
+			throw "Begin before you end";
+		}
 	}
 	
 	@:functionCode('Kore::Graphics4::flush();')

@@ -11,7 +11,7 @@ class Sound extends kha.Sound {
 	function initWav(filename: String) {
 		uncompressedData = new kha.arrays.Float32Array();
 		var dataSize = new kha.arrays.Uint32Array(1);
-		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData());
+		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), length);
 		uncompressedData.setData(data, dataSize[0]);
 		dataSize.free();
 	}
@@ -33,5 +33,5 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer): Pointer { return null; }
+	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outLength: hl.Ref<Float>): Pointer { return null; }
 }

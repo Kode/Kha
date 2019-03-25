@@ -385,7 +385,23 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 	return t;
 }
 
-void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
+HL_API void hl_flush_proto( hl_type *ot ) {
+	int i;
+	hl_type_obj *o = ot->obj;
+	hl_runtime_obj *rt = ot->obj->rt;
+	hl_module_context *m = o->m;
+	if( !rt ) return;
+	for(i=0;i<o->nbindings;i++) {
+		hl_runtime_binding *b = rt->bindings + i;
+		int mid = o->bindings[(i<<1)|1];
+		if( b->closure )
+			b->ptr = m->functions_ptrs[mid];
+		else
+			((vclosure*)b->ptr)->fun = m->functions_ptrs[mid];
+	}
+}
+
+HL_API void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
 	int i;
 	int vsize = sizeof(vvirtual) + sizeof(void*) * vt->virt->nfields;
 	int size = vsize;
@@ -457,6 +473,20 @@ vdynamic *hl_virtual_make_value( vvirtual *v ) {
 	return v->value;
 }
 
+static bool should_recast( hl_type *t, hl_type *vt ) {
+	if( vt->kind == HF64 && t->kind == HI32 )
+		return true;
+	if( vt->kind == HNULL && vt->tparam->kind == t->kind )
+		return true;
+	if( vt->kind == HNULL && vt->tparam->kind == HF64 && t->kind == HI32 )
+		return true;
+	if( vt->kind == HVIRTUAL && t->kind == HDYNOBJ )
+		return true;
+	if( vt->kind == HOBJ && t->kind == HOBJ && vt->obj->rt->castFun )
+		return true;
+	return false;
+}
+
 /**
 	Allocate a virtual fields mapping to a given value.
 **/
@@ -477,14 +507,18 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 			for(i=0;i<vt->virt->nfields;i++) {
 				hl_field_lookup *f = obj_resolve_field(obj->t->obj,vt->virt->fields[i].hashed_name);
 				if( f && f->field_index < 0 ) {
+					hl_type *ft = vt->virt->fields[i].t;
 					hl_type tmp;
 					hl_type_fun tf;
-					tmp.kind = HFUN;
+					tmp.kind = HMETHOD;
 					tmp.fun = &tf;
 					tf.args = f->t->fun->args + 1;
 					tf.nargs = f->t->fun->nargs - 1;
 					tf.ret = f->t->fun->ret;
-					hl_vfields(v)[i] = hl_same_type(&tmp,vt->virt->fields[i].t) ? obj->t->obj->rt->methods[-f->field_index-1] : NULL;
+					if( hl_safe_cast(&tmp,ft) )
+						hl_vfields(v)[i] = obj->t->obj->rt->methods[-f->field_index-1];
+					else
+						hl_vfields(v)[i] = NULL;
 				} else
 					hl_vfields(v)[i] = f == NULL || !hl_same_type(f->t,vt->virt->fields[i].t) ? NULL : (char*)obj + f->field_index;
 			}
@@ -493,6 +527,7 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 	case HDYNOBJ:
 		{
 			int i;
+			int64 need_recast = 0;
 			vdynobj *o = (vdynobj*)obj;
 			v = o->virtuals;
 			while( v ) {
@@ -506,11 +541,28 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 			v->value = obj;
 			for(i=0;i<vt->virt->nfields;i++) {
 				hl_field_lookup *f = hl_lookup_find(o->lookup,o->nfields,vt->virt->fields[i].hashed_name);
-				hl_vfields(v)[i] = f == NULL || !hl_same_type(f->t,vt->virt->fields[i].t) ? NULL : hl_dynobj_field(o,f);
+				hl_type *vft = vt->virt->fields[i].t;
+				void *addr = f == NULL || !hl_same_type(f->t,vft) ? NULL : hl_dynobj_field(o,f);
+				// check if we will perform recast of some fields to match the virtual definition
+				// recast will not work for >64 fields, but this should be pretty rare
+				if( addr == NULL && f && !o->virtuals && should_recast(f->t,vft) )
+					need_recast |= ((int64)1) << ((int64)i);
+				hl_vfields(v)[i] = addr;
 			}
 			// add it to the list
 			v->next = o->virtuals;
 			o->virtuals = v;
+			// recast
+			if( need_recast ) {
+				for(i=0;i<vt->virt->nfields;i++)
+					if( need_recast & (((int64)1) << ((int64)i)) ) {
+						hl_obj_field *f = vt->virt->fields + i;
+						if( hl_is_ptr(f->t) )
+							hl_dyn_setp(obj,f->hashed_name,f->t,hl_dyn_getp(obj,f->hashed_name,f->t));
+						else if( f->t->kind == HF64 )
+							hl_dyn_setd(obj,f->hashed_name,hl_dyn_getd(obj,f->hashed_name));
+					}
+			}
 		}
 		break;
 	case HVIRTUAL:
@@ -787,6 +839,7 @@ static void *hl_obj_lookup_set( vdynamic *d, int hfield, hl_type *t, hl_type **f
 					f = hl_dynobj_add_field(o,hfield,t);
 				} else {
 					f->t = t;
+					hl_dynobj_remap_virtuals(o,f,0);
 				}
 			}
 			*ft = f->t;

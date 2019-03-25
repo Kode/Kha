@@ -1,5 +1,6 @@
 package kha.arrays;
 
+import cpp.vm.Gc;
 import kha.FastFloat;
 
 @:unreflective
@@ -25,17 +26,22 @@ extern class Float32ArrayData {
 }
 
 class Float32ArrayPrivate {
-
 	public var self: Float32ArrayData;
 
 	public inline function new(elements: Int = 0) {
 		self = Float32ArrayData.create();
-		if (elements > 0) self.alloc(elements);
+		if (elements > 0) {
+			self.alloc(elements);
+			Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+		}
+	}
+
+	@:void static function finalize(arr: Float32ArrayPrivate): Void {
+		arr.self.free();
 	}
 }
 
 abstract Float32Array(Float32ArrayPrivate) {
-
 	public inline function new(elements: Int = 0) {
 		this = new Float32ArrayPrivate(elements);
 	}

@@ -1,7 +1,9 @@
 package kha.input;
 
-@:keep
+import kha.SystemImpl;
+
 class Sensor {
+	private static var isInited: Bool = false;
 	private static var accelerometer: Sensor = new Sensor();
 	private static var gyroscope: Sensor = new Sensor();
 	private var listeners: Array<Float -> Float -> Float -> Void> = new Array();
@@ -16,6 +18,10 @@ class Sensor {
 	}
 
 	public function notify(listener: Float -> Float -> Float -> Void): Void {
+		if (!isInited) {
+			SystemImpl.initSensor();
+			isInited = true;
+		}
 		listeners.push(listener);
 	}
 

@@ -31,6 +31,7 @@ typedef uchar pchar;
 #define ptoi(s)	wcstol(s,NULL,10)
 #define PSTR(x) USTR(x)
 #else
+#	include <sys/stat.h>
 typedef char pchar;
 #define pprintf printf
 #define pfopen fopen
@@ -39,13 +40,34 @@ typedef char pchar;
 #define PSTR(x) x
 #endif
 
-static hl_code *load_code( const pchar *file ) {
+typedef struct {
+	hl_code *code;
+	hl_module *m;
+	vdynamic *ret;
+	vclosure c;
+	pchar *file;
+	int file_time;
+} main_context;
+
+static int pfiletime( pchar *file )	{
+#ifdef HL_WIN
+	struct _stat32 st;
+	_wstat32(file,&st);
+	return (int)st.st_mtime;
+#else
+	struct stat st;
+	stat(file,&st);
+	return (int)st.st_mtime;
+#endif
+}
+
+static hl_code *load_code( const pchar *file, char **error_msg, bool print_errors ) {
 	hl_code *code;
 	FILE *f = pfopen(file,"rb");
 	int pos, size;
 	char *fdata;
 	if( f == NULL ) {
-		pprintf("File not found '%s'\n",file);
+		if( print_errors ) pprintf("File not found '%s'\n",file);
 		return NULL;
 	}
 	fseek(f, 0, SEEK_END);
@@ -56,31 +78,59 @@ static hl_code *load_code( const pchar *file ) {
 	while( pos < size ) {
 		int r = (int)fread(fdata + pos, 1, size-pos, f);
 		if( r <= 0 ) {
-			pprintf("Failed to read '%s'\n",file);
+			if( print_errors ) pprintf("Failed to read '%s'\n",file);
 			return NULL;
 		}
 		pos += r;
 	}
 	fclose(f);
-	code = hl_code_read((unsigned char*)fdata, size);
+	code = hl_code_read((unsigned char*)fdata, size, error_msg);
 	free(fdata);
 	return code;
 }
 
-#ifdef HL_VCC
-static int throw_handler( int code ) {
-	switch( code ) {
-	case EXCEPTION_ACCESS_VIOLATION: hl_error("Access violation");
-	case EXCEPTION_STACK_OVERFLOW: hl_error("Stack overflow");
-	default: hl_error("Unknown runtime error");
-	}
-	return EXCEPTION_CONTINUE_SEARCH;
+static bool check_reload( main_context *m ) {
+	int time = pfiletime(m->file);
+	bool changed;
+	if( time == m->file_time )
+		return false;
+	char *error_msg = NULL;
+	hl_code *code = load_code(m->file, &error_msg, false);
+	if( code == NULL )
+		return false;
+	changed = hl_module_patch(m->m, code);
+	m->file_time = time;
+	hl_code_free(code);
+	return changed;
 }
 
+#ifdef HL_VCC
 // this allows some runtime detection to switch to high performance mode
 __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+#endif
 
+#if defined(HL_LINUX) || defined(HL_MAC)
+#include <signal.h>
+static void handle_signal( int signum ) {
+	signal(signum, SIG_DFL);
+	printf("SIGNAL %d\n",signum);
+	hl_dump_stack();
+	fflush(stdout);
+	raise(signum);
+}
+static void setup_handler() {
+	struct sigaction act;
+	act.sa_sigaction = NULL;
+	act.sa_handler = handle_signal;
+	act.sa_flags = 0;
+	sigemptyset(&act.sa_mask);
+	sigaction(SIGSEGV,&act,NULL);
+	sigaction(SIGTERM,&act,NULL);
+}
+#else
+static void setup_handler() {
+}
 #endif
 
 #ifdef HL_WIN
@@ -89,14 +139,11 @@ int wmain(int argc, pchar *argv[]) {
 int main(int argc, pchar *argv[]) {
 #endif
 	pchar *file = NULL;
+	char *error_msg = NULL;
 	int debug_port = -1;
 	bool debug_wait = false;
-	struct {
-		hl_code *code;
-		hl_module *m;
-		vdynamic *ret;
-		vclosure c;
-	} ctx;
+	bool hot_reload = false;
+	main_context ctx;
 	bool isExc = false;
 	int first_boot_arg = -1;
 	argv++;
@@ -117,6 +164,10 @@ int main(int argc, pchar *argv[]) {
 		if( pcompare(arg,PSTR("--version")) == 0 ) {
 			printf("%d.%d.%d",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
 			return 0;
+		}
+		if( pcompare(arg,PSTR("--hot-reload")) == 0 ) {
+			hot_reload = true;
+			continue;
 		}
 		if( *arg == '-' || *arg == '+' ) {
 			if( first_boot_arg < 0 ) first_boot_arg = argc + 1;
@@ -147,14 +198,21 @@ int main(int argc, pchar *argv[]) {
 	hl_global_init();
 	hl_sys_init((void**)argv,argc,file);
 	hl_register_thread(&ctx);
-	ctx.code = load_code(file);
-	if( ctx.code == NULL )
+	ctx.file = file;
+	ctx.code = load_code(file, &error_msg, true);
+	if( ctx.code == NULL ) {
+		if( error_msg ) printf("%s\n", error_msg);
 		return 1;
+	}
 	ctx.m = hl_module_alloc(ctx.code);
 	if( ctx.m == NULL )
 		return 2;
-	if( !hl_module_init(ctx.m) )
+	if( !hl_module_init(ctx.m,hot_reload) )
 		return 3;
+	if( hot_reload ) {
+		ctx.file_time = pfiletime(ctx.file);
+		hl_setup_reload_check(check_reload,&ctx);
+	}
 	hl_code_free(ctx.code);
 	if( debug_port > 0 && !hl_module_debug(ctx.m,debug_port,debug_wait) ) {
 		fprintf(stderr,"Could not start debugger on port %d",debug_port);
@@ -163,6 +221,7 @@ int main(int argc, pchar *argv[]) {
 	ctx.c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
 	ctx.c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
 	ctx.c.hasValue = 0;
+	setup_handler();
 	ctx.ret = hl_dyn_call_safe(&ctx.c,NULL,0,&isExc);
 	if( isExc ) {
 		varray *a = hl_exception_stack();

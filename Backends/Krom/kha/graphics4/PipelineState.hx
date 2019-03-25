@@ -19,10 +19,10 @@ class PipelineState extends PipelineStateBase {
 	}
 	
 	public function compile(): Void {
-		var structure0 = inputLayout.length > 0 ? inputLayout[0].elements : null;
-		var structure1 = inputLayout.length > 1 ? inputLayout[1].elements : null;
-		var structure2 = inputLayout.length > 2 ? inputLayout[2].elements : null;
-		var structure3 = inputLayout.length > 3 ? inputLayout[3].elements : null;
+		var structure0 = inputLayout.length > 0 ? inputLayout[0] : null;
+		var structure1 = inputLayout.length > 1 ? inputLayout[1] : null;
+		var structure2 = inputLayout.length > 2 ? inputLayout[2] : null;
+		var structure3 = inputLayout.length > 3 ? inputLayout[3] : null;
 		var gs = geometryShader != null ? geometryShader.shader : null;
 		var tcs = tessellationControlShader != null ? tessellationControlShader.shader : null;
 		var tes = tessellationEvaluationShader != null ? tessellationEvaluationShader.shader : null;

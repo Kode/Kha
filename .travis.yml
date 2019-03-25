@@ -9,6 +9,7 @@ addons:
       - libasound2-dev
       - libxinerama-dev
       - libgl1-mesa-dev-lts-xenial
+      - libxi-dev
 language: cpp
 before_script:
   - git submodule update --init --recursive

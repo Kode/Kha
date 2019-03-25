@@ -33,7 +33,6 @@ HL_API hl_socket *hl_socket_accept( hl_socket *s );
 HL_API int hl_socket_send( hl_socket *s, vbyte *buf, int pos, int len );
 HL_API int hl_socket_recv( hl_socket *s, vbyte *buf, int pos, int len );
 HL_API void hl_sys_sleep( double t );
-HL_API int hl_thread_id();
 HL_API void *hl_gc_threads_info();
 HL_API int hl_sys_getpid();
 

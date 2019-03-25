@@ -5,8 +5,8 @@ import haxe.Unserializer;
 
 using StringTools;
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("image"))
+@:keep
 private class ImageList {
 	public function new() {
 
@@ -17,8 +17,8 @@ private class ImageList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("sound"))
+@:keep
 private class SoundList {
 	public function new() {
 
@@ -29,8 +29,8 @@ private class SoundList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("blob"))
+@:keep
 private class BlobList {
 	public function new() {
 
@@ -41,8 +41,8 @@ private class BlobList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("font"))
+@:keep
 private class FontList {
 	public function new() {
 
@@ -53,8 +53,8 @@ private class FontList {
 	}
 }
 
-@:keep
 @:build(kha.internal.AssetsBuilder.build("video"))
+@:keep
 private class VideoList {
 	public function new() {
 
@@ -65,7 +65,6 @@ private class VideoList {
 	}
 }
 
-@:keep
 class Assets {
 	public static var images: ImageList = new ImageList();
 	public static var sounds: SoundList = new SoundList();
@@ -73,7 +72,10 @@ class Assets {
 	public static var fonts: FontList = new FontList();
 	public static var videos: VideoList = new VideoList();
 
-	public static var progress: Float; // moves from 0 to 1, use for loading screens
+	/**
+	 * Moves from 0 to 1. Use for loading screens.
+	 */
+	public static var progress: Float;
 
 	/**
 	Loads all assets which were detected by khamake. When running khamake (doing so is Kha's standard build behavior)

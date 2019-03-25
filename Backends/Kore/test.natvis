@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
+
+  <Type Name="cpp::VirtualArray_obj">
+    <DisplayString>Haxe Array</DisplayString>
+    <Expand>
+      <Item Name="length">base->length</Item>
+      <CustomListItems>
+        <Variable Name="index" InitialValue="0"/>
+        <Variable Name="length" InitialValue="base->length"/>
+        <Size>length</Size>
+        <Loop>
+          <Break Condition="index &gt;= length"/>
+          <Item>(Dynamic*)(base->mBase + index * sizeof(Dynamic))</Item>
+          <Exec>++index</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+  <Type Name="JSMapImpl_obj">
+    <DisplayString>JSMap</DisplayString>
+    <Expand>
+      <Item Name="length">myKeys.mPtr->length</Item>
+      <CustomListItems>
+        <Variable Name="index" InitialValue="0"/>
+        <Variable Name="length" InitialValue="myKeys.mPtr->length"/>
+        <Size>myKeys.mPtr->length + 10</Size>
+        <Loop>
+          <Break Condition="index &gt;= length"/>
+          <Item>((String*)(myKeys.mPtr->mBase + index * sizeof(String)))->__s,s</Item>
+          <Exec>++index</Exec>
+        </Loop>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 0 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 1 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 2 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 3 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 4 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 5 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 6 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 7 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 8 * sizeof(String)))</Item>
+        <Item>__string_hash_get2(map.mPtr, (String*)(myKeys.mPtr->mBase + 9 * sizeof(String)))</Item>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+</AutoVisualizer> 

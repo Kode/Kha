@@ -41,12 +41,16 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 		return music.length / 1000.0;
 	}
 	
-	public var position(get, null): Float;
+	public var position(get, set): Float;
 	
 	private function get_position(): Float {
 		return channel.position / 1000.0;
 	}
 	
+	function set_position(value: Float): Float {
+		return value;
+	}
+
 	public var volume(get, set): Float;
 
 	private function get_volume(): Float {
@@ -99,6 +103,8 @@ class Audio {
 			}
 		}
     }
+
+	public static var samplesPerSecond: Int;
 	
 	public static var audioCallback: Int->Buffer->Void;
 	

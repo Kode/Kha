@@ -103,8 +103,7 @@ class KravurImage {
 		return mySize;
 	}
 
-	public function stringWidth(string: String): Float {
-		var str = new SuperString(string);
+	public function stringWidth(str: String): Float {
 		var width: Float = 0;
 		for (c in 0...str.length) {
 			width += getCharWidth(str.charCodeAt(c));

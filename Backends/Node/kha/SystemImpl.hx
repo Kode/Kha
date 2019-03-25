@@ -10,7 +10,7 @@ import kha.input.Mouse;
 import kha.js.EmptyGraphics1;
 import kha.js.EmptyGraphics2;
 import kha.js.EmptyGraphics4;
-import kha.network.Session;
+import kha.netsync.Session;
 
 class SystemImpl {
 	private static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;

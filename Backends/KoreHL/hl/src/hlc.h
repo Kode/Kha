@@ -76,6 +76,7 @@
 
 static void hl_null_access() {
 	hl_error("Null access");
+	HL_UNREACHABLE;
 }
 
 #endif

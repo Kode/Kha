@@ -91,7 +91,7 @@ static int_val gc_hash( void *ptr ) {
 #define PAGE_KIND_BITS		2
 #define PAGE_KIND_MASK		((1 << PAGE_KIND_BITS) - 1)
 
-#ifdef HL_DEBUG
+#if defined(HL_DEBUG) && !defined(HL_CONSOLE)
 #	define GC_DEBUG
 #	define GC_MEMCHK
 #endif
@@ -209,8 +209,6 @@ static void gc_global_lock( bool lock ) {
 	if( lock ) {
 		if( !t )
 			hl_fatal("Can't lock GC in unregistered thread");
-		if( t->gc_blocking )
-			hl_fatal("Can't lock GC in hl_blocking section");
 		if( mt ) gc_save_context(t);
 		t->gc_blocking++;
 		if( mt ) hl_mutex_acquire(gc_threads.global_lock);
@@ -380,6 +378,18 @@ static int PAGE_ID = 0;
 HL_API void hl_gc_dump_memory( const char *filename );
 static void gc_major( void );
 
+static void *gc_will_collide( void *p, int size ) {
+#	ifdef HL_64
+	int i;
+	for(i=0;i<size>>GC_MASK_BITS;i++) {
+		void *ptr = (unsigned char*)p + (i<<GC_MASK_BITS);
+		if( GC_GET_PAGE(ptr) )
+			return ptr;
+	}
+#	endif
+	return NULL;
+}
+
 static gc_pheader *gc_alloc_new_page( int pid, int block, int size, int kind, bool varsize ) {
 	int m, i;
 	unsigned char *base;
@@ -421,16 +431,14 @@ retry:
 	}
 
 #	ifdef HL_64
-	for(i=0;i<size>>GC_MASK_BITS;i++) {
-		void *ptr = (unsigned char*)p + (i<<GC_MASK_BITS);
-		if( GC_GET_PAGE(ptr) ) {
-#			ifdef HL_VCC
-			printf("GC Page HASH collide %IX %IX\n",(int_val)GC_GET_PAGE(ptr),(int_val)ptr);
-#			else
-			printf("GC Page HASH collide %lX %lX\n",(int_val)GC_GET_PAGE(ptr),(int_val)ptr);
-#			endif
-			return gc_alloc_new_page(pid,block,size,kind,varsize);
-		}
+	void *ptr = gc_will_collide(p,size);
+	if( ptr ) {
+#		ifdef HL_VCC
+		printf("GC Page HASH collide %IX %IX\n",(int_val)GC_GET_PAGE(ptr),(int_val)ptr);
+#		else
+		printf("GC Page HASH collide %lX %lX\n",(int_val)GC_GET_PAGE(ptr),(int_val)ptr);
+#		endif
+		return gc_alloc_new_page(pid,block,size,kind,varsize);
 	}
 #endif
 
@@ -1175,23 +1183,12 @@ HL_PRIM void hl_free_executable_memory( void *c, int size ) {
 #endif
 }
 
-#ifdef HL_CONSOLE
+#if defined(HL_CONSOLE)
 void *sys_alloc_align( int size, int align );
 void sys_free_align( void *ptr, int size );
+#elif !defined(HL_WIN)
+static void *base_addr = (void*)0x40000000;
 #endif
-
-#if defined(__ANDROID__) && !defined(HAVE_POSIX_MEMALIGN)
-int posix_memalign(void** memptr, size_t alignment, size_t size) {
-    if ((alignment & (alignment - 1)) != 0 || alignment == 0 || alignment % sizeof(void*) != 0) {
-        return 22; // Invalid argument (EINVAL)
-    }
-    *memptr = memalign(alignment, size);
-    if (*memptr == NULL) {
-        return 12; // Out of memory (ENOMEM)
-    }
-    return 0;
-}
-#endif /* __ANDROID_API__ < 17 */
 
 static void *gc_alloc_page_memory( int size ) {
 #if defined(HL_WIN)
@@ -1207,9 +1204,34 @@ static void *gc_alloc_page_memory( int size ) {
 #elif defined(HL_CONSOLE)
 	return sys_alloc_align(size, GC_PAGE_SIZE);
 #else
-	void *ptr;
-	if( posix_memalign(&ptr,GC_PAGE_SIZE,size) )
+	int i = 0;
+	while( gc_will_collide(base_addr,size) ) {
+		base_addr = (char*)base_addr + GC_PAGE_SIZE;
+		i++;
+		// most likely our hashing creates too many collisions
+		if( i >= 1 << (GC_LEVEL0_BITS + GC_LEVEL1_BITS + 2) )
+			return NULL;
+	}
+	void *ptr = mmap(base_addr,size,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
+	if( ptr == (void*)-1 )
 		return NULL;
+	if( ((int_val)ptr) & (GC_PAGE_SIZE-1) ) {
+		munmap(ptr,size);
+		void *tmp;
+		int tmp_size = (int)((int_val)ptr - (int_val)base_addr);
+		if( tmp_size > 0 ) {
+			base_addr = (void*)((((int_val)ptr) & ~(GC_PAGE_SIZE-1)) + GC_PAGE_SIZE);
+			tmp = ptr;
+		} else {
+			base_addr = (void*)(((int_val)ptr) & ~(GC_PAGE_SIZE-1));
+			tmp = NULL;
+		}
+		if( tmp ) tmp = mmap(tmp,tmp_size,PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
+		ptr = gc_alloc_page_memory(size);
+		if( tmp ) munmap(tmp,tmp_size);
+		return ptr;
+	}
+	base_addr = (char*)ptr+size;
 	return ptr;
 #endif
 }
@@ -1220,7 +1242,7 @@ static void gc_free_page_memory( void *ptr, int size ) {
 #elif defined(HL_CONSOLE)
 	sys_free_align(ptr,size);
 #else
-	free(ptr);
+	munmap(ptr,size);
 #endif
 }
 

@@ -123,10 +123,10 @@ class WebGLImage extends Image {
 			else createImageData();
 		}
 		
-		var r = data.data[y * Std.int(image.width) * 4 + x * 4];
-		var g = data.data[y * Std.int(image.width) * 4 + x * 4 + 1];
-		var b = data.data[y * Std.int(image.width) * 4 + x * 4 + 2];
-		var a = data.data[y * Std.int(image.width) * 4 + x * 4 + 3];
+		var r = data.data[y * width * 4 + x * 4];
+		var g = data.data[y * width * 4 + x * 4 + 1];
+		var b = data.data[y * width * 4 + x * 4 + 2];
+		var a = data.data[y * width * 4 + x * 4 + 3];
 		
 		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 	}
@@ -313,8 +313,9 @@ class WebGLImage extends Image {
 	}
 
 	override public function setDepthStencilFrom(image: Image): Void {
+		depthTexture = cast(image, WebGLImage).depthTexture;
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, cast(image, WebGLImage).depthTexture, 0);
+		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
 	}
 
 	private static function formatByteSize(format: TextureFormat): Int {

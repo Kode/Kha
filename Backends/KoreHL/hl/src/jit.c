@@ -25,6 +25,10 @@
 #include <math.h>
 #include <hlmodule.h>
 
+#ifdef __arm__
+#	error "JIT does not support ARM processors, only x86 and x86-64 are supported, please use HashLink/C native compilation instead"
+#endif
+
 #ifdef HL_DEBUG
 #	define JIT_DEBUG
 #endif
@@ -293,6 +297,7 @@ struct jit_ctx {
 	int c2hl;
 	int hl2c;
 	int longjump;
+	void *static_functions[8];
 };
 
 #define jit_exit() { hl_debug_break(); exit(-1); }
@@ -1446,18 +1451,6 @@ static int prepare_call_args( jit_ctx *ctx, int count, int *args, vreg *vregs, i
 	return paddedSize;
 }
 
-#ifdef HL_VCC
-#	pragma optimize( "", off )
-#endif
-HL_NO_OPT static void hl_null_access() {
-	vdynamic *d = hl_alloc_dynamic(&hlt_bytes);
-	d->v.ptr = USTR("Null access");
-	hl_throw(d);
-}
-#ifdef HL_VCC
-#	pragma optimize( "", on )
-#endif
-
 static void op_call( jit_ctx *ctx, preg *r, int size ) {
 	preg p;
 #	ifdef JIT_DEBUG
@@ -1479,7 +1472,7 @@ static void op_call( jit_ctx *ctx, preg *r, int size ) {
 }
 
 static void call_native( jit_ctx *ctx, void *nativeFun, int size ) {
-	bool isExc = nativeFun == hl_null_access || nativeFun == hl_assert || nativeFun == hl_throw || nativeFun == on_jit_error;
+	bool isExc = nativeFun == hl_assert || nativeFun == hl_throw || nativeFun == on_jit_error;
 	preg p;
 	// native function, already resolved
 	op64(ctx,MOV,PEAX,pconst64(&p,(int_val)nativeFun));
@@ -1730,6 +1723,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 	case HVIRTUAL:
 	case HOBJ:
 	case HFUN:
+	case HMETHOD:
 	case HBYTES:
 	case HNULL:
 	case HENUM:
@@ -1768,6 +1762,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 	case HDYNOBJ:
 	case HVIRTUAL:
 	case HFUN:
+	case HMETHOD:
 	case HBYTES:
 	case HNULL:
 	case HENUM:
@@ -2210,13 +2205,23 @@ jit_ctx *hl_jit_alloc() {
 	return ctx;
 }
 
-void hl_jit_free( jit_ctx *ctx ) {
+void hl_jit_free( jit_ctx *ctx, h_bool can_reset ) {
 	free(ctx->vregs);
 	free(ctx->opsPos);
 	free(ctx->startBuf);
+	ctx->maxRegs = 0;
+	ctx->vregs = NULL;
+	ctx->maxOps = 0;
+	ctx->opsPos = NULL;
+	ctx->startBuf = NULL;
+	ctx->bufSize = 0;
+	ctx->buf.b = NULL;
+	ctx->calls = NULL;
+	ctx->switchs = NULL;
+	ctx->closure_list = NULL;
 	hl_free(&ctx->falloc);
 	hl_free(&ctx->galloc);
-	free(ctx);
+	if( !can_reset ) free(ctx);
 }
 
 static void jit_nops( jit_ctx *ctx ) {
@@ -2572,6 +2577,30 @@ static void jit_longjump( jit_ctx *ctx ) {
 }
 #endif
 
+static void jit_fail( uchar *msg ) {
+	if( msg == NULL ) {
+		hl_debug_break();
+		msg = USTR("assert");
+	}
+	vdynamic *d = hl_alloc_dynamic(&hlt_bytes);
+	d->v.ptr = msg;
+	hl_throw(d);
+}
+
+static void jit_null_access( jit_ctx *ctx ) {
+	op64(ctx,PUSH,PEBP,UNUSED);
+	op64(ctx,MOV,PEBP,PESP);
+	int_val arg = (int_val)USTR("Null access");
+	call_native_consts(ctx, jit_fail, &arg, 1);
+}
+
+static void jit_assert( jit_ctx *ctx ) {
+	op64(ctx,PUSH,PEBP,UNUSED);
+	op64(ctx,MOV,PEBP,PESP);
+	int_val arg = 0;
+	call_native_consts(ctx, jit_fail, &arg, 1);
+}
+
 static int jit_build( jit_ctx *ctx, void (*fbuild)( jit_ctx *) ) {
 	int pos;
 	jit_buf(ctx);
@@ -2582,7 +2611,7 @@ static int jit_build( jit_ctx *ctx, void (*fbuild)( jit_ctx *) ) {
 	return pos;
 }
 
-void hl_jit_init( jit_ctx *ctx, hl_module *m ) {
+static void hl_jit_init_module( jit_ctx *ctx, hl_module *m ) {
 	int i;
 	ctx->m = m;
 	if( m->code->hasdebug )
@@ -2591,11 +2620,22 @@ void hl_jit_init( jit_ctx *ctx, hl_module *m ) {
 		jit_buf(ctx);
 		*ctx->buf.d++ = m->code->floats[i];
 	}
+}
+
+void hl_jit_init( jit_ctx *ctx, hl_module *m ) {
+	hl_jit_init_module(ctx,m);
 	ctx->c2hl = jit_build(ctx, jit_c2hl);
 	ctx->hl2c = jit_build(ctx, jit_hl2c);
 #	ifdef JIT_CUSTOM_LONGJUMP
 	ctx->longjump = jit_build(ctx, jit_longjump);
 #	endif
+	ctx->static_functions[0] = (void*)(int_val)jit_build(ctx,jit_null_access);
+	ctx->static_functions[1] = (void*)(int_val)jit_build(ctx,jit_assert);
+}
+
+void hl_jit_reset( jit_ctx *ctx, hl_module *m ) {
+	ctx->debug = NULL;
+	hl_jit_init_module(ctx,m);
 }
 
 static void *get_dyncast( hl_type *t ) {
@@ -2971,6 +3011,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			}
 			break;
 		case OToSFloat:
+			if( ra == dst ) break;
 			if( ra->t->kind == HI32 ) {
 				preg *r = alloc_cpu(ctx,ra,true);
 				preg *w = alloc_fpu(ctx,dst,false);
@@ -2998,6 +3039,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			}
 			break;
 		case OToInt:
+			if( ra == dst ) break;
 			if( ra->t->kind == HF64 ) {
 				preg *r = alloc_fpu(ctx,ra,true);
 				preg *w = alloc_cpu(ctx,dst,false);
@@ -3069,8 +3111,11 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			store(ctx,dst,dst->current,false);
 			break;
 		case OBytes:
-			op64(ctx,MOV,alloc_cpu(ctx,dst,false),pconst64(&p,(int_val)m->code->strings[o->p2]));
-			store(ctx,dst,dst->current,false);
+			{
+				char *b = m->code->version >= 5 ? m->code->bytes + m->code->bytes_pos[o->p2] : m->code->strings[o->p2];
+				op64(ctx,MOV,alloc_cpu(ctx,dst,false),pconst64(&p,(int_val)b));
+				store(ctx,dst,dst->current,false);
+			}
 			break;
 		case ONull:
 			{
@@ -3724,7 +3769,16 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 				preg *r = alloc_cpu(ctx,dst,true);
 				op64(ctx,TEST,r,r);
 				XJump_small(JNotZero,jz);
-				call_native_consts(ctx,hl_null_access,NULL,0);
+				pad_before_call(ctx, 0);
+
+				jlist *j = (jlist*)hl_malloc(&ctx->galloc,sizeof(jlist));
+				j->pos = BUF_POS();
+				j->target = -1;
+				j->next = ctx->calls;
+				ctx->calls = j;
+
+				op64(ctx,MOV,PEAX,pconst64(&p,RESERVE_ADDRESS));
+				op_call(ctx,PEAX,-1);
 				patch_jump(ctx,jz);
 			}
 			break;
@@ -3843,18 +3897,49 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 				op64(ctx,MOV,trap,PESP);
 				op64(ctx,MOV,pmem(&p,treg->id,offset),trap);
 
+				/*
+					This is a bit hackshish : we want to detect the type of exception filtered by the catch so we check the following
+					sequence of HL opcodes:
+
+					trap E,@catch
+					...
+					@catch:
+					global R, _
+					call _, ???(R,E)
+
+					??? is expected to be hl.BaseType.check
+				*/
+				hl_opcode *next = f->ops + opCount + 1 + o->p2;
+				hl_opcode *next2 = f->ops + opCount + 2 + o->p2;
+				if( next->op == OGetGlobal && next2->op == OCall2 && next2->p3 == next->p1 && dst->stack.id == (int)(int_val)next2->extra ) {
+					hl_type *gt = m->code->globals[next->p2];
+					while( gt->kind == HOBJ && gt->obj->super ) gt = gt->obj->super;
+					if( gt->kind == HOBJ && gt->obj->nfields && gt->obj->fields[0].t->kind == HTYPE ) {
+						void *addr = m->globals_data + m->globals_indexes[next->p2];
+#						ifdef HL_64
+						op64(ctx,MOV,treg,pconst64(&p,(int_val)addr));
+						op64(ctx,MOV,treg,pmem(&p,treg->id,0));
+#						else
+						op64(ctx,MOV,treg,paddr(&p,addr));
+#						endif
+					} else
+						op64(ctx,MOV,treg,pconst(&p,0));
+				} else {
+					op64(ctx,MOV,treg,pconst(&p,0));
+				}
+				op64(ctx,MOV,pmem(&p,Esp,(int)(int_val)&t->tcheck),treg);
+
 				size = begin_native_call(ctx, 1);
 				set_native_arg(ctx,trap);
 				call_native(ctx,setjmp,size);
 				op64(ctx,TEST,PEAX,PEAX);
 				XJump_small(JZero,jenter);
-				call_native(ctx, hl_get_thread, 0);
 				op64(ctx,ADD,PESP,pconst(&p,trap_size));
 				if( !tinf ) {
 					call_native(ctx, hl_get_thread, 0);
 					op64(ctx,MOV,PEAX,pmem(&p, Eax, (int)(int_val)&tinf->exc_value));
 				} else {
-					op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&tinf->trap_current));
+					op64(ctx,MOV,PEAX,pconst64(&p,(int_val)&tinf->exc_value));
 					op64(ctx,MOV,PEAX,pmem(&p, Eax, 0));
 				}
 				store(ctx,dst,PEAX,false);
@@ -3950,7 +4035,16 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			store(ctx,dst,dst->current,false);
 			break;
 		case OAssert:
-			call_native(ctx, hl_assert, 0);
+			{
+				jlist *j = (jlist*)hl_malloc(&ctx->galloc,sizeof(jlist));
+				j->pos = BUF_POS();
+				j->target = -1;
+				j->next = ctx->calls;
+				ctx->calls = j;
+
+				op64(ctx,MOV,PEAX,pconst64(&p,RESERVE_ADDRESS));
+				op_call(ctx,PEAX,-2);
+			}
 			break;
 		case ONop:
 			break;
@@ -4008,7 +4102,34 @@ static void *get_wrapper( hl_type *t ) {
 	return call_jit_hl2c;
 }
 
-void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **debug ) {
+void hl_jit_patch_method( void *old_fun, void **new_fun_table ) {
+	// mov eax, addr
+	// jmp [eax]
+	unsigned char *b = (unsigned char*)old_fun;
+	unsigned long long addr = (unsigned long long)(int_val)new_fun_table;
+#	ifdef HL_64
+	*b++ = 0x48;
+	*b++ = 0xB8;
+	*b++ = (unsigned char)addr;
+	*b++ = (unsigned char)(addr>>8);
+	*b++ = (unsigned char)(addr>>16);
+	*b++ = (unsigned char)(addr>>24);
+	*b++ = (unsigned char)(addr>>32);
+	*b++ = (unsigned char)(addr>>40);
+	*b++ = (unsigned char)(addr>>48);
+	*b++ = (unsigned char)(addr>>56);
+#	else
+	*b++ = 0xB8;
+	*b++ = (unsigned char)addr;
+	*b++ = (unsigned char)(addr>>8);
+	*b++ = (unsigned char)(addr>>16);
+	*b++ = (unsigned char)(addr>>24);
+#	endif
+	*b++ = 0xFF;
+	*b++ = 0x20;
+}
+
+void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **debug, hl_module *previous ) {
 	jlist *c;
 	int size = BUF_POS();
 	unsigned char *code;
@@ -4018,17 +4139,47 @@ void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **d
 	memcpy(code,ctx->startBuf,BUF_POS());
 	*codesize = size;
 	*debug = ctx->debug;
-	call_jit_c2hl = code + ctx->c2hl;
-	call_jit_hl2c = code + ctx->hl2c;
-	hl_setup_callbacks(callback_c2hl, get_wrapper);
+	if( !call_jit_c2hl ) {
+		call_jit_c2hl = code + ctx->c2hl;
+		call_jit_hl2c = code + ctx->hl2c;
+		hl_setup_callbacks(callback_c2hl, get_wrapper);
+#		ifdef JIT_CUSTOM_LONGJUMP
+		hl_setup_longjump(code + ctx->longjump);
+#		endif
+		int i;
+		for(i=0;i<sizeof(ctx->static_functions)/sizeof(void*);i++)
+			ctx->static_functions[i] = (void*)(code + (int)(int_val)ctx->static_functions[i]);
+	}
 	// patch calls
 	c = ctx->calls;
 	while( c ) {
-		int fpos = (int)(int_val)m->functions_ptrs[c->target];
+		void *fabs;
+		if( c->target < 0 )
+			fabs = ctx->static_functions[-c->target-1];
+		else {
+			fabs = m->functions_ptrs[c->target];
+			if( fabs == NULL ) {
+				// read absolute address from previous module
+				int old_idx = m->functions_hashes[m->functions_indexes[c->target]];
+				if( old_idx < 0 )
+					return NULL;
+				fabs = previous->functions_ptrs[(previous->code->functions + old_idx)->findex];
+			} else {
+				// relative
+				fabs = (unsigned char*)code + (int)(int_val)fabs;
+			}
+		}
 		if( (code[c->pos]&~3) == (IS_64?0x48:0xB8) || code[c->pos] == 0x68 ) // MOV : absolute | PUSH
-			*(int_val*)(code + c->pos + (IS_64?2:1)) = (int_val)(code + fpos);
-		else
-			*(int*)(code + c->pos + 1) = fpos - (c->pos + 5);
+			*(void**)(code + c->pos + (IS_64?2:1)) = fabs;
+		else {
+			int_val delta = (int_val)fabs - (int_val)code - (c->pos + 5);
+			int rpos = (int)delta;
+			if( (int_val)rpos != delta ) {
+				printf("Target code too far too rebase\n");
+				return NULL;
+			}
+			*(int*)(code + c->pos + 1) = rpos;
+		}
 		c = c->next;
 	}
 	// patch switchs
@@ -4042,16 +4193,24 @@ void *hl_jit_code( jit_ctx *ctx, hl_module *m, int *codesize, hl_debug_infos **d
 		vclosure *c = ctx->closure_list;
 		while( c ) {
 			vclosure *next;
-			int fpos = (int)(int_val)m->functions_ptrs[(int)(int_val)c->fun];
-			c->fun = code + fpos;
+			int fidx = (int)(int_val)c->fun;
+			void *fabs = m->functions_ptrs[fidx];
+			if( fabs == NULL ) {
+				// read absolute address from previous module
+				int old_idx = m->functions_hashes[m->functions_indexes[fidx]];
+				if( old_idx < 0 )
+					return NULL;
+				fabs = previous->functions_ptrs[(previous->code->functions + old_idx)->findex];
+			} else {
+				// relative
+				fabs = (unsigned char*)code + (int)(int_val)fabs;
+			}
+			c->fun = fabs;
 			next = (vclosure*)c->value;
 			c->value = NULL;
 			c = next;
 		}
 	}
-#	ifdef JIT_CUSTOM_LONGJUMP
-	hl_setup_longjump(code + ctx->longjump);
-#	endif
 	return code;
 }
 
