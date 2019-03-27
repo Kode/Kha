@@ -30,7 +30,7 @@ class Surface {
 	public function remove(touchStartListener: Int->Int->Int->Void, touchEndListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Void): Void {
 		if (touchStartListener != null) touchStartListeners.remove(touchStartListener);
 		if (touchEndListener != null) touchEndListeners.remove(touchEndListener);
-		if (moveListener != null) moveListeners.push(moveListener);
+		if (moveListener != null) moveListeners.remove(moveListener);
 	}
 	
 	private static var instance: Surface;
