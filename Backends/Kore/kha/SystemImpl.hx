@@ -104,8 +104,9 @@ class SystemImpl {
 		untyped __cpp__("Kore::System::vibrate(ms)");
 	}
 
+	@:functionCode('return ::String(Kore::System::language());')
 	public static function getLanguage(): String {
-		return "en"; //TODO: Implement
+		return "en";
 	}
 
 	public static function requestShutdown(): Bool {
