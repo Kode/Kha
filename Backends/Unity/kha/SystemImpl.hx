@@ -39,7 +39,7 @@ class SystemImpl {
 	public static function screenDpi(): Int {
 		return 96;
 	}
-	
+
 	public static function getVsync(): Bool {
 		return true;
 	}
@@ -84,7 +84,11 @@ class SystemImpl {
 	public static function getSystemId(): String {
 		return "unity";
 	}
-	
+
+	public static function vibrate(ms:Int): Void {
+		//TODO: Implement
+	}
+
 	public static function getLanguage(): String {
 		return "en"; //TODO: Implement
 	}
@@ -99,7 +103,7 @@ class SystemImpl {
 	private static var gamepad2: Gamepad;
 	private static var gamepad3: Gamepad;
 	private static var gamepad4: Gamepad;
-	
+
 	public static function init(options: SystemOptions, callback: Void -> Void) {
 		init2();
 		Scheduler.init();
@@ -202,7 +206,7 @@ class SystemImpl {
 	public static function mouseUp(button: Int, x: Int, y: Int): Void {
 		kha.input.Mouse.get().sendUpEvent(0, button, x, y);
 	}
-	
+
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
 		gamepad1.sendAxisEvent(axis, value);
 	}
@@ -239,13 +243,13 @@ class SystemImpl {
 		Scheduler.executeFrame();
 		System.render(0, frame);
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 
 	public static function loadUrl(url: String): Void {
-		
+
 	}
 
 	public static function getGamepadId(index: Int): String {

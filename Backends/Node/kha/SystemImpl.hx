@@ -18,14 +18,14 @@ class SystemImpl {
 	private static var height: Int;
 
 	private static inline var networkSendRate = 0.05;
-	
+
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		SystemImpl.width = options.width;
 		SystemImpl.height = options.height;
 		init2();
 		callback(null);
 	}
-	
+
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Window -> Void) {
 		trace('initEx is not supported on the node target, running init() with first window options');
 
@@ -35,29 +35,29 @@ class SystemImpl {
 			windowCallback(0);
 		}
 	}
-	
+
 	public static function changeResolution(width: Int, height: Int): Void {
 
 	}
-	
+
 	public static function _updateSize(width: Int, height: Int): Void {
 		SystemImpl.width = width;
 		SystemImpl.height = height;
 	}
-	
+
 	public static function _updateScreenRotation(value: Int): Void {
 		screenRotation = ScreenRotation.createByIndex(value);
 	}
-	
+
 	public static function getTime(): Float {
 		var time = Node.process.hrtime();
 		return cast(time[0], Float) + cast(time[1], Float) / 1000000000;
 	}
-	
+
 	public static function windowWidth(id: Int): Int {
 		return width;
 	}
-	
+
 	public static function windowHeight(id: Int): Int {
 		return height;
 	}
@@ -65,58 +65,62 @@ class SystemImpl {
 	public static function screenDpi(): Int {
 		return 96;
 	}
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return screenRotation;
 	}
-	
+
 	public static function getVsync(): Bool {
 		return false;
 	}
-	
+
 	public static function getRefreshRate(): Int {
 		return 60;
 	}
-	
+
 	public static function getSystemId(): String {
 		return "nodejs";
 	}
-	
+
+	public static function vibrate(ms:Int): Void {
+
+	}
+
 	public static function getLanguage(): String {
 		return "en";
 	}
-	
+
 	public static function requestShutdown(): Bool {
 		Node.process.exit(0);
 		return true;
 	}
-	
+
 	private static var frame: Framebuffer = null;
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var gamepad: Gamepad;
-	
+
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 
 	private static var lastTime: Float = 0;
-	
+
 	private static function init2() {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
-		
+
 		Scheduler.init();
 
 		Shaders.init();
 		frame = new Framebuffer(0, new EmptyGraphics1(width, height), new EmptyGraphics2(width, height), new EmptyGraphics4(width, height));
 		Scheduler.start();
-		
+
 		lastTime = Scheduler.time();
 		run();
 		synch();
 	}
-	
+
 	private static function run() {
 		Scheduler.executeFrame();
 		var time = Scheduler.time();
@@ -132,30 +136,30 @@ class SystemImpl {
 		}
 		Node.setTimeout(run, 1);
 	}
-	
+
 	private static function synch() {
 		if (Session.the() != null) {
 			Session.the().update();
 		}
 		Node.setTimeout(synch, Std.int(networkSendRate * 1000));
 	}
-	
+
 	public static function getKeyboard(num: Int): Keyboard {
 		if (num != 0) return null;
 		return keyboard;
 	}
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
 	}
 
 	public static function lockMouse(): Void {
-		
+
 	}
-	
+
 	public static function unlockMouse(): Void {
-		
+
 	}
 
 	public static function canLockMouse(): Bool {
@@ -167,11 +171,11 @@ class SystemImpl {
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function canSwitchFullscreen() : Bool{
@@ -183,28 +187,28 @@ class SystemImpl {
 	}
 
 	public static function requestFullscreen(): Void {
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
-		
+
   	}
 
 	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+
 	}
 
 
 	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
+
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 
 	public static function loadUrl(url: String): Void {
-		
+
 	}
 
 	public static function getGamepadId(index: Int): String {

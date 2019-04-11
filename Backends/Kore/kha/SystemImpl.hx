@@ -100,6 +100,10 @@ class SystemImpl {
 		return '';
 	}
 
+	public static function vibrate(ms:Int): Void {
+		untyped __cpp__("Kore::System::vibrate(ms)");
+	}
+
 	@:functionCode('return ::String(Kore::System::language());')
 	public static function getLanguage(): String {
 		return "en";

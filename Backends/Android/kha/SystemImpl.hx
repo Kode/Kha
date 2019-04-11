@@ -1,5 +1,6 @@
 package kha;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import tech.kode.kha.KhaActivity;
@@ -7,6 +8,9 @@ import kha.android.Graphics;
 import kha.android.Keyboard;
 import kha.graphics4.Graphics2;
 import android.view.KeyEvent;
+import android.os.Vibrator;
+// import android.os.VibrationEffect;
+import android.os.BuildVERSION;
 import kha.input.Mouse;
 import kha.input.KeyCode;
 import kha.input.Surface;
@@ -16,7 +20,7 @@ class SystemImpl {
 	public static var w: Int = 640;
 	public static var h: Int = 480;
 	private static var startTime: Float;
-	
+
 	public static function getScreenRotation(): ScreenRotation {
 		return ScreenRotation.RotationNone;
 	}
@@ -48,13 +52,27 @@ class SystemImpl {
 		return "Android";
 	}
 
+	public static function vibrate(ms:Int): Void {
+		var instance = KhaActivity.the();
+		var v:Vibrator = cast instance.getSystemService(Context.VIBRATOR_SERVICE);
+		if (BuildVERSION.SDK_INT >= 26) { // Build.VERSION_CODES.O
+			untyped __java__("v.vibrate(
+					android.os.VibrationEffect.createOneShot(ms,
+						android.os.VibrationEffect.DEFAULT_AMPLITUDE));
+			");
+		} else {
+			// deprecated in API 26
+			v.vibrate(ms);
+		}
+	}
+
 	public static function getLanguage(): String {
 		return java.util.Locale.getDefault().getLanguage();
 	}
 
 	public static function requestShutdown(): Bool {
 		shutdown();
-		untyped __java__("java.lang.System.exit(0)");	
+		untyped __java__("java.lang.System.exit(0)");
 		return true;
 	}
 
@@ -118,7 +136,7 @@ class SystemImpl {
 		//if (kha.audio2.Audio._init()) {
 			//kha.audio2.Audio1._init();
 		//}
-		
+
 		Scheduler.start();
 
 		done(Window.get(0));
@@ -268,7 +286,7 @@ class SystemImpl {
 	public static function setKeepScreenOn(on: Bool): Void {
 
 	}
-		
+
 	public static function loadUrl(url: String): Void {
 		var i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		KhaActivity.the().startActivity(i);

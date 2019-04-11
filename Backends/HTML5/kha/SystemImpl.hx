@@ -179,6 +179,10 @@ class SystemImpl {
 		return "HTML5";
 	}
 
+	public static function vibrate(ms:Int): Void {
+		Browser.navigator.vibrate(ms);
+	}
+
 	public static function getLanguage(): String {
 		return Browser.navigator.language;
 	}
@@ -624,7 +628,7 @@ class SystemImpl {
 					trace(err);
 				});
 			}
-			
+
 			kha.audio2.Audio.wakeChannels();
 		}
 		unlockiOSSound();
