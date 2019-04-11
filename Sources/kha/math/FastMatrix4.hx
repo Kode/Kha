@@ -142,10 +142,8 @@ class FastMatrix4 {
 	}
 
 	public static inline function lookAt(eye: FastVector3, at: FastVector3, up: FastVector3): FastMatrix4 {
-		var zaxis = at.sub(eye);
-		zaxis.normalize();
-		var xaxis = zaxis.cross(up);
-		xaxis.normalize();
+		var zaxis = at.sub(eye).normalized();
+		var xaxis = zaxis.cross(up).normalized();
 		var yaxis = xaxis.cross(zaxis);
 
 		return new FastMatrix4(
