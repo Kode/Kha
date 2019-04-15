@@ -10,8 +10,8 @@ package kha.graphics5;
 @:headerClassCode("Kore::Graphics5::RayTracePipeline* pipeline;")
 class RayTracePipeline {
 
-	public function new(commandList: CommandList, rayShader: kha.Blob, hitShader: kha.Blob, missShader: kha.Blob, constantBuffer: ConstantBuffer) {
-		untyped __cpp__("pipeline = new Kore::Graphics5::RayTracePipeline(commandList->commandList, rayShader->bytes->b->Pointer(), rayShader->get_length(), hitShader->bytes->b->Pointer(), hitShader->get_length(), missShader->bytes->b->Pointer(), missShader->get_length(), constantBuffer->buffer);");
+	public function new(commandList: CommandList, rayTraceShader: kha.Blob, constantBuffer: ConstantBuffer) {
+		untyped __cpp__("pipeline = new Kore::Graphics5::RayTracePipeline(commandList->commandList, rayTraceShader->bytes->b->Pointer(), rayTraceShader->get_length(), constantBuffer->buffer);");
 	}
 
 	@:keep
