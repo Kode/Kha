@@ -26,7 +26,7 @@ class FastVector4 {
 		this.w = v.w;
 	}
 
-	private function get_length(): FastFloat {
+	private inline function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
@@ -55,12 +55,12 @@ class FastVector4 {
 
 	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
-		length = 1;
+		#if haxe4 inline #end set_length(1);
 	}
 
 	@:extern public inline function normalized(): FastVector4 {
 		var v = new FastVector4(x, y, z, w);
-		v.length = 1;
+		#if haxe4 inline #end v.set_length(1);
 		return v;
 	}
 

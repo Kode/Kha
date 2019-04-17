@@ -20,7 +20,7 @@ class FastVector2 {
 		this.y = v.y;
 	}
 
-	private function get_length(): FastFloat {
+	private inline function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y);
 	}
 
@@ -55,12 +55,12 @@ class FastVector2 {
 
 	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
-		length = 1;
+		#if haxe4 inline #end set_length(1);
 	}
 
 	@:extern public inline function normalized(): FastVector2 {
 		var v = new FastVector2(x, y);
-		v.length = 1;
+		#if haxe4 inline #end v.set_length(1);
 		return v;
 	}
 

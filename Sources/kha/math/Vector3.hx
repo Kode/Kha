@@ -19,7 +19,7 @@ class Vector3 {
 		this.z = v.z;
 	}
 
-	private function get_length(): Float {
+	private inline function get_length(): Float {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 
@@ -58,12 +58,12 @@ class Vector3 {
 
 	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
-		length = 1;
+		#if haxe4 inline #end set_length(1);
 	}
 
 	@:extern public inline function normalized(): Vector3 {
 		var v = new Vector3(x, y, z);
-		v.length = 1;
+		#if haxe4 inline #end v.set_length(1);
 		return v;
 	}
 

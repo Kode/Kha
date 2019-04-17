@@ -16,7 +16,7 @@ class Vector2 {
 		this.y = v.y;
 	}
 
-	private function get_length(): Float {
+	private inline function get_length(): Float {
 		return Math.sqrt(x * x + y * y);
 	}
 
@@ -51,12 +51,12 @@ class Vector2 {
 
 	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
-		length = 1;
+		#if haxe4 inline #end set_length(1);
 	}
 
 	@:extern public inline function normalized(): Vector2 {
 		var v = new Vector2(x, y);
-		v.length = 1;
+		#if haxe4 inline #end v.set_length(1);
 		return v;
 	}
 
