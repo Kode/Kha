@@ -124,7 +124,7 @@ class PipelineState extends PipelineStateBase {
 			case Static(value): value;
 			default: 0;
 		}
-		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail,
+		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, depthWrite,
 		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
@@ -196,7 +196,9 @@ class PipelineState extends PipelineStateBase {
 			break;
 		}
 
-		pipeline->depthWrite = convertCompareMode(depthWrite);
+		pipeline->depthMode = convertCompareMode(depthMode);
+		pipeline->depthWrite = depthWrite;
+
 		pipeline->stencilMode = convertCompareMode(stencilMode);
 		pipeline->stencilBothPass = convertStencilAction(stencilBothPass);
 		pipeline->stencilDepthFail = convertStencilAction(stencilDepthFail);
@@ -219,7 +221,7 @@ class PipelineState extends PipelineStateBase {
 
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
-	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int,
+	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
 	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {
 
 	}
