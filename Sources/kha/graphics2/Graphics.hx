@@ -128,6 +128,10 @@ class Graphics {
 
 	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
 
+	public function scale(x :FastFloat, y :FastFloat): Void {
+		transformation = kha.math.FastMatrix3.scale(x, y).multmat(transformation);
+	}
+
 	public function pushTransformation(transformation: FastMatrix3): Void {
 		var trans = FastMatrix3.identity();
 		trans.setFrom(transformation);
