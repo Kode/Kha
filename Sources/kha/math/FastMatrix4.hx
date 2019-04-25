@@ -117,14 +117,14 @@ class FastMatrix4 {
 		);
 	}
 
-	// Inlining this leads to weird error in C#, please investigate
+	// Inlining with `2` instead of `2.0` leads to wrong temp var type in Java/C#
 	public static inline function orthogonalProjection(left: FastFloat, right: FastFloat, bottom: FastFloat, top: FastFloat, zn: FastFloat, zf: FastFloat): FastMatrix4 {
 		var tx: FastFloat = -(right + left) / (right - left);
 		var ty: FastFloat = -(top + bottom) / (top - bottom);
 		var tz: FastFloat = -(zf + zn) / (zf - zn);
 		return new FastMatrix4(
 			2 / (right - left), 0,                  0,              tx,
-			0,                  2 / (top - bottom), 0,              ty,
+			0,                  2.0 / (top - bottom), 0,              ty,
 			0,                  0,                  -2 / (zf - zn), tz,
 			0,                  0,                  0,               1
 		);
