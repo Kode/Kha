@@ -40,7 +40,7 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, antiAliasingSamples > 1, contextId);
 	}
-	
+
 	/**
 	 * Textures in array mast be readable!
 	 */
@@ -50,7 +50,7 @@ class Image implements Canvas implements Resource {
 		initArrayTexture(image, images);
 		return image;
 	}
-	
+
 	@:functionCode('
 		source->textureArrayTextures = new Kore::Graphics4::Image*[images->length];
 		for (unsigned i = 0; i < images->length; ++i) {
@@ -59,11 +59,10 @@ class Image implements Canvas implements Resource {
 		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
 	')
 	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
-		
+
 	}
-	
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		var readable = true;
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = null): Image {
 		var image = new Image(readable);
 		image.format = format;
 		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
@@ -72,7 +71,7 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, format, readable);')
 	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
-		
+
 	}
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -85,9 +84,9 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, depth, format, readable);')
 	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
-		
+
 	}
-	
+
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
 		var isFloat = format == "hdr" || format == "HDR";
@@ -98,7 +97,7 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
 	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
-		
+
 	}
 
 	private function new(readable: Bool) {
@@ -158,7 +157,7 @@ class Image implements Canvas implements Resource {
 			case Depth16: 0;
 		}
 	}
-	
+
 	private static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
 		case RGBA32:
@@ -411,6 +410,6 @@ class Image implements Canvas implements Resource {
 
 	@:functionCode("if (texture != nullptr) texture->clear(x, y, z, width, height, depth, color);")
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
+
 	}
 }

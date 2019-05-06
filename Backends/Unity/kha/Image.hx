@@ -29,8 +29,8 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencilFormat: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true);
 	}
-	
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = null): Image {
 		return null;
 	}
 
@@ -145,7 +145,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		
+
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
@@ -153,11 +153,11 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
-		
+
 	}
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
+
 	}
 
 	public static var maxSize(get, null): Int;

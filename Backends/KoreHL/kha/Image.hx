@@ -12,7 +12,7 @@ class Image implements Canvas implements Resource {
 	public var _renderTarget: Pointer;
 	public var _textureArray: Pointer;
 	public var _textureArrayTextures: Pointer;
-	
+
 	private var format: TextureFormat;
 	private var readable: Bool;
 
@@ -45,9 +45,8 @@ class Image implements Canvas implements Resource {
 		// initArrayTexture(image, images);
 		// return image;
 	// }
-	
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		var readable = true;
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = null): Image {
 		var image = new Image(readable);
 		image.format = format;
 		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
@@ -325,7 +324,7 @@ class Image implements Canvas implements Resource {
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
 		kore_texture_clear(_texture, x, y, z, width, height, depth, color);
 	}
-	
+
 	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_create3d") static function kore_texture_create3d(width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }

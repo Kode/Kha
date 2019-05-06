@@ -194,7 +194,7 @@ class Image implements Canvas implements Resource {
 
 		return result;
 	}
-	
+
 	private static function convertFramebufferStatus(status: Int): String {
 		if (status == GLES20.GL_FRAMEBUFFER_COMPLETE) return "complete";
 		else if (status == GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) return "incomplete attachments";
@@ -249,8 +249,8 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		return new Image(width, height, format, true, depthStencil);
 	}
-	
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = null): Image {
 		return null;
 	}
 
@@ -390,7 +390,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		
+
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
@@ -398,11 +398,11 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
-		
+
 	}
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
+
 	}
 
 	public static var maxSize(get, null): Int;
