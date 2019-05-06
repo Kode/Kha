@@ -46,14 +46,17 @@ class KravurImage {
 		for (char in chars) {
 			char.yoff += baseline;
 		}
-		texture = Image.create(width, height, TextureFormat.L8);
-		var bytes = texture.lock();
-		var pos: Int = 0;
-		for (y in 0...height) for (x in 0...width) {
-			bytes.set(pos, pixels.readU8(pos));
-			++pos;
+		texture = Image.fromBytes(pixels.toBytes(), width, height, TextureFormat.L8);
+		if (texture == null) {
+			texture = Image.create(width, height, TextureFormat.L8);
+			var bytes = texture.lock();
+			var pos: Int = 0;
+			for (y in 0...height) for (x in 0...width) {
+				bytes.set(pos, pixels.readU8(pos));
+				++pos;
+			}
+			texture.unlock();
 		}
-		texture.unlock();
 	}
 
 	public function getTexture(): Image {
