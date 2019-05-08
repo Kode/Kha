@@ -855,22 +855,22 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)); //bottom-right
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
 
-		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
-		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + strength / 2, y + strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + strength / 2, y + height - strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + strength / 2, y + strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + strength / 2, y + height - strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
 
-		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2));
-		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
 
-		p1 = transformation.multvec(new FastVector2(x + width - strength / 2, y + height - strength / 2));
-		p2 = transformation.multvec(new FastVector2(x + width - strength / 2, y + strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x + width - strength / 2, y + height - strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x + width - strength / 2, y + strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
 	}
 
@@ -916,19 +916,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 
-		var vec: FastVector2;
-		if (y2 == y1) vec = new FastVector2(0, -1);
-		else vec = new FastVector2(1, -(x2 - x1) / (y2 - y1));
+		var vec = new FastVector2();
+		if (y2 == y1) vec.setFrom(new FastVector2(0, -1));
+		else vec.setFrom(new FastVector2(1, -(x2 - x1) / (y2 - y1)));
 		vec.length = strength;
 		var p1 = new FastVector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
 		var p2 = new FastVector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
 		var p3 = p1.sub(vec);
 		var p4 = p2.sub(vec);
 
-		p1 = transformation.multvec(p1);
-		p2 = transformation.multvec(p2);
-		p3 = transformation.multvec(p3);
-		p4 = transformation.multvec(p4);
+		p1.setFrom(transformation.multvec(p1));
+		p2.setFrom(transformation.multvec(p2));
+		p3.setFrom(transformation.multvec(p3));
+		p4.setFrom(transformation.multvec(p4));
 
 		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 		coloredPainter.fillTriangle(opacity, color, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);
