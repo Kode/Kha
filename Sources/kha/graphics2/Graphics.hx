@@ -130,28 +130,28 @@ class Graphics {
 	public var transformation(get, set): FastMatrix3;
 
 	private inline function get_transformation(): FastMatrix3 {
-		return transformations[transformationId];
+		return transformations[transformationIndex];
 	}
 
 	private inline function set_transformation(transformation: FastMatrix3): FastMatrix3 {
 		setTransformation(transformation);
-		transformations[transformationId].setFrom(transformation);
+		transformations[transformationIndex].setFrom(transformation);
 		return transformation;
 	}
 
 	public inline function pushTransformation(trans: FastMatrix3): Void {
-		transformationId++;
-		if (transformationId == transformations.length) {
+		transformationIndex++;
+		if (transformationIndex == transformations.length) {
 			transformations.push(FastMatrix3.identity());
 		}
-		transformations[transformationId].setFrom(trans);
+		transformations[transformationIndex].setFrom(trans);
 		setTransformation(get_transformation());
 	}
 
 	public function popTransformation(): FastMatrix3 {
-		transformationId--;
+		transformationIndex--;
 		setTransformation(get_transformation());
-		return transformations[transformationId + 1];
+		return transformations[transformationIndex + 1];
 	}
 
 	public function scale(x :FastFloat, y :FastFloat): Void {
@@ -228,16 +228,14 @@ class Graphics {
 	#end
 
 	private var transformations: Array<FastMatrix3>;
-	private var transformationId: Int;
+	private var transformationIndex: Int;
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;
 
 	public function new() {
-		transformations = new Array<FastMatrix3>();
-		transformations.push(FastMatrix3.identity());
-		transformationId = transformations.length - 1;
-		opacities = new Array<Float>();
-		opacities.push(1);
+		transformations = [FastMatrix3.identity()];
+		transformationIndex = 0;
+		opacities = [1];
 		myFontSize = 12;
 		#if sys_g4
 		pipe = null;
