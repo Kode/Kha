@@ -793,6 +793,7 @@ class SystemImpl {
 		event.stopPropagation();
 		event.preventDefault();
 
+		var index = 0;
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
 			if (ios) {
@@ -804,6 +805,11 @@ class SystemImpl {
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
 			surface.sendTouchStartEvent(id, touchX, touchY);
+			if (index == 0) {
+				lastFirstTouchX = touchX;
+				lastFirstTouchY = touchY;
+			}
+			index++;
 		}
 		insideInputEvent = false;
 	}
@@ -833,7 +839,7 @@ class SystemImpl {
 		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
-			if(index == 0){
+			if (index == 0) {
 				var movementX = touchX - lastFirstTouchX;
 				var movementY = touchY - lastFirstTouchY;
 				lastFirstTouchX = touchX;
