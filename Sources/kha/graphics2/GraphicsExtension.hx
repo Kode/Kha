@@ -211,6 +211,7 @@ class GraphicsExtension {
 	 * Draws a cubic bezier using 4 pairs of points. If the x and y arrays have a length bigger then 4, the additional
 	 * points will be ignored. With a length smaller of 4 a error will occur, there is no check for this.
 	 * You can construct the curves visually in Inkscape with a path using default nodes.
+	 * Provide x and y in the following order: startPoint, controlPoint1, controlPoint2, endPoint
 	 * Reference: http://devmag.org.za/2011/04/05/bzier-curves-a-tutorial/
 	 */
 	public static function drawCubicBezier(g2:Graphics, x:Array<Float>, y:Array<Float>, segments:Int = 20, strength:Float = 1.0):Void {
