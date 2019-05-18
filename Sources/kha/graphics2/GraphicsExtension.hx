@@ -191,20 +191,34 @@ class GraphicsExtension {
 	 * Draws a filled convex polygon.
 	 */
 	public static function fillPolygon(g2: Graphics, x: Float, y: Float, vertices: Array<Vector2>) {
+		#if (kha_html5 && !kha_webgl)
 
-		var iterator = vertices.iterator();
+			var _g2:kha.js.CanvasGraphics = cast g2;
+			@:privateAccess var ctx = _g2.canvas;
 
-		if (!iterator.hasNext()) return;
-		var v0 = iterator.next();
+			ctx.beginPath();
+			ctx.moveTo(vertices[0].x, vertices[0].y);
+			for(i in 1...vertices.length) {
+				ctx.lineTo(vertices[i].x, vertices[i].y);
+			}
+			ctx.closePath();
+			ctx.fill();
 
-		if (!iterator.hasNext()) return;
-		var v1 = iterator.next();
+		#else
+			var iterator = vertices.iterator();
 
-		while (iterator.hasNext()) {
-			var v2 = iterator.next();
-			g2.fillTriangle(v0.x + x, v0.y + y, v1.x + x, v1.y + y, v2.x + x, v2.y + y);
-			v1 = v2;
-		}
+			if (!iterator.hasNext()) return;
+			var v0 = iterator.next();
+
+			if (!iterator.hasNext()) return;
+			var v1 = iterator.next();
+
+			while (iterator.hasNext()) {
+				var v2 = iterator.next();
+				g2.fillTriangle(v0.x + x, v0.y + y, v1.x + x, v1.y + y, v2.x + x, v2.y + y);
+				v1 = v2;
+			}
+		#end
 	}
 
 	/**
