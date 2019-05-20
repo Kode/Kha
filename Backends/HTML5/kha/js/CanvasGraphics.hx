@@ -229,7 +229,9 @@ class CanvasGraphics extends Graphics {
 
 	override public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
 		canvas.beginPath();
-
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
+		canvas.lineTo(x3, y3);
 		canvas.closePath();
 		canvas.fill();
 	}
