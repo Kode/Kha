@@ -18,7 +18,7 @@ class VertexBuffer {
 	private var sizes: Array<Int>;
 	private var offsets: Array<Int>;
 	private var usage: Usage;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		this.usage = usage;
 		mySize = vertexCount;
@@ -41,15 +41,15 @@ class VertexBuffer {
 				myStride += 2 * 4;
 			}
 		}
-	
+
 		buffer = createBuffer();
 		data = new Float32Array(Std.int(vertexCount * myStride / 4));
-		
+
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
 		sizes[structure.elements.length - 1] = 0;
 		offsets[structure.elements.length - 1] = 0;
-		
+
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
@@ -91,30 +91,31 @@ class VertexBuffer {
 			++index;
 		}
 	}
-	
+
 	private static function createBuffer(): Int {
 		var buffers = new NativeArray<Int>(1);
 		GLES20.glGenBuffers(1, buffers, 0);
 		return buffers[0];
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return data;
 	}
-	
+
 	public function unlock(?count: Int): Void {
+		var count = (count != null ? count : mySize) * myStride;
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffer);
-		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, (count != null ? count : mySize) * myStride, data.data(), usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
+		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, count, data.data(count), usage == Usage.DynamicUsage ? GLES20.GL_DYNAMIC_DRAW : GLES20.GL_STATIC_DRAW);
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return mySize;
 	}
-	
+
 	public function set(): Void {
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffer);
 		for (i in 0...sizes.length) {
