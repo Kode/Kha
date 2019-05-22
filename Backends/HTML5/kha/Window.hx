@@ -108,7 +108,7 @@ class Window {
 
 	function requestFullscreen(): Void {
 		untyped if (canvas.requestFullscreen) {
-			canvas.requestFullscreen();
+			canvas.requestFullscreen({navigationUI:"hide"});
 		}
 		else if (canvas.msRequestFullscreen) {
 			canvas.msRequestFullscreen();
