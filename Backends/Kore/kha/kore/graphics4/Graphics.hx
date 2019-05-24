@@ -565,6 +565,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function beginFace(face: Int): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		untyped __cpp__("Kore::Graphics4::setRenderTargetFace(renderTarget, face)");
 	}
 	
