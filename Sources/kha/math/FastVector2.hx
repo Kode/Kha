@@ -24,7 +24,7 @@ class FastVector2 {
 		return Math.sqrt(x * x + y * y);
 	}
 
-	private function set_length(length: FastFloat): FastFloat {
+	private inline function set_length(length: FastFloat): FastFloat {
 		var currentLength = get_length();
 		if (currentLength == 0) return 0;
 		var mul = length / currentLength;
