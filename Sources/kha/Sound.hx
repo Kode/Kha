@@ -7,7 +7,7 @@ import kha.audio2.ogg.vorbis.Reader;
 /**
  * Contains compressed or uncompressed audio data.
  */
- @:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <Kore/Audio1/stb_vorbis.c>")
+ @:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;

@@ -137,10 +137,10 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-    g4.window = 0;
-		var g5 = new kha.kore.graphics5.Graphics();
-		var framebuffer = new Framebuffer(0, null, null, g4, g5);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4, g5);
+		g4.window = 0;
+		//var g5 = new kha.kore.graphics5.Graphics();
+		var framebuffer = new Framebuffer(0, null, null, g4 /*, g5*/);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4/*, g5*/);
 		framebuffers.push(framebuffer);
 #end
 
