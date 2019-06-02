@@ -26,3 +26,7 @@
 	url = https://github.com/Kode/lame_bin.git
 	branch = master
 	shallow = true
+[submodule "Kinc"]
+	path = Kinc
+	url = https://github.com/Kode/Kinc.git
+	branch = master
