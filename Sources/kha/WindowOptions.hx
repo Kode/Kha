@@ -21,19 +21,19 @@ class WindowOptions {
 	@:optional public var y: Int = -1;
 	@:optional public var width: Int = 800;
 	@:optional public var height: Int = 600;
-	@:optional public var display: Display = null;
+	@:optional public var display: Int = -1;
 	@:optional public var visible: Bool = true;
 	@:optional public var windowFeatures:WindowFeatures = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
 	@:optional public var mode: WindowMode = Windowed;
 
-	public function new(title: String = null, ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, display: Display = null,
+	public function new(title: String = null, ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, ?display: Int = -1,
 	?visible: Bool = true, ?windowFeatures:WindowFeatures, ?mode: WindowMode = WindowMode.Windowed) {
 		this.title = title;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.display = display == null ? Display.primary : display;
+		this.display = display;
 		this.visible = visible;
 		this.windowFeatures = (windowFeatures == null) ? WindowFeatures.FeatureResizable | WindowFeatures.FeatureMaximizable | WindowFeatures.FeatureMinimizable : windowFeatures;
 		this.mode = mode;

@@ -28,7 +28,7 @@ Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
 	window.y = win->y;
 	window.width = win->width;
 	window.height = win->height;
-	window.display = Kore::Display::get(win->display->num);
+	window.display = win->display < 0 ? Kore::Display::primary() : Kore::Display::get(win->display);
 	window.visible = win->visible;
 	window.windowFeatures = win->windowFeatures;
 	window.mode = (Kore::WindowMode)win->mode;
