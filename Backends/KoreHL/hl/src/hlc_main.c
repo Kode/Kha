@@ -109,7 +109,7 @@ static int throw_handler( int code ) {
 #endif
 
 #ifdef KOREC
-int kore(int argc, char *argv[]) {
+int kickstart(int argc, char *argv[]) {
 #else
 	#ifdef HL_WIN_DESKTOP
 	int wmain(int argc, uchar *argv[]) {

@@ -78,7 +78,7 @@ namespace {
 extern "C" void hl_init_kore(vbyte *title, int width, int height, int samplesPerPixel, bool vSync, int windowMode, int windowFeatures) {
 	Kore::log(Kore::Info, "Starting KoreHL");
 
-	Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
+	// Kore::Random::init(static_cast<int>(Kore::System::timestamp() % std::numeric_limits<int>::max()));
 
 	Kore::WindowOptions win;
 	win.title = (char*)title;
