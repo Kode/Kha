@@ -44,6 +44,7 @@ class Sound extends kha.Sound {
 			for (i in 0...extractedLength) {
 				uncompressedData.set(i, array.readFloat());
 			}
+			this.length = _mp3.length;
 			_mp3 = null;
 			compressedData = null;
 			done();
