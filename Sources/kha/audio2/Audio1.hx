@@ -1,7 +1,7 @@
 package kha.audio2;
 
 #if cpp
-import cpp.vm.Mutex;
+import sys.thread.Mutex;
 #end
 import haxe.ds.Vector;
 

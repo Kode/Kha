@@ -129,7 +129,7 @@ class SystemImpl {
 		initKore(options.title, options.width, options.height, options.window, options.framebuffer);
 		Window._init();
 
-		kha.Worker._mainThread = cpp.vm.Thread.current();
+		kha.Worker._mainThread = sys.thread.Thread.current();
 
 		untyped __cpp__('post_kore_init()');
 

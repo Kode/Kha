@@ -1,8 +1,8 @@
 package kha.arrays;
 
-abstract Int16Array(js.html.Int16Array) {
+abstract Int16Array(js.lib.Int16Array) {
 	public inline function new(elements: Int) {
-		this = new js.html.Int16Array(elements);
+		this = new js.lib.Int16Array(elements);
 	}
 	
 	public var length(get, never): Int;
@@ -19,7 +19,7 @@ abstract Int16Array(js.html.Int16Array) {
 		return this[index];
 	}
 	
-	public inline function data(): js.html.Int16Array {
+	public inline function data(): js.lib.Int16Array {
 		return this;
 	}
 

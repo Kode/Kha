@@ -2,7 +2,7 @@ package kha;
 
 import haxe.io.Bytes;
 import js.Browser;
-import js.html.Uint8Array;
+import js.lib.Uint8Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
