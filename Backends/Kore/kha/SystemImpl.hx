@@ -446,4 +446,8 @@ class SystemImpl {
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
 	}
+
+	public static function safeZone(): Float {
+		return untyped __cpp__('Kore::System::safeZone()');
+	}
 }
