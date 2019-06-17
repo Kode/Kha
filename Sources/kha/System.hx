@@ -314,4 +314,8 @@ class System {
 	public static function screenDpi(): Int {
 		return Display.primary.pixelsPerInch;
 	}
+
+	public static function safeZone(): Float {
+		return SystemImpl.safeZone();
+	}
 }
