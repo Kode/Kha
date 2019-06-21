@@ -80,8 +80,14 @@ class Assets {
 	/**
 	Loads all assets which were detected by khamake. When running khamake (doing so is Kha's standard build behavior)
 	it creates a files.json in the build/{target}-resources directoy which contains information about all assets which were found.
+
+	The `callback` parameter is always called after loading, even when some or all assets had failures.
+
+	An optional callback parameter `failed` is called for each asset that failed to load.
+
 	The filter parameter can be used to load assets selectively. The Dynamic parameter describes the asset,
 	it contains the very same objects which are listed in files.json.
+
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
@@ -133,7 +139,7 @@ class Assets {
 
 				if (filter == null || filter(description)) {
 					Reflect.field(blobs, blob)(onLoaded, function(err) {
-						reporter(failed);
+						reporter(failed)(err);
 						onLoaded();
 					});
 				}
@@ -149,7 +155,7 @@ class Assets {
 
 				if (filter == null || filter(description)) {
 					Reflect.field(images, image)(onLoaded, function(err) {
-						reporter(failed);
+						reporter(failed)(err);
 						onLoaded();
 					});
 				}
@@ -171,7 +177,10 @@ class Assets {
 						else {
 							onLoaded();
 						}
-					}, reporter(failed));
+					}, function(err) {
+						reporter(failed)(err);
+						onLoaded();
+					});
 				}
 				else {
 					onLoaded();
@@ -184,7 +193,7 @@ class Assets {
 				var description = Reflect.field(fonts, name + "Description");
 				if (filter == null || filter(description)) {
 					Reflect.field(fonts, font)(onLoaded, function(err) {
-						reporter(failed);
+						reporter(failed)(err);
 						onLoaded();
 					});
 				}
@@ -199,7 +208,7 @@ class Assets {
 				var description = Reflect.field(videos, name + "Description");
 				if (filter == null || filter(description)) {
 					Reflect.field(videos, video)(onLoaded, function(err) {
-						reporter(failed);
+						reporter(failed)(err);
 						onLoaded();
 					});
 				}
