@@ -218,4 +218,8 @@ class SystemImpl {
 	public static function getPen(num: Int): kha.input.Pen {
 		return null;
 	}
+
+	public static function safeZone(): Float {
+		return 1.0;
+	}
 }
