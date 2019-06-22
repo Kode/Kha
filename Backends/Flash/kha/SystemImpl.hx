@@ -139,11 +139,11 @@ class SystemImpl {
 		mouseX = Std.int(event.stageX);
 		mouseY = Std.int(event.stageY);
 	}
-	
+
 	private static function mouseLeaveHandler(event: Event): Void {
 		mouse.sendLeaveEvent(0);
 	}
-	
+
 	private static function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, 0, mouseX, mouseY);
@@ -199,9 +199,13 @@ class SystemImpl {
 	public static function getTime(): Float {
 		return Lib.getTimer() / 1000;
 	}
-	
+
 	public static function getSystemId(): String {
 		return "Flash";
+	}
+
+	public static function vibrate(ms:Int): Void {
+
 	}
 
 	public static function getLanguage(): String {
@@ -217,18 +221,18 @@ class SystemImpl {
 	}
 
 	public static function setKeepScreenOn(on: Bool): Void {
-		
+
 	}
 
 	public static function loadUrl(url: String): Void {
 		Lib.getURL(new URLRequest(url), "_blank");
 	}
-	
+
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
 	}
 
 	public static function getPen(num: Int): kha.input.Pen {
 		return null;
-	}	
+	}
 }

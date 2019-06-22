@@ -555,7 +555,6 @@ class StbTruetype {
 	
 	public static function stbtt_GetGlyphShape(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
 		var numberOfContours: Stbtt_int16;
-		var endPtsOfContours: Blob;
 		var data: Blob = info.data;
 		var vertices: Vector<Stbtt_vertex> = null;
 		var num_vertices: Int = 0;
@@ -571,13 +570,11 @@ class StbTruetype {
 			var was_off: Bool = false;
 			var start_off: Bool = false;
 			var x,y,cx,cy,sx,sy, scx,scy: Stbtt_int32;
-			var points: Blob;
-			var pointsIndex: Int = 0;
-			endPtsOfContours = data.sub(g + 10, data.length - (g + 10));
-			ins = ttUSHORT(data, g + 10 + numberOfContours * 2);
-			points = data.sub(g + 10 + numberOfContours * 2 + 2 + ins, data.length - (g + 10 + numberOfContours * 2 + 2 + ins));
+			var endPtsOfContoursOffset: Int = g + 10;
+			ins = ttUSHORT(data, endPtsOfContoursOffset + numberOfContours * 2);
+			var pointsIndex: Int = endPtsOfContoursOffset + numberOfContours * 2 + 2 + ins;
 
-			n = 1+ttUSHORT(endPtsOfContours, numberOfContours*2-2);
+			n = 1+ttUSHORT(data, endPtsOfContoursOffset + numberOfContours*2-2);
 
 			m = n + 2*numberOfContours;  // a loose bound on how many vertices we might need
 			vertices = new Vector<Stbtt_vertex>(m);
@@ -602,9 +599,9 @@ class StbTruetype {
 
 			for (i in 0...n) {
 				if (flagcount == 0) {
-					flags = points.readU8(pointsIndex++);
+					flags = data.readU8(pointsIndex++);
 					if (flags & 8 != 0)
-						flagcount = points.readU8(pointsIndex++);
+						flagcount = data.readU8(pointsIndex++);
 				} else
 					--flagcount;
 				vertices[off+i].type = flags;
@@ -615,13 +612,13 @@ class StbTruetype {
 			for (i in 0...n) {
 				flags = vertices[off+i].type;
 				if (flags & 2 != 0) {
-					var dx: Stbtt_int16 = points.readU8(pointsIndex++);
+					var dx: Stbtt_int16 = data.readU8(pointsIndex++);
 					x += (flags & 16 != 0) ? dx : -dx; // ???
 				} else {
 					if (flags & 16 == 0) {
 						var value: Stbtt_int16;
-						var ch1 = points.readU8(pointsIndex + 0);
-						var ch2 = points.readU8(pointsIndex + 1);
+						var ch1 = data.readU8(pointsIndex + 0);
+						var ch2 = data.readU8(pointsIndex + 1);
 						var n = ch2 | (ch1 << 8);
 						if (n & 0x8000 != 0)
 							value = n - 0x10000;
@@ -639,13 +636,13 @@ class StbTruetype {
 			for (i in 0...n) {
 				flags = vertices[off+i].type;
 				if (flags & 4 != 0) {
-					var dy: Stbtt_int16 = points.readU8(pointsIndex++);
+					var dy: Stbtt_int16 = data.readU8(pointsIndex++);
 					y += (flags & 32 != 0) ? dy : -dy; // ???
 				} else {
 					if (flags & 32 == 0) {
 						var value: Stbtt_int16;
-						var ch1 = points.readU8(pointsIndex + 0);
-						var ch2 = points.readU8(pointsIndex + 1);
+						var ch1 = data.readU8(pointsIndex + 0);
+						var ch2 = data.readU8(pointsIndex + 1);
 						var n = ch2 | (ch1 << 8);
 						if (n & 0x8000 != 0)
 							value = n - 0x10000;
@@ -694,7 +691,7 @@ class StbTruetype {
 					}
 					stbtt_setvertex(vertices[num_vertices++], STBTT_vmove,sx,sy,0,0);
 					was_off = false;
-					next_move = 1 + ttUSHORT(endPtsOfContours, j*2);
+					next_move = 1 + ttUSHORT(data, endPtsOfContoursOffset + j*2);
 					++j;
 				} else {
 					if (flags & 1 == 0) { // if it's a curve
@@ -717,8 +714,7 @@ class StbTruetype {
 		} else if (numberOfContours == -1) {
 			// Compound shapes.
 			var more: Int = 1;
-			var comp: Blob = data.sub(g + 10, data.length - (g + 10));
-			var compIndex: Int = 0;
+			var compIndex: Int = g + 10;
 			num_vertices = 0;
 			vertices = null;
 			while (more != 0) {
@@ -734,16 +730,16 @@ class StbTruetype {
 				var mtx5: Float = 0;
 				var m, n: Float;
 
-				flags = ttSHORT(comp, compIndex); compIndex+=2;
-				gidx = ttSHORT(comp, compIndex); compIndex+=2;
+				flags = ttSHORT(data, compIndex); compIndex+=2;
+				gidx = ttSHORT(data, compIndex); compIndex+=2;
 
 				if (flags & 2 != 0) { // XY values
 					if (flags & 1 != 0) { // shorts
-						mtx4 = ttSHORT(comp, compIndex); compIndex+=2;
-						mtx5 = ttSHORT(comp, compIndex); compIndex+=2;
+						mtx4 = ttSHORT(data, compIndex); compIndex+=2;
+						mtx5 = ttSHORT(data, compIndex); compIndex+=2;
 					} else {
-						mtx4 = ttCHAR(comp, compIndex); compIndex+=1;
-						mtx5 = ttCHAR(comp, compIndex); compIndex+=1;
+						mtx4 = ttCHAR(data, compIndex); compIndex+=1;
+						mtx5 = ttCHAR(data, compIndex); compIndex+=1;
 					}
 				}
 				else {
@@ -751,17 +747,17 @@ class StbTruetype {
 					STBTT_assert(false);
 				}
 				if (flags & (1<<3) != 0) { // WE_HAVE_A_SCALE
-					mtx0 = mtx3 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
+					mtx0 = mtx3 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 					mtx1 = mtx2 = 0;
 				} else if (flags & (1<<6) != 0) { // WE_HAVE_AN_X_AND_YSCALE
-					mtx0 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
+					mtx0 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 					mtx1 = mtx2 = 0;
-					mtx3 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
+					mtx3 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 				} else if (flags & (1<<7) != 0) { // WE_HAVE_A_TWO_BY_TWO
-					mtx0 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
-					mtx1 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
-					mtx2 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
-					mtx3 = ttSHORT(comp, compIndex)/16384.0; compIndex+=2;
+					mtx0 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
+					mtx1 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
+					mtx2 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
+					mtx3 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 				}
 		 
 				// Find transformation scales.
@@ -829,30 +825,31 @@ class StbTruetype {
 	}
 
 	public static function stbtt_GetGlyphKernAdvance(info: Stbtt_fontinfo, glyph1: Int, glyph2: Int): Int {
-		var data: Blob = info.data.sub(info.kern, info.data.length - info.kern);
+		var kern: Int = info.kern;
+		var data: Blob = info.data;
 		var needle, straw: Stbtt_uint32;
 		var l, r, m: Int;
 
 		// we only look at the first table. it must be 'horizontal' and format 0.
 		if (info.kern == 0)
 			return 0;
-		if (ttUSHORT(data, 2) < 1) // number of tables, need at least 1
+		if (ttUSHORT(data, kern + 2) < 1) // number of tables, need at least 1
 			return 0;
-		if (ttUSHORT(data, 8) != 1) // horizontal flag must be set in format
+		if (ttUSHORT(data, kern + 8) != 1) // horizontal flag must be set in format
 			return 0;
 
 		l = 0;
-		r = ttUSHORT(data, 10) - 1;
+		r = ttUSHORT(data, kern + 10) - 1;
 		needle = glyph1 << 16 | glyph2;
 		while (l <= r) {
 			m = (l + r) >> 1;
-			straw = ttULONG(data, 18+(m*6)); // note: unaligned read
+			straw = ttULONG(data, kern + 18+(m*6)); // note: unaligned read
 			if (needle < straw)
 				r = m - 1;
 			else if (needle > straw)
 				l = m + 1;
 			else
-				return ttSHORT(data, 22+(m*6));
+				return ttSHORT(data, kern + 22+(m*6));
 		}
 		return 0;
 	}
@@ -1605,8 +1602,6 @@ class StbTruetype {
 		var f: Stbtt_fontinfo = new Stbtt_fontinfo();
 		if (!stbtt_InitFont(f, data, offset))
 			return -1;
-		for (i in 0...pw * ph)
-			pixels.writeU8(i, 0); // background of 0 around pixels
 		x=y=1;
 		bottom_y = 1;
 
@@ -1633,7 +1628,6 @@ class StbTruetype {
 				return -i;
 			STBTT_assert(x+gw < pw);
 			STBTT_assert(y+gh < ph);
-			stbtt_MakeGlyphBitmap(f, pixels, x + y * pw, gw, gh, pw, scale, scale, g);
 			chardata[i].x0 = x;
 			chardata[i].y0 = y;
 			chardata[i].x1 = x + gw;
@@ -1644,6 +1638,16 @@ class StbTruetype {
 			x = x + gw + 1;
 			if (y+gh+1 > bottom_y)
 				bottom_y = y+gh+1;
+			++i;
+		}
+		for (i in 0...pw * ph)
+			pixels.writeU8(i, 0); // background of 0 around pixels
+		i = 0;
+		var ch:Stbtt_bakedchar;
+		for (index in chars) {//bake bitmap if fits
+			var g: Int = stbtt_FindGlyphIndex(f, index);
+			ch = chardata[i];
+			stbtt_MakeGlyphBitmap(f, pixels, ch.x0 + ch.y0 * pw, ch.x1 - ch.x0, ch.y1 - ch.y0, pw, scale, scale, g);
 			++i;
 		}
 		return bottom_y;

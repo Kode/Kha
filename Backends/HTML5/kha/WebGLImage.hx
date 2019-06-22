@@ -2,9 +2,9 @@ package kha;
 
 import haxe.io.Bytes;
 import js.Browser;
-import js.html.Uint8Array;
-import js.html.Uint16Array;
-import js.html.Float32Array;
+import js.lib.Uint8Array;
+import js.lib.Uint16Array;
+import js.lib.Float32Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
 import kha.graphics4.TextureFormat;
@@ -123,17 +123,17 @@ class WebGLImage extends Image {
 			else createImageData();
 		}
 		
-		var r = data.data[y * Std.int(image.width) * 4 + x * 4];
-		var g = data.data[y * Std.int(image.width) * 4 + x * 4 + 1];
-		var b = data.data[y * Std.int(image.width) * 4 + x * 4 + 2];
-		var a = data.data[y * Std.int(image.width) * 4 + x * 4 + 3];
+		var r = data.data[y * width * 4 + x * 4];
+		var g = data.data[y * width * 4 + x * 4 + 1];
+		var b = data.data[y * width * 4 + x * 4 + 2];
+		var a = data.data[y * width * 4 + x * 4 + 3];
 		
 		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 	}
 
 	function createImageData() {
 		if (Std.is(image, Uint8Array)) {
-			data = new js.html.ImageData(new js.html.Uint8ClampedArray(image.buffer), this.width, this.height);
+			data = new js.html.ImageData(new js.lib.Uint8ClampedArray(image.buffer), this.width, this.height);
 		} 
 		else {
 			if (this.width > canvas.width || this.height > canvas.height) {
@@ -395,7 +395,7 @@ class WebGLImage extends Image {
 		}
 	}
 
-	private var pixels: js.html.ArrayBufferView = null;
+	private var pixels: js.lib.ArrayBufferView = null;
 	
 	override public function getPixels(): Bytes {
 		if (frameBuffer == null) return null;

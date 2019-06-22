@@ -66,12 +66,16 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		return source.buffer.duration;
 	}
 
-	public var position(get, null): Float; // Seconds
+	public var position(get, set): Float; // Seconds
 	
 	private function get_position(): Float {
 		if (stopped) return length;
 		if (paused) return pauseTime;
 		else return MobileWebAudio._context.currentTime - startTime;
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 
 	public var volume(get, set): Float;

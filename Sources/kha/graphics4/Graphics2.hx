@@ -253,13 +253,13 @@ class ColoredShaderPainter {
 	static var standardColorPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 
-	static inline var bufferSize: Int = 100;
+	static inline var bufferSize: Int = 1000;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: Float32Array;
 	static var indexBuffer: IndexBuffer;
 
-	static inline var triangleBufferSize: Int = 100;
+	static inline var triangleBufferSize: Int = 1000;
 	static var triangleBufferIndex: Int;
 	static var triangleVertexBuffer: VertexBuffer;
 	static var triangleVertices: Float32Array;
@@ -358,7 +358,7 @@ class ColoredShaderPainter {
 
 	public function setRectColors(opacity: FastFloat, color: Color): Void {
 		var baseIndex: Int = bufferIndex * 7 * 4;
-		
+
 		var a: FastFloat = opacity * color.A;
 		var r: FastFloat = a * color.R;
 		var g: FastFloat = a * color.G;
@@ -492,14 +492,11 @@ class ColoredShaderPainter {
 	}
 }
 
-#if cpp
-@:headerClassCode("const wchar_t* wtext;")
-#end
 class TextShaderPainter {
 	var projectionMatrix: FastMatrix4;
 	static var standardTextPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
-	static inline var bufferSize: Int = 100;
+	static inline var bufferSize: Int = 1000;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: Float32Array;
@@ -650,44 +647,6 @@ class TextShaderPainter {
 		this.font = cast(font, Kravur);
 	}
 
-	private var text: String;
-
-	#if cpp
-	@:functionCode('
-		wtext = text.__WCStr();
-	')
-	#end
-	private function startString(text: String): Void {
-		this.text = text;
-	}
-
-	#if cpp
-	@:functionCode('
-		return wtext[position];
-	')
-	#end
-	private function charCodeAt(position: Int): Int {
-		return text.charCodeAt(position);
-	}
-
-	#if cpp
-	@:functionCode('
-		return wcslen(wtext);
-	')
-	#end
-	private function stringLength(): Int {
-		return text.length;
-	}
-
-	#if cpp
-	@:functionCode('
-		wtext = 0;
-	')
-	#end
-	private function endString(): Void {
-		text = null;
-	}
-
 	private static function findIndex(charCode: Int): Int {
 		var glyphs = kha.graphics2.Graphics.fontGlyphs;
 		var blocks = Kravur.KravurImage.charBlocks;
@@ -711,9 +670,9 @@ class TextShaderPainter {
 
 		var xpos = x;
 		var ypos = y;
-		startString(text);
-		for (i in 0...stringLength()) {
-			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCodeAt(i)), xpos, ypos);
+		for (i in 0...text.length) {
+			var charCode = StringTools.fastCodeAt(text, i);
+			var q = font.getBakedQuad(bakedQuadCache, findIndex(charCode), xpos, ypos);
 			if (q != null) {
 				if (bufferIndex + 1 >= bufferSize) drawBuffer();
 				setRectColors(opacity, color);
@@ -727,7 +686,6 @@ class TextShaderPainter {
 				++bufferIndex;
 			}
 		}
-		endString();
 	}
 
 	public function drawCharacters(text: Array<Int>, start: Int, length: Int, opacity: FastFloat, color: Color, x: Float, y: Float, transformation: FastMatrix3): Void {
@@ -897,22 +855,22 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)); //bottom-right
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // top
 
-		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
-		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + strength / 2, y + strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + strength / 2, y + height - strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + strength / 2, y + strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + strength / 2, y + height - strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // left
 
-		p1 = transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2));
-		p2 = transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height + strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x - strength / 2, y + height - strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height + strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // bottom
 
-		p1 = transformation.multvec(new FastVector2(x + width - strength / 2, y + height - strength / 2));
-		p2 = transformation.multvec(new FastVector2(x + width - strength / 2, y + strength / 2));
-		p3 = transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2));
-		p4 = transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2));
+		p1.setFrom(transformation.multvec(new FastVector2(x + width - strength / 2, y + height - strength / 2)));
+		p2.setFrom(transformation.multvec(new FastVector2(x + width - strength / 2, y + strength / 2)));
+		p3.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + strength / 2)));
+		p4.setFrom(transformation.multvec(new FastVector2(x + width + strength / 2, y + height - strength / 2)));
 		coloredPainter.fillRect(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y); // right
 	}
 
@@ -958,19 +916,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 
-		var vec: FastVector2;
-		if (y2 == y1) vec = new FastVector2(0, -1);
-		else vec = new FastVector2(1, -(x2 - x1) / (y2 - y1));
+		var vec = new FastVector2();
+		if (y2 == y1) vec.setFrom(new FastVector2(0, -1));
+		else vec.setFrom(new FastVector2(1, -(x2 - x1) / (y2 - y1)));
 		vec.length = strength;
 		var p1 = new FastVector2(x1 + 0.5 * vec.x, y1 + 0.5 * vec.y);
 		var p2 = new FastVector2(x2 + 0.5 * vec.x, y2 + 0.5 * vec.y);
 		var p3 = p1.sub(vec);
 		var p4 = p2.sub(vec);
 
-		p1 = transformation.multvec(p1);
-		p2 = transformation.multvec(p2);
-		p3 = transformation.multvec(p3);
-		p4 = transformation.multvec(p4);
+		p1.setFrom(transformation.multvec(p1));
+		p2.setFrom(transformation.multvec(p2));
+		p3.setFrom(transformation.multvec(p3));
+		p4.setFrom(transformation.multvec(p4));
 
 		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 		coloredPainter.fillTriangle(opacity, color, p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);
@@ -986,7 +944,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter.fillTriangle(opacity, color, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 
-	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+	private var myImageScaleQuality: ImageScaleQuality = ImageScaleQuality.Low;
 
 	override private function get_imageScaleQuality(): ImageScaleQuality {
 		return myImageScaleQuality;
@@ -1001,7 +959,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		return myImageScaleQuality = value;
 	}
 
-	private var myMipmapScaleQuality: ImageScaleQuality = ImageScaleQuality.High;
+	private var myMipmapScaleQuality: ImageScaleQuality = ImageScaleQuality.Low;
 
 	override private function get_mipmapScaleQuality(): ImageScaleQuality {
 		return myMipmapScaleQuality;
@@ -1025,7 +983,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		if (pipeline == null) {
 			imagePainter.pipeline = null;
 			coloredPainter.pipeline = null;
-			textPainter.pipeline = null;	
+			textPainter.pipeline = null;
 		}
 		else {
 			var cache = pipelineCache[pipeline];

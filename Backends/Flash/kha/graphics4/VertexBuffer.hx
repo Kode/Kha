@@ -45,8 +45,8 @@ class VertexBuffer {
 		return vertices;
 	}
 	
-	public function unlock(): Void {
-		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, vertexCount);
+	public function unlock(?count: Int): Void {
+		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, count != null ? count : vertexCount);
 	}
 	
 	public function stride(): Int {

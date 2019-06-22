@@ -365,6 +365,10 @@ class SystemImpl {
 		return "java";
 	}
 
+	public static function vibrate(ms:Int): Void {
+
+	}
+
 	public static function getLanguage(): String {
 		return java.util.Locale.getDefault().getLanguage();
 	}

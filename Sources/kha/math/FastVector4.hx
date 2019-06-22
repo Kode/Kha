@@ -8,11 +8,11 @@ class FastVector4 {
 		this.z = z;
 		this.w = w;
 	}
-	
+
 	public static function fromVector4(v: Vector4): FastVector4 {
 		return new FastVector4(v.x, v.y, v.z, v.w);
 	}
-	
+
 	public var x: FastFloat;
 	public var y: FastFloat;
 	public var z: FastFloat;
@@ -25,11 +25,11 @@ class FastVector4 {
 		this.z = v.z;
 		this.w = v.w;
 	}
-	
-	private function get_length(): FastFloat {
+
+	private inline function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y + z * z + w * w);
 	}
-	
+
 	private function set_length(length: FastFloat): FastFloat {
 		var currentLength = get_length();
 		if (currentLength == 0) return 0;
@@ -40,23 +40,30 @@ class FastVector4 {
 		w *= mul;
 		return length;
 	}
-	
+
 	@:extern public inline function add(vec: FastVector4): FastVector4 {
 		return new FastVector4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
-	
+
 	@:extern public inline function sub(vec: FastVector4): FastVector4 {
 		return new FastVector4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
-	
+
 	@:extern public inline function mult(value: FastFloat): FastVector4 {
 		return new FastVector4(x * value, y * value, z * value, w * value);
 	}
-	
+
+	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
-		length = 1;
+		#if haxe4 inline #end set_length(1);
 	}
-	
+
+	@:extern public inline function normalized(): FastVector4 {
+		var v = new FastVector4(x, y, z, w);
+		#if haxe4 inline #end v.set_length(1);
+		return v;
+	}
+
 	public function toString() {
 		return 'FastVector4($x, $y, $z, $w)';
 	}

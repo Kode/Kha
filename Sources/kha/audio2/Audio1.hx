@@ -1,7 +1,7 @@
 package kha.audio2;
 
 #if cpp
-import cpp.vm.Mutex;
+import sys.thread.Mutex;
 #end
 import haxe.ds.Vector;
 
@@ -112,6 +112,11 @@ class Audio1 {
 		#if cpp
 		mutex.acquire();
 		#end
+		for (i in 0...channelCount) {
+			if (soundChannels[i] == channel) {
+				soundChannels[i] = null;
+			}
+		}
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished || soundChannels[i] == channel) {
 				soundChannels[i] = channel;

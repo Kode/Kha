@@ -99,6 +99,12 @@ class PipelineState extends PipelineStateBase {
 				case 4:
 					data = Kore::Graphics4::Float4x4VertexData;
 					break;
+				case 5:
+					data = Kore::Graphics4::Short2NormVertexData;
+					break;
+				case 6:
+					data = Kore::Graphics4::Short4NormVertexData;
+					break;
 				}
 				pipeline->inputLayout[i1] = structures2[i1];
 				pipeline->inputLayout[i1]->add((*structures[i1])->get(i2)->name, data);

@@ -65,7 +65,18 @@ class Audio {
 		return true;
 	}
 
+	public static var samplesPerSecond: Int;
+
 	public static var audioCallback: Int->Buffer->Void;
+
+	static var virtualChannels: Array<VirtualStreamChannel> = [];
+
+	public static function wakeChannels() {
+		SystemImpl.mobileAudioPlaying = true;
+		for (channel in virtualChannels) {
+			channel.wake();
+		}
+	}
 	
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		//var source = _context.createMediaStreamSource(cast sound.compressedData.getData());
@@ -78,8 +89,16 @@ class Audio {
 		#end
 		element.src = URL.createObjectURL(blob);
 		element.loop = loop;
-		var channel = new AEAudioChannel(element);
-		channel.play();
-		return channel;
+		var channel = new AEAudioChannel(element, loop);
+
+		if (SystemImpl.mobileAudioPlaying) {
+			channel.play();
+			return channel;
+		}
+		else {
+			var virtualChannel = new VirtualStreamChannel(channel, loop);
+			virtualChannels.push(virtualChannel);
+			return virtualChannel;
+		}
 	}
 }

@@ -440,6 +440,10 @@ class SystemImpl {
 		return "WPF";
 	}
 
+	public static function vibrate(ms:Int): Void {
+
+	}
+
 	public static function getLanguage(): String {
 		var id = cs.system.globalization.CultureInfo.CurrentCulture.Name;
 		return ~/-/.replace(id, "_");

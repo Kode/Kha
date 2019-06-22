@@ -82,6 +82,14 @@ class SystemImpl {
 		chrome = isChrome();
 		firefox = isFirefox();
 		ie = isIE();
+
+		if (mobile || chrome) {
+			mobileAudioPlaying = false;
+		}
+		else {
+			mobileAudioPlaying = true;
+		}
+
 		initSecondStep(callback);
 		#end
 	}
@@ -169,6 +177,10 @@ class SystemImpl {
 
 	public static function getSystemId(): String {
 		return "HTML5";
+	}
+
+	public static function vibrate(ms:Int): Void {
+		Browser.navigator.vibrate(ms);
 	}
 
 	public static function getLanguage(): String {
@@ -471,11 +483,12 @@ class SystemImpl {
 		// Autofocus
 		canvas.focus();
 
-		// disable context menu
+		#if kha_disable_context_menu
 		canvas.oncontextmenu = function (event: Dynamic) {
 			event.stopPropagation();
 			event.preventDefault();
 		}
+		#end
 
 		canvas.onmousedown = mouseDown;
 		canvas.onmousemove = mouseMove;
@@ -615,6 +628,8 @@ class SystemImpl {
 					trace(err);
 				});
 			}
+
+			kha.audio2.Audio.wakeChannels();
 		}
 		unlockiOSSound();
 	}
@@ -624,6 +639,7 @@ class SystemImpl {
 	}
 
 	private static function mouseWheel(event: WheelEvent): Bool {
+		unlockSound();
 		insideInputEvent = true;
 
 		event.preventDefault();
@@ -777,6 +793,7 @@ class SystemImpl {
 		event.stopPropagation();
 		event.preventDefault();
 
+		var index = 0;
 		for (touch in event.changedTouches)	{
 			var id = touch.identifier;
 			if (ios) {
@@ -788,6 +805,11 @@ class SystemImpl {
 			setTouchXY(touch);
 			mouse.sendDownEvent(0, 0, touchX, touchY);
 			surface.sendTouchStartEvent(id, touchX, touchY);
+			if (index == 0) {
+				lastFirstTouchX = touchX;
+				lastFirstTouchY = touchY;
+			}
+			index++;
 		}
 		insideInputEvent = false;
 	}
@@ -817,7 +839,7 @@ class SystemImpl {
 		var index = 0;
 		for (touch in event.changedTouches) {
 			setTouchXY(touch);
-			if(index == 0){
+			if (index == 0) {
 				var movementX = touchX - lastFirstTouchX;
 				var movementY = touchY - lastFirstTouchY;
 				lastFirstTouchX = touchX;
@@ -949,6 +971,9 @@ class SystemImpl {
 	}
 
 	private static function keyDown(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
 			&& (event.key != null && event.key.length != 1)) event.preventDefault();
 		event.stopPropagation();
@@ -967,22 +992,33 @@ class SystemImpl {
 		}
 
 		keyboard.sendDownEvent(cast event.keyCode);
+		insideInputEvent = false;
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		event.preventDefault();
 		event.stopPropagation();
 
 		if (ie) pressedKeys[event.keyCode] = false;
 
 		keyboard.sendUpEvent(cast event.keyCode);
+
+		insideInputEvent = false;
 	}
 
 	private static function keyPress(event: KeyboardEvent): Void {
+		insideInputEvent = true;
+		unlockSound();
+
 		if (event.which == 0) return; //for Firefox and Safari
 		event.preventDefault();
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
+
+		insideInputEvent = false;
 	}
 
 	public static function canSwitchFullscreen(): Bool {

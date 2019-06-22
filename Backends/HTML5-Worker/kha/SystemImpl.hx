@@ -33,7 +33,7 @@ class SystemImpl {
 
 	public static function init(options: SystemOptions, callback: Window -> Void) {
 		Worker.handleMessages(messageHandler);
-		
+
 		Shaders.init();
 		var shaders = new Array<Dynamic>();
 		for (field in Reflect.fields(Shaders)) {
@@ -47,11 +47,11 @@ class SystemImpl {
 			}
 		}
 		Worker.postMessage({ command: 'setShaders', shaders: shaders });
-			
+
 		SystemImpl.options = options;
-		
+
 		//haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
-		
+
 		keyboard = new Keyboard();
 		mouse = new Mouse();
 		surface = new Surface();
@@ -59,17 +59,17 @@ class SystemImpl {
 		for (i in 0...maxGamepads) {
 			gamepads[i] = new Gamepad(i);
 		}
-		
+
 		var g4 = new kha.html5worker.Graphics();
 		frame = new Framebuffer(0, null, null, g4);
 		frame.init(new kha.graphics2.Graphics1(frame), new kha.graphics4.Graphics2(frame), g4);
 
 		Scheduler.init();
 		Scheduler.start();
-		
+
 		callback(new Window());
 	}
-	
+
 	public static function windowWidth(windowId: Int = 0): Int {
 		return Window.get(0).width;
 	}
@@ -102,6 +102,10 @@ class SystemImpl {
 		return "HTML5-Worker";
 	}
 
+	public static function vibrate(ms:Int): Void {
+		js.Browser.navigator.vibrate(ms);
+	}
+
 	public static function getLanguage(): String {
 		return js.Browser.navigator.language;
 	}
@@ -121,11 +125,11 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
-		
+
 	}
 
 	public static function unlockMouse(): Void {
-		
+
 	}
 
 	public static function canLockMouse(): Bool {
@@ -137,7 +141,7 @@ class SystemImpl {
 	}
 
 	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void {
@@ -157,19 +161,19 @@ class SystemImpl {
 	}
 
 	public static function requestFullscreen(): Void {
-		
+
 	}
 
 	public static function exitFullscreen(): Void {
-		
+
 	}
 
 	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-		
+
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
@@ -181,13 +185,13 @@ class SystemImpl {
 	}
 
 	public static function loadUrl(url: String): Void {
-		
+
 	}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
 	}
-	
+
 	static function messageHandler(value: Dynamic): Void {
 		switch (value.data.command) {
 		case 'patch':

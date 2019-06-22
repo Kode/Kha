@@ -50,7 +50,7 @@ class VertexBuffer {
 		return i16array;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		kore_vertexbuffer_unlock(_buffer);
 	}
 	

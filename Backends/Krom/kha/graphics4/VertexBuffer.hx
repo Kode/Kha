@@ -32,7 +32,7 @@ class VertexBuffer {
 		return new Int16Array(untyped lock(start, count).buffer);
 	}
 
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		Krom.unlockVertexBuffer(buffer);
 	}
 

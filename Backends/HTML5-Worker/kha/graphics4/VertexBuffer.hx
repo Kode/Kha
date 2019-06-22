@@ -35,6 +35,10 @@ class VertexBuffer {
 				myStride += 4 * 4;
 			case Float4x4:
 				myStride += 4 * 4 * 4;
+			case Short2Norm:
+				myStride += 2 * 2;
+			case Short4Norm:
+				myStride += 4 * 2;
 			}
 		}
 	
@@ -60,6 +64,10 @@ class VertexBuffer {
 				size = 4;
 			case Float4x4:
 				size = 4 * 4;
+			case Short2Norm:
+				myStride += 2 * 2;
+			case Short4Norm:
+				myStride += 4 * 2;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
@@ -74,6 +82,10 @@ class VertexBuffer {
 				offset += 4 * 4;
 			case Float4x4:
 				offset += 4 * 4 * 4;
+			case Short2Norm:
+				myStride += 2 * 2;
+			case Short4Norm:
+				myStride += 4 * 2;
 			}
 			++index;
 		}
@@ -86,7 +98,7 @@ class VertexBuffer {
 				data: element.data
 			});
 		}
-		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}, usage: usage.getIndex()});
+		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}, usage: usage});
 	}
 
 	public function delete(): Void {
@@ -105,10 +117,10 @@ class VertexBuffer {
 		return _data.subarray(start * stride(), (start + count) * stride());
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count_: Int): Void {
 		if (lockEnd > lockStart) {
 			var start = lockStart;
-			var count = lockEnd - lockStart;
+			var count = count_ != null ? count_ : lockEnd - lockStart;
 			Worker.postMessage({ command: 'updateVertexBuffer', id: _id, data: _data.subarray(start * stride(), (start + count) * stride()).data(), start: start, count: count });
 		}
 		lockStart = lockEnd = -1;

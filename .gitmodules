@@ -1,7 +1,3 @@
-[submodule "Kore"]
-	path = Kore
-	url = https://github.com/Kode/Kore.git
-	branch = master
 [submodule "Tools/khamake"]
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git
@@ -14,15 +10,23 @@
 	path = Tools/haxe
 	url = https://github.com/Kode/haxe_bin.git
 	branch = jscompat
+	shallow = true
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
 	url = https://github.com/Kode/oggenc_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/kravur"]
 	path = Tools/kravur
 	url = https://github.com/Kode/kravur_bin.git
 	branch = master
+	shallow = true
 [submodule "Tools/lame"]
 	path = Tools/lame
 	url = https://github.com/Kode/lame_bin.git
+	branch = master
+	shallow = true
+[submodule "Kinc"]
+	path = Kinc
+	url = https://github.com/Kode/Kinc.git
 	branch = master

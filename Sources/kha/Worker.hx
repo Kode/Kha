@@ -80,7 +80,7 @@ class Worker {
 
 #if kha_kore
 
-import cpp.vm.Thread;
+import sys.thread.Thread;
 import kha.Scheduler;
 
 class Worker {

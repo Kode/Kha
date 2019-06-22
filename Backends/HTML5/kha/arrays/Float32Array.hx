@@ -2,9 +2,9 @@ package kha.arrays;
 
 import kha.FastFloat;
 
-abstract Float32Array(js.html.Float32Array) {
+abstract Float32Array(js.lib.Float32Array) {
 	public inline function new(elements: Int) {
-		this = new js.html.Float32Array(elements);
+		this = new js.lib.Float32Array(elements);
 	}
 	
 	public var length(get, never): Int;
@@ -21,7 +21,7 @@ abstract Float32Array(js.html.Float32Array) {
 		return this[index];
 	}
 	
-	public inline function data(): js.html.Float32Array {
+	public inline function data(): js.lib.Float32Array {
 		return this;
 	}
 

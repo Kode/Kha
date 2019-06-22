@@ -4,31 +4,18 @@ import js.html.AudioElement;
 import kha.audio1.AudioChannel;
 
 class AEAudioChannel implements kha.audio1.AudioChannel {
-	private var element: AudioElement;
-	private static var todo: Array<AEAudioChannel> = [];
-	private var stopped = false;
+	var element: AudioElement;
+	var stopped = false;
+	var looping: Bool;
 	
-	public function new(element: AudioElement) {
+	public function new(element: AudioElement, looping: Bool) {
 		this.element = element;
+		this.looping = looping;
 	}
 	
 	public function play(): Void {
 		stopped = false;
-		if (SystemImpl.mobile) {
-			if (SystemImpl.insideInputEvent) {
-				element.play();
-				SystemImpl.mobileAudioPlaying = true;
-			}
-			else if (SystemImpl.mobileAudioPlaying) {
-				element.play();
-			}
-			else {
-				todo.push(this);
-			}
-		}
-		else {
-			element.play();
-		}
+		element.play();
 	}
 	
 	public function pause(): Void {
@@ -62,10 +49,14 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 		}
 	}
 
-	public var position(get, null): Float; // Seconds
+	public var position(get, set): Float; // Seconds
 	
 	private function get_position(): Float {
 		return element.currentTime;
+	}
+
+	function set_position(value: Float): Float {
+		return element.currentTime = value;
 	}
 
 	public var volume(get, set): Float;
@@ -81,6 +72,6 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	public var finished(get, null): Bool;
 
 	private function get_finished(): Bool {
-		return stopped || position >= length;
+		return stopped || (!looping && position >= length);
 	}
 }

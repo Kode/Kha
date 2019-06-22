@@ -126,29 +126,36 @@ class Graphics {
 
 	public static var fontGlyphs: Array<Int> = [for (i in 32...256) i];
 
-	public var transformation(get, set): FastMatrix3; // works on the top of the transformation stack
-
-	public function pushTransformation(transformation: FastMatrix3): Void {
-		var trans = FastMatrix3.identity();
-		trans.setFrom(transformation);
-		setTransformation(trans);
-		transformations.push(trans);
-	}
-
-	public function popTransformation(): FastMatrix3 {
-		var ret = transformations.pop();
-		setTransformation(get_transformation());
-		return ret;
-	}
+	// works on the top of the transformation stack
+	public var transformation(get, set): FastMatrix3;
 
 	private inline function get_transformation(): FastMatrix3 {
-		return transformations[transformations.length - 1];
+		return transformations[transformationIndex];
 	}
 
 	private inline function set_transformation(transformation: FastMatrix3): FastMatrix3 {
 		setTransformation(transformation);
-		transformations[transformations.length - 1].setFrom(transformation);
+		transformations[transformationIndex].setFrom(transformation);
 		return transformation;
+	}
+
+	public inline function pushTransformation(trans: FastMatrix3): Void {
+		transformationIndex++;
+		if (transformationIndex == transformations.length) {
+			transformations.push(FastMatrix3.identity());
+		}
+		transformations[transformationIndex].setFrom(trans);
+		setTransformation(get_transformation());
+	}
+
+	public function popTransformation(): FastMatrix3 {
+		transformationIndex--;
+		setTransformation(get_transformation());
+		return transformations[transformationIndex + 1];
+	}
+
+	public function scale(x :FastFloat, y :FastFloat): Void {
+		transformation.setFrom(kha.math.FastMatrix3.scale(x, y).multmat(transformation));
 	}
 
 	private inline function translation(tx: FastFloat, ty: FastFloat): FastMatrix3 {
@@ -156,7 +163,7 @@ class Graphics {
 	}
 
 	public function translate(tx: FastFloat, ty: FastFloat): Void {
-		transformation = translation(tx, ty);
+		transformation.setFrom(translation(tx, ty));
 	}
 
 	public function pushTranslation(tx: FastFloat, ty: FastFloat): Void {
@@ -168,17 +175,7 @@ class Graphics {
 	}
 
 	public function rotate(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
-		var temp = rotation(angle, centerx, centery);
-		// Compiler fails to inline unless we do this
-		transformation._00 = temp._00;
-		transformation._01 = temp._01;
-		transformation._02 = temp._02;
-		transformation._10 = temp._10;
-		transformation._11 = temp._11;
-		transformation._12 = temp._12;
-		transformation._20 = temp._20;
-		transformation._21 = temp._21;
-		transformation._22 = temp._22;
+		transformation.setFrom(rotation(angle, centerx, centery));
 	}
 
 	public function pushRotation(angle: FastFloat, centerx: FastFloat, centery: FastFloat): Void {
@@ -231,14 +228,14 @@ class Graphics {
 	#end
 
 	private var transformations: Array<FastMatrix3>;
+	private var transformationIndex: Int;
 	private var opacities: Array<Float>;
 	private var myFontSize: Int;
 
 	public function new() {
-		transformations = new Array<FastMatrix3>();
-		transformations.push(FastMatrix3.identity());
-		opacities = new Array<Float>();
-		opacities.push(1);
+		transformations = [FastMatrix3.identity()];
+		transformationIndex = 0;
+		opacities = [1];
 		myFontSize = 12;
 		#if sys_g4
 		pipe = null;

@@ -21,14 +21,14 @@ class SystemImpl {
 	private static var gamepad4: Gamepad;
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
-	
+
 	public static function init(options: SystemOptions, callback: Window -> Void): Void {
 		haxe.Log.trace = function(v: Dynamic, ?infos: haxe.PosInfos) {
 			var message = infos != null ? infos.className + ":" + infos.lineNumber + ": " + v : Std.string(v);
 			kore_log(StringHelper.convert(message));
 		};
 		init_kore(StringHelper.convert(options.title), options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures);
-		
+
 		new Window(0);
 		Scheduler.init();
 		Shaders.init();
@@ -38,7 +38,7 @@ class SystemImpl {
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
-		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample);
+		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample, kha.audio2.Audio.samplesPerSecond);
 		keyboard = new kha.input.Keyboard();
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
@@ -60,23 +60,23 @@ class SystemImpl {
 		kore_register_callbacks(foreground, resume, pause, background, shutdown);
 		kore_register_dropfiles(dropFiles);
 		kore_register_copycutpaste(copy, cut, paste);
-		
+
 		Scheduler.start();
 		callback(Window.get(0));
 
 		run_kore();
 	}
-	
+
 	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
 
 	}
-	
+
 	@:keep
 	public static function frame(): Void {
 		Scheduler.executeFrame();
 		System.render([framebuffer]);
 	}
-	
+
 	public static function getTime(): Float {
 		return kore_get_time();
 	}
@@ -97,16 +97,20 @@ class SystemImpl {
 		// return kore_get_system_id();
 		return 'HL';
 	}
-	
+
+	public static function vibrate(ms:Int): Void {
+		//TODO: Implement
+	}
+
 	public static function getLanguage(): String {
 		return "en"; //TODO: Implement
 	}
-	
+
 	public static function requestShutdown(): Bool {
 		kore_request_shutdown();
 		return true;
 	}
-	
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
@@ -116,12 +120,12 @@ class SystemImpl {
 		if (num != 0) return null;
 		return pen;
 	}
-	
+
 	public static function getKeyboard(num: Int): Keyboard {
 		if (num != 0) return null;
 		return keyboard;
 	}
-		
+
 	public static function lockMouse(windowId: Int = 0): Void {
 		if (!isMouseLocked()) {
 			kore_mouse_lock(windowId);
@@ -130,7 +134,7 @@ class SystemImpl {
 			}
 		}
 	}
-	
+
 	public static function unlockMouse(windowId: Int = 0): Void {
 		if (isMouseLocked()) {
 			kore_mouse_unlock(windowId);
@@ -279,7 +283,7 @@ class SystemImpl {
 	public static function dropFiles(filePath: String): Void {
 		System.dropFiles(filePath);
 	}
-	
+
 	public static function copy(): String {
 		if (System.copyListener != null) {
 			return System.copyListener();
@@ -288,7 +292,7 @@ class SystemImpl {
 			return null;
 		}
 	}
-	
+
 	public static function cut(): String {
 		if (System.cutListener != null) {
 			return System.cutListener();
@@ -297,13 +301,13 @@ class SystemImpl {
 			return null;
 		}
 	}
-	
+
 	public static function paste(data: String): Void {
 		if (System.pasteListener != null) {
 			System.pasteListener(data);
 		}
 	}
-	
+
 	private static var fullscreenListeners: Array<Void->Void> = new Array();
 	private static var previousWidth: Int = 0;
 	private static var previousHeight: Int = 0;
@@ -355,7 +359,7 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {
 		kore_system_change_resolution(width, height);
 	}
-	
+
 	public static function setKeepScreenOn(on: Bool): Void {
 		kore_system_set_keepscreenon(on);
 	}
@@ -367,10 +371,10 @@ class SystemImpl {
 	public static function getGamepadId(index: Int): String {
 		return "";//kore_get_gamepad_id(index);
 	}
-	
+
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
 	@:hlNative("std", "run_kore") static function run_kore(): Void { }
-	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback:Int->Void, readSample:Void->FastFloat): Void { }
+	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat, outSamplesPerSecond: hl.Ref<Int>): Void { }
 	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }

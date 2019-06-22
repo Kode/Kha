@@ -224,6 +224,10 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 		hl_buffer_str_sub(b,USTR("function#"),9);
 		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT,(int_val)v));
 		break;
+	case HMETHOD:
+		hl_buffer_str_sub(b,USTR("method#"),7);
+		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT,(int_val)v->v.ptr));
+		break;
 	case HOBJ:
 		{
 			hl_type_obj *o = v->t->obj;

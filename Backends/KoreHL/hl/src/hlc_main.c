@@ -26,7 +26,9 @@
 #endif
 
 #ifdef HL_WIN_DESKTOP
+# ifndef CONST
 #	define CONST
+# endif
 #	pragma warning(disable:4091)
 #if !defined(HL_MINGW)
 #	include <DbgHelp.h>

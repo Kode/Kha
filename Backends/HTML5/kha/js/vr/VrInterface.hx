@@ -1,6 +1,6 @@
 package kha.js.vr;
 
-import js.html.Float32Array;
+import js.lib.Float32Array;
 import kha.vr.Pose;
 import kha.vr.PoseState;
 import kha.vr.SensorState;

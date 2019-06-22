@@ -39,7 +39,7 @@ class Sound extends kha.Sound {
 	public var soundId(default, null) = -1;
 	@:noCompletion
 	public var mediaPlayer(default, null): MediaPlayer = null;
-	public var length(default, null): Float = 0;
+	//public var length(default, null): Float = 0;
 	@:noCompletion
 	public var ownedByMPC: MediaPlayerChannel;
 	

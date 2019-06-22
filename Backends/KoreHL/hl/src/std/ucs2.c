@@ -20,8 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include <hl.h>
-#ifndef HL_NATIVE_UCHAR_FUN
 #include <stdarg.h>
+
+#ifndef HL_NATIVE_UCHAR_FUN
 
 #ifdef HL_ANDROID
 #	include <android/log.h>

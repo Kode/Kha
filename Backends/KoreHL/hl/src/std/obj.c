@@ -385,7 +385,23 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 	return t;
 }
 
-void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
+HL_API void hl_flush_proto( hl_type *ot ) {
+	int i;
+	hl_type_obj *o = ot->obj;
+	hl_runtime_obj *rt = ot->obj->rt;
+	hl_module_context *m = o->m;
+	if( !rt ) return;
+	for(i=0;i<o->nbindings;i++) {
+		hl_runtime_binding *b = rt->bindings + i;
+		int mid = o->bindings[(i<<1)|1];
+		if( b->closure )
+			b->ptr = m->functions_ptrs[mid];
+		else
+			((vclosure*)b->ptr)->fun = m->functions_ptrs[mid];
+	}
+}
+
+HL_API void hl_init_virtual( hl_type *vt, hl_module_context *ctx ) {
 	int i;
 	int vsize = sizeof(vvirtual) + sizeof(void*) * vt->virt->nfields;
 	int size = vsize;
@@ -491,14 +507,18 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 			for(i=0;i<vt->virt->nfields;i++) {
 				hl_field_lookup *f = obj_resolve_field(obj->t->obj,vt->virt->fields[i].hashed_name);
 				if( f && f->field_index < 0 ) {
+					hl_type *ft = vt->virt->fields[i].t;
 					hl_type tmp;
 					hl_type_fun tf;
-					tmp.kind = HFUN;
+					tmp.kind = HMETHOD;
 					tmp.fun = &tf;
 					tf.args = f->t->fun->args + 1;
 					tf.nargs = f->t->fun->nargs - 1;
 					tf.ret = f->t->fun->ret;
-					hl_vfields(v)[i] = hl_same_type(&tmp,vt->virt->fields[i].t) ? obj->t->obj->rt->methods[-f->field_index-1] : NULL;
+					if( hl_safe_cast(&tmp,ft) )
+						hl_vfields(v)[i] = obj->t->obj->rt->methods[-f->field_index-1];
+					else
+						hl_vfields(v)[i] = NULL;
 				} else
 					hl_vfields(v)[i] = f == NULL || !hl_same_type(f->t,vt->virt->fields[i].t) ? NULL : (char*)obj + f->field_index;
 			}

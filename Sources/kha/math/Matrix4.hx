@@ -142,10 +142,8 @@ class Matrix4 {
 	}
 
 	public static function lookAt(eye: Vector3, at: Vector3, up: Vector3): Matrix4 {
-		var zaxis = at.sub(eye);
-		zaxis.normalize();
-		var xaxis = zaxis.cross(up);
-		xaxis.normalize();
+		var zaxis = at.sub(eye).normalized();
+		var xaxis = zaxis.cross(up).normalized();
 		var yaxis = xaxis.cross(zaxis);
 
 		return new Matrix4(

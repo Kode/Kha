@@ -27,7 +27,7 @@
 	https://github.com/HaxeFoundation/hashlink/wiki/
 **/
 
-#define HL_VERSION	0x180
+#define HL_VERSION	0x190
 
 #if defined(_WIN32)
 #	define HL_WIN
@@ -224,7 +224,7 @@ HL_API int uvszprintf( uchar *out, int out_size, const uchar *fmt, va_list argli
 #	define utoi(s,end)	wcstol(s,end,10)
 #	define ucmp(a,b)	wcscmp(a,b)
 #	define utostr(out,size,str) wcstombs(out,str,size)
-#elif defined(HL_MAC)
+#elif defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS)
 typedef uint16_t uchar;
 #	undef USTR
 #	define USTR(str)	u##str
@@ -285,6 +285,14 @@ C_FUNCTION_END
 #	define hl_debug_break()
 #endif
 
+#ifdef HL_VCC
+#	define HL_NO_RETURN(f) __declspec(noreturn) f
+#	define HL_UNREACHABLE
+#else
+#	define HL_NO_RETURN(f) f __attribute__((noreturn))
+#	define HL_UNREACHABLE __builtin_unreachable()
+#endif
+
 // ---- TYPES -------------------------------------------
 
 typedef enum {
@@ -308,8 +316,9 @@ typedef enum {
 	HABSTRACT=17,
 	HENUM	= 18,
 	HNULL	= 19,
+	HMETHOD = 20,
 	// ---------
-	HLAST	= 20,
+	HLAST	= 21,
 	_H_FORCE_INT = 0x7FFFFFFF
 } hl_type_kind;
 
@@ -417,6 +426,7 @@ HL_API int hl_pad_struct( int size, hl_type *t );
 
 HL_API hl_runtime_obj *hl_get_obj_rt( hl_type *ot );
 HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot );
+HL_API void hl_flush_proto( hl_type *ot );
 HL_API void hl_init_enum( hl_type *et, hl_module_context *m );
 
 /* -------------------- VALUES ------------------------------ */
@@ -572,8 +582,8 @@ HL_API const uchar *hl_field_name( int hash );
 
 HL_API vdynamic *hl_alloc_strbytes( const uchar *msg, ... );
 HL_API void hl_assert( void );
-HL_API void hl_throw( vdynamic *v );
-HL_API void hl_rethrow( vdynamic *v );
+HL_API HL_NO_RETURN( void hl_throw( vdynamic *v ) );
+HL_API HL_NO_RETURN( void hl_rethrow( vdynamic *v ) );
 HL_API void hl_setup_longjump( void *j );
 HL_API void hl_setup_exception( void *resolve_symbol, void *capture_stack );
 HL_API void hl_dump_stack( void );
@@ -795,6 +805,7 @@ HL_API void *hl_fatal_error( const char *msg, const char *file, int line );
 HL_API void hl_fatal_fmt( const char *file, int line, const char *fmt, ...);
 HL_API void hl_sys_init(void **args, int nargs, void *hlfile);
 HL_API void hl_setup_callbacks(void *sc, void *gw);
+HL_API void hl_setup_reload_check( void *freload, void *param );
 
 #include <setjmp.h>
 typedef struct _hl_trap_ctx hl_trap_ctx;
