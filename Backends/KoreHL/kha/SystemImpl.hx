@@ -372,6 +372,10 @@ class SystemImpl {
 		return "";//kore_get_gamepad_id(index);
 	}
 
+	public static function safeZone(): Float {
+		return 1.0;
+	}
+
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
 	@:hlNative("std", "run_kore") static function run_kore(): Void { }
 	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat, outSamplesPerSecond: hl.Ref<Int>): Void { }

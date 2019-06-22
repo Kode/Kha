@@ -230,4 +230,8 @@ class SystemImpl {
 			mouse.sendWheelEvent(0, value.data.delta);
 		}
 	}
+
+	public static function safeZone(): Float {
+		return 1.0;
+	}
 }
