@@ -52,7 +52,7 @@ class ImageShaderPainter {
 	static var rectVertices: Float32Array;
 	static var indexBuffer: IndexBuffer;
 	static var lastTexture: Image;
-	var bilinear: Bool = true;
+	var bilinear: Bool = false;
 	var bilinearMipmaps: Bool = false;
 	var g: Graphics;
 	var myPipeline: PipelineCache = null;
@@ -507,7 +507,7 @@ class TextShaderPainter {
 	var myPipeline: PipelineCache = null;
 	public var pipeline(get, set): PipelineCache;
 	public var fontSize: Int;
-	var bilinear: Bool = true;
+	var bilinear: Bool = false;
 
 	public function new(g4: Graphics) {
 		this.g = g4;
