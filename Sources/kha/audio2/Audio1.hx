@@ -40,7 +40,8 @@ class Audio1 {
 		return a < b ? a : b;
 	}
 
-	public static function mix(samples: Int, buffer: Buffer): Void {
+	public static function mix(samplesBox: kha.internal.IntBox, buffer: Buffer): Void {
+		var samples = samplesBox.value;
 		if (sampleCache1.length < samples) {
 			sampleCache1 = new kha.arrays.Float32Array(samples);
 			sampleCache2 = new kha.arrays.Float32Array(samples);
