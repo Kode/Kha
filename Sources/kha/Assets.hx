@@ -5,6 +5,30 @@ import haxe.Unserializer;
 
 using StringTools;
 
+typedef AssetData = {
+	name: String,
+	files: Array<String>,
+	type: String,
+	// image
+	?original_width: Int,
+	?original_height: Int,
+	// shader
+	?inputs: Array<AssetShaderVar>,
+	?outputs: Array<AssetShaderVar>,
+	?uniforms: Array<AssetShaderVar>,
+	?types: Array<{
+		name: String,
+		members: Array<AssetShaderVar>,
+	}>,
+	// custom type
+	?data: Dynamic
+}
+
+typedef AssetShaderVar = {
+	type: String,
+	name: String
+}
+
 @:build(kha.internal.AssetsBuilder.build("image"))
 @:keep
 private class ImageList {
@@ -80,18 +104,12 @@ class Assets {
 	/**
 	Loads all assets which were detected by khamake. When running khamake (doing so is Kha's standard build behavior)
 	it creates a files.json in the build/{target}-resources directoy which contains information about all assets which were found.
-
-	The `callback` parameter is always called after loading, even when some or all assets had failures.
-
-	An optional callback parameter `failed` is called for each asset that failed to load.
-
-	The filter parameter can be used to load assets selectively. The Dynamic parameter describes the asset,
+	The filter parameter can be used to load assets selectively. The AssetData parameter describes the asset,
 	it contains the very same objects which are listed in files.json.
-
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void): Void {
+	public static function loadEverything(callback: Void->Void, filter: AssetData->Bool = null, uncompressSoundsFilter: AssetData->Bool = null, ?failed: AssetError -> Void): Void {
 		var fileCount = 0;
 		for (blob in Type.getInstanceFields(BlobList)) {
 			if (blob.endsWith("Load")) {
