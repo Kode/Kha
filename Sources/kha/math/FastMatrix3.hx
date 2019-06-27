@@ -15,7 +15,7 @@ class FastMatrix3 {
 		this._01 = _01; this._11 = _11; this._21 = _21;
 		this._02 = _02; this._12 = _12; this._22 = _22;
 	}
-	
+
 	public static inline function fromMatrix3(m: Matrix3): FastMatrix3 {
 		return new FastMatrix3(m._00, m._10, m._20,
 								m._01, m._11, m._21,
@@ -40,7 +40,7 @@ class FastMatrix3 {
 		this._01 = m._01; this._11 = m._11; this._21 = m._21;
 		this._02 = m._02; this._12 = m._12; this._22 = m._22;
 	}
-	
+
 	@:extern public static inline function translation(x: FastFloat, y: FastFloat): FastMatrix3 {
 		return new FastMatrix3(
 			1, 0, x,
@@ -129,7 +129,8 @@ class FastMatrix3 {
 		//var product = new Vector2(0, 0);
 		var w = _02 * value.x + _12 * value.y + _22 * 1;
 		var x = (_00 * value.x + _10 * value.y + _20 * 1) / w;
-		var y = (_01 * value.x + _11 * value.y + _21 * 1) / w;
+		// type hint requred because of haxe bug #8220
+		var y: FastFloat = (_01 * value.x + _11 * value.y + _21 * 1) / w;
 		return new FastVector2(x, y);
 	}
 
@@ -153,7 +154,7 @@ class FastMatrix3 {
 		if (Math.abs(det) < 0.000001) {
 			throw "determinant is too small";
 		}
-		
+
 		var c10 = cofactor(_01, _21, _02, _22);
 		var c11 = cofactor(_00, _20, _02, _22);
 		var c12 = cofactor(_00, _20, _01, _21);
