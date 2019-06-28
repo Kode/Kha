@@ -162,7 +162,7 @@ int main(int argc, pchar *argv[]) {
 			continue;
 		}
 		if( pcompare(arg,PSTR("--version")) == 0 ) {
-			printf("%d.%d.%d",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
+			printf("%d.%d.%d",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
 			return 0;
 		}
 		if( pcompare(arg,PSTR("--hot-reload")) == 0 ) {
@@ -186,7 +186,7 @@ int main(int argc, pchar *argv[]) {
 		file = PSTR("hlboot.dat");
 		fchk = pfopen(file,"rb");
 		if( fchk == NULL ) {
-			printf("HL/JIT %d.%d.%d (c)2015-2018 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>8,(HL_VERSION>>4)&15,HL_VERSION&15);
+			printf("HL/JIT %d.%d.%d (c)2015-2019 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
 			return 1;
 		}
 		fclose(fchk);

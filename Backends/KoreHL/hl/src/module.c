@@ -24,7 +24,8 @@
 
 #ifdef HL_WIN
 #	include <windows.h>
-#	define dlopen(l,p)		(void*)( (l) ? LoadLibraryA(l) : GetModuleHandle(NULL))
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+#	define dlopen(l,p)		(void*)( (l) ? LoadLibraryA(l) : (HMODULE)&__ImageBase)
 #	define dlsym(h,n)		GetProcAddress((HANDLE)h,n)
 #else
 #	include <dlfcn.h>
@@ -249,6 +250,8 @@ static void append_type( char **p, hl_type *t ) {
 	case HNULL:
 		append_type(p,t->tparam);
 		break;
+	case HSTRUCT:
+		*(*p)++ = 'S';
 	case HOBJ:
 		{
 			int i;
@@ -339,6 +342,7 @@ static void hl_module_init_indexes( hl_module *m ) {
 		hl_type *t = m->code->types + i;
 		switch( t->kind ) {
 		case HOBJ:
+		case HSTRUCT:
 			t->obj->m = &m->ctx;
 			t->obj->global_value = ((int)(int_val)t->obj->global_value) ? (void**)(int_val)(m->globals_data + m->globals_indexes[(int)(int_val)t->obj->global_value-1]) : NULL;
 			{
@@ -504,6 +508,7 @@ int hl_module_init( hl_module *m, h_bool hot_reload ) {
 		vdynamic *v = NULL;
 		switch (t->kind) {
 		case HOBJ:
+		case HSTRUCT:
 			rt = hl_get_obj_rt(t);
 			v = (vdynamic*)hl_malloc(&m->ctx.alloc,rt->size);
 			v->t = t;
@@ -651,7 +656,7 @@ h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
 	}
 	for(i=0;i<m1->code->ntypes;i++) {
 		hl_type *t = m1->code->types + i;
-		if( t->kind == HOBJ ) hl_flush_proto(t);
+		if( t->kind == HOBJ || t->kind == HSTRUCT ) hl_flush_proto(t);
 	}
 
 	return true;

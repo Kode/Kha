@@ -167,6 +167,7 @@ static void hl_read_type( hl_reader *r, hl_type *t ) {
 		}
 		break;
 	case HOBJ:
+	case HSTRUCT:
 		{
 			int i;
 			const uchar *name = hl_read_ustring(r);
@@ -437,7 +438,7 @@ hl_code *hl_code_read( const unsigned char *data, int size, char **error_msg ) {
 	r->code = c;
 	c->version = READ();
 	if( c->version <= 1 || c->version > max_version ) {
-		printf("Found version %d while HL %d.%d supports up to %d\n",c->version,HL_VERSION>>8,(HL_VERSION>>4)&15,max_version);
+		printf("Found version %d while HL %d.%d supports up to %d\n",c->version,HL_VERSION>>16,(HL_VERSION>>8)&0xFF,max_version);
 		EXIT("Unsupported bytecode version");
 	}
 	flags = UINDEX();
@@ -602,7 +603,7 @@ static const unsigned int crc32_table[] =
   0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
 };
 
-#define H(b) hash = (hash >> 8) ^ crc32_table[(hash ^ b) & 0xFF]
+#define H(b) hash = (hash >> 8) ^ crc32_table[(hash ^ (b)) & 0xFF]
 #define H32(i) { H(i&0xFF); H((i>>8)&0xFF); H((i>>16)&0xFF); H(((unsigned int)i)>>24); }
 #define HFUN(idx) H32(functions_signs[functions_indexes[idx]]); 
 #define HSTR(s) { const char *_c = s; while( *_c ) H(*_c++); }
