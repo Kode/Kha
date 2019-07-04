@@ -17,7 +17,7 @@ class VertexBuffer {
 	var instanceDataStepRate: Int;
 	var lockStart: Int = -1;
 	var lockEnd: Int = -1;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.usage = usage;
 		this.instanceDataStepRate = instanceDataStepRate;
@@ -41,18 +41,18 @@ class VertexBuffer {
 				myStride += 4 * 2;
 			}
 		}
-	
+
 		_data = new Float32Array(Std.int(vertexCount * myStride / 4));
-		
+
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
 		sizes[structure.elements.length - 1] = 0;
 		offsets[structure.elements.length - 1] = 0;
-		
+
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
-			var size;
+			var size = 0;
 			switch (element.data) {
 			case Float1:
 				size = 1;
@@ -89,7 +89,7 @@ class VertexBuffer {
 			}
 			++index;
 		}
-		
+
 		_id = ++lastId;
 		var elements = new Array<Dynamic>();
 		for (element in structure.elements) {
@@ -104,7 +104,7 @@ class VertexBuffer {
 	public function delete(): Void {
 		_data = null;
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		if (start == null) start = 0;
 		if (count == null) count = mySize;
@@ -116,7 +116,7 @@ class VertexBuffer {
 		}
 		return _data.subarray(start * stride(), (start + count) * stride());
 	}
-	
+
 	public function unlock(?count_: Int): Void {
 		if (lockEnd > lockStart) {
 			var start = lockStart;
@@ -125,15 +125,15 @@ class VertexBuffer {
 		}
 		lockStart = lockEnd = -1;
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return mySize;
 	}
-	
+
 	public function set(offset: Int): Int {
 		var attributesOffset = 0;
 		for (i in 0...sizes.length) {
