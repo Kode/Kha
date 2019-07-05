@@ -105,6 +105,7 @@ typedef enum {
 	CVTSD2SI,
 	CVTSD2SS,
 	CVTSS2SD,
+	CVTSS2SI,
 	STMXCSR,
 	LDMXCSR,
 	// 8-16 bits
@@ -473,6 +474,7 @@ static opform OP_FORMS[_CPU_LAST] = {
 	{ "CVTSD2SI", 0xF20F2D },
 	{ "CVTSD2SS", 0xF20F5A },
 	{ "CVTSS2SD", 0xF30F5A },
+	{ "CVTSS2SI", 0xF30F2D },
 	{ "STMXCSR", 0, LONG_RM(0x0FAE,3) },
 	{ "LDMXCSR", 0, LONG_RM(0x0FAE,2) },
 	// 8 bits,
@@ -1722,6 +1724,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 	case HDYNOBJ:
 	case HVIRTUAL:
 	case HOBJ:
+	case HSTRUCT:
 	case HFUN:
 	case HMETHOD:
 	case HBYTES:
@@ -1759,6 +1762,7 @@ static preg *op_binop( jit_ctx *ctx, vreg *dst, vreg *a, vreg *b, hl_opcode *op 
 		return out;
 #	ifdef HL_64
 	case HOBJ:
+	case HSTRUCT:
 	case HDYNOBJ:
 	case HVIRTUAL:
 	case HFUN:
@@ -1957,7 +1961,7 @@ static void dyn_value_compare( jit_ctx *ctx, preg *a, preg *b, hl_type *t ) {
 }
 
 static void op_jump( jit_ctx *ctx, vreg *a, vreg *b, hl_opcode *op, int targetPos ) {
-	if( a->t->kind == HDYN || b->t->kind == HDYN ) {
+	if( a->t->kind == HDYN || b->t->kind == HDYN || a->t->kind == HFUN || b->t->kind == HFUN ) {
 		int args[] = { a->stack.id, b->stack.id };
 		int size = prepare_call_args(ctx,2,args,ctx->vregs,0);
 		call_native(ctx,hl_dyn_compare,size);
@@ -2114,6 +2118,7 @@ static void op_jump( jit_ctx *ctx, vreg *a, vreg *b, hl_opcode *op, int targetPo
 		}
 		break;
 	case HOBJ:
+	case HSTRUCT:
 		if( b->t->kind == HVIRTUAL ) {
 			op_jump(ctx,b,a,op,targetPos); // inverse
 			return;
@@ -3053,7 +3058,17 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 				op32(ctx,LDMXCSR,pmem(&p,Esp,-4),UNUSED);
 				store(ctx, dst, w, true);
 			} else if (ra->t->kind == HF32) {
-				ASSERT(0);
+				preg *r = alloc_fpu(ctx, ra, true);
+				preg *w = alloc_cpu(ctx, dst, false);
+				preg *tmp = alloc_reg(ctx, RCPU);
+				op32(ctx, STMXCSR, pmem(&p, Esp, -4), UNUSED);
+				op32(ctx, MOV, tmp, &p);
+				op32(ctx, OR, tmp, pconst(&p, 0x6000)); // set round towards 0
+				op32(ctx, MOV, pmem(&p, Esp, -4), tmp);
+				op32(ctx, LDMXCSR, &p, UNUSED);
+				op32(ctx, CVTSS2SI, w, r);
+				op32(ctx, LDMXCSR, pmem(&p, Esp, -4), UNUSED);
+				store(ctx, dst, w, true);
 			} else if( dst->t->kind == HI64 && ra->t->kind == HI32 ) {
 				ASSERT(0); // todo : more i64 native support
 			} else {
@@ -3094,10 +3109,11 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 					op64(ctx,XORPD,f,f);
 				} else switch( dst->t->kind ) {
 				case HF64:
+				case HF32:
 #					ifdef HL_64
-					op64(ctx,MOVSD,alloc_fpu(ctx,dst,false),pcodeaddr(&p,o->p2 * 8));
+					op64(ctx,dst->t->kind == HF32 ? MOVSS : MOVSD,alloc_fpu(ctx,dst,false),pcodeaddr(&p,o->p2 * 8));
 #					else
-					op64(ctx,MOVSD,alloc_fpu(ctx,dst,false),paddr(&p,m->code->floats + o->p2));
+					op64(ctx,dst->t->kind == HF32 ? MOVSS : MOVSD,alloc_fpu(ctx,dst,false),paddr(&p,m->code->floats + o->p2));
 #					endif
 					break;
 				default:
@@ -3130,6 +3146,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 				int nargs = 1;
 				switch( dst->t->kind ) {
 				case HOBJ:
+				case HSTRUCT:
 					allocFun = hl_alloc_obj;
 					break;
 				case HDYNOBJ:
@@ -3285,6 +3302,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			{
 				switch( ra->t->kind ) {
 				case HOBJ:
+				case HSTRUCT:
 					{
 						hl_runtime_obj *rt = hl_get_obj_rt(ra->t);
 						preg *rr = alloc_cpu(ctx,ra, true);
@@ -3323,6 +3341,7 @@ int hl_jit_function( jit_ctx *ctx, hl_module *m, hl_function *f ) {
 			{
 				switch( dst->t->kind ) {
 				case HOBJ:
+				case HSTRUCT:
 					{
 						hl_runtime_obj *rt = hl_get_obj_rt(dst->t);
 						preg *rr = alloc_cpu(ctx, dst, true);
