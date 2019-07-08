@@ -1,5 +1,5 @@
 extern class Krom {
-	static inline var KROM_API: Int = 2;
+	static inline var KROM_API: Int = 3;
 
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
 
@@ -83,6 +83,7 @@ extern class Krom {
 	static function setCallback(callback: Void->Void): Void;
 	static function setDropFilesCallback(callback: String->Void): Void;
 	static function setCutCopyPasteCallback(cutCallback: Void->String, copyCallback: Void->String, pasteCallback: String->Void): Void;
+	static function setApplicationStateCallback(foregroundCallback: Void->Void, resumeCallback: Void->Void, pauseCallback: Void->Void, backgroundCallback: Void->Void, shutdownCallback: Void->Void): Void;
 	static function setKeyboardDownCallback(callback: Int->Void): Void;
 	static function setKeyboardUpCallback(callback: Int->Void): Void;
 	static function setKeyboardPressCallback(callback: Int->Void): Void;
