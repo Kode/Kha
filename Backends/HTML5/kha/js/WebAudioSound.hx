@@ -85,6 +85,7 @@ class WebAudioSound extends kha.Sound {
 			var len = ch0.length;
 			uncompressedData = new kha.arrays.Float32Array(len * 2);
 			length = buffer.duration;
+			channels = buffer.numberOfChannels;
 			if (buffer.numberOfChannels == 1) {
 				var idx = 0;
 				var i = 0;
