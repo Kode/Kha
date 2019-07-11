@@ -129,23 +129,23 @@ class AssetsBuilder {
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Assets.loadImage($v{name}, function (image: Image) done(), kha.Assets.reporter(failure));
+							Assets.loadImage($v{name}, function (image: Image) done(), failure);
 						};
 					case "sound":
 						loadExpressions = macro {
-							Assets.loadSound($v{name}, function (sound: Sound) done(), kha.Assets.reporter(failure));
+							Assets.loadSound($v{name}, function (sound: Sound) done(), failure);
 						};
 					case "blob":
 						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function (blob: Blob) done(), kha.Assets.reporter(failure));
+							Assets.loadBlob($v{name}, function (blob: Blob) done(), failure);
 						};
 					case "font":
 						loadExpressions = macro {
-							Assets.loadFont($v{name}, function (font: Font) done(), kha.Assets.reporter(failure));
+							Assets.loadFont($v{name}, function (font: Font) done(), failure);
 						};
 					case "video":
 						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function (video: Video) done(), kha.Assets.reporter(failure));
+							Assets.loadVideo($v{name}, function (video: Video) done(), failure);
 						};
 				}
 
