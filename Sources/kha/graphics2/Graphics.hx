@@ -51,10 +51,24 @@ class Graphics {
 
 	}
 
+	/**
+	 * Draw a single line of text with the current `color`, `font` and `fontSize` properties.
+	 *
+	 * When drawing into rendertargets, you might have to use a different shader than the default one
+	 *  - use the default shader when drawing into a transparent section of your rendertarget
+	 *  - use a shader with `alphaBlendSource = BlendOne` when drawing into a non-transparent section of your rendertarget
+	 */
 	public function drawString(text: String, x: Float, y: Float): Void {
 
 	}
 
+	/**
+	 * Draw a single line of characters with the current `color`, `font` and `fontSize` properties.
+	 *
+	 * When drawing into rendertargets, you might have to use a different shader than the default one
+	 *  - use the default shader when drawing into a transparent section of your rendertarget
+	 *  - use a shader with `alphaBlendSource = BlendOne` when drawing into a non-transparent section of your rendertarget
+	 */
 	public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
 
 	}
