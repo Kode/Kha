@@ -36,7 +36,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var indicesCount: Int;
 	private var renderTarget: Canvas;
 	private var renderTargetFrameBuffer: Dynamic;
-	private var renderTargetColor: Dynamic;
+	private var renderTargetMSAA: Dynamic;
 	private var renderTargetTexture: Dynamic;
 	private var isCubeMap: Bool = false;
 	private var isDepthAttachment: Bool = false;
@@ -73,7 +73,7 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			var image: WebGLImage = cast(renderTarget, WebGLImage);
 			renderTargetFrameBuffer = image.frameBuffer;
-			renderTargetColor=image.colorBuffer;
+			renderTargetMSAA=image.MSAAFramebuffer;
 			renderTargetTexture = image.texture;
 		}
 	}
@@ -123,13 +123,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
-		if (renderTarget != null) {
+		if (renderTargetMSAA != null) {
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.READ_FRAMEBUFFER, renderTargetFrameBuffer);
-			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetColor);
+			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetMSAA);
 			untyped SystemImpl.gl.clearBufferfv(SystemImpl.gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
 			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height,
 								0, 0, renderTarget.width, renderTarget.height,
 								GL.COLOR_BUFFER_BIT, GL.LINEAR);
+			
 		}
 		#if (debug || kha_debug_html5)
 		var error = SystemImpl.gl.getError();

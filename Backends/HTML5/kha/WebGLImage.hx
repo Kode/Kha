@@ -27,7 +27,8 @@ class WebGLImage extends Image {
 	public var renderBuffer: Dynamic = null;
 	public var texture: Dynamic = null;
 	public var depthTexture: Dynamic = null;
-	public var colorBuffer:Dynamic=null;
+	public var MSAAFramebuffer:Dynamic=null;
+
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -211,23 +212,23 @@ class WebGLImage extends Image {
 				}
 			}
 			else {
-				if (SystemImpl.gl2) {
-					colorBuffer = SystemImpl.gl.createFramebuffer();
+				if (samples>1&&SystemImpl.gl2) {
+					MSAAFramebuffer = SystemImpl.gl.createFramebuffer();
 					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
 					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
-					untyped trace(SystemImpl.gl.getParameter(SystemImpl.gl.MAX_SAMPLES));
 					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, SystemImpl.gl.RGBA8, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
-					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, colorBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
 				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER,GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 			}
-
-			//initDepthStencilBuffer(depthStencilFormat);
+			
+			initDepthStencilBuffer(depthStencilFormat);
 			var e=SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER);
 			if (e != GL.FRAMEBUFFER_COMPLETE) {
-				trace(e);
+				trace("checkframebufferStatus error "+e);
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
@@ -282,7 +283,19 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+				
+				if (samples>1&&SystemImpl.gl2) {
+					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL.DEPTH_COMPONENT16, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, colorRenderbuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
+					
+				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+				
 			}
 		}
 		case DepthAutoStencilAuto, Depth24Stencil8, Depth32Stencil8:
@@ -301,6 +314,15 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+				if (samples>1&&SystemImpl.gl2) {
+					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL_DEPTH24_STENCIL8, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, colorRenderbuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
+					
+				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
 			}
 		}
@@ -441,6 +463,7 @@ class WebGLImage extends Image {
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
 		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
 		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
+		if (MSAAFramebuffer != null) SystemImpl.gl.deleteRenderbuffer(MSAAFramebuffer);
 	}
 
 	override public function generateMipmaps(levels: Int): Void {
