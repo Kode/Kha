@@ -27,7 +27,9 @@ class WebGLImage extends Image {
 	public var renderBuffer: Dynamic = null;
 	public var texture: Dynamic = null;
 	public var depthTexture: Dynamic = null;
-	public var MSAAFramebuffer:Dynamic=null;
+	public var MSAAFrameBuffer:Dynamic=null;
+	var MSAAColorBuffer:Dynamic;
+	var MSAADepthBuffer:Dynamic;
 
 
 	private var graphics1: kha.graphics1.Graphics;
@@ -213,9 +215,9 @@ class WebGLImage extends Image {
 			}
 			else {
 				if (samples>1&&SystemImpl.gl2) {
-					MSAAFramebuffer = SystemImpl.gl.createFramebuffer();
-					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					MSAAFrameBuffer = SystemImpl.gl.createFramebuffer();
+					MSAAColorBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAAColorBuffer);
 					var MSAAFormat=switch (format) {
 					case DEPTH16:
 						GL.DEPTH_COMPONENT16;
@@ -234,8 +236,8 @@ class WebGLImage extends Image {
 					};
 					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, MSAAFormat, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
-					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, MSAAColorBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
 				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER,GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
@@ -301,12 +303,12 @@ class WebGLImage extends Image {
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 				
 				if (samples>1&&SystemImpl.gl2) {
-					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					MSAADepthBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAADepthBuffer);
 					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL.DEPTH_COMPONENT16, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, colorRenderbuffer);
-					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
 					
 				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
@@ -331,12 +333,12 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 				if (samples>1&&SystemImpl.gl2) {
-					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					MSAADepthBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAADepthBuffer);
 					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL_DEPTH24_STENCIL8, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, colorRenderbuffer);
-					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
 					
 				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
@@ -479,7 +481,9 @@ class WebGLImage extends Image {
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
 		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
 		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
-		if (MSAAFramebuffer != null) SystemImpl.gl.deleteRenderbuffer(MSAAFramebuffer);
+		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteRenderbuffer(MSAAFrameBuffer);
+		if(MSAAColorBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAAColorBuffer);
+		if(MSAADepthBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAADepthBuffer);
 	}
 
 	override public function generateMipmaps(levels: Int): Void {

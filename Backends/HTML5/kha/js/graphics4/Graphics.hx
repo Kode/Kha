@@ -73,7 +73,7 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			var image: WebGLImage = cast(renderTarget, WebGLImage);
 			renderTargetFrameBuffer = image.frameBuffer;
-			renderTargetMSAA=image.MSAAFramebuffer;
+			renderTargetMSAA=image.MSAAFrameBuffer;
 			renderTargetTexture = image.texture;
 		}
 	}
