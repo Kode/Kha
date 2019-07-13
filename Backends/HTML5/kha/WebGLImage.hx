@@ -216,7 +216,23 @@ class WebGLImage extends Image {
 					MSAAFramebuffer = SystemImpl.gl.createFramebuffer();
 					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
 					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
-					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, SystemImpl.gl.RGBA8, realWidth, realHeight);
+					var MSAAFormat=switch (format) {
+					case DEPTH16:
+						GL.DEPTH_COMPONENT16;
+					case RGBA128:
+						untyped SystemImpl.gl.RGBA32F;
+					case RGBA64:
+						untyped SystemImpl.gl.RGBA16F;
+					case RGBA32:
+						untyped SystemImpl.gl.RGBA8;
+					case A32:
+						GL_R32F;
+					case A16:
+						GL_R16F;
+					default:
+						untyped SystemImpl.gl.RGBA8;
+					};
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, MSAAFormat, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFramebuffer);
