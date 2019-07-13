@@ -21,6 +21,7 @@ class Sound extends kha.Sound {
 			uncompressedData->self.data[i * 2 + 1] = (float)(right[i] / 32767.0);
 		}
 		this->length = sound->length;
+		this->channels = sound->format.channels;
 		delete sound;
 	')
 	function initWav(filename: String) {

@@ -22,6 +22,7 @@ class MobileWebAudioSound extends kha.Sound {
 			MobileWebAudio._context.decodeAudioData(compressedData.getData(),
 				function (buffer) {
 					length = buffer.duration;
+					channels = buffer.numberOfChannels;
 					_buffer = buffer;
 					done(this);
 				},
