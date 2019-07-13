@@ -27,6 +27,7 @@ class WebGLImage extends Image {
 	public var renderBuffer: Dynamic = null;
 	public var texture: Dynamic = null;
 	public var depthTexture: Dynamic = null;
+	public var colorBuffer:Dynamic=null;
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -210,19 +211,23 @@ class WebGLImage extends Image {
 				}
 			}
 			else {
-				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
-
-				// TODO: Multisampling
-				//var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-				//SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
-				//untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER, 4, GL.RGBA8, realWidth, realHeight);
-				//SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
+				if (SystemImpl.gl2) {
+					colorBuffer = SystemImpl.gl.createFramebuffer();
+					var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
+					untyped trace(SystemImpl.gl.getParameter(SystemImpl.gl.MAX_SAMPLES));
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, SystemImpl.gl.RGBA8, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, colorBuffer);
+				}
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER,GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 			}
 
-			initDepthStencilBuffer(depthStencilFormat);
-
-			if (SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER) != GL.FRAMEBUFFER_COMPLETE) {
-				trace("WebGL error: Framebuffer incomplete");
+			//initDepthStencilBuffer(depthStencilFormat);
+			var e=SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER);
+			if (e != GL.FRAMEBUFFER_COMPLETE) {
+				trace(e);
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
