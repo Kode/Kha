@@ -126,10 +126,9 @@ class Graphics implements kha.graphics4.Graphics {
 		if (renderTargetMSAA != null) {
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.READ_FRAMEBUFFER, renderTargetFrameBuffer);
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetMSAA);
-			untyped SystemImpl.gl.clearBufferfv(SystemImpl.gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
 			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height,
 								0, 0, renderTarget.width, renderTarget.height,
-								GL.COLOR_BUFFER_BIT, GL.LINEAR);
+								GL.COLOR_BUFFER_BIT, GL.NEAREST);
 			
 		}
 		#if (debug || kha_debug_html5)
