@@ -456,4 +456,12 @@ class SystemImpl {
 	public static function safeZone(): Float {
 		return untyped __cpp__('Kore::System::safeZone()');
 	}
+
+	public static function automaticSafeZone(): Bool {
+		return untyped __cpp__('Kore::System::automaticSafeZone()');
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		untyped __cpp__('Kore::System::setSafeZone(value)');
+	}
 }

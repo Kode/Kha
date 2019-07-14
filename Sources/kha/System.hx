@@ -318,4 +318,12 @@ class System {
 	public static function safeZone(): Float {
 		return SystemImpl.safeZone();
 	}
+
+	public static function automaticSafeZone(): Bool {
+		return SystemImpl.automaticSafeZone();
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		SystemImpl.setSafeZone(value);
+	}
 }
