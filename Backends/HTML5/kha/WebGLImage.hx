@@ -480,7 +480,7 @@ class WebGLImage extends Image {
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
 		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
 		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
-		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteRenderbuffer(MSAAFrameBuffer);
+		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteFramebuffer(MSAAFrameBuffer);
 		if(MSAAColorBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAAColorBuffer);
 		if(MSAADepthBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAADepthBuffer);
 	}
