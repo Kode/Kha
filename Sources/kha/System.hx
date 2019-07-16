@@ -167,6 +167,10 @@ class System {
 		System.logoutListener = logoutListener;
 	}
 
+	public static function login(): Void {
+		SystemImpl.login();
+	}
+
 	static function render(framebuffers: Array<Framebuffer>): Void {
 		for (listener in renderListeners) {
 			listener(framebuffers);
