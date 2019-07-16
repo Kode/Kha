@@ -71,6 +71,8 @@ class System {
 	static var cutListener: Void->String = null;
 	static var copyListener: Void->String = null;
 	static var pasteListener: String->Void = null;
+	static var loginListener: Void->Void = null;
+	static var logoutListener: Void->Void = null;
 	static var theTitle: String;
 
 	@:deprecated("Use System.start instead")
@@ -158,6 +160,11 @@ class System {
 		System.cutListener = cutListener;
 		System.copyListener = copyListener;
 		System.pasteListener = pasteListener;
+	}
+
+	public static function notifyOnLoginLogout(loginListener: Void->Void, logoutListener: Void->Void) {
+		System.loginListener = loginListener;
+		System.logoutListener = logoutListener;
 	}
 
 	static function render(framebuffers: Array<Framebuffer>): Void {
