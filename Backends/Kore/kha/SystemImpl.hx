@@ -430,13 +430,20 @@ class SystemImpl {
 		}
 	}
 
+	@:functionCode('
+		Kore::System::login();
+	')
 	public static function login(): Void {
+
+	}
+
+	public static function loginevent(): Void {
 		if (System.loginListener != null) {
 			System.loginListener();
 		}
 	}
 
-	public static function logout(): Void {
+	public static function logoutevent(): Void {
 		if (System.logoutListener != null) {
 			System.logoutListener();
 		}

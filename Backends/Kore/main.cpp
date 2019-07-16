@@ -276,11 +276,11 @@ namespace {
 	}
 
   void login() {
-    SystemImpl_obj::login();
+    SystemImpl_obj::loginevent();
   }
 
   void logout() {
-    SystemImpl_obj::logout();
+    SystemImpl_obj::logoutevent();
   }
 }
 
