@@ -430,6 +430,18 @@ class SystemImpl {
 		}
 	}
 
+	public static function login(): Void {
+		if (System.loginListener != null) {
+			System.loginListener();
+		}
+	}
+
+	public static function logout(): Void {
+		if (System.logoutListener != null) {
+			System.logoutListener();
+		}
+	}
+
 	@:functionCode('
 		Kore::WindowOptions window = convertWindowOptions(win);
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);

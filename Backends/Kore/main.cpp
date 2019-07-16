@@ -274,6 +274,14 @@ namespace {
 	void paste(char* data) {
 		SystemImpl_obj::paste(String(data));
 	}
+
+  void login() {
+    SystemImpl_obj::login();
+  }
+
+  void logout() {
+    SystemImpl_obj::logout();
+  }
 }
 
 void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame) {
@@ -296,6 +304,8 @@ void init_kore(const char* name, int width, int height, Kore::WindowOptions* win
 	Kore::System::setCopyCallback(copy);
 	Kore::System::setCutCallback(cut);
 	Kore::System::setPasteCallback(paste);
+  Kore::System::setLoginCallback(login);
+  Kore::System::setLogoutCallback(logout);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
