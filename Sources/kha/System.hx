@@ -337,4 +337,8 @@ class System {
 	public static function setSafeZone(value: Float): Void {
 		SystemImpl.setSafeZone(value);
 	}
+
+	public static function unlockAchievement(id: Int): Void {
+		SystemImpl.unlockAchievement(id);
+	}
 }
