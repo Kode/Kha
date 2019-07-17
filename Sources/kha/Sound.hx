@@ -12,6 +12,7 @@ class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
 	public var length: Float = 0; // in seconds
+	public var channels: Int = 0;
 	
 	public function new() {
 		
@@ -46,6 +47,7 @@ class Sound implements Resource {
 				untyped __cpp__("this->uncompressedData->self.set(i1, data[i1] / 32767.0f)");
 			}
 		}
+		this.channels = channels;
 
 		untyped __cpp__("delete[] data");
 
@@ -79,6 +81,7 @@ class Sound implements Resource {
 				uncompressedData[i] = soundBytes.getFloat(i * 4);
 			}
 		}
+		channels = header.channel;
 		compressedData = null;
 		done();
 		#end
