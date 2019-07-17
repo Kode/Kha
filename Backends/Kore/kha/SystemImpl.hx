@@ -482,4 +482,8 @@ class SystemImpl {
 	public static function setSafeZone(value: Float): Void {
 		untyped __cpp__('Kore::System::setSafeZone(value)');
 	}
+
+	public static function unlockAchievement(id: Int): Void {
+		untyped __cpp__('Kore::System::unlockAchievement(id)');
+	}
 }
