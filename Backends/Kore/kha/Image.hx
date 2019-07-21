@@ -358,7 +358,9 @@ class Image implements Canvas implements Resource {
 		bytes = null;
 	}
 
+	@:ifFeature("kha.Image.getPixelsInternal")
 	private var pixels: Bytes = null;
+	@:ifFeature("kha.Image.getPixelsInternal")
 	private var pixelsAllocated: Bool = false;
 
 	@:functionCode('
