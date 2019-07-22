@@ -32,6 +32,7 @@ import kha.graphics4.DepthStencilFormat;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/System.h>
+#include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Pen.h>
 #include <Kore/Display.h>
@@ -282,6 +283,18 @@ class SystemImpl {
 			untyped __cpp__('Kore::Graphics4::end(win);');
 		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
+
+		if (gamepad1.connected && !checkGamepadConnected()) {
+			Gamepad.sendDisconnectEvent(0);
+		}
+		else if (!gamepad1.connected && checkGamepadConnected()) {
+			Gamepad.sendConnectEvent(0);
+		}
+	}
+
+	@:functionCode('return Kore::Gamepad::get(0)->connected();')
+	static function checkGamepadConnected(): Bool {
+		return true;
 	}
 
 	public static function keyDown(code: KeyCode): Void {
