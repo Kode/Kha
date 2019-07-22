@@ -1,9 +1,8 @@
 package kha.audio2;
 
-#if cpp
-import sys.thread.Mutex;
-#end
 import haxe.ds.Vector;
+
+@:cppFileCode("#include <kinc/pch.h>\n#include <kinc/threads/mutex.h>\nstatic kinc_mutex_t mutex;")
 
 class Audio1 {
 	private static inline var channelCount: Int = 32;
@@ -14,15 +13,10 @@ class Audio1 {
 	private static var internalStreamChannels: Vector<StreamChannel>;
 	private static var sampleCache1: kha.arrays.Float32Array;
 	private static var sampleCache2: kha.arrays.Float32Array;
-	#if cpp
-	private static var mutex: Mutex;
-	#end
 
 	@:noCompletion
 	public static function _init(): Void {
-		#if cpp
-		mutex = new Mutex();
-		#end
+		untyped __cpp__('kinc_mutex_init(&mutex)');
 		soundChannels = new Vector<AudioChannel>(channelCount);
 		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
@@ -31,7 +25,7 @@ class Audio1 {
 		sampleCache2 = new kha.arrays.Float32Array(512);
 		Audio.audioCallback = mix;
 	}
-
+	
 	private static inline function max(a: Float, b: Float): Float {
 		return a > b ? a : b;
 	}
@@ -50,18 +44,14 @@ class Audio1 {
 			sampleCache2[i] = 0;
 		}
 
-		#if cpp
-		mutex.acquire();
-		#end
+		untyped __cpp__('kinc_mutex_lock(&mutex)');
 		for (i in 0...channelCount) {
 			internalSoundChannels[i] = soundChannels[i];
 		}
 		for (i in 0...channelCount) {
 			internalStreamChannels[i] = streamChannels[i];
 		}
-		#if cpp
-		mutex.release();
-		#end
+		untyped __cpp__('kinc_mutex_unlock(&mutex)');
 
 		for (channel in internalSoundChannels) {
 			if (channel == null || channel.finished) continue;
@@ -98,9 +88,7 @@ class Audio1 {
 		channel.data = sound.uncompressedData;
 		var foundChannel = false;
 
-		#if cpp
-		mutex.acquire();
-		#end
+		untyped __cpp__('kinc_mutex_lock(&mutex)');
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
 				soundChannels[i] = channel;
@@ -108,17 +96,13 @@ class Audio1 {
 				break;
 			}
 		}
-		#if cpp
-		mutex.release();
-		#end
+		untyped __cpp__('kinc_mutex_unlock(&mutex)');
 
 		return foundChannel ? channel : null;
 	}
 
 	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
-		#if cpp
-		mutex.acquire();
-		#end
+		untyped __cpp__('kinc_mutex_lock(&mutex)');
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == channel) {
 				soundChannels[i] = null;
@@ -130,9 +114,7 @@ class Audio1 {
 				break;
 			}
 		}
-		#if cpp
-		mutex.release();
-		#end
+		untyped __cpp__('kinc_mutex_unlock(&mutex)');
 	}
 
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
@@ -145,9 +127,7 @@ class Audio1 {
 		var channel: StreamChannel = new StreamChannel(sound.compressedData, loop);
 		var foundChannel = false;
 
-		#if cpp
-		mutex.acquire();
-		#end
+		untyped __cpp__('kinc_mutex_lock(&mutex)');
 		for (i in 0...channelCount) {
 			if (streamChannels[i] == null || streamChannels[i].finished) {
 				streamChannels[i] = channel;
@@ -155,9 +135,7 @@ class Audio1 {
 				break;
 			}
 		}
-		#if cpp
-		mutex.release();
-		#end
+		untyped __cpp__('kinc_mutex_unlock(&mutex)');
 
 		return foundChannel ? channel : null;
 	}
