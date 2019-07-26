@@ -43,6 +43,8 @@ class Audio {
 		return value;
 	}
 
+	public static var disableGcInteractions = false;
+
 	public static var samplesPerSecond: Int;
 
 	public static var audioCallback: IntBox->Buffer->Void;
