@@ -11,8 +11,8 @@ import kha.audio2.ogg.vorbis.Reader;
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
-	public var length: Float = 0; // in seconds
-	public var channels: Int = 0;
+	@:keep public var length: Float = 0; // in seconds
+	@:keep public var channels: Int = 0;
 	
 	public function new() {
 		
