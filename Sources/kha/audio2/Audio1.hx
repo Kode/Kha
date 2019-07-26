@@ -13,6 +13,7 @@ class Audio1 {
 	private static var internalStreamChannels: Vector<StreamChannel>;
 	private static var sampleCache1: kha.arrays.Float32Array;
 	private static var sampleCache2: kha.arrays.Float32Array;
+	private static var lastAllocation: Float;
 
 	@:noCompletion
 	public static function _init(): Void {
@@ -23,6 +24,7 @@ class Audio1 {
 		internalStreamChannels = new Vector<StreamChannel>(channelCount);
 		sampleCache1 = new kha.arrays.Float32Array(512);
 		sampleCache2 = new kha.arrays.Float32Array(512);
+		lastAllocation = Scheduler.realTime();
 		Audio.audioCallback = mix;
 	}
 	
@@ -39,7 +41,14 @@ class Audio1 {
 		if (sampleCache1.length < samples) {
 			sampleCache1 = new kha.arrays.Float32Array(samples);
 			sampleCache2 = new kha.arrays.Float32Array(samples);
+			lastAllocation = Scheduler.realTime();
 		}
+		else {
+			if (Scheduler.realTime() - lastAllocation > 1) {
+				Audio.disableGcInteractions = true;
+			}
+		}
+
 		for (i in 0...samples) {
 			sampleCache2[i] = 0;
 		}

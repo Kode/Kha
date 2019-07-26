@@ -230,6 +230,11 @@ namespace {
 		}*/
 	}
 	
+#if defined(HXCPP_TELEMETRY) || defined(HXCPP_PROFILER) || defined(HXCPP_DEBUG)
+	const static bool gcInteractionStrictlyRequired = true;
+#else
+	const static bool gcInteractionStrictlyRequired = false;
+#endif
 	bool mixThreadregistered = false;
 
 	void mix(int samples) {
@@ -237,16 +242,32 @@ namespace {
 
 		int t0 = 99;
 #ifdef KORE_MULTITHREADED_AUDIO
-		if (!mixThreadregistered) {
+		if (!mixThreadregistered && !::kha::audio2::Audio_obj::disableGcInteractions) {
 			hx::SetTopOfStack(&t0, true);
 			mixThreadregistered = true;
-			//threadSleep(100);
+			hx::EnterGCFreeZone();
 		}
-#endif
+
 		//int addr = 0;
 		//Kore::log(Info, "mix address is %x", &addr);
 
+		if (mixThreadregistered && ::kha::audio2::Audio_obj::disableGcInteractions && !gcInteractionStrictlyRequired) {
+			hx::UnregisterCurrentThread();
+			mixThreadregistered = false;
+		}
+
+		if (mixThreadregistered) {
+			hx::ExitGCFreeZone();
+		}
+#endif
+
 		::kha::audio2::Audio_obj::_callCallback(samples, Kore::Audio2::samplesPerSecond);
+
+#ifdef KORE_MULTITHREADED_AUDIO
+		if (mixThreadregistered) {
+			hx::EnterGCFreeZone();
+		}
+#endif
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();
@@ -299,8 +320,8 @@ void init_kore(const char* name, int width, int height, Kore::WindowOptions* win
 	Kore::System::setCopyCallback(copy);
 	Kore::System::setCutCallback(cut);
 	Kore::System::setPasteCallback(paste);
-  Kore::System::setLoginCallback(login);
-  Kore::System::setLogoutCallback(logout);
+	Kore::System::setLoginCallback(login);
+	Kore::System::setLogoutCallback(logout);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
