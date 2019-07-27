@@ -40,10 +40,20 @@ class Audio1 {
 		var samples = samplesBox.value;
 		if (sampleCache1.length < samples) {
 			if (Audio.disableGcInteractions) {
-				throw "Unexpected allocation in audio thread.";
+				trace("Unexpected allocation request in audio thread.");
+				for (i in 0...samples) {
+					buffer.data.set(buffer.writeLocation, 0);
+					buffer.writeLocation += 1;
+					if (buffer.writeLocation >= buffer.size) {
+						buffer.writeLocation = 0;
+					}
+				}
+				lastAllocationCount = 0;
+				Audio.disableGcInteractions = false;
+				return;
 			}
-			sampleCache1 = new kha.arrays.Float32Array(samples);
-			sampleCache2 = new kha.arrays.Float32Array(samples);
+			sampleCache1 = new kha.arrays.Float32Array(samples * 2);
+			sampleCache2 = new kha.arrays.Float32Array(samples * 2);
 			lastAllocationCount = 0;
 		}
 		else {
