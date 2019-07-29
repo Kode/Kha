@@ -143,7 +143,7 @@ namespace {
 	bool paused = false;
 
 	void update() {
-		if (paused) return;
+		//**if (paused) return;
 		Kore::Audio2::update();
 
 		SystemImpl_obj::frame();
