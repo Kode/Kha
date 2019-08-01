@@ -166,7 +166,7 @@ class AssetsBuilder {
 						}, {
 							value: null,
 							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
-							opt: null,
+							opt: true,
 							name: "failure"
 						}]
 					}),
