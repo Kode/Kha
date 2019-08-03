@@ -20,6 +20,16 @@ class BlobCallback {
 	}
 }
 
+class ImageCallback {
+	public var success: Image -> Void;
+	public var error: AssetError -> Void;
+
+	public function new(success: Image -> Void, error: AssetError -> Void) {
+		this.success = success;
+		this.error = error;
+	}
+}
+
 class SoundCallback {
 	public var success: Sound -> Void;
 	public var error: AssetError -> Void;
@@ -32,6 +42,7 @@ class SoundCallback {
 
 class LoaderImpl {
 	static var blobCallbacks = new Map<cpp.UInt64, BlobCallback>();
+	static var imageCallbacks = new Map<cpp.UInt64, ImageCallback>();
 	static var soundCallbacks = new Map<cpp.UInt64, SoundCallback>();
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
@@ -49,7 +60,13 @@ class LoaderImpl {
 
 	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image -> Void, failed: AssetError -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
-		done(kha.Image.fromFile(desc.files[0], readable));
+		//done(kha.Image.fromFile(desc.files[0], readable));
+		imageCallbacks[loadImage(desc.files[0], readable)] = new ImageCallback(done, failed);
+	}
+
+	@:functionCode('return kha_loader_load_image(filename, readable);')
+	static function loadImage(filename: String, readable: Bool): cpp.UInt64 {
+		return 0;
 	}
 
 	public static function getImageFormats(): Array<String> {
@@ -133,6 +150,18 @@ class LoaderImpl {
 		return new Float32Array();
 	}
 
+	static function createEmptyImage(readable: Bool, floatFormat: Bool) {
+		return Image.createEmpty(readable, floatFormat);
+	}
+
+	static function imageLoaded(index: cpp.UInt64, image: Image) {
+		imageCallbacks[index].success(image);
+	}
+
+	static function imageErrored(index: cpp.UInt64, filename: String) {
+		imageCallbacks[index].error({url: filename});
+	}
+
 	@:functionCode('
 		kha_file_reference_t file = kha_loader_get_file();
 		while (file.index != 0) {
@@ -144,6 +173,16 @@ class LoaderImpl {
 					else {
 						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
 						blobLoaded(file.index, buffer);
+					}
+					break;
+				case KHA_FILE_TYPE_IMAGE:
+					if (file.error) {
+						imageErrored(file.index, file.name);
+					}
+					else {
+						::kha::Image image = createEmptyImage(file.data.image.readable, file.data.image.image.format == KINC_IMAGE_FORMAT_RGBA128);
+						image->texture = new Kore::Graphics4::Texture(file.data.image.image.data, file.data.image.image.width, file.data.image.image.height, (Kore::Graphics1::Image::Format)file.data.image.image.format, file.data.image.readable);
+						imageLoaded(file.index, image);
 					}
 					break;
 				case KHA_FILE_TYPE_SOUND:

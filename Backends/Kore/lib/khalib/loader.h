@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <kinc/image.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,6 +21,11 @@ typedef struct {
 } kha_blob_t;
 
 typedef struct {
+	bool readable;
+	kinc_image_t image;
+} kha_image_t;
+
+typedef struct {
 	float *samples;
 	uint8_t *compressed_samples;
 	size_t size;
@@ -28,8 +35,8 @@ typedef struct {
 
 typedef union {
 	kha_blob_t blob;
+	kha_image_t image;
 	kha_sound_t sound;
-
 } kha_file_data_t;
 
 typedef struct {
@@ -42,6 +49,7 @@ typedef struct {
 
 void kha_loader_init();
 kha_index_t kha_loader_load_blob(const char *filename);
+kha_index_t kha_loader_load_image(const char *filename, bool readable);
 kha_index_t kha_loader_load_sound(const char *filename);
 kha_file_reference_t kha_loader_get_file();
 

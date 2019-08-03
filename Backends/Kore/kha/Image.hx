@@ -213,7 +213,13 @@ class Image implements Canvas implements Resource {
 
 	}
 
-	public static function fromFile(filename: String, readable: Bool): Image {
+	public static function createEmpty(readable: Bool, floatFormat: Bool): Image {
+		var image = new Image(readable);
+		image.format = floatFormat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		return image;
+	}
+
+	/*public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
 		var isFloat = StringTools.endsWith(filename, ".hdr");
 		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
@@ -224,7 +230,7 @@ class Image implements Canvas implements Resource {
 	@:functionCode('texture = new Kore::Graphics4::Texture(filename.c_str(), readable);')
 	private function initFromFile(filename: String): Void {
 
-	}
+	}*/
 
 	public var g1(get, null): kha.graphics1.Graphics;
 
