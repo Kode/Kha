@@ -331,7 +331,6 @@ void post_kore_init() {
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
-	Kore::threadsInit();
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
 	::kha::audio2::Audio_obj::samplesPerSecond = Kore::Audio2::samplesPerSecond;
@@ -350,6 +349,7 @@ extern char **_hxcpp_argv;
 int kickstart(int argc, char **argv) {
 	_hxcpp_argc = argc;
 	_hxcpp_argv = argv;
+	Kore::threadsInit();
 	kha_loader_init();
 	HX_TOP_OF_STACK
 	hx::Boot();
