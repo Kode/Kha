@@ -11,8 +11,18 @@ import kha.Kravur;
 #include <khalib/loader.h>
 ')
 
+class BlobCallback {
+	public var success: Blob -> Void;
+	public var error: AssetError -> Void;
+
+	public function new(success: Blob -> Void, error: AssetError -> Void) {
+		this.success = success;
+		this.error = error;
+	}
+}
+
 class LoaderImpl {
-	static var blobCallbacks = new Map<cpp.UInt64, Blob -> Void>();
+	static var blobCallbacks = new Map<cpp.UInt64, BlobCallback>();
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		done(new kha.kore.Sound(desc.files[0]));
@@ -32,7 +42,7 @@ class LoaderImpl {
 	}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
-		blobCallbacks[loadBlob(desc.files[0])] = done;
+		blobCallbacks[loadBlob(desc.files[0])] = new BlobCallback(done, failed);
 	}
 
 	@:functionCode('return kha_loader_load_blob(filename);')
@@ -75,14 +85,23 @@ class LoaderImpl {
 	}
 
 	static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
-		blobCallbacks[index](new Blob(Bytes.ofData(bytes)));
+		blobCallbacks[index].success(new Blob(Bytes.ofData(bytes)));
+	}
+
+	static function blobErrored(index: cpp.UInt64, filename: String) {
+		blobCallbacks[index].error({url: filename});
 	}
 
 	@:functionCode('
 		kha_file_reference_t file = kha_loader_get_file();
 		while (file.index != 0) {
-			Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
-			blobLoaded(file.index, buffer);
+			if (file.error) {
+				blobErrored(file.index, file.name);
+			}
+			else {
+				Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
+				blobLoaded(file.index, buffer);
+			}
 			file = kha_loader_get_file();
 		}
 	')
