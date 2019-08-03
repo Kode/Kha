@@ -1,9 +1,8 @@
 package kha;
 
+import kha.arrays.Float32Array;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
-import kha.Blob;
-import kha.Kravur;
 
 @:headerCode('
 #include <Kore/pch.h>
@@ -21,11 +20,27 @@ class BlobCallback {
 	}
 }
 
+class SoundCallback {
+	public var success: Sound -> Void;
+	public var error: AssetError -> Void;
+
+	public function new(success: Sound -> Void, error: AssetError -> Void) {
+		this.success = success;
+		this.error = error;
+	}
+}
+
 class LoaderImpl {
 	static var blobCallbacks = new Map<cpp.UInt64, BlobCallback>();
+	static var soundCallbacks = new Map<cpp.UInt64, SoundCallback>();
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
-		done(new kha.kore.Sound(desc.files[0]));
+		soundCallbacks[loadSound(desc.files[0])] = new SoundCallback(done, failed);
+	}
+
+	@:functionCode('return kha_loader_load_sound(filename);')
+	static function loadSound(filename: String): cpp.UInt64 {
+		return 0;
 	}
 
 	public static function getSoundFormats(): Array<String> {
@@ -92,16 +107,62 @@ class LoaderImpl {
 		blobCallbacks[index].error({url: filename});
 	}
 
+	static function soundLoadedCompressed(index: cpp.UInt64, bytes: BytesData) {
+		var sound = new Sound();
+		sound.compressedData = Bytes.ofData(bytes);
+		sound.uncompressedData = null;
+		sound.channels = 0;
+		sound.length = 0;
+		soundCallbacks[index].success(sound);
+	}
+
+	static function soundLoadedUncompressed(index: cpp.UInt64, samples: Float32Array, channels: Int, length: Float) {
+		var sound = new Sound();
+		sound.compressedData = null;
+		sound.uncompressedData = samples;
+		sound.channels = channels;
+		sound.length = length;
+		soundCallbacks[index].success(sound);
+	}
+
+	static function soundErrored(index: cpp.UInt64, filename: String) {
+		soundCallbacks[index].error({url: filename});
+	}
+
+	static function createFloat32Array() {
+		return new Float32Array();
+	}
+
 	@:functionCode('
 		kha_file_reference_t file = kha_loader_get_file();
 		while (file.index != 0) {
-			if (file.error) {
-				blobErrored(file.index, file.name);
+			switch (file.type) {
+				case KHA_FILE_TYPE_BLOB:
+					if (file.error) {
+						blobErrored(file.index, file.name);
+					}
+					else {
+						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
+						blobLoaded(file.index, buffer);
+					}
+					break;
+				case KHA_FILE_TYPE_SOUND:
+					if (file.error) {
+						soundErrored(file.index, file.name);
+					}
+					else if (file.data.sound.samples != NULL) {
+						::kha::arrays::Float32ArrayPrivate buffer = createFloat32Array();
+						buffer->self.data = file.data.sound.samples;
+						buffer->self.myLength = file.data.sound.size;
+						soundLoadedUncompressed(file.index, buffer, file.data.sound.channels, file.data.sound.length);
+					}
+					else {
+						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.sound.compressed_samples, file.data.sound.size);
+						soundLoadedCompressed(file.index, buffer);
+					}
+					break;
 			}
-			else {
-				Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
-				blobLoaded(file.index, buffer);
-			}
+			
 			file = kha_loader_get_file();
 		}
 	')

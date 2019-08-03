@@ -11,7 +11,7 @@ extern "C" {
 
 typedef uint64_t kha_index_t;
 
-typedef enum { KHA_FILE_TYPE_BLOB, KHA_FILE_TYPE_IMAGE, KHA_FILE_TYPE_SOUND, KHA_FILE_TYPE_VIDEO } kha_file_type_t;
+typedef enum { KHA_FILE_TYPE_BLOB, KHA_FILE_TYPE_IMAGE, KHA_FILE_TYPE_SOUND } kha_file_type_t;
 
 typedef struct {
 	uint8_t *bytes;
@@ -42,6 +42,7 @@ typedef struct {
 
 void kha_loader_init();
 kha_index_t kha_loader_load_blob(const char *filename);
+kha_index_t kha_loader_load_sound(const char *filename);
 kha_file_reference_t kha_loader_get_file();
 
 #ifdef __cplusplus

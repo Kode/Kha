@@ -93,9 +93,6 @@ static void run(void* param) {
 				}
 				break;
 			}
-			case KHA_FILE_TYPE_VIDEO: {
-				break;
-			}
 			}
 
 			kinc_mutex_lock(&loaded_mutex);
@@ -129,6 +126,23 @@ kha_index_t kha_loader_load_blob(const char *filename) {
 	memset(&file, 0, sizeof(file));
 	file.index = next_index++;
 	strcpy(file.name, filename);
+	file.type = KHA_FILE_TYPE_BLOB;
+
+	kinc_mutex_lock(&loading_mutex);
+	arrput(loading_files, file);
+	kinc_event_signal(&event);
+	kinc_mutex_unlock(&loading_mutex);
+
+	return file.index;
+}
+
+kha_index_t kha_loader_load_sound(const char *filename) {
+	assert(strlen(filename) <= KHA_MAX_PATH_LENGTH);
+	kha_file_reference_t file;
+	memset(&file, 0, sizeof(file));
+	file.index = next_index++;
+	strcpy(file.name, filename);
+	file.type = KHA_FILE_TYPE_SOUND;
 
 	kinc_mutex_lock(&loading_mutex);
 	arrput(loading_files, file);
