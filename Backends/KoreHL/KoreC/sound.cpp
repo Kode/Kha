@@ -3,7 +3,7 @@
 #include <hl.h>
 
 #define STB_VORBIS_HEADER_ONLY
-#include <Kore/Audio1/stb_vorbis.c>
+#include <kinc/audio1/stb_vorbis.c>
 
 extern "C" vbyte *hl_kore_sound_init_wav(vbyte* filename, vbyte* outSize, float* outLength) {
 	Kore::Sound* sound = new Kore::Sound((char*)filename);

@@ -86,7 +86,7 @@ HL_PRIM int hl_utf8_length( const vbyte *s, int pos ) {
 	while( true ) {
 		unsigned char c = (unsigned)*s;
 		len++;
-		if( c < 0x7F ) {
+		if( c < 0x80 ) {
 			if( c == 0 ) {
 				len--;
 				break;
@@ -126,10 +126,10 @@ HL_PRIM int hl_from_utf8( uchar *out, int outLen, const char *str ) {
 		} else {
 			c2 = (unsigned)*str++;
 			c3 = (unsigned)*str++;
-			c = ((c & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | ((*str++) & 0x7F);
+			c = (((c & 0x0F) << 18) | ((c2 & 0x7F) << 12) | ((c3 & 0x7F) << 6) | ((*str++) & 0x7F)) - 0x10000;
 			// surrogate pair
 			if( p++ == outLen ) break;
-			*out++ = (uchar)((c >> 10) + 0xD7C0);
+			*out++ = (uchar)((c >> 10) + 0xD800);
 			*out++ = (uchar)((c & 0x3FF) | 0xDC00);
 			continue;
 		}
@@ -194,14 +194,15 @@ HL_PRIM vbyte* hl_ucs2_lower( vbyte *str, int pos, int len ) {
 	return (vbyte*)out;
 }
 
-HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
+HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int len, int *size ) {
 	vbyte *out;
-	uchar *c = (uchar*)(str + pos);
+	uchar *c = (uchar*)str;
+	uchar *end = len == 0 ? NULL : c + len;
 	int utf8bytes = 0;
 	int p = 0;
-	while( true ) {
+	while( c != end ) {
 		unsigned int v = (unsigned int)*c;
-		if( v == 0 ) break;
+		if( v == 0 && end == NULL ) break;
 		if( v < 0x80 )
 			utf8bytes++;
 		else if( v < 0x800 )
@@ -214,12 +215,12 @@ HL_PRIM vbyte *hl_utf16_to_utf8( vbyte *str, int pos, int *size ) {
 		c++;
 	}
 	out = hl_gc_alloc_noptr(utf8bytes + 1);
-	c = (uchar*)(str + pos);
-	while( true ) {
+	c = (uchar*)str;
+	while( c != end ) {
 		unsigned int v = (unsigned int)*c;
 		if( v < 0x80 ) {
 			out[p++] = (vbyte)v;
-			if( v == 0 ) break;
+			if( v == 0 && end == NULL ) break;
 		} else if( v < 0x800 ) {
 			out[p++] = (vbyte)(0xC0|(v>>6));
 			out[p++] = (vbyte)(0x80|(v&63));
@@ -267,14 +268,21 @@ HL_PRIM vbyte *hl_url_encode( vbyte *str, int *len ) {
 			} else if( c < 0x800 ) {
 				hl_buffer_hex(b, 0xC0|(c>>6));
 				hl_buffer_hex(b, 0x80|(c&63));
-			} else if( c >= 0xD800 && c <= 0xDBFF && (sur = (unsigned)*cstr) && sur >= 0xDC00 && sur < 0xDFFF ) {
-				cstr++;
-				c = ((((int)c - 0xD800) << 10) | ((int)sur - 0xDC00)) + 0x10000;
-				hl_buffer_hex(b, 0xF0|(c>>18));
-				hl_buffer_hex(b, 0x80|((c >> 12) & 63));
-				hl_buffer_hex(b, 0x80|((c >> 6) & 63));
-				hl_buffer_hex(b, 0x80|(c & 63));
-			} else{
+			} else if( c >= 0xD800 && c <= 0xDBFF ) {
+				sur = (unsigned)*cstr;
+				if( sur >= 0xDC00 && sur < 0xDFFF ) {
+					cstr++;
+					c = ((((int)c - 0xD800) << 10) | ((int)sur - 0xDC00)) + 0x10000;
+					hl_buffer_hex(b, 0xF0|(c>>18));
+					hl_buffer_hex(b, 0x80|((c >> 12) & 63));
+					hl_buffer_hex(b, 0x80|((c >> 6) & 63));
+					hl_buffer_hex(b, 0x80|(c & 63));
+				} else {
+					hl_buffer_hex(b, 0xE0|(c>>12));
+					hl_buffer_hex(b, 0x80|((c>>6)&63));
+					hl_buffer_hex(b, 0x80|(c&63));
+				}
+			} else {
 				hl_buffer_hex(b, 0xE0|(c>>12));
 				hl_buffer_hex(b, 0x80|((c>>6)&63));
 				hl_buffer_hex(b, 0x80|(c&63));
@@ -351,8 +359,8 @@ HL_PRIM vbyte *hl_url_decode( vbyte *str, int *len ) {
 				if( *cstr++ != '%' ) break;
 				p4 = decode_hex(&cstr);
 				if( p4 < 0 ) break;
-				k = ((p1 & 0x0F) << 18) | ((p2 & 0x7F) << 12) | ((p3 & 0x7F) << 6) | (p4 & 0x7F);
-				hl_buffer_char(b,(uchar)((k >> 10) + 0xD7C0));
+				k = (((p1 & 0x0F) << 18) | ((p2 & 0x7F) << 12) | ((p3 & 0x7F) << 6) | (p4 & 0x7F)) - 0x10000;
+				hl_buffer_char(b,(uchar)((k >> 10) + 0xD800));
 				c = (uchar)((k & 0x3FF) | 0xDC00);
 			}
 		}

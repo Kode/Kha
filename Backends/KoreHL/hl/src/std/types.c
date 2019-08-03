@@ -37,7 +37,7 @@ static const uchar *TSTR[] = {
 	USTR("void"), USTR("i8"), USTR("i16"), USTR("i32"), USTR("i64"), USTR("f32"), USTR("f64"),
 	USTR("bool"), USTR("bytes"), USTR("dynamic"), NULL, NULL,
 	USTR("array"), USTR("type"), NULL, NULL, USTR("dynobj"),
-	NULL, NULL, NULL, NULL
+	NULL, NULL, NULL, NULL, NULL
 };
 
 static int T_SIZES[] = {
@@ -62,6 +62,7 @@ static int T_SIZES[] = {
 	HL_WSIZE, // ENUM
 	HL_WSIZE, // NULL
 	HL_WSIZE, // METHOD
+	HL_WSIZE, // STRUCT
 };
 
 HL_PRIM int hl_type_size( hl_type *t ) {
@@ -136,6 +137,7 @@ HL_PRIM bool hl_same_type( hl_type *a, hl_type *b ) {
 			return hl_same_type(a->fun->ret, b->fun->ret);
 		}
 	case HOBJ:
+	case HSTRUCT:
 		return a->obj == b->obj;
 	case HVIRTUAL:
 		return a->virt == b->virt;
@@ -172,6 +174,7 @@ HL_PRIM bool hl_is_dynamic( hl_type *t ) {
 		true, // HENUM
 		true, // HNULL
 		false, // HMETHOD
+		false, // HSTRUCT
 	};
 	return T_IS_DYNAMIC[t->kind];
 }
@@ -198,6 +201,7 @@ HL_PRIM bool hl_safe_cast( hl_type *t, hl_type *to ) {
 		}
 		break;
 	case HOBJ:
+	case HSTRUCT:
 		{
 			hl_type_obj *o = t->obj;
 			hl_type_obj *oto = to->obj;
@@ -266,8 +270,9 @@ static void hl_type_str_rec( hl_buffer *b, hl_type *t, tlist *parents ) {
 		hl_buffer_char(b,')');
 		hl_buffer_char(b,')');
 		break;
+	case HSTRUCT:
+		hl_buffer_char(b,'@');
 	case HOBJ:
-		hl_buffer_char(b,'#');
 		hl_buffer_str(b,t->obj->name);
 		break;
 	case HREF:
@@ -321,6 +326,7 @@ HL_PRIM const uchar *hl_type_str( hl_type *t ) {
 HL_PRIM vbyte* hl_type_name( hl_type *t ) {
 	switch( t->kind ) {
 	case HOBJ:
+	case HSTRUCT:
 		return (vbyte*)t->obj->name;
 	case HENUM:
 		return (vbyte*)t->tenum->name;
@@ -408,7 +414,7 @@ HL_PRIM varray *hl_type_instance_fields( hl_type *t ) {
 			names[i] = t->virt->fields[i].name;
 		return a;
 	}
-	if( t->kind != HOBJ )
+	if( t->kind != HOBJ && t->kind != HSTRUCT )
 		return NULL;
 	o = t->obj;
 	while( true ) {
@@ -444,7 +450,7 @@ HL_PRIM varray *hl_type_instance_fields( hl_type *t ) {
 }
 
 HL_PRIM hl_type *hl_type_super( hl_type *t ) {
-	if( t->kind == HOBJ && t->obj->super )
+	if( (t->kind == HOBJ || t->kind == HSTRUCT) && t->obj->super )
 		return t->obj->super;
 	return &hlt_void;
 }
@@ -452,6 +458,7 @@ HL_PRIM hl_type *hl_type_super( hl_type *t ) {
 HL_PRIM vdynamic *hl_type_get_global( hl_type *t ) {
 	switch( t->kind ) {
 	case HOBJ:
+	case HSTRUCT:
 		return t->obj->global_value ? *(vdynamic**)t->obj->global_value : NULL;
 	case HENUM:
 		return *(vdynamic**)t->tenum->global_value;
@@ -464,6 +471,7 @@ HL_PRIM vdynamic *hl_type_get_global( hl_type *t ) {
 HL_PRIM bool hl_type_set_global( hl_type *t, vdynamic *v ) {
 	switch( t->kind ) {
 	case HOBJ:
+	case HSTRUCT:
 		if( t->obj->global_value ) {
 			*(vdynamic**)t->obj->global_value = v;
 			return true;

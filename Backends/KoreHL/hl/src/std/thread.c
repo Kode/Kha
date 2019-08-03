@@ -69,7 +69,8 @@ struct _hl_tls {
 
 HL_PRIM hl_mutex *hl_mutex_alloc( bool gc_thread ) {
 #	if !defined(HL_THREADS)
-	return (hl_mutex*)1;
+	static struct _hl_mutex null_mutex = {0};
+	return (hl_mutex*)&null_mutex;
 #	elif defined(HL_WIN)
 	hl_mutex *l = (hl_mutex*)hl_gc_alloc_finalizer(sizeof(hl_mutex));
 	l->free = hl_mutex_free;

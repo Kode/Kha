@@ -277,6 +277,7 @@ class SystemImpl {
 		#end
 		*/
 
+		LoaderImpl.tick();
 		Scheduler.executeFrame();
 		System.render(framebuffers);
 		var win = kha.kore.graphics4.Graphics.lastWindow;
