@@ -1,16 +1,19 @@
 package kha;
 
-import kha.Blob;
 import haxe.io.Bytes;
+import haxe.io.BytesData;
+import kha.Blob;
 import kha.Kravur;
-import sys.io.File;
 
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/System.h>
+#include <khalib/loader.h>
 ')
 
 class LoaderImpl {
+	static var blobCallbacks = new Map<cpp.UInt64, Blob -> Void>();
+
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: AssetError -> Void) {
 		done(new kha.kore.Sound(desc.files[0]));
 	}
@@ -29,7 +32,12 @@ class LoaderImpl {
 	}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
-		done(new Blob(File.getBytes(desc.files[0])));
+		blobCallbacks[loadBlob(desc.files[0])] = done;
+	}
+
+	@:functionCode('return kha_loader_load_blob(filename);')
+	static function loadBlob(filename: String): cpp.UInt64 {
+		return 0;
 	}
 
 	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
@@ -63,6 +71,22 @@ class LoaderImpl {
 
 	@:functionCode('Kore::System::loadURL(url);')
 	public static function loadURL(url: String): Void {
+
+	}
+
+	static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
+		blobCallbacks[index](new Blob(Bytes.ofData(bytes)));
+	}
+
+	@:functionCode('
+		kha_file_reference_t file = kha_loader_get_file();
+		while (file.index != 0) {
+			Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
+			blobLoaded(file.index, buffer);
+			file = kha_loader_get_file();
+		}
+	')
+	public static function tick(): Void {
 
 	}
 }

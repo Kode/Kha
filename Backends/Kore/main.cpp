@@ -1,4 +1,7 @@
 #include <Kore/pch.h>
+
+#include <khalib/loader.h>
+
 //#include <Kore/Application.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Input/Gamepad.h>
@@ -347,6 +350,7 @@ extern char **_hxcpp_argv;
 int kickstart(int argc, char **argv) {
 	_hxcpp_argc = argc;
 	_hxcpp_argv = argv;
+	kha_loader_init();
 	HX_TOP_OF_STACK
 	hx::Boot();
 #ifdef NDEBUG
