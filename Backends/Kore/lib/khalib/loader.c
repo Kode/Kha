@@ -83,7 +83,8 @@ static void run(void* param) {
 				if (string_ends_with(next.name, ".ogg")) {
 					kinc_file_reader_t reader;
 					if (kinc_file_reader_open(&reader, next.name, KINC_FILE_TYPE_ASSET)) {
-						next.data.sound.compressed_samples = (uint8_t *)malloc(kinc_file_reader_size(&reader));
+						next.data.sound.size = kinc_file_reader_size(&reader);
+						next.data.sound.compressed_samples = (uint8_t *)malloc(next.data.sound.size);
 						kinc_file_reader_read(&reader, next.data.sound.compressed_samples, kinc_file_reader_size(&reader));
 						kinc_file_reader_close(&reader);
 					}
