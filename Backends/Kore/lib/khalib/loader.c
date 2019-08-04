@@ -14,6 +14,13 @@
 
 #include <assert.h>
 
+#define DECOMPRESS_OGGS
+#define STB_VORBIS_HEADER_ONLY
+#include <kinc/audio1/stb_vorbis.c>
+#ifdef DECOMPRESS_OGGS
+
+#endif
+
 static kinc_thread_t thread;
 static kinc_event_t event;
 static kinc_mutex_t loading_mutex;
@@ -87,6 +94,39 @@ static void run(void* param) {
 						next.data.sound.compressed_samples = (uint8_t *)malloc(next.data.sound.size);
 						kinc_file_reader_read(&reader, next.data.sound.compressed_samples, kinc_file_reader_size(&reader));
 						kinc_file_reader_close(&reader);
+#ifdef DECOMPRESS_OGGS
+						int samples = 0;
+						int channels = 0;
+						int samplesPerSecond = 0;
+
+						int16_t *data = NULL;
+						samples = stb_vorbis_decode_memory(next.data.sound.compressed_samples, next.data.sound.size, &channels, &samplesPerSecond,
+						                                   &data);
+
+						if (channels == 1) {
+							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
+							next.data.sound.size = samples * 2;
+							next.data.sound.samples = malloc(next.data.sound.size * sizeof(float));
+							for (int i = 0; i < samples; ++i) {
+								next.data.sound.samples[i * 2 + 0] = data[i] / 32767.0f;
+								next.data.sound.samples[i * 2 + 1] = data[i] / 32767.0f;
+							}
+						}
+						else {
+							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
+							next.data.sound.size = samples * 2;
+							next.data.sound.samples = malloc(next.data.sound.size * sizeof(float));
+							for (int i = 0; i < next.data.sound.size; ++i) {
+								next.data.sound.samples[i] = data[i] / 32767.0f;
+							}
+						}
+						next.data.sound.channels = channels;
+
+						free(data);
+
+						free(next.data.sound.compressed_samples);
+						next.data.sound.compressed_samples = NULL;
+#endif
 					}
 					else {
 						next.error = true;
