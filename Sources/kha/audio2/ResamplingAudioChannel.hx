@@ -58,7 +58,7 @@ class ResamplingAudioChannel extends AudioChannel {
 	}
 	
 	/*inline*/ function sampleLength(sampleRate: Int): Int {
-		return Math.ceil(data.length * (this.sampleRate / sampleRate));
+		return Math.ceil(data.length * (sampleRate / this.sampleRate));
 	}
 
 	public override function play(): Void {
