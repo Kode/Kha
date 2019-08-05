@@ -13,6 +13,7 @@ class Sound implements Resource {
 	public var uncompressedData: kha.arrays.Float32Array;
 	public var length: Float = 0; // in seconds
 	public var channels: Int = 0;
+	public var sampleRate: Int = 0;
 	
 	public function new() {
 		
@@ -33,7 +34,7 @@ class Sound implements Resource {
 		untyped __cpp__("samples = stb_vorbis_decode_memory((Kore::u8*)compressedData->b->GetBase(), compressedData->length, &channels, &samplesPerSecond, &data)");
 
 		if (channels == 1) {
-			length = samples / kha.audio2.Audio.samplesPerSecond;// header.sampleRate;
+			length = samples / samplesPerSecond;
 			uncompressedData = new kha.arrays.Float32Array(samples * 2);
 			for (i in 0...samples) {
 				untyped __cpp__("this->uncompressedData->self.set(i * 2 + 0, data[i] / 32767.0f)");
@@ -41,13 +42,14 @@ class Sound implements Resource {
 			}
 		}
 		else {
-			length = samples / kha.audio2.Audio.samplesPerSecond; //header.sampleRate;
+			length = samples / samplesPerSecond;
 			uncompressedData = new kha.arrays.Float32Array(samples * 2);
 			for (i in 0...samples * 2) {
 				untyped __cpp__("this->uncompressedData->self.set(i1, data[i1] / 32767.0f)");
 			}
 		}
 		this.channels = channels;
+		this.sampleRate = samplesPerSecond;
 
 		untyped __cpp__("delete[] data");
 
@@ -82,6 +84,7 @@ class Sound implements Resource {
 			}
 		}
 		channels = header.channel;
+		sampleRate = header.sampleRate;
 		compressedData = null;
 		done();
 		#end

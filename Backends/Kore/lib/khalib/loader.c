@@ -101,6 +101,7 @@ static void run(void* param) {
 						next.data.sound.samples[i * 2 + 1] = (float)(sound->right[i] / 32767.0);
 					}
 					next.data.sound.channels = sound->format.channels;
+					next.data.sound.sample_rate = sound->format.samples_per_second;
 					next.data.sound.length = (sound->size / (sound->format.bits_per_sample / 8) / sound->format.channels) / (float)sound->format.samples_per_second;
 				}
 				break;
