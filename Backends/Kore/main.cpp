@@ -246,7 +246,7 @@ namespace {
 		//int addr = 0;
 		//Kore::log(Info, "mix address is %x", &addr);
 
-		::kha::audio2::Audio_obj::_callCallback(samples);
+		::kha::audio2::Audio_obj::_callCallback(samples, Kore::Audio2::samplesPerSecond);
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();

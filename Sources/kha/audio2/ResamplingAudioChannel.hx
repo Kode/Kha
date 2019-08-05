@@ -38,11 +38,19 @@ class ResamplingAudioChannel extends AudioChannel {
 		}
 	}
 
-	/*inline*/ function sample(position: Int, sampleRate: Int) {
-		var pos: Float = position * (this.sampleRate / sampleRate);
-		var a = data[max(0, Math.floor(pos))];
-		var b = data[min(Math.ceil(pos), data.length - 1)];
-		return lerp(a, b, pos - position);
+	/*inline*/ function sample(position: Int, sampleRate: Int): Float {
+		var factor = this.sampleRate / sampleRate;
+		var pos1: Int = Math.floor(position * factor);
+		var pos2: Int = Math.ceil((position + 1) * factor);
+		var sum = 0.0;
+		for (i in pos1...pos2 + 1) {
+			sum += data[min(data.length - 1, max(0, i))];
+		}
+		return sum / (pos2 - pos1);
+		
+		//var a = data[max(0, Math.floor(pos))];
+		//var b = data[min(Math.ceil(pos), data.length - 1)];
+		//return lerp(a, b, pos - position);
 	}
 
 	/*inline*/ function lerp(v0: Float, v1: Float, t: Float) {
