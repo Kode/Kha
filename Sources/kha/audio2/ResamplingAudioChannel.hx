@@ -54,8 +54,8 @@ class ResamplingAudioChannel extends AudioChannel {
 			var maximum = data.length - 1;
 			maximum = maximum % 2 == 0 ? maximum : maximum - 1;
 
-			var a = data[max(minimum, pos1)];
-			var b = data[min(maximum, pos2)];
+			var a = (pos1 < minimum || pos1 > maximum) ? 0 : data[pos1];
+			var b = (pos2 < minimum || pos2 > maximum) ? 0 : data[pos2];
 			return lerp(a, b, pos - Math.floor(pos));
 		}
 		else {
@@ -70,8 +70,8 @@ class ResamplingAudioChannel extends AudioChannel {
 			var maximum = data.length - 1;
 			maximum = maximum % 2 != 0 ? maximum : maximum - 1;
 
-			var a = data[max(minimum, pos1)];
-			var b = data[min(maximum, pos2)];
+			var a = (pos1 < minimum || pos1 > maximum) ? 0 : data[pos1];
+			var b = (pos2 < minimum || pos2 > maximum) ? 0 : data[pos2];
 			return lerp(a, b, pos - Math.floor(pos));
 		}
 	}
@@ -81,7 +81,8 @@ class ResamplingAudioChannel extends AudioChannel {
 	}
 	
 	inline function sampleLength(sampleRate: Int): Int {
-		return Math.ceil(data.length * (sampleRate / this.sampleRate));
+		var value = Math.ceil(data.length * (sampleRate / this.sampleRate));
+		return value % 2 == 0 ? value : value + 1;
 	}
 
 	public override function play(): Void {
