@@ -100,7 +100,7 @@ static void run(void* param) {
 						int samplesPerSecond = 0;
 
 						int16_t *data = NULL;
-						samples = stb_vorbis_decode_memory(next.data.sound.compressed_samples, next.data.sound.size, &channels, &samplesPerSecond,
+						samples = stb_vorbis_decode_memory(next.data.sound.compressed_samples, (int)next.data.sound.size, &channels, &samplesPerSecond,
 						                                   &data);
 
 						if (channels == 1) {
@@ -121,6 +121,7 @@ static void run(void* param) {
 							}
 						}
 						next.data.sound.channels = channels;
+						next.data.sound.sample_rate = samplesPerSecond;
 
 						free(data);
 
