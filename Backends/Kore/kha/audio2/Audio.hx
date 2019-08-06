@@ -15,8 +15,9 @@ class Audio {
 	}
 
 	@:noCompletion
-	public static function _callCallback(samples: Int): Void {
+	public static function _callCallback(samples: Int, sampleRate: Int): Void {
 		if (buffer == null) return;
+		buffer.samplesPerSecond = sampleRate;
 		if (audioCallback != null) {
 			intBox.value = samples;
 			audioCallback(intBox, buffer);

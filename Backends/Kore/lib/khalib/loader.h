@@ -30,6 +30,7 @@ typedef struct {
 	uint8_t *compressed_samples;
 	size_t size;
 	size_t channels;
+	int sample_rate;
 	float length;
 } kha_sound_t;
 

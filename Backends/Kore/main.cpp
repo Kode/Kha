@@ -267,7 +267,7 @@ namespace {
 		}
 #endif
 
-		::kha::audio2::Audio_obj::_callCallback(samples);
+		::kha::audio2::Audio_obj::_callCallback(samples, Kore::Audio2::samplesPerSecond);
 
 #ifdef KORE_MULTITHREADED_AUDIO
 		if (mixThreadregistered) {
