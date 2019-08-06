@@ -43,12 +43,12 @@ class ResamplingAudioChannel extends AudioChannel {
 		var pos = position * factor;
 		var floored = Math.floor(pos);
 		var a = data[max(0, floored)];
-		var b = data[min(Math.ceil(pos), data.length - 1)];
+		var b = data[min(Math.floor(pos + 1), data.length - 1)];
 		return lerp(a, b, pos - floored);
 	}
 
 	inline function lerp(v0: Float, v1: Float, t: Float) {
-		return v0 + t * (v1 - v0);
+		return (1 - t) * v0 + t * v1;
 	}
 	
 	inline function sampleLength(sampleRate: Int): Int {
