@@ -116,15 +116,15 @@ class LoaderImpl {
 
 	}
 
-	static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
+	@:keep static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
 		blobCallbacks[index].success(new Blob(Bytes.ofData(bytes)));
 	}
 
-	static function blobErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function blobErrored(index: cpp.UInt64, filename: String) {
 		blobCallbacks[index].error({url: filename});
 	}
 
-	static function soundLoadedCompressed(index: cpp.UInt64, bytes: BytesData) {
+	@:keep static function soundLoadedCompressed(index: cpp.UInt64, bytes: BytesData) {
 		var sound = new Sound();
 		sound.compressedData = Bytes.ofData(bytes);
 		sound.uncompressedData = null;
@@ -134,7 +134,7 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	static function soundLoadedUncompressed(index: cpp.UInt64, samples: Float32Array, channels: Int, sampleRate: Int, length: Float) {
+	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: Float32Array, channels: Int, sampleRate: Int, length: Float) {
 		var sound = new Sound();
 		sound.compressedData = null;
 		sound.uncompressedData = samples;
@@ -144,23 +144,23 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	static function soundErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function soundErrored(index: cpp.UInt64, filename: String) {
 		soundCallbacks[index].error({url: filename});
 	}
 
-	static function createFloat32Array() {
+	@:keep static function createFloat32Array() {
 		return new Float32Array();
 	}
 
-	static function createEmptyImage(readable: Bool, floatFormat: Bool) {
+	@:keep static function createEmptyImage(readable: Bool, floatFormat: Bool) {
 		return Image.createEmpty(readable, floatFormat);
 	}
 
-	static function imageLoaded(index: cpp.UInt64, image: Image) {
+	@:keep static function imageLoaded(index: cpp.UInt64, image: Image) {
 		imageCallbacks[index].success(image);
 	}
 
-	static function imageErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function imageErrored(index: cpp.UInt64, filename: String) {
 		imageCallbacks[index].error({url: filename});
 	}
 
@@ -203,7 +203,7 @@ class LoaderImpl {
 					}
 					break;
 			}
-			
+
 			file = kha_loader_get_file();
 		}
 	')
