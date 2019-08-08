@@ -450,7 +450,7 @@ class SystemImpl {
 
 			Scheduler.executeFrame();
 
-			if (untyped canvas.getContext) {
+			if (canvas.getContext != null) {
 
 				// Lookup the size the browser is displaying the canvas.
 				//TODO deal with window.devicePixelRatio ?

@@ -280,8 +280,10 @@ class SystemImpl {
 		LoaderImpl.tick();
 		Scheduler.executeFrame();
 		System.render(framebuffers);
-		var win = kha.kore.graphics4.Graphics.lastWindow;
-		untyped __cpp__('Kore::Graphics4::end(win);');
+		if (kha.kore.graphics4.Graphics.lastWindow != -1) {
+			var win = kha.kore.graphics4.Graphics.lastWindow;
+			untyped __cpp__('Kore::Graphics4::end(win);');
+		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
 
 		if (gamepad1.connected && !checkGamepadConnected()) {
