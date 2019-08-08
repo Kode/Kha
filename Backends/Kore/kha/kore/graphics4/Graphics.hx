@@ -553,7 +553,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var win: Int = window == null ? 0 : window;
 		if (win != lastWindow) {
 			if (lastWindow != -1) {
-				untyped __cpp__('Kore::Graphics4::begin(lastWindow);');
+				untyped __cpp__('Kore::Graphics4::end(lastWindow);');
 			}
 			untyped __cpp__('Kore::Graphics4::begin(win);');
 			lastWindow = win;
