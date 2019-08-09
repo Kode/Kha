@@ -68,12 +68,16 @@ static void run(void* param) {
 			case KHA_FILE_TYPE_IMAGE: {
 				kinc_image_t image;
 				size_t size = kinc_image_size_from_file(next.name);
-				void *data = malloc(size);
-				if (kinc_image_init_from_file(&image, data, next.name) != 0) {
-					next.data.image.image = image;
-				}
-				else {
-					free(data);
+				if (size > 0) {
+					void *data = malloc(size);
+					if (kinc_image_init_from_file(&image, data, next.name) != 0) {
+						next.data.image.image = image;
+					}
+					else {
+						free(data);
+						next.error = true;
+					}
+				} else {
 					next.error = true;
 				}
 				break;
