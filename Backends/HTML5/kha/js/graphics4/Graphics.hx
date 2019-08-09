@@ -42,6 +42,7 @@ class Graphics implements kha.graphics4.Graphics {
 	private var isDepthAttachment: Bool = false;
 	private var instancedExtension: Dynamic;
 	private var blendMinMaxExtension: Dynamic;
+	private var useVertexAttributes:Int=0;
 
 	// WebGL2 constants
 	// https://www.khronos.org/registry/webgl/specs/2.0.0/
@@ -319,7 +320,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set(0);
+		useVertexAttributes =cast(vertexBuffer, VertexBuffer).set(0);
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
@@ -327,6 +328,7 @@ class Graphics implements kha.graphics4.Graphics {
 		for (vertexBuffer in vertexBuffers) {
 			offset += cast(vertexBuffer, VertexBuffer).set(offset);
 		}
+		useVertexAttributes=offset;
 	}
 
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
@@ -574,6 +576,9 @@ class Graphics implements kha.graphics4.Graphics {
 		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
 		var size = type == GL.UNSIGNED_SHORT ? 2 : 4;
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
+		for(i in 0...useVertexAttributes){
+			SystemImpl.gl.disableVertexAttribArray(i);
+		}
 	}
 
 	private function convertStencilAction(action: StencilAction) {
