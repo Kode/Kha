@@ -21,14 +21,14 @@ class Mouse extends Controller {
 	 * @param wheelListener function with `delta:Int` argument, fired when the wheel rotates. It can have a value of `1` or `-1` depending on the rotation.
 	 * @param leaveListener (optional) function without` arguments, when fired mouse leave canvas.
 	 */
-	public function notify(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
+	public function notify(downListener: (button:Int, x:Int, y:Int)->Void, upListener: (button:Int, x:Int, y:Int)->Void, moveListener: (x:Int, y:Int, moveX:Int, moveY:Int)->Void, wheelListener: (delta:Int)->Void, leaveListener:()->Void = null): Void {
 		notifyWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void, wheelListener: Int->Void, leaveListener:Void->Void = null): Void {
+	public function remove(downListener: (button:Int, x:Int, y:Int)->Void, upListener: (button:Int, x:Int, y:Int)->Void, moveListener: (x:Int, y:Int, moveX:Int, moveY:Int)->Void, wheelListener: (delta:Int)->Void, leaveListener:()->Void = null): Void {
 		removeWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 

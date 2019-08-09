@@ -1,4 +1,7 @@
 #include <Kore/pch.h>
+
+#include <khalib/loader.h>
+
 //#include <Kore/Application.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Input/Gamepad.h>
@@ -243,7 +246,7 @@ namespace {
 		//int addr = 0;
 		//Kore::log(Info, "mix address is %x", &addr);
 
-		::kha::audio2::Audio_obj::_callCallback(samples);
+		::kha::audio2::Audio_obj::_callCallback(samples, Kore::Audio2::samplesPerSecond);
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();
@@ -328,7 +331,6 @@ void post_kore_init() {
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
-	Kore::threadsInit();
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
 	::kha::audio2::Audio_obj::samplesPerSecond = Kore::Audio2::samplesPerSecond;
@@ -347,6 +349,8 @@ extern char **_hxcpp_argv;
 int kickstart(int argc, char **argv) {
 	_hxcpp_argc = argc;
 	_hxcpp_argv = argv;
+	Kore::threadsInit();
+	kha_loader_init();
 	HX_TOP_OF_STACK
 	hx::Boot();
 #ifdef NDEBUG

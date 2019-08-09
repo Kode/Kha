@@ -35,6 +35,7 @@ class Audio {
 		initContext();
 		if (_context == null) return false;
 		
+		Audio.samplesPerSecond = Math.round(_context.sampleRate);
 		var bufferSize = 1024 * 2;
 		buffer = new Buffer(bufferSize * 4, 2, Std.int(_context.sampleRate));
 		

@@ -80,12 +80,13 @@ class WebAudioSound extends kha.Sound {
 
 	override public function uncompress(done: Void->Void): Void {
 		Audio._context.decodeAudioData(compressedData.getData(),
-		function (buffer) {
+		function (buffer: js.html.audio.AudioBuffer) {
 			var ch0 = buffer.getChannelData(0);
 			var len = ch0.length;
 			uncompressedData = new kha.arrays.Float32Array(len * 2);
 			length = buffer.duration;
 			channels = buffer.numberOfChannels;
+			sampleRate = Math.round(buffer.sampleRate);
 			if (buffer.numberOfChannels == 1) {
 				var idx = 0;
 				var i = 0;

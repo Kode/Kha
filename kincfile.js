@@ -34,7 +34,9 @@ for (const file of zlibFiles) {
 
 project.addFiles('Backends/Kore/khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/**');
 
-project.addFiles('Backends/Kore/*.cpp', 'Backends/Kore/*.h', 'Backends/Kore/*.natvis');
+project.addFiles('Backends/Kore/*.cpp', 'Backends/Kore/*.c', 'Backends/Kore/*.h', 'Backends/Kore/*.natvis');
+project.addFiles('Backends/Kore/lib/**');
+project.addIncludeDir('Backends/Kore/lib');
 
 const pcreExcludes = [
 	'dftables.c',
