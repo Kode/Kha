@@ -5,7 +5,6 @@ platform:
 environment:
   matrix:
   - platform_name: windows
-  - platform_name: windowsapp
 before_build:
   - git submodule update --init --recursive
   - git clone https://github.com/Kode/nodejs_bin.git

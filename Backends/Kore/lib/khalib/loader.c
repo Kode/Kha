@@ -170,7 +170,7 @@ static void run(void* param) {
 void kha_loader_init() {
 	kinc_mutex_init(&loaded_mutex);
 	kinc_mutex_init(&loading_mutex);
-	kinc_event_init(&event);
+	kinc_event_init(&event, false);
 	kinc_thread_init(&thread, run, NULL);
 }
 

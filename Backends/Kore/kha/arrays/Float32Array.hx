@@ -10,18 +10,18 @@ import kha.FastFloat;
 extern class Float32ArrayData {
 	@:native("float32array")
 	public static function create(): Float32ArrayData;
-	
+
 	public var length(get, never): Int;
 
 	@:native("length")
 	function get_length(): Int;
-	
+
 	public function alloc(elements: Int): Void;
 
 	public function free(): Void;
 
 	public function get(index: Int): FastFloat;
-		
+
 	public function set(index: Int, value: FastFloat): FastFloat;
 }
 
@@ -55,23 +55,15 @@ abstract Float32Array(Float32ArrayPrivate) {
 	inline function get_length(): Int {
 		return this.self.length;
 	}
-	
+
+	@:arrayAccess
 	public inline function set(index: Int, value: FastFloat): FastFloat {
 		return this.self.set(index, value);
 	}
-	
-	public inline function get(index: Int): FastFloat {
-		return this.self.get(index);
-	}
-	
-	@:arrayAccess
-	public inline function arrayRead(index: Int): FastFloat {
-		return this.self.get(index);
-	}
 
 	@:arrayAccess
-	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
-		return this.self.set(index, value);
+	public inline function get(index: Int): FastFloat {
+		return this.self.get(index);
 	}
 
 	//public inline function subarray(start: Int, ?end: Int): Float32Array {
