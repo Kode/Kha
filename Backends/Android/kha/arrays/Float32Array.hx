@@ -17,28 +17,19 @@ abstract Float32Array(java.NativeArray<Single>) {
 		return this.length;
 	}
 
+	@:arrayAccess
 	public inline function set(index: Int, value: FastFloat): FastFloat {
 		this[index] = value;
 		return value;
 	}
 
+	@:arrayAccess
 	public inline function get(index: Int): FastFloat {
 		return this[index];
 	}
 
 	public inline function data(count:Int): FloatBuffer {
 		return FloatBuffer.wrap(this, 0, count);
-	}
-
-	@:arrayAccess
-	public inline function arrayRead(index: Int): FastFloat {
-		return get(index);
-	}
-
-	@:arrayAccess
-	public inline function arrayWrite(index: Int, value: FastFloat): FastFloat {
-		set(index, value);
-		return value;
 	}
 
 	//public inline function subarray(start: Int, ?end: Int): Float32Array {
