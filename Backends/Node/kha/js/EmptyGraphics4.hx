@@ -156,10 +156,6 @@ class EmptyGraphics4 implements Graphics {
 		
 	}
 	
-	public function renderTargetsInvertedY(): Bool {
-		return false;
-	}
-	
 	public function setPipeline(pipeline: PipelineState): Void {
 		
 	}

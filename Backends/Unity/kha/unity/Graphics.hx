@@ -159,10 +159,6 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
-	public function renderTargetsInvertedY(): Bool {
-		return !UnityBackend.uvStartsAtTop();
-	}
-
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
 		var w = System.windowWidth();
