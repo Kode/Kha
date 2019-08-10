@@ -89,10 +89,6 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_disable_scissor();
 	}
 	
-	public function renderTargetsInvertedY(): Bool {
-		return kore_graphics_render_targets_inverted_y();
-	}
-	
 	public function instancedRenderingAvailable(): Bool {
 		return true;
 	}
@@ -292,7 +288,6 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_scissor") static function kore_graphics_scissor(x: Int, y: Int, width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_graphics_disable_scissor") static function kore_graphics_disable_scissor(): Void { }
-	@:hlNative("std", "kore_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool { return false; }
 	@:hlNative("std", "kore_graphics_set_texture_parameters") static function kore_graphics_set_texture_parameters(unit: Pointer, uAddressing: Int, vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_texture3d_parameters") static function kore_graphics_set_texture3d_parameters(unit: Pointer, uAddressing: Int, vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_texture_compare_mode") static function kore_graphics_set_texture_compare_mode(unit: Pointer, enabled: Bool): Void { }

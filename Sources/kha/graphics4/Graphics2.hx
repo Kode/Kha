@@ -773,7 +773,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 				width = upperPowerOfTwo(width);
 				height = upperPowerOfTwo(height);
 			}
-			if (g.renderTargetsInvertedY()) {
+			if (Image.renderTargetsInvertedY()) {
 				projectionMatrix.setFrom(FastMatrix4.orthogonalProjection(0, width, 0, height, 0.1, 1000));
 			}
 			else {

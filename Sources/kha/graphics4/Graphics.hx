@@ -45,7 +45,6 @@ interface Graphics {
 	//function supportsNonPow2Textures(): Bool;
 	function setStencilReferenceValue(value: Int): Void;
 	
-	function renderTargetsInvertedY(): Bool;
 	function instancedRenderingAvailable(): Bool;
 	
 	function setPipeline(pipeline: PipelineState): Void;
