@@ -24,7 +24,7 @@ static kha_index_t next_index = 1;
 static kha_file_reference_t *loading_files = NULL;
 static kha_file_reference_t *loaded_files = NULL;
 
-static bool string_ends_with(char *str, char *end) {
+static bool string_ends_with(char *str, const char *end) {
 	size_t str_len = strlen(str);
 	size_t end_len = strlen(end);
 	if (end_len > str_len) {
@@ -56,7 +56,7 @@ static void run(void* param) {
 				kinc_file_reader_t reader;
 				if (kinc_file_reader_open(&reader, next.name, KINC_FILE_TYPE_ASSET)) {
 					next.data.blob.size = kinc_file_reader_size(&reader);
-					next.data.blob.bytes = malloc(next.data.blob.size);
+					next.data.blob.bytes = (uint8_t*)malloc(next.data.blob.size);
 					kinc_file_reader_read(&reader, next.data.blob.bytes, next.data.blob.size);
 					kinc_file_reader_close(&reader);
 				}
