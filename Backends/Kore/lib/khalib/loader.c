@@ -31,7 +31,7 @@ static kha_index_t next_index = 1;
 static kha_file_reference_t *loading_files = NULL;
 static kha_file_reference_t *loaded_files = NULL;
 
-static bool string_ends_with(char *str, char *end) {
+static bool string_ends_with(char *str, const char *end) {
 	size_t str_len = strlen(str);
 	size_t end_len = strlen(end);
 	if (end_len > str_len) {
@@ -63,7 +63,7 @@ static void run(void* param) {
 				kinc_file_reader_t reader;
 				if (kinc_file_reader_open(&reader, next.name, KINC_FILE_TYPE_ASSET)) {
 					next.data.blob.size = kinc_file_reader_size(&reader);
-					next.data.blob.bytes = malloc(next.data.blob.size);
+					next.data.blob.bytes = (uint8_t*)malloc(next.data.blob.size);
 					kinc_file_reader_read(&reader, next.data.blob.bytes, next.data.blob.size);
 					kinc_file_reader_close(&reader);
 				}
@@ -106,7 +106,7 @@ static void run(void* param) {
 						if (channels == 1) {
 							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
 							next.data.sound.size = samples * 2;
-							next.data.sound.samples = malloc(next.data.sound.size * sizeof(float));
+							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
 							for (int i = 0; i < samples; ++i) {
 								next.data.sound.samples[i * 2 + 0] = data[i] / 32767.0f;
 								next.data.sound.samples[i * 2 + 1] = data[i] / 32767.0f;
@@ -115,7 +115,7 @@ static void run(void* param) {
 						else {
 							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
 							next.data.sound.size = samples * 2;
-							next.data.sound.samples = malloc(next.data.sound.size * sizeof(float));
+							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
 							for (int i = 0; i < next.data.sound.size; ++i) {
 								next.data.sound.samples[i] = data[i] / 32767.0f;
 							}
