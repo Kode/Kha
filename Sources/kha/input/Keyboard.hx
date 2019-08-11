@@ -7,7 +7,7 @@ enum BlockInterventions {
 	Default;
 	Full;
 	None;
-	Custom(func:(code:Int)->Bool);
+	Custom(func: (code: KeyCode)->Bool);
 }
 
 @:allow(kha.SystemImpl)

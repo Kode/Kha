@@ -980,7 +980,7 @@ class SystemImpl {
 			case Full:
 				event.preventDefault();
 			case Custom(func):
-				if (func(event.keyCode)) event.preventDefault();
+				if (func(cast event.keyCode)) event.preventDefault();
 			case None:
 		}
 		event.stopPropagation();
