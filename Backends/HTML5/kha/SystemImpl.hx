@@ -974,8 +974,15 @@ class SystemImpl {
 		insideInputEvent = true;
 		unlockSound();
 
-		if ((event.keyCode < 112 || event.keyCode > 123) //F1-F12
-			&& (event.key != null && event.key.length != 1)) event.preventDefault();
+		switch (Keyboard.keyBehavior) {
+			case Default:
+				defaultKeyBlock(event);
+			case Full:
+				event.preventDefault();
+			case Custom(func):
+				if (func(event.keyCode)) event.preventDefault();
+			case None:
+		}
 		event.stopPropagation();
 
 		// prevent key repeat
@@ -993,6 +1000,19 @@ class SystemImpl {
 
 		keyboard.sendDownEvent(cast event.keyCode);
 		insideInputEvent = false;
+	}
+
+	static function defaultKeyBlock(e: KeyboardEvent):Void {
+		// block if ctrl/backspace key pressed
+		if (e.ctrlKey || e.metaKey || e.keyCode == 8) {
+			e.preventDefault();
+			return;
+		}
+		// allow F-keys
+		if (e.keyCode >= 112 || e.keyCode <= 123) return;
+		// allow char keys
+		if (e.key == null || e.key.length == 1) return;
+		e.preventDefault();
 	}
 
 	private static function keyUp(event: KeyboardEvent): Void {
