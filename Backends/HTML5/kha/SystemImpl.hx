@@ -14,6 +14,7 @@ import js.html.DeviceOrientationEvent;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
+import kha.input.KeyCode;
 import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.Surface;
@@ -261,27 +262,6 @@ class SystemImpl {
 		document.addEventListener("copy", onCopy);
 		document.addEventListener("cut", onCut);
 		document.addEventListener("paste", onPaste);
-
-		if (firefox) {
-			var canvas = getCanvasElement();
-			function onPreTextEvents(e: KeyboardEvent):Void {
-				if (!(e.ctrlKey || e.metaKey)) return;
-				var isEvent = e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86;
-				if (!isEvent) return;
-
-				var input = document.createTextAreaElement();
-				var onEvent = function(e: ClipboardEvent) {
-					document.body.removeChild(input);
-					canvas.focus();
-				};
-				if (e.keyCode == 67) input.oncopy = onEvent;
-				else if (e.keyCode == 88) input.oncut = onEvent;
-				else if (e.keyCode == 86) input.onpaste = onEvent;
-				document.body.appendChild(input);
-				input.select();
-			}
-			canvas.addEventListener("keydown", onPreTextEvents);
-		}
 
 		CanvasImage.init();
 		Scheduler.init();
@@ -997,19 +977,28 @@ class SystemImpl {
 			event.preventDefault();
 			return;
 		}
-
-		keyboard.sendDownEvent(cast event.keyCode);
+		var keyCode = fixedKeyCode(event);
+		keyboard.sendDownEvent(keyCode);
 		insideInputEvent = false;
 	}
 
+	static function fixedKeyCode(event: KeyboardEvent): KeyCode {
+		return switch (event.keyCode) {
+			case 91, 93: Meta; // left/right in Chrome
+			default: cast event.keyCode;
+		}
+	}
+
 	static function defaultKeyBlock(e: KeyboardEvent):Void {
-		// block if ctrl/backspace key pressed
-		if (e.ctrlKey || e.metaKey || e.keyCode == 8) {
+		// block if ctrl key pressed
+		if (e.ctrlKey || e.metaKey) {
+			// except for cut-copy-paste
+			if (e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86) return;
 			e.preventDefault();
 			return;
 		}
 		// allow F-keys
-		if (e.keyCode >= 112 || e.keyCode <= 123) return;
+		if (e.keyCode >= 112 && e.keyCode <= 123) return;
 		// allow char keys
 		if (e.key == null || e.key.length == 1) return;
 		e.preventDefault();
@@ -1024,7 +1013,8 @@ class SystemImpl {
 
 		if (ie) pressedKeys[event.keyCode] = false;
 
-		keyboard.sendUpEvent(cast event.keyCode);
+		var keyCode = fixedKeyCode(event);
+		keyboard.sendUpEvent(keyCode);
 
 		insideInputEvent = false;
 	}
