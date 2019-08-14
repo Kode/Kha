@@ -103,6 +103,7 @@ static void run(void* param) {
 					next.data.sound.channels = sound->format.channels;
 					next.data.sound.sample_rate = sound->format.samples_per_second;
 					next.data.sound.length = (sound->size / (sound->format.bits_per_sample / 8) / sound->format.channels) / (float)sound->format.samples_per_second;
+					kinc_a1_sound_destroy(sound);
 				}
 				break;
 			}
@@ -195,4 +196,13 @@ kha_file_reference_t kha_loader_get_file() {
 		memset(&file, 0, sizeof(file));
 		return file;
 	}
+}
+
+void kha_loader_cleanup_blob(kha_blob_t blob) {
+	free(blob.bytes);
+}
+
+void kha_loader_cleanup_sound(kha_sound_t sound) {
+	// sound.samples is transferred to a Float32Array in LoaderImpl.hx and will go into hxcpp GC
+	free(sound.compressed_samples);
 }

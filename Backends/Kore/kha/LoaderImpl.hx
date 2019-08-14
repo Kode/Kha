@@ -175,6 +175,7 @@ class LoaderImpl {
 					else {
 						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.blob.bytes, file.data.blob.size);
 						blobLoaded(file.index, buffer);
+						kha_loader_cleanup_blob(file.data.blob);
 					}
 					break;
 				case KHA_FILE_TYPE_IMAGE:
@@ -200,6 +201,7 @@ class LoaderImpl {
 					else {
 						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.sound.compressed_samples, file.data.sound.size);
 						soundLoadedCompressed(file.index, buffer);
+						kha_loader_cleanup_sound(file.data.sound);
 					}
 					break;
 			}
