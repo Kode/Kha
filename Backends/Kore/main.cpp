@@ -145,10 +145,6 @@ namespace {
 	double lastTime = 0.0;
 
 	void update() {
-		double time = Kore::System::time();
-		SystemImpl_obj::frameTime = time - lastTime;
-		lastTime = time;
-
 		//**if (paused) return;
 		Kore::Audio2::update();
 

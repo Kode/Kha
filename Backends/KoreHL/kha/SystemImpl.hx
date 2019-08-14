@@ -376,6 +376,22 @@ class SystemImpl {
 		return 1.0;
 	}
 
+	public static function login(): Void {
+
+	}
+
+	public static function automaticSafeZone(): Bool {
+		return true;
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		
+	}
+
+	public static function unlockAchievement(id: Int): Void {
+		
+	}
+
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
 	@:hlNative("std", "run_kore") static function run_kore(): Void { }
 	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat, outSamplesPerSecond: hl.Ref<Int>): Void { }
