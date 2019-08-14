@@ -17,7 +17,9 @@ class Audio1 {
 
 	@:noCompletion
 	public static function _init(): Void {
+		#if cpp
 		untyped __cpp__('kinc_mutex_init(&mutex)');
+		#end
 		soundChannels = new Vector<AudioChannel>(channelCount);
 		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
@@ -69,14 +71,18 @@ class Audio1 {
 			sampleCache2[i] = 0;
 		}
 
+		#if cpp
 		untyped __cpp__('kinc_mutex_lock(&mutex)');
+		#end
 		for (i in 0...channelCount) {
 			internalSoundChannels[i] = soundChannels[i];
 		}
 		for (i in 0...channelCount) {
 			internalStreamChannels[i] = streamChannels[i];
 		}
+		#if cpp
 		untyped __cpp__('kinc_mutex_unlock(&mutex)');
+		#end
 
 		for (channel in internalSoundChannels) {
 			if (channel == null || channel.finished) continue;
@@ -113,7 +119,9 @@ class Audio1 {
 		channel.data = sound.uncompressedData;
 		var foundChannel = false;
 
+		#if cpp
 		untyped __cpp__('kinc_mutex_lock(&mutex)');
+		#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
 				soundChannels[i] = channel;
@@ -121,13 +129,17 @@ class Audio1 {
 				break;
 			}
 		}
+		#if cpp
 		untyped __cpp__('kinc_mutex_unlock(&mutex)');
+		#end
 
 		return foundChannel ? channel : null;
 	}
 
 	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
+		#if cpp
 		untyped __cpp__('kinc_mutex_lock(&mutex)');
+		#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == channel) {
 				soundChannels[i] = null;
@@ -139,7 +151,9 @@ class Audio1 {
 				break;
 			}
 		}
+		#if cpp
 		untyped __cpp__('kinc_mutex_unlock(&mutex)');
+		#end
 	}
 
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
@@ -152,7 +166,9 @@ class Audio1 {
 		var channel: StreamChannel = new StreamChannel(sound.compressedData, loop);
 		var foundChannel = false;
 
+		#if cpp
 		untyped __cpp__('kinc_mutex_lock(&mutex)');
+		#end
 		for (i in 0...channelCount) {
 			if (streamChannels[i] == null || streamChannels[i].finished) {
 				streamChannels[i] = channel;
@@ -160,7 +176,9 @@ class Audio1 {
 				break;
 			}
 		}
+		#if cpp
 		untyped __cpp__('kinc_mutex_unlock(&mutex)');
+		#end
 
 		return foundChannel ? channel : null;
 	}
