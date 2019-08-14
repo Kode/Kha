@@ -32,8 +32,9 @@ class Float32ArrayPrivate {
 		self = Float32ArrayData.create();
 		if (elements > 0) {
 			self.alloc(elements);
-			Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
 		}
+
+		Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
 	}
 
 	@:void static function finalize(arr: Float32ArrayPrivate): Void {
