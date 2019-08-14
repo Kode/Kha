@@ -54,6 +54,10 @@ kha_index_t kha_loader_load_image(const char *filename, bool readable);
 kha_index_t kha_loader_load_sound(const char *filename);
 kha_file_reference_t kha_loader_get_file();
 
+// cleanup temporary memory allocations
+void kha_loader_cleanup_blob(kha_blob_t blob);
+void kha_loader_cleanup_sound(kha_sound_t sound);
+
 #ifdef __cplusplus
 }
 #endif
