@@ -1,5 +1,7 @@
 package kha.audio2;
 
+import kha.internal.IntBox;
+
 //import java.NativeArray;
 //import android.media.AudioTrack;
 //import android.media.AudioManager;
@@ -14,9 +16,12 @@ class Audio {
 	//public static var buffer: Buffer;
 	//
 
+	public static var disableGcInteractions = false;
+	static var intBox: IntBox = new IntBox(0);
+
 	public static var samplesPerSecond: Int;
 
-	public static var audioCallback: Int->Buffer->Void;
+	public static var audioCallback: IntBox->Buffer->Void;
 	//
 	//public static function initAudioTrack(): Void {
 		//var sampleRate = 44100;
