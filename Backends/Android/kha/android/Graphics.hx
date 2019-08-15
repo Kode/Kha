@@ -439,8 +439,4 @@ class Graphics implements kha.graphics4.Graphics {
 	public function disableScissor(): Void {
 
 	}
-
-	public function renderTargetsInvertedY(): Bool {
-		return true;
-	}
 }

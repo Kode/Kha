@@ -220,10 +220,6 @@ class Graphics implements kha.graphics4.Graphics {
 		Worker.postMessage({ command: 'disableScissor' });
 	}
 
-	public function renderTargetsInvertedY(): Bool {
-		return true;
-	}
-
 	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
 		Worker.postMessage({ command: 'drawIndexedVerticesInstanced', instanceCount: instanceCount, start: start, count: count });
 	}

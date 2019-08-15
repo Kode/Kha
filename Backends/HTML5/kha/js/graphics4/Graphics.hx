@@ -220,10 +220,6 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.disable(GL.SCISSOR_TEST);
 	}
 
-	public function renderTargetsInvertedY(): Bool {
-		return true;
-	}
-
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
 		case Always:
