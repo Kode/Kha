@@ -985,7 +985,11 @@ class SystemImpl {
 	static function fixedKeyCode(event: KeyboardEvent): KeyCode {
 		return switch (event.keyCode) {
 			case 91, 93: Meta; // left/right in Chrome
-			default: cast event.keyCode;
+			case 186: Semicolon;
+			case 187: Equals;
+			case 189: HyphenMinus;
+			default:
+				cast event.keyCode;
 		}
 	}
 
