@@ -219,8 +219,6 @@ class WebGLImage extends Image {
 					MSAAColorBuffer = SystemImpl.gl.createRenderbuffer();
 					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAAColorBuffer);
 					var MSAAFormat=switch (format) {
-					case DEPTH16:
-						GL.DEPTH_COMPONENT16;
 					case RGBA128:
 						untyped SystemImpl.gl.RGBA32F;
 					case RGBA64:
@@ -305,7 +303,8 @@ class WebGLImage extends Image {
 				if (samples>1&&SystemImpl.gl2) {
 					MSAADepthBuffer = SystemImpl.gl.createRenderbuffer();
 					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAADepthBuffer);
-					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL.DEPTH_COMPONENT16, realWidth, realHeight);
+					if (depthStencilFormat == DepthOnly) untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples,GL_DEPTH_COMPONENT24, realWidth, realHeight);
+					else untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples,GL.DEPTH_COMPONENT16, realWidth, realHeight);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
 					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
@@ -481,7 +480,7 @@ class WebGLImage extends Image {
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
 		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
 		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
-		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteRenderbuffer(MSAAFrameBuffer);
+		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteFramebuffer(MSAAFrameBuffer);
 		if(MSAAColorBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAAColorBuffer);
 		if(MSAADepthBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAADepthBuffer);
 	}
