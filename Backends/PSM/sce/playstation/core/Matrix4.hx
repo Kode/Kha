@@ -6,10 +6,7 @@ package sce.playstation.core;
  */
 class Matrix4
 {
+	public function new()
+	{}
 
-	public function new() 
-	{
-		
-	}
-	
 }

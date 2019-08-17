@@ -13,7 +13,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	public function new(looping: Bool) {
 		this.looping = looping;
 	}
-	
+
 	public function nextSamples(requestedSamples: Float32Array, requestedLength: Int, sampleRate: Int): Void {
 		if (paused || stopped) {
 			for (i in 0...requestedLength) {
@@ -21,7 +21,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 			}
 			return;
 		}
-		
+
 		var requestedSamplesIndex = 0;
 		while (requestedSamplesIndex < requestedLength) {
 			for (i in 0...min(data.length - myPosition, requestedLength - requestedSamplesIndex)) {
@@ -41,7 +41,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 			requestedSamples[requestedSamplesIndex++] = 0;
 		}
 	}
-	
+
 	public function play(): Void {
 		paused = false;
 		stopped = false;
@@ -58,13 +58,13 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	function get_length(): Float {
 		return data.length / kha.audio2.Audio.samplesPerSecond / 2; // 44.1 khz in stereo
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	function get_position(): Float {
 		return myPosition / kha.audio2.Audio.samplesPerSecond / 2;
 	}
@@ -74,9 +74,9 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		myPosition = max(min(myPosition, data.length), 0);
 		return value;
 	}
-	
+
 	public var volume(get, set): Float;
-	
+
 	function get_volume(): Float {
 		return myVolume;
 	}

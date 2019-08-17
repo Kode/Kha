@@ -15,9 +15,8 @@ import kha.graphics5.RayTracePipeline;
 ')
 
 class Graphics implements kha.graphics5.Graphics {
-
 	private var target: Canvas;
-	
+
 	public function new(target: Canvas = null) {
 		this.target = target;
 	}
@@ -25,7 +24,7 @@ class Graphics implements kha.graphics5.Graphics {
 	public function begin(target: RenderTarget): Void {
 		untyped __cpp__("Kore::Graphics5::begin(target->renderTarget);");
 	}
-	
+
 	public function end(): Void {
 		untyped __cpp__("Kore::Graphics5::end();");
 	}

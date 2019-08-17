@@ -30,9 +30,7 @@ class LoaderImpl {
 			br.close();
 		}
 		}
-		catch (java.io.IOException ex) {
-
-		}
+		catch (java.io.IOException ex) {}
 		return everything;
 	')
 		private static function loadText(filename: String): String {
@@ -65,9 +63,7 @@ class LoaderImpl {
 			e.printStackTrace();
 		}
 	')
-	static function loadRealImage(filename: String, image: Image) {
-
-	}
+	static function loadRealImage(filename: String, image: Image) {}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, ?failed: AssetError -> Void): Void {
 		loadRealBlob(desc.files[0], done);
@@ -83,7 +79,6 @@ class LoaderImpl {
 	// 		in.close();
 	// 	}
 	// 	catch (java.io.IOException ex) {
-
 	// 	}
 	// 	byte[] realbytes = new byte[bytes.size()];
 	// 	for (int i = 0; i < bytes.size(); ++i) realbytes[i] = bytes.get(i);

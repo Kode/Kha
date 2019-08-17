@@ -8,9 +8,7 @@ using StringTools;
 @:build(kha.internal.AssetsBuilder.build("image"))
 @:keep
 private class ImageList {
-	public function new() {
-
-	}
+	public function new() {}
 
 	public function get(name: String): Image {
 		return Reflect.field(this, name);
@@ -20,9 +18,7 @@ private class ImageList {
 @:build(kha.internal.AssetsBuilder.build("sound"))
 @:keep
 private class SoundList {
-	public function new() {
-
-	}
+	public function new() {}
 
 	public function get(name: String): Sound {
 		return Reflect.field(this, name);
@@ -32,9 +28,7 @@ private class SoundList {
 @:build(kha.internal.AssetsBuilder.build("blob"))
 @:keep
 private class BlobList {
-	public function new() {
-
-	}
+	public function new() {}
 
 	public function get(name: String): Blob {
 		return Reflect.field(this, name);
@@ -44,9 +38,7 @@ private class BlobList {
 @:build(kha.internal.AssetsBuilder.build("font"))
 @:keep
 private class FontList {
-	public function new() {
-
-	}
+	public function new() {}
 
 	public function get(name: String): Font {
 		return Reflect.field(this, name);
@@ -56,9 +48,7 @@ private class FontList {
 @:build(kha.internal.AssetsBuilder.build("video"))
 @:keep
 private class VideoList {
-	public function new() {
-
-	}
+	public function new() {}
 
 	public function get(name: String): Video {
 		return Reflect.field(this, name);

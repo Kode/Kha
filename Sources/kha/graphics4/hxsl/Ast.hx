@@ -32,7 +32,6 @@ enum SizeDecl {
 typedef FunType = { args : Array<{ name : String, type : Type }>, ret : Type };
 
 class Error {
-
 	public var msg : String;
 	public var pos : Position;
 
@@ -260,7 +259,6 @@ typedef ShaderData = {
 }
 
 class Tools {
-
 	static var UID = 0;
 
 	public static var SWIZ = Component.createAll();
@@ -416,7 +414,6 @@ class Tools {
 }
 
 class Tools2 {
-
 	public static function toString( g : TGlobal ) {
 		var n = g.getName();
 		return n.charAt(0).toLowerCase() + n.substr(1);
@@ -425,7 +422,6 @@ class Tools2 {
 }
 
 class Tools3 {
-
 	public static function toString( s : ShaderData ) {
 		return Printer.shaderToString(s);
 	}
@@ -433,7 +429,6 @@ class Tools3 {
 }
 
 class Tools4 {
-
 	public static function toString( e : TExpr ) {
 		return Printer.toString(e);
 	}

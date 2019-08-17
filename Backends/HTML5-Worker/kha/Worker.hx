@@ -12,5 +12,5 @@ class Worker {
 
 	public static function handleMessages(messageHandler: Dynamic->Void){
 		untyped __js__("self.onmessage = messageHandler");
-	} 
+	}
 }

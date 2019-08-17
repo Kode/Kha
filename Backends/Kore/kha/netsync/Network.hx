@@ -34,15 +34,13 @@ class Network {
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
 	}
-	
+
 	@:functionCode('
 		// TODO: mandatory
 		socket->send(url, port, (const unsigned char*)bytes->b->getBase(), bytes->length);
 	')
-	public function send(bytes: Bytes, mandatory: Bool): Void {
-		
-	}
-	
+	public function send(bytes: Bytes, mandatory: Bool): Void {}
+
 	public function listen(listener: Bytes->Void): Void {
 		this.listener = listener;
 	}
@@ -52,7 +50,7 @@ class Network {
 		buffer.blit(bufferPos, tempBuffer, 0, received);
 		bufferPos += received;
 		//if (received > 0) trace("received " + received + " bytes");
-		
+
 		// TODO: Handle partial packets, don't choke on garbage
 		if (listener != null && bufferPos > 0) {
 			var result = Bytes.alloc(bufferPos);

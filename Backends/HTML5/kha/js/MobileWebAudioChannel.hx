@@ -31,7 +31,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		source.connect(gain);
 		gain.connect(MobileWebAudio._context.destination);
 	}
-	
+
 	public function play(): Void {
 		if (paused || stopped) {
 			createSource();
@@ -61,13 +61,13 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	private function get_length(): Float {
 		return source.buffer.duration;
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	private function get_position(): Float {
 		if (stopped) return length;
 		if (paused) return pauseTime;

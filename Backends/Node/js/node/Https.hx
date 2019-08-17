@@ -39,7 +39,6 @@ typedef HttpsRequestOptions = {
 **/
 @:jsRequire("https")
 extern class Https {
-
 	/**
 		Global instance of `Agent` for all HTTPS client requests.
 	**/

@@ -54,7 +54,6 @@ import js.node.events.EventEmitter;
 	Objects returned from `Fs.watch` are of this type.
 **/
 extern class FSWatcher extends EventEmitter<FSWatcher> {
-
 	/**
 		Stop watching for changes on the given `FSWatcher`.
 	**/

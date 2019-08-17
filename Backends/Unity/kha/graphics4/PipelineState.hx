@@ -5,15 +5,15 @@ import unityEngine.Shader;
 
 class PipelineState extends PipelineStateBase {
 	public var material: Material;
-	
+
 	public function new() {
 		super();
 	}
-	
+
 	public function compile(): Void {
 		material = new Material(Shader.Find("Custom/" + vertexShader.name + "." + fragmentShader.name));
 	}
-	
+
 	public function getConstantLocation(name: String): ConstantLocation {
 		return new kha.unity.ConstantLocation(name);
 	}

@@ -28,7 +28,6 @@ import js.node.events.EventEmitter;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
 
-
 /**
 	Enumeration of events emitted by the Process class.
 **/
@@ -43,7 +42,6 @@ import js.node.stream.Writable;
 	**/
 	var Exit : ProcessEvent<Int->Void> = "exit";
 
-
 	/**
 		Emitted when node empties it's event loop and has nothing else to schedule.
 
@@ -56,7 +54,6 @@ import js.node.stream.Writable;
 	**/
 	var BeforeExit : ProcessEvent<Int->Void> = "beforeExit";
 
-
 	/**
 		Emitted when an exception bubbles all the way back to the event loop.
 		If a listener is added for this exception, the default action (which is to print a stack trace and exit)
@@ -65,9 +62,7 @@ import js.node.stream.Writable;
 	var UncaughtException : ProcessEvent<js.Error->Void> = "uncaughtException";
 }
 
-
 extern class Process extends EventEmitter<Process> {
-
 	/**
 		A Writable Stream to stdout.
 

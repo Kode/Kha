@@ -6,25 +6,24 @@ import flash.media.VideoStatus;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 
-
 class Video extends kha.Video {
 	private var finished: Bool = false;
 	private var filename: String;
 	private var looping: Bool = false;
 	public var stream: NetStream;
-	
+
 	public function new(filename: String) {
 		super();
 		this.filename = filename;
 	}
-	
+
 	private function asyncErrorHandler(event: AsyncErrorEvent): Void {
 		trace("Error loading " + filename);
 	}
-	
+
 	private function statusHandler(event: NetStatusEvent): Void {
 		switch (event.info.code) {
-			case 'NetStream.Play.Stop': 
+			case 'NetStream.Play.Stop':
 				if (looping) {
 					stream.pause();
 					stream.seek(0);
@@ -37,19 +36,19 @@ class Video extends kha.Video {
 				trace(filename + ' not found');
 		}
 	}
-	
+
 	public override function play(loop: Bool = false) : Void {
 		looping = loop;
-		
+
 		if (finished) stop();
-		
+
 		if (stream == null) {
 			finished = false;
 			var connection = new NetConnection();
 			connection.connect(null);
 			stream = new NetStream(connection);
-			stream.client = { onMetaData: function(obj: Dynamic): Void { } };
-			stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler); 
+			stream.client = { onMetaData: function(obj: Dynamic): Void {} };
+			stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
 			stream.addEventListener(NetStatusEvent.NET_STATUS, statusHandler);
 			stream.play(filename);
 		}
@@ -57,7 +56,7 @@ class Video extends kha.Video {
 			stream.resume();
 		}
 	}
-	
+
 	public override function pause(): Void {
 		stream.pause();
 		finished = false;
@@ -70,11 +69,11 @@ class Video extends kha.Video {
 			finished = false;
 		}
 	}
-	
+
 	public override function getCurrentPos(): Int {
 		return Std.int(stream.time * 1000); // Miliseconds
 	}
-	
+
 	public override function isFinished(): Bool {
 		return finished;
 	}

@@ -10,42 +10,42 @@ class Starter {
 	static var right: Bool;
 	static var up: Bool;
 	static var down: Bool;
-	
+
 	public static var mouseX: Int = 0;
 	public static var mouseY: Int = 0;
-	
+
 	public function new() {
 		left = false;
 		right = false;
 		up = false;
 		down = false;
-		
+
 		new kha.input.Keyboard();
 		new kha.input.Mouse();
 		//gamepad = new Gamepad();
-		
+
 		Loader.init(new kha.psm.Loader());
 		Scheduler.init();
 	}
-	
+
 	public function start(game: Game) {
 		Starter.game = game;
 		Configuration.setScreen(new EmptyScreen(Color.fromBytes(0, 0, 0)));
 		Loader.the.loadProject(loadFinished);
 	}
-	
+
 	public function loadFinished(): Void {
 		Loader.the.initProject();
 		game.width = Loader.the.width;
 		game.height = Loader.the.height;
 		Sys.init();
-		
+
 		var graphics = new Graphics();
 		framebuffer = new Framebuffer(null, null, graphics);
 		var g1 = new kha.graphics2.Graphics1(framebuffer);
 		var g2 = new Graphics2(framebuffer);
 		framebuffer.init(g1, g2, graphics);
-		
+
 		Scheduler.start();
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
@@ -58,13 +58,9 @@ class Starter {
 		}
 	}
 
-	public function lockMouse() : Void{
-		
-	}
-	
-	public function unlockMouse() : Void{
-		
-	}
+	public function lockMouse() : Void{}
+
+	public function unlockMouse() : Void{}
 
 	public function canLockMouse() : Bool{
 		return false;
@@ -74,16 +70,10 @@ class Starter {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
-	}
+	public function notifyOfMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
+	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
-	public function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void{
-		
-	}
-
-	
 	@:functionCode('
 		Sce.PlayStation.Core.Input.GamePadData gamePadData = Sce.PlayStation.Core.Input.GamePad.GetData(0);
 		if ((gamePadData.Buttons & Sce.PlayStation.Core.Input.GamePadButtons.Left) != 0) {
@@ -143,14 +133,10 @@ class Starter {
 			}
 		}
 	')
-	static function checkGamepad(): Void {
-		
-	}
-	
+	static function checkGamepad(): Void {}
+
 	@:functionCode('
 		Sce.PlayStation.Core.Environment.SystemEvents.CheckEvents();
 	')
-	static function checkEvents(): Void {
-		
-	}
+	static function checkEvents(): Void {}
 }

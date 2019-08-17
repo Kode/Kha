@@ -115,9 +115,7 @@ class PipelineState extends PipelineStateBase {
 		}
 		pipeline->compile();
 	')
-	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
-
-	}
+	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {}
 
 	public function compile(): Void {
 		var stencilReferenceValue = switch (this.stencilReferenceValue) {
@@ -141,9 +139,7 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str());')
-	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
-
-	}
+	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {}
 
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.kore.graphics4.TextureUnit();
@@ -152,9 +148,7 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str());')
-	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
-
-	}
+	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {}
 
 	private static function getBlendFunc(factor: BlendingFactor): Int {
 		switch (factor) {
@@ -222,14 +216,10 @@ class PipelineState extends PipelineStateBase {
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
 	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
-	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {
-
-	}
+	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {}
 
 	@:functionCode('Kore::Graphics4::setPipeline(pipeline);')
-	private function set2(): Void {
-
-	}
+	private function set2(): Void {}
 
 	public function set(): Void {
 		set2();

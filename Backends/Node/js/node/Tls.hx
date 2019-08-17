@@ -159,7 +159,6 @@ typedef TlsOptionsPem = {
 
 typedef TlsServerOptions = EitherType<TlsOptionsPem,TlsOptionsPfx>;
 
-
 typedef TlsConnectOptions = {
 	/**
 		Host the client should connect to.
@@ -245,14 +244,12 @@ typedef TlsConnectOptionsPem = {
 	@:optional var ca:Array<EitherType<String,Buffer>>;
 }
 
-
 /**
 	The tls module uses OpenSSL to provide Transport Layer Security
 	and/or Secure Socket Layer: encrypted stream communication.
 **/
 @:jsRequire("tls")
 extern class Tls {
-
 	/**
 		renegotiation limit, default is 3.
 	**/

@@ -2,7 +2,6 @@ package kha.graphics4.hxsl;
 using kha.graphics4.hxsl.Ast;
 
 class Printer {
-
 	var buffer : StringBuf;
 	var varId : Bool;
 

@@ -1,5 +1,3 @@
 package android.graphics;
 
-extern class RectF {
-	
-}
+extern class RectF {}

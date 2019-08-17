@@ -84,9 +84,7 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 	}
 
 	@:functionCode('inputManager = (android.view.inputmethod.InputMethodManager)activity.getSystemService(android.content.Context.INPUT_METHOD_SERVICE);')
-	private function initInputManager(activity: KhaActivity): Void {
-
-	}
+	private function initInputManager(activity: KhaActivity): Void {}
 
 	//unused
 	//@:overload public function new(context: Context) {
@@ -132,11 +130,11 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
 			return false;
 		}
-		
+
 		/*if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			return true;
 		}*/
-		
+
 		this.queueEvent(new OnKeyDownRunner(renderer, keyCode));
 		return true;
 	}

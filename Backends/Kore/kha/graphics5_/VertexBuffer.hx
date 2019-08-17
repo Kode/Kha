@@ -48,9 +48,7 @@ class VertexBuffer {
 		}
 		buffer = new Kore::Graphics5::VertexBuffer(vertexCount, structure2, false);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
-
-	}
+	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode('
 		data->self.data = buffer->lock() + start * buffer->stride() / 4;
@@ -68,9 +66,7 @@ class VertexBuffer {
 	}
 
 	@:functionCode('buffer->unlock();')
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	@:functionCode("return buffer->stride();")
 	public function stride(): Int {

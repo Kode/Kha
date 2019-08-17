@@ -15,9 +15,7 @@ class Sensor {
 		return null;
 	}
 
-	public function notify(listener: Float -> Float -> Float -> Void): Void {
-
-	}
+	public function notify(listener: Float -> Float -> Float -> Void): Void {}
 }
 
 #end

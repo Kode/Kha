@@ -15,33 +15,29 @@ class Audio {
 	private static var buffer: Buffer;
 	@:noCompletion public static var _context: AudioContext;
 	private static var processingNode: ScriptProcessorNode;
-	
+
 	private static function initContext(): Void {
 		try {
 			_context = new AudioContext();
 			return;
 		}
-		catch (e: Dynamic) {
-			
-		}
+		catch (e: Dynamic) {}
 		try {
 			untyped __js__('this._context = new webkitAudioContext();');
 			return;
 		}
-		catch (e: Dynamic) {
-			
-		}
+		catch (e: Dynamic) {}
 	}
-	
+
 	@:noCompletion
 	public static function _init(): Bool {
 		initContext();
 		if (_context == null) return false;
-		
+
 		Audio.samplesPerSecond = Math.round(_context.sampleRate);
 		var bufferSize = 1024 * 2;
 		buffer = new Buffer(bufferSize * 4, 2, Std.int(_context.sampleRate));
-		
+
 		processingNode = _context.createScriptProcessor(bufferSize, 0, 2);
 		processingNode.onaudioprocess = function (e: AudioProcessingEvent) {
 			var output1 = e.outputBuffer.getChannelData(0);
@@ -82,7 +78,7 @@ class Audio {
 			channel.wake();
 		}
 	}
-	
+
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		//var source = _context.createMediaStreamSource(cast sound.compressedData.getData());
 		//source.connect(_context.destination);

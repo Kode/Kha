@@ -12,12 +12,8 @@ class Keyboard extends kha.input.Keyboard {
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')
-	override public function show(): Void {
-
-	}
+	override public function show(): Void {}
 
 	@:functionCode('Kore::System::hideKeyboard();')
-	override public function hide(): Void {
-
-	}
+	override public function hide(): Void {}
 }

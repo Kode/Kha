@@ -56,9 +56,7 @@ class VertexBuffer {
 		}
 		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, (Kore::Graphics4::Usage)usage, instanceDataStepRate);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
-
-	}
+	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode('
 		data->self.data = buffer->lock() + start * buffer->stride() / 4;
@@ -95,9 +93,7 @@ class VertexBuffer {
 	}
 
 	@:functionCode('buffer->unlock(count);')
-	function unlockPrivate(count: Int): Void {
-
-	}
+	function unlockPrivate(count: Int): Void {}
 
 	public function unlock(?count: Int): Void {
 		unlockPrivate(count == null ? lastLockCount : count);

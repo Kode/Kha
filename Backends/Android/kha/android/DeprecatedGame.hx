@@ -11,7 +11,7 @@ class DeprecatedGame extends Activity {
 	override public function onCreate(savedInstanceState : Bundle) : Void {
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	override public function onStart() : Void {
 		super.onStart();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -19,7 +19,7 @@ class DeprecatedGame extends Activity {
 		layout.addView(new GameView(this));
 		setContentView(layout);
 	}
-	
+
 	override public function onResume() : Void {
 		super.onResume();
 	}
@@ -39,8 +39,6 @@ class DeprecatedGame extends Activity {
 	override public function onDestroy() : Void {
 		super.onDestroy();
 	}
-	
-	public static function main() : Void {
-		
-	}
+
+	public static function main() : Void {}
 }

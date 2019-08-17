@@ -32,9 +32,7 @@ class IndexBuffer {
 		Worker.postMessage({ command: 'updateIndexBuffer', id: _id, data: _data.data() });
 	}
 
-	public function set(): Void {
-
-	}
+	public function set(): Void {}
 
 	public function count(): Int {
 		return mySize;

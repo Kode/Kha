@@ -52,9 +52,7 @@ import kha.audio1.AudioChannel;
 					try {
 						wait();
 					}
-					catch (InterruptedException e) {
-
-					}
+					catch (InterruptedException e) {}
 				}
 			}
 		}
@@ -118,9 +116,7 @@ class Sound extends kha.Sound {
 		}
 		index = thread.addSound(this);
 	')
-	function init(filename : String) {
-
-	}
+	function init(filename : String) {}
 
 	@:functionCode('
 		thread.play(index);
@@ -136,9 +132,7 @@ class Sound extends kha.Sound {
 		}
 		thread.stop(index);
 	')
-	public function stop() : Void {
-
-	}
+	public function stop() : Void {}
 
 	@:functionCode('
 		return clip != null;
@@ -154,9 +148,7 @@ class Sound extends kha.Sound {
 		}
 		else clip.setFramePosition(0);
 	')
-	public function realplay() : Void {
-
-	}
+	public function realplay() : Void {}
 
 	@:functionCode('
 		return clip.isRunning();

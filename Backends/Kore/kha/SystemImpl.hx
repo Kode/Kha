@@ -447,9 +447,7 @@ class SystemImpl {
 	@:functionCode('
 		Kore::System::login();
 	')
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function loginevent(): Void {
 		if (System.loginListener != null) {
@@ -468,9 +466,7 @@ class SystemImpl {
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		init_kore(name, width, height, &window, &framebuffer);
 	')
-	private static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {
-
-	}
+	private static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {}
 
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");

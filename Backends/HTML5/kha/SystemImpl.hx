@@ -451,7 +451,6 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-
 				// Lookup the size the browser is displaying the canvas.
 				//TODO deal with window.devicePixelRatio ?
 				var displayWidth  = canvas.clientWidth;
@@ -460,7 +459,6 @@ class SystemImpl {
 				// Check if the canvas is not the same size.
 				if (canvas.width  != displayWidth ||
 					canvas.height != displayHeight) {
-
 					// Make the canvas the same size
 					canvas.width  = displayWidth;
 					canvas.height = displayHeight;
@@ -985,7 +983,6 @@ class SystemImpl {
 				return;
 			}
 			pressedKeys[event.keyCode] = true;
-
 		} else if (event.repeat) {
 			event.preventDefault();
 			return;
@@ -1053,9 +1050,7 @@ class SystemImpl {
 		js.Browser.document.removeEventListener('MSFullscreenError', error, false);
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
 	public static function loadUrl(url: String): Void {
 		js.Browser.window.open(url, "_blank");
@@ -1089,19 +1084,13 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 }

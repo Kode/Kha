@@ -7,7 +7,6 @@ package kha.graphics5;
 
 @:headerClassCode("Kore::Graphics5::ConstantBuffer* buffer;")
 class ConstantBuffer {
-	
 	public function new(size: Int) {
 		init(size);
 	}

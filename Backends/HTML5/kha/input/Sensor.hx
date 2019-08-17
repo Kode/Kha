@@ -25,9 +25,7 @@ class Sensor {
 		listeners.push(listener);
 	}
 
-	private function new() {
-
-	}
+	private function new() {}
 
 	public static function _changed(type: Int, x: Float, y: Float, z: Float): Void {
 		var sensor = get(type == 0 ? SensorType.Accelerometer : SensorType.Gyroscope);

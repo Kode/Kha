@@ -66,13 +66,13 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return true;
 	}
-	
+
 	public static function renderTargetsInvertedY(): Bool {
 		return true;
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
-	public function unload(): Void { }
+	public function unload(): Void {}
 
 	public function lock(level: Int = 0): Bytes {
 		if (bytes == null) {
@@ -101,10 +101,10 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function getPixels(): Bytes { return null; }
-	public function generateMipmaps(levels: Int): Void { }
-	public function setMipmaps(mipmaps: Array<Image>): Void { }
-	public function setDepthStencilFrom(image: Image): Void { }
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void { }
+	public function generateMipmaps(levels: Int): Void {}
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
+	public function setDepthStencilFrom(image: Image): Void {}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 	public var width(get, null): Int;
 	private function get_width(): Int { return w; }
 	public var height(get, null): Int;

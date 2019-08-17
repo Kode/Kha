@@ -7,7 +7,5 @@ package kha.compute;
 
 @:headerClassCode("Kore::ComputeConstantLocation location;")
 class ConstantLocation {
-	public function new() {
-		
-	}
+	public function new() {}
 }

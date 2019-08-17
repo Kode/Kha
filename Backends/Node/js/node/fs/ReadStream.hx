@@ -36,5 +36,4 @@ import js.node.events.EventEmitter.Event;
 /**
 	Readable file stream.
 **/
-extern class ReadStream extends js.node.stream.Readable<ReadStream> {
-}
+extern class ReadStream extends js.node.stream.Readable<ReadStream> {}

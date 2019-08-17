@@ -15,7 +15,7 @@ class Http {
 				return "DELETE";
 		}
 	}
-	
+
 	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, headers: Map<String, String>, callback: Int->Int->String->Void /*error, response, body*/): Void {
 		var req = new XMLHttpRequest("");
 		var completeUrl = (secure ? "https://" : "http://") + url + ":" + port + "/" + path;

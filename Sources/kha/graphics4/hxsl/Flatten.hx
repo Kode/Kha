@@ -16,7 +16,6 @@ private class Alloc {
 }
 
 class Flatten {
-
 	var globals : Array<TVar>;
 	var params : Array<TVar>;
 	var outVars : Array<TVar>;
@@ -25,8 +24,7 @@ class Flatten {
 	public var consts : Array<Float>;
 	public var allocData : Map< TVar, Array<Alloc> >;
 
-	public function new() {
-	}
+	public function new() {}
 
 	public function flatten( s : ShaderData, kind : FunctionKind, constsToGlobal : Bool ) : ShaderData {
 		globals = [];
@@ -284,7 +282,6 @@ class Flatten {
 			return Error.t("Access not supported for " + t.toString(), null);
 		}
 	}
-
 
 	function optimize( e : TExpr ) {
 		switch( e.e ) {

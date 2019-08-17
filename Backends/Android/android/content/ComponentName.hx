@@ -1,5 +1,3 @@
 package android.content;
 
-extern class ComponentName {
-	
-}
+extern class ComponentName {}

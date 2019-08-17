@@ -7,15 +7,12 @@ package kha.graphics5;
 
 @:headerClassCode("Kore::Graphics5::CommandList* commandList;")
 class CommandList {
-
 	public function new() {
 		init();
 	}
 
 	@:functionCode('commandList = new Kore::Graphics5::CommandList();')
-	private function init(): Void {
-
-	}
+	private function init(): Void {}
 
 	public function begin(): Void {
 		untyped __cpp__("commandList->begin();");

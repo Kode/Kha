@@ -288,19 +288,13 @@ class System {
 	}
 
 	@:deprecated("This does nothing")
-	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:deprecated("This does nothing")
-	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:deprecated("This does nothing. On Windows you can use Window.resize instead after setting the mode to ExclusiveFullscreen")
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	@:deprecated("Use System.stop instead")
 	public static function requestShutdown(): Void {

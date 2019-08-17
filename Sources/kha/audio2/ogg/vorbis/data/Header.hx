@@ -14,7 +14,6 @@ import kha.audio2.ogg.vorbis.VorbisDecodeState;
  * @author shohei909
  */
 class Header {
-
     static public inline var PACKET_ID = 1;
     static public inline var PACKET_COMMENT = 3;
     static public inline var PACKET_SETUP = 5;
@@ -34,9 +33,7 @@ class Header {
     public var comment(default, null):Comment;
     public var vendor(default, null):String;
 
-    function new() {
-
-    }
+    function new() {}
 
     static public function read(decodeState:VorbisDecodeState):Header {
         var page = decodeState.page;

@@ -43,12 +43,10 @@ class RuntimeShaderData {
 	public var texturesCube : AllocParam;
 	public var texturesCubeCount : Int;
 	public var consts : Array<Float>;
-	public function new() {
-	}
+	public function new() {}
 }
 
 class RuntimeShader {
-
 	static var UID = 0;
 	public var id : Int;
 	public var vertex : RuntimeShaderData;
@@ -62,6 +60,5 @@ class RuntimeShader {
 	public inline function hasGlobal( gid : Int ) {
 		return globals.exists(gid);
 	}
-
 
 }

@@ -6,30 +6,30 @@ import java.nio.IntBuffer;
 
 abstract Int16Array(IntBuffer) {
 	private static inline var elementSize = 2;
-		
+
 	public inline function new(elements: Int) {
 		this = ByteBuffer.allocateDirect(elements * elementSize).order(ByteOrder.nativeOrder()).asIntBuffer();
 	}
-	
+
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
 		return this.remaining();
 	}
-	
+
 	public function set(index: Int, value: Int): Int {
 		this.put(index, value);
 		return value;
 	}
-	
+
 	public inline function get(index: Int): Int {
 		return this.get(index);
 	}
-	
+
 	public inline function data(): IntBuffer {
 		return this;
 	}
-	
+
 	@:arrayAccess
 	public inline function arrayRead(index: Int): Int {
 		return this.get(index);

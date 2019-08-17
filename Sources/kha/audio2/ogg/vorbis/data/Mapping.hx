@@ -6,14 +6,13 @@ import kha.audio2.ogg.vorbis.VorbisDecodeState;
 
 class Mapping
 {
-    public var couplingSteps:Int; // uint16 
+    public var couplingSteps:Int; // uint16
     public var chan:Vector<MappingChannel>;
-    public var submaps:Int;            // uint8 
+    public var submaps:Int;            // uint8
     public var submapFloor:Vector<Int>;   // uint8 varies
     public var submapResidue:Vector<Int>; // uint8 varies
-    public function new() {
-    }
-    
+    public function new() {}
+
     public static function read(decodeState:VorbisDecodeState, channels:Int):Mapping
     {
         var m = new Mapping();
@@ -21,22 +20,22 @@ class Mapping
         if (mappingType != 0) {
             throw new ReaderError(INVALID_SETUP, "mapping type " + mappingType);
         }
-        
+
         m.chan = new Vector(channels);
         for (j in 0...channels) {
             m.chan[j] = new MappingChannel();
         }
-        
+
         if (decodeState.readBits(1) != 0) {
             m.submaps = decodeState.readBits(4)+1;
         } else {
             m.submaps = 1;
         }
-        
+
         //if (m.submaps > maxSubmaps) {
         //    maxSubmaps = m.submaps;
         //}
-        
+
         if (decodeState.readBits(1) != 0) {
             m.couplingSteps = decodeState.readBits(8)+1;
             for (k in 0...m.couplingSteps) {
@@ -72,20 +71,20 @@ class Mapping
                 m.chan[j].mux = 0;
             }
         }
-        
+
         m.submapFloor = new Vector(m.submaps);
         m.submapResidue = new Vector(m.submaps);
-        
+
         for (j in 0...m.submaps) {
             decodeState.readBits(8); // discard
             m.submapFloor[j] = decodeState.readBits(8);
             m.submapResidue[j] = decodeState.readBits(8);
         }
-        
+
         return m;
     }
-    
-    public function doFloor(floors:Vector<Floor>, i:Int, n:Int, target:Vector<Float>, finalY:Array<Int>, step2Flag:Vector<Bool>) 
+
+    public function doFloor(floors:Vector<Floor>, i:Int, n:Int, target:Vector<Float>, finalY:Array<Int>, step2Flag:Vector<Bool>)
     {
         var n2 = n >> 1;
         var s = chan[i].mux, floor;
@@ -118,10 +117,9 @@ class Mapping
 
 class MappingChannel
 {
-    public var magnitude:Int; // uint8 
-    public var angle:Int;     // uint8 
-    public var mux:Int;       // uint8 
-    
-    public function new() {
-    }
+    public var magnitude:Int; // uint8
+    public var angle:Int;     // uint8
+    public var mux:Int;       // uint8
+
+    public function new() {}
 }

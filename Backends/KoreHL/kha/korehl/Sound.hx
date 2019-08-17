@@ -7,7 +7,6 @@ using StringTools;
 
 @:keep
 class Sound extends kha.Sound {
-
 	function initWav(filename: String) {
 		uncompressedData = new kha.arrays.Float32Array();
 		var dataSize = new kha.arrays.Uint32Array(1);
@@ -19,7 +18,7 @@ class Sound extends kha.Sound {
 	function initOgg(filename: String) {
 		compressedData = File.getBytes(filename);
 	}
-	
+
 	public function new(filename: String) {
 		super();
 		if (filename.endsWith(".wav")) {

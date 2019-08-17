@@ -54,7 +54,6 @@ extern interface IDiffieHellman {
 	Returned by `Crypto.createDiffieHellman`.
 **/
 extern class DiffieHellman implements IDiffieHellman {
-
 	/**
 		Generates private and public Diffie-Hellman key values, and returns the public key in the specified `encoding`.
 		This key should be transferred to the other party. `encoding` can be 'binary', 'hex', or 'base64'.
@@ -76,7 +75,6 @@ extern class DiffieHellman implements IDiffieHellman {
 	@:overload(function(other_public_key:Buffer):Buffer {})
 	@:overload(function(other_public_key:String, input_encoding:String):Buffer {})
 	function computeSecret(other_public_key:String, input_encoding:String, output_encoding:String):String;
-
 
 	/**
 		Returns the Diffie-Hellman prime in the specified encoding, which can be 'binary', 'hex', or 'base64'.

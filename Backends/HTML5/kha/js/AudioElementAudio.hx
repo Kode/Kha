@@ -2,7 +2,6 @@ package kha.js;
 
 @:keep
 class AudioElementAudio {
-
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		return stream(sound, loop);
 	}

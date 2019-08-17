@@ -180,9 +180,7 @@ class SystemImpl {
 		callback(Window.get(0));
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
-
-	}
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {}
 
 	static function translateWindowMode(value: Null<WindowMode>): Int {
 		if (value == null) {
@@ -287,9 +285,7 @@ class SystemImpl {
 		Krom.showMouse(true);
 	}
 
-	static function unload(): Void {
-
-	}
+	static function unload(): Void {}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -299,34 +295,19 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function changeResolution(width: Int, height: Int): Void {}
 
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
@@ -336,19 +317,13 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 }

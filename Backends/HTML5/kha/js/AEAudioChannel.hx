@@ -7,17 +7,17 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	var element: AudioElement;
 	var stopped = false;
 	var looping: Bool;
-	
+
 	public function new(element: AudioElement, looping: Bool) {
 		this.element = element;
 		this.looping = looping;
 	}
-	
+
 	public function play(): Void {
 		stopped = false;
 		element.play();
 	}
-	
+
 	public function pause(): Void {
 		try {
 			element.pause();
@@ -39,7 +39,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	private function get_length(): Float {
 		if (Math.isFinite(element.duration)) {
 			return element.duration;
@@ -50,7 +50,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	private function get_position(): Float {
 		return element.currentTime;
 	}

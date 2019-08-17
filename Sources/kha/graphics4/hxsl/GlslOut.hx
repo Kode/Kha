@@ -2,7 +2,6 @@ package kha.graphics4.hxsl;
 import kha.graphics4.hxsl.Ast;
 
 class GlslOut {
-
 	static var KWD_LIST = [
 		"input", "output", "discard",
 		"dvec2", "dvec3", "dvec4",

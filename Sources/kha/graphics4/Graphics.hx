@@ -16,20 +16,20 @@ interface Graphics {
 	function beginFace(face: Int): Void;
 	function beginEye(eye: Int): Void;
 	function end(): Void;
-	
+
 	function vsynced(): Bool;
 	function refreshRate(): Int;
-	
+
 	function clear(?color: Color, ?depth: Float, ?stencil: Int): Void;
 
 	function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	function scissor(x: Int, y: Int, width: Int, height: Int): Void;
-	
+
 	function disableScissor(): Void;
 	function setVertexBuffer(vertexBuffer: VertexBuffer): Void;
 	function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	function setIndexBuffer(indexBuffer: IndexBuffer): Void;
-	
+
 	function setTexture(unit: TextureUnit, texture: Image): Void;
 	function setTextureDepth(unit: TextureUnit, texture: Image): Void;
 	function setTextureArray(unit: TextureUnit, texture: Image): Void;
@@ -44,11 +44,11 @@ interface Graphics {
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;
 	function setStencilReferenceValue(value: Int): Void;
-	
+
 	function instancedRenderingAvailable(): Bool;
-	
+
 	function setPipeline(pipeline: PipelineState): Void;
-	
+
 	function setBool(location: ConstantLocation, value: Bool): Void;
 	function setInt(location: ConstantLocation, value: Int): Void;
 	function setFloat(location: ConstantLocation, value: FastFloat): Void;
@@ -61,9 +61,9 @@ interface Graphics {
 	function setVector4(location: ConstantLocation, value: FastVector4): Void;
 	function setMatrix(location: ConstantLocation, value: FastMatrix4): Void;
 	function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void;
-	
+
 	function drawIndexedVertices(start: Int = 0, count: Int = -1): Void;
 	function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void;
-	
+
 	function flush(): Void;
 }

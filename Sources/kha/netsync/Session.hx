@@ -15,7 +15,7 @@ import kha.System;
 class State {
 	public var time: Float;
 	public var data: Bytes;
-	
+
 	public function new(time: Float, data: Bytes) {
 		this.time = time;
 		this.data = data;
@@ -30,7 +30,7 @@ class Session {
 	public static inline var PING = 4;
 	public static inline var SESSION_ERROR = 5;
 	public static inline var PLAYER_UPDATES = 6;
-	
+
 	public static inline var RPC_SERVER = 0;
 	public static inline var RPC_ALL = 1;
 
@@ -58,9 +58,9 @@ class Session {
 	private var updateTaskId: Int;
 	private var pingTaskId: Int;
 	#end
-	
+
 	public var me(get, null): Client;
-	
+
 	private function get_me(): Client {
 		#if sys_server
 		return current;
@@ -68,28 +68,28 @@ class Session {
 		return localClient;
 		#end
 	}
-	
+
 	public function new(maxPlayers: Int, address: String, port: Int) {
 		instance = this;
 		this.maxPlayers = maxPlayers;
 		this.address = address;
 		this.port = port;
 	}
-	
+
 	public static function the(): Session {
 		return instance;
 	}
-	
+
 	public function addEntity(entity: Entity): Void {
 		entities.set(entity._id(), entity);
 	}
-	
+
 	public function addController(controller: Controller): Void {
 		trace("Adding controller id " + controller._id());
 		controller._inputBufferIndex = 0;
 		controllers.set(controller._id(), controller);
 	}
-	
+
 	#if sys_server
 	private function send(): Bytes {
 		var size = 0;
@@ -106,16 +106,16 @@ class Session {
 			entity._send(offset, bytes);
 			offset += entity._size();
 		}
-		
+
 		lastStates.push(new State(Scheduler.time(), bytes));
 		if (lastStates.length > stateCount) {
 			lastStates.splice(0, 1);
 		}
-		
+
 		return bytes;
 	}
 	#end
-	
+
 	public function sendControllerUpdate(id: Int, bytes: haxe.io.Bytes) {
 		#if !sys_server
 		if (controllers.exists(id)) {
@@ -131,7 +131,7 @@ class Session {
 		}
 		#end
 	}
-	
+
 	private function sendPing() {
 		#if !sys_server
 		var bytes = haxe.io.Bytes.alloc(5);
@@ -141,7 +141,7 @@ class Session {
 		sendToServer(bytes);
 		#end
 	}
-	
+
 	private function sendPlayerUpdate() {
 		#if sys_server
 		currentPlayers = clients.length;
@@ -155,18 +155,18 @@ class Session {
 
 	public function receive(bytes: Bytes, client: Client = null): Void {
 		#if sys_server
-		
+
 		switch (bytes.get(0)) {
 		case CONTROLLER_UPDATES:
 			var id = bytes.getInt32(1);
 			var time = bytes.getDouble(5);
-			
+
 			var width = bytes.getInt32(13);
 			var height = bytes.getInt32(17);
 			var rotation = bytes.get(21);
 			SystemImpl._updateSize(width, height);
 			SystemImpl._updateScreenRotation(rotation);
-			
+
 			if (controllers.exists(id)) {
 				processEventRetroactively(function () {
 					current = client;
@@ -176,7 +176,7 @@ class Session {
 						controllers[id]._receive(bytes.sub(offset + 4, length));
 						offset += (4 + length);
 					}
-					current = null;					
+					current = null;
 				}, time);
 			}
 		case REMOTE_CALL:
@@ -185,9 +185,9 @@ class Session {
 			// PONG, i.e. just return the packet to the client
 			if (client != null) client.send(bytes, false);
 		}
-		
+
 		#else
-		
+
 		switch (bytes.get(0)) {
 		case START:
 			var index = bytes.get(1);
@@ -217,7 +217,7 @@ class Session {
 		case PLAYER_UPDATES:
 			currentPlayers = bytes.getInt32(1);
 		}
-		
+
 		#end
 	}
 
@@ -268,7 +268,7 @@ class Session {
 		var args = new Array<Dynamic>();
 		var syncId = bytes.getInt32(2);
 		var index: Int = 6;
-		
+
 		var classnamelength = bytes.getUInt16(index);
 		index += 2;
 		var classname = "";
@@ -276,7 +276,7 @@ class Session {
 			classname += String.fromCharCode(bytes.get(index));
 			++index;
 		}
-		
+
 		var methodnamelength = bytes.getUInt16(index);
 		index += 2;
 		var methodname = "";
@@ -284,7 +284,7 @@ class Session {
 			methodname += String.fromCharCode(bytes.get(index));
 			++index;
 		}
-		
+
 		while (index < bytes.length) {
 			var type = bytes.get(index);
 			++index;
@@ -325,7 +325,7 @@ class Session {
 			Reflect.callMethod(SyncBuilder.objects[syncId], Reflect.field(SyncBuilder.objects[syncId], methodname + "_remotely"), args);
 		}
 	}
-	
+
 	public function waitForStart(callback: Void->Void, refuseCallback: Void->Void, errorCallback: Void->Void, closeCallback: Void->Void, resCallback: Void->Void): Void {
 		startCallback = callback;
 		refusedCallback = refuseCallback;
@@ -346,14 +346,14 @@ class Session {
 
 			clients.push(client);
 			current = client;
-			
+
 			Node.console.log(clients.length + " client" + (clients.length > 1 ? "s " : " ") + "connected.");
 			sendPlayerUpdate();
-			
+
 			client.receive(function (bytes: Bytes) {
 				receive(bytes, client);
 			});
-			
+
 			client.onClose(function () {
 				Node.console.log("Removing client " + client.id + ".");
 				clients.remove(client);
@@ -363,7 +363,7 @@ class Session {
 					reset();
 				}
 			});
-			
+
 			if (clients.length >= maxPlayers) {
 				isJoinable = false;
 				Node.console.log("Starting game.");
@@ -408,7 +408,7 @@ class Session {
 		entities = new Map();
 		resetCallback();
 	}
-	
+
 	public function update(): Void {
 		#if sys_server
 		var bytes = send();
@@ -432,7 +432,7 @@ class Session {
 		}
 		#end
 	}
-	
+
 	#if sys_server
 	public function sendToEverybody(bytes: Bytes): Void {
 		for (client in clients) {
@@ -440,7 +440,7 @@ class Session {
 		}
 	}
 	#end
-	
+
 	#if !sys_server
 	public function sendToServer(bytes: Bytes): Void {
 		network.send(bytes, false);

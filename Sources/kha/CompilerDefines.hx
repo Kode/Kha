@@ -5,6 +5,4 @@ package kha;
  * defines specified by the khafile and khamake.
  */
 @:build(kha.internal.CompilerDefinesBuilder.build())
-class CompilerDefines {
-	
-}
+class CompilerDefines {}

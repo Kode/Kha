@@ -21,5 +21,4 @@
  */
 package js.node.crypto;
 
-extern class SecureContext {
-}
+extern class SecureContext {}

@@ -7,7 +7,7 @@ import java.lang.Throwable;
 
 class Video extends kha.Video {
 	var mp: MediaPlayer;
-	
+
 	public function new(file: AssetFileDescriptor) {
 		super();
 		try {
@@ -21,7 +21,7 @@ class Video extends kha.Video {
 			e.printStackTrace();
 		}
 	}
-	
+
 	override public function play(loop: Bool = false): Void {
 		//mp.setDisplay(GameView.the().getHolder());
 		mp.start();

@@ -710,7 +710,6 @@ extern class Fs {
 	**/
 	static function existsSync(path:String):Bool;
 
-
 	/**
 		Returns a new ReadStream object (See Readable Stream).
 

@@ -7,7 +7,6 @@ using kha.graphics4.hxsl.Ast;
 	evaluate and reduce the expression, unroll loops, etc.
 **/
 class Eval {
-
 	public var varMap : Map<TVar,TVar>;
 	var constants : Map<TVar,TExprDef>;
 	var funMap : Map<TVar,TFunction>;

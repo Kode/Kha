@@ -29,14 +29,12 @@ class Http {
 	@:functionCode('
 		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method, header, internalCallback, (void*)callbackindex);
 	')
-	private static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, header: String, callbackindex: Int): Void {
-
-	}
+	private static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, header: String, callbackindex: Int): Void {}
 
 	private static function internalCallback2(error: Int, response: Int, body: String, callbackindex: Int): Void {
 		callbacks[callbackindex](error, response, body);
 	}
-	
+
 	private static function convertMethod(method: HttpMethod): Int {
 		switch (method) {
 			case Get:
@@ -51,7 +49,7 @@ class Http {
 				return 0;
 		}
 	}
-	
+
 	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, headers: Map<String, String>, callback: Int->Int->String->Void /*error, response, body*/): Void {
 		if (callbacks == null) {
 			callbacks = new Array<Int->Int->String->Void>();

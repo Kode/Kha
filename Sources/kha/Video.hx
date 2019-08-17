@@ -10,43 +10,35 @@ class Video implements Resource {
 	public function width(): Int {
 		return 100;
 	}
-	
+
 	/**
 	 * The height of the video file in pixels.
 	 */
 	public function height(): Int {
 		return 100;
 	}
-	
+
 	/**
 	 * Create a new media object instance.
 	 */
-	public function new() : Void {
+	public function new() : Void {}
 
-	}
-	
 	/**
 	 * Play / resume the media element.
-	 * 
+	 *
 	 * @param loop		If playing it looped, default = false.
 	 */
-	public function play(loop: Bool = false) : Void {
+	public function play(loop: Bool = false) : Void {}
 
-	}
-	
 	/**
 	 * Pause the media element.
 	 */
-	public function pause() : Void {
+	public function pause() : Void {}
 
-	}
-	
 	/**
 	 * Pause the stop element.
 	 */
-	public function stop() : Void {
-
-	}
+	public function stop() : Void {}
 
 	/**
 	 * Return the media length, in milliseconds.
@@ -54,7 +46,7 @@ class Video implements Resource {
 	public function getLength() : Int { // Milliseconds
 		return 0;
 	}
-	
+
 	/**
 	 * Return the media position, in milliseconds.
 	 * Deprecated.
@@ -73,7 +65,7 @@ class Video implements Resource {
 		return 0;
 	}
 
-	/**	
+	/**
 	 * Return the media volume, between 0 and 1.
 	 */
 	public function getVolume() : Float { // [0, 1]
@@ -88,7 +80,7 @@ class Video implements Resource {
 	public function setVolume(volume : Float) : Void { // [0, 1]
 
 	}
-	
+
 	/**
 	 * If the media has finished or not.
 	 */
@@ -99,7 +91,5 @@ class Video implements Resource {
 	/**
 	 * Unload the resource from memory.
 	 */
-	public function unload(): Void {
-		
-	}
+	public function unload(): Void {}
 }

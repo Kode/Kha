@@ -130,7 +130,6 @@ class Graphics implements kha.graphics4.Graphics {
 			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height,
 								0, 0, renderTarget.width, renderTarget.height,
 								GL.COLOR_BUFFER_BIT, GL.NEAREST);
-			
 		}
 		#if (debug || kha_debug_html5)
 		var error = SystemImpl.gl.getError();
@@ -155,9 +154,7 @@ class Graphics implements kha.graphics4.Graphics {
 		#end
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -372,9 +369,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(texunit, TextureUnit).value);
@@ -429,9 +424,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		if (enabled) {

@@ -6,11 +6,11 @@ import android.media.MediaPlayerOnCompletionListener;
 
 class CompListener implements MediaPlayerOnCompletionListener {
 	private var mpc: MediaPlayerChannel;
-	
+
 	public function new(mpc: MediaPlayerChannel): Void {
 		this.mpc = mpc;
 	}
-	
+
 	public function onCompletion(mp: MediaPlayer): Void {
 		mpc.playbackComplete = true;
 	}
@@ -19,10 +19,10 @@ class CompListener implements MediaPlayerOnCompletionListener {
 class MediaPlayerChannel implements AudioChannel {
 	private var mp: MediaPlayer;
 	private var sound: Sound;
-	
+
 	@:noCompletion
 	public var playbackComplete: Bool = false;
-	
+
 	public function new(sound:Sound, loop:Bool): Void {
 		this.sound = sound;
 		sound.ownedByMPC = this;
@@ -33,7 +33,7 @@ class MediaPlayerChannel implements AudioChannel {
 		mp.setOnCompletionListener(new CompListener(this));
 		mp.start();
 	}
-	
+
 	public function play(): Void {
 		try {
 			if (!sound.ownedByMPC.playbackComplete) {
@@ -93,7 +93,7 @@ class MediaPlayerChannel implements AudioChannel {
 
 	@:isVar
 	public var volume(get, set): Float;
-	
+
 	private function get_volume(): Float {
 		if (sound.ownedByMPC == this) {
 			return volume;
@@ -113,7 +113,7 @@ class MediaPlayerChannel implements AudioChannel {
 	}
 
 	public var finished(get, null): Bool;
-	
+
 	private function get_finished(): Bool {
 		return sound.ownedByMPC.playbackComplete;
 	}

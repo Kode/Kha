@@ -15,13 +15,11 @@ private class VarProps {
 }
 
 class Splitter {
-
 	var vars : Map<Int,VarProps>;
 	var varNames : Map<String,TVar>;
 	var varMap : Map<TVar,TVar>;
 
-	public function new() {
-	}
+	public function new() {}
 
 	public function split( s : ShaderData ) : { vertex : ShaderData, fragment : ShaderData } {
 		var vfun = null, vvars = new Map();

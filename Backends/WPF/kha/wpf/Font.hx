@@ -23,25 +23,25 @@ class Font implements Resource {
 		myStyle = style;
 		mySize = size;
 	}
-	
+
 	public var name(get, null): String;
-	
+
 	public function get_name(): String {
 		return myName;
 	}
-	
+
 	public var style(get, null): FontStyle;
-	
+
 	public function get_style(): FontStyle {
 		return myStyle;
 	}
-	
+
 	public var size(get, null): Float;
-	
+
 	public function get_size(): Float {
 		return mySize;
 	}
-	
+
 	@:functionCode('
 		return getFormat().Height;
 	')
@@ -63,7 +63,7 @@ class Font implements Resource {
 	public function stringWidth(str : String) : Float {
 		return 0;
 	}
-	
+
 	@:functionCode('
 		return getFormat().Baseline;
 	')

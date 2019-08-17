@@ -7,7 +7,5 @@ package kha.kore.graphics4;
 
 @:headerClassCode("Kore::Graphics4::TextureUnit unit;")
 class TextureUnit implements kha.graphics4.TextureUnit {
-	public function new() {
-		
-	}
+	public function new() {}
 }

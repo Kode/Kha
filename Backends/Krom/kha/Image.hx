@@ -11,11 +11,11 @@ class Image implements Canvas implements Resource {
 
 	private var format: TextureFormat;
 	private var readable: Bool;
-	
+
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
 	private var graphics4: kha.graphics4.Graphics;
-	
+
 	private function new(texture: Dynamic) {
 		texture_ = texture;
 	}
@@ -79,7 +79,7 @@ class Image implements Canvas implements Resource {
 			return 1; // Grey8
 		}
 	}
-	
+
 	public static function _fromTexture(texture: Dynamic): Image {
 		return new Image(texture);
 	}
@@ -107,7 +107,7 @@ class Image implements Canvas implements Resource {
 		image.texture_ = Krom.createTextureFromEncodedBytes(bytes.getData(), format, readable);
 		doneCallback(image);
 	}
-	
+
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		var image = new Image(null);
@@ -143,14 +143,14 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return true;
 	}
-	
+
 	public static function renderTargetsInvertedY(): Bool {
 		return Krom.renderTargetsInvertedY();
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }
-	
+
 	public function unload(): Void {
 		Krom.unloadImage(this);
 		texture_ = null;
@@ -190,11 +190,11 @@ class Image implements Canvas implements Resource {
 			default: 4;
 		}
 	}
-	
+
 	public function generateMipmaps(levels: Int): Void {
 		texture_ == null ? Krom.generateRenderTargetMipmaps(renderTarget_, levels) : Krom.generateTextureMipmaps(texture_, levels);
 	}
-	
+
 	public function setMipmaps(mipmaps: Array<Image>): Void {
 		Krom.setMipmaps(texture_, mipmaps);
 	}
@@ -217,16 +217,16 @@ class Image implements Canvas implements Resource {
 	private function get_realWidth(): Int { return texture_ == null ? renderTarget_.width : texture_.realWidth; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return texture_ == null ? renderTarget_.height : texture_.realHeight; }
-	
+
 	public var g1(get, null): kha.graphics1.Graphics;
-	
+
 	private function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
 			graphics1 = new kha.graphics2.Graphics1(this);
 		}
 		return graphics1;
 	}
-	
+
 	public var g2(get, null): kha.graphics2.Graphics;
 
 	private function get_g2(): kha.graphics2.Graphics {

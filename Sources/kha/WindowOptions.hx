@@ -5,12 +5,12 @@ package kha;
     var FeatureMinimizable = 2;
     var FeatureMaximizable = 4;
     var FeatureBorderless = 8;
-    var FeatureOnTop = 16;	
-	
+    var FeatureOnTop = 16;
+
     function new (value:Int) {
         this = value;
     }
-    
+
     @:op(A | B) static function or( a:WindowFeatures, b:WindowFeatures) : WindowFeatures;
 }
 

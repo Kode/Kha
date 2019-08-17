@@ -30,8 +30,7 @@ class Main {
 		}
     }
 
-	private static function init(): Void {
-	}
+	private static function init(): Void {}
 
 	static var primary : Primary;
 	static var secondary1 : Secondary1;

@@ -28,7 +28,7 @@ class PipelineStateBase {
 		alphaBlendSource = BlendingFactor.BlendOne;
 		alphaBlendDestination = BlendingFactor.BlendZero;
 		alphaBlendOperation = BlendingOperation.Add;
-		
+
 		colorWriteMasksRed = [];
 		colorWriteMasksGreen = [];
 		colorWriteMasksBlue = [];
@@ -68,7 +68,7 @@ class PipelineStateBase {
 	public var alphaBlendSource: BlendingFactor;
 	public var alphaBlendDestination: BlendingFactor;
 	public var alphaBlendOperation: BlendingOperation;
-	
+
 	public var colorWriteMask(never, set): Bool;
 	public var colorWriteMaskRed(get, set): Bool;
 	public var colorWriteMaskGreen(get, set): Bool;

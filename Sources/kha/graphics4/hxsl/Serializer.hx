@@ -2,9 +2,7 @@ package kha.graphics4.hxsl;
 using kha.graphics4.hxsl.Ast;
 
 class Serializer {
-
-	function new() {
-	}
+	function new() {}
 
 	#if macro
 	function mapExpr( e : TExpr ) {

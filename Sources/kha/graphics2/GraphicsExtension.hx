@@ -191,7 +191,6 @@ class GraphicsExtension {
 	 * Draws a filled convex polygon.
 	 */
 	public static function fillPolygon(g2: Graphics, x: Float, y: Float, vertices: Array<Vector2>) {
-
 		var iterator = vertices.iterator();
 
 		if (!iterator.hasNext()) return;

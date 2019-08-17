@@ -112,17 +112,13 @@ class MainWindow extends system.windows.Window {
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
-	public function new(title: String, width: Int, height: Int) {
-
-	}
+	public function new(title: String, width: Int, height: Int) {}
 
 	@:functionCode('
 		Width = width + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
 		Height = height + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 	')
-	public function resize(width: Int, height: Int): Void {
-
-	}
+	public function resize(width: Int, height: Int): Void {}
 }
 
 @:classCode('
@@ -319,17 +315,11 @@ class SystemImpl {
 	}
 
 	@:functionCode('global::System.Windows.MessageBox.Show(msg, "Exeption", global::System.Windows.MessageBoxButton.OK, global::System.Windows.MessageBoxImage.Error);')
-	private static function displayErrorMessage(msg: String) {
+	private static function displayErrorMessage(msg: String) {}
 
-	}
+	public static function lockMouse(): Void {}
 
-	public static function lockMouse(): Void {
-
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -339,22 +329,16 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:functionCode('
 		if (global::System.Windows.Application.Current == null) {
 			new global::System.Windows.Application().Run(mainWindow);
 		}
 	')
-	static function startWindow(): Void {
-
-	}
+	static function startWindow(): Void {}
 
 	public static var mouseX: Int;
 	public static var mouseY: Int;
@@ -440,9 +424,7 @@ class SystemImpl {
 		return "WPF";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms:Int): Void {}
 
 	public static function getLanguage(): String {
 		var id = cs.system.globalization.CultureInfo.CurrentCulture.Name;
@@ -450,9 +432,7 @@ class SystemImpl {
 	}
 
 	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
-	public static function requestShutdown(): Void {
-
-	}
+	public static function requestShutdown(): Void {}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -462,21 +442,13 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
-  	}
-
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	//@:functionCode('mainWindow.resize(width, height);')
 	public static function changeResolution(width: Int, height: Int): Void {
@@ -484,13 +456,9 @@ class SystemImpl {
 		painter.height = height;
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";

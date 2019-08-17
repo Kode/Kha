@@ -5,12 +5,10 @@ import kha.graphics4.hxsl.RuntimeShader;
 class SearchMap {
 	public var linked : RuntimeShader;
 	public var next : Map<Int,SearchMap>;
-	public function new() {
-	}
+	public function new() {}
 }
 
 class Cache {
-
 	var linkCache : Map<Int,SearchMap>;
 	var outVarsMap : Map<String, Int>;
 	var outVars : Array<Array<String>>;

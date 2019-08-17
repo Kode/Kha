@@ -58,13 +58,9 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
-
-	public function beginEye(eye: Int): Void {
-		
-	}
+	public function beginEye(eye: Int): Void {}
 
 	public function end(): Void {
 		/*if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
@@ -72,9 +68,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}*/
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -175,9 +169,7 @@ class Graphics implements kha.graphics4.Graphics {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
 
-	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-
-	}
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {}
 
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
 		return new IndexBuffer(indexCount, usage);
@@ -189,13 +181,9 @@ class Graphics implements kha.graphics4.Graphics {
 		this.indexBuffer = indexBuffer;
 	}
 
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
-	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
+
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
@@ -206,22 +194,14 @@ class Graphics implements kha.graphics4.Graphics {
 			texture.set(cast(stage, TextureUnit).value);
 		}
 	}
-	
-	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
-	
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
 
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(texunit, TextureUnit).value);
@@ -273,17 +253,11 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	}
-
-	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
-		
-	}
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
@@ -312,9 +286,7 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.set();
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
-
-	}
+	public function setStencilReferenceValue(value: Int): Void {}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		GLES20.glUniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
@@ -384,9 +356,7 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indexBuffer.count() : count, GLES20.GL_UNSIGNED_SHORT, indexBuffer.data);
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-
-	}
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
 
 	public function instancedRenderingAvailable(): Bool {
 		return false;
@@ -432,11 +402,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {}
 
-	}
-
-	public function disableScissor(): Void {
-
-	}
+	public function disableScissor(): Void {}
 }

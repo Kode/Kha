@@ -1,5 +1,3 @@
 package android.os;
 
-extern interface Parcelable {
-	
-}
+extern interface Parcelable {}

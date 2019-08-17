@@ -23,7 +23,7 @@ class FontStyle {
 
 	/**
 	 * Initialize a new font style.
-	 * 
+	 *
 	 * @param bold				If the font is bold, default = false.
 	 * @param italic			If the font is italic, default = false.
  	 * @param underlined		If the font is underlined, default = false.
@@ -50,7 +50,7 @@ class FontStyle {
 
 	/**
 	 * Returns true if the font is underlined.
-	 */	
+	 */
 	public function getUnderlined() : Bool {
 		return underlined;
 	}

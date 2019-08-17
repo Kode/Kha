@@ -14,7 +14,7 @@ class VertexBuffer {
 	private var vertexCount: Int;
 	private var vertices: NativeArray<Single>;
 	private var lockedVertices: Float32Array;
-	
+
 	public function new(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage) {
 		this.vertexCount = vertexCount;
 		this.myStructure = structure;
@@ -34,11 +34,11 @@ class VertexBuffer {
 		vertices = new NativeArray<Single>(stride() * count());
 		lockedVertices = new Float32Array(stride() * count());
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return lockedVertices;
 	}
-	
+
 	public function unlock(): Void {
 		for (i in 0...stride() * count()) {
 			vertices[i] = lockedVertices[i];
@@ -63,15 +63,15 @@ class VertexBuffer {
 			++index;
 		}*/
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return vertexCount;
 	}
-	
+
 	private function createVertexBuffer(): Void {
 		var format = new NativeArray<VertexFormat>(myStructure.elements.length);
 		var index = 0;
@@ -90,7 +90,7 @@ class VertexBuffer {
 		}
 		buffer = new sce.playstation.core.graphics.VertexBuffer(vertexCount, indexCount, format);
 	}
-	
+
 	public function setIndices(indexBuffer: IndexBuffer): Void {
 		if (indexCount != indexBuffer.count()) {
 			indexCount = indexBuffer.count();

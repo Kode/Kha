@@ -9,11 +9,11 @@ package kha;
 namespace {
 	char windowTitles[10][256];
 	int titleIndex = 0;
-	
+
 	void resizeCallback(int width, int height, void* data) {
 		::kha::Window_obj::callResizeCallbacks(*((int*)&data), width, height);
 	}
-	
+
 	void ppiCallback(int ppi, void* data) {
 		::kha::Window_obj::callPpiCallbacks(*((int*)&data), ppi);
 	}
@@ -64,14 +64,14 @@ class Window {
 		resizeCallbacks[num] = [];
 		ppiCallbacks[num] = [];
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep
 	static function unused(): Void {
 		Display.primary.x;
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	public static function _init(win: WindowOptions = null, frame: FramebufferOptions = null): Void {
@@ -93,9 +93,7 @@ class Window {
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		Kore::Window::create(&window, &framebuffer);
 	')
-	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {
-
-	}
+	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {}
 
 	public static function destroy(window: Window): Void {
 		koreDestroy(window.num);
@@ -110,7 +108,7 @@ class Window {
 	}
 
 	public static var all(get, never): Array<Window>;
-	
+
 	static function get_all(): Array<Window> {
 		return windows;
 	}
@@ -180,11 +178,10 @@ class Window {
 
 	public var mode(get, set): WindowMode;
 
-	
 	function get_mode(): WindowMode {
 		return cast getKoreMode();
 	}
-	
+
 	@:functionCode('return Kore::Window::get(this->num)->mode();')
 	function getKoreMode(): Int {
 		return 0;
@@ -223,7 +220,7 @@ class Window {
 	public function notifyOnResize(callback: Int->Int->Void): Void {
 		resizeCallbacks[num].push(callback);
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep
@@ -232,12 +229,12 @@ class Window {
 			callback(width, height);
 		}
 	}
-	
+
 	@:functionCode('Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);')
 	public function notifyOnPpiChange(callback: Int->Void): Void {
 		ppiCallbacks[num].push(callback);
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep

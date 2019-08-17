@@ -83,16 +83,16 @@ class Mouse extends Controller {
 
 			windowWheelListeners[windowId].push(wheelListener);
 		}
-		
+
 		if (leaveListener != null) {
 			if (windowLeaveListeners == null) {
 				windowLeaveListeners = new Array();
 			}
-			
+
 			while (windowLeaveListeners.length <= windowId) {
 				windowLeaveListeners.push(new Array());
 			}
-			
+
 			windowLeaveListeners[windowId].push(leaveListener);
 		}
 	}
@@ -156,7 +156,7 @@ class Mouse extends Controller {
 				trace('no wheelListeners were ever registered');
 			}
 		}
-		
+
 		if (leaveListener != null) {
 			if (windowLeaveListeners != null) {
 				if (windowId < windowLeaveListeners.length) {
@@ -175,16 +175,12 @@ class Mouse extends Controller {
 	/**
 	 * Locks the cursor position and hides it. For catching movements, use the `moveX`/`moveY` arguments of your `moveListener` handler.
 	 */
-	public function lock(): Void {
-
-	}
+	public function lock(): Void {}
 
 	/**
 	 * Unlock the cursor position and hides it. For catching movements, use the `moveX`/`moveY` arguments of your `moveListener` handler.
 	 */
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	/**
 	 * Unlocks the cursor position and displays it.
@@ -205,30 +201,22 @@ class Mouse extends Controller {
 	 * @param change function fired when the lock is turned on / off.
 	 * @param error function fired when a toggle error occurs.
 	 */
-	public function notifyOnLockChange(change: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public function notifyOnLockChange(change: Void -> Void, error: Void -> Void): Void {}
 
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notifyOnLockChange` function.
 	 */
-	public function removeFromLockChange(change: Void -> Void, error: Void -> Void): Void{
-
-	}
+	public function removeFromLockChange(change: Void -> Void, error: Void -> Void): Void{}
 
 	/**
 	 * Hides the system cursor (without locking)
 	 */
-	public function hideSystemCursor(): Void {
-
-	}
+	public function hideSystemCursor(): Void {}
 
 	/**
 	 * Show the system cursor
 	 */
-	public function showSystemCursor(): Void {
-
-	}
+	public function showSystemCursor(): Void {}
 
 	private static var instance: Mouse;
 	var windowDownListeners: Array<Array<Int->Int->Int->Void>>;
@@ -250,7 +238,7 @@ class Mouse extends Controller {
 			}
 		}
 	}
-	
+
 	@input
 	private function sendDownEvent(windowId: Int, button: Int, x: Int, y: Int): Void {
 		if (windowDownListeners != null) {

@@ -9,7 +9,7 @@ class ResamplingAudioChannel extends AudioChannel {
 		super(looping);
 		this.sampleRate = sampleRate;
 	}
-	
+
 	public override function nextSamples(requestedSamples: Float32Array, requestedLength: Int, sampleRate: Int): Void {
 		if (paused || stopped) {
 			for (i in 0...requestedLength) {
@@ -17,7 +17,7 @@ class ResamplingAudioChannel extends AudioChannel {
 			}
 			return;
 		}
-		
+
 		var requestedSamplesIndex = 0;
 		while (requestedSamplesIndex < requestedLength) {
 			for (i in 0...min(sampleLength(sampleRate) - myPosition, requestedLength - requestedSamplesIndex)) {
@@ -79,7 +79,7 @@ class ResamplingAudioChannel extends AudioChannel {
 	inline function lerp(v0: Float, v1: Float, t: Float) {
 		return (1 - t) * v0 + t * v1;
 	}
-	
+
 	inline function sampleLength(sampleRate: Int): Int {
 		var value = Math.ceil(data.length * (sampleRate / this.sampleRate));
 		return value % 2 == 0 ? value : value + 1;
@@ -99,7 +99,7 @@ class ResamplingAudioChannel extends AudioChannel {
 		myPosition = 0;
 		stopped = true;
 	}
-	
+
 	override function get_length(): Float {
 		return data.length / this.sampleRate / 2; // 44.1 khz in stereo
 	}
@@ -113,7 +113,7 @@ class ResamplingAudioChannel extends AudioChannel {
 		myPosition = max(min(myPosition, sampleLength(kha.audio2.Audio.samplesPerSecond)), 0);
 		return value;
 	}
-	
+
 	override function get_volume(): Float {
 		return myVolume;
 	}
@@ -121,7 +121,7 @@ class ResamplingAudioChannel extends AudioChannel {
 	override function set_volume(value: Float): Float {
 		return myVolume = value;
 	}
-	
+
 	override function get_finished(): Bool {
 		return stopped;
 	}

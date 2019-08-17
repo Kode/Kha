@@ -5,9 +5,7 @@ import flash.system.Capabilities;
 class Display {
 	static var instance: Display = new Display();
 
-	function new() {
-
-	}
+	function new() {}
 
 	public static var primary(get, never): Display;
 

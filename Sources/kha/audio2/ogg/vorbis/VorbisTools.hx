@@ -201,7 +201,6 @@ class VorbisTools
         }
     }
 
-
     public static function drawLine(output:Vector<Float>, x0:Int, y0:Int, x1:Int, y1:Int, n:Int)
     {
         if (integerDivideTable == null) {

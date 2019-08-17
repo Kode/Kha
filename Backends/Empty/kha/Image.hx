@@ -17,7 +17,7 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
 		return null;
 	}
-	
+
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
@@ -43,14 +43,14 @@ class Image implements Canvas implements Resource {
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }
-	public function unload(): Void { }
+	public function unload(): Void {}
 	public function lock(level: Int = 0): Bytes { return null; }
-	public function unlock(): Void { }
+	public function unlock(): Void {}
 	public function getPixels(): Bytes { return null; }
-	public function generateMipmaps(levels: Int): Void { }
-	public function setMipmaps(mipmaps: Array<Image>): Void { }
-	public function setDepthStencilFrom(image: Image): Void { }
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void { }
+	public function generateMipmaps(levels: Int): Void {}
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
+	public function setDepthStencilFrom(image: Image): Void {}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 	public var width(get, null): Int;
 	private function get_width(): Int { return 0; }
 	public var height(get, null): Int;

@@ -42,7 +42,6 @@ extern class Path {
 	**/
 	static function join(paths:haxe.extern.Rest<String>):String;
 
-
 	/**
 		Resolves to to an absolute path.
 
@@ -84,7 +83,7 @@ extern class Path {
 	static var sep(default,null):String;
 
 	/**
-		The platform-specific path delimiter, ; or ':'.
+		The platform-specific path delimiter,; or ':'.
 	**/
 	static var delimiter(default,null):String;
 }

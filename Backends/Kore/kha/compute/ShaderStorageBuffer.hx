@@ -56,9 +56,7 @@ class ShaderStorageBuffer {
 		delete buffer; buffer = nullptr;
 		#endif
 	")
-	public function delete(): Void {
-		
-	}
+	public function delete(): Void {}
 
 	public function lock(): Array<Int> {
 		return data;
@@ -73,9 +71,7 @@ class ShaderStorageBuffer {
 		buffer->unlock();
 		#endif
 	")
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	public function count(): Int {
 		return myCount;

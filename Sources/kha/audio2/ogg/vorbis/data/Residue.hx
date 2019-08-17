@@ -18,8 +18,7 @@ class Residue
     public var residueBooks(default, null):Vector<Vector<Int>>; //int16 (*)[8]
     public var type(default, null):Int;
 
-    public function new() {
-    }
+    public function new() {}
 
     public static function read(decodeState:VorbisDecodeState, codebooks:Vector<Codebook>):Residue
     {
@@ -78,7 +77,6 @@ class Residue
 
         return r;
     }
-
 
     public function decode(decodeState:VorbisDecodeState, header:Header, residueBuffers:Vector<Vector<Float>>, ch:Int, n:Int,  doNotDecode:Vector<Bool>, channelBuffers:Vector<Vector<Float>>)
     {

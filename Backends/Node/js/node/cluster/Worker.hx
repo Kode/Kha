@@ -24,7 +24,6 @@ package js.node.cluster;
 import js.node.ChildProcess;
 import js.node.events.EventEmitter;
 
-
 @:enum abstract WorkerEvent(String) to String {
 	var Message = "message";
 	var Online = "online";
@@ -33,7 +32,6 @@ import js.node.events.EventEmitter;
 	var Exit = "exit";
 	var Error = "error";
 }
-
 
 /**
 	A Worker object contains all public information and method about a worker.

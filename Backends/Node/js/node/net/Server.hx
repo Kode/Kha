@@ -75,7 +75,6 @@ extern class Server extends EventEmitter<Server> {
 	@:overload(function(port:Int, host:String, ?callback:Void->Void):Void {})
 	function listen(port:Int, host:String, backlog:Int, ?callback:Void->Void):Void;
 
-
 	/**
 		Stops the server from accepting new connections and keeps existing connections.
 		This function is asynchronous, the server is finally closed when all connections are ended

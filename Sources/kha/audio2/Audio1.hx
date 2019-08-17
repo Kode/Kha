@@ -29,7 +29,7 @@ class Audio1 {
 		lastAllocationCount = 0;
 		Audio.audioCallback = mix;
 	}
-	
+
 	private static inline function max(a: Float, b: Float): Float {
 		return a > b ? a : b;
 	}

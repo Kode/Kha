@@ -4,7 +4,6 @@ import haxe.macro.Expr;
 using kha.graphics4.hxsl.Ast;
 
 class Macros {
-
 	static function makeType( t : Type ) : ComplexType {
 		#if macro
 		return switch( t ) {
@@ -294,7 +293,7 @@ class Macros {
 						#if debug
 						Printer.check(shader);
 						#end
-						
+
 						sys.FileSystem.createDirectory("Shaders");
 						var index = 0;
 						for (fun in shader.funs) {
@@ -306,7 +305,7 @@ class Macros {
 							}
 							++index;
 						}
-						
+
 						var str = Serializer.run(shader);
 						f.kind = FVar(null, { expr : EConst(CString(str)), pos : pos } );
 						f.meta.push({

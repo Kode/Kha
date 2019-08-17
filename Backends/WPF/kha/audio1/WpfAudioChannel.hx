@@ -9,7 +9,7 @@ import system.windows.controls.MediaState;
 class WpfAudioChannel implements kha.audio1.AudioChannel {
 	private var player: MediaElement;
 	private var hasFinished: Bool = false;
-	
+
 	public function new(filename: String) {
 		this.player = new MediaElement();
 		addEventHandlers();
@@ -18,15 +18,15 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 		// MediaElement needs Absolute URI. Relative won't work
 		player.Source = new Uri(Path.GetFullPath(filename), UriKind.Absolute);
 		// TODO: perhaps files should be checked for validity?
-		
+
 		play();
 	}
-	
+
 	public function play(): Void {
 		hasFinished = false;
 		player.Play();
 	}
-	
+
 	public function pause(): Void {
 		player.Pause();
 	}
@@ -37,7 +37,7 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float;
-	
+
 	@:functionCode('
 		if (player.NaturalDuration.HasTimeSpan) return player.NaturalDuration.TimeSpan.TotalMilliseconds * 1000.0;
 		else return float.MaxValue;
@@ -45,16 +45,16 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 	public function get_length(): Float {
 		return 0;
 	}
-	
+
 	public var position(get, null): Float; // Seconds
-	
+
 	@:functionCode('return Math.round(player.Position.TotalMilliseconds) * 1000.0;')
 	function get_position(): Float {
 		return 0;
 	}
-	
+
 	public var volume(get, set): Float;
-	
+
 	function get_volume(): Float {
 		return player.Volume;
 	}
@@ -62,20 +62,18 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 	function set_volume(value: Float): Float {
 		return player.Volume = value;
 	}
-	
+
 	public var finished(get, null): Bool;
-	
+
 	function get_finished(): Bool {
 		return hasFinished;
 	}
-	
+
 	@:functionCode('
 		player.MediaEnded += OnMediaEnded;
 	')
-	function addEventHandlers() {
-		
-	}
-	
+	function addEventHandlers() {}
+
 	function OnMediaEnded(obj : Dynamic, e : RoutedEventArgs) {
 		hasFinished = true;
 	}

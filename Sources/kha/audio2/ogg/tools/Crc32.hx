@@ -14,7 +14,7 @@ class Crc32
         if (table != null) {
             return;
         }
-        
+
         table = new Vector(256);
         for (i in 0...256) {
             var s:UInt = ((i:UInt) << (24:UInt));

@@ -7,7 +7,7 @@ import js.html.WebSocket;
 class Network {
 	private var socket: WebSocket;
 	private var open: Bool = false;
-	
+
 	public function new(url: String, port: Int, errorCallback: Void->Void, closeCallback: Void->Void) {
 		socket = new WebSocket("ws://" + url + ":" + port);
 		socket.onerror = function (error) {
@@ -41,11 +41,11 @@ class Network {
 			default: return "";
 		}
 	}
-	
+
 	public function send(bytes: Bytes, mandatory: Bool): Void {
 		if (open) socket.send(bytes.getData());
 	}
-	
+
 	public function listen(listener: Bytes->Void): Void {
 		socket.onmessage = function (message) {
 			listener(Bytes.ofData(message.data));

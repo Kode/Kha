@@ -46,17 +46,13 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.beginFace(renderTarget, face);
 	}
 
-	public function beginEye(eye: Int): Void {
-
-	}
+	public function beginEye(eye: Int): Void {}
 
 	public function end(): Void {
 		Krom.end();
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -110,13 +106,9 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setTextureDepth(unit, texture.renderTarget_);
 	}
 
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
-
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
-
-	}
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
@@ -143,9 +135,7 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.set();
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
-
-	}
+	public function setStencilReferenceValue(value: Int): Void {}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		Krom.setBool(location, value);

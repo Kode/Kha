@@ -9,7 +9,7 @@ class DeprecatedFont implements kha.Font {
 	public var style : FontStyle;
 	public var size : Int;
 	var paint : Paint;
-	
+
 	public function new(name : String, style : FontStyle, size : Int) {
 		this.name = name;
 		this.style = style;
@@ -18,7 +18,7 @@ class DeprecatedFont implements kha.Font {
 		paint.setTypeface(Typeface.create(name, Typeface.NORMAL));
 		paint.setTextSize(size);
 	}
-	
+
 	public function getHeight() : Float {
 		return size;
 	}

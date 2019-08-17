@@ -130,7 +130,7 @@ class ControllerBuilder {
 
 				switch (field.kind) {
 				case FFun(f):
-					var expr = macro { };
+					var expr = macro {};
 					var index: Int = 4;
 					var varindex: Int = 0;
 					for (arg in f.args) {

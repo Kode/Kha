@@ -36,7 +36,6 @@ package haxe;
 	the child class.
 **/
 class Timer {
-
 	#if macro
 		private var event : MainLoop.MainEvent;
 	#else
@@ -101,9 +100,7 @@ class Timer {
 		Once bound, it can still be rebound to different functions until `this`
 		Timer is stopped through a call to `this.stop`.
 	**/
-	public dynamic function run() {
-
-	}
+	public dynamic function run() {}
 
 	/**
 		Invokes `f` after `time_ms` milliseconds.

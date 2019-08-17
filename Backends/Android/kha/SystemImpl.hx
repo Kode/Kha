@@ -76,9 +76,7 @@ class SystemImpl {
 		return true;
 	}
 
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function canSwitchFullscreen() : Bool{
 		return false;
@@ -88,22 +86,13 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
-  	}
-
-	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-
-	}
-
-
-	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-
-	}
+	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
 	private static var framebuffer: Framebuffer;
 	public static var mouseX: Int = 0;
@@ -152,13 +141,9 @@ class SystemImpl {
 		else return null;
 	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(): Void {}
 
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -168,13 +153,9 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:access(Main.main)
 	public static function preinit(width: Int, height: Int): Void {
@@ -200,7 +181,6 @@ class SystemImpl {
 	}
 
 	public static function touch(index: Int, x: Int, y: Int, action: Int): Void {
-
 		switch (action) {
 		case 0: //DOWN
 			if (index == 0) {
@@ -237,7 +217,6 @@ class SystemImpl {
 		case 0x00000004:
 			keyboard.sendDownEvent(KeyCode.Back);
 		default:
-
 		}
 	}
 
@@ -253,7 +232,6 @@ class SystemImpl {
 		case 0x00000004:
 			keyboard.sendUpEvent(KeyCode.Back);
 		default:
-
 		}
 	}
 
@@ -283,9 +261,7 @@ class SystemImpl {
 		System.shutdown();
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
 	public static function loadUrl(url: String): Void {
 		var i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -300,19 +276,13 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 }

@@ -9,7 +9,6 @@ package kha.graphics5;
 
 @:headerClassCode("Kore::Graphics5::AccelerationStructure* accel;")
 class AccelerationStructure {
-
 	public function new(commandList: CommandList, vb: VertexBuffer, ib: IndexBuffer) {
 		init(commandList, vb, ib);
 	}

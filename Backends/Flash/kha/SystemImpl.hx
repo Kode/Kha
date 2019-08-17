@@ -204,9 +204,7 @@ class SystemImpl {
 		return "Flash";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms:Int): Void {}
 
 	public static function getLanguage(): String {
 		return Capabilities.language;
@@ -220,9 +218,7 @@ class SystemImpl {
 		return true;
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
 	public static function loadUrl(url: String): Void {
 		Lib.getURL(new URLRequest(url), "_blank");
@@ -240,19 +236,13 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 }

@@ -20,7 +20,7 @@ class Window {
 	}
 
 	public static var all(get, never): Array<Window>;
-	
+
 	static function get_all(): Array<Window> {
 		return windows;
 	}
@@ -69,7 +69,7 @@ class Window {
 	}
 
 	public var height(get, set): Int;
-	
+
 	@:functionCode('
 		android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
 		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);

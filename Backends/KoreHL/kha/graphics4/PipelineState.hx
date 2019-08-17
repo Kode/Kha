@@ -8,12 +8,12 @@ import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
 	private var _pipeline: Pointer;
-	
+
 	public function new() {
 		super();
 		init();
 	}
-	
+
 	private function init(): Void {
 		_pipeline = kore_create_pipeline();
 	}
@@ -21,10 +21,10 @@ class PipelineState extends PipelineStateBase {
 	public function delete() {
 		kore_delete_pipeline(_pipeline);
 	}
-	
+
 	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, count: Int): Void {
 		kore_pipeline_set_vertex_shader(_pipeline, vertexShader._shader);
-		kore_pipeline_set_fragment_shader(_pipeline, fragmentShader._shader);		
+		kore_pipeline_set_fragment_shader(_pipeline, fragmentShader._shader);
 		if (geometryShader != null) kore_pipeline_set_geometry_shader(_pipeline, geometryShader._shader);
 		if (tessellationControlShader != null) kore_pipeline_set_tesscontrol_shader(_pipeline, tessellationControlShader._shader);
 		if (tessellationEvaluationShader != null) kore_pipeline_set_tesseval_shader(_pipeline, tessellationEvaluationShader._shader);
@@ -56,10 +56,10 @@ class PipelineState extends PipelineStateBase {
 				VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(structures[i].get(j).name), data);
 			}
 		}
-		
+
 		kore_pipeline_compile(_pipeline, kore_structures[0], count > 1 ? kore_structures[1] : null, count > 2 ? kore_structures[2] : null, count > 3 ? kore_structures[3] : null);
 	}
-	
+
 	public function compile(): Void {
 		var stencilReferenceValue = 0;
 		switch (this.stencilReferenceValue) {
@@ -80,12 +80,11 @@ class PipelineState extends PipelineStateBase {
 			inputLayout.length > 3 ? inputLayout[3] : null,
 			inputLayout.length);
 	}
-	
+
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		return new kha.korehl.graphics4.ConstantLocation(kore_pipeline_get_constantlocation(_pipeline, StringHelper.convert(name)));
 	}
-	
-	
+
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		return new kha.korehl.graphics4.TextureUnit(kore_pipeline_get_textureunit(_pipeline, StringHelper.convert(name)));
 	}
@@ -116,19 +115,19 @@ class PipelineState extends PipelineStateBase {
 			return 0;
 		}
 	}
-	
+
 	public function set(): Void {
 		kore_pipeline_set(_pipeline);
 	}
-	
+
 	@:hlNative("std", "kore_create_pipeline") static function kore_create_pipeline(): Pointer { return null; }
-	@:hlNative("std", "kore_delete_pipeline") static function kore_delete_pipeline(pipeline: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_geometry_shader") static function kore_pipeline_set_geometry_shader(pipeline: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_tesscontrol_shader") static function kore_pipeline_set_tesscontrol_shader(pipeline: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_set_tesseval_shader") static function kore_pipeline_set_tesseval_shader(pipeline: Pointer, shader: Pointer): Void { }
-	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure0: Pointer, structure1: Pointer, structure2: Pointer, structure3: Pointer): Void { }
+	@:hlNative("std", "kore_delete_pipeline") static function kore_delete_pipeline(pipeline: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_set_geometry_shader") static function kore_pipeline_set_geometry_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_set_tesscontrol_shader") static function kore_pipeline_set_tesscontrol_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_set_tesseval_shader") static function kore_pipeline_set_tesseval_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure0: Pointer, structure1: Pointer, structure2: Pointer, structure3: Pointer): Void {}
 	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer { return null; }
 	@:hlNative("std", "kore_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer,
@@ -136,6 +135,6 @@ class PipelineState extends PipelineStateBase {
 		blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int,
 		depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int,
 		colorWriteMaskRed: Bool, colorWriteMaskGreen: Bool, colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool,
-		conservativeRasterization: Bool): Void { }
-	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void { }
+		conservativeRasterization: Bool): Void {}
+	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void {}
 }

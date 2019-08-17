@@ -6,13 +6,9 @@ import kha.Scheduler;
 import kha.System;
 
 class Main {
-	static function update(): Void {
+	static function update(): Void {}
 
-	}
-
-	static function render(frames: Array<Framebuffer>): Void {
-
-	}
+	static function render(frames: Array<Framebuffer>): Void {}
 
 	public static function main() {
 		System.start({title: "Test", width: 1024, height: 768}, function (_) {

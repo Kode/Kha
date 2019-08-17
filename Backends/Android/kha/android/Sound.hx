@@ -20,12 +20,12 @@ class LoadListener implements SoundPoolOnLoadCompleteListener {
 	private var lock: ReentrantLock;
 	private var condition: Condition;
 	public var status(default, null): Int;
-	
+
 	public function new(lock: ReentrantLock, condition: Condition): Void {
 		this.lock = lock;
 		this.condition = condition;
 	}
-	
+
 	public function onLoadComplete(soundPool: SoundPool, soundId: Int, status:Int): Void {
 		lock.lock();
 		this.status = status;
@@ -42,14 +42,14 @@ class Sound extends kha.Sound {
 	//public var length(default, null): Float = 0;
 	@:noCompletion
 	public var ownedByMPC: MediaPlayerChannel;
-	
+
 	public function new(file: AssetFileDescriptor) {
 		super();
-		
+
 		var uncompressedSize: Float;
 		var sampleRate = 48000; // worst case
 		var channelCount = 2;
-		
+
 		// if api >= 16 determine sample rate and channel count for size calculation
 		if (BuildVERSION.SDK_INT >= 16) {
 			try {
@@ -64,7 +64,7 @@ class Sound extends kha.Sound {
 				trace(e);
 			}
 		}
-		
+
 		try {
 			mediaPlayer = new MediaPlayer();
 			mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
@@ -75,7 +75,7 @@ class Sound extends kha.Sound {
 		catch (e: Dynamic) {
 			trace(e);
 		}
-		
+
 		uncompressedSize = (length != 0) ? sampleRate * channelCount * length * 2 : 1024 * 1024 + 1;
 		if (uncompressedSize < 1024 * 1024 && Audio.spSamples < Audio.spSamplesMax) {
 			try {
@@ -101,11 +101,11 @@ class Sound extends kha.Sound {
 			mediaPlayer = null;
 		}
 	}
-	
+
 	override public function uncompress(done: Void->Void): Void {
 		done();
 	}
-	
+
 	override public function unload(): Void {
 		if (soundId > 0) {
 			if (Audio.soundpool.unload(soundId)) {
@@ -116,7 +116,7 @@ class Sound extends kha.Sound {
 			mediaPlayer.release();
 		}
 	}
-	
+
 	//public function new(file : AssetFileDescriptor) {
 		//super();
 		//try {
@@ -130,7 +130,7 @@ class Sound extends kha.Sound {
 			//trace(e);
 		//}
 	//}
-	
+
 	//private function parseWaveFile(input:FileInputStream): Void {
 		//var wavBytes = new NativeArray<Int8>(input.available());
 		//input.read(wavBytes);

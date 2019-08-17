@@ -11,9 +11,7 @@ import kha.audio2.ogg.vorbis.VorbisDecodeState;
 class Page {
     public var flag(default, null):Int;
 
-    public function new () {
-
-    }
+    public function new () {}
 
     public function clone() {
         var page = new Page();

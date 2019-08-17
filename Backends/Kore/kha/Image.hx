@@ -40,7 +40,7 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, antiAliasingSamples > 1, contextId);
 	}
-	
+
 	/**
 	 * Textures in array mast be readable!
 	 */
@@ -50,7 +50,7 @@ class Image implements Canvas implements Resource {
 		initArrayTexture(image, images);
 		return image;
 	}
-	
+
 	@:functionCode('
 		source->textureArrayTextures = new Kore::Graphics4::Image*[images->length];
 		for (unsigned i = 0; i < images->length; ++i) {
@@ -58,10 +58,8 @@ class Image implements Canvas implements Resource {
 		}
 		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
 	')
-	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
-		
-	}
-	
+	private static function initArrayTexture(source:Image, images:Array<Image>):Void {}
+
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
@@ -71,9 +69,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, (Kore::Graphics1::Image::Format)format, readable);')
-	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
-		
-	}
+	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {}
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
@@ -84,10 +80,8 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, depth, (Kore::Graphics1::Image::Format)format, readable);')
-	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
-		
-	}
-	
+	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {}
+
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
 		var isFloat = format == "hdr" || format == "HDR";
@@ -97,9 +91,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
-	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
-		
-	}
+	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {}
 
 	private function new(readable: Bool) {
 		this.readable = readable;
@@ -108,9 +100,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode("texture = nullptr; renderTarget = nullptr; textureArray = nullptr; textureArrayTextures = nullptr;")
-	function nullify() {
-
-	}
+	function nullify() {}
 
 	@:void static function finalize(image: Image): Void {
 		image.unload();
@@ -158,7 +148,7 @@ class Image implements Canvas implements Resource {
 			case Depth16: 0;
 		}
 	}
-	
+
 	private static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
 		case RGBA32:
@@ -194,24 +184,16 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('renderTarget = new Kore::Graphics4::RenderTarget(width, height, depthBufferBits, antiAliasing, (Kore::Graphics4::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
-	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-
-	}
+	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
-	private function init(width: Int, height: Int, format: Int): Void {
-
-	}
+	private function init(width: Int, height: Int, format: Int): Void {}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, depth, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
-	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
-
-	}
+	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {}
 
 	@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
-	private function initVideo(video: kha.kore.Video): Void {
-
-	}
+	private function initVideo(video: kha.kore.Video): Void {}
 
 	public static function createEmpty(readable: Bool, floatFormat: Bool): Image {
 		var image = new Image(readable);
@@ -228,9 +210,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('texture = new Kore::Graphics4::Texture(filename.c_str(), readable);')
-	private function initFromFile(filename: String): Void {
-
-	}*/
+	private function initFromFile(filename: String): Void {}*/
 
 	public var g1(get, null): kha.graphics1.Graphics;
 
@@ -271,7 +251,7 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
-	
+
 	@:functionCode('return Kore::Graphics4::renderTargetsInvertedY();')
 	public static function renderTargetsInvertedY(): Bool {
 		return false;
@@ -324,9 +304,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr; delete[] textureArrayTextures; textureArrayTextures = nullptr;")
-	public function unload(): Void {
-
-	}
+	public function unload(): Void {}
 
 	private var bytes: Bytes = null;
 
@@ -423,7 +401,5 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode("if (texture != nullptr) texture->clear(x, y, z, width, height, depth, color);")
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
-	}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 }

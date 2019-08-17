@@ -6,7 +6,7 @@ import haxe.ds.Vector;
 class Sound extends kha.Sound {
 	public var _id: Int;
 	public var _callback: Void->Void;
-	
+
 	public function new(id: Int) {
 		super();
 		this._id = id;

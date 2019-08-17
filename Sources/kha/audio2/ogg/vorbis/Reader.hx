@@ -143,7 +143,6 @@ class Reader {
         return reader;
     }
 
-
     public inline function sampleToMillisecond(samples:Int) {
         return samples / header.sampleRate * 1000;
     }

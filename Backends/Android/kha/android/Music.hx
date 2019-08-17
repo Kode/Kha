@@ -8,7 +8,7 @@ import java.lang.Throwable;
 class Music extends kha.Music {
 	private static var instance: Music;
 	private var mp: MediaPlayer;
-		
+
 	public function new(file: AssetFileDescriptor) {
 		super();
 		instance = this;
@@ -23,7 +23,7 @@ class Music extends kha.Music {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public function play(loop: Bool = false) : Void {
 		mp.start();
 	}
@@ -31,7 +31,7 @@ class Music extends kha.Music {
 	public function stop() : Void {
 		mp.stop();
 	}
-	
+
 	public static function stopit(): Void {
 		if (instance != null) instance.stop();
 	}

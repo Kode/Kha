@@ -34,7 +34,6 @@ import js.node.stream.Writable;
 	The legacy `update` method is also supported.
 **/
 extern class Verify extends Writable<Sign> {
-
 	/**
 		Updates the verifier object with data. This can be called many times with new data as it is streamed.
 	**/

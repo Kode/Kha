@@ -7,11 +7,11 @@ using StringTools;
 
 class KromStorageFile extends StorageFile {
 	private var name: String;
-	
+
 	public function new(name: String) {
 		this.name = name;
 	}
-	
+
 	override public function read(): Blob {
 		var data: BytesData = Krom.readStorage(name);
 		return data != null ? Blob.fromBytes(Bytes.ofData(data)) : null;

@@ -7,7 +7,5 @@ package kha.compute;
 
 @:headerClassCode("Kore::ComputeTextureUnit unit;")
 class TextureUnit {
-	public function new() {
-		
-	}
+	public function new() {}
 }

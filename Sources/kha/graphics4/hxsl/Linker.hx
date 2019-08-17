@@ -9,8 +9,7 @@ private class AllocatedVar {
 	public var kind : Null<FunctionKind>;
 	public var parent : AllocatedVar;
 	public var instanceIndex : Int;
-	public function new() {
-	}
+	public function new() {}
 }
 
 private class ShaderInfos {
@@ -37,7 +36,6 @@ private class ShaderInfos {
 }
 
 class Linker {
-
 	public var allVars : Array<AllocatedVar>;
 	var varMap : Map<String,AllocatedVar>;
 	var curShader : ShaderInfos;
@@ -46,8 +44,7 @@ class Linker {
 	var locals : Map<Int,Bool>;
 	var curInstance : Int;
 
-	public function new() {
-	}
+	public function new() {}
 
 	inline function debug( msg : String, ?pos : haxe.PosInfos ) {
 		//haxe.Log.trace(msg, pos);
@@ -378,7 +375,6 @@ class Linker {
 				initDependencies(s);
 				entry.deps.set(s, true);
 			}
-
 
 		// collect needed dependencies
 		var v = [], f = [];

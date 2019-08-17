@@ -11,7 +11,7 @@ class Audio {
 	private static var spSamplesMax(default, null): Int = 32;
 	@:noCompletion
 	public static var soundpool(default, null) = new SoundPool(spSamplesMax, AudioManager.STREAM_MUSIC, 0);
-	
+
 	public static function play(sound: kha.Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		// It is possible to have more than one simultaneously playing instances of one Sound
 		// if SoundPool is used.
@@ -34,7 +34,7 @@ class Audio {
 		}
 		return null;
 	}
-	
+
 	public static function stream(sound: kha.Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		return play(sound, loop);
 	}
