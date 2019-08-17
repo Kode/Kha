@@ -36,9 +36,7 @@ class SystemImpl {
 		}
 	}
 
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function _updateSize(width: Int, height: Int): Void {
 		SystemImpl.width = width;
@@ -82,9 +80,7 @@ class SystemImpl {
 		return "nodejs";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms:Int): Void {}
 
 	public static function getLanguage(): String {
 		return "en";
@@ -154,13 +150,9 @@ class SystemImpl {
 		return mouse;
 	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(): Void {}
 
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -170,13 +162,9 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	public static function canSwitchFullscreen() : Bool{
 		return false;
@@ -186,30 +174,17 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
-  	}
+	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{}
 
-	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	}
-
-
-	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
@@ -223,19 +198,13 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 }

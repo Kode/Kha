@@ -16,32 +16,32 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	public static inline var Purple: Color = 0xff800080;
 	public static inline var Pink: Color = 0xffffc0cb;
 	public static inline var Orange: Color = 0xffffa500;
-	
+
 	public static inline var Transparent: Color = 0x00000000;
-	
+
 	static inline var invMaxChannelValue: FastFloat = 1 / 255;
-	
+
 	/**
 	 * Creates a new Color object from a packed 32 bit ARGB value.
 	 */
 	public static inline function fromValue(value: Int): Color {
 		return new Color(value);
 	}
-	
+
 	/**
 	 * Creates a new Color object from components in the range 0 - 255.
 	 */
 	public static function fromBytes(r: Int, g: Int, b: Int, a: Int = 255): Color {
 		return new Color((a << 24) | (r << 16) | (g << 8) | b);
 	}
-	
+
 	/**
 	 * Creates a new Color object from components in the range 0 - 1.
 	 */
 	public static function fromFloats(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat = 1): Color {
 		return new Color((Std.int(a * 255) << 24) | (Std.int(r * 255) << 16) | (Std.int(g * 255) << 8) | Std.int(b * 255));
 	}
-	
+
 	/**
 	 * Creates a new Color object from an HTML style #AARRGGBB string.
 	 */
@@ -57,7 +57,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 			throw "Invalid Color string: '" + value + "'";
 		}
 	}
-	
+
 	/**
 	 * Contains a byte representing the red color component.
 	 */
@@ -90,20 +90,20 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	 * Contains a float representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	 */
 	public var A(get, set): FastFloat;
-	
+
 	private function new(value: Int) {
 		this = value;
 	}
-	
+
 	/**
 	 * Return this Color instance as Int.
 	 */
 	public var value(get, set): Int;
-	
+
 	private inline function get_value(): Int {
 		return this;
 	}
-	
+
 	private inline function set_value(value: Int): Int {
 		this = value;
 		return this;
@@ -112,15 +112,15 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	private inline function get_Rb(): Int {
 		return (this & 0x00ff0000) >>> 16;
 	}
-	
+
 	private inline function get_Gb(): Int {
 		return (this & 0x0000ff00) >>> 8;
 	}
-	
+
 	private inline function get_Bb(): Int {
 		return this & 0x000000ff;
 	}
-	
+
 	private inline function get_Ab(): Int {
 		return this >>> 24;
 	}
@@ -129,17 +129,17 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 		this = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
 		return i;
 	}
-	
+
 	private inline function set_Gb(i: Int): Int {
 		this = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
 		return i;
 	}
-	
+
 	private inline function set_Bb(i: Int): Int {
 		this = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
 		return i;
 	}
-	
+
 	private inline function set_Ab(i: Int): Int {
 		this = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
 		return i;
@@ -148,15 +148,15 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	private inline function get_R(): FastFloat {
 		return get_Rb() * invMaxChannelValue;
 	}
-	
+
 	private inline function get_G(): FastFloat {
 		return get_Gb() * invMaxChannelValue;
 	}
-	
+
 	private inline function get_B(): FastFloat {
 		return get_Bb() * invMaxChannelValue;
 	}
-	
+
 	private inline function get_A(): FastFloat {
 		return get_Ab() * invMaxChannelValue;
 	}

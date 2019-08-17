@@ -1059,9 +1059,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 	}
 
-	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
-
-	}
+	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		setPipeline(videoPipeline);

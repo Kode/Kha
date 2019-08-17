@@ -7,7 +7,7 @@ class IndexBuffer {
 	public var nativeCutIndices: NativeArray<Int>;
 	private var indices: Array<Int>;
 	private var indexCount: Int;
-	
+
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;
 		indices = new Array<Int>();
@@ -25,9 +25,7 @@ class IndexBuffer {
 		}
 	}
 
-	public function set(): Void {
-		
-	}
+	public function set(): Void {}
 
 	public function count(): Int {
 		return indexCount;

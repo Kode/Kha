@@ -2,7 +2,6 @@ package kha.graphics4.hxsl;
 using kha.graphics4.hxsl.Ast;
 
 class Clone {
-
 	public var varMap : Map<Int,TVar>;
 
 	public function new() {

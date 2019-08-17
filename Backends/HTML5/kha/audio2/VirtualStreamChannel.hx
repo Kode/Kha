@@ -15,7 +15,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 	var lastTickTime: Float;
 	var lastPosition: Float;
 	var looping: Bool;
-	
+
 	public function new(aeChannel: AEAudioChannel, looping: Bool) {
 		this.aeChannel = aeChannel;
 		this.looping = looping;
@@ -44,7 +44,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 		}
 		lastTickTime = now;
 	}
-	
+
 	public function play(): Void {
 		if (SystemImpl.mobileAudioPlaying) {
 			aeChannel.play();
@@ -54,7 +54,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 			mode = Playing;
 		}
 	}
-	
+
 	public function pause(): Void {
 		if (SystemImpl.mobileAudioPlaying) {
 			aeChannel.pause();
@@ -76,13 +76,13 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	function get_length(): Float {
 		return aeChannel.length;
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	function get_position(): Float {
 		if (SystemImpl.mobileAudioPlaying) {
 			return aeChannel.position;

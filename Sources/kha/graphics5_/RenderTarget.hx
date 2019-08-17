@@ -1,5 +1,3 @@
 package kha.graphics5;
 
-interface RenderTarget {
-	
-}
+interface RenderTarget {}

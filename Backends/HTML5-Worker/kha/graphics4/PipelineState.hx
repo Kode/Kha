@@ -18,9 +18,7 @@ class PipelineState extends PipelineStateBase {
 		textureValues = new Array<Dynamic>();
 	}
 
-	public function delete(): Void {
-
-	}
+	public function delete(): Void {}
 
 	public function compile(): Void {
 		var index = 0;

@@ -3,16 +3,13 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 class CubeMap implements Canvas implements Resource {
-
 	public var _texture: Pointer;
 	public var _renderTarget: Pointer;
 
 	private var format: TextureFormat;
 	private var graphics4: kha.graphics4.Graphics;
 
-	private function new() {
-
-	}
+	private function new() {}
 
 	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
 		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
@@ -66,7 +63,7 @@ class CubeMap implements Canvas implements Resource {
 			case Depth16: 0;
 		}
 	}
-	
+
 	private static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
 		case RGBA32:
@@ -82,9 +79,9 @@ class CubeMap implements Canvas implements Resource {
 		}
 	}
 
-	public function unload(): Void { }
+	public function unload(): Void {}
 	public function lock(level: Int = 0): Bytes { return null; }
-	public function unlock(): Void { }
+	public function unlock(): Void {}
 
 	public var width(get, null): Int;
 	public var height(get, null): Int;

@@ -17,7 +17,7 @@ class TargetRectangle {
 	public var height: Float;
 	public var scaleFactor: Float;
 	public var rotation: ScreenRotation;
-	
+
 	public function new(x: Float, y: Float, w: Float, h: Float, s: Float, r: ScreenRotation) {
 		this.x = x;
 		this.y = y;
@@ -99,7 +99,7 @@ class Scaler {
 		}
 		return new TargetRectangle(scalex, scaley, scalew, scaleh, scale, rotation);
 	}
-	
+
 	public static function transformXDirectly(x: Int, y: Int, sourceWidth: Int, sourceHeight: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Int {
 		var targetRect = targetRect(sourceWidth, sourceHeight, destinationWidth, destinationHeight, rotation);
 		switch (targetRect.rotation) {
@@ -113,7 +113,7 @@ class Scaler {
 			return Std.int((targetRect.y - y) / targetRect.scaleFactor);
 		}
 	}
-	
+
 	/**
 	 * Transform the X value from the given position in the source to a position in the destination canvas.
 	 *
@@ -126,7 +126,7 @@ class Scaler {
 	public static function transformX(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
 		return transformXDirectly(x, y, source.width, source.height, destination.width, destination.height, rotation);
 	}
-	
+
 	public static function transformYDirectly(x: Int, y: Int, sourceWidth: Int, sourceHeight: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): Int {
 		var targetRect = targetRect(sourceWidth, sourceHeight, destinationWidth, destinationHeight, rotation);
 		switch (targetRect.rotation) {
@@ -153,7 +153,7 @@ class Scaler {
 	public static function transformY(x: Int, y: Int, source: Image, destination: Canvas, rotation: ScreenRotation): Int {
 		return transformYDirectly(x, y, source.width, source.height, destination.width, destination.height, rotation);
 	}
-	
+
 	public static function scale(source: Image, destination: Canvas, rotation: ScreenRotation): Void {
 		var g = destination.g2;
 		g.pushTransformation(getScaledTransformation(source.width, source.height, destination.width, destination.height, rotation));
@@ -162,7 +162,7 @@ class Scaler {
 		g.drawImage(source, 0, 0);
 		g.popTransformation();
 	}
-	
+
 	public static function getScaledTransformation(width: Int, height: Int, destinationWidth: Int, destinationHeight: Int, rotation: ScreenRotation): FastMatrix3 {
 		var rect = targetRect(width, height, destinationWidth, destinationHeight, rotation);
 		var sf = rect.scaleFactor;

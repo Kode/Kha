@@ -14,12 +14,12 @@ import java.lang.Runnable;
 ')
 class Music extends kha.Music implements Runnable {
 	private var loop: Bool = false;
-	
+
 	public function new(filename: String) {
 		super();
 		init(filename);
 	}
-	
+
 	@:functionCode('
 		try {
 			//instance = this;
@@ -46,10 +46,8 @@ class Music extends kha.Music implements Runnable {
 			ex.printStackTrace();
 		}
 	')
-	function init(filename : String) : Void {
-		
-	}
-	
+	function init(filename : String) : Void {}
+
 	@:functionCode('
 		int readPoint = 0;
 		int bytesRead = 0;
@@ -100,10 +98,8 @@ class Music extends kha.Music implements Runnable {
 			// line.close();
 		}
 	')
-	public function run() : Void {
-		
-	}
-	
+	public function run() : Void {}
+
 	@:functionCode('
 		this.loop = loop;
 		playing = true;
@@ -111,19 +107,15 @@ class Music extends kha.Music implements Runnable {
 			playThread.start();
 		line.start();
 	')
-	private function play2(loop: Bool): Void {
-		
-	}
-	
+	private function play2(loop: Bool): Void {}
+
 	public function play(loop: Bool = false): Void {
 		play2(loop);
 	}
-	
+
 	@:functionCode('
 		playing = false;
 		line.stop();
 	')
-	public function stop(): Void {
-		
-	}
+	public function stop(): Void {}
 }

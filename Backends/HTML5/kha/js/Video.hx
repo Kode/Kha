@@ -13,7 +13,7 @@ class Video extends kha.Video {
 	public var element: VideoElement;
 	private var done: kha.Video -> Void;
 	public var texture: Image;
-	
+
 	private function new() {
 		super();
 	}
@@ -29,9 +29,9 @@ class Video extends kha.Video {
 		var video = new Video();
 
 		video.done = done;
-		
+
 		video.element = cast Browser.document.createElement("video");
-		
+
 		video.filenames = [];
 		for (filename in filenames) {
 			if (video.element.canPlayType("video/webm") != "" && filename.endsWith(".webm")) video.filenames.push(filename);
@@ -39,10 +39,10 @@ class Video extends kha.Video {
 			if (video.element.canPlayType("video/mp4") != "" && filename.endsWith(".mp4")) video.filenames.push(filename);
 #end
 		}
-		
+
 		video.element.addEventListener("error", video.errorListener, false);
 		video.element.addEventListener("canplaythrough", video.canPlayThroughListener, false);
-		
+
 		video.element.preload = "auto";
 		video.element.src = video.filenames[0];
 	}
@@ -50,11 +50,11 @@ class Video extends kha.Video {
 	override public function width(): Int{
 		return element.videoWidth;
 	}
-	
+
 	override public function height(): Int{
 		return element.videoHeight;
 	}
-	
+
 	override public function play(loop: Bool = false): Void {
 		try {
 			element.loop = loop;
@@ -64,7 +64,7 @@ class Video extends kha.Video {
 			trace (e);
 		}
 	}
-	
+
 	override public function pause(): Void {
 		try {
 			element.pause();
@@ -73,7 +73,7 @@ class Video extends kha.Video {
 			trace(e);
 		}
 	}
-	
+
 	override public function stop(): Void {
 		try {
 			element.pause();
@@ -83,7 +83,7 @@ class Video extends kha.Video {
 			trace(e);
 		}
 	}
-	
+
 	override public function getCurrentPos(): Int {
 		return Math.ceil(element.currentTime * 1000);  // Miliseconds
 	}
@@ -96,7 +96,7 @@ class Video extends kha.Video {
 		element.currentTime = value / 1000;
 		return value;
 	}
-	
+
 	override public function getLength(): Int {
 		if (Math.isFinite(element.duration)) {
 			return Math.floor(element.duration * 1000); // Miliseconds
@@ -105,7 +105,7 @@ class Video extends kha.Video {
 			return -1;
 		}
 	}
-	
+
 	private function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
 			for (i in 0...filenames.length - 1) {
@@ -116,15 +116,15 @@ class Video extends kha.Video {
 				}
 			}
 		}
-		
+
 		trace("Error loading " + element.src);
 		finishAsset();
 	}
-	
+
 	function canPlayThroughListener(eventInfo: Event): Void {
 		finishAsset();
 	}
-	
+
 	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);

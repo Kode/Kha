@@ -10,7 +10,7 @@ class SyncBuilder {
 
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
-		
+
 		var isBaseEntity = false;
 		for (i in Context.getLocalClass().get().interfaces) {
 			var intf = i.t.get();
@@ -19,7 +19,7 @@ class SyncBuilder {
 				break;
 			}
 		}
-		
+
 		for (field in fields) {
 			if (field.name == "new") {
 				switch (field.kind) {
@@ -57,11 +57,11 @@ class SyncBuilder {
 				}
 			}
 			if (!synced) continue;
-			
+
 			switch (field.kind) {
 			case FFun(f):
 				var original = f.expr;
-				
+
 				var size = 6;
 				for (arg in f.args) {
 					switch (arg.type) {
@@ -77,11 +77,11 @@ class SyncBuilder {
 					default:
 					}
 				}
-				
+
 				var expr = macro @:mergeBlock {
 					var size: Int = $v { size };
 				};
-				
+
 				for (arg in f.args) {
 					switch (arg.type) {
 					case TPath(p):
@@ -96,7 +96,7 @@ class SyncBuilder {
 					default:
 					}
 				}
-				
+
 				var classname = Context.getLocalClass().toString();
 				var methodname = field.name;
 
@@ -115,7 +115,7 @@ class SyncBuilder {
 						bytes.setInt32(2, -1);
 					}
 				}
-				else { 
+				else {
 					expr = macro @:mergeBlock {
 						$expr;
 						bytes.setInt32(2, _syncId());
@@ -125,7 +125,7 @@ class SyncBuilder {
 				expr = macro @:mergeBlock {
 					$expr;
 					var index = 6;
-					
+
 					bytes.setUInt16(index, $v { classname } .length);
 					index += 2;
 					for (i in 0...$v { classname } .length) {
@@ -190,7 +190,7 @@ class SyncBuilder {
 					default:
 					}
 				}
-				
+
 				#if sys_server
 
 				expr = macro {
@@ -199,9 +199,9 @@ class SyncBuilder {
 						kha.network.Session.the().processRPC(bytes);
 					}
 				};
-				
+
 				#else
-				
+
 				expr = macro {
 					if (kha.network.Session.the() != null) {
 						$expr;
@@ -211,7 +211,7 @@ class SyncBuilder {
 						$original;
 					}
 				};
-				
+
 				#end
 
 				fields.push({
@@ -227,13 +227,13 @@ class SyncBuilder {
 					}),
 					pos: Context.currentPos()
 				});
-				
+
 				f.expr = expr;
 			default:
 				trace("Warning: Synced property " + field.name + " is not a function.");
 			}
 		}
-			
+
 		fields.push({
 			name: "_syncId",
 			doc: null,
@@ -242,7 +242,7 @@ class SyncBuilder {
 			kind: FFun({
 				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
-				expr: macro { 
+				expr: macro {
 					return __syncId; },
 				args: []
 			}),
@@ -259,7 +259,7 @@ class SyncBuilder {
 				pos: Context.currentPos()
 			});
 		}
-		
+
 		return fields;
 	}
 }

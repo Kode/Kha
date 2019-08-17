@@ -9,7 +9,7 @@ import android.view.KeyEvent;
 class OpenGLES20Renderer implements GLSurfaceViewRenderer {
 	var game : kha.Game;
 	var painter : OpenGLPainter;
-	
+
 	public function new(context : Context) {
 		kha.Loader.init(new Loader(context));
 		game = new TPlayer(); //GameInfo.createGame();
@@ -30,9 +30,7 @@ class OpenGLES20Renderer implements GLSurfaceViewRenderer {
 		painter = new OpenGLPainter(width, height);
 	}
 
-	public function onSurfaceCreated(glUnused : GL10, config : EGLConfig) {
-
-	}
+	public function onSurfaceCreated(glUnused : GL10, config : EGLConfig) {}
 
 	public function keyDown(keyCode : Int) : Bool {
 		//synchronized (game) {
@@ -50,7 +48,7 @@ class OpenGLES20Renderer implements GLSurfaceViewRenderer {
 			case 100:
 				game.buttonDown(Button.BUTTON_2);
 			default:
-				return false;	
+				return false;
 			}
 			return true;
 		//}
@@ -77,21 +75,21 @@ class OpenGLES20Renderer implements GLSurfaceViewRenderer {
 			return true;
 		//}
 	}
-	
+
 	public function mouseDown(x : Int, y : Int) : Bool {
 	    //synchronized (game) {
 	    	game.mouseDown(Std.int(painter.adjustXPosInv(x)), Std.int(painter.adjustYPosInv(y)));
 	    //}
 	    return true;
 	}
-	
+
 	public function mouseUp(x : Int, y : Int) : Bool {
 	    //synchronized (game) {
 	    	game.mouseUp(Std.int(painter.adjustXPosInv(x)), Std.int(painter.adjustYPosInv(y)));
 	    //}
 	    return true;
 	}
-	
+
 	public function mouseMove(x : Int, y : Int) : Bool {
 	    //synchronized (game) {
 	    	game.mouseMove(Std.int(painter.adjustXPosInv(x)), Std.int(painter.adjustYPosInv(y)));

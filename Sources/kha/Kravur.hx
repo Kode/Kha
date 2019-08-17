@@ -7,9 +7,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
 class AlignedQuad {
-	public function new() {
-
-	}
+	public function new() {}
 
 	// top-left
 	public var x0: Float;

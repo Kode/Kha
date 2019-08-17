@@ -24,7 +24,6 @@ abstract Float32Array(NativeArray<Float>) {
 		return this[index];
 	}
 
-
 	public inline function data(): NativeArray<Float> {
 		return this;
 	}

@@ -49,7 +49,6 @@ class VorbisDecodeState
     public var previousLength:Int;
     public var finalY:Vector<Array<Int>>; // [STB_VORBIS_MAX_CHANNELS];
 
-
     var firstDecode:Bool = false;
     var nextSeg:Int = 0;
 
@@ -149,7 +148,6 @@ class VorbisDecodeState
         return state;
     }
 
-
     // nextSegment
     public function next():Int {
         if (lastSeg) {
@@ -224,8 +222,6 @@ class VorbisDecodeState
         startPacket();
         return true;
     }
-
-
 
     // public inline function readBits(n:Int):Int
     public function readBits(n:Int):Int // Kha: reduce output size
@@ -493,7 +489,6 @@ class VorbisDecodeState
     }
 
     public function getSampleNumber(seekFunc:Int->Void, inputLength:UInt):Int {
-
         // first, store the current decode position so we can restore it
         var restoreOffset = inputPosition;
 
@@ -693,7 +688,6 @@ class VorbisDecodeState
         for (i in 0...pageHeader.get(26)) {
             if (packetStart) {
                 if (lacing.get(i) == 0) {
-
                     setInputOffset(seekFunc, z.pageStart);
                     return null; // trying to read from zero-length packet
                 }
@@ -780,7 +774,6 @@ class VorbisDecodeState
         return z;
     }
 
-
     function decodeScalarRaw(c:Codebook):Int
     {
         prepHuffman();
@@ -849,7 +842,6 @@ class VorbisDecodeState
         return -1;
     }
 }
-
 
 private enum FindPageResult {
     Found(end:Int, last:Bool);

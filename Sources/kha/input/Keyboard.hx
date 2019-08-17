@@ -12,7 +12,7 @@ class Keyboard extends Controller {
 	public static function get(num: Int = 0): Keyboard {
 		return SystemImpl.getKeyboard(num);
 	}
-	
+
 	/**
 	 * Creates event handlers from passed functions.
 	 * @param downListener function with `key:KeyCode` argument, fired when a key is pressed down.
@@ -24,7 +24,7 @@ class Keyboard extends Controller {
 		if (upListener != null) upListeners.push(upListener);
 		if (pressListener != null) pressListeners.push(pressListener);
 	}
-	
+
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
@@ -33,26 +33,22 @@ class Keyboard extends Controller {
 		if (upListener != null) upListeners.remove(upListener);
 		if (pressListener != null) pressListeners.remove(pressListener);
 	}
-	
+
 	/**
 	 * Show virtual keyboard (if it exists).
 	 */
-	public function show(): Void {
-
-	}
+	public function show(): Void {}
 
 	/**
 	 * Hide virtual keyboard (if it exists).
 	 */
-	public function hide(): Void {
-
-	}
+	public function hide(): Void {}
 
 	private static var instance: Keyboard;
 	private var downListeners: Array<KeyCode->Void>;
 	private var upListeners: Array<KeyCode->Void>;
 	private var pressListeners: Array<String->Void>;
-	
+
 	private function new() {
 		super();
 		downListeners = [];
@@ -60,7 +56,7 @@ class Keyboard extends Controller {
 		pressListeners = [];
 		instance = this;
 	}
-	
+
 	@input
 	private function sendDownEvent(code: KeyCode): Void {
 		#if sys_server
@@ -70,7 +66,7 @@ class Keyboard extends Controller {
 			listener(code);
 		}
 	}
-	
+
 	@input
 	private function sendUpEvent(code: KeyCode): Void {
 		#if sys_server

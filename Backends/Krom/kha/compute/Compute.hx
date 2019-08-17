@@ -14,7 +14,6 @@ import kha.graphics4.TextureFilter;
 import kha.graphics4.MipMapFilter;
 
 class Compute {
-
 	public static function setBool(location: ConstantLocation, value: Bool) {
 		Krom.setBoolCompute(location, value);
 	}
@@ -71,9 +70,7 @@ class Compute {
 		Krom.setMatrix3Compute(location, mat.buffer);
 	}
 
-	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
-		
-	}
+	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
 		if (texture == null) return;

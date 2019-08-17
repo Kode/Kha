@@ -11,10 +11,10 @@ class Sound extends kha.Sound {
 		for (i in 0...count) {
 			uncompressedData[i] = bytes.getFloat(i * 4);
 		}
-		
+
 		compressedData = null;
 	}
-	
+
 	override public function uncompress(done: Void->Void): Void {
 		done();
 	}

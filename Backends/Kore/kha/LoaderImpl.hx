@@ -102,19 +102,13 @@ class LoaderImpl {
 	}
 
 	@:functionCode('Kore::System::showKeyboard();')
-	public static function showKeyboard(): Void {
-
-	}
+	public static function showKeyboard(): Void {}
 
 	@:functionCode('Kore::System::hideKeyboard();')
-	public static function hideKeyboard(): Void {
-
-	}
+	public static function hideKeyboard(): Void {}
 
 	@:functionCode('Kore::System::loadURL(url);')
-	public static function loadURL(url: String): Void {
-
-	}
+	public static function loadURL(url: String): Void {}
 
 	@:keep static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
 		blobCallbacks[index].success(new Blob(Bytes.ofData(bytes)));
@@ -209,7 +203,5 @@ class LoaderImpl {
 			file = kha_loader_get_file();
 		}
 	')
-	public static function tick(): Void {
-
-	}
+	public static function tick(): Void {}
 }

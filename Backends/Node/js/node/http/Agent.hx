@@ -88,7 +88,6 @@ extern class Agent {
 	function getName(options:{}):String;
 }
 
-
 /**
 	Options for `Agent` constructor.
 **/

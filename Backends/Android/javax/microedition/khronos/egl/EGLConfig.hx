@@ -1,5 +1,3 @@
 package javax.microedition.khronos.egl;
 
-extern class EGLConfig {
-	
-}
+extern class EGLConfig {}

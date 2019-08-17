@@ -30,7 +30,6 @@ import js.node.stream.Readable.IReadable;
 	Enumeration for `Writable` class events.
 **/
 @:enum abstract WritableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-
 	/**
 		If a `writable.write(chunk)` call returns `false`, then the `drain` event will indicate
 		when it is appropriate to begin writing more data to the stream.
@@ -113,7 +112,6 @@ extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IW
 	**/
 	var isTTY(default,null):Bool;
 
-
 	// --------- API for stream implementors - see node.js API documentation ---------
 	private function new(?options:WritableNewOptions);
 	@:overload(function(chunk:String, encoding:String, callback:js.Error->Void):Void {})
@@ -129,7 +127,6 @@ typedef WritableNewOptions = {
 	@:optional var decodeStrings:Bool;
 	@:optional var objectMode:Bool;
 }
-
 
 /**
     Writable interface used for type parameter constraints.

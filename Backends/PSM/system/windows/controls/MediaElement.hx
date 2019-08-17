@@ -7,19 +7,17 @@ extern class MediaElement {
 	public var Source : Uri;
 	public var LoadedBehavior : MediaState;
 	public var UnloadedBehavior : MediaState;
-	
+
 	public var MediaOpened : Dynamic;
-	
-	public function new() : Void { }
-	
-	public function Play() : Void { }
-	
-	public function Pause() : Void { }
 
-	public function Stop() : Void { }
+	public function new() : Void {}
+
+	public function Play() : Void {}
+
+	public function Pause() : Void {}
+
+	public function Stop() : Void {}
 }
 
-@:native("System.Windows.RoutedEventArgs") 
-extern class RoutedEventArgs {
-	
-}
+@:native("System.Windows.RoutedEventArgs")
+extern class RoutedEventArgs {}

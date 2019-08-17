@@ -35,7 +35,6 @@ import js.node.stream.Writable;
 	The legacy `update` method is also supported.
 **/
 extern class Sign extends Writable<Sign> {
-
 	/**
 		Updates the sign object with data.
 		This can be called many times with new data as it is streamed.

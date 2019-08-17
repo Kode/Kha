@@ -36,5 +36,4 @@ import js.node.events.EventEmitter.Event;
 /**
     Writable file stream.
 **/
-extern class WriteStream extends js.node.stream.Writable<WriteStream> {
-}
+extern class WriteStream extends js.node.stream.Writable<WriteStream> {}

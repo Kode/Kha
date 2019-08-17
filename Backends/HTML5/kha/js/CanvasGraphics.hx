@@ -46,9 +46,7 @@ class CanvasGraphics extends Graphics {
 		this.color = myColor;
 	}
 
-	override public function end(): Void {
-
-	}
+	override public function end(): Void {}
 
 	/*override public function translate(x: Float, y: Float) {
 		tx = x;
@@ -84,9 +82,7 @@ class CanvasGraphics extends Graphics {
 				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, dx, dy, dw, dh);
 			}
 		}
-		catch (ex: Dynamic) {
-
-		}
+		catch (ex: Dynamic) {}
 		canvas.globalAlpha = 1;
 	}
 

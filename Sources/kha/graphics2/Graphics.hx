@@ -8,24 +8,16 @@ import kha.Image;
 import kha.math.FastMatrix3;
 
 class Graphics {
-	public function begin(clear: Bool = true, clearColor: Color = null): Void {
+	public function begin(clear: Bool = true, clearColor: Color = null): Void {}
 
-	}
+	public function end(): Void {}
 
-	public function end(): Void {
-
-	}
-
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	//scale-filtering
 	//draw/fillPolygon
 
-	public function clear(color: Color = null): Void {
-
-	}
+	public function clear(color: Color = null): Void {}
 
 	public function drawImage(img: Image, x: FastFloat, y: FastFloat): Void {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
@@ -39,17 +31,11 @@ class Graphics {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
 	}
 
-	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
+	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {}
 
-	}
+	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {}
 
-	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
-
-	}
-
-	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
-
-	}
+	public function fillRect(x: Float, y: Float, width: Float, height: Float): Void {}
 
 	/**
 	 * Draw a single line of text with the current `color`, `font` and `fontSize` properties.
@@ -58,9 +44,7 @@ class Graphics {
 	 *  - use the default shader when drawing into a transparent section of your rendertarget
 	 *  - use a shader with `alphaBlendSource = BlendOne` when drawing into a non-transparent section of your rendertarget
 	 */
-	public function drawString(text: String, x: Float, y: Float): Void {
-
-	}
+	public function drawString(text: String, x: Float, y: Float): Void {}
 
 	/**
 	 * Draw a single line of characters with the current `color`, `font` and `fontSize` properties.
@@ -69,21 +53,13 @@ class Graphics {
 	 *  - use the default shader when drawing into a transparent section of your rendertarget
 	 *  - use a shader with `alphaBlendSource = BlendOne` when drawing into a non-transparent section of your rendertarget
 	 */
-	public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
+	public function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {}
 
-	}
+	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {}
 
-	public function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
+	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void {}
 
-	}
-
-	public function drawVideo(video: Video, x: Float, y: Float, width: Float, height: Float): Void {
-
-	}
-
-	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
-
-	}
+	public function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {}
 
 	public var imageScaleQuality(get, set): ImageScaleQuality;
 
@@ -218,13 +194,9 @@ class Graphics {
 		return opacities[opacities.length - 1] = opacity;
 	}
 
-	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {}
 
-	}
-
-	public function disableScissor(): Void {
-
-	}
+	public function disableScissor(): Void {}
 
 	#if sys_g4
 	private var pipe: PipelineState;
@@ -256,15 +228,9 @@ class Graphics {
 		#end
 	}
 
-	private function setTransformation(transformation: FastMatrix3): Void {
+	private function setTransformation(transformation: FastMatrix3): Void {}
 
-	}
+	private function setOpacity(opacity: Float): Void {}
 
-	private function setOpacity(opacity: Float): Void {
-
-	}
-
-	private function setPipeline(pipeline: PipelineState): Void {
-
-	}
+	private function setPipeline(pipeline: PipelineState): Void {}
 }

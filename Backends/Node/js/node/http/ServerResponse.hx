@@ -51,7 +51,6 @@ import js.node.stream.Writable;
 **/
 @:jsRequire("http", "ServerResponse")
 extern class ServerResponse extends Writable<ServerResponse> {
-
 	/**
 		Sends a HTTP/1.1 100 Continue message to the client, indicating that the request body should be sent.
 		See the 'checkContinue' event on `Server`.

@@ -13,7 +13,7 @@ import kha.SystemImpl;
 
 class KeyboardShowRunner implements Runnable {
 	private var view: KhaView;
-	
+
 	public function new(view: KhaView) {
 		this.view = view;
 	}
@@ -25,7 +25,7 @@ class KeyboardShowRunner implements Runnable {
 
 class KeyboardHideRunner implements Runnable {
 	private var view: KhaView;
-	
+
 	public function new(view: KhaView) {
 		this.view = view;
 	}
@@ -41,23 +41,23 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 	private var keyboardShown: Bool = false;
 	private var keyMap: KeyCharacterMap;
 	private var view: KhaView;
-	
+
 	public function new(context: Context, view: KhaView) {
 		this.context = context;
 		this.view = view;
 		keyMap = KeyCharacterMap.load(-1);
-	} 
-	
+	}
+
 	public function onSurfaceCreated(gl: GL10, config: EGLConfig): Void {
 		SystemImpl.preinit(640, 480);
 	}
-	
+
 	public function onDrawFrame(gl: GL10): Void {
 		//GLES20.glClearColor(1.0, 1.0, 0.0, 1.0);
 		//GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-		
+
 		SystemImpl.step();
-		
+
 		if (SystemImpl.keyboardShown()) {
 			if (!keyboardShown) {
 				keyboardShown = true;
@@ -75,7 +75,7 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 	public function onSurfaceChanged(gl: GL10, width: Int, height: Int): Void {
 		SystemImpl.setWidthHeight(width, height); // , context.getResources().getAssets(), context.getApplicationInfo().sourceDir, context.getFilesDir().toString());
 	}
-	
+
 	public function key(keyCode: Int, down: Bool): Void {
 		switch (keyCode) {
 		case 59: // shift
@@ -96,15 +96,15 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 			else SystemImpl.keyUp(code);
 		}
 	}
-	
+
 	public function touch(index: Int, x: Int, y: Int, action: Int): Void {
 		SystemImpl.touch(index, x, y, action);
 	}
-	
+
 	//public function accelerometer(x: Single, y: Single, z: Single): Void {
 	//	KoreLib.accelerometerChanged(x, y, z);
 	//}
-	
+
 	//public function gyro(x: Single, y: Single, z: Single): Void {
 	//	KoreLib.gyroChanged(x, y, z);
 	//}

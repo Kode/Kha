@@ -9,12 +9,8 @@ extern class TessellationControlShader {
 }
 #else
 class TessellationControlShader {
-	public function new(source: Blob, file: String) {
-		
-	}
-	
-	public function delete(): Void {
-		
-	}
+	public function new(source: Blob, file: String) {}
+
+	public function delete(): Void {}
 }
 #end

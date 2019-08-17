@@ -12,16 +12,16 @@ class DeprecatedGameView extends SurfaceView implements SurfaceHolderCallback {
 	var thread : GameThread;
 	//private int lastTouch;
 	public static var instance : GameView;
-	
+
 	public static function the() : GameView {
 		return instance;
 	}
-	
+
 	public function new(context : Context) {
 		super(context);
 		instance = this;
 		//new OpenGLES20Renderer(context);
-		
+
 		var holder = getHolder();
 		holder.addCallback(this);
 		thread = new GameThread(holder, context, getWidth(), getHeight());
@@ -49,9 +49,7 @@ class DeprecatedGameView extends SurfaceView implements SurfaceHolderCallback {
 		return thread.keyUp(keyCode);
 	}
 
-	/*override*/ public function onWindowFocusChanged(hasWindowFocus : Bool) {
-
-	}
+	/*override*/ public function onWindowFocusChanged(hasWindowFocus : Bool) {}
 
 	public function surfaceChanged(holder : SurfaceHolder, format : Int, width : Int, height : Int) {
 		thread.setSurfaceSize(width, height);
@@ -61,7 +59,7 @@ class DeprecatedGameView extends SurfaceView implements SurfaceHolderCallback {
 		thread.setRunning(true);
 		thread.start();
 	}
-	
+
 	@:functionBody('
 		boolean retry = true;
 		thread.setRunning(false);
@@ -70,14 +68,10 @@ class DeprecatedGameView extends SurfaceView implements SurfaceHolderCallback {
 				thread.join();
 				retry = false;
 			}
-			catch (InterruptedException e) {
-
-			}
+			catch (InterruptedException e) {}
 		}
 	')
-	function joinThread() : Void {
-		
-	}
+	function joinThread() : Void {}
 
 	public function surfaceDestroyed(holder : SurfaceHolder) {
 		joinThread();

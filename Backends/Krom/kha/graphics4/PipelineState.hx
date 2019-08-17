@@ -7,7 +7,7 @@ import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
 	private var pipeline: Dynamic;
-	
+
 	public function new() {
 		super();
 		pipeline = Krom.createPipeline();
@@ -17,7 +17,7 @@ class PipelineState extends PipelineStateBase {
 		Krom.deletePipeline(pipeline);
 		pipeline = null;
 	}
-	
+
 	public function compile(): Void {
 		var structure0 = inputLayout.length > 0 ? inputLayout[0] : null;
 		var structure1 = inputLayout.length > 1 ? inputLayout[1] : null;
@@ -54,15 +54,15 @@ class PipelineState extends PipelineStateBase {
 			conservativeRasterization: conservativeRasterization
 		});
 	}
-	
+
 	public function set(): Void {
 		Krom.setPipeline(pipeline);
 	}
-	
+
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		return Krom.getConstantLocation(pipeline, name);
 	}
-	
+
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		return Krom.getTextureUnit(pipeline, name);
 	}
@@ -77,7 +77,7 @@ class PipelineState extends PipelineStateBase {
 				return 2;
 		}
 	}
-	
+
 	private static function convertCompareMode(mode: CompareMode): Int {
 		switch (mode) {
 			case Always:

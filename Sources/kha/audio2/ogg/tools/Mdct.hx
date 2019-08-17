@@ -22,7 +22,6 @@ class Mdct {
 
         // kernel from paper
 
-
         // merged:
         //    copy and reflect spectral data
         //    step 0
@@ -78,7 +77,6 @@ class Mdct {
             var dOffset1 = 0;
 
             while (aaOffset >= 0) {
-
                 var v41_21:Float = v[eOffset0 + 1] - v[eOffset1 + 1];
                 var v40_20:Float = v[eOffset0 + 0] - v[eOffset1 + 0];
                 u[dOffset0 + 1]  = v[eOffset0 + 1] + v[eOffset1 + 1];
@@ -148,14 +146,12 @@ class Mdct {
             }
         }
 
-
         // iterations with count:
         //    ld-6,-5,-4 all interleaved together
         //         the big win comes from getting rid of needless flops
         //            due to the constants on pass 5 & 4 being all 1 and 0;
         //         combining them to be simultaneous to improve cache made little difference
         step3InnerSLoopLd654(n >> 5, u, n2-1, a, n);
-
 
         // output is u
 
@@ -296,7 +292,6 @@ class Mdct {
         }
     }
 
-
     // the following were split out into separate functions while optimizing;
     // they could be pushed back up but eh. __forceinline showed no change;
     // they're probably already being inlined.
@@ -344,7 +339,6 @@ class Mdct {
             eeOffset2 -= 8;
         }
     }
-
 
     static inline function step3InnerRLoop(lim:Int, e:Vector<Float>, d0:Int, k_off:Int, a:Vector<Float>, k1:Int) {
         var aOffset = 0;
@@ -495,7 +489,6 @@ class Mdct {
             e[zOffset + -9]    = t0 - t1;
             e[zOffset + -1] = t0 + t1;
 
-
             t0 = e[zOffset +  -2];
             t1 = e[zOffset + -10];
             var k00    = t0 - t1;
@@ -509,7 +502,6 @@ class Mdct {
             e[zOffset + -10] = (k00+k11) * A2;
             e[zOffset + -11] = (k11-k00) * A2;
 
-
             t0 = e[zOffset +  -4];
             t1 = e[zOffset + -12];
             k00     = t1 - t0; // reverse to avoid a unary negation
@@ -522,7 +514,6 @@ class Mdct {
 
             e[zOffset + -12] = k11;
             e[zOffset + -13] = k00;
-
 
             t0 = e[zOffset +  -6];
             t1 = e[zOffset + -14];

@@ -19,9 +19,7 @@ class Sensor {
 		listeners.push(listener);
 	}
 
-	private function new() {
-
-	}
+	private function new() {}
 
 	public static function _accelerometerChanged(x: Float, y: Float, z: Float): Void {
 		var sensor = get(SensorType.Accelerometer);

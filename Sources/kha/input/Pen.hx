@@ -93,7 +93,7 @@ class Pen {
 	private function new() {
 		instance = this;
 	}
-	
+
 	private function sendDownEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
 		if (windowDownListeners != null) {
 			for (listener in windowDownListeners[windowId]) {

@@ -174,7 +174,6 @@ class VorbisDecoder
         }
     }
 
-
     public function seek(seekFunc:Int->Void, inputLength:UInt, sampleNumber:Int) {
         if (currentSample == sampleNumber) {
             return;
@@ -205,8 +204,6 @@ class VorbisDecoder
             var attempts = 0;
 
             while (p0.pageEnd < p1.pageStart) {
-
-
                 // copy these into local variables so we can tweak them
                 // if any are unknown
                 var startOffset:UInt = p0.pageEnd;
@@ -553,7 +550,6 @@ class VorbisDecoder
         }
     }
 
-
     function decodePacketRest(r:DecodeInitialResult):DecodePacketResult
     {
         var len = 0;
@@ -689,7 +685,6 @@ class VorbisDecoder
             var doNotDecode = new Vector<Bool>(256);
             var ch = 0;
             for (j in 0...header.channel) {
-
                 if (map.chan[j].mux == i) {
                     if (zeroChannel[j]) {
                         doNotDecode[ch] = true;

@@ -13,7 +13,7 @@ class PipelineState extends PipelineStateBase {
 	private var program: Program3D;
 	private var vc: haxe.ds.Vector<flash.Vector<Float>>;
 	private var fc: haxe.ds.Vector<flash.Vector<Float>>;
-	
+
 	public function new() {
 		super();
 		program = kha.flash.graphics4.Graphics.context.createProgram();
@@ -27,7 +27,7 @@ class PipelineState extends PipelineStateBase {
 				vclength = i + 1;
 			}
 		}
-		
+
 		var fclength: Int = 0;
 		for (i in 0...28) {
 			var name = "fc" + i;
@@ -35,7 +35,7 @@ class PipelineState extends PipelineStateBase {
 				fclength = i + 1;
 			}
 		}
-	
+
 		vc = new haxe.ds.Vector<flash.Vector<Float>>(vclength);
 		for (i in 0...vclength) {
 			var name = "vc" + i;
@@ -61,16 +61,16 @@ class PipelineState extends PipelineStateBase {
 				fc[i][3] = field[3];
 			}
 		}
-		
+
 		var vertexAssembler = new AGALMiniAssembler();
 		vertexAssembler.assemble(Context3DProgramType.VERTEX, vertexShader.source);
-		
+
 		var fragmentAssembler = new AGALMiniAssembler();
 		fragmentAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader.source);
-		
+
 		program.upload(vertexAssembler.agalcode(), fragmentAssembler.agalcode());
 	}
-	
+
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		var type: Context3DProgramType;
 		var value: Int;
@@ -84,7 +84,7 @@ class PipelineState extends PipelineStateBase {
 		}
 		return new kha.flash.graphics4.ConstantLocation(value, type);
 	}
-	
+
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.flash.graphics4.TextureUnit();
 		if (Reflect.hasField(vertexShader.names, name)) {
@@ -95,23 +95,23 @@ class PipelineState extends PipelineStateBase {
 		}
 		return unit;
 	}
-		
+
 	public function set(): Void {
 		kha.flash.graphics4.Graphics.context.setProgram(program);
-		
+
 		for (i in 0...vc.length) {
 			if (vc[i] != null) {
 				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, i, vc[i]);
 			}
 		}
-		
+
 		for (i in 0...fc.length) {
 			if (fc[i] != null) {
 				kha.flash.graphics4.Graphics.context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, i, fc[i]);
 			}
 		}
 	}
-	
+
 	public function delete(): Void {
 		program.dispose();
 	}

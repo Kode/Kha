@@ -35,7 +35,6 @@ class ShaderConst {
 }
 
 class SharedShader {
-
 	public var data : ShaderData;
 	public var globals : Array<ShaderGlobal>;
 	public var consts : ShaderConst;

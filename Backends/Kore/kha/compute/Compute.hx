@@ -86,9 +86,7 @@ class Compute {
 		value.Set(3, 0, matrix->_03); value.Set(3, 1, matrix->_13); value.Set(3, 2, matrix->_23); value.Set(3, 3, matrix->_33);
 		Kore::Compute::setMatrix(location->location, value);
 	')
-	private static function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {
-
-	}
+	private static function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {}
 
 	@:functionCode('
 		Kore::mat3 value;
@@ -97,9 +95,7 @@ class Compute {
 		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22);
 		Kore::Compute::setMatrix(location->location, value);
 	')
-	private static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {
-		
-	}
+	private static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
 		untyped __cpp__('
@@ -117,9 +113,7 @@ class Compute {
 		if (texture->texture != nullptr) Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Compute::Access)access);
 		else Kore::Compute::setTexture(unit->unit, texture->renderTarget, (Kore::Compute::Access)access);
 	')
-	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
-		
-	}
+	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {}
 
 	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
 		setSampledTexturePrivate(unit, texture);
@@ -129,9 +123,7 @@ class Compute {
 		if (texture->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, texture->texture);
 		else Kore::Compute::setSampledTexture(unit->unit, texture->renderTarget);
 	')
-	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
-		
-	}
+	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {}
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
 		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, texture->renderTarget);");
@@ -145,9 +137,7 @@ class Compute {
 		if (cubeMap->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, cubeMap->texture);
 		else Kore::Compute::setSampledTexture(unit->unit, cubeMap->renderTarget);
 	')
-	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
-		
-	}
+	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {}
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
 		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, cubeMap->renderTarget);");
@@ -157,37 +147,29 @@ class Compute {
 		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
 		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
 	')
-	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
-		
-	}
+	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {}
 
 	@:functionCode('
 		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
 		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
 		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wWrap);
 	')
-	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
-		
-	}
-	
+	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {}
+
 	@:functionCode('
 		Kore::Compute::setTextureMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
 		Kore::Compute::setTextureMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
 		Kore::Compute::setTextureMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
 	')
-	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
-		
-	}
+	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {}
 
 	@:functionCode('
 		Kore::Compute::setTexture3DMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
 		Kore::Compute::setTexture3DMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
 		Kore::Compute::setTexture3DMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
 	')
-	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
-		
-	}
-	
+	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {}
+
 	private static function getTextureAddressing(addressing: TextureAddressing): Int {
 		switch (addressing) {
 		case TextureAddressing.Repeat:
@@ -198,7 +180,7 @@ class Compute {
 			return 2;
 		}
 	}
-	
+
 	private static function getTextureFilter(filter: TextureFilter): Int {
 		switch (filter) {
 		case PointFilter:
@@ -209,7 +191,7 @@ class Compute {
 			return 2;
 		}
 	}
-	
+
 	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
 		switch (filter) {
 		case NoMipFilter:
@@ -220,7 +202,7 @@ class Compute {
 			return 2;
 		}
 	}
-	
+
 	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		setTextureWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
 		setTextureFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));

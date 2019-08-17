@@ -7,16 +7,16 @@ using StringTools;
 
 class FlashStorageFile extends StorageFile {
 	private var obj: SharedObject;
-	
+
 	public function new(obj: SharedObject) {
 		this.obj = obj;
 	}
-	
+
 	override public function read(): Blob {
 		if (obj.data.bytes == null) return null;
 		return Blob.fromBytes(Bytes.ofData(obj.data.bytes));
 	}
-	
+
 	override public function write(data: Blob): Void {
 		if (data == null) obj.data.bytes = null;
 		else obj.data.bytes = data.bytes;

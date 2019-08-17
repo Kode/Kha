@@ -222,19 +222,13 @@ implements java.awt.event.MouseWheelListener {
 	}
 
 	@Override
-	public function mouseClicked(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseClicked(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
-	public function mouseEntered(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseEntered(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
-	public function mouseExited(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseExited(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
 	public function mousePressed(arg0: java.awt.event.MouseEvent): Void {
@@ -365,9 +359,7 @@ class SystemImpl {
 		return "java";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms:Int): Void {}
 
 	public static function getLanguage(): String {
 		return java.util.Locale.getDefault().getLanguage();
@@ -388,9 +380,7 @@ class SystemImpl {
 		return 96;
 	}
 
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function requestShutdown(): Bool {
 		return false;
@@ -404,30 +394,17 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void{}
 
-	}
+	public static function removeFromFullscreenChange(func: Void -> Void, error : Void -> Void): Void{}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
+	public function lockMouse(): Void {}
 
-	}
-
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error : Void -> Void): Void{
-
-	}
-
-	public function lockMouse(): Void {
-
-	}
-
-	public function unlockMouse(): Void {
-
-	}
+	public function unlockMouse(): Void {}
 
 	public function canLockMouse(): Bool {
 		return false;
@@ -437,22 +414,13 @@ class SystemImpl {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
+	public function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	public function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function safeZone(): Float {
 		return 1.0;

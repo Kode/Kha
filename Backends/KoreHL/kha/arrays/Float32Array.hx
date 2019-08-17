@@ -10,7 +10,6 @@ class Float32ArrayPrivate {
 }
 
 abstract Float32Array(Float32ArrayPrivate) {
-
 	public inline function new(elements: Int = 0) {
 		this = new Float32ArrayPrivate();
 		this.length = elements;
@@ -48,7 +47,7 @@ abstract Float32Array(Float32ArrayPrivate) {
 	}
 
 	@:hlNative("std", "kore_float32array_alloc") static function kore_float32array_alloc(elements: Int): Pointer { return null; }
-	@:hlNative("std", "kore_float32array_free") static function kore_float32array_free(f32array: Pointer): Void { }
-	@:hlNative("std", "kore_float32array_set") static function kore_float32array_set(f32array: Pointer, index: Int, value: FastFloat): Void { }
+	@:hlNative("std", "kore_float32array_free") static function kore_float32array_free(f32array: Pointer): Void {}
+	@:hlNative("std", "kore_float32array_set") static function kore_float32array_set(f32array: Pointer, index: Int, value: FastFloat): Void {}
 	@:hlNative("std", "kore_float32array_get") static function kore_float32array_get(f32array: Pointer, index: Int): FastFloat { return 0.0; }
 }

@@ -91,9 +91,7 @@ class WebAudioSound extends kha.Sound {
 				var idx = 0;
 				var i = 0;
 				var lidx = len * 2;
-				var uncompressInner = function () {
-
-				};
+				var uncompressInner = function () {};
 				uncompressInner = function () {
 					var chk_len = idx + 11025;
 					var next_chk = chk_len > lidx ? lidx : chk_len;
@@ -117,9 +115,7 @@ class WebAudioSound extends kha.Sound {
 				var idx = 0;
 				var i = 0;
 				var lidx = len * 2;
-				var uncompressInner = function () {
-
-				};
+				var uncompressInner = function () {};
 				uncompressInner = function () {
 					var chk_len = idx + 11025;
 					var next_chk = chk_len > lidx ? lidx : chk_len;

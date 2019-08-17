@@ -31,8 +31,7 @@ class Codebook
     public var sortedValues:Vector<Int>;
     public var sortedEntries:Int;
 
-    public function new () {
-    }
+    public function new () {}
 
     static public function read(decodeState:VorbisDecodeState):Codebook {
         var c = new Codebook();
@@ -209,7 +208,6 @@ class Codebook
         }
     }
 
-
     function computeCodewords(len:Vector<Int>, n:Int, values:Vector<UInt>)
     {
         var available = new Vector<UInt>(32);
@@ -278,7 +276,6 @@ class Codebook
 
         return true;
     }
-
 
     function computeSortedHuffman(lengths:Vector<Int>, values:Vector<UInt>)
     {

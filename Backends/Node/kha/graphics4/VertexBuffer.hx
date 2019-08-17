@@ -43,9 +43,7 @@ class VertexBuffer {
 		return data;
 	}
 
-	public function unlock(?count: Int): Void {
-
-	}
+	public function unlock(?count: Int): Void {}
 
 	public function stride(): Int {
 		return myStride;

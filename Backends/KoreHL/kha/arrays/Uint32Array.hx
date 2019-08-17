@@ -8,7 +8,6 @@ class Uint32ArrayPrivate {
 }
 
 abstract Uint32Array(Uint32ArrayPrivate) {
-	
 	public inline function new(elements: Int = 0) {
 		this = new Uint32ArrayPrivate();
 		this.length = elements;
@@ -18,7 +17,7 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 	public inline function free(): Void {
 		kore_uint32array_free(this.self);
 	}
-	
+
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
@@ -33,12 +32,12 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 		this.self = ar;
 		this.length = elements;
 	}
-	
+
 	public inline function set(index: Int, value: Int): Int {
 		kore_uint32array_set(this.self, index, value);
 		return value;
 	}
-	
+
 	public inline function get(index: Int): Int {
 		return kore_uint32array_get(this.self, index);
 	}
@@ -54,7 +53,7 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 	}
 
 	@:hlNative("std", "kore_uint32array_alloc") static function kore_uint32array_alloc(elements: Int): Pointer { return null; }
-	@:hlNative("std", "kore_uint32array_free") static function kore_uint32array_free(u32array: Pointer): Void { }
-	@:hlNative("std", "kore_uint32array_set") static function kore_uint32array_set(u32array: Pointer, index: Int, value: Int): Void { }
+	@:hlNative("std", "kore_uint32array_free") static function kore_uint32array_free(u32array: Pointer): Void {}
+	@:hlNative("std", "kore_uint32array_set") static function kore_uint32array_set(u32array: Pointer, index: Int, value: Int): Void {}
 	@:hlNative("std", "kore_uint32array_get") static function kore_uint32array_get(u32array: Pointer, index: Int): Int { return 0; }
 }

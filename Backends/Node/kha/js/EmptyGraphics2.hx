@@ -14,7 +14,7 @@ class EmptyGraphics2 extends Graphics {
 	private var myColor: Color;
 	private var myFont: kha.Font;
 	private static var instance: EmptyGraphics2;
-	
+
 	public function new(width: Int, height: Int) {
 		super();
 		this.width = width;
@@ -22,19 +22,19 @@ class EmptyGraphics2 extends Graphics {
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
 	}
-	
+
 	override public function set_color(color: Color): Color {
 		return myColor = color;
 	}
-	
+
 	override public function get_color(): Color {
 		return myColor;
 	}
-	
+
 	override public function set_font(font: kha.Font): kha.Font {
 		return myFont = font;
 	}
-	
+
 	override public function get_font(): kha.Font {
 		return myFont;
 	}

@@ -3,9 +3,7 @@ import haxe.macro.Expr;
 using haxe.macro.Tools;
 
 class MacroParser {
-
-	public function new() {
-	}
+	public function new() {}
 
 	function error( msg : String, pos : Position ) : Dynamic {
 		return Ast.Error.t(msg,pos);

@@ -183,7 +183,6 @@ extern class Readable<TSelf:Readable<TSelf>> extends Stream<TSelf> implements IR
 	**/
 	function wrap(stream:Dynamic):IReadable;
 
-
 	// --------- API for stream implementors - see node.js API documentation ---------
 	// TODO: add state objects here and in other streams
 	private function new(?options:ReadableNewOptions);

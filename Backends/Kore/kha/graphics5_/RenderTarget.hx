@@ -7,15 +7,12 @@ package kha.graphics5;
 
 @:headerClassCode("Kore::Graphics5::RenderTarget* renderTarget;")
 class RenderTarget {
-	
 	public function new(width: Int, height: Int, depthBufferBits: Int, antialiasing: Bool, format: TextureFormat, stencilBufferBits: Int, contextId: Int) {
 		init(width, height, depthBufferBits, antialiasing, getRenderTargetFormat(format), stencilBufferBits, contextId);
 	}
 
 	@:functionCode('renderTarget = new Kore::Graphics5::RenderTarget(width, height, depthBufferBits, antialiasing, (Kore::Graphics5::RenderTargetFormat)format, stencilBufferBits, contextId);')
-	private function init(width: Int, height: Int, depthBufferBits: Int, antialiasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-
-	}
+	private function init(width: Int, height: Int, depthBufferBits: Int, antialiasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
 
 	private static function getRenderTargetFormat(format: TextureFormat): Int {
 		switch (format) {

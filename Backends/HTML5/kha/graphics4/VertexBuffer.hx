@@ -16,7 +16,7 @@ class VertexBuffer {
 	private var types: Array<Int>;
 	private var usage: Usage;
 	private var instanceDataStepRate: Int;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.usage = usage;
 		this.instanceDataStepRate = instanceDataStepRate;
@@ -40,17 +40,17 @@ class VertexBuffer {
 				myStride += 2 * 4;
 			}
 		}
-	
+
 		buffer = SystemImpl.gl.createBuffer();
 		_data = new Float32Array(Std.int(vertexCount * myStride / 4));
-		
+
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
 		types = new Array<Int>();
 		sizes[structure.elements.length - 1] = 0;
 		offsets[structure.elements.length - 1] = 0;
 		types[structure.elements.length - 1] = 0;
-		
+
 		var offset = 0;
 		var index = 0;
 		for (element in structure.elements) {
@@ -106,7 +106,7 @@ class VertexBuffer {
 		_data = null;
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		if (start == null) start = 0;
 		if (count == null) count = mySize;
@@ -116,20 +116,20 @@ class VertexBuffer {
 	public function lockInt16(?start: Int, ?count: Int): Int16Array {
 		return new Int16Array(untyped lock(start, count).buffer);
 	}
-	
+
 	public function unlock(?count: Int): Void {
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast _data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return mySize;
 	}
-	
+
 	public function set(offset: Int): Int {
 		var ext: Dynamic = SystemImpl.gl2 ? true : SystemImpl.gl.getExtension("ANGLE_instanced_arrays");
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);

@@ -10,18 +10,16 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	@:keep private var loop: Bool;
 	private var myVolume: Float;
 	private var paused: Bool = false;
-	
+
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
 		this.loop = loop;
 		initVorbis(data);
 	}
-	
+
 	@:functionCode('vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, NULL, NULL);')
-	private function initVorbis(data: Bytes): Void {
-		
-	}
-	
+	private function initVorbis(data: Bytes): Void {}
+
 	@:functionCode('
 		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
 		if (read < length / 2) {
@@ -36,9 +34,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			}
 		}
 	')
-	private function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {
-		
-	}
+	private function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {}
 
 	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
 		if (paused) {
@@ -47,10 +43,10 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			}
 			return;
 		}
-		
+
 		nextVorbisSamples(samples, length);
 	}
-	
+
 	public function play(): Void {
 		paused = false;
 	}
@@ -64,7 +60,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	@:functionCode('
 		if (vorbis == NULL) return 0;
 		return stb_vorbis_stream_length_in_seconds(vorbis);
@@ -74,7 +70,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	@:functionCode('
 		 if (vorbis == NULL) return 0;
 		return stb_vorbis_get_sample_offset(vorbis) / stb_vorbis_stream_length_in_samples(vorbis);
@@ -86,9 +82,9 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	private function set_position(value: Float): Float {
 		return value;
 	}
-	
+
 	public var volume(get, set): Float;
-	
+
 	private function get_volume(): Float {
 		return myVolume;
 	}

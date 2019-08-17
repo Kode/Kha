@@ -99,7 +99,6 @@ extern class DnsError extends Error {
 **/
 @:jsRequire("dns")
 extern class Dns {
-
 	/**
 		Resolves a `domain` (e.g. 'google.com') into the first found A (IPv4) or AAAA (IPv6) record.
 		The `family` can be the integer 4 or 6. Defaults to null that indicates both Ip v4 and v6 address family.
@@ -174,7 +173,6 @@ extern class Dns {
 		The `callback` has arguments (err, domains).
 	**/
 	static function reverse(ip:String, callback:DnsError->Array<String>->Void):Void;
-
 
 	// Each DNS query can return one of the following error codes
 	// TODO: think of some kind of @:enum abstract pointing to these values so we can use that instead of strings

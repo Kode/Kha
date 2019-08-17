@@ -33,23 +33,21 @@ class UdpClient implements Client {
 		socket.send(buffer, 0, bytes.length, port, address);
 		#end
 	}
-	
+
 	public function receive(receiver: Bytes->Void): Void {
 		onReceive = receiver;
 	}
-	
-	public function onClose(close: Void->Void): Void {
-		
-	}
-	
+
+	public function onClose(close: Void->Void): Void {}
+
 	public var controllers(get, null): Array<Controller>;
-	
+
 	public function get_controllers(): Array<Controller> {
 		return null;
 	}
-	
+
 	public var id(get, null): Int;
-	
+
 	public function get_id(): Int {
 		return myId;
 	}

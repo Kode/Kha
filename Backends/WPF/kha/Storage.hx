@@ -13,18 +13,18 @@ using StringTools;
 
 class WPFStorageFile extends StorageFile {
 	private var file: Path;
-	
+
 	public function new(filename: String) {
 		this.file = new Path(filename);
 		if (file.dir != null) Directory.CreateDirectory(file.dir);
 	}
-	
+
 	override public function read(): Blob {
 		if (file == null) return null;
 		if (!File.Exists(file.toString())) return null;
 		return Blob.fromBytes(Bytes.ofData(File.ReadAllBytes(file.toString())));
 	}
-	
+
 	override public function write(data: Blob): Void {
 		File.WriteAllBytes(file.toString(), data.toBytes().getData());
 	}

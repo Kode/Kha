@@ -48,7 +48,7 @@ import kha.math.Vector4;
 class Graphics implements kha.graphics4.Graphics {
 	public static var context: Context3D;
 	private var target: Image;
-	
+
 	private var textureRegisterUsed:Vector<Int>;
 
 	public static function initContext(context: Context3D): Void {
@@ -61,13 +61,9 @@ class Graphics implements kha.graphics4.Graphics {
 		textureRegisterUsed = new Vector();
 	}
 
-	public function flush(): Void {
+	public function flush(): Void {}
 
-	}
-
-	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
-
-	}
+	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -133,13 +129,9 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setDepthTest(write, getCompareMode(mode));
 	}
 
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
-	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
-	}
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	private function getStencilAction(action: StencilAction): Context3DStencilAction {
 		switch (action) {
@@ -209,17 +201,11 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setSamplerStateAt(cast(texunit, TextureUnit).unit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	}
-
-	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
-		
-	}
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
 	private function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
 		switch (op) {
@@ -260,9 +246,7 @@ class Graphics implements kha.graphics4.Graphics {
 		vertexBuffer.set();
 	}
 
-	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-
-	}
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {}
 
 	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
 	//	return new IndexBuffer(indexCount, usage);
@@ -291,9 +275,7 @@ class Graphics implements kha.graphics4.Graphics {
 		pipe.set();
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
-
-	}
+	public function setStencilReferenceValue(value: Int): Void {}
 
 	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 	//	return new Image(width, height, format, false, false, canRead);
@@ -315,30 +297,20 @@ class Graphics implements kha.graphics4.Graphics {
 		textureRegisterUsed.push(cast(unit, TextureUnit).unit);
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
-	
-	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-			
-	}
-	
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
 
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-
-	}
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
 
 	public function instancedRenderingAvailable(): Bool {
 		return false;
@@ -431,9 +403,7 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
 	}
 
-	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		
-	}
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void {
 		var flashLocation: ConstantLocation = cast location;
@@ -455,13 +425,9 @@ class Graphics implements kha.graphics4.Graphics {
 		else context.setRenderToTexture(target.getFlashTexture(), enableDepthStencil(target.depthStencilFormat()));
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
-
-	public function beginEye(eye: Int): Void {
-		
-	}
+	public function beginEye(eye: Int): Void {}
 
 	function enableDepthStencil( format : DepthStencilFormat ) : Bool {
 		return switch (format) {
@@ -490,7 +456,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
-		for (reg in textureRegisterUsed) 
+		for (reg in textureRegisterUsed)
 		{
 			context.setTextureAt(reg, null);
 		}

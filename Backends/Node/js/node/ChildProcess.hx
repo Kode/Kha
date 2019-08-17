@@ -52,7 +52,6 @@ private typedef ChildProcessCommonOptions = {
 	@:optional var gid:Int;
 }
 
-
 /**
 	Common options for `spawn` and `spawnSync` methods.
 **/
@@ -64,7 +63,6 @@ private typedef ChildProcessSpawnOptionsBase = {
 	**/
 	@:optional var stdio:ChildProcessSpawnOptionsStdio;
 }
-
 
 /**
 	Options for the `spawn` method.
@@ -89,7 +87,6 @@ typedef ChildProcessSpawnOptions = {
 	@:optional var customFds:Array<Int>;
 }
 
-
 /**
 	Options for the `spawnSync` method.
 **/
@@ -99,7 +96,6 @@ typedef ChildProcessSpawnSyncOptions = {
 
 	@:optional var input:EitherType<String,Buffer>;
 }
-
 
 /**
 	The `stdio` option is an array where each index corresponds to a fd in the child.
@@ -294,7 +290,6 @@ extern class ChildProcessExecError extends js.Error {
 **/
 typedef ChildProcessExecCallback = Null<ChildProcessExecError> -> Buffer -> Buffer -> Void;
 
-
 /**
 	Object returned from the `spawnSync` method.
 **/
@@ -334,7 +329,6 @@ typedef ChildProcessSpawnSyncResult = {
 	**/
 	var error:js.Error;
 }
-
 
 @:jsRequire("child_process")
 extern class ChildProcess {

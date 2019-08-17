@@ -60,7 +60,7 @@ class VrInterface extends kha.vr.VrInterface {
 			}
 		});
 	}
-	
+
 	public override function onVRRequestPresent () {
 		try {
 			vrDisplay.requestPresent([{ source: SystemImpl.khanvas }]).then(function () {
@@ -129,7 +129,7 @@ class VrInterface extends kha.vr.VrInterface {
 
 		result.Predicted = new PoseState();
 		result.Recorded = result.Predicted;
-		
+
 		result.Predicted.AngularAcceleration = new Vector3();
 		result.Predicted.AngularVelocity = new Vector3();
 		result.Predicted.LinearAcceleration = new Vector3();
@@ -148,7 +148,7 @@ class VrInterface extends kha.vr.VrInterface {
 			result.Predicted.Pose.Orientation = createQuaternion(untyped mPose.orientation);
 			result.Predicted.Pose.Position = createVectorFromArray(untyped mPose.position);
 		}
-		
+
 		return result;
 	}
 
@@ -156,12 +156,12 @@ class VrInterface extends kha.vr.VrInterface {
 	public override function WarpSwapBlack(): Void {
 		// TODO: Implement
 	}
-	
+
 	// Sends the Oculus loading symbol to the warp swap thread
 	public override function WarpSwapLoadingIcon(): Void {
 		// TODO: Implement
 	}
-	
+
 	// Sends the set of images to the warp swap thread
 	public override function WarpSwap(parms: TimeWarpParms): Void {
 		// TODO: Implement

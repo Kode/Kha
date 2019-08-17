@@ -3,14 +3,13 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 class CubeMap implements Canvas implements Resource {
-
 	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
 		return null;
 	}
 
-	public function unload(): Void { }
+	public function unload(): Void {}
 	public function lock(level: Int = 0): Bytes { return null; }
-	public function unlock(): Void { }
+	public function unlock(): Void {}
 
 	public var width(get, null): Int;
 	private function get_width(): Int { return 0; }

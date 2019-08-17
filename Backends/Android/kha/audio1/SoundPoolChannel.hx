@@ -9,7 +9,7 @@ class SoundPoolChannel implements AudioChannel {
 	private var looping: Bool;
 	private var running: Bool;
 	private var startTime: Float;
-	
+
 	public function new(sound: Sound, loopMode: Int) {
 		this.soundpool = Audio.soundpool;
 		volume = 1;
@@ -20,7 +20,7 @@ class SoundPoolChannel implements AudioChannel {
 		running = true;
 		startTime = Scheduler.realTime();
 	}
-	
+
 	public function play(): Void {
 		soundpool.resume(streamId);
 		if (!running) {
@@ -75,7 +75,7 @@ class SoundPoolChannel implements AudioChannel {
 
 	@:isVar
 	public var volume(get, set): Float;
-	
+
 	private function get_volume(): Float {
 		return volume;
 	}
@@ -87,7 +87,7 @@ class SoundPoolChannel implements AudioChannel {
 	}
 
 	public var finished(get, null): Bool;
-	
+
 	private function get_finished(): Bool {
 		return get_position() == length;
 	}

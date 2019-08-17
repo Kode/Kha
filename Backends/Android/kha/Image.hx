@@ -54,7 +54,7 @@ class Image implements Canvas implements Resource {
 			GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, tex, 0);
 
 			switch (depthAndStencil) {
-				case NoDepthAndStencil: { }
+				case NoDepthAndStencil: {}
 				case DepthOnly: setupDepthBufferOnly();
 				case DepthAutoStencilAuto: runDepthAndStencilSetupChain();
 				case Depth24Stencil8: {
@@ -194,7 +194,7 @@ class Image implements Canvas implements Resource {
 
 		return result;
 	}
-	
+
 	private static function convertFramebufferStatus(status: Int): String {
 		if (status == GLES20.GL_FRAMEBUFFER_COMPLETE) return "complete";
 		else if (status == GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) return "incomplete attachments";
@@ -249,7 +249,7 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		return new Image(width, height, format, true, depthStencil);
 	}
-	
+
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
@@ -389,21 +389,13 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
-	public function generateMipmaps(levels: Int): Void {
-		
-	}
+	public function generateMipmaps(levels: Int): Void {}
 
-	public function setMipmaps(mipmaps: Array<Image>): Void {
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
 
-	}
+	public function setDepthStencilFrom(image: Image): Void {}
 
-	public function setDepthStencilFrom(image: Image): Void {
-		
-	}
-
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
-	}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 
 	public static var maxSize(get, null): Int;
 
@@ -416,7 +408,7 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
-	
+
 	public static function renderTargetsInvertedY(): Bool {
 		return true;
 	}

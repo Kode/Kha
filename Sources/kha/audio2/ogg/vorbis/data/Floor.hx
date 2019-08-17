@@ -15,9 +15,7 @@ class Floor
     public var type:Int;
 
     function new()
-    {
-
-    }
+    {}
 
     public static function read(decodeState:VorbisDecodeState, codebooks:Vector<Codebook>):Floor
     {
@@ -127,8 +125,7 @@ class Floor0
     public var numberOfBooks:Int; //uint8
     public var bookList:Vector<UInt>; //uint8 [16] varies
 
-    public function new() {
-    }
+    public function new() {}
 }
 
 class Floor1
@@ -146,6 +143,5 @@ class Floor1
     public var rangebits:Int;
     public var values:Int;
 
-    public function new() {
-    }
+    public function new() {}
 }

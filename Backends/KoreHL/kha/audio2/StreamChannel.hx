@@ -9,7 +9,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	@:keep private var loop: Bool;
 	private var myVolume: Float;
 	private var paused: Bool = false;
-	
+
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
 		this.loop = loop;
@@ -23,10 +23,10 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			}
 			return;
 		}
-		
+
 		atend = kore_sound_next_vorbis_samples(_vorbis, samples.getData(), length, loop, atend);
 	}
-	
+
 	public function play(): Void {
 		paused = false;
 	}
@@ -40,13 +40,13 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	private function get_length(): Float {
 		return kore_sound_vorbis_get_length(_vorbis);
 	}
 
 	public var position(get, set): Float; // Seconds
-	
+
 	private function get_position(): Float {
 		return kore_sound_vorbis_get_position(_vorbis);
 	}
@@ -54,9 +54,9 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	private function set_position(value: Float): Float {
 		return value;
 	}
-	
+
 	public var volume(get, set): Float;
-	
+
 	private function get_volume(): Float {
 		return myVolume;
 	}

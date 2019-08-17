@@ -29,21 +29,15 @@ class Graphics implements kha.graphics4.Graphics {
 		Worker.postMessage({ command: 'begin', renderTarget: renderTarget == null ? -1 : renderTarget._rtid });
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
-
-	public function beginEye(eye: Int): Void {
-
-	}
+	public function beginEye(eye: Int): Void {}
 
 	public function end(): Void {
 		Worker.postMessage({ command: 'end' });
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -90,21 +84,13 @@ class Graphics implements kha.graphics4.Graphics {
 			texture: texture == null ? -1 : texture.id, renderTarget: texture == null ? -1 : texture._rtid });
 	}
 
-	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	}
-
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
-
-	}
-
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		Worker.postMessage({ command: 'setTextureParameters', id: cast(texunit, kha.html5worker.TextureUnit)._id,
@@ -113,33 +99,21 @@ class Graphics implements kha.graphics4.Graphics {
 		});
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	}
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	}
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
-	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
-
-	}
-
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-
-	}
-
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-
-	}
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	public function setPipeline(pipe: PipelineState): Void {
 		Worker.postMessage({ command: 'setPipeline', id: pipe._id });
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
-
-	}
+	public function setStencilReferenceValue(value: Int): Void {}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		Worker.postMessage({ command: 'setBool', location: cast(location, kha.html5worker.ConstantLocation)._id,

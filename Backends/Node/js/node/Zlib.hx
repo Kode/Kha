@@ -65,7 +65,6 @@ typedef ZlibOptions = {
 **/
 @:jsRequire("zlib")
 extern class Zlib {
-
 	/**
 		Allowed `flush` values.
 	**/
@@ -125,7 +124,6 @@ extern class Zlib {
 		For initializing zalloc, zfree, opaque.
 	**/
 	static var Z_NULL(default,null):Int;
-
 
 	/**
 		Returns a new `Gzip` object with an `options`.

@@ -14,10 +14,8 @@ class Sound implements Resource {
 	public var length: Float = 0; // in seconds
 	public var channels: Int = 0;
 	public var sampleRate: Int = 0;
-	
-	public function new() {
-		
-	}
+
+	public function new() {}
 
 #if kha_kore
 	public function uncompress(done: Void->Void): Void {
@@ -63,7 +61,7 @@ class Sound implements Resource {
 			done();
 			return;
 		}
-		
+
 		var output = new BytesOutput();
 		var header = Reader.readAll(compressedData, output, true);
 		var soundBytes = output.getBytes();

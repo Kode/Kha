@@ -15,6 +15,6 @@ extern class AudioTrack {
 	public function setPositionNotificationPeriod(periodInFrames:Int): Int;
 	public function setNotificationMarkerPosition(markerInFrames:Int): Int;
 	public static function getMinBufferSize(sampleRateInHz:Int, channelConfig:Int, audioFormat:Int): Int;
-	
+
 	public static var MODE_STREAM: Int;
 }

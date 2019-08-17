@@ -18,7 +18,6 @@ private enum WithType {
 	Type Checker : will take an untyped Expr and turn it into a typed TExpr, resolving identifiers and ensuring type safety.
 **/
 class Checker {
-
 	static var vec2 = TVec(2, VFloat);
 	static var vec3 = TVec(3, VFloat);
 	static var vec4 = TVec(4, VFloat);
@@ -30,8 +29,7 @@ class Checker {
 
 	public function new() {
 		globals = new Map();
-		inline function g(gl:TGlobal, vars) {
-		}
+		inline function g(gl:TGlobal, vars) {}
 		var genType = [TFloat, vec2, vec3, vec4];
 		var baseType = [TFloat, TBool, TInt];
 		var genFloat = [for( t in genType ) { args : [ { name : "value", type : t } ], ret : t } ];

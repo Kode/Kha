@@ -3,7 +3,6 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 class CubeMap implements Canvas implements Resource {
-
 	public var texture_: Dynamic;
 	public var renderTarget_: Dynamic;
 

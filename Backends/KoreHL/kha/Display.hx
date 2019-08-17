@@ -4,12 +4,12 @@ class Display {
     static var displays: Array<Display> = [];
     var num: Int;
     var isPrimary: Bool;
-    
+
     function new(num: Int, isPrimary: Bool) {
         this.num = num;
         this.isPrimary = isPrimary;
     }
-    
+
     static function init(): Void {
         for (i in 0...kore_display_count()) {
             displays.push(new Display(i, kore_display_is_primary(i)));

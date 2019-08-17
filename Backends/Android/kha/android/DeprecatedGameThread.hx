@@ -14,7 +14,7 @@ class DeprecatedGameThread extends Thread {
 	var width : Int;
 	var height : Int;
 	var p : Painter;
-	
+
 	public function new(surface : SurfaceHolder, context : Context, width : Int, height : Int) {
 		//super();
 		this.surface = surface;
@@ -29,7 +29,7 @@ class DeprecatedGameThread extends Thread {
 		Configuration.setScreen(new EmptyScreen(game.getWidth(), game.getHeight(), new Color(0, 0, 0)));
 		kha.Loader.the().loadProject(loadFinished);
 	}
-	
+
 	public function loadFinished(): Void {
 		if (kha.Loader.the().getWidth() > 0 && kha.Loader.the().getHeight() > 0) {
 			game.setWidth(kha.Loader.the().getWidth());
@@ -39,7 +39,7 @@ class DeprecatedGameThread extends Thread {
 		Configuration.setScreen(game);
 		Configuration.screen().setInstance();
 		game.loadFinished();
-		
+
 		while (running) {
 			var c :Canvas = null;
 			//try {
@@ -83,7 +83,7 @@ class DeprecatedGameThread extends Thread {
 			case 100:
 				game.buttonDown(Button.BUTTON_2);
 			default:
-				return false;	
+				return false;
 			}
 			return true;
 		//}
@@ -117,14 +117,14 @@ class DeprecatedGameThread extends Thread {
 		//}
 		return true;
 	}
-	
+
 	public function mouseUp(x : Int, y : Int) : Bool {
 		//synchronized (surface) {
 			game.mouseUp(Std.int(p.adjustXPosInv(x)), Std.int(p.adjustYPosInv(y)));
 		//}
 		return true;
 	}
-	
+
 	public function mouseMove(x : Int, y : Int) : Bool {
 		//synchronized (surface) {
 			game.mouseMove(Std.int(p.adjustXPosInv(x)), Std.int(p.adjustYPosInv(y)));

@@ -47,7 +47,6 @@ import js.node.net.Socket.NetworkAdress;
 	A `ClearTextStream` is the `cleartext` member of a `SecurePair` object.
 **/
 extern class CleartextStream extends CryptoStream {
-
 	/**
 		A boolean that is true if the peer certificate was signed by one of the specified CAs, otherwise false
 	**/

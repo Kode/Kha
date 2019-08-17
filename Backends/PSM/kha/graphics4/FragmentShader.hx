@@ -7,7 +7,7 @@ import sce.playstation.core.graphics.ShaderProgram;
 
 class FragmentShader {
 	private var shaderProgram: ShaderProgram;
-	
+
 	public function new(shader: Blob) {
 		//shaderProgram = new ShaderProgram("/Application/shaders/Texture.cgx");
 		//shaderProgram.SetUniformBinding(0, "WorldViewProj");

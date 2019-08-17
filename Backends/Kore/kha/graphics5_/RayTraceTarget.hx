@@ -9,7 +9,6 @@ package kha.graphics5;
 
 @:headerClassCode("Kore::Graphics5::RayTraceTarget* target;")
 class RayTraceTarget {
-
 	public function new(width: Int, height: Int) {
 		init(width, height);
 	}

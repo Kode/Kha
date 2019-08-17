@@ -2,8 +2,7 @@ package kha.graphics4.hxsl;
 using kha.graphics4.hxsl.Ast;
 
 private class Exit {
-	public function new() {
-	}
+	public function new() {}
 }
 
 private class VarDeps {
@@ -19,11 +18,9 @@ private class VarDeps {
 }
 
 class Dce {
-
 	var used : Map<Int,VarDeps>;
 
-	public function new() {
-	}
+	public function new() {}
 
 	public function dce( vertex : ShaderData, fragment : ShaderData ) {
 		// collect vars dependencies
@@ -66,7 +63,6 @@ class Dce {
 			f.expr = mapExpr(f.expr);
 		for( f in fragment.funs )
 			f.expr = mapExpr(f.expr);
-
 
 		return {
 			fragment : fragment,

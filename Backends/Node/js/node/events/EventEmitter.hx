@@ -74,7 +74,6 @@ abstract Event<T:Function>(String) from String to String {}
 **/
 @:jsRequire("events", "EventEmitter")
 extern class EventEmitter<TSelf:EventEmitter<TSelf>> implements IEventEmitter {
-
 	function new();
 
 	/**
@@ -127,7 +126,6 @@ extern class EventEmitter<TSelf:EventEmitter<TSelf>> implements IEventEmitter {
 	**/
 	static function listenerCount<T:Function>(emitter:IEventEmitter, event:Event<T>):Int;
 }
-
 
 /**
     `IEventEmitter` interface is used as "any EventEmitter".

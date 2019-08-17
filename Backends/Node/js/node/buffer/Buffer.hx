@@ -29,7 +29,6 @@ package js.node.buffer;
 **/
 @:jsRequire("buffer", "Buffer")
 extern class Buffer implements ArrayAccess<Int> {
-
 	/**
 		How many bytes will be returned when `buffer.inspect()` is called.
 		This can be overridden by user modules.

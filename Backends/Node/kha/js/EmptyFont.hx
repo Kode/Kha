@@ -7,31 +7,31 @@ class EmptyFont implements Font {
 	private var myName: String;
 	private var myStyle: FontStyle;
 	private var mySize: Float;
-	
+
 	public function new(name: String, style: FontStyle, size: Float) {
 		myName = name;
 		myStyle = style;
 		mySize = size;
 	}
-	
+
 	public var name(get, null): String;
-	
+
 	private function get_name(): String {
 		return myName;
 	}
-	
+
 	public var style(get, null): FontStyle;
-	
+
 	private function get_style(): FontStyle {
 		return myStyle;
 	}
-	
+
 	public var size(get, null): Float;
-	
+
 	private function get_size(): Float {
 		return mySize;
 	}
-	
+
 	public function getHeight(): Float {
 		return mySize;
 	}

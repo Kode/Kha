@@ -28,70 +28,52 @@ import android.view.Display;
 */
 
 class OnCreateRunner implements Runnable {
-	public function new() {
-		
-	}
-	
-	public function run(): Void {
-		
-	}
+	public function new() {}
+
+	public function run(): Void {}
 }
 
 class OnStartRunner implements Runnable {
-	public function new() {
-		
-	}
-	
+	public function new() {}
+
 	public function run(): Void {
 		SystemImpl.foreground();
 	}
 }
 
 class OnPauseRunner implements Runnable {
-	public function new() {
-		
-	}
-	
+	public function new() {}
+
 	public function run(): Void {
 		SystemImpl.pause();
 	}
 }
 
 class OnResumeRunner implements Runnable {
-	public function new() {
-		
-	}
-	
+	public function new() {}
+
 	public function run(): Void {
 		SystemImpl.resume();
 	}
 }
 
 class OnStopRunner implements Runnable {
-	public function new() {
-		
-	}
-	
+	public function new() {}
+
 	public function run(): Void {
 		SystemImpl.background();
 	}
 }
 
 class OnRestartRunner implements Runnable {
-	public function new() {
-		
-	}
-	
-	public function run(): Void {
-		
-	}
+	public function new() {}
+
+	public function run(): Void {}
 }
 
 class OnDestroyRunner implements Runnable {
-	public function new() {
-		
-	}
-	
+	public function new() {}
+
 	public function run(): Void {
 		SystemImpl.shutdown();
 	}
@@ -104,20 +86,20 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//private var audioThread: Thread;
 	//private var bufferSize: Int;
 	private var view: KhaView;
-	
+
 	//public static var sensorLock: Object = new Object();
 	//private var sensorManager: SensorManager;
 	//private var accelerometer: Sensor;
 	//private var gyro: Sensor;
 
 	private var extensions:Array<KhaExtension>;
-	
+
 	private static var instance: KhaActivity;
-		
+
 	public static function the(): KhaActivity {
 		return instance;
 	}
-	
+
 	override public function onCreate(state: Bundle): Void {
 		super.onCreate(state);
 		instance = this;
@@ -126,17 +108,17 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		setContentView(view = new KhaView(this));
 		//bufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT) * 2;
 		//audio = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
-		
+
 		//sensorManager = cast getSystemService(Context.SENSOR_SERVICE);
 		//accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		//gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-		
+
 		view.queueEvent(new OnCreateRunner());
 
 		var androidBeforeMain = Reflect.field(Main, "androidBeforeMain");
 		if (androidBeforeMain != null) androidBeforeMain();
 	}
-	
+
 	override public function onStart(): Void {
 		super.onStart();
 		view.queueEvent(new OnStartRunner());
@@ -146,7 +128,7 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 				ext.onStart();
 		}
 	}
-	
+
 	override public function onPause(): Void {
 		super.onPause();
 		view.onPause();
@@ -161,13 +143,13 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 				ext.onPause();
 		}
 	}
-	
+
 	override public function onResume(): Void {
 		super.onResume();
 		view.onResume();
 		//sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 		//sensorManager.registerListener(this, gyro, SensorManager.SENSOR_DELAY_NORMAL);
-		
+
 		/*if (audioThread != null) {
 			try {
 				audioThread.join();
@@ -176,9 +158,9 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 				e.printStackTrace();
 			}
 		}*/
-		
+
 		paused = false;
-		
+
 		/*audio.play();
 		Runnable audioRunnable = new Runnable() {
 			public void run() {
@@ -196,7 +178,7 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		};
 		audioThread = new Thread(audioRunnable);
 		audioThread.start();*/
-		
+
 		view.queueEvent(new OnResumeRunner());
 
 		if (extensions != null) {
@@ -204,7 +186,7 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 				ext.onResume();
 		}
 	}
-	
+
 	override public function onStop(): Void {
 		super.onStop();
 		view.queueEvent(new OnStopRunner());
@@ -214,13 +196,12 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 				ext.onStop();
 		}
 	}
-	
-	
+
 	override public function onRestart(): Void {
 		super.onRestart();
 		view.queueEvent(new OnRestartRunner());
 	}
-	
+
 	override public function onDestroy(): Void {
 		if (extensions != null) {
 			for (ext in extensions)
@@ -228,27 +209,26 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 		}
 
 		super.onDestroy();
-		view.queueEvent(new OnDestroyRunner());	
-		
-		untyped __java__("System.exit(0)");	
+		view.queueEvent(new OnDestroyRunner());
+
+		untyped __java__("System.exit(0)");
 	}
-	
+
 	override public function onConfigurationChanged(newConfig: Configuration): Void {
 		super.onConfigurationChanged(newConfig);
-		
+
 		/*switch (newConfig.orientation) {
 		case Configuration.ORIENTATION_LANDSCAPE:
-			
+
 			break;
 		case Configuration.ORIENTATION_PORTRAIT:
-			
+
 			break;
-			
 		}*/
 	}
 
 	//override public function onAccuracyChanged(sensor: Sensor, value: Int): Void {
-	//	
+	//
 	//}
 
 	//override public function onSensorChanged(e: SensorEvent): Void {
@@ -258,7 +238,7 @@ class KhaActivity extends Activity /*implements SensorEventListener*/ {
 	//	else if (e.sensor == gyro) {
 	//		view.gyro(e.values[0], e.values[1], e.values[2]);
 	//	}
-	//}	
+	//}
 
 	public function registerExtension(ext:KhaExtension):Void {
 		if (extensions == null)

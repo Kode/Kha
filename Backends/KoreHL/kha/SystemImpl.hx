@@ -67,9 +67,7 @@ class SystemImpl {
 		run_kore();
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
-
-	}
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {}
 
 	@:keep
 	public static function frame(): Void {
@@ -376,50 +374,44 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
-	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
-	@:hlNative("std", "run_kore") static function run_kore(): Void { }
-	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat, outSamplesPerSecond: hl.Ref<Int>): Void { }
-	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void { }
+	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void {}
+	@:hlNative("std", "run_kore") static function run_kore(): Void {}
+	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat, outSamplesPerSecond: hl.Ref<Int>): Void {}
+	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void {}
 	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float { return 0; }
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_system_id") static function kore_get_system_id(): hl.Bytes { return null; }
-	@:hlNative("std", "kore_request_shutdown") static function kore_request_shutdown(): Void { }
-	@:hlNative("std", "kore_mouse_lock") static function kore_mouse_lock(windowId: Int): Void { }
-	@:hlNative("std", "kore_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void { }
+	@:hlNative("std", "kore_request_shutdown") static function kore_request_shutdown(): Void {}
+	@:hlNative("std", "kore_mouse_lock") static function kore_mouse_lock(windowId: Int): Void {}
+	@:hlNative("std", "kore_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void {}
 	@:hlNative("std", "kore_can_lock_mouse") static function kore_can_lock_mouse(windowId: Int): Bool { return false; }
 	@:hlNative("std", "kore_is_mouse_locked") static function kore_is_mouse_locked(windowId: Int): Bool { return false; }
-	@:hlNative("std", "kore_show_mouse") static function kore_show_mouse(show: Bool): Void { }
+	@:hlNative("std", "kore_show_mouse") static function kore_show_mouse(show: Bool): Void {}
 	@:hlNative("std", "kore_system_is_fullscreen") static function kore_system_is_fullscreen(): Bool { return false; }
-	@:hlNative("std", "kore_system_request_fullscreen") static function kore_system_request_fullscreen(): Void { }
-	@:hlNative("std", "kore_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void { }
-	@:hlNative("std", "kore_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void, keyPress: Int->Void): Void { }
-	@:hlNative("std", "kore_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void, mouseMove: Int->Int->Int->Int->Int->Void, mouseWheel: Int->Int->Void): Void { }
-	@:hlNative("std", "kore_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void, penMove: Int->Int->Int->Float->Void): Void { }
-	@:hlNative("std", "kore_register_gamepad") static function kore_register_gamepad(index: Int, gamepadAxis: Int->Float->Void, gamepadButton: Int->Float->Void): Void { }
-	@:hlNative("std", "kore_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void, touchMove: Int->Int->Int->Void): Void { }
-	@:hlNative("std", "kore_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void, gyroscopeChanged: Float->Float->Float->Void): Void { }
-	@:hlNative("std", "kore_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void, background: Void->Void, shutdown: Void->Void): Void { }
-	@:hlNative("std", "kore_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void { }
-	@:hlNative("std", "kore_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->String, cut: Void->String, paste: String->Void): Void { }
-	@:hlNative("std", "kore_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void { }
-	@:hlNative("std", "kore_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void { }
-	@:hlNative("std", "kore_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void { }
+	@:hlNative("std", "kore_system_request_fullscreen") static function kore_system_request_fullscreen(): Void {}
+	@:hlNative("std", "kore_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void {}
+	@:hlNative("std", "kore_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void, keyPress: Int->Void): Void {}
+	@:hlNative("std", "kore_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void, mouseMove: Int->Int->Int->Int->Int->Void, mouseWheel: Int->Int->Void): Void {}
+	@:hlNative("std", "kore_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void, penMove: Int->Int->Int->Float->Void): Void {}
+	@:hlNative("std", "kore_register_gamepad") static function kore_register_gamepad(index: Int, gamepadAxis: Int->Float->Void, gamepadButton: Int->Float->Void): Void {}
+	@:hlNative("std", "kore_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void, touchMove: Int->Int->Int->Void): Void {}
+	@:hlNative("std", "kore_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void, gyroscopeChanged: Float->Float->Float->Void): Void {}
+	@:hlNative("std", "kore_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void, background: Void->Void, shutdown: Void->Void): Void {}
+	@:hlNative("std", "kore_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void {}
+	@:hlNative("std", "kore_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->String, cut: Void->String, paste: String->Void): Void {}
+	@:hlNative("std", "kore_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void {}
+	@:hlNative("std", "kore_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void {}
+	@:hlNative("std", "kore_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void {}
 	@:hlNative("std", "kore_get_gamepad_id") static function kore_get_gamepad_id(index: Int): hl.Bytes { return null; }
 }

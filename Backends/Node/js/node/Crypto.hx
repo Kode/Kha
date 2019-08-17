@@ -132,7 +132,6 @@ extern class Crypto {
 	**/
 	static function createHash(algorithm:CryptoAlgorithm):Hash;
 
-
 	/**
 		Creates and returns a hmac object, a cryptographic hmac with the given algorithm and key.
 		`algorithm` is dependent on the available algorithms supported by OpenSSL - see `createHash` above.
@@ -180,7 +179,6 @@ extern class Crypto {
 	**/
 	static function createDecipheriv(algorithm:String, key:EitherType<String,Buffer>, iv:EitherType<String,Buffer>):Decipher;
 
-
 	/**
 		Creates and returns a signing object, with the given algorithm.
 		On recent OpenSSL releases, openssl list-public-key-algorithms will display the available signing algorithms.
@@ -193,7 +191,6 @@ extern class Crypto {
 		This is the mirror of the signing object above.
 	**/
 	static function createVerify(algorithm:String):Verify;
-
 
 	/**
 		Creates a Diffie-Hellman key exchange object using the supplied `prime` or generated prime of given bit `prime_length`.
@@ -214,7 +211,6 @@ extern class Crypto {
 		saving both processor and communication time.
 	**/
 	static function getDiffieHellman(group_name:DiffieHellmanGroupName):IDiffieHellman;
-
 
 	/**
 		Asynchronous PBKDF2 applies pseudorandom function HMAC-SHA1 to derive a key of given length

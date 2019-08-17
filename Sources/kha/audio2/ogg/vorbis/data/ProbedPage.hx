@@ -13,6 +13,5 @@ class ProbedPage
     public var firstDecodedSample:Null<Int>;
     public var lastDecodedSample:Null<Int>;
 
-    public function new() {
-    }
+    public function new() {}
 }

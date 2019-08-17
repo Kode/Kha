@@ -48,7 +48,6 @@ extern class Node {
 	static var console(get,never):Console;
 	private static inline function get_console():Console return untyped __js__("console");
 
-
 	// TODO: handle this better way
 	/**
 		Fetches a library and returns the reference to it.
@@ -88,7 +87,6 @@ extern class Node {
 	static var require_main(get,never):Module;
 	private static inline function get_require_main():Module return untyped __js__("require.main");
 
-
 	/**
 		The name of the directory that the currently executing script resides in.
 	**/
@@ -118,7 +116,6 @@ extern class Node {
 	**/
 	static var exports(get,never):Dynamic<Dynamic>;
 	private static inline function get_exports():Dynamic<Dynamic> return module.exports;
-
 
 	/**
 		To schedule execution of a one-time `callback` after `delay` milliseconds.

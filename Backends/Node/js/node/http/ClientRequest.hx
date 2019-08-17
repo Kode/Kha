@@ -86,7 +86,6 @@ import js.node.stream.Writable;
 **/
 @:jsRequire("http", "ClientRequest")
 extern class ClientRequest extends Writable<ClientRequest> {
-
 	/**
 		Get header value
 	**/

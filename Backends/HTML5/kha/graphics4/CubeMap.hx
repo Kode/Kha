@@ -53,7 +53,6 @@ class CubeMap implements Canvas implements Resource {
 		SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 
 		if (renderTarget) {
-
 			frameBuffer = SystemImpl.gl.createFramebuffer();
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 
@@ -135,23 +134,19 @@ class CubeMap implements Canvas implements Resource {
 		SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, depthTexture);
 	}
 
-	public function unload(): Void {
-		
-	}
-	
+	public function unload(): Void {}
+
 	public function lock(level: Int = 0): Bytes {
 		return null;
 	}
-	
-	public function unlock(): Void {
 
-	}
+	public function unlock(): Void {}
 
 	public var width(get, null): Int;
 	private function get_width(): Int {
 		return myWidth;
 	}
-	
+
 	public var height(get, null): Int;
 	private function get_height(): Int {
 		return myHeight;
@@ -166,7 +161,7 @@ class CubeMap implements Canvas implements Resource {
 	private function get_g2(): kha.graphics2.Graphics {
 		return null;
 	}
-	
+
 	public var g4(get, null): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {

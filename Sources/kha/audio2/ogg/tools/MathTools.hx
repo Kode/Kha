@@ -9,7 +9,7 @@ class MathTools
     public static inline function ilog(n:Int)
     {
         var log2_4 = [0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4];
-        
+
         // 2 compares if n < 16, 3 compares otherwise (4 if signed or n > 1<<29)
         return if (n < (1 << 14)) {
             if (n < (1 <<  4)) {

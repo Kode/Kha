@@ -16,7 +16,6 @@ abstract GlobalSlot<T>(Int) {
 }
 
 class Globals {
-
 	var map : Map<Int,Dynamic>;
 
 	public function new() {

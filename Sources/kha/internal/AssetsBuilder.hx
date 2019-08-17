@@ -56,7 +56,6 @@ class AssetsBuilder {
 			var filename = file.files[0];
 
 			if (file.type == type) {
-
 				names.push(macro $v{name});
 
 				switch (type) {
@@ -125,7 +124,7 @@ class AssetsBuilder {
 					pos: Context.currentPos()
 				});
 
-				var loadExpressions = macro { };
+				var loadExpressions = macro {};
 				switch (type) {
 					case "image":
 						loadExpressions = macro {

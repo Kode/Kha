@@ -31,7 +31,7 @@ class Audio {
 									//AudioFormat.ENCODING_PCM_16BIT, buffersizeInBytes, AudioTrack.MODE_STREAM);
 		//
 	//}
-	
+
 	@:noCompletion
 	public static function _init(): Bool {
 		//try {
@@ -58,7 +58,7 @@ class Audio {
 		//}
 		return false;
 	}
-	
+
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		return null;
 	}

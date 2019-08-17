@@ -28,9 +28,7 @@ class LoaderImpl {
 		return ["webm"];
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {
-
-	}
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void): Void {}
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
 		done(new Blob(Bytes.ofData(Krom.loadBlob(desc.files[0]))));

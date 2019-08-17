@@ -1,7 +1,6 @@
 package kha.vr;
 
 class TimeWarpParms {
-
 /*	TimeWarpParms() :   SwapOptions( 0 ),
 			            MinimumVsyncs( 1 ),
 			            PreScheduleSeconds( 0.014f ),
@@ -16,19 +15,19 @@ class TimeWarpParms {
             }
         }
     }*/
-	
+
 		public var LeftImage: TimeWarpImage;
 		public var RightImage: TimeWarpImage;
-		
+
 		public var LeftOverlay: TimeWarpImage;
 		public var RightOverlay: TimeWarpImage;
 
 	//static const int	MAX_WARP_EYES = 2;
 	// static const int	MAX_WARP_IMAGES = 2;	// 0 = world, 1 = overlay screen
 	//TimeWarpImage 		Images[MAX_WARP_EYES][MAX_WARP_IMAGES];
-	
+
 		//public var SwapOptions: Int;
-	
+
 	// WarpSwap will not return until at least this many vsyncs have
 	// passed since the previous WarpSwap returned.
 	// Setting to 2 will reduce power consumption and may make animation
@@ -49,10 +48,7 @@ class TimeWarpParms {
 	// Controls the collection and display of timing data.
 	//debugPerfMode_t		DebugGraphMode;
 	//debugPerfValue_t	DebugGraphValue;
-	
-	public function new() {
-		
-	}
 
-	
+	public function new() {}
+
 }

@@ -27,7 +27,6 @@ package js.node;
 	Module isn't actually a global but rather local to each module.
 **/
 extern class Module {
-
 	/**
 		The `exports` object is created by the Module system.
 		Sometimes this is not acceptable; many want their module to be an instance of some class.

@@ -10,8 +10,6 @@ class Example implements Entity {
 		//super();
 		test = 3;
 	}
-	
-	public function simulate(tdif: Float): Void {
-		
-	}
+
+	public function simulate(tdif: Float): Void {}
 }

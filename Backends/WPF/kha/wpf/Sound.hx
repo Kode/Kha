@@ -10,7 +10,7 @@ import system.windows.controls.MediaState;
 class Sound extends kha.Sound {
 	public var filename: String;
 	private var channel: AudioChannel;
-	
+
 	public function new(filename: String): Void {
 		super();
 		this.filename = filename;

@@ -4,7 +4,6 @@ import kha.Image;
 import kha.math.Matrix4;
 
 class TimeWarpImage {
-	
 	// If TexId == 0, this image is disabled.
 	// Most applications will have the overlay image
 	// disabled.
@@ -27,7 +26,7 @@ class TimeWarpImage {
 	// function into ( TanX, TanY, 1, 1 ) vectors that are transformed
 	// by this matrix to get ( S, T, Q, _ ) vectors that are looked
 	// up with texture2dproj() to get texels.
-	
+
 	public var TexCoordsFromTanAngles: Matrix4;
 
 	// The sensor state for which ModelViewMatrix is correct.
@@ -36,9 +35,7 @@ class TimeWarpImage {
 	// must remain the same for both eyes, or the position would
 	// seem to judder "backwards in time" if a frame is dropped.
 	public var Pose: PoseState;
-	
-	public function new() {
-		
-	}
-	
+
+	public function new() {}
+
 }

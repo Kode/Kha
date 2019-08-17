@@ -9,7 +9,5 @@ class IntPoint
     public var x:Int;
     public var y:Int;
 
-    public function new() {
-
-    }
+    public function new() {}
 }
