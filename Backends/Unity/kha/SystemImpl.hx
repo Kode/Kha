@@ -56,30 +56,17 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
-  	}
+	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function changeResolution(width: Int, height: Int): Void {}
 
-	}
-
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-
-	public static function requestShutdown(): Void {
-
-	}
+	public static function requestShutdown(): Void {}
 
 	public static function getSystemId(): String {
 		return "unity";
@@ -141,13 +128,9 @@ class SystemImpl {
 		else return null;
 	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(): Void {}
 
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -157,15 +140,9 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
-	}
-
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
+	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	public static function leftDown(): Void {
 		Keyboard.get().sendDownEvent(Key.LEFT, '');
@@ -244,13 +221,9 @@ class SystemImpl {
 		System.render(0, frame);
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";

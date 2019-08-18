@@ -50,26 +50,18 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
-
-	public function beginEye(eye: Int): Void {
-		
-	}
+	public function beginEye(eye: Int): Void {}
 
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(0, 0, w, h));')
-	private function setViewport(w: Int, h: Int): Void {
-
-	}
+	private function setViewport(w: Int, h: Int): Void {}
 
 	public function end(): Void {
 		RenderTexture.active = null;
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -86,41 +78,25 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, width, height));')
-	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
+	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{}
 
-	}
+	public function setCullMode(mode: CullMode): Void {}
 
-	public function setCullMode(mode: CullMode): Void {
+	public function setDepthMode(write: Bool, mode: CompareMode): Void {}
 
-	}
+	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {}
 
-	public function setDepthMode(write: Bool, mode: CompareMode): Void {
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {}
 
-	}
+	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {}
 
-	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {
-
-	}
-
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-
-	}
-
-	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-
-	}
-
-	public function disableScissor(): Void {
-
-	}
+	public function disableScissor(): Void {}
 
 	public function setVertexBuffer(vertexBuffer: VertexBuffer): Void {
 		this.vertexBuffer = vertexBuffer;
 	}
 
-	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-
-	}
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {}
 
 	public function setIndexBuffer(indexBuffer: IndexBuffer): Void {
 		this.indexBuffer = indexBuffer;
@@ -130,34 +106,20 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		pipeline.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
-	
-	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {
-	
-	}
 
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {}
 
-	}
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	}
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
-	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
-	}
-
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
-	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
@@ -202,13 +164,9 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value1, value2, value3, value4));
 	}
 
-	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {
+	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {}
 
-	}
-
-	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {
-
-	}
+	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {}
 
 	public function setVector2(location: ConstantLocation, value: FastVector2): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);
@@ -235,9 +193,7 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.material.SetMatrix(loc.name, m);
 	}
 
-	public function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {
-		
-	}
+	public function setMatrix3(location: ConstantLocation, value: FastMatrix3): Void {}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		if (count < 0) {
@@ -259,9 +215,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-
-	}
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
 
 	public function instancedRenderingAvailable(): Bool {
 		return false;
