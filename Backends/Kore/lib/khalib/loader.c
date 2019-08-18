@@ -104,7 +104,7 @@ static void run(void* param) {
 						                                   &data);
 
 						if (channels == 1) {
-							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
+							next.data.sound.length = samples / (float)samplesPerSecond;
 							next.data.sound.size = samples * 2;
 							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
 							for (int i = 0; i < samples; ++i) {
@@ -113,7 +113,7 @@ static void run(void* param) {
 							}
 						}
 						else {
-							next.data.sound.length = samples / (float)kinc_a2_samples_per_second; // samplesPerSecond;
+							next.data.sound.length = samples / (float)samplesPerSecond;
 							next.data.sound.size = samples * 2;
 							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
 							for (int i = 0; i < next.data.sound.size; ++i) {
