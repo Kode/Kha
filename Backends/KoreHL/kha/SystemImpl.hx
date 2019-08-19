@@ -94,16 +94,17 @@ class SystemImpl {
 	}
 
 	public static function getSystemId(): String {
-		// return kore_get_system_id();
-		return 'HL';
+		final b: hl.Bytes = kore_get_system_id();
+		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function vibrate(ms:Int): Void {
-		//TODO: Implement
+		kore_vibrate(ms);
 	}
 
 	public static function getLanguage(): String {
-		return "en"; //TODO: Implement
+		final b: hl.Bytes = kore_get_language();
+		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function requestShutdown(): Bool {
@@ -400,6 +401,8 @@ class SystemImpl {
 	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int { return 0; }
 	@:hlNative("std", "kore_get_system_id") static function kore_get_system_id(): hl.Bytes { return null; }
+	@:hlNative("std", "kore_vibrate") static function kore_vibrate(ms: Int): Void {}
+	@:hlNative("std", "kore_get_language") static function kore_get_language(): hl.Bytes { return null; }
 	@:hlNative("std", "kore_request_shutdown") static function kore_request_shutdown(): Void { }
 	@:hlNative("std", "kore_mouse_lock") static function kore_mouse_lock(windowId: Int): Void { }
 	@:hlNative("std", "kore_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void { }
