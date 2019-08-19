@@ -7,11 +7,11 @@ class DisplayImpl {
 
 	public static function width( index : Int ) : Int {
 		trace('TODO (DK) implement me');
-        return -1;
+		return -1;
 	}
 
 	public static function height( index : Int ) : Int {
-        trace('TODO (DK) implement me');
-        return -1;
+		trace('TODO (DK) implement me');
+		return -1;
 	}
 }
