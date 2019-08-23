@@ -321,6 +321,6 @@ class Assets {
 		return LoaderImpl.getVideoFormats();
 	}
 
-	public static inline function reporter(custom: AssetError -> Void, ?pos: haxe.PosInfos)
+	public static function reporter(custom: AssetError -> Void, ?pos: haxe.PosInfos)
 		return custom != null ? custom : haxe.Log.trace.bind(_, pos);
 }
