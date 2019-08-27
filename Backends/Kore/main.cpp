@@ -1,4 +1,7 @@
 #include <Kore/pch.h>
+
+#include <khalib/loader.h>
+
 //#include <Kore/Application.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Input/Gamepad.h>
@@ -140,7 +143,7 @@ namespace {
 	bool paused = false;
 
 	void update() {
-		if (paused) return;
+		//**if (paused) return;
 		Kore::Audio2::update();
 
 		SystemImpl_obj::frame();
@@ -227,22 +230,44 @@ namespace {
 		}*/
 	}
 	
+#if defined(HXCPP_TELEMETRY) || defined(HXCPP_PROFILER) || defined(HXCPP_DEBUG)
+	const static bool gcInteractionStrictlyRequired = true;
+#else
+	const static bool gcInteractionStrictlyRequired = false;
+#endif
 	bool mixThreadregistered = false;
 
 	void mix(int samples) {
 		using namespace Kore;
 
+		int t0 = 99;
 #ifdef KORE_MULTITHREADED_AUDIO
-		if (!mixThreadregistered) {
-			HX_TOP_OF_STACK
+		if (!mixThreadregistered && !::kha::audio2::Audio_obj::disableGcInteractions) {
+			hx::SetTopOfStack(&t0, true);
 			mixThreadregistered = true;
-			threadSleep(100);
+			hx::EnterGCFreeZone();
 		}
-#endif
+
 		//int addr = 0;
 		//Kore::log(Info, "mix address is %x", &addr);
 
-		::kha::audio2::Audio_obj::_callCallback(samples);
+		if (mixThreadregistered && ::kha::audio2::Audio_obj::disableGcInteractions && !gcInteractionStrictlyRequired) {
+			hx::UnregisterCurrentThread();
+			mixThreadregistered = false;
+		}
+
+		if (mixThreadregistered) {
+			hx::ExitGCFreeZone();
+		}
+#endif
+
+		::kha::audio2::Audio_obj::_callCallback(samples, Kore::Audio2::samplesPerSecond);
+
+#ifdef KORE_MULTITHREADED_AUDIO
+		if (mixThreadregistered) {
+			hx::EnterGCFreeZone();
+		}
+#endif
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();
@@ -267,6 +292,14 @@ namespace {
 	void paste(char* data) {
 		SystemImpl_obj::paste(String(data));
 	}
+
+  void login() {
+    SystemImpl_obj::loginevent();
+  }
+
+  void logout() {
+    SystemImpl_obj::logoutevent();
+  }
 }
 
 void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame) {
@@ -287,6 +320,8 @@ void init_kore(const char* name, int width, int height, Kore::WindowOptions* win
 	Kore::System::setCopyCallback(copy);
 	Kore::System::setCutCallback(cut);
 	Kore::System::setPasteCallback(paste);
+	Kore::System::setLoginCallback(login);
+	Kore::System::setLogoutCallback(logout);
 
 	Kore::Keyboard::the()->KeyDown = keyDown;
 	Kore::Keyboard::the()->KeyUp = keyUp;
@@ -333,6 +368,7 @@ void run_kore() {
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
+	Kore::threadsQuit();
 	Kore::System::stop();
 #endif
 }
@@ -341,9 +377,11 @@ extern "C" void __hxcpp_main();
 extern int _hxcpp_argc;
 extern char **_hxcpp_argv;
 
-int kore(int argc, char **argv) {
+int kickstart(int argc, char **argv) {
 	_hxcpp_argc = argc;
 	_hxcpp_argv = argv;
+	Kore::threadsInit();
+	kha_loader_init();
 	HX_TOP_OF_STACK
 	hx::Boot();
 #ifdef NDEBUG

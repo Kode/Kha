@@ -37,6 +37,9 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
+	public static function renderTargetsInvertedY(): Bool {
+		return false;
+	}
 
 	public function isOpaque(x: Int, y: Int): Bool { return false; }
 	public function at(x: Int, y: Int): Color { return Color.Black; }

@@ -1,7 +1,3 @@
-[submodule "Kore"]
-	path = Kore
-	url = https://github.com/Kode/Kore.git
-	branch = master
 [submodule "Tools/khamake"]
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git
@@ -30,3 +26,7 @@
 	url = https://github.com/Kode/lame_bin.git
 	branch = master
 	shallow = true
+[submodule "Kinc"]
+	path = Kinc
+	url = https://github.com/Kode/Kinc.git
+	branch = master

@@ -136,29 +136,19 @@ class Image implements Canvas implements Resource {
 		return bytes;
 	}
 
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	public function getPixels(): Bytes {
 		return null;
 	}
 
-	public function generateMipmaps(levels: Int): Void {
+	public function generateMipmaps(levels: Int): Void {}
 
-	}
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
 
-	public function setMipmaps(mipmaps: Array<Image>): Void {
+	public function setDepthStencilFrom(image: Image): Void {}
 
-	}
-
-	public function setDepthStencilFrom(image: Image): Void {
-
-	}
-
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-
-	}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 
 	public static var maxSize(get, null): Int;
 
@@ -170,5 +160,9 @@ class Image implements Canvas implements Resource {
 
 	public static function get_nonPow2Supported(): Bool {
 		return false;
+	}
+
+	public static function renderTargetsInvertedY(): Bool {
+		return !UnityBackend.uvStartsAtTop();
 	}
 }

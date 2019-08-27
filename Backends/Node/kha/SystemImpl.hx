@@ -218,4 +218,24 @@ class SystemImpl {
 	public static function getPen(num: Int): kha.input.Pen {
 		return null;
 	}
+
+	public static function safeZone(): Float {
+		return 1.0;
+	}
+
+	public static function login(): Void {
+
+	}
+
+	public static function automaticSafeZone(): Bool {
+		return true;
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		
+	}
+
+	public static function unlockAchievement(id: Int): Void {
+		
+	}
 }

@@ -59,7 +59,7 @@ static void hl_debug_loop( hl_module *m ) {
 	flags |= 4;
 	loop = true;
 #	endif
-	hl_get_thread()->exc_flags |= HL_THREAD_INVISIBLE;
+	hl_get_thread()->flags |= HL_THREAD_INVISIBLE;
 	do {
 		int i;
 		vbyte cmd;

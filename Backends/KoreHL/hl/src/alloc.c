@@ -113,9 +113,6 @@ struct _gc_pheader {
 	unsigned char *sizes;
 	unsigned char *bmp;
 	gc_pheader *next_page;
-#ifdef HL_TRACK_ALLOC
-	int *alloc_hashes;
-#endif
 #ifdef GC_DEBUG
 	int page_id;
 #endif
@@ -132,7 +129,11 @@ static const int GC_SIZES[GC_PARTITIONS] = {8,16,24,32,40,	8,64,1<<14,1<<22};
 static const int GC_SIZES[GC_PARTITIONS] = {4,8,12,16,20,	8,64,1<<14,1<<22};
 #endif
 
-#define INPAGE(ptr,page) ((void*)(ptr) > (void*)(page) && (unsigned char*)(ptr) < (unsigned char*)(page) + (page)->page_size)
+#ifdef HL_64
+#	define INPAGE(ptr,page) ((void*)(ptr) > (void*)(page) && (unsigned char*)(ptr) < (unsigned char*)(page) + (page)->page_size)
+#else
+#	define INPAGE(ptr,page) true
+#endif
 
 #define GC_PROFILE		1
 #define GC_DUMP_MEM		2
@@ -145,7 +146,6 @@ static int gc_free_blocks[GC_ALL_PAGES] = {0};
 static gc_pheader *gc_free_pages[GC_ALL_PAGES] = {NULL};
 static gc_pheader *gc_level1_null[1<<GC_LEVEL1_BITS] = {NULL};
 static gc_pheader **hl_gc_page_map[1<<GC_LEVEL0_BITS] = {NULL};
-static void (*gc_track_callback)(hl_type *,int,int,void*) = NULL;
 
 static struct {
 	int count;
@@ -219,10 +219,6 @@ static void gc_global_lock( bool lock ) {
 }
 #endif
 
-HL_PRIM void hl_gc_set_track( void *f ) {
-	gc_track_callback = f;
-}
-
 HL_PRIM void hl_add_root( void *r ) {
 	gc_global_lock(true);
 	if( gc_roots_count == gc_roots_max ) {
@@ -251,10 +247,8 @@ HL_PRIM void hl_remove_root( void *v ) {
 
 HL_PRIM gc_pheader *hl_gc_get_page( void *v ) {
 	gc_pheader *page = GC_GET_PAGE(v);
-#	ifdef HL_64
 	if( page && !INPAGE(v,page) )
 		page = NULL;
-#	endif
 	return page;
 }
 
@@ -270,6 +264,7 @@ HL_API void hl_register_thread( void *stack_top ) {
 	memset(t, 0, sizeof(hl_thread_info));
 	t->thread_id = hl_thread_id();
 	t->stack_top = stack_top;
+	t->flags = HL_TRACK_MASK << HL_TREAD_TRACK_SHIFT;
 	current_thread = t;
 	hl_add_root(&t->exc_value);
 	hl_add_root(&t->exc_handler);
@@ -465,10 +460,6 @@ retry:
 		start_pos += p->max_blocks;
 		MZERO(p->sizes,p->max_blocks);
 	}
-#	ifdef HL_TRACK_ALLOC
-	p->alloc_hashes = (int*)malloc(sizeof(int) * p->max_blocks);
-	MZERO(p->alloc_hashes,p->max_blocks * sizeof(int));
-#	endif
 	m = start_pos % block;
 	if( m ) start_pos += block - m;
 	p->first_block = start_pos / block;
@@ -539,9 +530,6 @@ alloc_fixed:
 				hl_fatal("assert");
 	}
 #	endif
-#	ifdef HL_TRACK_ALLOC
-	p->alloc_hashes[p->next_block] = hl_get_stack_hash();
-#	endif
 	p->next_block++;
 	gc_stats.total_allocated += p->block_size;
 	gc_free_pages[pid] = p;
@@ -575,9 +563,7 @@ resume:
 					if( avail > p->free_blocks ) p->free_blocks = avail;
 					avail = 0;
 					next += bits - 1;
-#					ifdef GC_DEBUG
 					if( p->sizes[next] == 0 ) hl_fatal("assert");
-#					endif
 					next += p->sizes[next];
 					if( next + nblocks > p->max_blocks ) {
 						p->next_block = next;
@@ -634,23 +620,19 @@ alloc_var:
 	}
 #	endif
 	if( p->bmp ) {
-		int i;
 		int bid = p->next_block;
+#		ifdef GC_DEBUG
+		int i;
 		for(i=0;i<nblocks;i++) {
-#			ifdef GC_DEBUG
 			if( (p->bmp[bid>>3]&(1<<(bid&7))) != 0 ) hl_fatal("Alloc on marked block");
-#			endif
-			p->bmp[bid>>3] &= ~(1<<(bid&7));
 			bid++;
 		}
 		bid = p->next_block;
+#		endif
 		p->bmp[bid>>3] |= 1<<(bid&7);
 	} else {
 		p->free_blocks = p->max_blocks - (p->next_block + nblocks);
 	}
-#	ifdef HL_TRACK_ALLOC
-	p->alloc_hashes[p->next_block] = hl_get_stack_hash();
-#	endif
 	if( nblocks > 1 ) MZERO(p->sizes + p->next_block, nblocks);
 	p->sizes[p->next_block] = (unsigned char)nblocks;
 	p->next_block += nblocks;
@@ -715,8 +697,7 @@ void *hl_gc_alloc_gen( hl_type *t, int size, int flags ) {
 	memset((char*)ptr+(allocated - HL_WSIZE),0xEE,HL_WSIZE);
 #	endif
 	gc_global_lock(false);
-	if( gc_track_callback && (current_thread->exc_flags&HL_TRACK_DISABLE) == 0 )
-		((void (*)(hl_type *,int,int,void*))gc_track_callback)(t,size,flags,ptr);
+	hl_track_call(HL_TRACK_ALLOC, on_alloc(t,size,flags,ptr));
 	return ptr;
 }
 
@@ -777,6 +758,9 @@ static void gc_flush_mark() {
 			break;
 		}
 		size = page->sizes ? page->sizes[bid] * page->block_size : page->block_size;
+#		ifdef GC_DEBUG
+		if( size == 0 ) hl_fatal("assert");
+#		endif
 		nwords = size / HL_WSIZE;
 #		ifdef GC_PRECISE
 		if( page->page_kind == MEM_KIND_DYNAMIC ) {
@@ -811,10 +795,7 @@ static void gc_flush_mark() {
 			p = *block++;
 			pos++;
 			page = GC_GET_PAGE(p);
-			if( !page || ((((unsigned char*)p - (unsigned char*)page))%page->block_size) != 0 ) continue;
-#			ifdef HL_64
-			if( !INPAGE(p,page) ) continue;
-#			endif
+			if( !page || !INPAGE(p,page) || ((((unsigned char*)p - (unsigned char*)page))%page->block_size) != 0 ) continue;
 			bid = (int)((unsigned char*)p - (unsigned char*)page) / page->block_size;
 			if( page->sizes ) {
 				if( page->sizes[bid] == 0 ) continue;
@@ -893,10 +874,7 @@ static void gc_mark_stack( void *start, void *end ) {
 		void *p = *stack_head++;
 		gc_pheader *page = GC_GET_PAGE(p);
 		int bid;
-		if( !page || (((unsigned char*)p - (unsigned char*)page)%page->block_size) != 0 ) continue;
-#		ifdef HL_64
-		if( !INPAGE(p,page) ) continue;
-#		endif
+		if( !page || !INPAGE(p,page) || (((unsigned char*)p - (unsigned char*)page)%page->block_size) != 0 ) continue;
 		bid = (int)((unsigned char*)p - (unsigned char*)page) / page->block_size;
 		if( page->sizes ) {
 			if( page->sizes[bid] == 0 ) continue;
@@ -945,9 +923,21 @@ static void gc_mark() {
 		int bid;
 		if( !p ) continue;
 		page = GC_GET_PAGE(p);
-		if( !page ) continue; // the value was set to a not gc allocated ptr
+		if( !page || !INPAGE(p,page) ) continue; // the value was set to a not gc allocated ptr
 		// don't check if valid ptr : it's a manual added root, so should be valid
 		bid = (int)((unsigned char*)p - (unsigned char*)page) / page->block_size;
+
+#		ifdef GC_DEBUG
+		// only check if valid ptr in debug : it's a manual added root, so shouldn't be an invalid ptr
+		bool valid = true;
+		if( (((unsigned char*)p - (unsigned char*)page)%page->block_size) != 0 ) valid = false;
+		if( page->sizes ) {
+			if( page->sizes[bid] == 0 ) valid = false;
+		} else if( bid < page->first_block )
+			valid = false;
+		if( !valid ) hl_fatal("Root containing invalid ptr");
+#		endif
+
 		if( (page->bmp[bid>>3] & (1<<(bid&7))) == 0 ) {
 			page->bmp[bid>>3] |= 1<<(bid&7);
 			GC_PUSH_GEN(p,page,bid);
@@ -1007,7 +997,7 @@ HL_API void hl_gc_major() {
 HL_API bool hl_is_gc_ptr( void *ptr ) {
 	gc_pheader *page = GC_GET_PAGE(ptr);
 	int bid;
-	if( !page ) return false;
+	if( !page || !INPAGE(ptr,page) ) return false;
 	if( ((unsigned char*)ptr - (unsigned char*)page) % page->block_size != 0 ) return false;
 	bid = (int)((unsigned char*)ptr - (unsigned char*)page) / page->block_size;
 	if( bid < page->first_block || bid >= page->max_blocks ) return false;
@@ -1042,7 +1032,9 @@ static void hl_gc_init() {
 #	endif
 	memset(&gc_threads,0,sizeof(gc_threads));
 	gc_threads.global_lock = hl_mutex_alloc(false);
+#	ifdef HL_THREADS
 	hl_add_root(&gc_threads.global_lock);
+#	endif
 }
 
 // ---- UTILITIES ----------------------
@@ -1274,8 +1266,12 @@ vdynamic *hl_alloc_obj( hl_type *t ) {
 	if( rt == NULL || rt->methods == NULL ) rt = hl_get_obj_proto(t);
 	size = rt->size;
 	if( size & (HL_WSIZE-1) ) size += HL_WSIZE - (size & (HL_WSIZE-1));
-	o = (vobj*)hl_gc_alloc_gen(t, size, (rt->hasPtr ? MEM_KIND_DYNAMIC : MEM_KIND_NOPTR) | MEM_ZERO);
-	o->t = t;
+	if( t->kind == HSTRUCT ) {
+		o = (vobj*)hl_gc_alloc_gen(t, size, (rt->hasPtr ? MEM_KIND_RAW : MEM_KIND_NOPTR) | MEM_ZERO);
+	} else {
+		o = (vobj*)hl_gc_alloc_gen(t, size, (rt->hasPtr ? MEM_KIND_DYNAMIC : MEM_KIND_NOPTR) | MEM_ZERO);
+		o->t = t;
+	}
 	for(i=0;i<rt->nbindings;i++) {
 		hl_runtime_binding *b = rt->bindings + i;
 		*(void**)(((char*)o) + rt->fields_indexes[b->fid]) = b->closure ? hl_alloc_closure_ptr(b->closure,b->ptr,o) : b->ptr;

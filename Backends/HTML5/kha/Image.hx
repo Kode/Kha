@@ -52,7 +52,7 @@ class Image implements Canvas implements Resource {
 		var img = new CanvasImage(width, height, format, false);
 		var g2 : kha.js.CanvasGraphics = cast img.g2;
 		@:privateAccess var canvas = g2.canvas;
-		var imageData = new js.html.ImageData(new js.html.Uint8ClampedArray(bytes.getData()), width, height);
+		var imageData = new js.html.ImageData(new js.lib.Uint8ClampedArray(bytes.getData()), width, height);
 		canvas.putImageData(imageData, 0, 0);
 		return img;
 	}
@@ -94,6 +94,10 @@ class Image implements Canvas implements Resource {
 
 	public static function get_nonPow2Supported(): Bool {
 		return SystemImpl.gl != null;
+	}
+	
+	public static function renderTargetsInvertedY(): Bool {
+		return true;
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool {

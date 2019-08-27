@@ -229,10 +229,11 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT,(int_val)v->v.ptr));
 		break;
 	case HOBJ:
+	case HSTRUCT:
 		{
 			hl_type_obj *o = v->t->obj;
 			if( o->rt == NULL || o->rt->toStringFun == NULL ) {
-				hl_buffer_char(b,'#');
+				if( v->t->kind == HSTRUCT ) hl_buffer_char(b,'@');
 				hl_buffer_str(b,o->name);
 			} else
 				hl_buffer_str(b,o->rt->toStringFun(v));
@@ -293,7 +294,7 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 			for(i=0;i<vv->t->virt->nfields;i++) {
 				hl_field_lookup *f = vv->t->virt->lookup + i;
 				if( i ) hl_buffer_str_sub(b,USTR(", "),2);
-				hl_buffer_str(b,hl_field_name(f->hashed_name));
+				hl_buffer_str(b,(uchar*)hl_field_name(f->hashed_name));
 				hl_buffer_str_sub(b,USTR(" : "),3);
 				hl_buffer_addr(b, (char*)v + vv->t->virt->indexes[f->field_index], f->t, &l);
 			}
@@ -328,7 +329,7 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 			for(i=0;i<o->nfields;i++) {
 				hl_field_lookup *f = o->lookup + i;
 				if( i ) hl_buffer_str_sub(b,USTR(", "),2);
-				hl_buffer_str(b,hl_field_name(f->hashed_name));
+				hl_buffer_str(b,(uchar*)hl_field_name(f->hashed_name));
 				hl_buffer_str_sub(b,USTR(" : "),3);
 				hl_buffer_addr(b, hl_is_ptr(f->t) ? (void*)(o->values + f->field_index) : (void*)(o->raw_data + f->field_index), f->t, &l);
 			}
@@ -383,6 +384,10 @@ HL_PRIM void hl_buffer_val( hl_buffer *b, vdynamic *v ) {
 }
 
 HL_PRIM uchar *hl_to_string( vdynamic *v ) {
+	if( v == NULL )
+		return USTR("null");
+	if( v->t->kind == HBOOL )
+		return v->v.b ? USTR("true") : USTR("false");
 	hl_buffer *b = hl_alloc_buffer();
 	hl_buffer_val(b,v);
 	hl_buffer_char(b,0);

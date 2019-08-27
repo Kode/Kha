@@ -108,7 +108,8 @@ class Window {
 
 	function requestFullscreen(): Void {
 		untyped if (canvas.requestFullscreen) {
-			canvas.requestFullscreen();
+			var c: Dynamic = canvas;
+			c.requestFullscreen({navigationUI: "hide"});
 		}
 		else if (canvas.msRequestFullscreen) {
 			canvas.msRequestFullscreen();
@@ -116,7 +117,7 @@ class Window {
 		else if (canvas.mozRequestFullScreen) {
 			canvas.mozRequestFullScreen();
 		}
-		else if(canvas.webkitRequestFullscreen){
+		else if (canvas.webkitRequestFullscreen){
 			canvas.webkitRequestFullscreen();
 		}
 	}

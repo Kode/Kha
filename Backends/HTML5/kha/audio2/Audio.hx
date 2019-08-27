@@ -5,10 +5,13 @@ import js.html.URL;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ScriptProcessorNode;
+import kha.internal.IntBox;
 import kha.js.AEAudioChannel;
 import kha.Sound;
 
 class Audio {
+	public static var disableGcInteractions = false;
+	static var intBox: IntBox = new IntBox(0);
 	private static var buffer: Buffer;
 	@:noCompletion public static var _context: AudioContext;
 	private static var processingNode: ScriptProcessorNode;
@@ -35,6 +38,7 @@ class Audio {
 		initContext();
 		if (_context == null) return false;
 		
+		Audio.samplesPerSecond = Math.round(_context.sampleRate);
 		var bufferSize = 1024 * 2;
 		buffer = new Buffer(bufferSize * 4, 2, Std.int(_context.sampleRate));
 		
@@ -43,7 +47,8 @@ class Audio {
 			var output1 = e.outputBuffer.getChannelData(0);
 			var output2 = e.outputBuffer.getChannelData(1);
 			if (audioCallback != null) {
-				audioCallback(e.outputBuffer.length * 2, buffer);
+				intBox.value = e.outputBuffer.length * 2;
+				audioCallback(intBox, buffer);
 				for (i in 0...e.outputBuffer.length) {
 					output1[i] = buffer.data.get(buffer.readLocation);
 					buffer.readLocation += 1;
@@ -67,7 +72,7 @@ class Audio {
 
 	public static var samplesPerSecond: Int;
 
-	public static var audioCallback: Int->Buffer->Void;
+	public static var audioCallback: kha.internal.IntBox->Buffer->Void;
 
 	static var virtualChannels: Array<VirtualStreamChannel> = [];
 

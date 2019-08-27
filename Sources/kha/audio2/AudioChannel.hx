@@ -9,7 +9,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	var paused: Bool = false;
 	var stopped: Bool = false;
 	var looping: Bool = false;
-	
+
 	public function new(looping: Bool) {
 		this.looping = looping;
 	}

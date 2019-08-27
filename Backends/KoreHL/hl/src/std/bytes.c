@@ -39,6 +39,16 @@ HL_PRIM int hl_bytes_compare( vbyte *a, int apos, vbyte *b, int bpos, int len ) 
 	return memcmp(a+apos,b+bpos,len);
 }
 
+HL_PRIM int hl_bytes_compare16( vbyte *a, vbyte *b, int len ) {
+	unsigned short *s1 = (unsigned short *)a;
+	unsigned short *s2 = (unsigned short *)b;
+	int i;
+	for(i=0;i<len;i++)
+		if( s1[i] != s2[i] )
+			return ((int)s1[i]) - ((int)s2[i]);
+	return 0;
+}
+
 typedef unsigned char byte;
 static void *
 memfind_rb (const void  *in_block,      /*  Block containing data            */
@@ -118,6 +128,18 @@ HL_PRIM int hl_bytes_find( vbyte *where, int pos, int len, vbyte *which, int wpo
 	vbyte *found = (vbyte*)memfind_rb(where + pos,len,which+wpos,wlen,searchbuf,&repeat_find);
 	if( found == NULL ) return -1;
 	return (int)(size_t)(found - where);
+}
+
+HL_PRIM int hl_bytes_rfind( vbyte *where, int len, vbyte *which, int wlen ) {
+	if( wlen > len ) return -1;
+	if( wlen == 0 ) return len; // at end
+	int pos = len - wlen;
+	while( pos >= 0 ) {
+		if( memcmp(where+pos,which,wlen) == 0 )
+			return pos;
+		pos--;
+	}
+	return -1;
 }
 
 HL_PRIM void hl_bytes_fill( vbyte *bytes, int pos, int len, int value ) {
@@ -224,8 +246,10 @@ HL_PRIM int hl_string_compare( vbyte *a, vbyte *b, int len ) {
 DEFINE_PRIM(_BYTES,alloc_bytes,_I32);
 DEFINE_PRIM(_VOID,bytes_blit,_BYTES _I32 _BYTES _I32 _I32);
 DEFINE_PRIM(_I32,bytes_compare,_BYTES _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_I32,bytes_compare16,_BYTES _BYTES _I32);
 DEFINE_PRIM(_I32,string_compare,_BYTES _BYTES _I32);
 DEFINE_PRIM(_I32,bytes_find,_BYTES _I32 _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_I32,bytes_rfind,_BYTES _I32 _BYTES _I32);
 DEFINE_PRIM(_VOID,bytes_fill,_BYTES _I32 _I32 _I32);
 DEFINE_PRIM(_F64, parse_float,_BYTES _I32 _I32);
 DEFINE_PRIM(_NULL(_I32), parse_int, _BYTES _I32 _I32);

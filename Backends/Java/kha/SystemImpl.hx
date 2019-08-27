@@ -453,4 +453,8 @@ class SystemImpl {
 	public static function loadUrl(url: String): Void {
 
 	}
+
+	public static function safeZone(): Float {
+		return 1.0;
+	}
 }

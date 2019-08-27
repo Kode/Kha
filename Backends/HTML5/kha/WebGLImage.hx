@@ -2,11 +2,14 @@ package kha;
 
 import haxe.io.Bytes;
 import js.Browser;
-import js.html.Uint8Array;
-import js.html.Uint16Array;
-import js.html.Float32Array;
+import js.lib.Uint8Array;
+import js.lib.Uint16Array;
+import js.lib.Float32Array;
 import js.html.VideoElement;
 import js.html.webgl.GL;
+import js.html.webgl.Framebuffer;
+import js.html.webgl.Renderbuffer;
+import js.html.webgl.Texture;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
 import kha.js.graphics4.Graphics;
@@ -15,18 +18,22 @@ class WebGLImage extends Image {
 	public var image: Dynamic;
 	public var video: VideoElement;
 
-	private static var context: Dynamic;
-	private var data: Dynamic;
+	private static var context: js.html.CanvasRenderingContext2D;
+	private var data: js.html.ImageData;
 
 	private var myWidth: Int;
 	private var myHeight: Int;
 	private var format: TextureFormat;
 	private var renderTarget: Bool;
 	private var samples: Int;
-	public var frameBuffer: Dynamic = null;
-	public var renderBuffer: Dynamic = null;
-	public var texture: Dynamic = null;
-	public var depthTexture: Dynamic = null;
+	public var frameBuffer: Framebuffer = null;
+	public var renderBuffer: Renderbuffer = null;
+	public var texture: Texture = null;
+	public var depthTexture: Texture = null;
+	public var MSAAFrameBuffer:Framebuffer=null;
+	var MSAAColorBuffer:Renderbuffer;
+	var MSAADepthBuffer:Renderbuffer;
+
 
 	private var graphics1: kha.graphics1.Graphics;
 	private var graphics2: kha.graphics2.Graphics;
@@ -49,7 +56,7 @@ class WebGLImage extends Image {
 	public static function init() {
 		if (context == null) {
 			// create only once
-			canvas = cast Browser.document.createElement("canvas");
+			canvas = Browser.document.createCanvasElement();
 			if (canvas != null) {
 				context = canvas.getContext("2d");
 				canvas.width = 4096;
@@ -122,19 +129,19 @@ class WebGLImage extends Image {
 			if (context == null) return Color.Black;
 			else createImageData();
 		}
-		
+
 		var r = data.data[y * width * 4 + x * 4];
 		var g = data.data[y * width * 4 + x * 4 + 1];
 		var b = data.data[y * width * 4 + x * 4 + 2];
 		var a = data.data[y * width * 4 + x * 4 + 3];
-		
+
 		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 	}
 
 	function createImageData() {
 		if (Std.is(image, Uint8Array)) {
-			data = new js.html.ImageData(new js.html.Uint8ClampedArray(image.buffer), this.width, this.height);
-		} 
+			data = new js.html.ImageData(new js.lib.Uint8ClampedArray(image.buffer), this.width, this.height);
+		}
 		else {
 			if (this.width > canvas.width || this.height > canvas.height) {
 				var cw = canvas.width;
@@ -210,19 +217,37 @@ class WebGLImage extends Image {
 				}
 			}
 			else {
-				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
-
-				// TODO: Multisampling
-				//var colorRenderbuffer = SystemImpl.gl.createRenderbuffer();
-				//SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, colorRenderbuffer);
-				//untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER, 4, GL.RGBA8, realWidth, realHeight);
-				//SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, colorRenderbuffer);
+				if (samples>1&&SystemImpl.gl2) {
+					MSAAFrameBuffer = SystemImpl.gl.createFramebuffer();
+					MSAAColorBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAAColorBuffer);
+					var MSAAFormat=switch (format) {
+					case RGBA128:
+						untyped SystemImpl.gl.RGBA32F;
+					case RGBA64:
+						untyped SystemImpl.gl.RGBA16F;
+					case RGBA32:
+						untyped SystemImpl.gl.RGBA8;
+					case A32:
+						GL_R32F;
+					case A16:
+						GL_R16F;
+					default:
+						untyped SystemImpl.gl.RGBA8;
+					};
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, MSAAFormat, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, MSAAColorBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
+				}
+				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER,GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 			}
 
 			initDepthStencilBuffer(depthStencilFormat);
-
-			if (SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER) != GL.FRAMEBUFFER_COMPLETE) {
-				trace("WebGL error: Framebuffer incomplete");
+			var e=SystemImpl.gl.checkFramebufferStatus(GL.FRAMEBUFFER);
+			if (e != GL.FRAMEBUFFER_COMPLETE) {
+				trace("checkframebufferStatus error "+e);
 			}
 
 			SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, null);
@@ -264,7 +289,7 @@ class WebGLImage extends Image {
 			if (SystemImpl.depthTexture == null) {
 				renderBuffer = SystemImpl.gl.createRenderbuffer();
 				SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer);
-				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight); 
+				SystemImpl.gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, realWidth, realHeight);
 				SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBuffer);
 			}
 			else {
@@ -277,7 +302,20 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+
+				if (samples>1&&SystemImpl.gl2) {
+					MSAADepthBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAADepthBuffer);
+					if (depthStencilFormat == DepthOnly) untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples,GL_DEPTH_COMPONENT24, realWidth, realHeight);
+					else untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples,GL.DEPTH_COMPONENT16, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
+
+				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
+				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+
 			}
 		}
 		case DepthAutoStencilAuto, Depth24Stencil8, Depth32Stencil8:
@@ -296,6 +334,15 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 				SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+				if (samples>1&&SystemImpl.gl2) {
+					MSAADepthBuffer = SystemImpl.gl.createRenderbuffer();
+					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAADepthBuffer);
+					untyped SystemImpl.gl.renderbufferStorageMultisample(GL.RENDERBUFFER,samples, GL_DEPTH24_STENCIL8, realWidth, realHeight);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+					SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
+					SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, MSAAFrameBuffer);
+
+				}
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
 			}
 		}
@@ -331,7 +378,7 @@ class WebGLImage extends Image {
 		}
 	}
 
-	public function bytesToArray(bytes: Bytes): Dynamic {
+	public function bytesToArray(bytes: Bytes): js.lib.ArrayBufferView {
 		return switch(format) {
 			case RGBA32, L8:
 				new Uint8Array(bytes.getData());
@@ -395,8 +442,8 @@ class WebGLImage extends Image {
 		}
 	}
 
-	private var pixels: js.html.ArrayBufferView = null;
-	
+	private var pixels: js.lib.ArrayBufferView = null;
+
 	override public function getPixels(): Bytes {
 		if (frameBuffer == null) return null;
 		if (pixels == null) {
@@ -436,6 +483,9 @@ class WebGLImage extends Image {
 		if (depthTexture != null) SystemImpl.gl.deleteTexture(depthTexture);
 		if (frameBuffer != null) SystemImpl.gl.deleteFramebuffer(frameBuffer);
 		if (renderBuffer != null) SystemImpl.gl.deleteRenderbuffer(renderBuffer);
+		if (MSAAFrameBuffer != null) SystemImpl.gl.deleteFramebuffer(MSAAFrameBuffer);
+		if(MSAAColorBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAAColorBuffer);
+		if(MSAADepthBuffer != null)SystemImpl.gl.deleteRenderbuffer(MSAADepthBuffer);
 	}
 
 	override public function generateMipmaps(levels: Int): Void {

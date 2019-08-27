@@ -32,7 +32,7 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		if (usage == null) usage = Usage.StaticUsage;
 		var id = ++_lastId;
-		Worker.postMessage({ command: 'createImage', id: id, width: width, height: height, format: format.getIndex(), usage: usage.getIndex() });
+		Worker.postMessage({ command: 'createImage', id: id, width: width, height: height, format: format, usage: usage });
 		return new Image(id, -1, width, height, width, height, format);
 	}
 
@@ -64,6 +64,10 @@ class Image implements Canvas implements Resource {
 	public static var nonPow2Supported(get, null): Bool;
 
 	public static function get_nonPow2Supported(): Bool {
+		return true;
+	}
+
+	public static function renderTargetsInvertedY(): Bool {
 		return true;
 	}
 

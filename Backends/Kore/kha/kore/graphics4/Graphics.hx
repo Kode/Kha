@@ -176,12 +176,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function disableScissor(): Void {
 		
 	}
-	
-	@:functionCode('return Kore::Graphics4::renderTargetsInvertedY();')
-	public function renderTargetsInvertedY(): Bool {
-		return false;
-	}
-	
+
 	public function instancedRenderingAvailable(): Bool {
 		return true;
 	}
@@ -553,7 +548,7 @@ class Graphics implements kha.graphics4.Graphics {
 		var win: Int = window == null ? 0 : window;
 		if (win != lastWindow) {
 			if (lastWindow != -1) {
-				untyped __cpp__('Kore::Graphics4::begin(lastWindow);');
+				untyped __cpp__('Kore::Graphics4::end(lastWindow);');
 			}
 			untyped __cpp__('Kore::Graphics4::begin(win);');
 			lastWindow = win;
@@ -565,6 +560,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 	
 	public function beginFace(face: Int): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		untyped __cpp__("Kore::Graphics4::setRenderTargetFace(renderTarget, face)");
 	}
 	

@@ -36,11 +36,13 @@ class Graphics implements kha.graphics4.Graphics {
 	private var indicesCount: Int;
 	private var renderTarget: Canvas;
 	private var renderTargetFrameBuffer: Dynamic;
+	private var renderTargetMSAA: Dynamic;
 	private var renderTargetTexture: Dynamic;
 	private var isCubeMap: Bool = false;
 	private var isDepthAttachment: Bool = false;
 	private var instancedExtension: Dynamic;
 	private var blendMinMaxExtension: Dynamic;
+	private var useVertexAttributes:Int=0;
 
 	// WebGL2 constants
 	// https://www.khronos.org/registry/webgl/specs/2.0.0/
@@ -72,6 +74,7 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			var image: WebGLImage = cast(renderTarget, WebGLImage);
 			renderTargetFrameBuffer = image.frameBuffer;
+			renderTargetMSAA=image.MSAAFrameBuffer;
 			renderTargetTexture = image.texture;
 		}
 	}
@@ -121,6 +124,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
+		if (renderTargetMSAA != null) {
+			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.READ_FRAMEBUFFER, renderTargetFrameBuffer);
+			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetMSAA);
+			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height,
+								0, 0, renderTarget.width, renderTarget.height,
+								GL.COLOR_BUFFER_BIT, GL.NEAREST);
+			
+		}
 		#if (debug || kha_debug_html5)
 		var error = SystemImpl.gl.getError();
 		switch (error) {
@@ -207,10 +218,6 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function disableScissor(): Void {
 		SystemImpl.gl.disable(GL.SCISSOR_TEST);
-	}
-
-	public function renderTargetsInvertedY(): Bool {
-		return true;
 	}
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
@@ -309,7 +316,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		cast(vertexBuffer, VertexBuffer).set(0);
+		useVertexAttributes =cast(vertexBuffer, VertexBuffer).set(0);
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
@@ -317,6 +324,7 @@ class Graphics implements kha.graphics4.Graphics {
 		for (vertexBuffer in vertexBuffers) {
 			offset += cast(vertexBuffer, VertexBuffer).set(offset);
 		}
+		useVertexAttributes=offset;
 	}
 
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
@@ -564,6 +572,9 @@ class Graphics implements kha.graphics4.Graphics {
 		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
 		var size = type == GL.UNSIGNED_SHORT ? 2 : 4;
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
+		for(i in 0...useVertexAttributes){
+			SystemImpl.gl.disableVertexAttribArray(i);
+		}
 	}
 
 	private function convertStencilAction(action: StencilAction) {

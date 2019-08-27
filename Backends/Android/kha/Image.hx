@@ -416,6 +416,10 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return false;
 	}
+	
+	public static function renderTargetsInvertedY(): Bool {
+		return true;
+	}
 
 	private static function upperPowerOfTwo(v: Int): Int {
 		v--;

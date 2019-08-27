@@ -1,8 +1,8 @@
 package kha.arrays;
 
-abstract Uint32Array(js.html.Uint32Array) {
+abstract Uint32Array(js.lib.Uint32Array) {
 	public inline function new(elements: Int) {
-		this = new js.html.Uint32Array(elements);
+		this = new js.lib.Uint32Array(elements);
 	}
 	
 	public var length(get, never): Int;
@@ -19,7 +19,7 @@ abstract Uint32Array(js.html.Uint32Array) {
 		return this[index];
 	}
 	
-	public inline function data(): js.html.Uint32Array {
+	public inline function data(): js.lib.Uint32Array {
 		return this;
 	}
 

@@ -70,6 +70,7 @@ class Sound extends kha.Sound {
 			mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 			mediaPlayer.prepare();
 			length = mediaPlayer.getDuration() / 1000; // getDuration returns milliseconds
+			channels = channelCount;
 		}
 		catch (e: Dynamic) {
 			trace(e);

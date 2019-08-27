@@ -54,6 +54,26 @@ class SystemImpl {
 		}
 	}
 
+	private static function foregroundCallback(): Void {
+		System.foreground();
+	}
+
+	private static function resumeCallback(): Void {
+		System.resume();
+	}
+
+	private static function pauseCallback(): Void {
+		System.pause();
+	}
+
+	private static function backgroundCallback(): Void {
+		System.background();
+	}
+
+	private static function shutdownCallback(): Void {
+		System.shutdown();
+	}
+
 	private static function keyboardDownCallback(code: Int): Void {
 		keyboard.sendDownEvent(cast code);
 	}
@@ -128,6 +148,7 @@ class SystemImpl {
 		Krom.setCallback(renderCallback);
 		Krom.setDropFilesCallback(dropFilesCallback);
 		Krom.setCutCopyPasteCallback(cutCallback, copyCallback, pasteCallback);
+		Krom.setApplicationStateCallback(foregroundCallback, resumeCallback, pauseCallback, backgroundCallback, shutdownCallback);
 
 		keyboard = new Keyboard();
 		mouse = new MouseImpl();
@@ -309,5 +330,25 @@ class SystemImpl {
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";
+	}
+
+	public static function safeZone(): Float {
+		return 1.0;
+	}
+
+	public static function login(): Void {
+
+	}
+
+	public static function automaticSafeZone(): Bool {
+		return true;
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		
+	}
+
+	public static function unlockAchievement(id: Int): Void {
+		
 	}
 }

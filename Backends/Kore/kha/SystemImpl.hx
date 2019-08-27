@@ -32,6 +32,7 @@ import kha.graphics4.DepthStencilFormat;
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/System.h>
+#include <Kore/Input/Gamepad.h>
 #include <Kore/Input/Mouse.h>
 #include <Kore/Input/Pen.h>
 #include <Kore/Display.h>
@@ -129,7 +130,7 @@ class SystemImpl {
 		initKore(options.title, options.width, options.height, options.window, options.framebuffer);
 		Window._init();
 
-		kha.Worker._mainThread = cpp.vm.Thread.current();
+		kha.Worker._mainThread = sys.thread.Thread.current();
 
 		untyped __cpp__('post_kore_init()');
 
@@ -137,10 +138,10 @@ class SystemImpl {
 
 #if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
-    g4.window = 0;
-		var g5 = new kha.kore.graphics5.Graphics();
-		var framebuffer = new Framebuffer(0, null, null, g4, g5);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4, g5);
+		g4.window = 0;
+		//var g5 = new kha.kore.graphics5.Graphics();
+		var framebuffer = new Framebuffer(0, null, null, g4 /*, g5*/);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4/*, g5*/);
 		framebuffers.push(framebuffer);
 #end
 
@@ -274,11 +275,26 @@ class SystemImpl {
 		#end
 		*/
 
+		LoaderImpl.tick();
 		Scheduler.executeFrame();
 		System.render(framebuffers);
-		var win = kha.kore.graphics4.Graphics.lastWindow;
-		untyped __cpp__('Kore::Graphics4::end(win);');
+		if (kha.kore.graphics4.Graphics.lastWindow != -1) {
+			var win = kha.kore.graphics4.Graphics.lastWindow;
+			untyped __cpp__('Kore::Graphics4::end(win);');
+		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
+
+		if (gamepad1.connected && !checkGamepadConnected()) {
+			Gamepad.sendDisconnectEvent(0);
+		}
+		else if (!gamepad1.connected && checkGamepadConnected()) {
+			Gamepad.sendConnectEvent(0);
+		}
+	}
+
+	@:functionCode('return Kore::Gamepad::get(0)->connected();')
+	static function checkGamepadConnected(): Bool {
+		return true;
 	}
 
 	public static function keyDown(code: KeyCode): Void {
@@ -429,6 +445,25 @@ class SystemImpl {
 	}
 
 	@:functionCode('
+		Kore::System::login();
+	')
+	public static function login(): Void {
+
+	}
+
+	public static function loginevent(): Void {
+		if (System.loginListener != null) {
+			System.loginListener();
+		}
+	}
+
+	public static function logoutevent(): Void {
+		if (System.logoutListener != null) {
+			System.logoutListener();
+		}
+	}
+
+	@:functionCode('
 		Kore::WindowOptions window = convertWindowOptions(win);
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		init_kore(name, width, height, &window, &framebuffer);
@@ -448,5 +483,21 @@ class SystemImpl {
 	@:functionCode('return ::String(::getGamepadId(index));')
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
+	}
+
+	public static function safeZone(): Float {
+		return untyped __cpp__('Kore::System::safeZone()');
+	}
+
+	public static function automaticSafeZone(): Bool {
+		return untyped __cpp__('Kore::System::automaticSafeZone()');
+	}
+
+	public static function setSafeZone(value: Float): Void {
+		untyped __cpp__('Kore::System::setSafeZone(value)');
+	}
+
+	public static function unlockAchievement(id: Int): Void {
+		untyped __cpp__('Kore::System::unlockAchievement(id)');
 	}
 }

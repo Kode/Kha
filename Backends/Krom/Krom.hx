@@ -1,8 +1,8 @@
 extern class Krom {
-	static inline var KROM_API: Int = 2;
+	static inline var KROM_API: Int = 3;
 
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
-	
+
 	static function createVertexShader(data: haxe.io.BytesData, name: String): Dynamic;
 	static function createVertexShaderFromSource(source: String): Dynamic;
 	static function createFragmentShader(data: haxe.io.BytesData, name: String): Dynamic;
@@ -31,10 +31,10 @@ extern class Krom {
 	static function setFloat2(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float): Void;
 	static function setFloat3(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4(location: kha.graphics4.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
-	static function setFloats(location: kha.graphics4.ConstantLocation, values: js.html.ArrayBuffer): Void;
-	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: js.html.ArrayBuffer): Void;
-	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: js.html.ArrayBuffer): Void;
-	
+	static function setFloats(location: kha.graphics4.ConstantLocation, values: js.lib.ArrayBuffer): Void;
+	static function setMatrix(location: kha.graphics4.ConstantLocation, matrix: js.lib.ArrayBuffer): Void;
+	static function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: js.lib.ArrayBuffer): Void;
+
 	static function begin(renderTarget: kha.Canvas, additionalRenderTargets: Array<kha.Canvas>): Void;
 	static function beginFace(renderTarget: kha.Canvas, face: Int): Void;
 	static function end(): Void;
@@ -51,7 +51,7 @@ extern class Krom {
 	static function createTextureFromEncodedBytes(data: haxe.io.BytesData, format: String, readable: Bool): Dynamic;
 	static function getTexturePixels(texture: Dynamic): haxe.io.BytesData;
 	static function getRenderTargetPixels(renderTarget: Dynamic, data: haxe.io.BytesData): Void;
-	static function lockTexture(texture: Dynamic, level: Int): js.html.ArrayBuffer;
+	static function lockTexture(texture: Dynamic, level: Int): js.lib.ArrayBuffer;
 	static function unlockTexture(texture: Dynamic): Void;
 	static function generateTextureMipmaps(texture: Dynamic, levels: Int): Void;
 	static function generateRenderTargetMipmaps(renderTarget: Dynamic, levels: Int): Void;
@@ -71,18 +71,19 @@ extern class Krom {
 	static function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	static function drawIndexedVertices(start: Int, count: Int): Void;
 	static function drawIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void;
-	
+
 	static function loadImage(file: String, readable: Bool): Dynamic;
 	static function unloadImage(image: kha.Image): Void;
 	static function loadSound(file: String): Dynamic;
-	static function writeAudioBuffer(buffer: js.html.ArrayBuffer, samples: Int): Void;
-	static function loadBlob(file: String): js.html.ArrayBuffer;
-	
+	static function writeAudioBuffer(buffer: js.lib.ArrayBuffer, samples: Int): Void;
+	static function loadBlob(file: String): js.lib.ArrayBuffer;
+
 	static function init(title: String, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int, kromApi: Int): Void;
 	static function log(v: Dynamic): Void;
 	static function setCallback(callback: Void->Void): Void;
 	static function setDropFilesCallback(callback: String->Void): Void;
 	static function setCutCopyPasteCallback(cutCallback: Void->String, copyCallback: Void->String, pasteCallback: String->Void): Void;
+	static function setApplicationStateCallback(foregroundCallback: Void->Void, resumeCallback: Void->Void, pauseCallback: Void->Void, backgroundCallback: Void->Void, shutdownCallback: Void->Void): Void;
 	static function setKeyboardDownCallback(callback: Int->Void): Void;
 	static function setKeyboardUpCallback(callback: Int->Void): Void;
 	static function setKeyboardPressCallback(callback: Int->Void): Void;
@@ -130,9 +131,9 @@ extern class Krom {
 	static function setFloat2Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float): Void;
 	static function setFloat3Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float): Void;
 	static function setFloat4Compute(location: kha.compute.ConstantLocation, value1: Float, value2: Float, value3: Float, value4: Float): Void;
-	static function setFloatsCompute(location: kha.compute.ConstantLocation, values: js.html.ArrayBuffer): Void;
-	static function setMatrixCompute(location: kha.compute.ConstantLocation, matrix: js.html.ArrayBuffer): Void;
-	static function setMatrix3Compute(location: kha.compute.ConstantLocation, matrix: js.html.ArrayBuffer): Void;
+	static function setFloatsCompute(location: kha.compute.ConstantLocation, values: js.lib.ArrayBuffer): Void;
+	static function setMatrixCompute(location: kha.compute.ConstantLocation, matrix: js.lib.ArrayBuffer): Void;
+	static function setMatrix3Compute(location: kha.compute.ConstantLocation, matrix: js.lib.ArrayBuffer): Void;
 	static function setTextureCompute(unit: kha.compute.TextureUnit, texture: Dynamic, access: Int): Void;
 	static function setRenderTargetCompute(unit: kha.compute.TextureUnit, renderTarget: Dynamic, access: Int): Void;
 	static function setSampledTextureCompute(unit: kha.compute.TextureUnit, texture: Dynamic): Void;

@@ -2,7 +2,7 @@ package kha.audio2;
 
 import haxe.io.Bytes;
 
-@:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <Kore/Audio1/stb_vorbis.c>')
+@:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>')
 
 @:headerClassCode('stb_vorbis* vorbis;')
 class StreamChannel implements kha.audio1.AudioChannel {
