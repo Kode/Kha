@@ -285,27 +285,32 @@ class SystemImpl {
 		System.dropFiles(filePath);
 	}
 
-	public static function copy(): String {
+	public static function copy(): hl.Bytes {
 		if (System.copyListener != null) {
-			return System.copyListener();
+			final text = System.copyListener();
+			if (text == null) return null;
+			return StringHelper.convert(text);
 		}
 		else {
 			return null;
 		}
 	}
 
-	public static function cut(): String {
+	public static function cut(): hl.Bytes {
 		if (System.cutListener != null) {
-			return System.cutListener();
+			final text = System.cutListener();
+			if (text == null) return null;
+			return StringHelper.convert(text);
 		}
 		else {
 			return null;
 		}
 	}
 
-	public static function paste(data: String): Void {
+	public static function paste(data: hl.Bytes): Void {
+		final text = @:privateAccess String.fromUTF8(data);
 		if (System.pasteListener != null) {
-			System.pasteListener(data);
+			System.pasteListener(text);
 		}
 	}
 
@@ -386,11 +391,11 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 
 	@:hlNative("std", "init_kore") static function init_kore(title: hl.Bytes, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int): Void { }
@@ -420,7 +425,7 @@ class SystemImpl {
 	@:hlNative("std", "kore_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void, gyroscopeChanged: Float->Float->Float->Void): Void { }
 	@:hlNative("std", "kore_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void, background: Void->Void, shutdown: Void->Void): Void { }
 	@:hlNative("std", "kore_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void { }
-	@:hlNative("std", "kore_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->String, cut: Void->String, paste: String->Void): Void { }
+	@:hlNative("std", "kore_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->hl.Bytes, cut: Void->hl.Bytes, paste: hl.Bytes->Void): Void { }
 	@:hlNative("std", "kore_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void { }
 	@:hlNative("std", "kore_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void { }
 	@:hlNative("std", "kore_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void { }
