@@ -1,6 +1,6 @@
 package kha.graphics2;
 
-enum ImageScaleQuality {
-	Low; // usually point filter
-	High; // usually bilinear filter
+enum abstract ImageScaleQuality(Int) {
+	var Low; // usually point filter
+	var High; // usually bilinear filter
 }
