@@ -171,7 +171,7 @@ class ImageShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
-		rectVertexBuffer.unlock(bufferIndex * 4);
+		rectVertexBuffer.unlock(); // rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -427,7 +427,7 @@ class ColoredShaderPainter {
 	private function drawBuffer(trisDone: Bool): Void {
 		if (!trisDone) endTris(true);
 
-		rectVertexBuffer.unlock(bufferIndex * 4);
+		rectVertexBuffer.unlock(); // rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -442,7 +442,7 @@ class ColoredShaderPainter {
 	private function drawTriBuffer(rectsDone: Bool): Void {
 		if (!rectsDone) endRects(true);
 
-		triangleVertexBuffer.unlock(triangleBufferIndex * 3);
+		triangleVertexBuffer.unlock(); // triangleVertexBuffer.unlock(triangleBufferIndex * 3);
 		g.setVertexBuffer(triangleVertexBuffer);
 		g.setIndexBuffer(triangleIndexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -623,7 +623,7 @@ class TextShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
-		rectVertexBuffer.unlock(bufferIndex * 4);
+		rectVertexBuffer.unlock(); // rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
@@ -811,7 +811,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var py = Float32x4.div(Float32x4.add(Float32x4.add(Float32x4.mul(_01, xx), Float32x4.mul(_11, yy)), _21), w);
 
 		imagePainter.drawImage(img, Float32x4.get(px, 0), Float32x4.get(py, 0), Float32x4.get(px, 1), Float32x4.get(py, 1),
-			Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), opacity, this.color);
+		Float32x4.get(px, 2), Float32x4.get(py, 2), Float32x4.get(px, 3), Float32x4.get(py, 3), opacity, this.color);
 	}
 	#else
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
@@ -1004,23 +1004,23 @@ class Graphics2 extends kha.graphics2.Graphics {
 	var scissorH: Int = -1;
 
 	override public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-		//if (!scissorEnabled || x != scissorX || y != scissorY || width != scissorW || height != scissorH) {
-			scissorEnabled = true;
-			scissorX = x;
-			scissorY = y;
-			scissorW = width;
-			scissorH = height;
-			flush();
-			g.scissor(x, y, width, height);
-		//}
+		// if (!scissorEnabled || x != scissorX || y != scissorY || width != scissorW || height != scissorH) {
+		scissorEnabled = true;
+		scissorX = x;
+		scissorY = y;
+		scissorW = width;
+		scissorH = height;
+		flush();
+		g.scissor(x, y, width, height);
+		// }
 	}
 
 	override public function disableScissor(): Void {
-		//if (scissorEnabled) {
-			scissorEnabled = false;
-			flush();
-			g.disableScissor();
-		//}
+		// if (scissorEnabled) {
+		scissorEnabled = false;
+		flush();
+		g.disableScissor();
+		// }
 	}
 
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
@@ -1059,9 +1059,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		}
 	}
 
-	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
-
-	}
+	private function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
 		setPipeline(videoPipeline);

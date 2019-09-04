@@ -56,10 +56,14 @@ class UnitySoundChannel implements kha.audio1.AudioChannel {
 		return clip.length;
 	}
 
-	public var position(get, null): Float;
+	public var position(get, set): Float;
 
 	public function get_position(): Float {
 		return source != null ? source.time : 0;
+	}
+
+	public function set_position(value:Float): Float {
+		return source != null ? (source.volume = untyped __cs__("(float)value")) : 0;
 	}
 
 	public var volume(get, set): Float;

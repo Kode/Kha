@@ -11,14 +11,14 @@ class SystemOptions {
 	@:optional public var framebuffer: FramebufferOptions = null;
 
 	/**
-	 * Used to provide parameters for System.start
-	 * @param title The application title is the default window title (unless the window parameter provides a title of its own)
-	 * and is used for various other purposes - for example for save data locations
-	 * @param width Just a shortcut which overwrites window.width if set
-	 * @param height Just a shortcut which overwrites window.height if set
-	 * @param window Optionally provide window options
-	 * @param framebuffer Optionally provide framebuffer options
-	 */
+	* Used to provide parameters for System.start
+	* @param title The application title is the default window title (unless the window parameter provides a title of its own)
+	* and is used for various other purposes - for example for save data locations
+	* @param width Just a shortcut which overwrites window.width if set
+	* @param height Just a shortcut which overwrites window.height if set
+	* @param window Optionally provide window options
+	* @param framebuffer Optionally provide framebuffer options
+	*/
 	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
 		this.title = title;
 		this.window = window == null ? {} : window;
@@ -121,21 +121,21 @@ class System {
 	}
 
 	/**
-	 * The provided listener is called when new framebuffers are ready for rendering into.
-	 * Each framebuffer corresponds to the kha.Window of the same index, single-window
-	 * applications always receive an array of only one framebuffer.
-	 * @param listener
-	 * The callback to add
-	 */
+	* The provided listener is called when new framebuffers are ready for rendering into.
+	* Each framebuffer corresponds to the kha.Window of the same index, single-window
+	* applications always receive an array of only one framebuffer.
+	* @param listener
+	* The callback to add
+	*/
 	public static function notifyOnFrames(listener: Array<Framebuffer> -> Void): Void {
 		renderListeners.push(listener);
 	}
 
 	/**
-	 * Removes a previously set frames listener.
-	 * @param listener
-	 * The callback to remove
-	 */
+	* Removes a previously set frames listener.
+	* @param listener
+	* The callback to remove
+	*/
 	public static function removeFramesListener(listener: Array<Framebuffer> -> Void): Void {
 		renderListeners.remove(listener);
 	}
@@ -240,25 +240,25 @@ class System {
 	}
 
 	/**
-	 * Pulses the vibration hardware on the device for time in milliseconds, if such hardware exists.
-	 */
+	* Pulses the vibration hardware on the device for time in milliseconds, if such hardware exists.
+	*/
 	public static function vibrate(ms:Int): Void {
 		return SystemImpl.vibrate(ms);
 	}
 
 	/**
-	 * The IS0 639 system current language identifier.
-	 */
+	* The IS0 639 system current language identifier.
+	*/
 	public static var language(get, never): String;
 
 	private static function get_language(): String {
 		return SystemImpl.getLanguage();
 	}
 
-  /**
-	 * Schedules the application to stop as soon as possible. This is not possible on all targets.
-	 * @return Returns true if the application can be stopped
-	 */
+	/**
+	* Schedules the application to stop as soon as possible. This is not possible on all targets.
+	* @return Returns true if the application can be stopped
+	*/
 	public static function stop(): Bool {
 		return SystemImpl.requestShutdown();
 	}
@@ -288,19 +288,13 @@ class System {
 	}
 
 	@:deprecated("This does nothing")
-	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function notifyOnFullscreenChange(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:deprecated("This does nothing")
-	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFullscreenListener(func: Void -> Void, error: Void -> Void): Void {}
 
 	@:deprecated("This does nothing. On Windows you can use Window.resize instead after setting the mode to ExclusiveFullscreen")
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	@:deprecated("Use System.stop instead")
 	public static function requestShutdown(): Void {
