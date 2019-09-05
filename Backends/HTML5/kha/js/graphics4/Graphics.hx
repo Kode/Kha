@@ -2,6 +2,7 @@ package kha.js.graphics4;
 
 import kha.graphics4.StencilValue;
 import kha.arrays.Float32Array;
+import kha.arrays.Int32Array;
 import js.html.webgl.GL;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
@@ -503,6 +504,32 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
 		SystemImpl.gl.uniform1i(cast(location, ConstantLocation).value, value);
+	}
+
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		SystemImpl.gl.uniform2i(cast(location, ConstantLocation).value, value1, value2);
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		SystemImpl.gl.uniform3i(cast(location, ConstantLocation).value, value1, value2, value3);
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		SystemImpl.gl.uniform4i(cast(location, ConstantLocation).value, value1, value2, value3, value4);
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: Int32Array): Void {
+		var webglLocation = cast(location, ConstantLocation);
+		switch (webglLocation.type) {
+			case GL.INT_VEC2:
+				SystemImpl.gl.uniform2iv(webglLocation.value, cast values);
+			case GL.INT_VEC3:
+				SystemImpl.gl.uniform3iv(webglLocation.value, cast values);
+			case GL.INT_VEC4:
+				SystemImpl.gl.uniform4iv(webglLocation.value, cast values);
+			default:
+				SystemImpl.gl.uniform1iv(webglLocation.value, cast values);
+		}
 	}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
