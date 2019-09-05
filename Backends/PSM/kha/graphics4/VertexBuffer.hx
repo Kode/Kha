@@ -39,8 +39,8 @@ class VertexBuffer {
 		return lockedVertices;
 	}
 	
-	public function unlock(): Void {
-		for (i in 0...stride() * count()) {
+	public function unlock(?count: Int): Void {
+		for (i in 0...stride() * this.count()) {
 			vertices[i] = lockedVertices[i];
 		}
 		/*var offset = 0;

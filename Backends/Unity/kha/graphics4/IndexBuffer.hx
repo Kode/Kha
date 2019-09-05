@@ -15,11 +15,11 @@ class IndexBuffer {
 		nativeCutIndices = new NativeArray<Int>(indexCount);
 	}
 
-	public function lock(): Array<Int> {
+	public function lock(?start: Int, ?count: Int): Array<Int> {
 		return indices;
 	}
 
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		for (i in 0...indexCount) {
 			nativeIndices[i] = indices[i];
 		}

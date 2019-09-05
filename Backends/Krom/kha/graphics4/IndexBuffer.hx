@@ -25,7 +25,7 @@ class IndexBuffer {
 		return _data.subarray(start, start + count);
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		Krom.unlockIndexBuffer(buffer);
 	}
 	
