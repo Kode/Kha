@@ -15,8 +15,8 @@ class VertexBuffer {
 	var offsets: Array<Int>;
 	var usage: Usage;
 	var instanceDataStepRate: Int;
-	var lockStart: Int = -1;
-	var lockEnd: Int = -1;
+	var lockStart: Int = 0;
+	var lockCount: Int = 0;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.usage = usage;
@@ -106,24 +106,14 @@ class VertexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		if (start == null) start = 0;
-		if (count == null) count = mySize;
-		if (lockStart < 0 || lockStart > start) {
-			lockStart = start;
-		}
-		if (lockEnd < 0 || lockEnd < start + count) {
-			lockEnd = start + count;
-		}
-		return _data.subarray(start * stride(), (start + count) * stride());
+		lockStart = start != null ? start : 0; 
+		lockCount = count != null ? count : mySize; 
+		return _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride());
 	}
 
-	public function unlock(?count_: Int): Void {
-		if (lockEnd > lockStart) {
-			var start = lockStart;
-			var count = count_ != null ? count_ : lockEnd - lockStart;
-			Worker.postMessage({ command: 'updateVertexBuffer', id: _id, data: _data.subarray(start * stride(), (start + count) * stride()).data(), start: start, count: count });
-		}
-		lockStart = lockEnd = -1;
+	public function unlock(?count: Int): Void {
+		if(count != null) lockCount = count;
+		Worker.postMessage({ command: 'updateVertexBuffer', id: _id, data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).data(), start: lockStart, count: lockCount });
 	}
 
 	public function stride(): Int {

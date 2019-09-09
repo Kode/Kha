@@ -16,13 +16,13 @@ class IndexBuffer {
 		kore_delete_indexbuffer(_buffer);
 	}
 	
-	public function lock(): kha.arrays.Uint32Array {
+	public function lock(?start: Int, ?count: Int): kha.arrays.Uint32Array {
 		var u32array = new kha.arrays.Uint32Array();
 		u32array.setData(kore_indexbuffer_lock(_buffer), myCount);
 		return u32array;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		kore_indexbuffer_unlock(_buffer);
 	}
 	

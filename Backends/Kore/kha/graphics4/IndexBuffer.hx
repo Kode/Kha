@@ -27,19 +27,23 @@ class IndexBuffer {
 		data->self.myLength = count;
 		return data;
 	')
-	private function lock2(start: Int, count: Int): Uint32Array {
+	private function lockPrivate(start: Int, count: Int): Uint32Array {
 		return data;
 	}
 
 	public function lock(?start: Int, ?count: Int): Uint32Array {
 		if (start == null) start = 0;
 		if (count == null) count = this.count();
-		return lock2(start, count);
+		return lockPrivate(start, count);
 	}
 	
 	@:functionCode('buffer->unlock();')
-	public function unlock(): Void {
+	public function unlockPrivate(): Void {
 		
+	}
+
+	public function unlock(?count: Int): Void {
+		unlockPrivate();
 	}
 	
 	public function count(): Int {

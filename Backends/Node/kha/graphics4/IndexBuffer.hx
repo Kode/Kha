@@ -16,11 +16,11 @@ class IndexBuffer {
 		data = null;
 	}
 	
-	public function lock(): Array<Int> {
+	public function lock(?start: Int, ?count: Int): Array<Int> {
 		return data;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 
 	}
 	
