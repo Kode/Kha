@@ -47,6 +47,6 @@ class Http {
 		for (key in headers.keys()) {
 			header += key + ": " + headers[key] + "\r\n";
 		}
-		request2(url, path, data, port, secure, method.toInt(), header, index);
+		request2(url, path, data, port, secure, method, header, index);
 	}
 }

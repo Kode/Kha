@@ -99,7 +99,7 @@ class Compute {
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
-		setTexturePrivate(unit, texture, access.toInt());
+		setTexturePrivate(unit, texture, access);
 	}
 
 	@:functionCode('

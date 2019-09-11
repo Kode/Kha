@@ -74,8 +74,8 @@ class Compute {
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
-		if (texture._texture != null) kore_compute_set_texture(unit._unit, texture._texture, access.toInt());
-		else kore_compute_set_target(unit._unit, texture._renderTarget, access.toInt());
+		if (texture._texture != null) kore_compute_set_texture(unit._unit, texture._texture, access);
+		else kore_compute_set_target(unit._unit, texture._renderTarget, access);
 	}
 
 	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
