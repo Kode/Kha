@@ -177,47 +177,14 @@ class Compute {
 
 	}
 
-	private static function getTextureAddressing(addressing: TextureAddressing): Int {
-		switch (addressing) {
-		case TextureAddressing.Repeat:
-			return 0;
-		case TextureAddressing.Mirror:
-			return 1;
-		case TextureAddressing.Clamp:
-			return 2;
-		}
-	}
-
-	private static function getTextureFilter(filter: TextureFilter): Int {
-		switch (filter) {
-		case PointFilter:
-			return 0;
-		case LinearFilter:
-			return 1;
-		case AnisotropicFilter:
-			return 2;
-		}
-	}
-
-	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
-		switch (filter) {
-		case NoMipFilter:
-			return 0;
-		case PointMipFilter:
-			return 1;
-		case LinearMipFilter:
-			return 2;
-		}
-	}
-
 	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		setTextureWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
-		setTextureFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		setTextureWrapNative(unit, uAddressing, vAddressing);
+		setTextureFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		setTexture3DWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing));
-		setTexture3DFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		setTexture3DWrapNative(unit, uAddressing, vAddressing, wAddressing);
+		setTexture3DFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setShader(shader: Shader) {

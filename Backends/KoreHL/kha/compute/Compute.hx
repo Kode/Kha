@@ -96,45 +96,12 @@ class Compute {
 		kore_compute_set_sampled_cubemap_depth_target(unit._unit, cubeMap._renderTarget);
 	}
 
-	private static function getTextureAddressing(addressing: TextureAddressing): Int {
-		switch (addressing) {
-		case TextureAddressing.Repeat:
-			return 0;
-		case TextureAddressing.Mirror:
-			return 1;
-		case TextureAddressing.Clamp:
-			return 2;
-		}
-	}
-
-	private static function getTextureFilter(filter: TextureFilter): Int {
-		switch (filter) {
-		case PointFilter:
-			return 0;
-		case LinearFilter:
-			return 1;
-		case AnisotropicFilter:
-			return 2;
-		}
-	}
-
-	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
-		switch (filter) {
-		case NoMipFilter:
-			return 0;
-		case PointMipFilter:
-			return 1;
-		case LinearMipFilter:
-			return 2;
-		}
-	}
-
 	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		kore_compute_set_texture_parameters(unit._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		kore_compute_set_texture_parameters(unit._unit, uAddressing, vAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		kore_compute_set_texture3d_parameters(unit._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		kore_compute_set_texture3d_parameters(unit._unit, uAddressing, vAddressing, wAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setShader(shader: Shader) {
