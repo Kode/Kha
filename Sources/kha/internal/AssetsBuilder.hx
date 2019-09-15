@@ -63,8 +63,6 @@ class AssetsBuilder {
 					case "image":
 						fields.push({
 							name: name,
-							doc: null,
-							meta: [],
 							access: [APublic],
 							kind: FVar(macro: kha.Image, macro null),
 							pos: Context.currentPos()
@@ -72,8 +70,6 @@ class AssetsBuilder {
 					case "sound":
 						fields.push({
 							name: name,
-							doc: null,
-							meta: [],
 							access: [APublic],
 							kind: FVar(macro: kha.Sound, macro null),
 							pos: Context.currentPos()
@@ -81,8 +77,6 @@ class AssetsBuilder {
 					case "blob":
 						fields.push({
 							name: name,
-							doc: null,
-							meta: [],
 							access: [APublic],
 							kind: FVar(macro: kha.Blob, macro null),
 							pos: Context.currentPos()
@@ -90,8 +84,6 @@ class AssetsBuilder {
 					case "font":
 						fields.push({
 							name: name,
-							doc: null,
-							meta: [],
 							access: [APublic],
 							kind: FVar(macro: kha.Font, macro null),
 							pos: Context.currentPos()
@@ -99,22 +91,11 @@ class AssetsBuilder {
 					case "video":
 						fields.push({
 							name: name,
-							doc: null,
-							meta: [],
 							access: [APublic],
 							kind: FVar(macro: kha.Video, macro null),
 							pos: Context.currentPos()
 						});
 				}
-
-				fields.push({
-					name: name + "Name",
-					doc: null,
-					meta: [],
-					access: [APublic],
-					kind: FVar(macro: String, macro $v { name }),
-					pos: Context.currentPos()
-				});
 
 				fields.push({
 					name: name + "Description",
@@ -124,82 +105,8 @@ class AssetsBuilder {
 					kind: FVar(macro: Dynamic, macro $v { file }),
 					pos: Context.currentPos()
 				});
-
-				var loadExpressions = macro { };
-				switch (type) {
-					case "image":
-						loadExpressions = macro {
-							Assets.loadImage($v{name}, function (image: Image) done(), failure);
-						};
-					case "sound":
-						loadExpressions = macro {
-							Assets.loadSound($v{name}, function (sound: Sound) done(), failure);
-						};
-					case "blob":
-						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function (blob: Blob) done(), failure);
-						};
-					case "font":
-						loadExpressions = macro {
-							Assets.loadFont($v{name}, function (font: Font) done(), failure);
-						};
-					case "video":
-						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function (video: Video) done(), failure);
-						};
-				}
-
-				fields.push({
-					name: name + "Load",
-					doc: null,
-					meta: [],
-					access: [APublic],
-					kind: FFun({
-						ret: null,
-						params: null,
-						expr: loadExpressions,
-						args: [{
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
-							opt: null,
-							name: "done"
-						}, {
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
-							opt: true,
-							name: "failure"
-						}]
-					}),
-					pos: Context.currentPos()
-				});
-
-				fields.push({
-					name: name + "Unload",
-					doc: null,
-					meta: [],
-					access: [APublic],
-					kind: FFun({
-						ret: null,
-						params: null,
-						expr: macro {
-							$i{name}.unload();
-							$i{name} = null;
-						},
-						args: []
-					}),
-					pos: Context.currentPos()
-				});
 			}
 		}
-
-		fields.push({
-			name: "names",
-			doc: null,
-			meta: [],
-			access: [APublic],
-			kind: FVar(macro: Array<String>, macro $a { names }),
-			pos: Context.currentPos()
-		});
 
 		return fields;
 	}
