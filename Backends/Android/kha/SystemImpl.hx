@@ -67,7 +67,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return java.util.Locale.getDefault().getLanguage();
+		final lang = java.util.Locale.getDefault().getLanguage();
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	public static function requestShutdown(): Bool {
@@ -309,10 +310,10 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 }

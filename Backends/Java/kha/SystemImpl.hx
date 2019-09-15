@@ -370,7 +370,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return java.util.Locale.getDefault().getLanguage();
+		final lang = java.util.Locale.getDefault().getLanguage();
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	private static var myPixelWidth = 640;

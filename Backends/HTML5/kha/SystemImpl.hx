@@ -185,7 +185,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return Browser.navigator.language;
+		final lang = Browser.navigator.language;
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	public static function requestShutdown(): Bool {
