@@ -313,7 +313,7 @@ class SystemImpl {
 		#if (kha_debug_html5 || !canvas_id)
 		return cast Browser.document.getElementById("khanvas");
 		#else
-		return cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		return cast Browser.document.getElementById(Macros.canvasId());
 		#end
 	}
 
