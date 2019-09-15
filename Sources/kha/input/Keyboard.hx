@@ -2,9 +2,19 @@ package kha.input;
 
 import kha.netsync.Controller;
 
+/** See `Keyboard.disableSystemInterventions` */
+enum BlockInterventions {
+	Default;
+	Full;
+	None;
+	Custom(func: (code: KeyCode)->Bool);
+}
+
 @:allow(kha.SystemImpl)
 @:expose
 class Keyboard extends Controller {
+	static var keyBehavior = BlockInterventions.Default;
+
 	/**
 	 * Get current Keyboard.
 	 * @param num (optional) keyboard id (0 by default).
@@ -12,28 +22,40 @@ class Keyboard extends Controller {
 	public static function get(num: Int = 0): Keyboard {
 		return SystemImpl.getKeyboard(num);
 	}
-	
+
+	/**
+	 * Disables system hotkeys (html5 only).
+	 * @param behavior can be:
+	 *   Default - allow F-keys and char keys.
+	 *   Full - disable all keys (that browser allows).
+	 *   None - do not block any key.
+	 *   Custom(func:(code:Int)->Bool) - set custom handler for keydown event (should return true if keycode blocked).
+	 */
+	public static function disableSystemInterventions(behavior: BlockInterventions):Void {
+		keyBehavior = behavior;
+	}
+
 	/**
 	 * Creates event handlers from passed functions.
 	 * @param downListener function with `key:KeyCode` argument, fired when a key is pressed down.
 	 * @param upListener function with `key:KeyCode` argument, fired when a key is released.
 	 * @param pressListener (optional) function with `char:String` argument, fired when a key that produces a character value is pressed down.
 	 */
-	public function notify(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void = null): Void {
+	public function notify(downListener: (key: KeyCode)->Void, upListener: (key: KeyCode)->Void, pressListener: (char: String)->Void = null): Void {
 		if (downListener != null) downListeners.push(downListener);
 		if (upListener != null) upListeners.push(upListener);
 		if (pressListener != null) pressListeners.push(pressListener);
 	}
-	
+
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: KeyCode->Void, upListener: KeyCode->Void, pressListener: String->Void): Void {
+	public function remove(downListener: (key: KeyCode)->Void, upListener: (key: KeyCode)->Void, pressListener: (char: String)->Void): Void {
 		if (downListener != null) downListeners.remove(downListener);
 		if (upListener != null) upListeners.remove(upListener);
 		if (pressListener != null) pressListeners.remove(pressListener);
 	}
-	
+
 	/**
 	 * Show virtual keyboard (if it exists).
 	 */
@@ -49,10 +71,10 @@ class Keyboard extends Controller {
 	}
 
 	private static var instance: Keyboard;
-	private var downListeners: Array<KeyCode->Void>;
-	private var upListeners: Array<KeyCode->Void>;
-	private var pressListeners: Array<String->Void>;
-	
+	private var downListeners: Array<(key: KeyCode)->Void>;
+	private var upListeners: Array<(key: KeyCode)->Void>;
+	private var pressListeners: Array<(char: String)->Void>;
+
 	private function new() {
 		super();
 		downListeners = [];
@@ -60,7 +82,7 @@ class Keyboard extends Controller {
 		pressListeners = [];
 		instance = this;
 	}
-	
+
 	@input
 	private function sendDownEvent(code: KeyCode): Void {
 		#if sys_server
@@ -70,7 +92,7 @@ class Keyboard extends Controller {
 			listener(code);
 		}
 	}
-	
+
 	@input
 	private function sendUpEvent(code: KeyCode): Void {
 		#if sys_server

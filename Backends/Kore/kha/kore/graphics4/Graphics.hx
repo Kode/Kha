@@ -176,12 +176,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function disableScissor(): Void {
 		
 	}
-	
-	@:functionCode('return Kore::Graphics4::renderTargetsInvertedY();')
-	public function renderTargetsInvertedY(): Bool {
-		return false;
-	}
-	
+
 	public function instancedRenderingAvailable(): Bool {
 		return true;
 	}

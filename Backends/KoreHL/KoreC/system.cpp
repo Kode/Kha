@@ -26,8 +26,15 @@ extern "C" int hl_kore_get_window_height(int window) {
 }
 
 extern "C" vbyte* hl_kore_get_system_id() {
-	return NULL;
-	// return (vbyte*)Kore::System::systemId();
+	return (vbyte*)Kore::System::systemId();
+}
+
+extern "C" void hl_kore_vibrate(int ms) {
+	Kore::System::vibrate(ms);
+}
+
+extern "C" vbyte* hl_kore_get_language() {
+	return (vbyte*)Kore::System::language();
 }
 
 extern "C" void hl_kore_request_shutdown() {

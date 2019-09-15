@@ -22,10 +22,6 @@ class Graphics implements kha.graphics5.Graphics {
 		this.target = target;
 	}
 
-	public function renderTargetsInvertedY(): Bool {
-		return untyped __cpp__("Kore::Graphics5::renderTargetsInvertedY();");
-	}
-
 	public function begin(target: RenderTarget): Void {
 		untyped __cpp__("Kore::Graphics5::begin(target->renderTarget);");
 	}

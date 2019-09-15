@@ -13,7 +13,7 @@ class VertexBuffer {
 	private var structure: VertexStructure;
 	private var vertexCount: Int;
 	private var myStride: Int;
-	
+
 	private var vertices: NativeArray<Vector3>;
 	private var normals: NativeArray<Vector3>;
 	private var tangents: NativeArray<Vector4>;
@@ -21,13 +21,13 @@ class VertexBuffer {
 	private var uv2: NativeArray<Vector2>;
 	private var uv3: NativeArray<Vector2>;
 	private var uv4: NativeArray<Vector2>;
-	
+
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		mesh = new Mesh();
 		mesh.MarkDynamic();
 		this.vertexCount = vertexCount;
 		this.structure = structure;
-		
+
 		vertices = new NativeArray<Vector3>(vertexCount);
 		normals = new NativeArray<Vector3>(vertexCount);
 		tangents = new NativeArray<Vector4>(vertexCount);
@@ -35,7 +35,7 @@ class VertexBuffer {
 		uv2 = new NativeArray<Vector2>(vertexCount);
 		uv3 = new NativeArray<Vector2>(vertexCount);
 		uv4 = new NativeArray<Vector2>(vertexCount);
-		
+
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {

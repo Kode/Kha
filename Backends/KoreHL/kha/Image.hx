@@ -226,6 +226,10 @@ class Image implements Canvas implements Resource {
 	public static function get_nonPow2Supported(): Bool {
 		return kore_non_pow2_textures_supported();
 	}
+	
+	public static function renderTargetsInvertedY(): Bool {
+		return kore_graphics_render_targets_inverted_y();
+	}
 
 	public var width(get, null): Int;
 	public var height(get, null): Int;
@@ -334,6 +338,7 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kore_texture_from_bytes3d") static function kore_texture_from_bytes3d(bytes: Pointer, width: Int, height: Int, depth: Int, format: Int, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_texture_from_encoded_bytes") static function kore_texture_from_encoded_bytes(bytes: Pointer, length: Int, format: hl.Bytes, readable: Bool): Pointer { return null; }
 	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool { return false; }
+	@:hlNative("std", "kore_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool { return false; }
 	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int { return 0; }
 	@:hlNative("std", "kore_texture_get_real_width") static function kore_texture_get_real_width(texture: Pointer): Int { return 0; }
