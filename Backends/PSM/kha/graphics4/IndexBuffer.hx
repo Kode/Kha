@@ -16,11 +16,11 @@ class IndexBuffer {
 		buffer = new NativeArray<UInt16>(indexCount);
 	}
 	
-	public function lock(): Array<Int> {
+	public function lock(?start: Int, ?count: Int): Array<Int> {
 		return indices;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		for (i in 0...indexCount) {
 			buffer[i] = cast indices[i];
 		}

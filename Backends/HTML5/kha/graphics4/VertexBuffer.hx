@@ -16,6 +16,8 @@ class VertexBuffer {
 	private var types: Array<Int>;
 	private var usage: Usage;
 	private var instanceDataStepRate: Int;
+	private var lockStart: Int = 0;
+	private var lockEnd: Int = 0;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.usage = usage;
@@ -108,9 +110,9 @@ class VertexBuffer {
 	}
 	
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		if (start == null) start = 0;
-		if (count == null) count = mySize;
-		return _data.subarray(start * stride(), (start + count) * stride());
+		lockStart = start != null ? start : 0; 
+		lockEnd = count != null ? start + count : mySize; 
+		return _data.subarray(lockStart * stride(), lockEnd * stride());
 	}
 
 	public function lockInt16(?start: Int, ?count: Int): Int16Array {
@@ -118,8 +120,9 @@ class VertexBuffer {
 	}
 	
 	public function unlock(?count: Int): Void {
+		if(count != null) lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, cast _data, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(lockStart * stride(), lockEnd * stride()).data(), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
 	public function stride(): Int {
