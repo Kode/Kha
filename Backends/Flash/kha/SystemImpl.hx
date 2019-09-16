@@ -209,7 +209,7 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return Capabilities.language;
+		return Capabilities.language.substr(0, 2);
 	}
 
 	public static function requestShutdown(): Bool {
@@ -249,10 +249,10 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 }
