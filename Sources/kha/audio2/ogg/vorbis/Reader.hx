@@ -110,7 +110,7 @@ class Reader {
         while (true) {
             var n = decoder.read(buffer, bufferSize, header.channel, header.sampleRate, useFloat);
 			for (i in 0...n * header.channel) {
-				output.writeFloat(buffer.get(i));
+				output.writeFloat(buffer[i]);
 			}
             if (n == 0) { break; }
             count += n;
@@ -142,6 +142,7 @@ class Reader {
         reader.loopLength = loopLength;
         return reader;
     }
+
 
     public inline function sampleToMillisecond(samples:Int) {
         return samples / header.sampleRate * 1000;

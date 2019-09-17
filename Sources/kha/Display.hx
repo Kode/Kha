@@ -12,16 +12,4 @@ extern class Display {
 	public var frequency(get, never): Int;
 	public var pixelsPerInch(get, never): Int;
 	public var modes(get, never): Array<DisplayMode>;
-
-	public static function get_primary(): Display;
-	public static function get_all(): Array<Display>;
-	public function get_available(): Bool;
-	public function get_name(): String;
-	public function get_x(): Int;
-	public function get_y(): Int;
-	public function get_width(): Int;
-	public function get_height(): Int;
-	public function get_frequency(): Int;
-	public function get_pixelsPerInch(): Int;
-	public function get_modes(): Array<DisplayMode>;
 }

@@ -109,8 +109,6 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTextureDepth(unit: TextureUnit, texture: Image): Void {}
 
-	public function setTextureArray(unit: TextureUnit, texture: Image): Void {}
-
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
@@ -119,15 +117,9 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureCompareMode(texunit: TextureUnit, enabled: Bool): Void {}
-
-	public function setCubeMapCompareMode(texunit: TextureUnit, enabled: Bool): Void {}
-
 	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
-
-	public function setStencilReferenceValue(value: Int): Void {}
 
 	public function setPipeline(pipeline: PipelineState): Void {
 		this.pipeline = pipeline;
@@ -172,7 +164,7 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.material.SetVector(loc.name, new unityEngine.Vector4(value1, value2, value3, value4));
 	}
 
-	public function setFloats(location: ConstantLocation, floats: kha.arrays.Float32Array): Void {}
+	public function setFloats(location: ConstantLocation, floats: Vector<FastFloat>): Void {}
 
 	public function setFloat4s(location: ConstantLocation, floats: Vector<FastFloat>): Void {}
 

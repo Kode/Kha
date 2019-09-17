@@ -39,9 +39,9 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case VertexData.Float1, Short2Norm:
+			case VertexData.Float1:
 				myStride += 1;
-			case VertexData.Float2, Short4Norm:
+			case VertexData.Float2:
 				myStride += 2;
 			case VertexData.Float3:
 				myStride += 3;
@@ -66,7 +66,7 @@ class VertexBuffer {
 		var threeindex: Int = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case Float1, Short2Norm:
+			case Float1:
 				switch (uvindex) {
 				case 0:
 					for (i in 0...vertexCount) {
@@ -91,7 +91,7 @@ class VertexBuffer {
 				}
 				++uvindex;
 				offset += 1;
-			case Float2, Short4Norm:
+			case Float2:
 				switch (uvindex) {
 				case 0:
 					for (i in 0...vertexCount) {

@@ -20,7 +20,7 @@ class ShadersBuilder {
 
 		var files: Iterable<Dynamic> = content.files;
 
-		var init = macro {};
+		var init = macro { };
 
 		for (file in files) {
 			var name: String = file.name;
