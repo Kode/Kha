@@ -14,4 +14,19 @@ class DisplayImpl {
 		trace('TODO (DK) implement me');
 		return -1;
 	}
+
+	public static function get_x( index : Int ) : Int {
+		trace('TODO (DK) implement me');
+		return 0;
+	}
+
+	public static function get_y( index : Int ) : Int {
+		trace('TODO (DK) implement me');
+		return 0;
+	}
+
+	public static function pixelsPerInch( index : Int ) : Int {
+		trace('TODO (DK) implement me');
+		return 96;
+	}
 }

@@ -39,9 +39,9 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case VertexData.Float1:
+			case VertexData.Float1, Short2Norm:
 				myStride += 1;
-			case VertexData.Float2:
+			case VertexData.Float2, Short4Norm:
 				myStride += 2;
 			case VertexData.Float3:
 				myStride += 3;
@@ -58,7 +58,7 @@ class VertexBuffer {
 		return array;
 	}
 
-	public function unlock(?count: Int): Void {
+	public function unlock(?start: Int, ?count: Int): Void {
 		var array = this.array.data();
 		//mesh.Clear(true);
 		var offset: Int = 0;
@@ -66,7 +66,7 @@ class VertexBuffer {
 		var threeindex: Int = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case Float1:
+			case Float1, Short2Norm:
 				switch (uvindex) {
 				case 0:
 					for (i in 0...vertexCount) {
@@ -91,7 +91,7 @@ class VertexBuffer {
 				}
 				++uvindex;
 				offset += 1;
-			case Float2:
+			case Float2, Short4Norm:
 				switch (uvindex) {
 				case 0:
 					for (i in 0...vertexCount) {
