@@ -1,7 +1,7 @@
 package kha.graphics2;
 
-enum HorTextAlignment {
-	TextLeft;
-	TextCenter;
-	TextRight;
+enum abstract HorTextAlignment(Int) {
+	var TextLeft;
+	var TextCenter;
+	var TextRight;
 }

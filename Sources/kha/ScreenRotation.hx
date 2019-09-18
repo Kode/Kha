@@ -3,10 +3,9 @@ package kha;
 /**
  * Enum with all the possible rotations.
  */
-@:keep
-enum ScreenRotation {
-	RotationNone;
-	Rotation90;
-	Rotation180;
-	Rotation270;
+enum abstract ScreenRotation(Int) {
+	var RotationNone = 0;
+	var Rotation90 = 90;
+	var Rotation180 = 180;
+	var Rotation270 = 270;
 }

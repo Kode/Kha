@@ -20,11 +20,11 @@ import kha.Color;
 
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
-	
+
 	public function new(target: Canvas = null) {
 		this.target = target;
 	}
-	
+
 	public function vsynced(): Bool {
 		return kore_graphics_vsynced();
 	}
@@ -32,7 +32,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function refreshRate(): Int {
 		return kore_graphics_refreshrate();
 	}
-	
+
 	public function clear(?color: Color, ?z: FastFloat, ?stencil: Int): Void {
 		var flags: Int = 0;
 		if (color != null) flags |= 1;
@@ -44,11 +44,11 @@ class Graphics implements kha.graphics4.Graphics {
 	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
 		kore_graphics_viewport(x, y, width, height);
 	}
-	
+
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
 		kore_graphics_set_vertexbuffer(vertexBuffer._buffer);
 	}
-	
+
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
 		kore_graphics_set_vertexbuffers(
 			vertexBuffers.length > 0 ? vertexBuffers[0]._buffer : null,
@@ -57,83 +57,50 @@ class Graphics implements kha.graphics4.Graphics {
 			vertexBuffers.length > 3 ? vertexBuffers[3]._buffer : null,
 			vertexBuffers.length);
 	}
-	
+
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		kore_graphics_set_indexbuffer(indexBuffer._buffer);
-	}	
-	
+	}
+
 	public function maxTextureSize(): Int {
 		return 4096;
 	}
-	
+
 	public function supportsNonPow2Textures(): Bool {
 		return false;
 	}
-	
+
 	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		if (cubeMap._texture != null) kore_graphics_set_cubemap_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._texture);
 		else kore_graphics_set_cubemap_target(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._renderTarget);
 	}
-	
+
 	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		kore_graphics_set_cubemap_depth(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, cubeMap._renderTarget);
 	}
-	
+
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
 		kore_graphics_scissor(x, y, width, height);
 	}
-	
+
 	public function disableScissor(): Void {
 		kore_graphics_disable_scissor();
 	}
-	
+
 	public function instancedRenderingAvailable(): Bool {
 		return true;
 	}
-	
-	private function getTextureAddressing(addressing: TextureAddressing): Int {
-		switch (addressing) {
-		case TextureAddressing.Repeat:
-			return 0;
-		case TextureAddressing.Mirror:
-			return 1;
-		case TextureAddressing.Clamp:
-			return 2;
-		}
-	}
-	
-	private function getTextureFilter(filter: TextureFilter): Int {
-		switch (filter) {
-		case PointFilter:
-			return 0;
-		case LinearFilter:
-			return 1;
-		case AnisotropicFilter:
-			return 2;
-		}
-	}
-	
-	private function getTextureMipMapFilter(filter: MipMapFilter): Int {
-		switch (filter) {
-		case NoMipFilter:
-			return 0;
-		case PointMipFilter:
-			return 1;
-		case LinearMipFilter:
-			return 2;
-		}
-	}
-	
-	public function setTextureParameters(unit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {	
-		kore_graphics_set_texture_parameters(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+
+	public function setTextureParameters(unit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+		kore_graphics_set_texture_parameters(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, uAddressing, vAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public function setTexture3DParameters(unit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		kore_graphics_set_texture3d_parameters(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		kore_graphics_set_texture3d_parameters(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, uAddressing, vAddressing, wAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
-	
+
 	public function setTextureCompareMode(unit: kha.graphics4.TextureUnit, enabled: Bool) {
 		kore_graphics_set_texture_compare_mode(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, enabled);
 	}
@@ -152,7 +119,7 @@ class Graphics implements kha.graphics4.Graphics {
 		if (texture == null) return;
 		kore_graphics_set_texture_array(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._textureArray);
 	}
-	
+
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		kore_graphics_set_texture_depth(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._renderTarget);
@@ -166,7 +133,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		kore_graphics_set_image_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._texture);
 	}
-		
+
 	public function setPipeline(pipe: PipelineState): Void {
 		pipe.set();
 	}
@@ -178,7 +145,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		kore_graphics_set_bool(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}
-	
+
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
 		kore_graphics_set_int(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}
@@ -186,35 +153,35 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		kore_graphics_set_float(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}
-	
+
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		kore_graphics_set_float2(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2);
 	}
-	
+
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		kore_graphics_set_float3(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2, value3);
 	}
-	
+
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		kore_graphics_set_float4(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2, value3, value4);
 	}
-	
+
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
 		kore_graphics_set_float2(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value.x, value.y);
 	}
-	
+
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
 		kore_graphics_set_float3(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value.x, value.y, value.z);
 	}
-	
+
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
 		kore_graphics_set_float4(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value.x, value.y, value.z, value.w);
 	}
-	
+
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		kore_graphics_set_floats(cast (location, kha.korehl.graphics4.ConstantLocation)._location, values.getData(), values.length);
 	}
-	
+
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		kore_graphics_set_matrix(cast (location, kha.korehl.graphics4.ConstantLocation)._location,
 			matrix._00, matrix._10, matrix._20, matrix._30,
@@ -229,17 +196,17 @@ class Graphics implements kha.graphics4.Graphics {
 			matrix._01, matrix._11, matrix._21,
 			matrix._02, matrix._12, matrix._22);
 	}
-	
+
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		if (count < 0) kore_graphics_draw_all_indexed_vertices();
 		else kore_graphics_draw_indexed_vertices(start, count);
 	}
-	
+
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
 		if (count < 0) kore_graphics_draw_all_indexed_vertices_instanced(instanceCount);
 		else kore_graphics_draw_indexed_vertices_instanced(instanceCount, start, count);
 	}
-	
+
 	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
 		if (additionalRenderTargets != null) {
 			var len = additionalRenderTargets.length;
@@ -257,7 +224,7 @@ class Graphics implements kha.graphics4.Graphics {
 			kore_graphics_render_to_texture(cast(target, Image)._renderTarget);
 		}
 	}
-	
+
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
 		if (target == null) kore_graphics_restore_render_target();
 		else renderToTexture(additionalRenderTargets);
@@ -268,17 +235,17 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function beginEye(eye: Int): Void {
-		
+
 	}
-	
+
 	public function end(): Void {
-		
+
 	}
-	
+
 	public function flush(): Void {
 		kore_graphics_flush();
 	}
-	
+
 	@:hlNative("std", "kore_graphics_clear") static function kore_graphics_clear(flags: Int, color: Int, z: FastFloat, stencil: Int): Void { }
 	@:hlNative("std", "kore_graphics_vsynced") static function kore_graphics_vsynced(): Bool { return false; }
 	@:hlNative("std", "kore_graphics_refreshrate") static function kore_graphics_refreshrate(): Int { return 0; }

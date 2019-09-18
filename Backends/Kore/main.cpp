@@ -19,12 +19,10 @@
 #if HXCPP_API_LEVEL >= 332
 #include <hxinc/kha/SystemImpl.h>
 #include <hxinc/kha/input/Sensor.h>
-#include <hxinc/kha/ScreenRotation.h>
 #include <hxinc/kha/audio2/Audio.h>
 #else
 #include <kha/SystemImpl.h>
 #include <kha/input/Sensor.h>
-#include <kha/ScreenRotation.h>
 #include <kha/audio2/Audio.h>
 #endif
 
@@ -42,7 +40,7 @@ namespace {
 
 	Kore::Mutex mutex;
 	bool shift = false;
-	
+
 	void keyDown(Kore::KeyCode code) {
 		SystemImpl_obj::keyDown((int)code);
 	}
@@ -138,7 +136,7 @@ namespace {
 	void touchMove(int index, int x, int y) {
 		SystemImpl_obj::touchMove(index, x, y);
 	}
-	
+
 	bool visible = true;
 	bool paused = false;
 
@@ -155,7 +153,7 @@ namespace {
 				#ifndef VR_RIFT
 				Kore::Graphics4::begin(windowIndex);
                 #endif
-			
+
 				// Google Cardboard: Update the Distortion mesh
 				#ifdef VR_CARDBOARD
 				//	Kore::VrInterface::DistortionBefore();
@@ -166,13 +164,13 @@ namespace {
 				#ifndef VR_RIFT
                 Kore::Graphics4::end(windowIndex);
 				#endif
-			
+
 				// Google Cardboard: Call the DistortionMesh Renderer
 				#ifdef VR_CARDBOARD
 				//	Kore::VrInterface::DistortionAfter();
 				#endif
 
-				
+
 			}
 		}*/
 
@@ -182,12 +180,12 @@ namespace {
 		}
 #endif
 	}
-	
+
 	void foreground() {
 		visible = true;
 		SystemImpl_obj::foreground();
 	}
-	
+
 	void resume() {
 		SystemImpl_obj::resume();
 		paused = false;
@@ -197,12 +195,12 @@ namespace {
 		SystemImpl_obj::pause();
 		paused = true;
 	}
-	
+
 	void background() {
 		visible = false;
 		SystemImpl_obj::background();
 	}
-	
+
 	void shutdown() {
 		SystemImpl_obj::shutdown();
 	}
@@ -210,26 +208,26 @@ namespace {
 	void dropFiles(wchar_t* filePath) {
 		SystemImpl_obj::dropFiles(String(filePath));
 	}
-	
+
 	void orientation(Kore::Orientation orientation) {
 		/*switch (orientation) {
 			case Kore::OrientationLandscapeLeft:
-				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation270;
+				::kha::Sys_obj::screenRotation = 270;
 				break;
 			case Kore::OrientationLandscapeRight:
-				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation90;
+				::kha::Sys_obj::screenRotation = 90;
 				break;
 			case Kore::OrientationPortrait:
-				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::RotationNone;
+				::kha::Sys_obj::screenRotation = 0;
 				break;
 			case Kore::OrientationPortraitUpsideDown:
-				::kha::Sys_obj::screenRotation = ::kha::ScreenRotation_obj::Rotation180;
+				::kha::Sys_obj::screenRotation = 180;
 				break;
 			case Kore::OrientationUnknown:
 				break;
 		}*/
 	}
-	
+
 #if defined(HXCPP_TELEMETRY) || defined(HXCPP_PROFILER) || defined(HXCPP_DEBUG)
 	const static bool gcInteractionStrictlyRequired = true;
 #else
@@ -304,9 +302,9 @@ namespace {
 
 void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame) {
 	Kore::log(Kore::Info, "Starting Kore");
-	
+
 	Kore::System::init(name, width, height, win, frame);
-	
+
 	mutex.create();
 
 	Kore::System::setOrientationCallback(orientation);

@@ -1,6 +1,6 @@
 package kha.kore.graphics4;
 
-enum ShaderType {
-	FragmentShader;
-	VertexShader;
+enum abstract ShaderType(Int) {
+	var FragmentShader;
+	var VertexShader;
 }

@@ -1,6 +1,6 @@
 package kha.input;
 
-enum SensorType {
-	Accelerometer;
-	Gyroscope;
+enum abstract SensorType(Int) {
+	var Accelerometer = 0;
+	var Gyroscope = 1;
 }

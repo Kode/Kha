@@ -1113,10 +1113,10 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 }

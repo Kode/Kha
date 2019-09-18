@@ -19,17 +19,6 @@ import kha.graphics4.MipMapFilter;
 ')
 
 class Compute {
-	private static function getAccess(access: Access): Int {
-		switch (access) {
-		case Access.Read:
-			return 0;
-		case Access.Write:
-			return 1;
-		case Access.ReadWrite:
-			return 2;
-		}
-	}
-
 	public static function setBool(location: ConstantLocation, value: Bool) {
 		untyped __cpp__('Kore::Compute::setBool(location->location, value);');
 	}
@@ -98,7 +87,7 @@ class Compute {
 		Kore::Compute::setMatrix(location->location, value);
 	')
 	private static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {
-		
+
 	}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
@@ -110,7 +99,7 @@ class Compute {
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
-		setTexturePrivate(unit, texture, getAccess(access));
+		setTexturePrivate(unit, texture, access);
 	}
 
 	@:functionCode('
@@ -118,7 +107,7 @@ class Compute {
 		else Kore::Compute::setTexture(unit->unit, texture->renderTarget, (Kore::Compute::Access)access);
 	')
 	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
-		
+
 	}
 
 	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
@@ -130,7 +119,7 @@ class Compute {
 		else Kore::Compute::setSampledTexture(unit->unit, texture->renderTarget);
 	')
 	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
-		
+
 	}
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
@@ -146,7 +135,7 @@ class Compute {
 		else Kore::Compute::setSampledTexture(unit->unit, cubeMap->renderTarget);
 	')
 	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
-		
+
 	}
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
@@ -158,7 +147,7 @@ class Compute {
 		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
 	')
 	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
-		
+
 	}
 
 	@:functionCode('
@@ -167,16 +156,16 @@ class Compute {
 		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wWrap);
 	')
 	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
-		
+
 	}
-	
+
 	@:functionCode('
 		Kore::Compute::setTextureMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
 		Kore::Compute::setTextureMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
 		Kore::Compute::setTextureMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
 	')
 	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
-		
+
 	}
 
 	@:functionCode('
@@ -185,50 +174,17 @@ class Compute {
 		Kore::Compute::setTexture3DMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
 	')
 	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
-		
+
 	}
-	
-	private static function getTextureAddressing(addressing: TextureAddressing): Int {
-		switch (addressing) {
-		case TextureAddressing.Repeat:
-			return 0;
-		case TextureAddressing.Mirror:
-			return 1;
-		case TextureAddressing.Clamp:
-			return 2;
-		}
-	}
-	
-	private static function getTextureFilter(filter: TextureFilter): Int {
-		switch (filter) {
-		case PointFilter:
-			return 0;
-		case LinearFilter:
-			return 1;
-		case AnisotropicFilter:
-			return 2;
-		}
-	}
-	
-	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
-		switch (filter) {
-		case NoMipFilter:
-			return 0;
-		case PointMipFilter:
-			return 1;
-		case LinearMipFilter:
-			return 2;
-		}
-	}
-	
+
 	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		setTextureWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing));
-		setTextureFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		setTextureWrapNative(unit, uAddressing, vAddressing);
+		setTextureFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		setTexture3DWrapNative(unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing));
-		setTexture3DFiltersNative(unit, getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		setTexture3DWrapNative(unit, uAddressing, vAddressing, wAddressing);
+		setTexture3DFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setShader(shader: Shader) {
