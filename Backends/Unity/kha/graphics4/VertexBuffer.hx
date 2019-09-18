@@ -58,7 +58,7 @@ class VertexBuffer {
 		return array;
 	}
 
-	public function unlock(): Void {
+	public function unlock(?start: Int, ?count: Int): Void {
 		var array = this.array.data();
 		//mesh.Clear(true);
 		var offset: Int = 0;
