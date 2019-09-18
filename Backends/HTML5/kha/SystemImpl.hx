@@ -185,7 +185,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return Browser.navigator.language;
+		final lang = Browser.navigator.language;
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	public static function requestShutdown(): Bool {
@@ -313,7 +314,7 @@ class SystemImpl {
 		#if (kha_debug_html5 || !canvas_id)
 		return cast Browser.document.getElementById("khanvas");
 		#else
-		return cast Browser.document.getElementById(kha.CompilerDefines.canvas_id);
+		return cast Browser.document.getElementById(Macros.canvasId());
 		#end
 	}
 
@@ -1112,10 +1113,10 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 }

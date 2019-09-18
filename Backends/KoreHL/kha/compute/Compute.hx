@@ -14,21 +14,10 @@ import kha.graphics4.TextureFilter;
 import kha.graphics4.MipMapFilter;
 
 class Compute {
-	private static function getAccess(access: Access): Int {
-		switch (access) {
-		case Access.Read:
-			return 0;
-		case Access.Write:
-			return 1;
-		case Access.ReadWrite:
-			return 2;
-		}
-	}
-
 	public static function setBool(location: kha.compute.ConstantLocation, value: Bool): Void {
 		kore_compute_set_bool(location._location, value);
 	}
-	
+
 	public static function setInt(location: kha.compute.ConstantLocation, value: Int): Void {
 		kore_compute_set_int(location._location, value);
 	}
@@ -36,35 +25,35 @@ class Compute {
 	public static function setFloat(location: kha.compute.ConstantLocation, value: FastFloat): Void {
 		kore_compute_set_float(location._location, value);
 	}
-	
+
 	public static function setFloat2(location: kha.compute.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 		kore_compute_set_float2(location._location, value1, value2);
 	}
-	
+
 	public static function setFloat3(location: kha.compute.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 		kore_compute_set_float3(location._location, value1, value2, value3);
 	}
-	
+
 	public static function setFloat4(location: kha.compute.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 		kore_compute_set_float4(location._location, value1, value2, value3, value4);
 	}
-	
+
 	public static function setVector2(location: kha.compute.ConstantLocation, value: FastVector2): Void {
 		kore_compute_set_float2(location._location, value.x, value.y);
 	}
-	
+
 	public static function setVector3(location: kha.compute.ConstantLocation, value: FastVector3): Void {
 		kore_compute_set_float3(location._location, value.x, value.y, value.z);
 	}
-	
+
 	public static function setVector4(location: kha.compute.ConstantLocation, value: FastVector4): Void {
 		kore_compute_set_float4(location._location, value.x, value.y, value.z, value.w);
 	}
-	
+
 	public static function setFloats(location: kha.compute.ConstantLocation, values: Float32Array): Void {
 		kore_compute_set_floats(location._location, values.getData(), values.length);
 	}
-	
+
 	public static function setMatrix(location: kha.compute.ConstantLocation, matrix: FastMatrix4): Void {
 		kore_compute_set_matrix(location._location,
 			matrix._00, matrix._10, matrix._20, matrix._30,
@@ -85,8 +74,8 @@ class Compute {
 	}
 
 	public static function setTexture(unit: TextureUnit, texture: Image, access: Access) {
-		if (texture._texture != null) kore_compute_set_texture(unit._unit, texture._texture, getAccess(access));
-		else kore_compute_set_target(unit._unit, texture._renderTarget, getAccess(access));
+		if (texture._texture != null) kore_compute_set_texture(unit._unit, texture._texture, access);
+		else kore_compute_set_target(unit._unit, texture._renderTarget, access);
 	}
 
 	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
@@ -106,46 +95,13 @@ class Compute {
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
 		kore_compute_set_sampled_cubemap_depth_target(unit._unit, cubeMap._renderTarget);
 	}
-	
-	private static function getTextureAddressing(addressing: TextureAddressing): Int {
-		switch (addressing) {
-		case TextureAddressing.Repeat:
-			return 0;
-		case TextureAddressing.Mirror:
-			return 1;
-		case TextureAddressing.Clamp:
-			return 2;
-		}
-	}
-	
-	private static function getTextureFilter(filter: TextureFilter): Int {
-		switch (filter) {
-		case PointFilter:
-			return 0;
-		case LinearFilter:
-			return 1;
-		case AnisotropicFilter:
-			return 2;
-		}
-	}
-	
-	private static function getTextureMipMapFilter(filter: MipMapFilter): Int {
-		switch (filter) {
-		case NoMipFilter:
-			return 0;
-		case PointMipFilter:
-			return 1;
-		case LinearMipFilter:
-			return 2;
-		}
-	}
-	
+
 	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		kore_compute_set_texture_parameters(unit._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		kore_compute_set_texture_parameters(unit._unit, uAddressing, vAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		kore_compute_set_texture3d_parameters(unit._unit, getTextureAddressing(uAddressing), getTextureAddressing(vAddressing), getTextureAddressing(wAddressing), getTextureFilter(minificationFilter), getTextureFilter(magnificationFilter), getTextureMipMapFilter(mipmapFilter));
+		kore_compute_set_texture3d_parameters(unit._unit, uAddressing, vAddressing, wAddressing, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
 	public static function setShader(shader: Shader) {

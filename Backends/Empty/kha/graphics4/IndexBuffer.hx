@@ -7,11 +7,11 @@ class IndexBuffer {
 
 	}
 	
-	public function lock(): Array<Int> {
+	public function lock(?start: Int, ?count: Int): Array<Int> {
 		return null;
 	}
 	
-	public function unlock(): Void {
+	public function unlock(?count: Int): Void {
 		
 	}
 	

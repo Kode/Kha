@@ -107,7 +107,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		return js.Browser.navigator.language;
+		final lang = Browser.navigator.language;
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	public static function requestShutdown(): Bool {
@@ -244,10 +245,10 @@ class SystemImpl {
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		
+
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		
+
 	}
 }

@@ -445,8 +445,8 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		var id = cs.system.globalization.CultureInfo.CurrentCulture.Name;
-		return ~/-/.replace(id, "_");
+		final lang = cs.system.globalization.CultureInfo.CurrentCulture.Name;
+		return lang.substr(0, 2).toLowerCase();
 	}
 
 	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
