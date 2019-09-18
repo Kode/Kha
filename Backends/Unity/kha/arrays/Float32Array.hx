@@ -13,11 +13,13 @@ abstract Float32Array(NativeArray<Float>) {
 		return this.length;
 	}
 
+	@:arrayAccess
 	public function set(index: Int, value: FastFloat): FastFloat {
 		this[index] = value;
 		return value;
 	}
 
+	@:arrayAccess
 	public inline function get(index: Int): FastFloat {
 		return this[index];
 	}
