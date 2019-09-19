@@ -358,6 +358,40 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		vec[2] = value3;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		var flashLocation = cast(location, ConstantLocation);
+		var vec = new Vector<Float>(4);
+		vec[0] = value1;
+		vec[1] = value2;
+		vec[2] = value3;
+		vec[3] = value4;
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vec);
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
+		var flashLocation: ConstantLocation = cast location;
+		var vals = new flash.Vector<Float>(values.length);
+		for (i in 0...values.length) vals[i] = values.get(i);
+		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vals);
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		var flashLocation = cast(location, ConstantLocation);
 		var vec = new Vector<Float>(4);
