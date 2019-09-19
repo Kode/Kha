@@ -155,6 +155,22 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setInt(location, value);
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
+		
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
 		Krom.setFloat(location, value);
 	}
