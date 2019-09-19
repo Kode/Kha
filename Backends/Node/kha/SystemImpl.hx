@@ -46,7 +46,7 @@ class SystemImpl {
 	}
 
 	public static function _updateScreenRotation(value: Int): Void {
-		screenRotation = ScreenRotation.createByIndex(value);
+		screenRotation = cast value;
 	}
 
 	public static function getTime(): Float {

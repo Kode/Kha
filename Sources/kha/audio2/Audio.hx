@@ -26,5 +26,5 @@ extern class Audio {
 	 * Used in Kinc based backends to untangle the audio thread from the garbage collector.
 	 * Be very careful please.
 	 */
-	public static var disableGcInteractions;
+	public static var disableGcInteractions: Bool;
 }
