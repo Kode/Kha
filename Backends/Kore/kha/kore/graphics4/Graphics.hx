@@ -323,6 +323,50 @@ class Graphics implements kha.graphics4.Graphics {
 
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		setInt2Private(cast location, value1, value2);
+	}
+
+	@:functionCode('
+		Kore::Graphics4::setInt2(location->location, value1, value2);
+	')
+	private function setInt2Private(location: ConstantLocation, value1: Int, value2: Int): Void {
+
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		setInt3Private(cast location, value1, value2, value3);
+	}
+
+	@:functionCode('
+		Kore::Graphics4::setInt3(location->location, value1, value2, value3);
+	')
+	private function setInt3Private(location: ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		setInt4Private(cast location, value1, value2, value3, value4);
+	}
+
+	@:functionCode('
+		Kore::Graphics4::setInt4(location->location, value1, value2, value3, value4);
+	')
+	private function setInt4Private(location: ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
+		setIntsPrivate(cast location, values);
+	}
+
+	@:functionCode('
+		Kore::Graphics4::setInts(location->location, values->self.data, values->self.length());
+	')
+	private function setIntsPrivate(location: ConstantLocation, values: kha.arrays.Int32Array): Void {
+
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		setFloatPrivate(cast location, value);
 	}
