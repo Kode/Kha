@@ -151,6 +151,26 @@ class Graphics implements kha.graphics4.Graphics {
 			value: value});
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		Worker.postMessage({ command: 'setInt2', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2});
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		Worker.postMessage({ command: 'setInt3', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2, _2: value3});
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		Worker.postMessage({ command: 'setInt4', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			_0: value1, _1: value2, _2: value3, _3: value4});
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
+		Worker.postMessage({ command: 'setInts', location: cast(location, kha.html5worker.ConstantLocation)._id,
+			values: values});
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		Worker.postMessage({ command: 'setFloat', location: cast(location, kha.html5worker.ConstantLocation)._id,
 			value: value});

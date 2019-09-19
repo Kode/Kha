@@ -107,7 +107,7 @@ class SystemImpl {
 	}
 
 	public static function getLanguage(): String {
-		final lang = Browser.navigator.language;
+		final lang = js.Browser.navigator.language;
 		return lang.substr(0, 2).toLowerCase();
 	}
 
