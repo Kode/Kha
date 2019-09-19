@@ -1,5 +1,6 @@
 package kha.android;
 
+import kha.arrays.Int32Array;
 import android.opengl.GLES20;
 import kha.arrays.Float32Array;
 import java.NativeArray;
@@ -324,6 +325,27 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glUniform1i(cast(location, ConstantLocation).value, value);
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		GLES20.glUniform2i(cast(location, ConstantLocation).value, value1, value2);
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		GLES20.glUniform3i(cast(location, ConstantLocation).value, value1, value2, value3);
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		GLES20.glUniform4i(cast(location, ConstantLocation).value, value1, value2, value3, value4);
+	}
+
+	var intValuesCache = new NativeArray<Int>(128);
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: Int32Array): Void {
+		for (i in 0...values.length) {
+			intValuesCache[i] = values[i];
+		}
+		GLES20.glUniform1iv(cast(location, ConstantLocation).value, values.length, intValuesCache, 0);
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: Float): Void {
 		GLES20.glUniform1f(cast(location, ConstantLocation).value, value);
 	}
@@ -340,7 +362,7 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glUniform4f(cast(location, ConstantLocation).value, value1, value2, value3, value4);
 	}
 
-	private var valuesCache = new NativeArray<Single>(128);
+	var valuesCache = new NativeArray<Single>(128);
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		for (i in 0...values.length) {

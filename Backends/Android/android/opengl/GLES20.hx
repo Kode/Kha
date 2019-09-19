@@ -106,6 +106,10 @@ extern class GLES20 {
 	public static function glDrawArrays(type : Int, start : Int, count : Int) : Void;
 	public static function glDrawElements(mode: Int, count: Int, type: Int, indices: Buffer): Void;
 	public static function glUniform1i(location: Int, x: Int): Void;
+	public static function glUniform2i(location: Int, x: Int, y: Int): Void;
+	public static function glUniform3i(location: Int, x: Int, y: Int, z: Int): Void;
+	public static function glUniform4i(location: Int, x: Int, y: Int, z: Int, w: Int): Void;
+	public static function glUniform1iv(location: Int, count: Int, v: NativeArray<Int>, offset: Int): Void;
 	public static function glUniform1f(location: Int, x: Single): Void;
 	public static function glUniform2f(location: Int, x: Single, y: Single): Void;
 	public static function glUniform3f(location: Int, x: Single, y: Single, z: Single): Void;
