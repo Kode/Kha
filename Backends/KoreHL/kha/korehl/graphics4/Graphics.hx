@@ -150,6 +150,22 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_set_int(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}
 
+	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
+		kore_graphics_set_int2(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2);
+	}
+
+	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
+		kore_graphics_set_int3(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2, value3);
+	}
+
+	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
+		kore_graphics_set_int4(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value1, value2, value3, value4);
+	}
+
+	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
+		kore_graphics_set_ints(cast (location, kha.korehl.graphics4.ConstantLocation)._location, values.getData(), values.length);
+	}
+
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
 		kore_graphics_set_float(cast (location, kha.korehl.graphics4.ConstantLocation)._location, value);
 	}
@@ -269,6 +285,10 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kore_graphics_set_image_texture") static function kore_graphics_set_image_texture(unit: Pointer, texture: Pointer): Void { }
 	@:hlNative("std", "kore_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void { }
 	@:hlNative("std", "kore_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_int2") static function kore_graphics_set_int2(location: Pointer, value1: Int, value2: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_int3") static function kore_graphics_set_int3(location: Pointer, value1: Int, value2: Int, value3: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_int4") static function kore_graphics_set_int4(location: Pointer, value1: Int, value2: Int, value3: Int, value4: Int): Void { }
+	@:hlNative("std", "kore_graphics_set_ints") static function kore_graphics_set_ints(location: Pointer, values: Pointer, count: Int): Void { }
 	@:hlNative("std", "kore_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: FastFloat): Void { }
 	@:hlNative("std", "kore_graphics_set_float2") static function kore_graphics_set_float2(location: Pointer, value1: FastFloat, value2: FastFloat): Void { }
 	@:hlNative("std", "kore_graphics_set_float3") static function kore_graphics_set_float3(location: Pointer, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void { }

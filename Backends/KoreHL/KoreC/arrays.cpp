@@ -57,3 +57,22 @@ extern "C" short hl_kore_int16array_get(vbyte* i16array, int index) {
 	short* arr = (short*)i16array;
 	return arr[index];
 }
+
+extern "C" vbyte* hl_kore_int32array_alloc(int elements) {
+	int* data = new int[elements];
+	return (vbyte*)data;
+}
+
+extern "C" void hl_kore_int32array_free(vbyte* i32array) {
+	delete[] i32array;
+}
+
+extern "C" void hl_kore_int32array_set(vbyte* i32array, int index, int value) {
+	int* arr = (int*)i32array;
+	arr[index] = value;
+}
+
+extern "C" int hl_kore_int32array_get(vbyte* i32array, int index) {
+	int* arr = (int*)i32array;
+	return arr[index];
+}

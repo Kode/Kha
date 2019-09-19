@@ -137,6 +137,26 @@ extern "C" void hl_kore_graphics_set_int(vbyte *location, int value) {
 	Kore::Graphics4::setInt(*loc, value);
 }
 
+extern "C" void hl_kore_graphics_set_int2(vbyte *location, int value1, int value2) {
+	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
+	Kore::Graphics4::setInt2(*loc, value1, value2);
+}
+
+extern "C" void hl_kore_graphics_set_int3(vbyte *location, int value1, int value2, int value3) {
+	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
+	Kore::Graphics4::setInt3(*loc, value1, value2, value3);
+}
+
+extern "C" void hl_kore_graphics_set_int4(vbyte *location, int value1, int value2, int value3, int value4) {
+	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
+	Kore::Graphics4::setInt4(*loc, value1, value2, value3, value4);
+}
+
+extern "C" void hl_kore_graphics_set_ints(vbyte *location, vbyte *values, int count) {
+	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
+	Kore::Graphics4::setInts(*loc, (int*)values, count);
+}
+
 extern "C" void hl_kore_graphics_set_float(vbyte *location, float value) {
 	Kore::Graphics4::ConstantLocation* loc = (Kore::Graphics4::ConstantLocation*)location;
 	Kore::Graphics4::setFloat(*loc, value);
