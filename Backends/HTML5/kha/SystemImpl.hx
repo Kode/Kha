@@ -197,7 +197,6 @@ class SystemImpl {
 	private static inline var maxGamepads: Int = 4;
 	private static var frame: Framebuffer;
 	private static var pressedKeys: Array<Bool>;
-	private static var leftMouseCtrlDown: Bool = false;
 	private static var keyboard: Keyboard = null;
 	private static var mouse: kha.input.Mouse;
 	private static var surface: Surface;
@@ -654,14 +653,7 @@ class SystemImpl {
 
 		setMouseXY(event);
 		if (event.which == 1) { //left button
-			if (event.ctrlKey) {
-				leftMouseCtrlDown = true;
-				mouse.sendDownEvent(0, 1, mouseX, mouseY);
-			}
-			else {
-				leftMouseCtrlDown = false;
-				mouse.sendDownEvent(0, 0, mouseX, mouseY);
-			}
+			mouse.sendDownEvent(0, 0, mouseX, mouseY);
 
 			if (khanvas.setCapture != null)  {
 				khanvas.setCapture();
@@ -695,13 +687,9 @@ class SystemImpl {
 		else {
 			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
 		}
-		if (leftMouseCtrlDown) {
-			mouse.sendUpEvent(0, 1, mouseX, mouseY);
-		}
-		else {
-			mouse.sendUpEvent(0, 0, mouseX, mouseY);
-		}
-		leftMouseCtrlDown = false;
+
+		mouse.sendUpEvent(0, 0, mouseX, mouseY);
+
 		insideInputEvent = false;
 	}
 
