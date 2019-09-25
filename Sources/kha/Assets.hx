@@ -91,31 +91,16 @@ class Assets {
 	Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 	Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	*/
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError -> Void): Void {
+	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null, ?failed: AssetError->Void): Void {
+		final lists: Array<Dynamic> = [ImageList, SoundList, BlobList, FontList, VideoList];
+		final listInstances: Array<Dynamic> = [images, sounds, blobs, fonts, videos];
 		var fileCount = 0;
-		for (blob in Type.getInstanceFields(BlobList)) {
-			if (blob.endsWith("Load")) {
-				++fileCount;
-			}
-		}
-		for (image in Type.getInstanceFields(ImageList)) {
-			if (image.endsWith("Load")) {
-				++fileCount;
-			}
-		}
-		for (sound in Type.getInstanceFields(SoundList)) {
-			if (sound.endsWith("Load")) {
-				++fileCount;
-			}
-		}
-		for (font in Type.getInstanceFields(FontList)) {
-			if (font.endsWith("Load")) {
-				++fileCount;
-			}
-		}
-		for (video in Type.getInstanceFields(VideoList)) {
-			if (video.endsWith("Load")) {
-				++fileCount;
+
+		for (list in lists) {
+			for (file in Type.getInstanceFields(list)) {
+				if (file.endsWith("Description")) {
+					fileCount++;
+				}
 			}
 		}
 
@@ -126,91 +111,46 @@ class Assets {
 
 		var filesLeft = fileCount;
 
-		function onLoaded() {
-			--filesLeft;
+		function loadFunc(desc: Dynamic, done: ()->Void, failure: (err: AssetError)->Void): Void {
+			final name = desc.name;
+			switch (desc.type) {
+				case "image":
+					Assets.loadImage(name, function (image: Image) done(), failure);
+				case "sound":
+					Assets.loadSound(name, function (sound: Sound) {
+						if (uncompressSoundsFilter == null || uncompressSoundsFilter(desc)) {
+							sound.uncompress(done);
+						}
+						else done();
+					}, failure);
+				case "blob":
+					Assets.loadBlob(name, function (blob: Blob) done(), failure);
+				case "font":
+					Assets.loadFont(name, function (font: Font) done(), failure);
+				case "video":
+					Assets.loadVideo(name, function (video: Video) done(), failure);
+			}
+		}
+
+		function onLoaded(): Void {
+			filesLeft--;
 			progress = 1 - filesLeft / fileCount;
 			if (filesLeft == 0) callback();
 		}
 
-		for (blob in Type.getInstanceFields(BlobList)) {
-			if (blob.endsWith("Load")) {
-				var name = blob.substr(0, blob.length - 4);
-				var description = Reflect.field(blobs, name + "Description");
+		function onError(err: AssetError): Void {
+			reporter(failed)(err);
+			onLoaded();
+		}
 
-				if (filter == null || filter(description)) {
-					Reflect.field(blobs, blob)(onLoaded, function(err) {
-						reporter(failed)(err);
-						onLoaded();
-					});
-				}
-				else {
-					onLoaded();
-				}
-			}
-		}
-		for (image in Type.getInstanceFields(ImageList)) {
-			if (image.endsWith("Load")) {
-				var name = image.substr(0, image.length - 4);
-				var description = Reflect.field(images, name + "Description");
-
-				if (filter == null || filter(description)) {
-					Reflect.field(images, image)(onLoaded, function(err) {
-						reporter(failed)(err);
-						onLoaded();
-					});
-				}
-				else {
-					onLoaded();
-				}
-			}
-		}
-		for (sound in Type.getInstanceFields(SoundList)) {
-			if (sound.endsWith("Load")) {
-				var name = sound.substr(0, sound.length - 4);
-				var description = Reflect.field(sounds, name + "Description");
-				if (filter == null || filter(description)) {
-					Reflect.field(sounds, sound)(function () {
-						if (uncompressSoundsFilter == null || uncompressSoundsFilter(description)) {
-							var sound: Sound = Reflect.field(sounds, sound.substring(0, sound.length - 4));
-							sound.uncompress(onLoaded);
-						}
-						else {
-							onLoaded();
-						}
-					}, function(err) {
-						reporter(failed)(err);
-						onLoaded();
-					});
-				}
-				else {
-					onLoaded();
-				}
-			}
-		}
-		for (font in Type.getInstanceFields(FontList)) {
-			if (font.endsWith("Load")) {
-				var name = font.substr(0, font.length - 4);
-				var description = Reflect.field(fonts, name + "Description");
-				if (filter == null || filter(description)) {
-					Reflect.field(fonts, font)(onLoaded, function(err) {
-						reporter(failed)(err);
-						onLoaded();
-					});
-				}
-				else {
-					onLoaded();
-				}
-			}
-		}
-		for (video in Type.getInstanceFields(VideoList)) {
-			if (video.endsWith("Load")) {
-				var name = video.substr(0, video.length - 4);
-				var description = Reflect.field(videos, name + "Description");
-				if (filter == null || filter(description)) {
-					Reflect.field(videos, video)(onLoaded, function(err) {
-						reporter(failed)(err);
-						onLoaded();
-					});
+		for (i in 0...lists.length) {
+			final list = lists[i];
+			final listInstance = listInstances[i];
+			for (field in Type.getInstanceFields(list)) {
+				if (!field.endsWith("Description")) continue;
+				final desc = Reflect.field(listInstance, field);
+				if (filter == null || filter(desc)) {
+					loadFunc(desc, onLoaded, onError);
 				}
 				else {
 					onLoaded();
