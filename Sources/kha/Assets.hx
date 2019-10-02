@@ -90,11 +90,17 @@ class Assets {
 		final lists: Array<Dynamic> = [ImageList, SoundList, BlobList, FontList, VideoList];
 		final listInstances: Array<Dynamic> = [images, sounds, blobs, fonts, videos];
 		var fileCount = 0;
+		var byteCount = 0;
 
-		for (list in lists) {
+		for (i in 0...lists.length) {
+			final list = lists[i];
 			for (file in Type.getInstanceFields(list)) {
 				if (file.endsWith("Description")) {
 					fileCount++;
+				}
+				else if (file.endsWith("Size")) {
+					var size: Int = Reflect.field(listInstances[i], file);
+					byteCount += size;
 				}
 			}
 		}
@@ -105,37 +111,52 @@ class Assets {
 		}
 
 		var filesLeft = fileCount;
+		var bytesLeft = byteCount;
 
-		function loadFunc(desc: Dynamic, done: ()->Void, failure: (err: AssetError)->Void): Void {
-			final name = desc.name;
-			switch (desc.type) {
-				case "image":
-					Assets.loadImage(name, function (image: Image) done(), failure);
-				case "sound":
-					Assets.loadSound(name, function (sound: Sound) {
-						if (uncompressSoundsFilter == null || uncompressSoundsFilter(desc)) {
-							sound.uncompress(done);
-						}
-						else done();
-					}, failure);
-				case "blob":
-					Assets.loadBlob(name, function (blob: Blob) done(), failure);
-				case "font":
-					Assets.loadFont(name, function (font: Font) done(), failure);
-				case "video":
-					Assets.loadVideo(name, function (video: Video) done(), failure);
-			}
-		}
-
-		function onLoaded(): Void {
+		function onLoaded(bytes: Int): Void {
 			filesLeft--;
-			progress = 1 - filesLeft / fileCount;
+			bytesLeft -= bytes;
+			progress = 1 - (bytesLeft / byteCount);
 			if (filesLeft == 0) callback();
 		}
 
-		function onError(err: AssetError): Void {
+		function onError(err: AssetError, bytes: Int): Void {
 			reporter(failed)(err);
-			onLoaded();
+			onLoaded(bytes);
+		}
+
+		function loadFunc(desc: Dynamic, done: (bytes: Int)->Void, failure: (err: AssetError, bytes: Int)->Void): Void {
+			final name = desc.name;
+			final size = desc.file_sizes[0];
+			switch (desc.type) {
+				case "image":
+					Assets.loadImage(name, function (image: Image) done(size), function(err: AssetError) {
+						onError(err, size);
+					});
+				case "sound":
+					Assets.loadSound(name, function (sound: Sound) {
+						if (uncompressSoundsFilter == null || uncompressSoundsFilter(desc)) {
+							sound.uncompress(function() {
+								done(size);
+							});
+						}
+						else done(size);
+					}, function(err: AssetError) {
+						onError(err, size);
+					});
+				case "blob":
+					Assets.loadBlob(name, function (blob: Blob) done(size), function(err: AssetError) {
+						onError(err, size);
+					});
+				case "font":
+					Assets.loadFont(name, function (font: Font) done(size), function(err: AssetError) {
+						onError(err, size);
+					});
+				case "video":
+					Assets.loadVideo(name, function (video: Video) done(size), function(err: AssetError) {
+						onError(err, size);
+					});
+			}
 		}
 
 		for (i in 0...lists.length) {
@@ -148,7 +169,7 @@ class Assets {
 					loadFunc(desc, onLoaded, onError);
 				}
 				else {
-					onLoaded();
+					onLoaded(desc.file_sizes[0]);
 				}
 			}
 		}
