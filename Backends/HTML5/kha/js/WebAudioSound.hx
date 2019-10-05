@@ -99,18 +99,18 @@ class WebAudioSound extends kha.Sound {
 					var next_chk = chk_len > lidx ? lidx : chk_len;
 					while(idx < next_chk) {
 						uncompressedData[idx] = ch0[i];
-						uncompressedData[idx+1] = ch0[i];
+						uncompressedData[idx + 1] = ch0[i];
 						idx += 2;
 						++i;
 					}
 					if (idx < lidx)
-						js.Browser.window.setTimeout(uncompressInner,0);
+						js.Browser.window.setTimeout(uncompressInner, 0);
 					else {
 						compressedData = null;
+						done();
 					}
 				};
 				uncompressInner();
-				js.Browser.window.setTimeout(done,250);
 			}
 			else {
 				var ch1 = buffer.getChannelData(1);
@@ -125,18 +125,18 @@ class WebAudioSound extends kha.Sound {
 					var next_chk = chk_len > lidx ? lidx : chk_len;
 					while(idx < next_chk) {
 						uncompressedData[idx] = ch0[i];
-						uncompressedData[idx+1] = ch1[i];
+						uncompressedData[idx + 1] = ch1[i];
 						idx += 2;
 						++i;
 					}
 					if (idx < lidx)
-						js.Browser.window.setTimeout(uncompressInner,0);
+						js.Browser.window.setTimeout(uncompressInner, 0);
 					else {
 						compressedData = null;
+						done();
 					}
 				};
 				uncompressInner();
-				js.Browser.window.setTimeout(done,250);
 			}
 		},
 		function () {
