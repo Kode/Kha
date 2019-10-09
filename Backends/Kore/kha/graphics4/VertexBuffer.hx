@@ -94,7 +94,7 @@ class VertexBuffer {
 		return lockInt16Private(start, count);
 	}
 
-	@:functionCode('buffer->unlock(count);')
+	@:functionCode('buffer->unlock(count); data->self.data = nullptr; if (!hx::IsNull(dataInt16)) dataInt16->self.data = nullptr;')
 	function unlockPrivate(count: Int): Void {
 
 	}

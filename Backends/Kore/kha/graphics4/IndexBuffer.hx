@@ -37,7 +37,7 @@ class IndexBuffer {
 		return lockPrivate(start, count);
 	}
 	
-	@:functionCode('buffer->unlock();')
+	@:functionCode('buffer->unlock(); data->self.data = nullptr;')
 	public function unlockPrivate(): Void {
 		
 	}
