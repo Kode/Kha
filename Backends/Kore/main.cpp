@@ -250,8 +250,8 @@ namespace {
 		//Kore::log(Info, "mix address is %x", &addr);
 
 		if (mixThreadregistered && ::kha::audio2::Audio_obj::disableGcInteractions && !gcInteractionStrictlyRequired) {
-			hx::UnregisterCurrentThread();
-			mixThreadregistered = false;
+			//hx::UnregisterCurrentThread();
+			//mixThreadregistered = false;
 		}
 
 		if (mixThreadregistered) {
