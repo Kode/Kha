@@ -26,7 +26,7 @@ extern class Int16ArrayData {
 }
 
 class Int16ArrayPrivate {
-	public var self: Int16ArrayData;
+	@:keep public var self: Int16ArrayData;
 
 	public inline function new(elements: Int = 0) {
 		self = Int16ArrayData.create();
