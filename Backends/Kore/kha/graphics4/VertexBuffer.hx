@@ -14,7 +14,7 @@ import kha.graphics4.VertexStructure;
 @:headerClassCode("Kore::Graphics4::VertexBuffer* buffer;")
 class VertexBuffer {
 	private var data: Float32Array;
-	private var dataInt16: Int16Array;
+	@:keep private var dataInt16: Int16Array;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		init(vertexCount, structure, usage, instanceDataStepRate);
