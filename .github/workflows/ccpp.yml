@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Apt Get
-      run: sudo apt install libasound2-dev libxinerama-dev libgl1-mesa-dev libxi-dev
+      run: sudo apt-get install libasound2-dev libxinerama-dev libgl1-mesa-dev libxi-dev --yes
     - name: Get Submodules
       run: git submodule update --init --recursive
     - name: Get Node.js
