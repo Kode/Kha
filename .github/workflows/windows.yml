@@ -19,7 +19,5 @@ jobs:
       run: git submodule update --init --recursive
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
-    - name: Setup Node.js
-      run: nodejs_bin/copysysbin.sh
     - name: Compile
-      run: nodejs_bin/node make.js --kha . --from Tests/Empty --compile
+      run: nodejs_bin/node.exe make.js --kha . --from Tests/Empty --compile
