@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Windows
 
 on:
   push:
@@ -11,14 +11,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v1
-    - name: Apt Update
-      run: sudo apt-get update
-    - name: Apt Install
-      run: sudo apt-get install libasound2-dev libxinerama-dev libgl1-mesa-dev libxi-dev --yes --quiet
     - name: Get Submodules
       run: git submodule update --init --recursive
     - name: Get Node.js
