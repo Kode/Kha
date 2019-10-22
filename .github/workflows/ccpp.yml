@@ -15,7 +15,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: get Node.js
+    - name: Get submodules
+      run: git submodule update --init --recursive
+    - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
     - name: Setup Node.js
       run: nodejs_bin/copysysbin.sh
