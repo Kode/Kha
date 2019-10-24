@@ -76,7 +76,7 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 		SystemImpl.setWidthHeight(width, height); // , context.getResources().getAssets(), context.getApplicationInfo().sourceDir, context.getFilesDir().toString());
 	}
 	
-	public function key(keyCode: Int, down: Bool): Void {
+	public function key(keyCode: Int, down: Bool, char:String): Void {
 		switch (keyCode) {
 		case 59: // shift
 			if (down) SystemImpl.keyDown(0x00000120);
