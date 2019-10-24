@@ -92,7 +92,7 @@ class KhaRenderer implements GLSurfaceViewRenderer {
 			else SystemImpl.keyUp(KeyEvent.KEYCODE_BACK);
 		default:
 			var code = keyMap.get(keyCode, MetaKeyKeyListener.META_SHIFT_ON);
-			if (down) SystemImpl.keyDown(code);
+			if (down) {SystemImpl.keyDown(code); SystemImpl.keyPress(char);}
 			else SystemImpl.keyUp(code);
 		}
 	}
