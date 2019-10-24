@@ -237,7 +237,7 @@ class SystemImpl {
 			keyboard.sendDownEvent(KeyCode.Return);
 		case 0x00000004:
 			keyboard.sendDownEvent(KeyCode.Back);
-		default: keyboard.sendPressEvent(String.fromCharCode(code).toLowerCase());
+		default:
 
 		}
 	}
@@ -257,6 +257,11 @@ class SystemImpl {
 
 		}
 	}
+	
+	public static function keyPress(char: String): Void {
+        	keyboard.sendPressEvent(char);
+    	}
+	
 
 	public static var showKeyboard: Bool;
 
