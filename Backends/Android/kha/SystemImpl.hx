@@ -237,7 +237,7 @@ class SystemImpl {
 			keyboard.sendDownEvent(KeyCode.Return);
 		case 0x00000004:
 			keyboard.sendDownEvent(KeyCode.Back);
-		default:
+		default: keyboard.sendPressEvent(String.fromCharCode(code).toLowerCase());
 
 		}
 	}
