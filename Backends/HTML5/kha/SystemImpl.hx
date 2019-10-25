@@ -283,7 +283,6 @@ class SystemImpl {
 		for (i in 0...pad.axes.length) {
 			if (pad.axes[i] != null) {
 				var axis = pad.axes[i];
-				if (i % 2 == 1) axis = -axis;
 				if (gamepadStates[pad.index].axes[i] != axis) {
 					gamepadStates[pad.index].axes[i] = axis;
 					gamepads[pad.index].sendAxisEvent(i, axis);
