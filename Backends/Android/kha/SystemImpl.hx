@@ -257,6 +257,11 @@ class SystemImpl {
 
 		}
 	}
+	
+	public static function keyPress(char: String): Void {
+        	keyboard.sendPressEvent(char);
+    	}
+	
 
 	public static var showKeyboard: Bool;
 
