@@ -36,8 +36,8 @@ class PipelineCache {
 
 	public function new(pipeline: PipelineState) {
 		this.pipeline = pipeline;
-		projectionLocation = pipeline.getConstantLocation("projectionMatrix");
-		textureLocation = pipeline.getTextureUnit("tex");
+		try { projectionLocation = pipeline.getConstantLocation("projectionMatrix"); } catch (x: Dynamic) { trace(x); }
+		try { textureLocation = pipeline.getTextureUnit("tex"); } catch (x: Dynamic) { trace(x); }
 	}
 }
 
