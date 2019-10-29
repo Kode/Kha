@@ -14,8 +14,8 @@ class VertexBuffer {
 	private var vertexCount: Int;
 	private var myStride: Int;
 	private var myStructure: kha.graphics4.VertexStructure;
-	
-	public function new(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage) {
+
+	public function new(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.vertexCount = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
@@ -40,23 +40,24 @@ class VertexBuffer {
 		vertexBuffer = kha.flash.graphics4.Graphics.context.createVertexBuffer(vertexCount, myStride, usage == Usage.DynamicUsage ? Context3DBufferUsage.DYNAMIC_DRAW : Context3DBufferUsage.STATIC_DRAW);
 		vertices = new Float32Array(myStride * vertexCount);
 	}
-	
+
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		return vertices;
 	}
-	
+
 	public function unlock(?count: Int): Void {
-		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, count != null ? count : vertexCount);
+		// (DK) using anything else than vertexCount does not work for some reason
+		vertexBuffer.uploadFromByteArray(vertices.data(), 0, 0, vertexCount);
 	}
-	
+
 	public function stride(): Int {
 		return myStride;
 	}
-	
+
 	public function count(): Int {
 		return vertexCount;
 	}
-	
+
 	public function set(): Void {
 		var index: Int = 0;
 		var offset: Int = 0;
@@ -96,7 +97,7 @@ class VertexBuffer {
 		}
 		for (i in index...8) kha.flash.graphics4.Graphics.context.setVertexBufferAt(i, null);
 	}
-	
+
 	public function delete(): Void {
 		vertexBuffer.dispose();
 	}
