@@ -544,7 +544,7 @@ HL_PRIM venum *hl_alloc_enum_dyn( hl_type *t, int index, varray *args, int nargs
 		return NULL;
 	e = hl_alloc_enum(t, index);
 	for(i=0;i<c->nparams;i++)
-		hl_write_dyn((char*)e+c->offsets[i],c->params[i],hl_aptr(args,vdynamic*)[i]);
+		hl_write_dyn((char*)e+c->offsets[i],c->params[i],hl_aptr(args,vdynamic*)[i],false);
 	return e;
 }
 

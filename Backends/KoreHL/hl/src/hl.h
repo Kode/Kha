@@ -228,20 +228,13 @@ HL_API int uvszprintf( uchar *out, int out_size, const uchar *fmt, va_list argli
 #	define utoi(s,end)	wcstol(s,end,10)
 #	define ucmp(a,b)	wcscmp(a,b)
 #	define utostr(out,size,str) wcstombs(out,str,size)
-#elif defined(HL_MAC)
+#elif defined(HL_MAC) || defined(HL_IOS) || defined(HL_TVOS)
 typedef uint16_t uchar;
 #	undef USTR
 #	define USTR(str)	u##str
 #else
 #	include <stdarg.h>
-#if defined(HL_IOS) || defined(HL_TVOS) || defined(HL_MAC)
-#include <stddef.h>
-#include <stdint.h>
-typedef uint16_t char16_t;
-typedef uint32_t char32_t;
-#else
 #	include <uchar.h>
-#endif
 typedef char16_t uchar;
 #	undef USTR
 #	define USTR(str)	u##str
@@ -613,7 +606,7 @@ HL_API double hl_dyn_castd( void *data, hl_type *t );
 #define hl_invalid_comparison 0xAABBCCDD
 HL_API int hl_dyn_compare( vdynamic *a, vdynamic *b );
 HL_API vdynamic *hl_make_dyn( void *data, hl_type *t );
-HL_API void hl_write_dyn( void *data, hl_type *t, vdynamic *v );
+HL_API void hl_write_dyn( void *data, hl_type *t, vdynamic *v, bool is_tmp );
 
 HL_API void hl_dyn_seti( vdynamic *d, int hfield, hl_type *t, int value );
 HL_API void hl_dyn_setp( vdynamic *d, int hfield, hl_type *t, void *ptr );
@@ -649,7 +642,7 @@ HL_API vdynamic *hl_dyn_call_safe( vclosure *c, vdynamic **args, int nargs, bool
 	so you are sure it's of the used typed. Otherwise use hl_dyn_call
 */
 #define hl_call0(ret,cl) \
-	(cl->hasValue ? ((ret(*)(vdynamic*))cl->fun)(cl->value) : ((ret(*)())cl->fun)()) 
+	(cl->hasValue ? ((ret(*)(vdynamic*))cl->fun)(cl->value) : ((ret(*)())cl->fun)())
 #define hl_call1(ret,cl,t,v) \
 	(cl->hasValue ? ((ret(*)(vdynamic*,t))cl->fun)(cl->value,v) : ((ret(*)(t))cl->fun)(v))
 #define hl_call2(ret,cl,t1,v1,t2,v2) \
@@ -885,7 +878,7 @@ typedef struct {
 
 HL_API hl_track_info hl_track;
 
-#else 
+#else
 
 #define hl_is_tracking(_) false
 #define hl_track_call(a,b)
