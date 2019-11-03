@@ -1,6 +1,7 @@
 package kha.js.graphics4;
 
 import kha.graphics4.StencilValue;
+import kha.arrays.ByteArray;
 import kha.arrays.Float32Array;
 import kha.arrays.Int32Array;
 import js.html.webgl.GL;
@@ -520,15 +521,16 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setInts(location: kha.graphics4.ConstantLocation, values: Int32Array): Void {
 		var webglLocation = cast(location, ConstantLocation);
+		var rawValues = new js.lib.Int32Array(values.buffer, values.byteOffset, values.length);
 		switch (webglLocation.type) {
 			case GL.INT_VEC2:
-				SystemImpl.gl.uniform2iv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform2iv(webglLocation.value, rawValues);
 			case GL.INT_VEC3:
-				SystemImpl.gl.uniform3iv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform3iv(webglLocation.value, rawValues);
 			case GL.INT_VEC4:
-				SystemImpl.gl.uniform4iv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform4iv(webglLocation.value, rawValues);
 			default:
-				SystemImpl.gl.uniform1iv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform1iv(webglLocation.value, rawValues);
 		}
 	}
 
@@ -550,17 +552,18 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
 		var webglLocation = cast(location, ConstantLocation);
+		var rawValues = new js.lib.Float32Array(values.buffer, values.byteOffset, values.length);
 		switch (webglLocation.type) {
 			case GL.FLOAT_VEC2:
-				SystemImpl.gl.uniform2fv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform2fv(webglLocation.value, rawValues);
 			case GL.FLOAT_VEC3:
-				SystemImpl.gl.uniform3fv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform3fv(webglLocation.value, rawValues);
 			case GL.FLOAT_VEC4:
-				SystemImpl.gl.uniform4fv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform4fv(webglLocation.value, rawValues);
 			case GL.FLOAT_MAT4:
-				SystemImpl.gl.uniformMatrix4fv(webglLocation.value,false,cast values);
+				SystemImpl.gl.uniformMatrix4fv(webglLocation.value, false, rawValues);
 			default:
-				SystemImpl.gl.uniform1fv(webglLocation.value, cast values);
+				SystemImpl.gl.uniform1fv(webglLocation.value, rawValues);
 		}
 	}
 
@@ -583,7 +586,8 @@ class Graphics implements kha.graphics4.Graphics {
 		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
 		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
 		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
-		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, cast matrixCache);
+		var rawMatrixCache = new js.lib.Float32Array(matrixCache.buffer, matrixCache.byteOffset, matrixCache.length);
+		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, rawMatrixCache);
 	}
 
 	private var matrix3Cache = new Float32Array(9);
@@ -592,13 +596,34 @@ class Graphics implements kha.graphics4.Graphics {
 		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
 		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
 		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
-		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, cast matrix3Cache);
+		var rawMatrix3Cache = new js.lib.Float32Array(matrix3Cache.buffer, matrix3Cache.byteOffset, matrix3Cache.length);
+		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, rawMatrix3Cache);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
 		var size = type == GL.UNSIGNED_SHORT ? 2 : 4;
+
+		if(indicesCount == 6)
+		{
+			{
+				var bleh = new kha.arrays.Uint32Array(6);
+				untyped SystemImpl.gl.getBufferSubData(GL.ELEMENT_ARRAY_BUFFER, 0, bleh);
+				for(i in 0 ... bleh.length)
+					trace(bleh[i]);
+			}
+
+			var bleh = new Float32Array(8);
+			untyped SystemImpl.gl.getBufferSubData(GL.ARRAY_BUFFER, 0, bleh);
+			for(i in 0 ... bleh.length)
+				trace(bleh[i]);
+
+			SystemImpl.gl.enableVertexAttribArray(0);
+			SystemImpl.gl.vertexAttribPointer(0, 2, GL.FLOAT, false, 0, 0);
+		}
+
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
+		SystemImpl.gl.getError();
 		for(i in 0...useVertexAttributes){
 			SystemImpl.gl.disableVertexAttribArray(i);
 		}
