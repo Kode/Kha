@@ -56,6 +56,7 @@ abstract ByteArray(DataView) to DataView
     {
         return this.getFloat64(byteOffset, LITTLE_ENDIAN);
     }
+
 	public function setInt8(byteOffset:Int, value:Int): Void
     {
         this.setInt8(byteOffset, value);
@@ -113,6 +114,7 @@ abstract ByteArray(DataView) to DataView
     {
         return this.getFloat64(byteOffset, true);
     }
+
 	public function setInt16LE(byteOffset:Int, value:Int): Void
     {
         this.setInt16(byteOffset, value, true);

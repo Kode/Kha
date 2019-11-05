@@ -603,25 +603,6 @@ class Graphics implements kha.graphics4.Graphics {
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
 		var size = type == GL.UNSIGNED_SHORT ? 2 : 4;
-
-		if(indicesCount == 6)
-		{
-			{
-				var bleh = new kha.arrays.Uint32Array(6);
-				untyped SystemImpl.gl.getBufferSubData(GL.ELEMENT_ARRAY_BUFFER, 0, bleh);
-				for(i in 0 ... bleh.length)
-					trace(bleh[i]);
-			}
-
-			var bleh = new Float32Array(8);
-			untyped SystemImpl.gl.getBufferSubData(GL.ARRAY_BUFFER, 0, bleh);
-			for(i in 0 ... bleh.length)
-				trace(bleh[i]);
-
-			SystemImpl.gl.enableVertexAttribArray(0);
-			SystemImpl.gl.vertexAttribPointer(0, 2, GL.FLOAT, false, 0, 0);
-		}
-
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
 		SystemImpl.gl.getError();
 		for(i in 0...useVertexAttributes){
