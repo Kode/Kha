@@ -1,34 +1,34 @@
 package kha.arrays;
 
 @:forward
-abstract Uint32Array(ByteArray) from ByteArray to ByteArray
+abstract Int16Array(ByteArray) from ByteArray to ByteArray
 {
     public var length(get, never):Int;
     function get_length() : Int
     {
-        return this.byteLength >> 2;
+        return this.byteLength >> 1;
     }
 
     public function new(elements:Int)
     {
-        this = ByteArray.make(elements * 4);
+        this = ByteArray.make(elements * 2);
     }
 
     @:arrayAccess
     public function get(k:Int) : Int
     {
-        return this.getUint32(k * 4);
+        return this.getInt16(k * 2);
     }
 
     @:arrayAccess
     public function set(k:Int, v:Int) : Int
     {
-        this.setUint32(k * 4, v);
+        this.setInt16(k * 2, v);
         return get(k);
     }
 
-    public function subarray(start:Int, ?end:Int) : Uint32Array
+    public function subarray(start:Int, ?end:Int) : Int16Array
     {
-        return this.subarray(start * 4, end != null ? end * 4 : null);
+        return this.subarray(start * 2, end != null ? end * 2 : null);
     }
 }

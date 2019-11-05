@@ -6,7 +6,7 @@ abstract Int32Array(ByteArray) from ByteArray to ByteArray
     public var length(get, never):Int;
     function get_length() : Int
     {
-        return Std.int(this.byteLength / 4);
+        return this.byteLength >> 2;
     }
     
     public function new(elements:Int)
@@ -24,7 +24,7 @@ abstract Int32Array(ByteArray) from ByteArray to ByteArray
     public function set(k:Int, v:Int) : Int
     {
         this.setInt32(k * 4, v);
-        return v;
+        return get(k);
     }
 
     public function subarray(start:Int, ?end:Int) : Int32Array

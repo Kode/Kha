@@ -6,7 +6,7 @@ abstract Float32Array(ByteArray) from ByteArray to ByteArray
     public var length(get, never):Int;
     function get_length() : Int
     {
-        return Std.int(this.byteLength / 4);
+        return this.byteLength >> 2;
     }
 
     public function new(elements:Int)
