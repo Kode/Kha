@@ -38,6 +38,8 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/Display.h>
 #include <Kore/Window.h>
 
+#include <kinc/system.h>
+
 Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win);
 Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame);
 
@@ -450,6 +452,17 @@ class SystemImpl {
 		Kore::System::login();
 	')
 	public static function login(): Void {
+
+	}
+
+
+	@:functionCode('kinc_disallow_user_change();')
+	public static function disallowUserChange(): Void {
+
+	}
+
+	@:functionCode('kinc_allow_user_change();')
+	public static function allowUserChange(): Void {
 
 	}
 
