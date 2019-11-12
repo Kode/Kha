@@ -286,6 +286,10 @@ class SystemImpl {
 			var win = kha.kore.graphics4.Graphics.lastWindow;
 			untyped __cpp__('Kore::Graphics4::end(win);');
 		}
+		else {
+			untyped __cpp__('Kore::Graphics4::begin(0);');
+			untyped __cpp__('Kore::Graphics4::end(0);');
+		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
 
 		if (gamepad1.connected && !checkGamepadConnected()) {
