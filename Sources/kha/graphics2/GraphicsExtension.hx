@@ -1,6 +1,7 @@
 package kha.graphics2;
 
 import kha.math.Vector2;
+import kha.math.FastVector2;
 import kha.graphics2.Graphics;
 import kha.graphics2.VerTextAlignment;
 import kha.graphics2.HorTextAlignment;
@@ -32,6 +33,7 @@ class GraphicsExtension {
 			if (eAngle > sAngle) eAngle -= Math.PI * 2;
 		} else if (eAngle < sAngle) eAngle += Math.PI * 2;
 
+		radius += strength / 2;
 		if (segments <= 0)
 			segments = Math.floor(10 * Math.sqrt(radius));
 
@@ -50,7 +52,7 @@ class GraphicsExtension {
 			x = c * x - s * y;
 			y = c * y + s * t;
 
-			g2.drawLine(px, py, x + cx, y + cy, strength);
+			drawInnerLine(g2, x + cx, y + cy, px, py, strength);
 		}
 	}
 
@@ -107,11 +109,12 @@ class GraphicsExtension {
 			#if kha_html5
 				if (kha.SystemImpl.gl == null) {
 					var g: kha.js.CanvasGraphics = cast g2;
-					radius -= strength/2; // reduce radius to fit the line thickness within image width/height
+					radius -= strength / 2; // reduce radius to fit the line thickness within image width/height
 					g.drawCircle(cx, cy, radius, strength);
 					return;
 				}
 			#end
+			radius += strength / 2;
 
 			if (segments <= 0)
 				segments = Math.floor(10 * Math.sqrt(radius));
@@ -130,10 +133,25 @@ class GraphicsExtension {
 				var t = x;
 				x = c * x - s * y;
 				y = c * y + s * t;
-
-				g2.drawLine(px, py, x + cx, y + cy, strength);
+				drawInnerLine(g2, x + cx, y + cy, px, py, strength);
 			}
 		}
+
+	static function drawInnerLine(g2: Graphics, x1: Float, y1: Float, x2: Float, y2: Float, strength: Float): Void {
+		var side = y2 > y1 ? 1 : 0;
+		if (y2 == y1) side = x2 - x1 > 0 ? 1 : 0;
+
+		var vec = new FastVector2();
+		if (y2 == y1) vec.setFrom(new FastVector2(0, -1));
+		else vec.setFrom(new FastVector2(1, -(x2 - x1) / (y2 - y1)));
+		vec.length = strength;
+		var p1 = new FastVector2(x1 + side * vec.x, y1 + side * vec.y);
+		var p2 = new FastVector2(x2 + side * vec.x, y2 + side * vec.y);
+		var p3 = p1.sub(vec);
+		var p4 = p2.sub(vec);
+		g2.fillTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+		g2.fillTriangle(p3.x, p3.y, p2.x, p2.y, p4.x, p4.y);
+	}
 
 	/**
 	 * Draws a filled circle.
