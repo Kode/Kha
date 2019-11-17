@@ -114,7 +114,11 @@ class Audio1 {
 			channel = new ResamplingAudioChannel(loop, sound.sampleRate);
 		}
 		else {
+			#if sys_ios
+			channel = new ResamplingAudioChannel(loop, sound.sampleRate);
+			#else
 			channel = new AudioChannel(loop);
+			#end
 		}
 		channel.data = sound.uncompressedData;
 		var foundChannel = false;
