@@ -82,7 +82,7 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return Windowed;
+		return isFullscreen()? Fullscreen:Windowed;
 	}
 
 	function set_mode(mode: WindowMode): WindowMode {
