@@ -455,10 +455,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-
+        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+        GLES20.glScissor(x,y,width,height);
 	}
 
 	public function disableScissor(): Void {
-
+        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 	}
 }
