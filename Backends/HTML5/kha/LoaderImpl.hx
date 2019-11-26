@@ -182,7 +182,12 @@ class LoaderImpl {
 			loadRemote(desc, done, failed);
 		}
 		else {
+			#if js_classic
+			// readFile never called with remote.require
+			var fs = untyped __js__("require('fs')");
+			#else
 			var fs = untyped __js__("require('electron').remote.require('fs')");
+			#end
 			var path = untyped __js__("require('electron').remote.require('path')");
 			var app = untyped __js__("require('electron').remote.require('electron').app");
 			var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
