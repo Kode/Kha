@@ -455,10 +455,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-
+        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+        // Workaround to transform opengl y coordinate into kha's
+        GLES20.glScissor(x,System.windowHeight()-y-height,width,height);
 	}
 
 	public function disableScissor(): Void {
-
+        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 	}
 }

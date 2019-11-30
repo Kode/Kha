@@ -47,6 +47,7 @@ extern class GLES20 {
 	public static var GL_DEPTH_BUFFER_BIT: Int;
 	public static var GL_STENCIL_BUFFER_BIT: Int;
 	public static var GL_DEPTH_TEST: Int;
+    public static var GL_SCISSOR_TEST: Int;
 	public static var GL_ALWAYS: Int;
 	public static var GL_NEVER: Int;
 	public static var GL_EQUAL: Int;
@@ -126,6 +127,7 @@ extern class GLES20 {
 	public static function glCompileShader(shader : Int) : Void;
 	public static function glBlendFunc(srcfunc : Int, destfunc : Int) : Void;
 	public static function glViewport(x : Int, y : Int, width : Int, height : Int) : Void;
+    public static function glScissor(x : Int, y : Int, width : Int, height : Int) : Void;
 	public static function glClearColor(r : Single, g : Single, b : Single, a : Single) : Void;
 	public static function glClearDepthf(depth : Single) : Void;
 	public static function glAttachShader(program : Int, shader : Int) : Void;
