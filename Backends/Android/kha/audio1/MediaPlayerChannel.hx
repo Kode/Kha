@@ -56,7 +56,8 @@ class MediaPlayerChannel implements AudioChannel {
 
 	public function stop(): Void {
 		try {
-			mp.stop();
+			mp.pause();
+            mp.seekTo(0);
 		}
 		catch (e: Dynamic) {
 			trace(e);
