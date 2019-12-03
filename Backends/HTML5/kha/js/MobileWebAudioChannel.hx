@@ -49,14 +49,18 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public function pause(): Void {
+		final wasStopped = paused || stopped;
 		pauseTime = MobileWebAudio._context.currentTime - startTime;
 		paused = true;
+		if (wasStopped) return;
 		source.stop();
 	}
 
 	public function stop(): Void {
+		final wasStopped = paused || stopped;
 		paused = false;
 		stopped = true;
+		if (wasStopped) return;
 		source.stop();
 	}
 
