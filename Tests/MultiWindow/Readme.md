@@ -1,1 +1,0 @@
-node ../../make --graphics opengl
