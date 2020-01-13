@@ -14,7 +14,7 @@ class SyncBuilder {
 		var isBaseEntity = false;
 		for (i in Context.getLocalClass().get().interfaces) {
 			var intf = i.t.get();
-			if (intf.module == "kha.network.Sync") {
+			if (intf.module == "kha.netsync.Sync") {
 				isBaseEntity = true;
 				break;
 			}
@@ -27,7 +27,7 @@ class SyncBuilder {
 					var cexpr = f.expr;
 					cexpr = macro @:mergeBlock {
 						$cexpr;
-						kha.network.SyncBuilder.objects[_syncId()] = this;
+						kha.netsync.SyncBuilder.objects[_syncId()] = this;
 					}
 					f.expr = cexpr;
 					continue;
@@ -37,18 +37,18 @@ class SyncBuilder {
 
 			var synced = false;
 			// TODO: Avoid hardcoding the target ids
-			var target = 0;//kha.network.Session.RPC_SERVER;
+			var target = 0;//kha.netsync.Session.RPC_SERVER;
 			var isStatic = field.access.lastIndexOf(AStatic) >= 0;
 			for (meta in field.meta) {
 				if (meta.name == "sync" || meta.name == "synced") {
 					// TODO: Figure out if there is a "nicer" way to do this
 					for (param in meta.params) {
 						if (param.expr.equals(EConst(CString("server")))) {
-							target = 0;//kha.network.Session.RPC_SERVER;
+							target = 0;//kha.netsync.Session.RPC_SERVER;
 							break;
 						}
 						else if (param.expr.equals(EConst(CString("all")))) {
-							target = 1;//kha.network.Session.RPC_ALL;
+							target = 1;//kha.netsync.Session.RPC_ALL;
 							break;
 						}
 					}
@@ -105,7 +105,7 @@ class SyncBuilder {
 					size += $v { classname } .length + 2;
 					size += $v { methodname } .length + 2;
 					var bytes = haxe.io.Bytes.alloc(size);
-					bytes.set(0, kha.network.Session.REMOTE_CALL);
+					bytes.set(0, kha.netsync.Session.REMOTE_CALL);
 					bytes.set(1, $v { target });
 				}
 
@@ -194,18 +194,18 @@ class SyncBuilder {
 				#if sys_server
 
 				expr = macro {
-					if (kha.network.Session.the() != null) {
+					if (kha.netsync.Session.the() != null) {
 						$expr;
-						kha.network.Session.the().processRPC(bytes);
+						kha.netsync.Session.the().processRPC(bytes);
 					}
 				};
 				
 				#else
 				
 				expr = macro {
-					if (kha.network.Session.the() != null) {
+					if (kha.netsync.Session.the() != null) {
 						$expr;
-						kha.network.Session.the().sendToServer(bytes);
+						kha.netsync.Session.the().sendToServer(bytes);
 					}
 					else {
 						$original;
