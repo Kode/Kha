@@ -255,7 +255,7 @@ class SyncBuilder {
 				doc: null,
 				meta: [],
 				access: [APublic],
-				kind: FVar(macro: Int, macro kha.network.SyncBuilder.nextId++),
+				kind: FVar(macro: Int, macro kha.netsync.SyncBuilder.nextId++),
 				pos: Context.currentPos()
 			});
 		}
