@@ -1,6 +1,6 @@
 package kha.netsync;
 
-@:autoBuild(kha.network.SyncBuilder.build())
+@:autoBuild(kha.netsync.SyncBuilder.build())
 interface Sync {
 	function _syncId(): Int;
 }
