@@ -291,6 +291,10 @@ class StbTruetype {
 		var ch4 = p.readU8(pos + 3);
 		return ch4 | (ch3 << 8) | (ch2 << 16) | (ch1 << 24);
 	}
+
+	private static inline function to_stbtt_uint16(value: Int) {
+		return value & 0xffff;
+	}
 	
 	private static inline function ttFixed(p: Blob, pos: Int = 0): Stbtt_int32 { return ttLONG(p, pos); }
 	
@@ -439,7 +443,7 @@ class StbTruetype {
 
 			{
 				var offset, start: Stbtt_uint16;
-				var item: Stbtt_uint16 = (search - endCount) >> 1;
+				var item: Stbtt_uint16 = to_stbtt_uint16((search - endCount) >> 1);
 
 				STBTT_assert(unicode_codepoint <= ttUSHORT(data, endCount + 2*item));
 				start = ttUSHORT(data, index_map + 14 + segcount*2 + 2 + 2*item);
@@ -448,7 +452,7 @@ class StbTruetype {
 
 				offset = ttUSHORT(data, index_map + 14 + segcount*6 + 2 + 2*item);
 				if (offset == 0) {
-					return unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item);
+					return to_stbtt_uint16(unicode_codepoint + ttSHORT(data, index_map + 14 + segcount*4 + 2 + 2*item));
 				}
 				return ttUSHORT(data, offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
 			}
