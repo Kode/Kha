@@ -377,6 +377,11 @@ void run_kore() {
 #endif
 }
 
+extern "C" void kinc_memory_emergency() {
+	Kore::log(Kore::Warning, "Memory emergency");
+	__hxcpp_collect(true);
+}
+
 extern "C" void __hxcpp_main();
 extern int _hxcpp_argc;
 extern char **_hxcpp_argv;
