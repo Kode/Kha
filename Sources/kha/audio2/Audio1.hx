@@ -104,6 +104,8 @@ class Audio1 {
 			}
 		}
 
+		dynamicCompressor(samples, sampleCache2);
+
 		for (i in 0...samples) {
 			buffer.data.set(buffer.writeLocation, max(min(sampleCache2[i], 1.0), -1.0));
 			buffer.writeLocation += 1;
@@ -111,6 +113,38 @@ class Audio1 {
 				buffer.writeLocation = 0;
 			}
 		}
+	}
+
+	static var compressedLast = false;
+
+	static function dynamicCompressor(samples: Int, cache: kha.arrays.Float32Array) {
+		var sum = 0.0;
+		for (i in 0...samples) {
+			sum += cache[i];
+		}
+		sum /= samples;
+		if (sum > 0.9) {
+			compressedLast = true;
+			for (i in 0...samples) {
+				if (cache[i] > 0.9) {
+					cache[i] = 0.9 + (cache[i] - 0.9) * 0.2;
+				}
+			}
+		}
+		else if (compressedLast) {
+			compressedLast = false;
+			for (i in 0...samples) {
+				if (cache[i] > 0.9) {
+					cache[i] = 0.9 + (cache[i] - 0.9) * lerp(i, samples);
+				}
+			}
+		}
+	}
+
+	static inline function lerp(index: Int, samples: Int) {
+		final start = 0.2;
+		final end = 1.0;
+		return start + (index / samples) * (end - start);
 	}
 
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
