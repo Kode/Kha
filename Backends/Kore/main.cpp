@@ -16,6 +16,9 @@
 #include <Kore/Math/Random.h>
 #include <Kore/Threads/Mutex.h>
 #include <Kore/Threads/Thread.h>
+
+#include <kinc/audio2/audio.h>
+
 #if HXCPP_API_LEVEL >= 332
 #include <hxinc/kha/ScreenRotation.h>
 #include <hxinc/kha/SystemImpl.h>
@@ -366,9 +369,9 @@ void post_kore_init() {
 
 void run_kore() {
 	Kore::log(Kore::Info, "Starting application");
-	Kore::Audio2::audioCallback = mix;
-	Kore::Audio2::init();
-	::kha::audio2::Audio_obj::samplesPerSecond = Kore::Audio2::samplesPerSecond;
+	// Kore::Audio2::audioCallback = mix;
+	kinc_a2_init();
+	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second;
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)

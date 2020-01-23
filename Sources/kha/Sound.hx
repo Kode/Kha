@@ -10,7 +10,8 @@ import kha.audio2.ogg.vorbis.Reader;
  @:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
 class Sound implements Resource {
 	public var compressedData: Bytes;
-	public var uncompressedData: kha.arrays.Float32Array;
+	public var uncompressedData: cpp.RawPointer<cpp.Float32>;
+	public var uncompressedDataSize: Int;
 	public var length: Float = 0; // in seconds
 	public var channels: Int = 0;
 	public var sampleRate: Int = 0;
@@ -21,7 +22,8 @@ class Sound implements Resource {
 
 #if kha_kore
 	public function uncompress(done: Void->Void): Void {
-		if (uncompressedData != null) {
+		done();
+		/*if (uncompressedData != null) {
 			done();
 			return;
 		}
@@ -54,7 +56,7 @@ class Sound implements Resource {
 		untyped __cpp__("delete[] data");
 
 		compressedData = null;
-		done();
+		done();*/
 	}
 #else
 	public function uncompress(done: Void->Void): Void {

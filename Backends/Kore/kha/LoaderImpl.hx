@@ -134,10 +134,11 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: Float32Array, channels: Int, sampleRate: Int, length: Float) {
+	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: cpp.RawPointer<cpp.Float32>, size: Int, channels: Int, sampleRate: Int, length: Float) {
 		var sound = new Sound();
 		sound.compressedData = null;
 		sound.uncompressedData = samples;
+		sound.uncompressedDataSize = size;
 		sound.channels = channels;
 		sound.sampleRate = sampleRate;
 		sound.length = length;
@@ -193,10 +194,7 @@ class LoaderImpl {
 						soundErrored(file.index, file.name);
 					}
 					else if (file.data.sound.samples != NULL) {
-						::kha::arrays::Float32ArrayPrivate buffer = createFloat32Array();
-						buffer->self.data = file.data.sound.samples;
-						buffer->self.myLength = file.data.sound.size;
-						soundLoadedUncompressed(file.index, buffer, file.data.sound.channels, file.data.sound.sample_rate, file.data.sound.length);
+						soundLoadedUncompressed(file.index, file.data.sound.samples, file.data.sound.size, file.data.sound.channels, file.data.sound.sample_rate, file.data.sound.length);
 					}
 					else {
 						Array<unsigned char> buffer = Array_obj<unsigned char>::fromData(file.data.sound.compressed_samples, file.data.sound.size);

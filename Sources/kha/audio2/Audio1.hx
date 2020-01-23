@@ -1,5 +1,6 @@
 package kha.audio2;
 
+/*
 #if cpp
 import sys.thread.Mutex;
 #end
@@ -221,4 +222,96 @@ class Audio1 {
 
 		return foundChannel ? channel : null;
 	}
+}
+*/
+
+@:headerCode('
+#include <kinc/pch.h>
+#include <khalib/audio1.h>
+')
+
+@:headerClassCode("AudioChannel *channel;")
+class KincAudioChannel implements kha.audio1.AudioChannel {
+	public function new(data: cpp.RawPointer<cpp.Float32>, size: Int) {
+		allocate(data, size);
+	}
+
+	@:functionCode('
+		channel = new AudioChannel;
+		channel->data = data;
+		channel->data_length = size;
+		channel->finished = false;
+		channel->volume = 1.0f;
+		channel->position = 0;
+		channel->paused = false;
+		channel->stopped = false;
+		channel->looping = false;
+	')
+	function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int): Void {
+
+	}
+
+	public function play(): Void {
+
+	}
+
+	public function pause(): Void {
+
+	}
+
+	public function stop(): Void {
+
+	}
+
+	public var length(get, null): Float; // Seconds
+	
+	function get_length(): Float {
+		return 1;
+	}
+
+	public var position(get, set): Float; // Seconds
+
+	function get_position(): Float {
+		return 0;
+	}
+	function set_position(value: Float): Float {
+		return 0;
+	}
+	
+	public var volume(get, set): Float;
+	
+	function get_volume(): Float {
+		return 1;
+	}
+
+	function set_volume(value: Float): Float {
+		return 1;
+	}
+
+	public var finished(get, null): Bool;
+	
+	function get_finished(): Bool {
+		return false;
+	}
+}
+
+class Audio1 {
+	@:noCompletion
+	@:functionCode('Audio_init();')
+	public static function _init(): Void {
+
+	}
+
+	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
+		var channel = new KincAudioChannel(sound.uncompressedData, sound.uncompressedDataSize);
+		play2(channel, loop);
+		return channel;
+	}
+
+	@:functionCode('Audio_play(channel->channel, loop);')
+	static function play2(channel: KincAudioChannel, loop: Bool) {
+
+	}
+	
+	//public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel;
 }
