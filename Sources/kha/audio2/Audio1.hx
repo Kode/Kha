@@ -243,13 +243,16 @@ static int sampleLength(AudioChannel *channel, int sampleRate) {
 @:headerClassCode("AudioChannel *channel;")
 class KincAudioChannel implements kha.audio1.AudioChannel {
 	public function new() {
+		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+	}
+
+	@:functionCode('AudioChannel_dec(channel->channel);')
+	@:void static function finalize(channel: KincAudioChannel): Void {
 		
 	}
 
 	@:functionCode('
-		rc_floats_inc((rc_floats*)data);
-		channel = new AudioChannel;
-		channel->data = (rc_floats*)data;
+		channel = AudioChannel_create((rc_floats*)data);
 		channel->data_length = size;
 		channel->volume = 1.0f;
 		channel->position = 0;

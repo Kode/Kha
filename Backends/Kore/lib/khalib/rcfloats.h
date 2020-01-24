@@ -16,7 +16,7 @@ struct rc_floats {
 
 static struct rc_floats *rc_floats_create(size_t count) {
 	struct rc_floats *floats = (struct rc_floats *)malloc(sizeof(struct rc_floats) - sizeof(float) + count * sizeof(float));
-	KINC_ATOMIC_EXCHANGE_32(&floats->reference_count, 0);
+	KINC_ATOMIC_EXCHANGE_32(&floats->reference_count, 1);
 	return floats;
 }
 

@@ -142,15 +142,28 @@ void AudioChannel_nextSamples(struct AudioChannel *channel, float *requestedSamp
 
 void AudioChannel_playAgain(struct AudioChannel *channel) {
 	kinc_mutex_lock(&mutex);
-	for (int i = 0; i < CHANNEL_COUNT; ++i) {
-		if (soundChannels[i] == channel) {
-			soundChannels[i] = NULL;
-		}
-	}
-	for (int i = 0; i < CHANNEL_COUNT; ++i) {
-		if (soundChannels[i] == NULL || soundChannels[i]->stopped || soundChannels[i] == channel) {
+	int i;
+	for (i = 0; i < CHANNEL_COUNT; ++i) {
+		if (soundChannels[i] == NULL) {
+			AudioChannel_inc(channel);
 			soundChannels[i] = channel;
 			break;
+		}
+		if (soundChannels[i] == channel) {
+			break;
+		}
+		if (soundChannels[i]->stopped) {
+			AudioChannel_dec(soundChannels[i]);
+			AudioChannel_inc(channel);
+			soundChannels[i] = channel;
+			break;
+		}
+	}
+	++i;
+	for (; i < CHANNEL_COUNT; ++i) {
+		if (soundChannels[i] == channel) {
+			AudioChannel_dec(soundChannels[i]);
+			soundChannels[i] = NULL;
 		}
 	}
 	kinc_mutex_unlock(&mutex);
@@ -215,6 +228,9 @@ static void mix(kinc_a2_buffer_t *buffer, int samples) {
 
 	kinc_mutex_lock(&mutex);
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
+		if (soundChannels[i] != NULL) {
+			AudioChannel_inc(soundChannels[i]);
+		}
 		internalSoundChannels[i] = soundChannels[i];
 	}
 	kinc_mutex_unlock(&mutex);
@@ -225,6 +241,13 @@ static void mix(kinc_a2_buffer_t *buffer, int samples) {
 		AudioChannel_nextSamples(channel, sampleCache1, samples, kinc_a2_samples_per_second);
 		for (int j = 0; j < samples; ++j) {
 			sampleCache2[j] += sampleCache1[j] * channel->volume;
+		}
+	}
+
+	for (int i = 0; i < CHANNEL_COUNT; ++i) {
+		if (internalSoundChannels[i] != NULL) {
+			AudioChannel_dec(internalSoundChannels[i]);
+			internalSoundChannels[i] = NULL;
 		}
 	}
 
@@ -285,6 +308,10 @@ bool Audio_play(struct AudioChannel *channel, bool loop /*= false*/) {
 	kinc_mutex_lock(&mutex);
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
 		if (soundChannels[i] == NULL || soundChannels[i]->stopped) {
+			if (soundChannels[i] != NULL) {
+				AudioChannel_dec(soundChannels[i]);
+			}
+			AudioChannel_inc(channel);
 			soundChannels[i] = channel;
 			foundChannel = true;
 			break;
