@@ -8,16 +8,17 @@ import kha.audio2.ogg.vorbis.Reader;
  * Contains compressed or uncompressed audio data.
  */
  @:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
-class Sound implements Resource {
+ @:headerCode('#include <khalib/rcfloats.h>')
+ class Sound implements Resource {
 	public var compressedData: Bytes;
-	public var uncompressedData: cpp.RawPointer<cpp.Float32>;
+	public var uncompressedData: cpp.Star<cpp.Void>;
 	public var uncompressedDataSize: Int;
 	public var length: Float = 0; // in seconds
 	public var channels: Int = 0;
 	public var sampleRate: Int = 0;
 	
 	public function new() {
-		
+		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
 	}
 
 #if kha_kore
@@ -95,6 +96,15 @@ class Sound implements Resource {
 
 	public function unload() {
 		compressedData = null;
-		uncompressedData = null;
+		unload2();
+	}
+
+	@:functionCode('rc_floats_dec((rc_floats*)uncompressedData); uncompressedData = NULL;')
+	function unload2() {
+
+	}
+
+	@:void static function finalize(sound: Sound): Void {
+		sound.unload();
 	}
 }

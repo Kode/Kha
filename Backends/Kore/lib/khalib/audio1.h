@@ -1,5 +1,7 @@
 #pragma once
 
+#include "rcfloats.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -9,7 +11,7 @@ struct AudioChannel {
 	volatile float volume;
 	volatile bool paused;
 	volatile bool stopped;
-	float *data;
+	struct rc_floats *data;
 	int data_length;
 	bool looping;
 	int sample_rate;

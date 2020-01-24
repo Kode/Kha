@@ -40,7 +40,7 @@ static bool string_ends_with(char *str, const char *end) {
 	return strcmp(&str[str_len - end_len], end) == 0;
 }
 
-static void run(void* param) {
+static void run(void *param) {
 	for (;;) {
 		kinc_event_wait(&event);
 
@@ -63,7 +63,7 @@ static void run(void* param) {
 				kinc_file_reader_t reader;
 				if (kinc_file_reader_open(&reader, next.name, KINC_FILE_TYPE_ASSET)) {
 					next.data.blob.size = kinc_file_reader_size(&reader);
-					next.data.blob.bytes = (uint8_t*)malloc(next.data.blob.size);
+					next.data.blob.bytes = (uint8_t *)malloc(next.data.blob.size);
 					kinc_file_reader_read(&reader, next.data.blob.bytes, next.data.blob.size);
 					kinc_file_reader_close(&reader);
 				}
@@ -84,7 +84,8 @@ static void run(void* param) {
 						free(data);
 						next.error = true;
 					}
-				} else {
+				}
+				else {
 					next.error = true;
 				}
 				break;
@@ -104,24 +105,23 @@ static void run(void* param) {
 						int samplesPerSecond = 0;
 
 						int16_t *data = NULL;
-						samples = stb_vorbis_decode_memory(next.data.sound.compressed_samples, (int)next.data.sound.size, &channels, &samplesPerSecond,
-						                                   &data);
+						samples = stb_vorbis_decode_memory(next.data.sound.compressed_samples, (int)next.data.sound.size, &channels, &samplesPerSecond, &data);
 
 						if (channels == 1) {
 							next.data.sound.length = samples / (float)samplesPerSecond;
 							next.data.sound.size = samples * 2;
-							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
+							next.data.sound.samples = rc_floats_create(next.data.sound.size);
 							for (int i = 0; i < samples; ++i) {
-								next.data.sound.samples[i * 2 + 0] = data[i] / 32767.0f;
-								next.data.sound.samples[i * 2 + 1] = data[i] / 32767.0f;
+								next.data.sound.samples->floats[i * 2 + 0] = data[i] / 32767.0f;
+								next.data.sound.samples->floats[i * 2 + 1] = data[i] / 32767.0f;
 							}
 						}
 						else {
 							next.data.sound.length = samples / (float)samplesPerSecond;
 							next.data.sound.size = samples * 2;
-							next.data.sound.samples = (float*)malloc(next.data.sound.size * sizeof(float));
+							next.data.sound.samples = rc_floats_create(next.data.sound.size);
 							for (int i = 0; i < next.data.sound.size; ++i) {
-								next.data.sound.samples[i] = data[i] / 32767.0f;
+								next.data.sound.samples->floats[i] = data[i] / 32767.0f;
 							}
 						}
 						next.data.sound.channels = channels;
@@ -140,14 +140,15 @@ static void run(void* param) {
 				else {
 					kinc_a1_sound_t *sound = kinc_a1_sound_create(next.name);
 					next.data.sound.size = sound->size * 2;
-					next.data.sound.samples = (float *)malloc(next.data.sound.size * sizeof(float));
+					next.data.sound.samples = rc_floats_create(next.data.sound.size);
 					for (int i = 0; i < sound->size; ++i) {
-						next.data.sound.samples[i * 2 + 0] = (float)(sound->left[i] / 32767.0);
-						next.data.sound.samples[i * 2 + 1] = (float)(sound->right[i] / 32767.0);
+						next.data.sound.samples->floats[i * 2 + 0] = (float)(sound->left[i] / 32767.0);
+						next.data.sound.samples->floats[i * 2 + 1] = (float)(sound->right[i] / 32767.0);
 					}
 					next.data.sound.channels = sound->format.channels;
 					next.data.sound.sample_rate = sound->format.samples_per_second;
-					next.data.sound.length = (sound->size / (sound->format.bits_per_sample / 8) / sound->format.channels) / (float)sound->format.samples_per_second;
+					next.data.sound.length =
+					    (sound->size / (sound->format.bits_per_sample / 8) / sound->format.channels) / (float)sound->format.samples_per_second;
 					kinc_a1_sound_destroy(sound);
 				}
 				break;

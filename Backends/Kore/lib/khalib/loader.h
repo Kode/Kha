@@ -5,6 +5,8 @@
 
 #include <kinc/image.h>
 
+#include "rcfloats.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,7 +28,7 @@ typedef struct {
 } kha_image_t;
 
 typedef struct {
-	float *samples;
+	struct rc_floats *samples;
 	uint8_t *compressed_samples;
 	size_t size;
 	size_t channels;

@@ -225,7 +225,7 @@ class Audio1 {
 }
 */
 
-@:headerCode('
+@:cppFileCode('
 #include <kinc/pch.h>
 #include <kinc/audio2/audio.h>
 #include <khalib/audio1.h>
@@ -239,7 +239,7 @@ static int sampleLength(AudioChannel *channel, int sampleRate) {
 	return value % 2 == 0 ? value : value + 1;
 }
 ')
-
+@:headerCode('struct AudioChannel;')
 @:headerClassCode("AudioChannel *channel;")
 class KincAudioChannel implements kha.audio1.AudioChannel {
 	public function new() {
@@ -247,8 +247,9 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	@:functionCode('
+		rc_floats_inc((rc_floats*)data);
 		channel = new AudioChannel;
-		channel->data = data;
+		channel->data = (rc_floats*)data;
 		channel->data_length = size;
 		channel->volume = 1.0f;
 		channel->position = 0;
@@ -257,7 +258,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel->looping = looping;
 		channel->sample_rate = sampleRate;
 	')
-	public function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int, sampleRate: Int, looping: Bool): Void {
+	public function allocate(data: cpp.Star<cpp.Void>, size: Int, sampleRate: Int, looping: Bool): Void {
 
 	}
 
@@ -315,6 +316,11 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	}
 }
 
+@:cppFileCode('
+#include <kinc/pch.h>
+#include <kinc/audio2/audio.h>
+#include <khalib/audio1.h>
+')
 class Audio1 {
 	@:noCompletion
 	@:functionCode('Audio_init();')

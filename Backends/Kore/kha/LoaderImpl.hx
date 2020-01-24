@@ -134,7 +134,7 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: cpp.RawPointer<cpp.Float32>, size: Int, channels: Int, sampleRate: Int, length: Float) {
+	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: cpp.Star<cpp.Void>, size: Int, channels: Int, sampleRate: Int, length: Float) {
 		var sound = new Sound();
 		sound.compressedData = null;
 		sound.uncompressedData = samples;
