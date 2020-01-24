@@ -17,7 +17,7 @@ struct AudioChannel *soundChannels[CHANNEL_COUNT];
 
 struct AudioChannel *internalSoundChannels[CHANNEL_COUNT];
 
-static float roundf(float value) {
+static float round_float(float value) {
 	return floorf(value + 0.5f);
 }
 
@@ -193,7 +193,7 @@ float AudioChannel_position_in_seconds(struct AudioChannel *channel) {
 }
 
 float AudioChannel_set_position_in_seconds(struct AudioChannel *channel, float value) {
-	channel->position = (int)roundf(value * kinc_a2_samples_per_second * 2);
+	channel->position = (int)round_float(value * kinc_a2_samples_per_second * 2);
 	channel->position = maxi(mini(channel->position, channel->data_length), 0);
 	return value;
 }
