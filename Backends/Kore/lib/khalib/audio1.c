@@ -148,7 +148,7 @@ void AudioChannel_playAgain(struct AudioChannel *channel) {
 		}
 	}
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
-		if (soundChannels[i] == NULL || soundChannels[i]->finished || soundChannels[i] == channel) {
+		if (soundChannels[i] == NULL || soundChannels[i]->stopped || soundChannels[i] == channel) {
 			soundChannels[i] = channel;
 			break;
 		}
@@ -221,7 +221,7 @@ static void mix(kinc_a2_buffer_t *buffer, int samples) {
 
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
 		struct AudioChannel *channel = internalSoundChannels[i];
-		if (channel == NULL || channel->finished) continue;
+		if (channel == NULL || channel->paused || channel->stopped) continue;
 		AudioChannel_nextSamples(channel, sampleCache1, samples, kinc_a2_samples_per_second);
 		for (int j = 0; j < samples; ++j) {
 			sampleCache2[j] += sampleCache1[j] * channel->volume;
@@ -284,7 +284,7 @@ bool Audio_play(struct AudioChannel *channel, bool loop /*= false*/) {
 
 	kinc_mutex_lock(&mutex);
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
-		if (soundChannels[i] == NULL || soundChannels[i]->finished) {
+		if (soundChannels[i] == NULL || soundChannels[i]->stopped) {
 			soundChannels[i] = channel;
 			foundChannel = true;
 			break;

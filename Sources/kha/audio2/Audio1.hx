@@ -250,15 +250,14 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel = new AudioChannel;
 		channel->data = data;
 		channel->data_length = size;
-		channel->finished = false;
 		channel->volume = 1.0f;
 		channel->position = 0;
 		channel->paused = false;
 		channel->stopped = false;
-		channel->looping = false;
+		channel->looping = looping;
 		channel->sample_rate = sampleRate;
 	')
-	public function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int, sampleRate: Int): Void {
+	public function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int, sampleRate: Int, looping: Bool): Void {
 
 	}
 
@@ -325,7 +324,7 @@ class Audio1 {
 
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		var channel = new KincAudioChannel();
-		channel.allocate(sound.uncompressedData, sound.uncompressedDataSize, sound.sampleRate);
+		channel.allocate(sound.uncompressedData, sound.uncompressedDataSize, sound.sampleRate, loop);
 		play2(channel, loop);
 		return channel;
 	}

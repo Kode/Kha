@@ -9,7 +9,6 @@ struct AudioChannel {
 	volatile float volume;
 	volatile bool paused;
 	volatile bool stopped;
-	volatile bool finished;
 	float *data;
 	int data_length;
 	bool looping;
