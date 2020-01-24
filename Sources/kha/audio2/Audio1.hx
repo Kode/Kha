@@ -227,13 +227,23 @@ class Audio1 {
 
 @:headerCode('
 #include <kinc/pch.h>
+#include <kinc/audio2/audio.h>
 #include <khalib/audio1.h>
+#include <math.h>
+
+static double maxd(double a, double b) { return a > b ? a : b; }
+static double mind(double a, double b) { return a < b ? a : b; }
+static double roundd(double value) { return floor(value + 0.5); }
+static int sampleLength(AudioChannel *channel, int sampleRate) {
+	int value = (int)ceil(channel->data_length * (sampleRate / channel->sample_rate));
+	return value % 2 == 0 ? value : value + 1;
+}
 ')
 
 @:headerClassCode("AudioChannel *channel;")
 class KincAudioChannel implements kha.audio1.AudioChannel {
-	public function new(data: cpp.RawPointer<cpp.Float32>, size: Int) {
-		allocate(data, size);
+	public function new() {
+		
 	}
 
 	@:functionCode('
@@ -246,50 +256,61 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel->paused = false;
 		channel->stopped = false;
 		channel->looping = false;
+		channel->sample_rate = sampleRate;
 	')
-	function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int): Void {
+	public function allocate(data: cpp.RawPointer<cpp.Float32>, size: Int, sampleRate: Int): Void {
 
 	}
 
+	@:functionCode('channel->paused = false; channel->stopped = false; AudioChannel_playAgain(channel);')
 	public function play(): Void {
-
+		
 	}
 
+	@:functionCode('channel->paused = true;')
 	public function pause(): Void {
-
+		
 	}
 
+	@:functionCode('channel->position = 0; channel->stopped = true;')
 	public function stop(): Void {
-
+		
 	}
 
 	public var length(get, null): Float; // Seconds
 	
+	@:functionCode('return (double)channel->data_length / (double)channel->sample_rate / 2.0;') // 44.1 khz in stereo
 	function get_length(): Float {
-		return 1;
+		return 0;
 	}
 
 	public var position(get, set): Float; // Seconds
 
+	@:functionCode('return (double)channel->position / (double)channel->sample_rate / 2.0;')
 	function get_position(): Float {
 		return 0;
 	}
+
+	@:functionCode('double pos = round(value * channel->sample_rate * 2.0); channel->position = maxd(mind(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0.0); return value;')
 	function set_position(value: Float): Float {
 		return 0;
 	}
-	
+
 	public var volume(get, set): Float;
 	
+	@:functionCode('return channel->volume;')
 	function get_volume(): Float {
-		return 1;
+		return 0;
 	}
 
+	@:functionCode('channel->volume = value; return value;')
 	function set_volume(value: Float): Float {
-		return 1;
+		return 0;
 	}
 
 	public var finished(get, null): Bool;
 	
+	@:functionCode('return channel->stopped;')
 	function get_finished(): Bool {
 		return false;
 	}
@@ -303,7 +324,8 @@ class Audio1 {
 	}
 
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
-		var channel = new KincAudioChannel(sound.uncompressedData, sound.uncompressedDataSize);
+		var channel = new KincAudioChannel();
+		channel.allocate(sound.uncompressedData, sound.uncompressedDataSize, sound.sampleRate);
 		play2(channel, loop);
 		return channel;
 	}
