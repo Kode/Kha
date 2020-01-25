@@ -257,11 +257,11 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel = AudioChannel_create((rc_floats*)data);
 		channel->data_length = size;
 		channel->volume = 1.0f;
-		channel->position = 0;
 		channel->paused = false;
 		channel->stopped = false;
 		channel->looping = looping;
 		channel->sample_rate = sampleRate;
+		KINC_ATOMIC_EXCHANGE_32(&channel->position , 0);
 	')
 	public function allocate(data: cpp.Star<cpp.Void>, size: Int, sampleRate: Int, looping: Bool): Void {
 
@@ -277,7 +277,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		
 	}
 
-	@:functionCode('channel->position = 0; channel->stopped = true;')
+	@:functionCode('channel->stopped = true; KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);')
 	public function stop(): Void {
 		
 	}
@@ -299,7 +299,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	@:functionCode('
 		int pos = (int)roundd(value * (double)kinc_a2_samples_per_second * 2.0);
 		pos = pos % 2 == 0 ? pos : pos + 1;
-		channel->position = maxi(mini(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0);
+		KINC_ATOMIC_EXCHANGE_32(&channel->position, maxi(mini(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0));
 		return value;')
 	function set_position(value: Float): Float {
 		return 0;

@@ -9,10 +9,11 @@ extern "C" {
 struct AudioChannel {
 #ifdef KORE_PS4
 	volatile int32_t reference_count;
+	volatile int32_t position;
 #else
 	volatile long reference_count;
+	volatile long position;
 #endif
-	volatile int position;
 	volatile float volume;
 	volatile bool paused;
 	volatile bool stopped;

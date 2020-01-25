@@ -37,34 +37,6 @@ static float minf(float a, float b) {
 	return a < b ? a : b;
 }
 
-/*void AudioChannel_nextSamples(struct AudioChannel *channel, float *requestedSamples, int requestedLength, int sampleRate) {
-    if (channel->paused || channel->stopped) {
-        for (int i = 0; i < requestedLength; ++i) {
-            requestedSamples[i] = 0;
-        }
-        return;
-    }
-
-    int requestedSamplesIndex = 0;
-    while (requestedSamplesIndex < requestedLength) {
-        for (int i = 0; i < mini(channel->data_length - channel->position, requestedLength - requestedSamplesIndex); ++i) {
-            requestedSamples[requestedSamplesIndex++] = channel->data[channel->position++];
-        }
-
-        if (channel->position >= channel->data_length) {
-            channel->position = 0;
-            if (!channel->looping) {
-                channel->stopped = true;
-                break;
-            }
-        }
-    }
-
-    while (requestedSamplesIndex < requestedLength) {
-        requestedSamples[requestedSamplesIndex++] = 0;
-    }
-}*/
-
 static int sampleLength(struct AudioChannel *channel, int sampleRate) {
 	int value = (int)ceilf((float)channel->data_length * ((float)sampleRate / (float)channel->sample_rate));
 	return value % 2 == 0 ? value : value + 1;
@@ -113,6 +85,9 @@ static float sample(struct AudioChannel *channel, int position, int sampleRate) 
 }
 
 void AudioChannel_nextSamples(struct AudioChannel *channel, float *requestedSamples, int requestedLength, int sampleRate) {
+	const int start_position = channel->position;
+	int position = start_position;
+
 	if (channel->paused || channel->stopped) {
 		for (int i = 0; i < requestedLength; ++i) {
 			requestedSamples[i] = 0;
@@ -122,18 +97,21 @@ void AudioChannel_nextSamples(struct AudioChannel *channel, float *requestedSamp
 
 	int requestedSamplesIndex = 0;
 	while (requestedSamplesIndex < requestedLength) {
-		for (int i = 0; i < mini(sampleLength(channel, sampleRate) - channel->position, requestedLength - requestedSamplesIndex); ++i) {
-			requestedSamples[requestedSamplesIndex++] = sample(channel, channel->position++, sampleRate);
+		int iterations = mini(sampleLength(channel, sampleRate) - position, requestedLength - requestedSamplesIndex);
+		for (int i = 0; i < iterations; ++i) {
+			requestedSamples[requestedSamplesIndex++] = sample(channel, position++, sampleRate);
 		}
 
-		if (channel->position >= sampleLength(channel, sampleRate)) {
-			channel->position = 0;
+		if (position >= sampleLength(channel, sampleRate)) {
+			position = 0;
 			if (!channel->looping) {
 				channel->stopped = true;
 				break;
 			}
 		}
 	}
+
+	KINC_ATOMIC_COMPARE_EXCHANGE(&channel->position, start_position, position);
 
 	while (requestedSamplesIndex < requestedLength) {
 		requestedSamples[requestedSamplesIndex++] = 0;
@@ -180,22 +158,12 @@ void AudioChannel_pause(struct AudioChannel *channel) {
 }
 
 void AudioChannel_stop(struct AudioChannel *channel) {
-	channel->position = 0;
 	channel->stopped = true;
+	KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);
 }
 
 float AudioChannel_length_in_seconds(struct AudioChannel *channel) {
 	return channel->data_length / (float)kinc_a2_samples_per_second / 2.0f; // Stereo
-}
-
-float AudioChannel_position_in_seconds(struct AudioChannel *channel) {
-	return channel->position / (float)kinc_a2_samples_per_second / 2.0f;
-}
-
-float AudioChannel_set_position_in_seconds(struct AudioChannel *channel, float value) {
-	channel->position = (int)round_float(value * kinc_a2_samples_per_second * 2);
-	channel->position = maxi(mini(channel->position, channel->data_length), 0);
-	return value;
 }
 
 struct Buffer {
