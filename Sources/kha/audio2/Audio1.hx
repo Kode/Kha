@@ -235,7 +235,7 @@ static double maxd(double a, double b) { return a > b ? a : b; }
 static double mind(double a, double b) { return a < b ? a : b; }
 static double roundd(double value) { return floor(value + 0.5); }
 static int sampleLength(AudioChannel *channel, int sampleRate) {
-	int value = (int)ceil(channel->data_length * (sampleRate / channel->sample_rate));
+	int value = (int)ceilf((float)channel->data_length * ((float)sampleRate / (float)channel->sample_rate));
 	return value % 2 == 0 ? value : value + 1;
 }
 ')
@@ -294,7 +294,10 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		return 0;
 	}
 
-	@:functionCode('double pos = round(value * channel->sample_rate * 2.0); channel->position = maxd(mind(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0.0); return value;')
+	@:functionCode('
+		double pos = round(value * channel->sample_rate * 2.0);
+		channel->position = maxd(mind(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0.0);
+		return value;')
 	function set_position(value: Float): Float {
 		return 0;
 	}

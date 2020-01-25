@@ -66,7 +66,7 @@ static float minf(float a, float b) {
 }*/
 
 static int sampleLength(struct AudioChannel *channel, int sampleRate) {
-	int value = (int)ceil(channel->data_length * (sampleRate / channel->sample_rate));
+	int value = (int)ceilf((float)channel->data_length * ((float)sampleRate / (float)channel->sample_rate));
 	return value % 2 == 0 ? value : value + 1;
 }
 
