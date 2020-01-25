@@ -231,6 +231,8 @@ class Audio1 {
 #include <khalib/audio1.h>
 #include <math.h>
 
+static int maxi(int a, int b) { return a > b ? a : b; }
+static int mini(int a, int b) { return a < b ? a : b; }
 static double maxd(double a, double b) { return a > b ? a : b; }
 static double mind(double a, double b) { return a < b ? a : b; }
 static double roundd(double value) { return floor(value + 0.5); }
@@ -289,14 +291,15 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 
 	public var position(get, set): Float; // Seconds
 
-	@:functionCode('return (double)channel->position / (double)channel->sample_rate / 2.0;')
+	@:functionCode('return (double)channel->position / (double)kinc_a2_samples_per_second / 2.0;')
 	function get_position(): Float {
 		return 0;
 	}
 
 	@:functionCode('
-		double pos = round(value * channel->sample_rate * 2.0);
-		channel->position = maxd(mind(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0.0);
+		int pos = (int)roundd(value * (double)kinc_a2_samples_per_second * 2.0);
+		pos = pos % 2 == 0 ? pos : pos + 1;
+		channel->position = maxi(mini(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0);
 		return value;')
 	function set_position(value: Float): Float {
 		return 0;
