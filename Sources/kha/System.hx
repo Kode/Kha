@@ -171,6 +171,18 @@ class System {
 		SystemImpl.login();
 	}
 
+	public static function waitingForLogin(): Bool {
+		return SystemImpl.waitingForLogin();
+	}
+
+	public static function allowUserChange(): Void {
+		SystemImpl.allowUserChange();
+	}
+
+	public static function disallowUserChange(): Void {
+		SystemImpl.disallowUserChange();
+	}
+
 	static function render(framebuffers: Array<Framebuffer>): Void {
 		for (listener in renderListeners) {
 			listener(framebuffers);

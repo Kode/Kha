@@ -448,10 +448,23 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode('
-		Kore::System::login();
-	')
+	@:functionCode('Kore::System::login();')
 	public static function login(): Void {
+
+	}
+
+	@:functionCode('return Kore::System::waitingForLogin();')
+	public static function waitingForLogin(): Bool {
+		return false;
+	}
+
+	@:functionCode('kinc_disallow_user_change();')
+	public static function disallowUserChange(): Void {
+
+	}
+
+	@:functionCode('kinc_allow_user_change();')
+	public static function allowUserChange(): Void {
 
 	}
 
