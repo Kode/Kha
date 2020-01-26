@@ -175,8 +175,8 @@ class ImageShaderPainter {
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
-		g.setTexture(myPipeline.textureLocation, lastTexture);
 		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
+		g.setTexture(myPipeline.textureLocation, lastTexture);
 		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
@@ -627,9 +627,9 @@ class TextShaderPainter {
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setPipeline(myPipeline.pipeline);
-		g.setTexture(myPipeline.textureLocation, lastTexture);
 		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
+		g.setTexture(myPipeline.textureLocation, lastTexture);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
