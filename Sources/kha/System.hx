@@ -171,6 +171,10 @@ class System {
 		SystemImpl.login();
 	}
 
+	public static function waitingForLogin(): Bool {
+		return SystemImpl.waitingForLogin();
+	}
+
 	public static function allowUserChange(): Void {
 		SystemImpl.allowUserChange();
 	}
