@@ -270,10 +270,11 @@ static inline function lerp(index : Int, samples : Int) {
     return start + (index / samples) * (end - start);
 }*/
 
-bool Audio_play(struct AudioChannel *channel, bool loop /*= false*/) {
+bool Audio_play(struct AudioChannel *channel, bool loop) {
 	bool foundChannel = false;
 
 	kinc_mutex_lock(&mutex);
+	channel->looping = loop;
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
 		if (soundChannels[i] == NULL || soundChannels[i]->stopped) {
 			if (soundChannels[i] != NULL) {
