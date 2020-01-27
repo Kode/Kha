@@ -105,12 +105,13 @@ class ResamplingAudioChannel extends AudioChannel {
 	}
 
 	override function get_position(): Float {
-		return myPosition / this.sampleRate / 2;
+		return myPosition / kha.audio2.Audio.samplesPerSecond / 2;
 	}
 
 	override function set_position(value: Float): Float {
-		myPosition = Math.round(value * this.sampleRate * 2);
-		myPosition = max(min(myPosition, sampleLength(kha.audio2.Audio.samplesPerSecond)), 0);
+		var pos = Math.round(value * kha.audio2.Audio.samplesPerSecond * 2.0);
+		pos = pos % 2 == 0 ? pos : pos + 1;
+		myPosition = max(min(pos, sampleLength(kha.audio2.Audio.samplesPerSecond)), 0);
 		return value;
 	}
 	
