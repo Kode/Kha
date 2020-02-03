@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 struct rc_floats {
-#ifdef KORE_PS4
+#ifdef KORE_SONY
 	volatile int32_t reference_count;
 #else
 	volatile long reference_count;
