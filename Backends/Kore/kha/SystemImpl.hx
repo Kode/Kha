@@ -38,6 +38,8 @@ import kha.graphics4.DepthStencilFormat;
 #include <Kore/Display.h>
 #include <Kore/Window.h>
 
+#include <kinc/system.h>
+
 Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win);
 Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame);
 
@@ -280,11 +282,13 @@ class SystemImpl {
 		System.render(framebuffers);
 		if (kha.kore.graphics4.Graphics.lastWindow != -1) {
 			var win = kha.kore.graphics4.Graphics.lastWindow;
-			untyped __cpp__('Kore::Graphics4::end(win);');
+			untyped __cpp__('Kore::Graphics4::end(win)');
 		}
 		else {
-			untyped __cpp__('Kore::Graphics4::begin(0);');
-			untyped __cpp__('Kore::Graphics4::end(0);');
+			trace("Emergency begin/end");
+			untyped __cpp__('Kore::Graphics4::begin(0)');
+			untyped __cpp__('Kore::Graphics4::clear(Kore::Graphics4::ClearColorFlag | Kore::Graphics4::ClearDepthFlag | Kore::Graphics4::ClearStencilFlag)');
+			untyped __cpp__('Kore::Graphics4::end(0)');
 		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
 
