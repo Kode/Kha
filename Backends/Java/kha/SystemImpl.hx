@@ -458,4 +458,16 @@ class SystemImpl {
 	public static function safeZone(): Float {
 		return 1.0;
 	}
+
+	public static function waitingForLogin(): Bool {
+		return false;
+	}
+
+	public static function disallowUserChange(): Void {
+
+	}
+
+	public static function allowUserChange(): Void {
+
+	}
 }

@@ -1106,4 +1106,16 @@ class SystemImpl {
 	public static function unlockAchievement(id: Int): Void {
 
 	}
+
+	public static function waitingForLogin(): Bool {
+		return false;
+	}
+
+	public static function disallowUserChange(): Void {
+
+	}
+
+	public static function allowUserChange(): Void {
+
+	}
 }
