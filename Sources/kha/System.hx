@@ -152,7 +152,7 @@ class System {
 		dropFilesListeners.push(dropFilesListener);
 	}
 
-	public static function removeDropListerer(listener: String -> Void): Void {
+	public static function removeDropListener(listener: String -> Void): Void {
 		dropFilesListeners.remove(listener);
 	}
 
