@@ -47,6 +47,7 @@ void init_kore(const char* name, int width, int height, Kore::WindowOptions* win
 void post_kore_init();
 void run_kore();
 const char* getGamepadId(int index);
+const char* getGamepadVendor(int index);
 ')
 @:keep
 class SystemImpl {
@@ -503,6 +504,11 @@ class SystemImpl {
 
 	@:functionCode('return ::String(::getGamepadId(index));')
 	public static function getGamepadId(index: Int): String {
+		return "unknown";
+	}
+
+	@:functionCode('return ::String(::getGamepadVendor(index));')
+	public static function getGamepadVendor(index: Int): String {
 		return "unknown";
 	}
 

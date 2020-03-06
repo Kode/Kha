@@ -493,7 +493,11 @@ class SystemImpl {
 	}
 
 	public static function getGamepadId(index: Int): String {
-		return "unkown";
+		return "unknown";
+	}
+
+	public static function getGamepadVendor(index: Int): String {
+		return "unknown";
 	}
 
 	public static function safeZone(): Float {

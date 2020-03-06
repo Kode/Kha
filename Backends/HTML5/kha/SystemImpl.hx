@@ -1072,6 +1072,10 @@ class SystemImpl {
 		return "unkown";
 	}
 
+	public static function getGamepadVendor(index: Int): String {
+		return "unknown";
+	}
+
 	private static function getGamepads(): Array<js.html.Gamepad> {
 		if (chrome && kha.vr.VrInterface.instance.IsVrEnabled()) return null; // Chrome crashes if navigator.getGamepads() is called when using VR
 
