@@ -377,6 +377,9 @@ class SystemImpl {
 	public static function getGamepadId(index: Int): String {
 		return "";//kore_get_gamepad_id(index);
 	}
+	public static function getGamepadVendor(index: Int): String {
+		return "";
+	}
 
 	public static function safeZone(): Float {
 		return 1.0;

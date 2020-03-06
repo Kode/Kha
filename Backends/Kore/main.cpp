@@ -351,6 +351,10 @@ const char* getGamepadId(int index) {
 	return Kore::Gamepad::get(index)->productName;
 }
 
+const char* getGamepadVendor(int index) {
+	return Kore::Gamepad::get(index)->vendor;
+}
+
 void post_kore_init() {
 #ifdef VR_GEAR_VR
 	// Enter VR mode

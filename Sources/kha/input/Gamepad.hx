@@ -44,10 +44,16 @@ class Gamepad {
 	}
 
 	public var id(get, null): String;
+	public var vendor(get, null): String;
 	public var connected(default, null):Bool;
+
 
 	private function get_id(): String {
 		return SystemImpl.getGamepadId(index);
+	}
+
+	private function get_vendor(): String {
+		return SystemImpl.getGamepadVendor(index);
 	}
 	
 	@input
