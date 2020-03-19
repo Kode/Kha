@@ -468,6 +468,10 @@ class Graphics implements kha.graphics4.Graphics {
 		cubeMap.setDepth(cast(stage, TextureUnit).value);
 	}
 
+	public function maxBoundTextures(): Int {
+		return SystemImpl.gl.getParameter(GL.MAX_TEXTURE_IMAGE_UNITS);
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:
