@@ -139,6 +139,10 @@ class Graphics implements kha.graphics4.Graphics {
 		Krom.setCubeMapCompareMode(texunit, enabled);
 	}
 
+	public function maxBoundTextures(): Int {
+		return 8;
+	}
+
 	public function setPipeline(pipeline: PipelineState): Void {
 		pipeline.set();
 	}

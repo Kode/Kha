@@ -134,6 +134,10 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_set_image_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, texture._texture);
 	}
 
+	public function maxBoundTextures(): Int {
+		return 8;
+	}
+
 	public function setPipeline(pipe: PipelineState): Void {
 		pipe.set();
 	}

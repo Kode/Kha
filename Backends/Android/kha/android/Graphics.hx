@@ -286,6 +286,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
+	public function maxBoundTextures(): Int {
+		return 8;
+	}
+
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
 		case None:
