@@ -42,6 +42,7 @@ interface Graphics {
 	function setCubeMapCompareMode(texunit: TextureUnit, enabled: Bool): Void;
 	function setCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	function setCubeMapDepth(unit: TextureUnit, cubeMap: CubeMap): Void;
+	function maxBoundTextures(): Int;
 	//function maxTextureSize(): Int;
 	//function supportsNonPow2Textures(): Bool;
 	function setStencilReferenceValue(value: Int): Void;

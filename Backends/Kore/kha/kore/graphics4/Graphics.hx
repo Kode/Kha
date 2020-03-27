@@ -278,6 +278,11 @@ class Graphics implements kha.graphics4.Graphics {
 		setImageTextureInternal(cast unit, texture);
 	}
 
+	@:functionCode('return Kore::Graphics4::maxBoundTextures();')
+	public function maxBoundTextures(): Int {
+		return 0;
+	}
+
 	//public function createVertexShader(source: Blob): VertexShader {
 	//	return new Shader(source, ShaderType.VertexShader);
 	//}

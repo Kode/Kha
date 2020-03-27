@@ -221,6 +221,10 @@ class Graphics implements kha.graphics4.Graphics {
 		
 	}
 
+	public function maxBoundTextures(): Int {
+		return 8;
+	}
+
 	private function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
 		switch (op) {
 			case BlendZero, Undefined:
