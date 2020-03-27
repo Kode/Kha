@@ -25,7 +25,7 @@ class Graphics1 implements kha.graphics1.Graphics {
 
 	public function end(): Void {
 		texture.unlock();
-		canvas.g2.begin();
+		canvas.g2.begin(false);
 		canvas.g2.drawImage(texture, 0, 0);
 		canvas.g2.end();
 	}
