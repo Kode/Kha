@@ -1,4 +1,4 @@
-name: macOS
+name: iOS (OpenGL)
 
 on:
   push:
@@ -22,4 +22,4 @@ jobs:
     - name: Setup Node.js
       run: nodejs_bin/copysysbin.sh
     - name: Compile
-      run: nodejs_bin/node make.js --kha . --from Tests/Empty --compile
+      run: nodejs_bin/node make.js ios -g opengl --kha . --from Tests/Empty --nosigning --compile

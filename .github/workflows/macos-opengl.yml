@@ -1,0 +1,25 @@
+name: macOS (OpenGL)
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get Submodules
+      run: git submodule update --init --recursive
+    - name: Get Node.js
+      run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
+    - name: Setup Node.js
+      run: nodejs_bin/copysysbin.sh
+    - name: Compile
+      run: nodejs_bin/node make.js -g opengl --kha . --from Tests/Empty --compile

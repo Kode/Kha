@@ -1,4 +1,4 @@
-name: iOS
+name: Windows (Direct3D 9)
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 jobs:
   build:
 
-    runs-on: macOS-latest
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v1
@@ -19,7 +19,5 @@ jobs:
       run: git submodule update --init --recursive
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
-    - name: Setup Node.js
-      run: nodejs_bin/copysysbin.sh
     - name: Compile
-      run: nodejs_bin/node make.js ios --kha . --from Tests/Empty --nosigning --compile
+      run: .\nodejs_bin\node.exe make.js -g direct3d9 -a directsound --kha . --from Tests/Empty --compile

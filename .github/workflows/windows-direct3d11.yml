@@ -1,0 +1,23 @@
+name: Windows (Direct3D 11)
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get Submodules
+      run: git submodule update --init --recursive
+    - name: Get Node.js
+      run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
+    - name: Compile
+      run: .\nodejs_bin\node.exe make.js -g direct3d11 --kha . --from Tests/Empty --compile
