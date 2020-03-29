@@ -17,6 +17,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Get Submodules
       run: git submodule update --init --recursive
+    - name: Install DirectX
+      run: Kinc\Tools\krafix\dxwebsetup.exe /silent
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
     - name: Compile
