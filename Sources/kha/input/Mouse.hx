@@ -2,15 +2,35 @@ package kha.input;
 
 import kha.netsync.Controller;
 
+/** See `Mouse.setWheelEventBlockBehavior` */
+enum MouseEventBlockBehavior {
+	Full;
+	None;
+	Custom(func: (event: Dynamic)->Bool);
+}
+
 @:allow(kha.SystemImpl)
 @:expose
 class Mouse extends Controller {
+	static var wheelEventBlockBehavior = MouseEventBlockBehavior.Full;
+
 	/**
 	 * Get current Mouse.
 	 * @param num (optional) mouse id (0 by default).
 	 */
 	public static function get(num: Int = 0): Mouse {
 		return SystemImpl.getMouse(num);
+	}
+
+	/**
+	 * Allows fine grained control of mouse wheel browser default actions (html5 only).
+	 * @param behavior can be:
+	 *   Full - block wheel events.
+	 *   None - do not block wheel events.
+	 *   Custom(func:(event:WheelEvent)->Bool) - set custom handler for wheel event (should return true if wheel event blocked).
+	 */
+	 public static function setWheelEventBlockBehavior(behavior: MouseEventBlockBehavior): Void {
+		wheelEventBlockBehavior = behavior;
 	}
 
 	/**

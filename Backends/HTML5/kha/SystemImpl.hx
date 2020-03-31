@@ -617,11 +617,17 @@ class SystemImpl {
 		mouse.sendLeaveEvent(0);
 	}
 
-	private static function mouseWheel(event: WheelEvent): Bool {
+	private static function mouseWheel(event: WheelEvent): Void {
 		unlockSound();
 		insideInputEvent = true;
 
-		event.preventDefault();
+		switch (Mouse.wheelEventBlockBehavior) {
+			case Full:
+				event.preventDefault();
+			case Custom(func):
+				if (func(event)) event.preventDefault();
+			case None:
+		}
 
 		//Deltamode == 0, deltaY is in pixels.
 		if (event.deltaMode == 0) {
@@ -632,7 +638,7 @@ class SystemImpl {
 				mouse.sendWheelEvent(0, 1);
 			}
 			insideInputEvent = false;
-			return false;
+			return;
 		}
 
 		//Lines
@@ -640,10 +646,10 @@ class SystemImpl {
 			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
 			mouse.sendWheelEvent(0, Std.int(event.deltaY / minimumScroll));
 			insideInputEvent = false;
-			return false;
+			return;
 		}
 		insideInputEvent = false;
-		return false;
+		return;
 	}
 
 	private static function mouseDown(event: MouseEvent): Void {
@@ -759,7 +765,14 @@ class SystemImpl {
 		unlockSound();
 
 		event.stopPropagation();
-		event.preventDefault();
+
+		switch (Surface.touchDownEventBlockBehavior) {
+			case Full:
+				event.preventDefault();
+			case Custom(func):
+				if (func(event)) event.preventDefault();
+			case None:
+		}
 
 		var index = 0;
 		for (touch in event.changedTouches)	{

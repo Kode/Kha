@@ -1,8 +1,17 @@
 package kha.input;
 
+/** See `Surface.setTouchDownEventBlockBehavior` */
+enum TouchDownEventBlockBehavior {
+	Full;
+	None;
+	Custom(func: (event: Dynamic)->Bool);
+}
+
 @:allow(kha.SystemImpl)
 @:expose
 class Surface {
+	static var touchDownEventBlockBehavior = TouchDownEventBlockBehavior.Full;
+
 	/**
 	 * Get current Surface.
 	 * @param num (optional) surface id (0 by default).
@@ -10,6 +19,17 @@ class Surface {
 	public static function get(num: Int = 0): Surface {
 		if (num != 0) return null;
 		return instance;
+	}
+
+	/**
+	 * Allows fine grained control of touch down browser default actions (html5 only).
+	 * @param behavior can be:
+	 *   Full - block touch down events.
+	 *   None - do not block touch down events.
+	 *   Custom(func:(event:TouchEvent)->Bool) - set custom handler for touch down event (should return true if touch down event blocked).
+	 */
+	 public static function setTouchDownEventBlockBehavior(behavior: TouchDownEventBlockBehavior): Void {
+		touchDownEventBlockBehavior = behavior;
 	}
 
 	/**
