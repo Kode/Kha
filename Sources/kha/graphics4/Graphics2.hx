@@ -34,10 +34,12 @@ class PipelineCache {
 	public var projectionLocation: ConstantLocation;
 	public var textureLocation: TextureUnit;
 
-	public function new(pipeline: PipelineState) {
+	public function new(pipeline: PipelineState, texture: Bool) {
 		this.pipeline = pipeline;
 		try { projectionLocation = pipeline.getConstantLocation("projectionMatrix"); } catch (x: Dynamic) { trace(x); }
-		try { textureLocation = pipeline.getTextureUnit("tex"); } catch (x: Dynamic) { trace(x); }
+		if (texture) {
+			try { textureLocation = pipeline.getTextureUnit("tex"); } catch (x: Dynamic) { trace(x); }
+		}
 	}
 }
 
@@ -86,7 +88,7 @@ class ImageShaderPainter {
 		if (standardImagePipeline == null) {
 			var pipeline = Graphics2.createImagePipeline(structure);
 			pipeline.compile();
-			standardImagePipeline = new PipelineCache(pipeline);
+			standardImagePipeline = new PipelineCache(pipeline, true);
 		}
 	}
 
@@ -298,7 +300,7 @@ class ColoredShaderPainter {
 		if (standardColorPipeline == null) {
 			var pipeline = Graphics2.createColoredPipeline(structure);
 			pipeline.compile();
-			standardColorPipeline = new PipelineCache(pipeline);
+			standardColorPipeline = new PipelineCache(pipeline, false);
 		}
 	}
 
@@ -537,7 +539,7 @@ class TextShaderPainter {
 		if (standardTextPipeline == null) {
 			var pipeline = Graphics2.createTextPipeline(structure);
 			pipeline.compile();
-			standardTextPipeline = new PipelineCache(pipeline);
+			standardTextPipeline = new PipelineCache(pipeline, true);
 		}
 	}
 
@@ -988,7 +990,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		else {
 			var cache = pipelineCache[pipeline];
 			if (cache == null) {
-				cache = new PipelineCache(pipeline);
+				cache = new PipelineCache(pipeline, true);
 				pipelineCache[pipeline] = cache;
 			}
 			imagePainter.pipeline = cache;
