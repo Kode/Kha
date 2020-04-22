@@ -286,7 +286,6 @@ class SystemImpl {
 			untyped __cpp__('Kore::Graphics4::end(win)');
 		}
 		else {
-			trace("Emergency begin/end");
 			untyped __cpp__('Kore::Graphics4::begin(0)');
 			untyped __cpp__('Kore::Graphics4::clear(Kore::Graphics4::ClearColorFlag | Kore::Graphics4::ClearDepthFlag | Kore::Graphics4::ClearStencilFlag)');
 			untyped __cpp__('Kore::Graphics4::end(0)');
