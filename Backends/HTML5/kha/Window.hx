@@ -2,17 +2,26 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
+	static var resizeCallbacks: Array<Array<Int->Int->Void>> = [];
+	var num: Int;
 	var canvas: js.html.CanvasElement;
 	var defaultWidth: Int;
 	var defaultHeight: Int;
 
 	@:noCompletion
 	@:noDoc
-	public function new(defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
+	public function new(num:Int, defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
+		this.num = num;
 		this.canvas = canvas;
 		this.defaultWidth = defaultWidth;
 		this.defaultHeight = defaultHeight;
+		resizeCallbacks[num] = [];
 		windows.push(this);
+
+		var browserWindow = js.Browser.window;
+		browserWindow.onresize = function() {
+			callResizeCallbacks(this.num, browserWindow.innerWidth, browserWindow.innerHeight);
+		};
 	}
 
 	public static function create(win: WindowOptions = null, frame: FramebufferOptions = null): Window {
@@ -157,7 +166,18 @@ class Window {
 		return "Kha";
 	}
 
-	public function notifyOnResize(callback: Int->Int->Void): Void {}
+	public function notifyOnResize(callback: Int->Int->Void): Void {
+		resizeCallbacks[num].push(callback);
+	}
+
+	@:noCompletion
+	@:noDoc
+	@:keep
+	public static function callResizeCallbacks(num: Int, width: Int, height: Int) {
+		for (callback in resizeCallbacks[num]) {
+			callback(width, height);
+		}
+	}
 
 	public var vSynced(get, never): Bool;
 
