@@ -19,9 +19,9 @@ class Window {
 		windows.push(this);
 
 		var browserWindow = js.Browser.window;
-		browserWindow.onresize = function() {
+		browserWindow.addEventListener('resize', function() {
 			callResizeCallbacks(this.num, browserWindow.innerWidth, browserWindow.innerHeight);
-		};
+		});
 	}
 
 	public static function create(win: WindowOptions = null, frame: FramebufferOptions = null): Window {
