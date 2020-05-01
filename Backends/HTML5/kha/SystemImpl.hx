@@ -998,7 +998,13 @@ class SystemImpl {
 		// block if ctrl key pressed
 		if (e.ctrlKey || e.metaKey) {
 			// except for cut-copy-paste
-			if (e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86) return;
+			if (e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86) {
+				return;
+			}
+			// and quit on macOS
+			if (e.metaKey && e.keyCode == 81) {
+				return;
+			}
 			e.preventDefault();
 			return;
 		}
