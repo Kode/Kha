@@ -10,13 +10,15 @@ struct AudioChannel {
 #ifdef KORE_SONY
 	volatile int32_t reference_count;
 	volatile int32_t position;
+	volatile int32_t paused;
+	volatile int32_t stopped;
 #else
 	volatile long reference_count;
 	volatile long position;
+	volatile long paused;
+	volatile long stopped;
 #endif
 	volatile float volume;
-	volatile bool paused;
-	volatile bool stopped;
 	struct rc_floats *data;
 	int data_length;
 	bool looping;

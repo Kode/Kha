@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CHANNEL_COUNT 32
+#define CHANNEL_COUNT 64
 
 static kinc_mutex_t mutex;
 
@@ -130,7 +130,7 @@ void AudioChannel_playAgain(struct AudioChannel *channel) {
 		if (soundChannels[i] == channel) {
 			break;
 		}
-		if (soundChannels[i]->stopped) {
+		if (soundChannels[i]->paused || soundChannels[i]->stopped) {
 			AudioChannel_dec(soundChannels[i]);
 			AudioChannel_inc(channel);
 			soundChannels[i] = channel;
@@ -145,21 +145,6 @@ void AudioChannel_playAgain(struct AudioChannel *channel) {
 		}
 	}
 	kinc_mutex_unlock(&mutex);
-}
-
-void AudioChannel_play(struct AudioChannel *channel) {
-	channel->paused = false;
-	channel->stopped = false;
-	AudioChannel_playAgain(channel);
-}
-
-void AudioChannel_pause(struct AudioChannel *channel) {
-	channel->paused = true;
-}
-
-void AudioChannel_stop(struct AudioChannel *channel) {
-	channel->stopped = true;
-	KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);
 }
 
 float AudioChannel_length_in_seconds(struct AudioChannel *channel) {
@@ -205,7 +190,9 @@ static void mix(kinc_a2_buffer_t *buffer, int samples) {
 
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
 		struct AudioChannel *channel = internalSoundChannels[i];
-		if (channel == NULL || channel->paused || channel->stopped) continue;
+		if (channel == NULL || channel->paused || channel->stopped) {
+			continue;
+		}
 		AudioChannel_nextSamples(channel, sampleCache1, samples, kinc_a2_samples_per_second);
 		for (int j = 0; j < samples; ++j) {
 			sampleCache2[j] += sampleCache1[j] * channel->volume;
@@ -276,7 +263,7 @@ bool Audio_play(struct AudioChannel *channel, bool loop) {
 	kinc_mutex_lock(&mutex);
 	channel->looping = loop;
 	for (int i = 0; i < CHANNEL_COUNT; ++i) {
-		if (soundChannels[i] == NULL || soundChannels[i]->stopped) {
+		if (soundChannels[i] == NULL || soundChannels[i]->paused || soundChannels[i]->stopped) {
 			if (soundChannels[i] != NULL) {
 				AudioChannel_dec(soundChannels[i]);
 			}

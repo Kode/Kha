@@ -267,17 +267,17 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 
 	}
 
-	@:functionCode('channel->paused = false; channel->stopped = false; AudioChannel_playAgain(channel);')
+	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->paused, false); KINC_ATOMIC_EXCHANGE_32(&channel->stopped, false); AudioChannel_playAgain(channel);')
 	public function play(): Void {
 		
 	}
 
-	@:functionCode('channel->paused = true;')
+	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->paused, true);')
 	public function pause(): Void {
 		
 	}
 
-	@:functionCode('channel->stopped = true; KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);')
+	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->stopped, true); KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);')
 	public function stop(): Void {
 		
 	}
