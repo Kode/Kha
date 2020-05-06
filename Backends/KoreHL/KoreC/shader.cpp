@@ -43,7 +43,27 @@ Kore::Graphics4::StencilAction convertStencilAction(int action) {
 		return Kore::Graphics4::DecrementWrap;
 	case 7:
 	default:
-		return Kore::Graphics4::Invert;	
+		return Kore::Graphics4::Invert;
+	}
+}
+
+Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
+	switch (format) {
+	case 0:
+		return Kore::Graphics4::Target32Bit;
+	case 1:
+		return Kore::Graphics4::Target8BitRed;
+	case 2:
+		return Kore::Graphics4::Target128BitFloat;
+	case 3:
+		return Kore::Graphics4::Target16BitDepth;
+	case 4:
+		return Kore::Graphics4::Target64BitFloat;
+	case 5:
+		return Kore::Graphics4::Target32BitRedFloat;
+	case 6:
+	default:
+		return Kore::Graphics4::Target16BitRedFloat;
 	}
 }
 
@@ -141,10 +161,11 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination,
 	bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask,
 	bool colorWriteMaskRed, bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha,
+	int colorAttachmentCount, int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3, int colorAttachment4, int colorAttachment5, int colorAttachment6, int colorAttachment7,
 	bool conservativeRasterization) {
-	
+
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	
+
 	switch (cullMode) {
 	case 0:
 		pipe->cullMode = Kore::Graphics4::Clockwise;
@@ -184,7 +205,7 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 		break;
 	}
 	pipe->depthWrite = depthWrite;
-	
+
 	pipe->stencilMode = convertCompareMode(stencilMode);
 	pipe->stencilBothPass = convertStencilAction(stencilBothPass);
 	pipe->stencilDepthFail = convertStencilAction(stencilDepthFail);
@@ -192,17 +213,27 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	pipe->stencilReferenceValue = stencilReferenceValue;
 	pipe->stencilReadMask = stencilReadMask;
 	pipe->stencilWriteMask = stencilWriteMask;
-	
+
 	pipe->blendSource = (Kore::Graphics4::BlendingOperation)blendSource;
 	pipe->blendDestination = (Kore::Graphics4::BlendingOperation)blendDestination;
 	pipe->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
 	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
-	
+
 	pipe->colorWriteMaskRed[0] = colorWriteMaskRed;
 	pipe->colorWriteMaskGreen[0] = colorWriteMaskGreen;
 	pipe->colorWriteMaskBlue[0] = colorWriteMaskBlue;
 	pipe->colorWriteMaskAlpha[0] = colorWriteMaskAlpha;
-	
+
+	pipe->colorAttachmentCount = colorAttachmentCount;
+	pipe->colorAttachment[0] = convertColorAttachment(colorAttachment0);
+	pipe->colorAttachment[1] = convertColorAttachment(colorAttachment1);
+	pipe->colorAttachment[2] = convertColorAttachment(colorAttachment2);
+	pipe->colorAttachment[3] = convertColorAttachment(colorAttachment3);
+	pipe->colorAttachment[4] = convertColorAttachment(colorAttachment4);
+	pipe->colorAttachment[5] = convertColorAttachment(colorAttachment5);
+	pipe->colorAttachment[6] = convertColorAttachment(colorAttachment6);
+	pipe->colorAttachment[7] = convertColorAttachment(colorAttachment7);
+
 	pipe->conservativeRasterization = conservativeRasterization;
 }
 
