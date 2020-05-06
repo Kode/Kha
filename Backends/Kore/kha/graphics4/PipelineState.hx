@@ -56,6 +56,26 @@ static Kore::Graphics4::StencilAction convertStencilAction(int action) {
 		return Kore::Graphics4::Invert;
 	}
 }
+
+static Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
+	switch (format) {
+	case 0:
+		return Kore::Graphics4::Target32Bit;
+	case 1:
+		return Kore::Graphics4::Target8BitRed;
+	case 2:
+		return Kore::Graphics4::Target128BitFloat;
+	case 3:
+		return Kore::Graphics4::Target16BitDepth;
+	case 4:
+		return Kore::Graphics4::Target64BitFloat;
+	case 5:
+		return Kore::Graphics4::Target32BitRedFloat;
+	case 6:
+	default:
+		return Kore::Graphics4::Target16BitRedFloat;
+	}
+}
 ')
 
 @:headerClassCode("Kore::Graphics4::PipelineState* pipeline;")
@@ -217,6 +237,11 @@ class PipelineState extends PipelineStateBase {
 			pipeline->colorWriteMaskGreen[i] = colorWriteMasksGreen[i];
 			pipeline->colorWriteMaskBlue[i] = colorWriteMasksBlue[i];
 			pipeline->colorWriteMaskAlpha[i] = colorWriteMasksAlpha[i];
+		}
+
+		pipeline->colorAttachmentCount = colorAttachmentCount;
+		for (int i = 0; i < 8; ++i) {
+			pipeline->colorAttachment[i] = convertColorAttachment(colorAttachments[i]);
 		}
 
 		pipeline->conservativeRasterization = conservativeRasterization;

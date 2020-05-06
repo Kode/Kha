@@ -28,7 +28,7 @@ class PipelineStateBase {
 		alphaBlendSource = BlendingFactor.BlendOne;
 		alphaBlendDestination = BlendingFactor.BlendZero;
 		alphaBlendOperation = BlendingOperation.Add;
-		
+
 		colorWriteMasksRed = [];
 		colorWriteMasksGreen = [];
 		colorWriteMasksBlue = [];
@@ -37,6 +37,10 @@ class PipelineStateBase {
 		for (i in 0...8) colorWriteMasksGreen.push(true);
 		for (i in 0...8) colorWriteMasksBlue.push(true);
 		for (i in 0...8) colorWriteMasksAlpha.push(true);
+
+		colorAttachmentCount = 1;
+		colorAttachments = [];
+		for (i in 0...8) colorAttachments.push(TextureFormat.RGBA32);
 
 		conservativeRasterization = false;
 	}
@@ -68,7 +72,7 @@ class PipelineStateBase {
 	public var alphaBlendSource: BlendingFactor;
 	public var alphaBlendDestination: BlendingFactor;
 	public var alphaBlendOperation: BlendingOperation;
-	
+
 	public var colorWriteMask(never, set): Bool;
 	public var colorWriteMaskRed(get, set): Bool;
 	public var colorWriteMaskGreen(get, set): Bool;
@@ -79,6 +83,9 @@ class PipelineStateBase {
 	public var colorWriteMasksGreen: Array<Bool>;
 	public var colorWriteMasksBlue: Array<Bool>;
 	public var colorWriteMasksAlpha: Array<Bool>;
+
+	public var colorAttachmentCount: Int;
+	public var colorAttachments: Array<TextureFormat>;
 
 	inline function set_colorWriteMask(value: Bool): Bool {
 		return colorWriteMaskRed = colorWriteMaskBlue = colorWriteMaskGreen = colorWriteMaskAlpha = value;
