@@ -389,6 +389,10 @@ extern "C" void __hxcpp_main();
 extern int _hxcpp_argc;
 extern char **_hxcpp_argv;
 
+#ifdef KORE_WINDOWS
+#include <Windows.h>
+#endif
+
 int kickstart(int argc, char **argv) {
 	_hxcpp_argc = argc;
 	_hxcpp_argv = argv;
@@ -405,6 +409,9 @@ int kickstart(int argc, char **argv) {
 	} catch (Dynamic e) {
 		__hx_dump_stack();
 		Kore::log(Kore::Error, "Error %s", e == null() ? "null" : e->toString().__CStr());
+#ifdef KORE_WINDOWS
+		MessageBoxW(NULL, e->toString().__WCStr(), NULL, MB_OK);
+#endif
 		return -1;
 	}
 #endif
