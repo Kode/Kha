@@ -21,7 +21,7 @@
  */
 package js.node.net;
 
-import js.Error;
+import js.lib.Error;
 import js.node.events.EventEmitter;
 import js.node.net.Socket.NetworkAdress;
 

@@ -23,7 +23,7 @@ package js.node;
 
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
-import js.Error;
+import js.lib.Error;
 import js.node.Buffer;
 import js.node.fs.Stats;
 import js.node.fs.FSWatcher;

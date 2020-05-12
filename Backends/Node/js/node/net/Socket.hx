@@ -21,7 +21,7 @@
  */
 package js.node.net;
 
-import js.Error;
+import js.lib.Error;
 import js.node.events.EventEmitter.Event;
 
 /**
@@ -75,7 +75,7 @@ import js.node.events.EventEmitter.Event;
 	/**
 		Emitted when an error occurs. The 'close' event will be called directly following this event.
 	**/
-	var Error : SocketEvent<js.Error->Void> = "error";
+	var Error : SocketEvent<js.lib.Error->Void> = "error";
 
 	/**
 		Emitted once the socket is fully closed.

@@ -67,7 +67,7 @@ import js.node.stream.Writable.IWritable;
 	/**
 		Emitted if there was an error receiving data.
 	**/
-	var Error : ReadableEvent<js.Error->Void> = "error";
+	var Error : ReadableEvent<js.lib.Error->Void> = "error";
 }
 
 /**

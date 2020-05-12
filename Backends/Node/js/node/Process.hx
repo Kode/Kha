@@ -62,7 +62,7 @@ import js.node.stream.Writable;
 		If a listener is added for this exception, the default action (which is to print a stack trace and exit)
 		will not occur.
 	**/
-	var UncaughtException : ProcessEvent<js.Error->Void> = "uncaughtException";
+	var UncaughtException : ProcessEvent<js.lib.Error->Void> = "uncaughtException";
 }
 
 

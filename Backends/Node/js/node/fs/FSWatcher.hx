@@ -47,7 +47,7 @@ import js.node.events.EventEmitter;
 	/**
 		Emitted when an error occurs.
 	**/
-	var Error : FSWatcherEvent<js.Error->Void> = "error";
+	var Error : FSWatcherEvent<js.lib.Error->Void> = "error";
 }
 
 /**

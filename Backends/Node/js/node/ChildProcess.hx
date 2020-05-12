@@ -272,7 +272,7 @@ typedef ChildProcessForkOptions = {
 	An error passed to the `ChildProcess.exec` callback.
 **/
 @:native("Error")
-extern class ChildProcessExecError extends js.Error {
+extern class ChildProcessExecError extends js.lib.Error {
 	/**
 		the exit code of the child proces.
 	**/
@@ -332,7 +332,7 @@ typedef ChildProcessSpawnSyncResult = {
 	/**
 		The error object if the child process failed or timed out
 	**/
-	var error:js.Error;
+	var error:js.lib.Error;
 }
 
 

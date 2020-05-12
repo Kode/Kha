@@ -22,7 +22,7 @@
 package js.node;
 
 import haxe.extern.EitherType;
-import js.Error;
+import js.lib.Error;
 import js.node.Buffer;
 import js.node.crypto.*;
 import js.node.crypto.DiffieHellman.IDiffieHellman;

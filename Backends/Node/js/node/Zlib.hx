@@ -21,7 +21,7 @@
  */
 package js.node;
 
-import js.Error;
+import js.lib.Error;
 import js.node.Buffer;
 import js.node.zlib.*;
 

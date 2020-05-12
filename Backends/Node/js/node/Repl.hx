@@ -74,7 +74,7 @@ typedef ReplOptions = {
 		Defaults to an async wrapper for `eval`.
 		Arguments: cmd, context, filename, callback
 	**/
-	@:optional var eval:String->Dynamic<Dynamic>->String->(js.Error->Dynamic->Void)->Void;
+	@:optional var eval:String->Dynamic<Dynamic>->String->(js.lib.Error->Dynamic->Void)->Void;
 
 	/**
 		whether or not the writer function should output colors.

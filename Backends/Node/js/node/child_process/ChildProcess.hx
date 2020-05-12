@@ -41,7 +41,7 @@ import js.node.stream.Writable;
 
         See also `ChildProcess.kill` and `ChildProcess.send`.
     **/
-    var Error : ChildProcessEvent<js.Error->Void> = "error";
+    var Error : ChildProcessEvent<js.lib.Error->Void> = "error";
 
     /**
         This event is emitted after the child process ends.

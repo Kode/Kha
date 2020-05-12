@@ -23,7 +23,7 @@ abstract Float32Array(js.lib.Float32Array) {
 		return this[index];
 	}
 
-	public inline function data(): js.html.Float32Array {
+	public inline function data(): js.lib.Float32Array {
 		return this;
 	}
 

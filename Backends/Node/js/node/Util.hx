@@ -141,7 +141,7 @@ extern class Util {
 		`callback` is called when `writableStream` is closed or when an error occurs.
 	**/
 	@:deprecated("Use `readableStream.pipe(writableStream)` instead")
-	static function pump(readableStream:IReadable, writableStream:IWritable, ?callback:js.Error->Void):Void;
+	static function pump(readableStream:IReadable, writableStream:IWritable, ?callback:js.lib.Error->Void):Void;
 
 	/**
 		Inherit the prototype methods from one constructor into another.

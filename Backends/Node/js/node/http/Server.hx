@@ -96,7 +96,7 @@ import js.node.net.Socket;
 	/**
 		If a client connection emits an 'error' event - it will forwarded here.
 	**/
-	var ClientError : ServerEvent<js.Error->Socket->Void> = "clientError";
+	var ClientError : ServerEvent<js.lib.Error->Socket->Void> = "clientError";
 }
 
 /**
