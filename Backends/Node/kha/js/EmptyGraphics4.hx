@@ -63,7 +63,11 @@ class EmptyGraphics4 implements Graphics {
 	public function refreshRate(): Int {
 		return 60;
 	}
-	
+
+	public function maxBoundTextures(): Int {
+		return 8;
+	}
+
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		
 	}
