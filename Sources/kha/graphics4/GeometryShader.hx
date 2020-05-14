@@ -4,17 +4,17 @@ import kha.Blob;
 
 #if cpp
 extern class GeometryShader {
-	public function new(source: Blob);
+	public function new(sources: Array<Blob>);
 	public function delete(): Void;
 }
 #else
 class GeometryShader {
-	public function new(source: Blob) {
-		
+	public function new(sources: Array<Blob>) {
+
 	}
-	
+
 	public function delete(): Void {
-		
+
 	}
 }
 #end
