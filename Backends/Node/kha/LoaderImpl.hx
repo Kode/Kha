@@ -2,7 +2,7 @@ package kha;
 
 import js.Boot;
 import js.Browser;
-import js.Error;
+import js.lib.Error;
 import js.html.audio.DynamicsCompressorNode;
 import js.html.ImageElement;
 import js.Node;

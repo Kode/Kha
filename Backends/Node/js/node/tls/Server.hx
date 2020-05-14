@@ -42,7 +42,7 @@ import js.node.events.EventEmitter.Event;
 			exception - error object
 			securePair - a secure pair that the error originated from
 	**/
-	var ClientError : ServerEvent<js.Error->SecurePair->Void> = "clientError";
+	var ClientError : ServerEvent<js.lib.Error->SecurePair->Void> = "clientError";
 
 	/**
 		Emitted on creation of TLS session.
@@ -68,7 +68,7 @@ import js.node.events.EventEmitter.Event;
 			sessionId
 			callback
 	**/
-	var ResumeSession : ServerEvent<Buffer->(js.Error->?Buffer->Void)->Void>= "resumeSession";
+	var ResumeSession : ServerEvent<Buffer->(js.lib.Error->?Buffer->Void)->Void>= "resumeSession";
 }
 
 /**

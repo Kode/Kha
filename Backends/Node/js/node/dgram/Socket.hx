@@ -50,7 +50,7 @@ import js.node.events.EventEmitter;
 	/**
 		Emitted when an error occurs.
 	**/
-	var Error : SocketEvent<js.Error->Void>= "error";
+	var Error : SocketEvent<js.lib.Error->Void>= "error";
 }
 
 typedef MessageListener = Buffer->MessageInfo->Void;

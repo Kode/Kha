@@ -70,8 +70,8 @@ extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements Writ
 
 	// --------- API for stream implementors - see node.js API documentation ---------
 	private function new(?options:DuplexNewOptions);
-	@:overload(function(chunk:String, encoding:String, callback:js.Error->Void):Void {})
-	private function _write(chunk:Buffer, encoding:String, callback:js.Error->Void):Void;
+	@:overload(function(chunk:String, encoding:String, callback:js.lib.Error->Void):Void {})
+	private function _write(chunk:Buffer, encoding:String, callback:js.lib.Error->Void):Void;
 }
 
 /**
