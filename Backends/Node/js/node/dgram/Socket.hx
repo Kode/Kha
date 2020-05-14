@@ -100,7 +100,7 @@ extern class Socket extends EventEmitter<Socket> {
 		to reuse the buf object. Note that DNS lookups delay the time to send for at least one tick.
 		The only way to know for sure that the datagram has been sent is by using a `callback`.
 	**/
-	function send(buf:Buffer, offset:Int, length:Int, port:Int, address:String, ?callback:Error->Int->Void):Void;
+	function send(buf:Buffer, offset:Int, length:Int, port:Int, address:String, ?callback:js.lib.Error->Int->Void):Void;
 
 	/**
 		Listen for datagrams on a named `port` and optional `address`.
