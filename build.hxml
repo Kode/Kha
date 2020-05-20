@@ -1,4 +1,16 @@
 -cp src
 -D doc-gen
 --no-output
+--each
+
+--next
+-xml bin/hl.xml
 -hl kha.hl
+
+--next
+-xml bin/js.xml
+-js kha.js
+
+--next
+-xml bin/flash.xml
+-swf kha.swf
