@@ -1,3 +1,4 @@
 -cp src
 -D doc-gen
 --no-output
+-hl kha.hl
