@@ -149,24 +149,29 @@ class MacroParser {
 					qualifiers : [],
 				}
 			}]);
-		case EFunction(name, f) if( name != null && f.expr != null ):
-			EFunction({
-				name : name,
-				ret : f.ret == null ? null : (switch( f.ret ) {
-					case TPath( { pack:[], name:"Void", sub:null } ): TVoid;
-					default: parseType(f.ret, e.pos);
-				}),
-				args : [for( a in f.args ) {
-					{
-						name : a.name,
-						type : a.type == null ? null : parseType(a.type, e.pos),
-						kind : Local,
-						qualifiers : [],
-						expr : a.value == null ? (a.opt ? { expr : EConst(CNull), pos : e.pos } : null) : parseExpr(a.value),
-					}
-				}],
-				expr : parseExpr(f.expr),
-			});
+		case EFunction(kind, f):
+			switch (kind) {
+				case FNamed(name, inlined) if( name != null && f.expr != null ):
+					EFunction({
+						name : name,
+						ret : f.ret == null ? null : (switch( f.ret ) {
+							case TPath( { pack:[], name:"Void", sub:null } ): TVoid;
+							default: parseType(f.ret, e.pos);
+						}),
+						args : [for( a in f.args ) {
+							{
+								name : a.name,
+								type : a.type == null ? null : parseType(a.type, e.pos),
+								kind : Local,
+								qualifiers : [],
+								expr : a.value == null ? (a.opt ? { expr : EConst(CNull), pos : e.pos } : null) : parseExpr(a.value),
+							}
+						}],
+						expr : parseExpr(f.expr),
+					});
+				default:
+					null;
+			}
 		case EBinop(op, e1, e2):
 			EBinop(op, parseExpr(e1), parseExpr(e2));
 		case EUnop(op, false, e1):
