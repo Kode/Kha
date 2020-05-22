@@ -1,3 +1,3 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 typedef TextureFormat = kha.graphics4.TextureFormat;

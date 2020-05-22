@@ -1,4 +1,4 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 interface Graphics {
 	function begin(target: RenderTarget): Void;

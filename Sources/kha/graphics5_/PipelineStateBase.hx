@@ -1,4 +1,4 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 class PipelineStateBase {
 	public function new() {

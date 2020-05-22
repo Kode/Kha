@@ -1,3 +1,3 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 typedef BlendingOperation = kha.graphics4.BlendingOperation;

@@ -1,3 +1,3 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 typedef ConstantLocation = kha.graphics4.ConstantLocation;

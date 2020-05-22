@@ -1,3 +1,3 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 typedef CubeMap = kha.graphics4.CubeMap;

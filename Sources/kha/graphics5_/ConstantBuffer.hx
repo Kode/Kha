@@ -1,4 +1,4 @@
-package kha.graphics5;
+package kha.graphics5_;
 
 import kha.arrays.Float32Array;
 import kha.math.FastVector2;
