@@ -346,4 +346,8 @@ class Graphics4 implements kha.graphics4.Graphics {
 	public function flush(): Void {
 		
 	}
+
+	public function maxBoundTextures(): Int {
+		return 16;
+	}
 }
