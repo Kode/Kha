@@ -42,6 +42,8 @@ class PipelineStateBase {
 		colorAttachments = [];
 		for (i in 0...8) colorAttachments.push(TextureFormat.RGBA32);
 
+		depthStencilAttachment = DepthStencilFormat.NoDepthAndStencil;
+
 		conservativeRasterization = false;
 	}
 
@@ -86,6 +88,8 @@ class PipelineStateBase {
 
 	public var colorAttachmentCount: Int;
 	public var colorAttachments: Array<TextureFormat>;
+
+	public var depthStencilAttachment: DepthStencilFormat;
 
 	inline function set_colorWriteMask(value: Bool): Bool {
 		return colorWriteMaskRed = colorWriteMaskBlue = colorWriteMaskGreen = colorWriteMaskAlpha = value;

@@ -139,13 +139,36 @@ class PipelineState extends PipelineStateBase {
 
 	}
 
+	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: 0;
+			case DepthOnly: 24;
+			case DepthAutoStencilAuto: 24;
+			case Depth24Stencil8: 24;
+			case Depth32Stencil8: 32;
+			case Depth16: 16;
+		}
+	}
+
+	private static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: 0;
+			case DepthOnly: 0;
+			case DepthAutoStencilAuto: 8;
+			case Depth24Stencil8: 8;
+			case Depth32Stencil8: 8;
+			case Depth16: 0;
+		}
+	}
+
 	public function compile(): Void {
 		var stencilReferenceValue = switch (this.stencilReferenceValue) {
 			case Static(value): value;
 			default: 0;
 		}
 		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, depthWrite,
-		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination));
+		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
+		getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment));
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
 			inputLayout.length > 1 ? inputLayout[1] : null,
@@ -244,10 +267,13 @@ class PipelineState extends PipelineStateBase {
 			pipeline->colorAttachment[i] = convertColorAttachment(colorAttachments[i]);
 		}
 
+		pipeline->depthAttachmentBits = depthAttachmentBits;
+		pipeline->stencilAttachmentBits = stencilAttachmentBits;
+
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
 	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
-	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int): Void {
+	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int, stencilAttachmentBits: Int): Void {
 
 	}
 
