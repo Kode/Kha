@@ -121,19 +121,23 @@ void AudioChannel_nextSamples(struct AudioChannel *channel, float *requestedSamp
 void AudioChannel_playAgain(struct AudioChannel *channel) {
 	kinc_mutex_lock(&mutex);
 	int i;
+	bool foundChannel = false;
 	for (i = 0; i < CHANNEL_COUNT; ++i) {
 		if (soundChannels[i] == NULL) {
 			AudioChannel_inc(channel);
 			soundChannels[i] = channel;
+			foundChannel = true;
 			break;
 		}
 		if (soundChannels[i] == channel) {
+			foundChannel = true;
 			break;
 		}
 		if (soundChannels[i]->paused || soundChannels[i]->stopped) {
 			AudioChannel_dec(soundChannels[i]);
 			AudioChannel_inc(channel);
 			soundChannels[i] = channel;
+			foundChannel = true;
 			break;
 		}
 	}
@@ -142,6 +146,27 @@ void AudioChannel_playAgain(struct AudioChannel *channel) {
 		if (soundChannels[i] == channel) {
 			AudioChannel_dec(soundChannels[i]);
 			soundChannels[i] = NULL;
+		}
+	}
+	if (!foundChannel) {
+		for (i = 0; i < CHANNEL_COUNT; ++i) {
+			if (soundChannels[i] == NULL) {
+				AudioChannel_inc(channel);
+				soundChannels[i] = channel;
+				foundChannel = true;
+				break;
+			}
+			if (soundChannels[i] == channel) {
+				foundChannel = true;
+				break;
+			}
+			if (soundChannels[i]->paused || soundChannels[i]->stopped || soundChannels[i]->volume == 0.0f) {
+				AudioChannel_dec(soundChannels[i]);
+				AudioChannel_inc(channel);
+				soundChannels[i] = channel;
+				foundChannel = true;
+				break;
+			}
 		}
 	}
 	kinc_mutex_unlock(&mutex);
@@ -271,6 +296,19 @@ bool Audio_play(struct AudioChannel *channel, bool loop) {
 			soundChannels[i] = channel;
 			foundChannel = true;
 			break;
+		}
+	}
+	if (!foundChannel) {
+		for (int i = 0; i < CHANNEL_COUNT; ++i) {
+			if (soundChannels[i] == NULL || soundChannels[i]->paused || soundChannels[i]->stopped || soundChannels[i]->volume == 0.0f) {
+				if (soundChannels[i] != NULL) {
+					AudioChannel_dec(soundChannels[i]);
+				}
+				AudioChannel_inc(channel);
+				soundChannels[i] = channel;
+				foundChannel = true;
+				break;
+			}
 		}
 	}
 	kinc_mutex_unlock(&mutex);

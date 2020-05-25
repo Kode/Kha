@@ -256,9 +256,10 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	@:functionCode('
 		channel = AudioChannel_create((rc_floats*)data);
 		channel->data_length = size;
-		channel->volume = 1.0f;
-		channel->paused = false;
-		channel->stopped = false;
+		float volume = 1.0f;
+		KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, volume);
+		KINC_ATOMIC_EXCHANGE_32(&channel->paused, false);
+		KINC_ATOMIC_EXCHANGE_32(&channel->stopped, false);
 		channel->looping = looping;
 		channel->sample_rate = sampleRate;
 		KINC_ATOMIC_EXCHANGE_32(&channel->position , 0);
@@ -300,7 +301,8 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		int pos = (int)roundd(value * (double)kinc_a2_samples_per_second * 2.0);
 		pos = pos % 2 == 0 ? pos : pos + 1;
 		KINC_ATOMIC_EXCHANGE_32(&channel->position, maxi(mini(pos, sampleLength(channel, kinc_a2_samples_per_second)), 0));
-		return value;')
+		return value;
+	')
 	function set_position(value: Float): Float {
 		return 0;
 	}
@@ -312,8 +314,18 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		return 0;
 	}
 
-	@:functionCode('channel->volume = value; return value;')
-	function set_volume(value: Float): Float {
+	@:functionCode('
+		float value = (float)value_;
+		if (channel->volume == 0.0f && value != 0.0f) {
+			KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, value);
+			AudioChannel_playAgain(channel);
+		}
+		else {
+			KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, value);
+		}
+		return value;
+	')
+	function set_volume(value_: Float): Float {
 		return 0;
 	}
 
