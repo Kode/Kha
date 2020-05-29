@@ -50,7 +50,7 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 			if (value.length == 7) {
 				colorValue += 0xFF000000;
 			}
-			return fromValue(colorValue);
+			return fromValue(colorValue | 0);
 		}
 		else {
 			throw "Invalid Color string: '" + value + "'";
