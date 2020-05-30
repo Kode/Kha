@@ -162,6 +162,7 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask,
 	bool colorWriteMaskRed, bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha,
 	int colorAttachmentCount, int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3, int colorAttachment4, int colorAttachment5, int colorAttachment6, int colorAttachment7,
+	int depthAttachmentBits, int stencilAttachmentBits,
 	bool conservativeRasterization) {
 
 	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
@@ -233,6 +234,9 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	pipe->colorAttachment[5] = convertColorAttachment(colorAttachment5);
 	pipe->colorAttachment[6] = convertColorAttachment(colorAttachment6);
 	pipe->colorAttachment[7] = convertColorAttachment(colorAttachment7);
+
+	pipe->depthAttachmentBits = depthAttachmentBits;
+	pipe->stencilAttachmentBits = stencilAttachmentBits;
 
 	pipe->conservativeRasterization = conservativeRasterization;
 }

@@ -60,6 +60,28 @@ class PipelineState extends PipelineStateBase {
 		kore_pipeline_compile(_pipeline, kore_structures[0], count > 1 ? kore_structures[1] : null, count > 2 ? kore_structures[2] : null, count > 3 ? kore_structures[3] : null);
 	}
 
+	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: 0;
+			case DepthOnly: 24;
+			case DepthAutoStencilAuto: 24;
+			case Depth24Stencil8: 24;
+			case Depth32Stencil8: 32;
+			case Depth16: 16;
+		}
+	}
+
+	private static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
+		return switch (depthAndStencil) {
+			case NoDepthAndStencil: 0;
+			case DepthOnly: 0;
+			case DepthAutoStencilAuto: 8;
+			case Depth24Stencil8: 8;
+			case Depth32Stencil8: 8;
+			case Depth16: 0;
+		}
+	}
+
 	public function compile(): Void {
 		var stencilReferenceValue = 0;
 		switch (this.stencilReferenceValue) {
@@ -73,6 +95,7 @@ class PipelineState extends PipelineStateBase {
 			depthWrite, stencilReferenceValue, stencilReadMask, stencilWriteMask,
 			colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha,
 			colorAttachmentCount, colorAttachments[0], colorAttachments[1], colorAttachments[2], colorAttachments[3], colorAttachments[4], colorAttachments[5], colorAttachments[6], colorAttachments[7],
+			getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment),
 			conservativeRasterization);
 		linkWithStructures2(
 			inputLayout.length > 0 ? inputLayout[0] : null,
@@ -138,6 +161,7 @@ class PipelineState extends PipelineStateBase {
 		depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int,
 		colorWriteMaskRed: Bool, colorWriteMaskGreen: Bool, colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool,
 		colorAttachmentCount: Int, colorAttachment0: TextureFormat, colorAttachment1: TextureFormat, colorAttachment2: TextureFormat, colorAttachment3: TextureFormat, colorAttachment4: TextureFormat, colorAttachment5: TextureFormat, colorAttachment6: TextureFormat, colorAttachment7: TextureFormat,
+		depthAttachmentBits: Int, stencilAttachmentBits: Int,
 		conservativeRasterization: Bool): Void { }
 	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void { }
 }
