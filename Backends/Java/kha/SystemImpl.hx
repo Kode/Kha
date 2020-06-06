@@ -486,4 +486,12 @@ class SystemImpl {
 	public static function unlockAchievement(id: Int): Void {
 
 	}
+
+	public static function getGamepadId(index: Int): String {
+		return "unkown";
+	}
+
+	public static function getGamepadVendor(index: Int): String {
+		return "unknown";
+	}
 }

@@ -26,10 +26,14 @@ class JavaSoundChannel implements kha.audio1.AudioChannel {
 		return 0;
 	}
 
-	public var position(get, null): Float;
+	public var position(get, set): Float;
 	
-	private function get_position(): Float {
-		return 0;
+	function get_position(): Float {
+		return 0.0;
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 
 	public var volume(get, set): Float;
