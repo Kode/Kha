@@ -1,5 +1,6 @@
 package kha.js.vr;
 
+import js.Syntax;
 import js.lib.Float32Array;
 import kha.vr.Pose;
 import kha.vr.PoseState;
@@ -29,7 +30,7 @@ class VrInterface extends kha.vr.VrInterface {
 	public function new() {
 		super();
 		#if kha_webvr
-		var displayEnabled: Bool = untyped __js__('navigator.getVRDisplays');
+		var displayEnabled: Bool = Syntax.code('navigator.getVRDisplays');
 		#else
 		var displayEnabled = false;
 		#end
@@ -41,11 +42,11 @@ class VrInterface extends kha.vr.VrInterface {
 	}
 
 	private function getVRDisplays() {
-		var vrDisplayInstance = untyped __js__('navigator.getVRDisplays()');
+		var vrDisplayInstance = Syntax.code('navigator.getVRDisplays()');
 		vrDisplayInstance.then(function (displays) {
 			if (displays.length > 0) {
-				frameData = untyped __js__('new VRFrameData()');
-				vrDisplay = untyped __js__('displays[0]');
+				frameData = Syntax.code('new VRFrameData()');
+				vrDisplay = Syntax.code('displays[0]');
 				vrDisplay.depthNear = 0.1;
 				vrDisplay.depthFar = 1024.0;
 

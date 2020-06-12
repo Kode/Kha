@@ -1,5 +1,6 @@
 package kha.js;
 
+import js.Syntax;
 import js.html.audio.AudioContext;
 
 @:keep
@@ -15,7 +16,7 @@ class MobileWebAudio {
 			
 		}
 		try {
-			untyped __js__('this._context = new webkitAudioContext();');
+			Syntax.code('this._context = new webkitAudioContext();');
 			return;
 		}
 		catch (e: Dynamic) {

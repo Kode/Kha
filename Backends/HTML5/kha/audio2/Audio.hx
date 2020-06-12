@@ -1,5 +1,6 @@
 package kha.audio2;
 
+import js.Syntax;
 import js.Browser;
 import js.html.URL;
 import js.html.audio.AudioContext;
@@ -25,7 +26,7 @@ class Audio {
 			
 		}
 		try {
-			untyped __js__('this._context = new webkitAudioContext();');
+			Syntax.code('this._context = new webkitAudioContext();');
 			return;
 		}
 		catch (e: Dynamic) {

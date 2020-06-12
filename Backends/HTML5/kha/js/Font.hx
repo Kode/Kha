@@ -1,5 +1,6 @@
 package kha.js;
 
+import js.Syntax;
 import haxe.io.Bytes;
 import js.Browser;
 import js.html.ImageElement;
@@ -12,7 +13,7 @@ class Font implements Resource {
 	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
 
 	public function new(blob: Blob) {
-		this.kravur = untyped __js__ ("new kha_js_Font.Kravur(blob);");
+		this.kravur = Syntax.code("new kha_js_Font.Kravur(blob);");
 	}
 
 	public static function fromBytes(bytes: Bytes): Font {

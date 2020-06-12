@@ -1,5 +1,6 @@
 package kha;
 
+import js.Syntax;
 import js.html.webgl.GL;
 import js.html.WheelEvent;
 import js.Browser;
@@ -64,7 +65,7 @@ class SystemImpl {
 		SystemImpl.options = options;
 		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
-		var electron = untyped __js__("require('electron')");
+		var electron = Syntax.code("require('electron')");
 		if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
 			electron.webFrame.setZoomLevelLimits(1, 1);
 		}
@@ -172,7 +173,7 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
-		var performance = (untyped __js__("window.performance ? window.performance : window.Date"));
+		var performance = (Syntax.code("window.performance ? window.performance : window.Date"));
 		return performance.now() / 1000;
 	}
 
@@ -381,7 +382,7 @@ class SystemImpl {
 			frame.init(new kha.graphics2.Graphics1(frame), new kha.js.graphics4.Graphics2(frame), g4); // new kha.graphics1.Graphics4(frame));
 		}
 		else {
-			untyped __js__ ("kha_js_Font.Kravur = kha_Kravur; kha_Kravur = kha_js_Font");
+			Syntax.code("kha_js_Font.Kravur = kha_Kravur; kha_Kravur = kha_js_Font");
 			var g2 = new CanvasGraphics(canvas.getContext("2d"));
 			frame = new Framebuffer(0, null, g2, null);
 			frame.init(new kha.graphics2.Graphics1(frame), g2, null);
@@ -395,11 +396,11 @@ class SystemImpl {
 		else if (mobile) {
 			SystemImpl._hasWebAudio = false;
 			MobileWebAudio._init();
-			untyped __js__ ("kha_audio2_Audio1 = kha_js_MobileWebAudio");
+			Syntax.code("kha_audio2_Audio1 = kha_js_MobileWebAudio");
 		}
 		else {
 			SystemImpl._hasWebAudio = false;
-			untyped __js__ ("kha_audio2_Audio1 = kha_js_AudioElementAudio");
+			Syntax.code("kha_audio2_Audio1 = kha_js_AudioElementAudio");
 		}
 
 		kha.vr.VrInterface.instance = new VrInterface();
@@ -499,7 +500,7 @@ class SystemImpl {
 				for (file in event.dataTransfer.files) {
 					// https://developer.mozilla.org/en-US/docs/Web/API/File
 					//  - use mozFullPath or webkitRelativePath?
-					System.dropFiles(untyped __js__('file.path'));
+					System.dropFiles(Syntax.code('file.path'));
 				}
 			}
 		});
@@ -535,13 +536,13 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(): Bool {
-		return untyped __js__("'pointerLockElement' in document ||
+		return Syntax.code("'pointerLockElement' in document ||
 		'mozPointerLockElement' in document ||
 		'webkitPointerLockElement' in document");
 	}
 
 	public static function isMouseLocked(): Bool {
-		return untyped __js__("document.pointerLockElement === kha_SystemImpl.khanvas ||
+		return Syntax.code("document.pointerLockElement === kha_SystemImpl.khanvas ||
 			document.mozPointerLockElement === kha_SystemImpl.khanvas ||
 			document.webkitPointerLockElement === kha_SystemImpl.khanvas");
 	}
@@ -597,7 +598,7 @@ class SystemImpl {
 			var context = kha.audio2.Audio._context;
 
 			if (context == null) {
-				context = untyped __js__('kha_audio2_Audio1._context');
+				context = Syntax.code('kha_audio2_Audio1._context');
 			}
 
 			if (context != null) {
@@ -1043,7 +1044,7 @@ class SystemImpl {
 	}
 
 	public static function canSwitchFullscreen(): Bool {
-		return untyped __js__("'fullscreenElement ' in document ||
+		return Syntax.code("'fullscreenElement ' in document ||
 		'mozFullScreenElement' in document ||
 		'webkitFullscreenElement' in document ||
 		'msFullscreenElement' in document

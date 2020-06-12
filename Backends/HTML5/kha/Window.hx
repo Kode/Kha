@@ -1,5 +1,7 @@
 package kha;
 
+import js.Syntax;
+
 class Window {
 	static var windows: Array<Window> = [];
 	var canvas: js.html.CanvasElement;
@@ -100,7 +102,7 @@ class Window {
 	}
 
 	function isFullscreen(): Bool {
-		return untyped __js__("document.fullscreenElement === this.canvas ||
+		return Syntax.code("document.fullscreenElement === this.canvas ||
 			document.mozFullScreenElement === this.canvas ||
 			document.webkitFullscreenElement === this.canvas ||
 			document.msFullscreenElement === this.canvas ");
