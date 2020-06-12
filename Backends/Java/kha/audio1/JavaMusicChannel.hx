@@ -1,6 +1,6 @@
 package kha.audio1;
 
-class JavaMusicChannel implements kha.audio1.MusicChannel {
+class JavaMusicChannel implements kha.audio1.AudioChannel {
 	private var music: kha.java.Music;
 	private var loop: Bool;
 	
@@ -26,10 +26,14 @@ class JavaMusicChannel implements kha.audio1.MusicChannel {
 		return 0;
 	}
 	
-	public var position(get, null): Int;
+	public var position(get, set): Float;
 	
-	private function get_position(): Int {
-		return 0;
+	function get_position(): Float {
+		return 0.0;
+	}
+
+	function set_position(value: Float): Float {
+		return value;
 	}
 	
 	public var volume(get, set): Float;
