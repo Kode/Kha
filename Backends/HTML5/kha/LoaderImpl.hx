@@ -1,5 +1,6 @@
 package kha;
 
+import js.Syntax;
 import js.Browser;
 import js.html.ImageElement;
 import js.html.XMLHttpRequest;
@@ -152,11 +153,11 @@ class LoaderImpl {
 				var bytes: Bytes = null;
 				var arrayBuffer = request.response;
 				if (arrayBuffer != null) {
-					var byteArray: Dynamic = untyped __js__("new Uint8Array(arrayBuffer)");
+					var byteArray: Dynamic = Syntax.code("new Uint8Array(arrayBuffer)");
 					bytes = Bytes.ofData(byteArray);
 				}
 				else if (request.responseBody != null) {
-					var data: Dynamic = untyped __js__("VBArray(request.responseBody).toArray()");
+					var data: Dynamic = untyped Syntax.code("VBArray(request.responseBody).toArray()");
 					bytes = Bytes.alloc(data.length);
 					for (i in 0...data.length) bytes.set(i, data[i]);
 				}
@@ -182,9 +183,9 @@ class LoaderImpl {
 			loadRemote(desc, done, failed);
 		}
 		else {
-			var fs = untyped __js__("require('electron').remote.require('fs')");
-			var path = untyped __js__("require('electron').remote.require('path')");
-			var app = untyped __js__("require('electron').remote.require('electron').app");
+			var fs = Syntax.code("require('electron').remote.require('fs')");
+			var path = Syntax.code("require('electron').remote.require('path')");
+			var app = Syntax.code("require('electron').remote.require('electron').app");
 			var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
 			fs.readFile(url, function (err, data) {
 				if (err != null) {
@@ -192,7 +193,7 @@ class LoaderImpl {
 					return;
 				}
 
-				var byteArray: Dynamic = untyped __js__("new Uint8Array(data)");
+				var byteArray: Dynamic = Syntax.code("new Uint8Array(data)");
 				var bytes = Bytes.alloc(byteArray.byteLength);
 				for (i in 0...byteArray.byteLength) bytes.set(i, byteArray[i]);
 				done(new Blob(bytes));
