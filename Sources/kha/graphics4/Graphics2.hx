@@ -49,6 +49,7 @@ class ImageShaderPainter {
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1500;
 	static inline var vertexSize: Int = 9;
+	static var bufferStart: Int;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: Float32Array;
@@ -62,6 +63,7 @@ class ImageShaderPainter {
 
 	public function new(g4: Graphics) {
 		this.g = g4;
+		bufferStart = 0;
 		bufferIndex = 0;
 		initShaders();
 		myPipeline = standardImagePipeline;
@@ -116,7 +118,7 @@ class ImageShaderPainter {
 		topleftx: FastFloat, toplefty: FastFloat,
 		toprightx: FastFloat, toprighty: FastFloat,
 		bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
-		var baseIndex: Int = bufferIndex * vertexSize * 4;
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
 		rectVertices.set(baseIndex +  0, bottomleftx);
 		rectVertices.set(baseIndex +  1, bottomlefty);
 		rectVertices.set(baseIndex +  2, -5.0);
@@ -135,7 +137,7 @@ class ImageShaderPainter {
 	}
 
 	private inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
-		var baseIndex: Int = bufferIndex * vertexSize * 4;
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
 		rectVertices.set(baseIndex +  3, left);
 		rectVertices.set(baseIndex +  4, bottom);
 
@@ -150,7 +152,7 @@ class ImageShaderPainter {
 	}
 
 	private inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
-		var baseIndex: Int = bufferIndex * vertexSize * 4;
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
 		rectVertices.set(baseIndex +  5, r);
 		rectVertices.set(baseIndex +  6, g);
 		rectVertices.set(baseIndex +  7, b);
@@ -172,8 +174,8 @@ class ImageShaderPainter {
 		rectVertices.set(baseIndex + 35, a);
 	}
 
-	private function drawBuffer(): Void {
-		rectVertexBuffer.unlock(bufferIndex * 4);
+	private function drawBuffer(end: Bool): Void {
+		rectVertexBuffer.unlock((bufferIndex - bufferStart) * 4);
 		g.setPipeline(myPipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
@@ -181,20 +183,30 @@ class ImageShaderPainter {
 		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
 		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
 
-		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
+		g.drawIndexedVertices(bufferStart * 2 * 3, (bufferIndex - bufferStart) * 2 * 3);
 
 		g.setTexture(myPipeline.textureLocation, null);
-		bufferIndex = 0;
-		rectVertices = rectVertexBuffer.lock();
+
+		if (end || bufferStart + bufferIndex + 1 >= bufferSize) {
+			bufferStart = 0;
+			bufferIndex = 0;
+			rectVertices = rectVertexBuffer.lock(0);
+		}
+		else {
+			bufferStart = bufferIndex;
+			rectVertices = rectVertexBuffer.lock(bufferStart * 4);
+		}
 	}
 
 	public function setBilinearFilter(bilinear: Bool): Void {
-		end();
+		drawBuffer(false);
+		lastTexture = null;
 		this.bilinear = bilinear;
 	}
 
 	public function setBilinearMipmapFilter(bilinear: Bool): Void {
-		end();
+		drawBuffer(false);
+		lastTexture = null;
 		this.bilinearMipmaps = bilinear;
 	}
 
@@ -205,7 +217,7 @@ class ImageShaderPainter {
 		bottomrightx: FastFloat, bottomrighty: FastFloat,
 		opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer(false);
 
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
@@ -222,7 +234,7 @@ class ImageShaderPainter {
 		bottomrightx: FastFloat, bottomrighty: FastFloat,
 		opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
@@ -234,7 +246,7 @@ class ImageShaderPainter {
 
 	public inline function drawImageScale(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer();
+		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture)) drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, opacity);
@@ -245,7 +257,9 @@ class ImageShaderPainter {
 	}
 
 	public function end(): Void {
-		if (bufferIndex > 0) drawBuffer();
+		if (bufferIndex > 0) {
+			drawBuffer(true);
+		}
 		lastTexture = null;
 	}
 }
