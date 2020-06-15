@@ -14,13 +14,11 @@ class VertexBuffer {
 	private var sizes: Array<Int>;
 	private var offsets: Array<Int>;
 	private var types: Array<Int>;
-	private var usage: Usage;
 	private var instanceDataStepRate: Int;
 	private var lockStart: Int = 0;
 	private var lockEnd: Int = 0;
 	
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
-		this.usage = usage;
 		this.instanceDataStepRate = instanceDataStepRate;
 		mySize = vertexCount;
 		myStride = 0;
@@ -102,6 +100,9 @@ class VertexBuffer {
 			}
 			++index;
 		}
+
+		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
+		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(0 * stride(), mySize * stride()).data(), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 
 	public function delete(): Void {
@@ -120,9 +121,9 @@ class VertexBuffer {
 	}
 	
 	public function unlock(?count: Int): Void {
-		if(count != null) lockEnd = lockStart + count;
+		if (count != null) lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(lockStart * stride(), lockEnd * stride()).data(), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()).data());
 	}
 	
 	public function stride(): Int {
