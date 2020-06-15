@@ -61,7 +61,7 @@ class VertexBuffer {
 	}
 
 	@:functionCode('
-		data->self.data = buffer->lock() + start * buffer->stride() / 4;
+		data->self.data = buffer->lock(start, count);
 		data->self.myLength = count * buffer->stride() / 4;
 		return data;
 	')
@@ -79,7 +79,7 @@ class VertexBuffer {
 	}
 
 	@:functionCode('
-		dataInt16->self.data = (short*)buffer->lock() + start * buffer->stride() / 2;
+		dataInt16->self.data = (short*)buffer->lock(start, count);
 		dataInt16->self.myLength = count * buffer->stride() / 2;
 		return dataInt16;
 	')
