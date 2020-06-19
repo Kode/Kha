@@ -173,8 +173,8 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
-		var performance = (Syntax.code("window.performance ? window.performance : window.Date"));
-		return performance.now() / 1000;
+		final now = js.Browser.window.performance != null ? js.Browser.window.performance.now() : js.lib.Date.now();
+		return now / 1000;
 	}
 
 	public static function getSystemId(): String {
