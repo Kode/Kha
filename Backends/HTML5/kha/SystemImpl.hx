@@ -173,7 +173,7 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
-		var performance = (Syntax.code("window.performance ? window.performance : window.Date"));
+		var performance = (Syntax.code("(window.performance ? window.performance : window.Date)"));
 		return performance.now() / 1000;
 	}
 
