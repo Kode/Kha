@@ -1,5 +1,5 @@
 extern class Krom {
-	static inline var KROM_API: Int = 3;
+	static inline var KROM_API: Int = 4;
 
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
 
