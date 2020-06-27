@@ -46,6 +46,7 @@ class Scheduler {
 	
 	private static var current: Float;
 	private static var lastTime: Float;
+	static var lastFrameEnd: Float;
 	
 	private static var frame_tasks_sorted: Bool;
 	private static var stopped: Bool;
@@ -72,7 +73,7 @@ class Scheduler {
 		
 		stopped = true;
 		frame_tasks_sorted = true;
-		current = lastTime = realTime();
+		current = lastTime = lastFrameEnd = realTime();
 
 		currentFrameTaskId = 0;
 		currentTimeTaskId  = 0;
@@ -133,6 +134,7 @@ class Scheduler {
 		if (time < lastTime) {
 			current = time;
 			lastTime = time;
+			lastFrameEnd = time;
 			
 			warpTimeTasksBack(time, outdatedTimeTasks);
 			warpTimeTasksBack(time, timeTasks);
@@ -165,6 +167,7 @@ class Scheduler {
 			
 			current = time;
 			lastTime = time;
+			lastFrameEnd = time;
 			
 			executeTimeTasks(time);
 		}
@@ -174,7 +177,7 @@ class Scheduler {
 		var now: Float = realTime() - startTime;
 		var delta = now - lastTime;
 		
-		var frameEnd: Float = current;
+		var frameEnd: Float = lastFrameEnd;
 		
 		if (delta >= 0) {
 			if (kha.netsync.Session.the() == null) {
@@ -230,7 +233,7 @@ class Scheduler {
 			
 			lastTime = frameEnd;
 			if (!stopped) { // Stop simulation time
-				current = frameEnd;
+				lastFrameEnd = frameEnd;
 			}
 			
 			// Extend endpoint by paused time (individually paused tasks)
@@ -261,6 +264,8 @@ class Scheduler {
 			}
 		}
 
+		current = frameEnd;
+
 		sortFrameTasks();
 		for (frameTask in frameTasks) {
 			if (!stopped && !frameTask.paused && frameTask.active) {
@@ -284,9 +289,11 @@ class Scheduler {
 			activeTimeTask = timeTasks[0];
 			
 			if (activeTimeTask.next <= until) {
+				current = activeTimeTask.next;
+
 				activeTimeTask.next += activeTimeTask.period;
 				timeTasks.remove(activeTimeTask);
-				
+
 				if (activeTimeTask.active && activeTimeTask.task()) {
 					if (activeTimeTask.period > 0 && (activeTimeTask.duration == 0 || activeTimeTask.duration >= activeTimeTask.start + activeTimeTask.next)) {
 						insertSorted(timeTasks, activeTimeTask);
@@ -341,6 +348,7 @@ class Scheduler {
 		for (i in 0...DIF_COUNT) deltas[i] = 0;
 		current = 0;
 		lastTime = 0;
+		lastFrameEnd = 0;
 	}
 	
 	public static function addBreakableFrameTask(task: Void -> Bool, priority: Int): Int {
