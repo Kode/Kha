@@ -217,6 +217,11 @@ class Image implements Canvas implements Resource {
 	private function get_realWidth(): Int { return texture_ == null ? renderTarget_.width : texture_.realWidth; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return texture_ == null ? renderTarget_.height : texture_.realHeight; }
+
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		return texture_.stride;
+	}
 	
 	public var g1(get, null): kha.graphics1.Graphics;
 	

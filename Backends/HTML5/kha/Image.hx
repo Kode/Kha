@@ -180,6 +180,11 @@ class Image implements Canvas implements Resource {
 	private function get_realHeight(): Int {
 		return 0;
 	}
+
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		return 0;
+	}
 	
 	public var g1(get, null): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics {

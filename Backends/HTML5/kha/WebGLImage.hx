@@ -116,6 +116,10 @@ class WebGLImage extends Image {
 		return myHeight;
 	}
 
+	override function get_stride(): Int {
+		return formatByteSize(format) * width;
+	}
+
 	override public function isOpaque(x: Int, y: Int): Bool {
 		if (data == null) {
 			if (context == null) return true;

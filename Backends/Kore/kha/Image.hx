@@ -426,4 +426,11 @@ class Image implements Canvas implements Resource {
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
 		
 	}
+
+	public var stride(get, null): Int;
+
+	@:functionCode("return texture->stride();")
+	function get_stride(): Int {
+		return 0;
+	}
 }

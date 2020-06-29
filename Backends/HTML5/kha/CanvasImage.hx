@@ -82,6 +82,10 @@ class CanvasImage extends Image {
 	override private function get_realHeight(): Int {
 		return myHeight;
 	}
+
+	override function get_stride(): Int {
+		return format == TextureFormat.RGBA32 ? 4 * width : width;
+	}
 	
 	override public function isOpaque(x: Int, y: Int): Bool {
 		if (data == null) {
