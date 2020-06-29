@@ -108,6 +108,11 @@ class Image implements Canvas implements Resource {
 	private function get_realHeight(): Int {
 		return height;
 	}
+
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		return realWidth * 4;
+	}
 	
 	@:functionCode('
 		if (x >= 0 && x < get_width() && y >= 0 && y < get_height()) {

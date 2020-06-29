@@ -349,6 +349,11 @@ class Image implements Canvas implements Resource {
 		return myRealHeight;
 	}
 
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		return format == TextureFormat.RGBA32 ? 4 * width : (format == TextureFormat.RGBA128 ? 16 * width : width);
+	}
+
 	public function at(x: Int, y: Int): Int {
 		return 0;
 	}

@@ -156,6 +156,20 @@ class Image implements Canvas implements Resource {
 		return texHeight;
 	}
 
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		switch (format) {
+			case RGBA32:
+				return texWidth * 4;
+			case L8:
+				return texWidth;
+			case RGBA128:
+				return texWidth * 16;
+			default:
+				return texWidth * 4;
+		}
+	}
+
 	public function unload(): Void {
 		if (tex != null) {
 			tex.dispose();

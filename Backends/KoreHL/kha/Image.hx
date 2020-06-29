@@ -258,6 +258,11 @@ class Image implements Canvas implements Resource {
 		return _texture != null ? kore_texture_get_real_height(_texture) : kore_render_target_get_real_height(_renderTarget);
 	}
 
+	public var stride(get, null): Int;
+	function get_stride(): Int {
+		return formatByteSize(format) * width;
+	}
+
 	public function isOpaque(x: Int, y: Int): Bool {
 		return atInternal(x, y) & 0xff != 0;
 	}
