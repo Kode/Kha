@@ -19,6 +19,7 @@ struct AudioChannel {
 	volatile long stopped;
 #endif
 	volatile float volume;
+	volatile float playback_rate;
 	struct rc_floats *data;
 	int data_length;
 	bool looping;

@@ -14,4 +14,7 @@ interface AudioChannel {
 	private function set_volume(value: Float): Float;
 	public var finished(get, null): Bool;
 	private function get_finished(): Bool;
+	public var playbackRate(get, set): Float;
+	private function get_playbackRate(): Float;
+	private function set_playbackRate(value: Float): Float;
 }

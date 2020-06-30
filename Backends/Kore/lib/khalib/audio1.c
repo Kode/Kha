@@ -48,7 +48,7 @@ static float lerp(float v0, float v1, float t) {
 
 static float sample(struct AudioChannel *channel, int position, int sampleRate) {
 	bool even = position % 2 == 0;
-	float factor = (float)channel->sample_rate / (float)sampleRate;
+	float factor = (float)channel->sample_rate / (float)sampleRate * channel->playback_rate;
 
 	if (even) {
 		position /= 2;

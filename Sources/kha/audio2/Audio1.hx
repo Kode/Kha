@@ -258,6 +258,8 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel->data_length = size;
 		float volume = 1.0f;
 		KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, volume);
+		float playback_rate = 1.0f;
+		KINC_ATOMIC_EXCHANGE_FLOAT(&channel->playback_rate, playback_rate);
 		KINC_ATOMIC_EXCHANGE_32(&channel->paused, false);
 		KINC_ATOMIC_EXCHANGE_32(&channel->stopped, false);
 		channel->looping = looping;
@@ -323,7 +325,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		else {
 			KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, value);
 		}
-		return value;
+		return value_;
 	')
 	function set_volume(value_: Float): Float {
 		return 0;
@@ -334,6 +336,18 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	@:functionCode('return channel->stopped;')
 	function get_finished(): Bool {
 		return false;
+	}
+
+	public var playbackRate(get, set): Float;
+
+	@:functionCode('return channel->playback_rate;')
+	function get_playbackRate(): Float {
+		return 1;
+	}
+	
+	@:functionCode('float value = (float)value_; KINC_ATOMIC_EXCHANGE_FLOAT(&channel->playback_rate, value); return value_;')
+	function set_playbackRate(value_: Float): Float {
+		return 1;
 	}
 }
 
