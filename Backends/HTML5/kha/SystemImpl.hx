@@ -85,7 +85,7 @@ class SystemImpl {
 		firefox = isFirefox();
 		ie = isIE();
 
-		if (mobile || chrome) {
+		if (mobile || chrome || firefox) {
 			mobileAudioPlaying = false;
 		}
 		else {
