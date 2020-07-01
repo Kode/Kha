@@ -175,6 +175,10 @@ class ImageShaderPainter {
 	}
 
 	private function drawBuffer(end: Bool): Void {
+		if (bufferIndex - bufferStart == 0) {
+			return;
+		}
+
 		rectVertexBuffer.unlock((bufferIndex - bufferStart) * 4);
 		g.setPipeline(myPipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
@@ -441,6 +445,10 @@ class ColoredShaderPainter {
 	}
 
 	private function drawBuffer(trisDone: Bool): Void {
+		if (bufferIndex == 0) {
+			return;
+		}
+
 		if (!trisDone) endTris(true);
 
 		rectVertexBuffer.unlock(bufferIndex * 4);
@@ -639,6 +647,10 @@ class TextShaderPainter {
 	}
 
 	private function drawBuffer(): Void {
+		if (bufferIndex == 0) {
+			return;
+		}
+		
 		rectVertexBuffer.unlock(bufferIndex * 4);
 		g.setPipeline(myPipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
