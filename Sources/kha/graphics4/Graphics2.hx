@@ -29,17 +29,85 @@ import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
 
-class PipelineCache {
+class InternalPipeline {
 	public var pipeline: PipelineState;
 	public var projectionLocation: ConstantLocation;
 	public var textureLocation: TextureUnit;
 
-	public function new(pipeline: PipelineState, texture: Bool) {
+	public function new(pipeline: PipelineState, projectionLocation: ConstantLocation, textureLocation: TextureUnit) {
 		this.pipeline = pipeline;
-		try { projectionLocation = pipeline.getConstantLocation("projectionMatrix"); } catch (x: Dynamic) { trace(x); }
-		if (texture) {
-			try { textureLocation = pipeline.getTextureUnit("tex"); } catch (x: Dynamic) { trace(x); }
+		this.projectionLocation = projectionLocation;
+		this.textureLocation = textureLocation;
+	}
+}
+
+interface PipelineCache {
+	function get(colorFormat: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat): InternalPipeline;
+}
+
+class SimplePipelineCache implements PipelineCache {
+	var pipeline: InternalPipeline;
+	
+	public function new(pipeline: PipelineState, texture: Bool) {
+		var projectionLocation: ConstantLocation = null;
+		try {
+			projectionLocation = pipeline.getConstantLocation("projectionMatrix");
 		}
+		catch (x: Dynamic) {
+			trace(x);
+		}
+		
+		var textureLocation: TextureUnit = null;
+		if (texture) {
+			try {
+				textureLocation = pipeline.getTextureUnit("tex");
+			}
+			catch (x: Dynamic) {
+				trace(x);
+			}
+		}
+
+		this.pipeline = new InternalPipeline(pipeline, projectionLocation, textureLocation);
+	}
+
+	public function get(colorFormats: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat): InternalPipeline {
+		return pipeline;
+	}
+}
+
+class PerFramebufferPipelineCache implements PipelineCache {
+	var pipelines: Array<InternalPipeline> = [];
+
+	public function new(pipeline: PipelineState, texture: Bool) {
+		pipeline.compile();
+
+		var projectionLocation: ConstantLocation = null;
+		try {
+			projectionLocation = pipeline.getConstantLocation("projectionMatrix");
+		}
+		catch (x: Dynamic) {
+			trace(x);
+		}
+		
+		var textureLocation: TextureUnit = null;
+		if (texture) {
+			try {
+				textureLocation = pipeline.getTextureUnit("tex");
+			}
+			catch (x: Dynamic) {
+				trace(x);
+			}
+		}
+
+		pipelines.push(new InternalPipeline(pipeline, projectionLocation, textureLocation));
+	}
+
+	public function get(colorFormats: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat): InternalPipeline {
+		return pipelines[hash(colorFormats, depthStencilFormat)];
+	}
+
+	function hash(colorFormats: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat) {
+		return 0;
 	}
 }
 
@@ -89,8 +157,7 @@ class ImageShaderPainter {
 		}
 		if (standardImagePipeline == null) {
 			var pipeline = Graphics2.createImagePipeline(structure);
-			pipeline.compile();
-			standardImagePipeline = new PipelineCache(pipeline, true);
+			standardImagePipeline = new PerFramebufferPipelineCache(pipeline, true);
 		}
 	}
 
@@ -180,16 +247,17 @@ class ImageShaderPainter {
 		}
 
 		rectVertexBuffer.unlock((bufferIndex - bufferStart) * 4);
-		g.setPipeline(myPipeline.pipeline);
+		var pipeline = myPipeline.get(null, Depth24Stencil8);
+		g.setPipeline(pipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setTexture(myPipeline.textureLocation, lastTexture);
-		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
-		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
+		g.setTexture(pipeline.textureLocation, lastTexture);
+		g.setTextureParameters(pipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
+		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(bufferStart * 2 * 3, (bufferIndex - bufferStart) * 2 * 3);
 
-		g.setTexture(myPipeline.textureLocation, null);
+		g.setTexture(pipeline.textureLocation, null);
 
 		if (end || bufferStart + bufferIndex + 1 >= bufferSize) {
 			bufferStart = 0;
@@ -317,8 +385,7 @@ class ColoredShaderPainter {
 		}
 		if (standardColorPipeline == null) {
 			var pipeline = Graphics2.createColoredPipeline(structure);
-			pipeline.compile();
-			standardColorPipeline = new PipelineCache(pipeline, false);
+			standardColorPipeline = new PerFramebufferPipelineCache(pipeline, false);
 		}
 	}
 
@@ -452,10 +519,11 @@ class ColoredShaderPainter {
 		if (!trisDone) endTris(true);
 
 		rectVertexBuffer.unlock(bufferIndex * 4);
-		g.setPipeline(myPipeline.pipeline);
+		var pipeline = myPipeline.get(null, Depth24Stencil8);
+		g.setPipeline(pipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
+		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
@@ -467,10 +535,11 @@ class ColoredShaderPainter {
 		if (!rectsDone) endRects(true);
 
 		triangleVertexBuffer.unlock(triangleBufferIndex * 3);
-		g.setPipeline(myPipeline.pipeline);
+		var pipeline = myPipeline.get(null, Depth24Stencil8);
+		g.setPipeline(pipeline.pipeline);
 		g.setVertexBuffer(triangleVertexBuffer);
 		g.setIndexBuffer(triangleIndexBuffer);
-		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
+		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(0, triangleBufferIndex * 3);
 
@@ -560,8 +629,7 @@ class TextShaderPainter {
 		}
 		if (standardTextPipeline == null) {
 			var pipeline = Graphics2.createTextPipeline(structure);
-			pipeline.compile();
-			standardTextPipeline = new PipelineCache(pipeline, true);
+			standardTextPipeline = new PerFramebufferPipelineCache(pipeline, true);
 		}
 	}
 
@@ -652,16 +720,17 @@ class TextShaderPainter {
 		}
 		
 		rectVertexBuffer.unlock(bufferIndex * 4);
-		g.setPipeline(myPipeline.pipeline);
+		var pipeline = myPipeline.get(null, Depth24Stencil8);
+		g.setPipeline(pipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setMatrix(myPipeline.projectionLocation, projectionMatrix);
-		g.setTexture(myPipeline.textureLocation, lastTexture);
-		g.setTextureParameters(myPipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
+		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
+		g.setTexture(pipeline.textureLocation, lastTexture);
+		g.setTextureParameters(pipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, MipMapFilter.NoMipFilter);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
-		g.setTexture(myPipeline.textureLocation, null);
+		g.setTexture(pipeline.textureLocation, null);
 		bufferIndex = 0;
 		rectVertices = rectVertexBuffer.lock();
 	}
@@ -1016,7 +1085,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		else {
 			var cache = pipelineCache[pipeline];
 			if (cache == null) {
-				cache = new PipelineCache(pipeline, true);
+				cache = new SimplePipelineCache(pipeline, true);
 				pipelineCache[pipeline] = cache;
 			}
 			imagePainter.pipeline = cache;
