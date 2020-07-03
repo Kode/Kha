@@ -47,6 +47,12 @@ class Stbtt_temp_region {
 	public var yoff: Int;
 }
 
+class Stbtt__buf {
+	public function new() { }
+	public var data: Blob;
+	public var cursor: Int;
+}
+
 class Stbtt_bakedchar {
 	public function new() { }
 	// coordinates of bbox in bitmap
@@ -128,9 +134,17 @@ class Stbtt_fontinfo {
 	public var hhea: Int;
 	public var hmtx: Int;
 	public var kern: Int;
-	
+	public var gpos: Int;
+
 	public var index_map: Int;                     // a cmap mapping for our chosen character encoding
 	public var indexToLocFormat: Int;              // format needed to map from glyph index to glyph
+
+	public var cff: Stbtt__buf;                    // cff font data
+	public var charstrings: Stbtt__buf;            // the charstring index
+	public var gsubrs: Stbtt__buf;                 // global charstring subroutines index
+	public var subrs: Stbtt__buf;                  // private charstring subroutines index
+	public var fontdicts: Stbtt__buf;              // array of font dicts
+	public var fdselect: Stbtt__buf;               // map from glyph to fontdict
 }
 
 class Stbtt_vertex {
@@ -139,6 +153,8 @@ class Stbtt_vertex {
 	public var y: Stbtt_int16;
 	public var cx: Stbtt_int16;
 	public var cy: Stbtt_int16;
+	public var cx1: Stbtt_int16;
+	public var cy1: Stbtt_int16;
 	public var type: Int;
 	public var padding: Int;
 }
@@ -178,6 +194,23 @@ class Stbtt__point {
 	public var y: Float;
 }
 
+class Stbtt__csctx {
+	public function new() { }
+	public var bounds: Bool;
+	public var started: Bool;
+	public var first_x: Float;
+	public var first_y: Float;
+	public var x: Float;
+	public var y: Float;
+	public var min_x: Stbtt_int32;
+	public var min_y: Stbtt_int32;
+	public var max_x: Stbtt_int32;
+	public var max_y: Stbtt_int32;
+
+	public var pvertices: Vector<Stbtt_vertex>;
+	public var num_vertices: Int;
+}
+
 class StbTruetype {
 	private static inline function STBTT_assert(value: Bool): Void { if (!value) throw "Error"; }
 	private static inline function STBTT_POINT_SIZE(x: Float): Float { return -x; }
@@ -185,6 +218,7 @@ class StbTruetype {
 	public static inline var STBTT_vmove  = 1;
 	public static inline var STBTT_vline  = 2;
 	public static inline var STBTT_vcurve = 3;
+	public static inline var STBTT_vcubic = 4;
 
 	public static inline var STBTT_MACSTYLE_DONTCARE   = 0;
 	public static inline var STBTT_MACSTYLE_BOLD       = 1;
@@ -255,7 +289,149 @@ class StbTruetype {
 	public static inline var STBTT_MAX_OVERSAMPLE: Int = 8;
 	//**typedef int stbtt__test_oversample_pow2[(STBTT_MAX_OVERSAMPLE & (STBTT_MAX_OVERSAMPLE-1)) == 0 ? 1 : -1];
 	public static inline var STBTT_RASTERIZER_VERSION: Int = 2;
-	
+
+//////////////////////////////////////////////////////////////////////////
+//
+// stbtt__buf helpers to parse data from file
+//
+
+	private static inline function stbtt__buf_get8(b: Stbtt__buf): Stbtt_uint8 {
+		if (b.cursor >= b.data.length)
+			return 0;
+		return ttBYTE(b.data, b.cursor++);
+	}
+
+	private static inline function stbtt__buf_peek8(b: Stbtt__buf): Stbtt_uint8 {
+		if (b.cursor >= b.data.length)
+			return 0;
+		return ttBYTE(b.data, b.cursor);
+	}
+
+	private static inline function stbtt__buf_seek(b: Stbtt__buf, o: Int): Void {
+		STBTT_assert(!(o > b.data.length || o < 0));
+		b.cursor = (o > b.data.length || o < 0) ? b.data.length : o;
+	}
+
+	private static inline function stbtt__buf_skip(b: Stbtt__buf, o: Int): Void {
+		stbtt__buf_seek(b, b.cursor + o);
+	}
+
+	private static inline function stbtt__buf_get(b: Stbtt__buf, n: Int): Stbtt_uint32 {
+		var v: Stbtt_uint32 = 0;
+		STBTT_assert(n >= 1 && n <= 4);
+		for (i in 0...n)
+			v = (v << 8) | stbtt__buf_get8(b);
+		return v;
+	}
+
+	private static inline function stbtt__new_buf(p: Blob, size: Int): Stbtt__buf {
+		var r: Stbtt__buf = new Stbtt__buf();
+		STBTT_assert(size < 0x40000000);
+		r.data = p;
+		r.cursor = 0;
+		return r;
+	}
+
+	private static inline function stbtt__buf_get16(b: Stbtt__buf): Stbtt_uint32 {
+		return stbtt__buf_get(b, 2);
+	}
+
+	private static inline function stbtt__buf_get32(b: Stbtt__buf): Stbtt_uint32 {
+		return stbtt__buf_get(b, 4);
+	}
+
+	private static inline function stbtt__buf_range(b: Stbtt__buf, o: Int, s: Int): Stbtt__buf {
+		var r = stbtt__new_buf(null, 0);
+		if (o < 0 || s < 0 || o > b.data.length || s > b.data.length - o) return r;
+		r.data = b.data.sub(o, s);
+		return r;
+	}
+
+	private static inline function stbtt__cff_get_index(b: Stbtt__buf): Stbtt__buf {
+		var start = b.cursor;
+		var count = stbtt__buf_get16(b);
+		if (count > 0) {
+			var offsize = stbtt__buf_get8(b);
+			STBTT_assert(offsize >= 1 && offsize <= 4);
+			stbtt__buf_skip(b, offsize * count);
+			stbtt__buf_skip(b, stbtt__buf_get(b, offsize) - 1);
+			return stbtt__buf_range(b, start, b.cursor - start);
+		}
+		return b;
+	}
+
+	private static inline function stbtt__cff_int(b: Stbtt__buf): Stbtt_uint32 {
+		var b0: Stbtt_uint8 = stbtt__buf_get8(b);
+		if (b0 >= 32 && b0 <= 246)       return b0 - 139;
+		else if (b0 >= 247 && b0 <= 250) return (b0 - 247)*256 + stbtt__buf_get8(b) + 108;
+		else if (b0 >= 251 && b0 <= 254) return -(b0 - 251)*256 - stbtt__buf_get8(b) - 108;
+		else if (b0 == 28)               return stbtt__buf_get16(b);
+		else if (b0 == 29)               return stbtt__buf_get32(b);
+		else {
+			STBTT_assert(false);
+			return 0;
+		}
+	}
+
+	private static inline function stbtt__cff_skip_operand(b: Stbtt__buf): Void {
+		var v: Int, b0: Stbtt_uint8 = stbtt__buf_peek8(b);
+		STBTT_assert(b0 >= 28);
+		if (b0 == 30) {
+			stbtt__buf_skip(b, 1);
+			while (b.cursor < b.data.length) {
+				v = stbtt__buf_get8(b);
+				if ((v & 0xF) == 0xF || (v >> 4) == 0xF)
+					break;
+			}
+		} else {
+			stbtt__cff_int(b);
+		}
+	}
+
+	private static inline function stbtt__dict_get(b: Stbtt__buf, key: Int): Stbtt__buf {
+		stbtt__buf_seek(b, 0);
+		var ret: Stbtt__buf = null;
+		while (b.cursor < b.data.length) {
+			var start: Int = b.cursor, end: Int, op: Int;
+			while (stbtt__buf_peek8(b) >= 28)
+				stbtt__cff_skip_operand(b);
+			end = b.cursor;
+			op = stbtt__buf_get8(b);
+			if (op == 12)  op = stbtt__buf_get8(b) | 0x100;
+			if (op == key) {
+				ret = stbtt__buf_range(b, start, end - start);
+				break;
+			}
+		}
+		return ret != null ? ret : stbtt__buf_range(b, 0, 0);
+	}
+
+	private static inline function stbtt__dict_get_ints(b: Stbtt__buf, key: Int, outcount: Int, out: Array<Stbtt_uint32>): Void {
+		var i: Int = 0, operands = stbtt__dict_get(b, key);
+		while (i < outcount && operands.cursor < operands.data.length) {
+			out[i] = stbtt__cff_int(operands);
+			i++;
+		}
+	}
+
+	private static inline function stbtt__cff_index_count(b: Stbtt__buf): Int
+	{
+		stbtt__buf_seek(b, 0);
+		return stbtt__buf_get16(b);
+	}
+
+	private static inline function stbtt__cff_index_get(b: Stbtt__buf, i: Int): Stbtt__buf {
+		stbtt__buf_seek(b, 0);
+		var count: Int = stbtt__buf_get16(b);
+		var offsize: Int = stbtt__buf_get8(b);
+		STBTT_assert(i >= 0 && i < count);
+		STBTT_assert(offsize >= 1 && offsize <= 4);
+		stbtt__buf_skip(b, i*offsize);
+		var start: Int = stbtt__buf_get(b, offsize);
+		var end: Int = stbtt__buf_get(b, offsize);
+		return stbtt__buf_range(b, 2+(count+1)*offsize+start, end - start);
+	}
+
 	private static inline function ttBYTE(p: Blob, pos: Int = 0): Stbtt_uint8 {
 		return p.readU8(pos);
 	}
@@ -307,6 +483,7 @@ class StbTruetype {
 		if (stbtt_tag(font, 0, "typ1"))   return true; // TrueType with type 1 font -- we don't support this!
 		if (stbtt_tag(font, 0, "OTTO"))   return true; // OpenType with CFF
 		if (stbtt_tag4(font, 0, 0,1,0,0)) return true; // OpenType 1.0
+		if (stbtt_tag(font, 0, "true"))   return true; // Apple specification for TrueType fonts
 		return false;
 	}
 
@@ -340,12 +517,40 @@ class StbTruetype {
 		return -1;
 	}
 
+	public static function stbtt_GetNumberOfFonts(font_collection: Blob): Int {
+		// if it's just a font, there's only one valid font
+		if (stbtt__isfont(font_collection))
+			return 1;
+
+		// check if it's a TTC
+		if (stbtt_tag(font_collection, 0, "ttcf")) {
+			// version 1?
+			if (ttULONG(font_collection, 4) == 0x00010000 || ttULONG(font_collection, 4) == 0x00020000) {
+				return ttLONG(font_collection, 8);
+			}
+		}
+		return 0;
+	}
+
+	private static inline function stbtt__get_subrs(cff: Stbtt__buf, fontdict: Stbtt__buf): Stbtt__buf {
+		var subrsoff: Array<Stbtt_uint32> = [ 0 ];
+		var private_loc: Array<Stbtt_uint32> = [ 0, 0 ];
+		stbtt__dict_get_ints(fontdict, 18, 2, private_loc);
+		if (private_loc[1] == 0 || private_loc[0] == 0) return stbtt__new_buf(null, 0);
+		var pdict: Stbtt__buf = stbtt__buf_range(cff, private_loc[1], private_loc[0]);
+		stbtt__dict_get_ints(pdict, 19, 1, subrsoff);
+		if (subrsoff[0] == 0) return stbtt__new_buf(null, 0);
+		stbtt__buf_seek(cff, private_loc[1]+subrsoff[0]);
+		return stbtt__cff_get_index(cff);
+	}
+
 	public static function stbtt_InitFont(info: Stbtt_fontinfo, data: Blob, fontstart: Int): Bool {
 		var cmap, t: Stbtt_uint32;
 		var numTables: Stbtt_int32 ;
 
 		info.data = data;
 		info.fontstart = fontstart;
+		info.cff = stbtt__new_buf(null, 0);
 
 		cmap = stbtt__find_table(data, fontstart, "cmap");       // required
 		info.loca = stbtt__find_table(data, fontstart, "loca"); // required
@@ -354,8 +559,61 @@ class StbTruetype {
 		info.hhea = stbtt__find_table(data, fontstart, "hhea"); // required
 		info.hmtx = stbtt__find_table(data, fontstart, "hmtx"); // required
 		info.kern = stbtt__find_table(data, fontstart, "kern"); // not required
-		if (cmap == 0 || info.loca == 0 || info.head == 0 || info.glyf == 0 || info.hhea == 0 || info.hmtx == 0)
+		info.gpos = stbtt__find_table(data, fontstart, "GPOS"); // not required
+
+		if (cmap == 0 || info.head == 0 || info.hhea == 0 || info.hmtx == 0)
 			return false;
+		if (info.glyf != 0) {
+			if (info.loca == 0) return false;
+		} else {
+			// initialization for CFF / Type2 fonts (OTF)
+			var b: Stbtt__buf, topdict, topdictidx;
+			var cstype: Array<Stbtt_uint32> = [ 2 ], charstrings = [ 0 ], fdarrayoff = [ 0 ], fdselectoff = [ 0 ];
+			var cff: Stbtt_uint32;
+
+			cff = stbtt__find_table(data, fontstart, "CFF ");
+			if (cff == 0) return false;
+
+			info.fontdicts = stbtt__new_buf(null, 0);
+			info.fdselect = stbtt__new_buf(null, 0);
+
+			var cff_data = data.sub(cff, data.length - cff);
+			info.cff = stbtt__new_buf(cff_data, cff_data.length);
+			b = info.cff;
+
+			// read the header
+			stbtt__buf_skip(b, 2);
+			stbtt__buf_seek(b, stbtt__buf_get8(b)); // hdrsize
+
+			// @TODO the name INDEX could list multiple fonts,
+			// but we just use the first one.
+			stbtt__cff_get_index(b);  // name INDEX
+			topdictidx = stbtt__cff_get_index(b);
+			topdict = stbtt__cff_index_get(topdictidx, 0);
+			stbtt__cff_get_index(b);  // string INDEX
+			info.gsubrs = stbtt__cff_get_index(b);
+
+			stbtt__dict_get_ints(topdict, 17, 1, charstrings);
+			stbtt__dict_get_ints(topdict, 0x100 | 6, 1, cstype);
+			stbtt__dict_get_ints(topdict, 0x100 | 36, 1, fdarrayoff);
+			stbtt__dict_get_ints(topdict, 0x100 | 37, 1, fdselectoff);
+			info.subrs = stbtt__get_subrs(b, topdict);
+
+			// we only support Type 2 charstrings
+			if (cstype[0] != 2) return false;
+			if (charstrings[0] == 0) return false;
+
+			if (fdarrayoff[0] != 0) {
+				// looks like a CID font
+				if (fdselectoff[0] == 0) return false;
+				stbtt__buf_seek(b, fdarrayoff[0]);
+				info.fontdicts = stbtt__cff_get_index(b);
+				info.fdselect = stbtt__buf_range(b, fdselectoff[0], b.data.length-fdselectoff[0]);
+			}
+
+			stbtt__buf_seek(b, charstrings[0]);
+			info.charstrings = stbtt__cff_get_index(b);
+		}
 
 		t = stbtt__find_table(data, fontstart, "maxp");
 		if (t != 0)
@@ -499,6 +757,8 @@ class StbTruetype {
 	private static function stbtt__GetGlyfOffset(info: Stbtt_fontinfo, glyph_index: Int): Int {
 		var g1,g2: Int;
 
+		STBTT_assert(info.cff.data == null || info.cff.data.length == 0);
+
 		if (glyph_index >= info.numGlyphs) return -1; // glyph index out of range
 		if (info.indexToLocFormat >= 2)    return -1; // unknown index->glyph map format
 
@@ -514,13 +774,17 @@ class StbTruetype {
 	}
 
 	public static function stbtt_GetGlyphBox(info: Stbtt_fontinfo, glyph_index: Int, rect: Stbtt_temp_rect): Bool {
-		var g: Int = stbtt__GetGlyfOffset(info, glyph_index);
-		if (g < 0) return false;
+		if (info.cff.data != null && info.cff.data.length > 0) {
+			stbtt__GetGlyphInfoT2(info, glyph_index, rect);
+		} else {
+			var g: Int = stbtt__GetGlyfOffset(info, glyph_index);
+			if (g < 0) return false;
 
-		rect.x0 = ttSHORT(info.data, g + 2);
-		rect.y0 = ttSHORT(info.data, g + 4);
-		rect.x1 = ttSHORT(info.data, g + 6);
-		rect.y1 = ttSHORT(info.data, g + 8);
+			rect.x0 = ttSHORT(info.data, g + 2);
+			rect.y0 = ttSHORT(info.data, g + 4);
+			rect.x1 = ttSHORT(info.data, g + 6);
+			rect.y1 = ttSHORT(info.data, g + 8);
+		}
 		return true;
 	}
 
@@ -530,6 +794,8 @@ class StbTruetype {
 
 	public static function stbtt_IsGlyphEmpty(info: Stbtt_fontinfo, glyph_index: Int): Bool {
 		var numberOfContours: Stbtt_int16;
+		if (info.cff.data != null && info.cff.data.length > 0)
+			return stbtt__GetGlyphInfoT2(info, glyph_index, null) == 0;
 		var g: Int = stbtt__GetGlyfOffset(info, glyph_index);
 		if (g < 0) return true;
 		numberOfContours = ttSHORT(info.data, g);
@@ -556,8 +822,8 @@ class StbTruetype {
 			to[offset + i] = from[i];
 		}
 	}
-	
-	public static function stbtt_GetGlyphShape(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
+
+	public static function stbtt__GetGlyphShapeTT(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
 		var numberOfContours: Stbtt_int16;
 		var data: Blob = info.data;
 		var vertices: Vector<Stbtt_vertex> = null;
@@ -715,7 +981,7 @@ class StbTruetype {
 				++i;
 			}
 			num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
-		} else if (numberOfContours == -1) {
+		} else if (numberOfContours < 0) {
 			// Compound shapes.
 			var more: Int = 1;
 			var compIndex: Int = g + 10;
@@ -796,9 +1062,6 @@ class StbTruetype {
 				// More components ?
 				more = flags & (1<<5);
 			}
-		} else if (numberOfContours < 0) {
-			// @TODO other compound variations?
-			STBTT_assert(false);
 		} else {
 			// numberOfCounters == 0, do nothing
 		}
@@ -813,6 +1076,418 @@ class StbTruetype {
 		else {
 			return vertices;
 		}
+	}
+
+	private static inline function STBTT__CSCTX_INIT(bounds: Bool): Stbtt__csctx {
+		var tmp = new Stbtt__csctx();
+		tmp.bounds = bounds;
+		tmp.started = false;
+		tmp.first_x = 0;
+		tmp.first_y = 0;
+		tmp.x = 0;
+		tmp.y = 0;
+		tmp.min_x = 0;
+		tmp.min_y = 0;
+		tmp.max_x = 0;
+		tmp.max_y = 0;
+		// tmp.pvertices = new Vector<Stbtt_vertex>(0);
+		tmp.pvertices = null;
+		tmp.num_vertices = 0;
+		return tmp;
+	}
+
+	private static inline function stbtt__track_vertex(c: Stbtt__csctx, x: Stbtt_int32, y: Stbtt_int32): Void {
+		if (x > c.max_x || !c.started) c.max_x = x;
+		if (y > c.max_y || !c.started) c.max_y = y;
+		if (x < c.min_x || !c.started) c.min_x = x;
+		if (y < c.min_y || !c.started) c.min_y = y;
+		c.started = true;
+	}
+
+	private static inline function stbtt__csctx_v(c: Stbtt__csctx, type: Stbtt_uint8, x: Stbtt_int32, y: Stbtt_int32, cx: Stbtt_int32, cy: Stbtt_int32, cx1: Stbtt_int32, cy1: Stbtt_int32): Void {
+		if (c.bounds) {
+			stbtt__track_vertex(c, x, y);
+			if (type == STBTT_vcubic) {
+				stbtt__track_vertex(c, cx, cy);
+				stbtt__track_vertex(c, cx1, cy1);
+			}
+		} else {
+			stbtt_setvertex(c.pvertices[c.num_vertices], type, x, y, cx, cy);
+			c.pvertices[c.num_vertices].cx1 = cast(cx1, Stbtt_int16);
+			c.pvertices[c.num_vertices].cy1 = cast(cy1, Stbtt_int16);
+		}
+		c.num_vertices++;
+	}
+
+	private static inline function stbtt__csctx_close_shape(ctx: Stbtt__csctx): Void {
+		if (ctx.first_x != ctx.x || ctx.first_y != ctx.y)
+			stbtt__csctx_v(ctx, STBTT_vline, Std.int(ctx.first_x), Std.int(ctx.first_y), 0, 0, 0, 0);
+	}
+
+	private static inline function stbtt__csctx_rmove_to(ctx: Stbtt__csctx, dx: Float, dy: Float): Void {
+		stbtt__csctx_close_shape(ctx);
+		ctx.first_x = ctx.x = ctx.x + dx;
+		ctx.first_y = ctx.y = ctx.y + dy;
+		stbtt__csctx_v(ctx, STBTT_vmove, Std.int(ctx.x), Std.int(ctx.y), 0, 0, 0, 0);
+	}
+
+	private static inline function stbtt__csctx_rline_to(ctx: Stbtt__csctx, dx: Float, dy: Float): Void {
+		ctx.x += dx;
+		ctx.y += dy;
+		stbtt__csctx_v(ctx, STBTT_vline, Std.int(ctx.x), Std.int(ctx.y), 0, 0, 0, 0);
+	}
+
+	private static inline function stbtt__csctx_rccurve_to(ctx: Stbtt__csctx, dx1: Float, dy1: Float, dx2: Float, dy2: Float, dx3: Float, dy3: Float): Void {
+		var cx1: Float = ctx.x + dx1;
+		var cy1: Float = ctx.y + dy1;
+		var cx2: Float = cx1 + dx2;
+		var cy2: Float = cy1 + dy2;
+		ctx.x = cx2 + dx3;
+		ctx.y = cy2 + dy3;
+		stbtt__csctx_v(ctx, STBTT_vcubic, Std.int(ctx.x), Std.int(ctx.y), Std.int(cx1), Std.int(cy1), Std.int(cx2), Std.int(cy2));
+	}
+
+	private static inline function stbtt__get_subr(idx: Stbtt__buf, n: Int): Stbtt__buf 
+	{
+		var count: Int = stbtt__cff_index_count(idx);
+		var bias: Int = 107;
+		if (count >= 33900)
+			bias = 32768;
+		else if (count >= 1240)
+			bias = 1131;
+		n += bias;
+		if (n < 0 || n >= count)
+			return stbtt__new_buf(null, 0);
+		return stbtt__cff_index_get(idx, n);
+	}
+
+	private static inline function stbtt__cid_get_glyph_subrs(info: Stbtt_fontinfo, glyph_index: Int): Stbtt__buf {
+		var fdselect: Stbtt__buf = info.fdselect;
+		var nranges: Int, start, end, v, fmt, fdselector = -1, i;
+
+		stbtt__buf_seek(fdselect, 0);
+		fmt = stbtt__buf_get8(fdselect);
+		if (fmt == 0) {
+			// untested
+			stbtt__buf_skip(fdselect, glyph_index);
+			fdselector = stbtt__buf_get8(fdselect);
+		} else if (fmt == 3) {
+			nranges = stbtt__buf_get16(fdselect);
+			start = stbtt__buf_get16(fdselect);
+			for (i in 0...nranges) {
+				v = stbtt__buf_get8(fdselect);
+				end = stbtt__buf_get16(fdselect);
+				if (glyph_index >= start && glyph_index < end) {
+					fdselector = v;
+					break;
+				}
+				start = end;
+			}
+		}
+		if (fdselector == -1) stbtt__new_buf(null, 0);
+		return stbtt__get_subrs(info.cff, stbtt__cff_index_get(info.fontdicts, fdselector));
+	}
+
+	private static inline function STBTT__CSERR(s: String): Bool {
+		return false;
+	}
+
+	private static function stbtt__run_charstring(info: Stbtt_fontinfo, glyph_index: Int, c: Stbtt__csctx): Bool {
+		var in_header: Bool = true;
+		var maskbits: Int = 0, subr_stack_height: Int = 0, sp: Int = 0, v: Int, i: Int, b0: Int;
+		var has_subrs: Bool = false, clear_stack;
+		var s: Array<Float> = [for (i in 0...48) 0];
+		var subr_stack: Array<Stbtt__buf> = [for (i in 0...10) new Stbtt__buf()];
+		var subrs: Stbtt__buf = info.subrs, b;
+		var f: Float;
+
+		// this currently ignores the initial width value, which isn't needed if we have hmtx
+		b = stbtt__cff_index_get(info.charstrings, glyph_index);
+		while (b.cursor < b.data.length) {
+			i = 0;
+			clear_stack = true;
+			b0 = stbtt__buf_get8(b);
+			switch (b0) {
+			// @TODO implement hinting
+			case 0x13, // hintmask
+				 0x14: // cntrmask
+				if (in_header)
+					maskbits += Std.int(sp / 2); // implicit "vstem"
+				in_header = false;
+				stbtt__buf_skip(b, Std.int((maskbits + 7) / 8));
+
+			case 0x01, // hstem
+				 0x03, // vstem
+				 0x12, // hstemhm
+				 0x17: // vstemhm
+				maskbits += Std.int(sp / 2);
+
+			case 0x15: // rmoveto
+				in_header = false;
+				if (sp < 2) return STBTT__CSERR("rmoveto stack");
+				stbtt__csctx_rmove_to(c, s[sp-2], s[sp-1]);
+			case 0x04: // vmoveto
+				in_header = false;
+				if (sp < 1) return STBTT__CSERR("vmoveto stack");
+				stbtt__csctx_rmove_to(c, 0, s[sp-1]);
+			case 0x16: // hmoveto
+				in_header = false;
+				if (sp < 1) return STBTT__CSERR("hmoveto stack");
+				stbtt__csctx_rmove_to(c, s[sp-1], 0);
+
+			case 0x05: // rlineto
+				if (sp < 2) return STBTT__CSERR("rlineto stack");
+				while (i + 1 < sp) {
+					stbtt__csctx_rline_to(c, s[i], s[i+1]);
+					i += 2;
+				}
+
+			// hlineto/vlineto and vhcurveto/hvcurveto alternate horizontal and vertical
+			// starting from a different place.
+
+			case 0x07: // vlineto
+				if (sp < 1) return STBTT__CSERR("vlineto stack");
+				while (true) {
+					if (i >= sp) break;
+					stbtt__csctx_rline_to(c, 0, s[i]);
+					i++;
+
+					if (i >= sp) break;
+					stbtt__csctx_rline_to(c, s[i], 0);
+					i++;
+				}
+			case 0x06: // hlineto
+				if (sp < 1) return STBTT__CSERR("hlineto stack");
+				while (true) {
+					if (i >= sp) break;
+					stbtt__csctx_rline_to(c, s[i], 0);
+					i++;
+
+					if (i >= sp) break;
+					stbtt__csctx_rline_to(c, 0, s[i]);
+					i++;
+				}
+
+			case 0x1F: // hvcurveto
+				if (sp < 4) return STBTT__CSERR("hvcurveto stack");
+				while (true) {
+					if (i + 3 >= sp) break;
+					stbtt__csctx_rccurve_to(c, s[i], 0, s[i+1], s[i+2], (sp - i == 5) ? s[i+4] : 0, s[i+3]);
+					i += 4;
+
+					if (i + 3 >= sp) break;
+					stbtt__csctx_rccurve_to(c, 0, s[i], s[i+1], s[i+2], s[i+3], (sp - i == 5) ? s[i + 4] : 0);
+					i += 4;
+				}
+			case 0x1E: // vhcurveto
+				if (sp < 4) return STBTT__CSERR("vhcurveto stack");
+				while (true) {
+					if (i + 3 >= sp) break;
+					stbtt__csctx_rccurve_to(c, 0, s[i], s[i+1], s[i+2], s[i+3], (sp - i == 5) ? s[i + 4] : 0);
+					i += 4;
+
+					if (i + 3 >= sp) break;
+					stbtt__csctx_rccurve_to(c, s[i], 0, s[i+1], s[i+2], (sp - i == 5) ? s[i+4] : 0, s[i+3]);
+					i += 4;
+				}
+
+			case 0x08: // rrcurveto
+				if (sp < 6) return STBTT__CSERR("rcurveline stack");
+				while (i + 5 < sp) {
+					stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
+					i += 6;
+				}
+
+			case 0x18: // rcurveline
+				if (sp < 8) return STBTT__CSERR("rcurveline stack");
+				while (i + 5 < sp - 2) {
+					stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
+					i += 6;
+				}
+				if (i + 1 >= sp) return STBTT__CSERR("rcurveline stack");
+				stbtt__csctx_rline_to(c, s[i], s[i+1]);
+
+			case 0x19: // rlinecurve
+				if (sp < 8) return STBTT__CSERR("rlinecurve stack");
+				while (i + 1 < sp - 6) {
+					stbtt__csctx_rline_to(c, s[i], s[i+1]);
+					i += 2;
+				}
+				if (i + 5 >= sp) return STBTT__CSERR("rlinecurve stack");
+				stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
+
+			case 0x1A, // vvcurveto
+				 0x1B: // hhcurveto
+				if (sp < 4) return STBTT__CSERR("(vv|hh)curveto stack");
+				f = 0.0;
+				if (sp & 1 != 0) { f = s[i]; i++; }
+				while (i + 3 < sp) {
+					if (b0 == 0x1B)
+						stbtt__csctx_rccurve_to(c, s[i], f, s[i+1], s[i+2], s[i+3], 0.0);
+					else
+						stbtt__csctx_rccurve_to(c, f, s[i], s[i+1], s[i+2], 0.0, s[i+3]);
+					f = 0.0;
+					i += 4;
+				}
+
+			case 0x0A, // callsubr
+				 0x1D: // callgsubr
+				if (b0 == 0x0A) {
+					if (!has_subrs) {
+						if (info.fdselect.data.length != 0)
+							subrs = stbtt__cid_get_glyph_subrs(info, glyph_index);
+						has_subrs = true;
+					}
+				}
+				if (sp < 1) return STBTT__CSERR("call(g|)subr stack");
+				v = Std.int(s[--sp]);
+				if (subr_stack_height >= 10) return STBTT__CSERR("recursion limit");
+				subr_stack[subr_stack_height++] = b;
+				b = stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
+				if (b.data.length == 0) return STBTT__CSERR("subr not found");
+				b.cursor = 0;
+				clear_stack = false;
+
+			case 0x0B: // return
+				if (subr_stack_height <= 0) return STBTT__CSERR("return outside subr");
+				b = subr_stack[--subr_stack_height];
+				clear_stack = false;
+
+			case 0x0E: // endchar
+				stbtt__csctx_close_shape(c);
+				return true;
+
+			case 0x0C: { // two-byte escape
+				var dx1: Float, dx2, dx3, dx4, dx5, dx6, dy1, dy2, dy3, dy4, dy5, dy6;
+				var dx: Float, dy;
+				var b1: Int = stbtt__buf_get8(b);
+				switch (b1) {
+				// @TODO These "flex" implementations ignore the flex-depth and resolution,
+				// and always draw beziers.
+				case 0x22: // hflex
+					if (sp < 7) return STBTT__CSERR("hflex stack");
+					dx1 = s[0];
+					dx2 = s[1];
+					dy2 = s[2];
+					dx3 = s[3];
+					dx4 = s[4];
+					dx5 = s[5];
+					dx6 = s[6];
+					stbtt__csctx_rccurve_to(c, dx1, 0, dx2, dy2, dx3, 0);
+					stbtt__csctx_rccurve_to(c, dx4, 0, dx5, -dy2, dx6, 0);
+
+				case 0x23: // flex
+					if (sp < 13) return STBTT__CSERR("flex stack");
+					dx1 = s[0];
+					dy1 = s[1];
+					dx2 = s[2];
+					dy2 = s[3];
+					dx3 = s[4];
+					dy3 = s[5];
+					dx4 = s[6];
+					dy4 = s[7];
+					dx5 = s[8];
+					dy5 = s[9];
+					dx6 = s[10];
+					dy6 = s[11];
+					//fd is s[12]
+					stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
+					stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
+
+				case 0x24: // hflex1
+					if (sp < 9) return STBTT__CSERR("hflex1 stack");
+					dx1 = s[0];
+					dy1 = s[1];
+					dx2 = s[2];
+					dy2 = s[3];
+					dx3 = s[4];
+					dx4 = s[5];
+					dx5 = s[6];
+					dy5 = s[7];
+					dx6 = s[8];
+					stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, 0);
+					stbtt__csctx_rccurve_to(c, dx4, 0, dx5, dy5, dx6, -(dy1+dy2+dy5));
+
+				case 0x25: // flex1
+					if (sp < 11) return STBTT__CSERR("flex1 stack");
+					dx1 = s[0];
+					dy1 = s[1];
+					dx2 = s[2];
+					dy2 = s[3];
+					dx3 = s[4];
+					dy3 = s[5];
+					dx4 = s[6];
+					dy4 = s[7];
+					dx5 = s[8];
+					dy5 = s[9];
+					dx6 = dy6 = s[10];
+					dx = dx1+dx2+dx3+dx4+dx5;
+					dy = dy1+dy2+dy3+dy4+dy5;
+					if (Math.abs(dx) > Math.abs(dy))
+						dy6 = -dy;
+					else
+						dx6 = -dx;
+					stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
+					stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
+
+				default:
+					return STBTT__CSERR("unimplemented");
+				}
+			}
+
+			default:
+				if (b0 != 255 && b0 != 28 && (b0 < 32 || b0 > 254))
+					return STBTT__CSERR("reserved operator");
+
+				// push immediate
+				if (b0 == 255) {
+					f = stbtt__buf_get32(b) / 0x10000;
+				} else {
+					stbtt__buf_skip(b, -1);
+					f = stbtt__cff_int(b);
+				}
+				if (sp >= 48) return STBTT__CSERR("push stack overflow");
+				s[sp++] = f;
+				clear_stack = false;
+			}
+			if (clear_stack) sp = 0;
+		}
+		return STBTT__CSERR("no endchar");
+	}
+
+	public static function stbtt__GetGlyphShapeT2(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
+		// runs the charstring twice, once to count and once to output (to avoid realloc)
+		var count_ctx: Stbtt__csctx = STBTT__CSCTX_INIT(true);
+		var output_ctx: Stbtt__csctx = STBTT__CSCTX_INIT(false);
+		if (stbtt__run_charstring(info, glyph_index, count_ctx)) {
+			output_ctx.pvertices = new Vector<Stbtt_vertex>(count_ctx.num_vertices);
+			for (i in 0...count_ctx.num_vertices)
+				output_ctx.pvertices[i] = new Stbtt_vertex();
+			if (stbtt__run_charstring(info, glyph_index, output_ctx)) {
+				STBTT_assert(output_ctx.num_vertices == count_ctx.num_vertices);
+				return output_ctx.pvertices;
+			}
+		}
+		return null;
+	}
+
+	public static function stbtt__GetGlyphInfoT2(info: Stbtt_fontinfo, glyph_index: Int, rect: Stbtt_temp_rect): Int {
+		var c: Stbtt__csctx = STBTT__CSCTX_INIT(true);
+		var r = stbtt__run_charstring(info, glyph_index, c);
+		if (rect != null) {
+			rect.x0 = r ? c.min_x : 0;
+			rect.y0 = r ? c.min_y : 0;
+			rect.x1 = r ? c.max_x : 0;
+			rect.y1 = r ? c.max_y : 0;
+		}
+		return r ? c.num_vertices : 0;
+	}
+
+	public static function stbtt_GetGlyphShape(info: Stbtt_fontinfo, glyph_index: Int): Vector<Stbtt_vertex> {
+		if (info.cff.data == null || info.cff.data.length == 0)
+			return stbtt__GetGlyphShapeTT(info, glyph_index);
+		else
+			return stbtt__GetGlyphShapeT2(info, glyph_index);
 	}
 
 	public static function stbtt_GetGlyphHMetrics(info: Stbtt_fontinfo, glyph_index: Int): Stbtt_temp_glyph_h_metrics {
@@ -941,6 +1616,7 @@ class StbTruetype {
 	private static function stbtt__new_active(e: Vector<Stbtt__edge>, eIndex: Int, off_x: Int, start_point: Float): Stbtt__active_edge {
 		var z: Stbtt__active_edge = new Stbtt__active_edge();
 		var dxdy: Float = (e[eIndex].x1 - e[eIndex].x0) / (e[eIndex].y1 - e[eIndex].y0);
+		STBTT_assert(z != null);
 		//STBTT_assert(e->y0 <= start_point);
 		if (z == null) return z;
 		z.fdx = dxdy;
@@ -1209,6 +1885,15 @@ class StbTruetype {
 				if (e[eIndex].y0 != e[eIndex].y1) {
 					var z: Stbtt__active_edge = stbtt__new_active(e, eIndex, off_x, scan_y_top);
 					STBTT_assert(z.ey >= scan_y_top);
+					if (z != null) {
+						if (j == 0 && off_y != 0) {
+							if (z.ey < scan_y_top) {
+								// this can happen due to subpixel positioning and some kind of fp rounding error i think
+								z.ey = scan_y_top;
+							}
+						}
+						STBTT_assert(z.ey >= scan_y_top); // if we get really unlucky a tiny bit of an edge can be out of bounds
+					}
 					// insert at front
 					z.next = active;
 					active = z;
@@ -1423,6 +2108,47 @@ class StbTruetype {
 		return 1;
 	}
 
+	private static function stbtt__tesselate_cubic(points: Vector<Stbtt__point>, num_points: { value: Int }, x0: Float, y0: Float, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, objspace_flatness_squared: Float, n: Int): Void {
+		// @TODO this "flatness" calculation is just made-up nonsense that seems to work well enough
+		var dx0: Float = x1-x0;
+		var dy0: Float = y1-y0;
+		var dx1: Float = x2-x1;
+		var dy1: Float = y2-y1;
+		var dx2: Float = x3-x2;
+		var dy2: Float = y3-y2;
+		var dx: Float = x3-x0;
+		var dy: Float = y3-y0;
+		var longlen: Float = (Math.sqrt(dx0*dx0+dy0*dy0)+Math.sqrt(dx1*dx1+dy1*dy1)+Math.sqrt(dx2*dx2+dy2*dy2));
+		var shortlen: Float = Math.sqrt(dx*dx+dy*dy);
+		var flatness_squared: Float = longlen*longlen-shortlen*shortlen;
+
+		if (n > 16) // 65536 segments on one curve better be enough!
+			return;
+
+		if (flatness_squared > objspace_flatness_squared) {
+			var x01: Float = (x0+x1)/2;
+			var y01: Float = (y0+y1)/2;
+			var x12: Float = (x1+x2)/2;
+			var y12: Float = (y1+y2)/2;
+			var x23: Float = (x2+x3)/2;
+			var y23: Float = (y2+y3)/2;
+
+			var xa: Float = (x01+x12)/2;
+			var ya: Float = (y01+y12)/2;
+			var xb: Float = (x12+x23)/2;
+			var yb: Float = (y12+y23)/2;
+
+			var mx: Float = (xa+xb)/2;
+			var my: Float = (ya+yb)/2;
+
+			stbtt__tesselate_cubic(points, num_points, x0,y0, x01,y01, xa,ya, mx,my, objspace_flatness_squared,n+1);
+			stbtt__tesselate_cubic(points, num_points, mx,my, xb,yb, x23,y23, x3,y3, objspace_flatness_squared,n+1);
+		} else {
+			stbtt__add_point(points, num_points.value,x3,y3);
+			num_points.value = num_points.value+1;
+		}
+	}
+
 	// returns number of contours
 	private static function stbtt_FlattenCurves(vertices: Vector<Stbtt_vertex>, num_verts: Int, objspace_flatness: Float, contour_lengths: VectorOfIntPointer, num_contours: { value: Int }): Vector<Stbtt__point> {
 		var points: Vector<Stbtt__point>=null;
@@ -1482,6 +2208,15 @@ class StbTruetype {
 						var num_points_reference = { value: num_points };
 						stbtt__tesselate_curve(points, num_points_reference, x, y,
 							vertices[i].cx, vertices[i].cy,
+							vertices[i].x,  vertices[i].y,
+							objspace_flatness_squared, 0);
+						num_points = num_points_reference.value;
+						x = vertices[i].x; y = vertices[i].y;
+					case STBTT_vcubic:
+						var num_points_reference = { value: num_points };
+						stbtt__tesselate_cubic(points, num_points_reference, x, y,
+							vertices[i].cx, vertices[i].cy,
+							vertices[i].cx1, vertices[i].cy1,
 							vertices[i].x,  vertices[i].y,
 							objspace_flatness_squared, 0);
 						num_points = num_points_reference.value;
