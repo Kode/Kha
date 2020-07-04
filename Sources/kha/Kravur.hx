@@ -217,6 +217,10 @@ class Kravur implements Resource {
 		return _get(fontSize).getBaselinePosition();
 	}
 
+	public function setFontIndex(fontIndex: Int): Void {
+		this.fontIndex = fontIndex;
+	}
+
 	public function unload(): Void {
 		blob = null;
 		images = null;
