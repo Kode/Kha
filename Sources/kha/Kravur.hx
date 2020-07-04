@@ -160,7 +160,7 @@ class Kravur implements Resource {
 			KravurImage.charBlocks.push(glyphs[glyphs.length - 1]);
 		}
 
-		var imageIndex = fontSize * 10000 + glyphs.length;
+		var imageIndex = fontIndex * 10000000 + fontSize * 10000 + glyphs.length;
 		if (!images.exists(imageIndex)) {
 			var width: Int = 64;
 			var height: Int = 32;
