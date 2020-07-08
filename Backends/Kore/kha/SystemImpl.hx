@@ -262,6 +262,10 @@ class SystemImpl {
 		untyped __cpp__("Kore::Mouse::the()->show(true);");
 	}
 
+	public static function setSystemCursor(cursor: Int): Void {
+		untyped __cpp__("Kore::Mouse::the()->setCursor(cursor)");
+	}
+
 	public static function frame() {
 		/*
 		#if !ANDROID

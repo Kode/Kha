@@ -1,6 +1,7 @@
 package kha.input;
 
 import kha.SystemImpl;
+import kha.input.Mouse;
 
 class MouseImpl extends kha.input.Mouse {
 	public function new() {
@@ -37,5 +38,25 @@ class MouseImpl extends kha.input.Mouse {
 
 	override public function showSystemCursor(): Void {
 		SystemImpl.khanvas.style.cursor = "default";
+	}
+
+	override public function setSystemCursor(cursor: MouseCursor): Void {
+		SystemImpl.khanvas.style.cursor = switch (cursor) {
+		case Default: "default";
+		case Pointer: "pointer";
+		case Text: "text";
+		case EastWestResize: "ew-resize";
+		case NorthSouthResize: "ns-resize";
+		case NorthEastResize: "ne-resize";
+		case SouthEastResize: "se-resize";
+		case NorthWestResize: "nw-resize";
+		case SouthWestResize: "sw-resize";
+		case Grab: "grab";
+		case Grabbing: "grabbing";
+		case NotAllowed: "not-allowed";
+		case Wait: "wait";
+		case Crosshair: "crosshair";
+		default: "default";
+		}
 	}
 }
