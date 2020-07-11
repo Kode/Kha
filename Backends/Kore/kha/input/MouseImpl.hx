@@ -1,6 +1,7 @@
 package kha.input;
 
 import kha.SystemImpl;
+import kha.input.Mouse;
 
 class MouseImpl extends kha.input.Mouse {
 	public function new() {
@@ -37,5 +38,9 @@ class MouseImpl extends kha.input.Mouse {
 
 	override public function showSystemCursor(): Void {
 		SystemImpl.showSystemCursor();
+	}
+
+	override public function setSystemCursor(cursor: MouseCursor): Void {
+		SystemImpl.setSystemCursor(cursor.getIndex());
 	}
 }
