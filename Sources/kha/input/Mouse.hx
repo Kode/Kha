@@ -9,6 +9,23 @@ enum MouseEventBlockBehavior {
 	Custom(func: (event: Dynamic)->Bool);
 }
 
+enum MouseCursor {
+	Default;
+	Pointer;
+	Text;
+	EastWestResize;
+	NorthSouthResize;
+	NorthEastResize;
+	SouthEastResize;
+	NorthWestResize;
+	SouthWestResize;
+	Grab;
+	Grabbing;
+	NotAllowed;
+	Wait;
+	Crosshair;
+}
+
 @:allow(kha.SystemImpl)
 @:expose
 class Mouse extends Controller {
@@ -247,6 +264,14 @@ class Mouse extends Controller {
 	 * Show the system cursor
 	 */
 	public function showSystemCursor(): Void {
+
+	}
+
+	/**
+	 * Set the native system cursor
+	 * @param cursor The native cursor to show.
+	 */
+	public function setSystemCursor(cursor: MouseCursor): Void {
 
 	}
 
