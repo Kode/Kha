@@ -53,7 +53,7 @@ extern "C" void hl_kore_int16array_set(vbyte* i16array, int index, short value) 
 	arr[index] = value;
 }
 
-extern "C" short hl_kore_int16array_get(vbyte* i16array, int index) {
+extern "C" int hl_kore_int16array_get(vbyte* i16array, int index) {
 	short* arr = (short*)i16array;
 	return arr[index];
 }
