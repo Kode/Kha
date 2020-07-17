@@ -147,6 +147,14 @@ class System {
 		if (backgroundListener != null) backgroundListeners.push(backgroundListener);
 		if (shutdownListener != null) shutdownListeners.push(shutdownListener);
 	}
+	
+	public static function removeApplicationStateListeners(foregroundListener: Void -> Void, resumeListener: Void -> Void,	pauseListener: Void -> Void, backgroundListener: Void-> Void, shutdownListener: Void -> Void): Void {
+		if (foregroundListener != null) foregroundListeners.remove(foregroundListener);
+		if (resumeListener != null) resumeListeners.remove(resumeListener);
+		if (pauseListener != null) pauseListeners.remove(pauseListener);
+		if (backgroundListener != null) backgroundListeners.remove(backgroundListener);
+		if (shutdownListener != null) shutdownListeners.remove(shutdownListener);
+	}
 
 	public static function notifyOnDropFiles(dropFilesListener: String -> Void): Void {
 		dropFilesListeners.push(dropFilesListener);
