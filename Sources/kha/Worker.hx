@@ -28,6 +28,8 @@ class Worker {
 		#end
 	}
 
+	public static function pumpMessages(): Void {}
+
 	#else
 
 	#if macro
@@ -108,17 +110,22 @@ class Worker {
 		thread.sendMessage(message);
 	}
 
+	static var receiver: Dynamic->Void;
+
 	public static function notifyWorker(func: Dynamic->Void): Void {
-		while (true) {
-			var message = Thread.readMessage(true);
-			if (message != null) {
-				func(message);
-			}
-		}
+		receiver = func;
 	}
 
 	public static function postFromWorker(message: Dynamic): Void {
 		_mainThread.sendMessage(message);
+	}
+
+	public static function pumpMessages(): Void {
+		var message = Thread.readMessage(true);
+		while (message != null) {
+			receiver(message);
+			message = Thread.readMessage(true);
+		}
 	}
 }
 #end
