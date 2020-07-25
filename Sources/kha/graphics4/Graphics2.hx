@@ -259,7 +259,7 @@ class ImageShaderPainter {
 
 		g.setTexture(pipeline.textureLocation, null);
 
-		if (end || bufferStart + bufferIndex + 1 >= bufferSize) {
+		if (end || (bufferStart + bufferIndex + 1) * 4 >= bufferSize) {
 			bufferStart = 0;
 			bufferIndex = 0;
 			rectVertices = rectVertexBuffer.lock(0);
