@@ -677,6 +677,14 @@ class SystemImpl {
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
 			khanvas.ownerDocument.addEventListener('mouseup', mouseRightUp);
 		}
+		else if (event.which == 4) { //backwards sidebutton
+			mouse.sendDownEvent(0, 3, mouseX, mouseY);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseBackUp);
+		}
+		else if (event.which == 5) { //forwards sidebutton
+			mouse.sendDownEvent(0, 4, mouseX, mouseY);
+			khanvas.ownerDocument.addEventListener('mouseup', mouseForwardUp);
+		}
 		insideInputEvent = false;
 	}
 
@@ -718,6 +726,28 @@ class SystemImpl {
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
+		insideInputEvent = false;
+	}
+
+	private static function mouseBackUp(event: MouseEvent): Void {
+		unlockSound();
+
+		if (event.which != 4) return;
+
+		insideInputEvent = true;
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseBackUp);
+		mouse.sendUpEvent(0, 3, mouseX, mouseY);
+		insideInputEvent = false;
+	}
+
+	private static function mouseForwardUp(event: MouseEvent): Void {
+		unlockSound();
+
+		if (event.which != 5) return;
+
+		insideInputEvent = true;
+		khanvas.ownerDocument.removeEventListener('mouseup', mouseForwardUp);
+		mouse.sendUpEvent(0, 4, mouseX, mouseY);
 		insideInputEvent = false;
 	}
 
