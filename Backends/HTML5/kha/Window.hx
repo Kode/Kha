@@ -13,7 +13,7 @@ class Window {
 
 	@:noCompletion
 	@:noDoc
-	public function new(defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
+	public function new(num:Int,defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
 		this.num = num;
 		this.canvas = canvas;
 		this.defaultWidth = defaultWidth;
