@@ -371,7 +371,7 @@ class SystemImpl {
 		#end
 
 		setCanvas(canvas);
-		window = new Window(defaultWidth, defaultHeight, canvas);
+		window = new Window(0,defaultWidth, defaultHeight, canvas);
 
 		//var widthTransform: Float = canvas.width / Loader.the.width;
 		//var heightTransform: Float = canvas.height / Loader.the.height;
