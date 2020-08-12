@@ -13,7 +13,7 @@ class Window {
 
 	@:noCompletion
 	@:noDoc
-	public function new(num:Int,defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
+	public function new(num: Int, defaultWidth: Int, defaultHeight: Int, canvas: js.html.CanvasElement) {
 		this.num = num;
 		this.canvas = canvas;
 		this.defaultWidth = defaultWidth;
@@ -22,16 +22,16 @@ class Window {
 		resizeCallbacks[num] = [];
 		windows.push(this);
 		final observer:MutationObserver = new MutationObserver(function(mutations:Array<js.html.MutationRecord>,observer:MutationObserver){
-            var isResize = false;
-            for(mutation in mutations){
-                if(mutation.attributeName == "width" || mutation.attributeName == "height"){
+			var isResize = false;
+			for(mutation in mutations){
+				if(mutation.attributeName == "width" || mutation.attributeName == "height"){
 					isResize = true;
 					break;
-                }
-            }
-            if(isResize){
-                this.resize(canvas.clientWidth,canvas.clientHeight);
-            }
+				}
+			}
+			if(isResize){
+				this.resize(canvas.clientWidth,canvas.clientHeight);
+			}
 		});
 		observer.observe(canvas,{ attributes: true});
 	}
