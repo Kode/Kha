@@ -367,6 +367,10 @@ class WebGLImage extends Image {
 		depthTexture = cast(image, WebGLImage).depthTexture;
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
 		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, depthTexture, 0);
+		if (samples > 1 && SystemImpl.gl2){
+			MSAADepthBuffer = cast(image, WebGLImage).MSAADepthBuffer;
+			SystemImpl.gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, MSAADepthBuffer);
+		}
 	}
 
 	private static function formatByteSize(format: TextureFormat): Int {
