@@ -45,7 +45,9 @@ class PipelineState extends PipelineStateBase {
 		
 		SystemImpl.gl.linkProgram(program);
 		if (!SystemImpl.gl.getProgramParameter(program, GL.LINK_STATUS)) {
-			throw "Could not link the shader program:\n" + SystemImpl.gl.getProgramInfoLog(program);
+			var message = "Could not link the shader program:\n" + SystemImpl.gl.getProgramInfoLog(program);
+			trace("Error: " + message);
+			throw message;
 		}
 	}
 	
@@ -81,7 +83,9 @@ class PipelineState extends PipelineStateBase {
 		}
 		SystemImpl.gl.compileShader(s);
 		if (!SystemImpl.gl.getShaderParameter(s, GL.COMPILE_STATUS)) {
-			throw "Could not compile shader:\n" + SystemImpl.gl.getShaderInfoLog(s);
+			var message = "Could not compile shader:\n" + SystemImpl.gl.getShaderInfoLog(s);
+			trace("Error: " + message);
+			throw message;
 		}
 		shader.shader = s;
 	}
