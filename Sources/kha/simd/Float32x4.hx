@@ -5,6 +5,7 @@ import kha.FastFloat;
 #if cpp
 @:unreflective
 @:structAccess
+@:include("Kore/pch.h")
 @:include("Kore/Simd/float32x4.h")
 @:native("Kore::float32x4")
 extern class Float32x4 {
