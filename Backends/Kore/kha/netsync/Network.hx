@@ -3,6 +3,7 @@ package kha.netsync;
 import haxe.io.Bytes;
 
 @:headerCode('
+#include <Kore/pch.h>
 #include <Kore/Network/Socket.h>
 ')
 
