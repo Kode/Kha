@@ -353,6 +353,10 @@ HL_PRIM int hl_dyn_compare( vdynamic *a, vdynamic *b ) {
 		return dcompare(a->v.d,(double)b->v.i);
 	case TK2(HI32, HF64):
 		return dcompare((double)a->v.i,b->v.d);
+	case TK2(HF64, HF32):
+		return dcompare(a->v.d,(double)b->v.f);
+	case TK2(HF32, HF64):
+		return dcompare((double)a->v.f,b->v.d);
 	case TK2(HOBJ,HOBJ):
 	case TK2(HSTRUCT,HSTRUCT):
 		if( a->t->obj->rt->compareFun )
