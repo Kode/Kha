@@ -44,7 +44,6 @@ typedef struct {
 	hl_code *code;
 	hl_module *m;
 	vdynamic *ret;
-	vclosure c;
 	pchar *file;
 	int file_time;
 } main_context;
@@ -125,6 +124,7 @@ static void setup_handler() {
 	act.sa_handler = handle_signal;
 	act.sa_flags = 0;
 	sigemptyset(&act.sa_mask);
+	signal(SIGPIPE, SIG_IGN);
 	sigaction(SIGSEGV,&act,NULL);
 	sigaction(SIGTERM,&act,NULL);
 }
@@ -138,11 +138,13 @@ int wmain(int argc, pchar *argv[]) {
 #else
 int main(int argc, pchar *argv[]) {
 #endif
+	static vclosure cl;
 	pchar *file = NULL;
 	char *error_msg = NULL;
 	int debug_port = -1;
 	bool debug_wait = false;
 	bool hot_reload = false;
+	int profile_count = -1;
 	main_context ctx;
 	bool isExc = false;
 	int first_boot_arg = -1;
@@ -169,6 +171,11 @@ int main(int argc, pchar *argv[]) {
 			hot_reload = true;
 			continue;
 		}
+		if( pcompare(arg,PSTR("--profile")) == 0 ) {
+			if( argc-- == 0 ) break;
+			profile_count = ptoi(*argv++);
+			continue;
+		}
 		if( *arg == '-' || *arg == '+' ) {
 			if( first_boot_arg < 0 ) first_boot_arg = argc + 1;
 			// skip value
@@ -186,7 +193,7 @@ int main(int argc, pchar *argv[]) {
 		file = PSTR("hlboot.dat");
 		fchk = pfopen(file,"rb");
 		if( fchk == NULL ) {
-			printf("HL/JIT %d.%d.%d (c)2015-2019 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
+			printf("HL/JIT %d.%d.%d (c)2015-2020 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
 			return 1;
 		}
 		fclose(fchk);
@@ -218,11 +225,13 @@ int main(int argc, pchar *argv[]) {
 		fprintf(stderr,"Could not start debugger on port %d",debug_port);
 		return 4;
 	}
-	ctx.c.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
-	ctx.c.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
-	ctx.c.hasValue = 0;
+	cl.t = ctx.code->functions[ctx.m->functions_indexes[ctx.m->code->entrypoint]].type;
+	cl.fun = ctx.m->functions_ptrs[ctx.m->code->entrypoint];
+	cl.hasValue = 0;
 	setup_handler();
-	ctx.ret = hl_dyn_call_safe(&ctx.c,NULL,0,&isExc);
+	hl_profile_setup(profile_count);
+	ctx.ret = hl_dyn_call_safe(&cl,NULL,0,&isExc);
+	hl_profile_end();
 	if( isExc ) {
 		varray *a = hl_exception_stack();
 		int i;

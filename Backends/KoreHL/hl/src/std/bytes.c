@@ -179,7 +179,9 @@ HL_PRIM void hl_bsort_f64( vbyte *bytes, int pos, int len, vclosure *cmp ) {
 HL_PRIM double hl_parse_float( vbyte *bytes, int pos, int len ) {
 	uchar *str = (uchar*)(bytes+pos);
 	uchar *end = NULL;
-	double d = utod(str,&end);
+	double d;
+	while( *str == ' ' ) str++; 
+	d = utod(str,&end);
 	if( end == str )
 		return hl_nan();
 	return d;
@@ -188,9 +190,14 @@ HL_PRIM double hl_parse_float( vbyte *bytes, int pos, int len ) {
 HL_PRIM vdynamic *hl_parse_int( vbyte *bytes, int pos, int len ) {
 	uchar *c = (uchar*)(bytes + pos), *end = NULL;
 	int h;
-	if( len >= 2 && c[0] == '0' && (c[1] == 'x' || c[1] == 'X') ) {
+	while( *c == ' ' ) {
+		c++;
+		len--;
+	}
+	if( (len >= 2 && c[0] == '0' && (c[1] == 'x' || c[1] == 'X')) || (len >= 3 && c[0] == '-' && c[1] == '0' && (c[2] == 'x' || c[2] == 'X')) ) {
+		bool neg = c[0] == '-';
 		h = 0;
-		c += 2;
+		c += neg ? 3 : 2;
 		while( *c ) {
 			uchar k = *c++;
 			if( k >= '0' && k <= '9' )
@@ -202,6 +209,7 @@ HL_PRIM vdynamic *hl_parse_int( vbyte *bytes, int pos, int len ) {
 			else
 				return NULL;
 		}
+		if( neg ) h = -h;
 		return hl_make_dyn(&h,&hlt_i32);
 	}
 	h = utoi(c,&end);

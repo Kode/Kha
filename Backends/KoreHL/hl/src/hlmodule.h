@@ -105,26 +105,40 @@ typedef struct {
 
 typedef struct jit_ctx jit_ctx;
 
+
+typedef struct {
+	hl_code *code;
+	int *types_hashes;
+	int *globals_signs;
+	int *functions_signs;
+	int *functions_hashes;
+	int *functions_indexes;
+} hl_code_hash;
+
 typedef struct {
 	hl_code *code;
 	int codesize;
+	int globals_size;
 	int *globals_indexes;
 	unsigned char *globals_data;
 	void **functions_ptrs;
 	int *functions_indexes;
-	int *functions_signs;
-	int *functions_hashes;
 	void *jit_code;
+	hl_code_hash *hash;
 	hl_debug_infos *jit_debug;
 	jit_ctx *jit_ctx;
 	hl_module_context ctx;
 } hl_module;
 
 hl_code *hl_code_read( const unsigned char *data, int size, char **error_msg );
-int hl_code_hash_fun_sign( hl_function *f );
-int hl_code_hash_fun( hl_code *c, hl_function *f, int *functions_indexes, int *functions_signs );
-int hl_code_hash_native( hl_native *n );
+
+hl_code_hash *hl_code_hash_alloc( hl_code *c );
+void hl_code_hash_finalize( hl_code_hash *h );
+void hl_code_hash_free( hl_code_hash *h );
 void hl_code_free( hl_code *c );
+int hl_code_hash_type( hl_code_hash *h, hl_type *t );
+void hl_code_hash_remap_globals( hl_code_hash *hnew, hl_code_hash *hold );
+
 const uchar *hl_get_ustring( hl_code *c, int index );
 const char* hl_op_name( int op );
 
@@ -134,6 +148,9 @@ int hl_module_init( hl_module *m, h_bool hot_reload );
 h_bool hl_module_patch( hl_module *m, hl_code *code );
 void hl_module_free( hl_module *m );
 h_bool hl_module_debug( hl_module *m, int port, h_bool wait );
+
+void hl_profile_setup( int sample_count );
+void hl_profile_end();
 
 jit_ctx *hl_jit_alloc();
 void hl_jit_free( jit_ctx *ctx, h_bool can_reset );

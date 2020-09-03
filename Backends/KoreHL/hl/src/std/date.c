@@ -131,6 +131,20 @@ HL_PRIM void hl_date_get_inf( int date, int *y, int *mo, int *day, int *h, int *
 	if( wday ) *wday = t.tm_wday;
 }
 
+HL_PRIM void hl_date_get_utc_inf( int date, int *y, int *mo, int *day, int *h, int *m, int *s, int *wday ) {
+	struct tm t;
+	time_t d = (time_t)(unsigned)date;
+	if( !gmtime_r(&d,&t) )
+		hl_error("invalid date");
+	if( y ) *y = t.tm_year + 1900;
+	if( mo ) *mo = t.tm_mon;
+	if( day ) *day = t.tm_mday;
+	if( h ) *h = t.tm_hour;
+	if( m ) *m = t.tm_min;
+	if( s ) *s = t.tm_sec;
+	if( wday ) *wday = t.tm_wday;
+}
+
 DEFINE_PRIM(_I32, date_now, _NO_ARG);
 DEFINE_PRIM(_BYTES, date_to_string, _I32 _REF(_I32));
 DEFINE_PRIM(_F64, date_get_time, _I32);
@@ -138,3 +152,4 @@ DEFINE_PRIM(_I32, date_from_time, _F64);
 DEFINE_PRIM(_I32, date_from_string, _BYTES _I32);
 DEFINE_PRIM(_I32, date_new, _I32 _I32 _I32 _I32 _I32 _I32);
 DEFINE_PRIM(_VOID, date_get_inf, _I32 _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32));
+DEFINE_PRIM(_VOID, date_get_utc_inf, _I32 _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32));

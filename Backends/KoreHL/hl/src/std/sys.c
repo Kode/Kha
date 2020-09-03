@@ -138,39 +138,78 @@ HL_PRIM vbyte *hl_sys_locale() {
 #endif
 }
 
+#define PR_WIN_UTF8 1
+#define PR_AUTO_FLUSH 2
+static int print_flags = PR_AUTO_FLUSH;
+
+HL_PRIM int hl_sys_set_flags( int flags ) {
+	return print_flags = flags;
+}
+
 HL_PRIM void hl_sys_print( vbyte *msg ) {
 	hl_blocking(true);
 #	ifdef HL_XBO
 	OutputDebugStringW((LPCWSTR)msg);
-#	else
-
+#	else	
 #	ifdef HL_WIN_DESKTOP
-	_setmode(_fileno(stdout),_O_U8TEXT);
+	if( print_flags & PR_WIN_UTF8 ) _setmode(_fileno(stdout),_O_U8TEXT);
 #	endif
 	uprintf(USTR("%s"),(uchar*)msg);
-	fflush(stdout);
+	if( print_flags & PR_AUTO_FLUSH ) fflush(stdout);
 #	ifdef HL_WIN_DESKTOP
-	_setmode(_fileno(stdout),_O_TEXT);
+	if( print_flags & PR_WIN_UTF8 ) _setmode(_fileno(stdout),_O_TEXT);
 #	endif
 
 #	endif
 	hl_blocking(false);
 }
 
+
+static void *f_before_exit = NULL;
+static void *f_profile_event = NULL;
+HL_PRIM void hl_setup_profiler( void *profile_event, void *before_exit ) {
+	f_before_exit = before_exit;
+	f_profile_event = profile_event;
+}
+
+HL_PRIM void hl_sys_profile_event( int code, vbyte *data, int dataLen ) {
+	if( f_profile_event ) ((void(*)(int,vbyte*,int))f_profile_event)(code,data,dataLen);
+}
+
 HL_PRIM void hl_sys_exit( int code ) {
+	if( f_before_exit ) ((void(*)())f_before_exit)();
 	exit(code);
 }
 
+#ifdef HL_DEBUG_REPRO
+static double CURT = 0;
+#endif
+
 HL_PRIM double hl_sys_time() {
+#ifdef HL_DEBUG_REPRO
+	CURT += 0.001;
+	return CURT;
+#endif
 #ifdef HL_WIN
+	#define EPOCH_DIFF	(134774*24*60*60.0)
+	static double time_diff = 0.;
 	static double freq = 0.;
 	LARGE_INTEGER time;
+
 	if( freq == 0 ) {
 		QueryPerformanceFrequency(&time);
 		freq = (double)time.QuadPart;
 	}
 	QueryPerformanceCounter(&time);
-	return ((double)time.QuadPart) / freq;
+	if( time_diff == 0 ) {
+		FILETIME ft;
+		LARGE_INTEGER start_time;
+		GetSystemTimeAsFileTime(&ft);
+		start_time.LowPart = ft.dwLowDateTime;
+		start_time.HighPart = ft.dwHighDateTime;
+		time_diff = (((double)start_time.QuadPart) / 10000000.0) - (((double)time.QuadPart) / freq) - EPOCH_DIFF;
+	}
+	return time_diff + ((double)time.QuadPart) / freq;
 #else
 	struct timeval tv;
 	if( gettimeofday(&tv,NULL) != 0 )
@@ -667,3 +706,5 @@ DEFINE_PRIM(_I32, sys_get_char, _BOOL);
 DEFINE_PRIM(_ARR, sys_args, _NO_ARG);
 DEFINE_PRIM(_I32, sys_getpid, _NO_ARG);
 DEFINE_PRIM(_BOOL, sys_check_reload, _NO_ARG);
+DEFINE_PRIM(_VOID, sys_profile_event, _I32 _BYTES _I32);
+DEFINE_PRIM(_I32, sys_set_flags, _I32);

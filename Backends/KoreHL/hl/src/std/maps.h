@@ -184,6 +184,10 @@ HL_PRIM varray* _MNAME(values)( t_map *m ) {
 	return a;
 }
 
+HL_PRIM void _MNAME(clear)( t_map *m ) {
+	memset(m,0,sizeof(t_map));
+}
+
 
 #undef hlt_key
 #undef hl_hbhash

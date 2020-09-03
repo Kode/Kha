@@ -51,6 +51,8 @@ struct _hl_tls {
 #	include <pthread.h>
 #	include <unistd.h>
 #	include <sys/syscall.h>
+#	include <sys/time.h>
+
 
 struct _hl_mutex {
 	void (*free)( hl_mutex * );
@@ -337,6 +339,117 @@ DEFINE_PRIM(_DEQUE, deque_alloc, _NO_ARG);
 DEFINE_PRIM(_VOID, deque_add, _DEQUE _DYN);
 DEFINE_PRIM(_VOID, deque_push, _DEQUE _DYN);
 DEFINE_PRIM(_DYN, deque_pop, _DEQUE _BOOL);
+
+// ----------------- LOCK
+
+struct _hl_lock;
+typedef struct _hl_lock hl_lock;
+
+struct _hl_lock {
+	void (*free)( hl_lock * );
+#if !defined(HL_THREADS)
+#elif defined(HL_WIN)
+	HANDLE wait;
+#else
+	pthread_mutex_t lock;
+	pthread_cond_t wait;
+	int counter;
+#endif
+};
+
+static void hl_lock_free( hl_lock *l ) {
+#	if !defined(HL_THREADS)
+#	elif defined(HL_WIN)
+	CloseHandle(l->wait);
+#	else
+	pthread_mutex_destroy(&l->lock);
+	pthread_cond_destroy(&l->wait);
+#	endif
+}
+
+HL_PRIM hl_lock *hl_lock_create() {
+	hl_lock *l = (hl_lock*)hl_gc_alloc_finalizer(sizeof(hl_lock));
+	l->free = hl_lock_free;
+#	if !defined(HL_THREADS)
+#	elif defined(HL_WIN)
+	l->wait = CreateSemaphore(NULL,0,(1 << 30),NULL);
+#	else
+	l->counter = 0;
+	pthread_mutex_init(&l->lock,NULL);
+	pthread_cond_init(&l->wait,NULL);
+#	endif
+	return l;
+}
+
+HL_PRIM void hl_lock_release( hl_lock *l ) {
+#	if !defined(HL_THREADS)
+#	elif defined(HL_WIN)
+	ReleaseSemaphore(l->wait,1,NULL);
+#	else
+	pthread_mutex_lock(&l->lock);
+	l->counter++;
+	pthread_cond_signal(&l->wait);
+	pthread_mutex_unlock(&l->lock);
+#	endif
+}
+
+HL_PRIM bool hl_lock_wait( hl_lock *l, vdynamic *timeout ) {
+#	if !defined(HL_THREADS)
+	return true;
+#	elif defined(HL_WIN)
+	DWORD ret;
+	hl_blocking(true);
+	ret = WaitForSingleObject(l->wait, timeout?(DWORD)((FLOAT)timeout->v.d * 1000.0):INFINITE);
+	hl_blocking(false);
+	switch( ret ) {
+	case WAIT_ABANDONED:
+	case WAIT_OBJECT_0:
+		return true;
+	case WAIT_TIMEOUT:
+		return false;
+	default:
+		hl_error("Lock wait error");
+	}
+#	else
+	{
+		hl_blocking(true);
+		pthread_mutex_lock(&l->lock);
+		while( l->counter == 0 ) {
+			if( timeout ) {
+				struct timeval tv;
+				struct timespec t;
+				double delta = timeout->v.d;
+				int idelta = (int)delta, idelta2;
+				delta -= idelta;
+				delta *= 1.0e9;
+				gettimeofday(&tv,NULL);
+				delta += tv.tv_usec * 1000.0;
+				idelta2 = (int)(delta / 1e9);
+				delta -= idelta2 * 1e9;
+				t.tv_sec = tv.tv_sec + idelta + idelta2;
+				t.tv_nsec = (long)delta;
+				if( pthread_cond_timedwait(&l->wait,&l->lock,&t) != 0 ) {
+					pthread_mutex_unlock(&l->lock);
+					hl_blocking(false);
+					return false;
+				}
+			} else
+				pthread_cond_wait(&l->wait,&l->lock);
+		}
+		l->counter--;
+		if( l->counter > 0 )
+			pthread_cond_signal(&l->wait);
+		pthread_mutex_unlock(&l->lock);
+		hl_blocking(false);
+		return true;
+	}
+#	endif
+}
+
+#define _LOCK _ABSTRACT(hl_lock)
+DEFINE_PRIM(_LOCK, lock_create, _NO_ARG);
+DEFINE_PRIM(_VOID, lock_release, _LOCK);
+DEFINE_PRIM(_BOOL, lock_wait, _LOCK _NULL(_F64));
 
 // ----------------- THREAD
 

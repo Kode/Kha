@@ -21,6 +21,8 @@
  */
 #include <hl.h>
 
+HL_PRIM int hl_closure_stack_capture = 0;
+
 static void fun_var_args() {
 	hl_error("Variable fun args was not cast to typed function");
 }
@@ -29,7 +31,7 @@ HL_PRIM vclosure *hl_alloc_closure_void( hl_type *t, void *fvalue ) {
 	vclosure *c = (vclosure*)hl_gc_alloc_noptr(sizeof(vclosure));
 	c->t = t;
 	c->fun = fvalue;
-	c->hasValue = false;
+	c->hasValue = 0;
 	c->value = NULL;
 	return c;
 }
@@ -48,14 +50,18 @@ static hl_type *hl_get_closure_type( hl_type *t ) {
 	return (hl_type*)&ft->closure_type;
 }
 
+int hl_internal_capture_stack( void **stack, int size );
+
 HL_PRIM vclosure *hl_alloc_closure_ptr( hl_type *fullt, void *fvalue, void *v ) {
 	hl_type *t = hl_get_closure_type(fullt);
-	vclosure *c = (vclosure*)hl_gc_alloc(t, sizeof(vclosure));
+	vclosure *c = (vclosure*)hl_gc_alloc(t, sizeof(vclosure) + sizeof(void*) * hl_closure_stack_capture);
 	c->t = t;
 	c->fun = fvalue;
 	c->hasValue = 1;
 #	ifdef HL_64
-	c->__pad = 0;
+	int stack = 0;
+	if( hl_closure_stack_capture ) stack = hl_internal_capture_stack((void**)(c + 1), hl_closure_stack_capture);
+	c->stackCount = stack;
 #	endif
 	c->value = v;
 	return c;
@@ -115,11 +121,18 @@ typedef void *(*fptr_get_wrapper)(hl_type *t);
 
 static fptr_static_call hlc_static_call = NULL;
 static fptr_get_wrapper hlc_get_wrapper = NULL;
+static int hlc_call_flags = 0;
 
-HL_PRIM void hl_setup_callbacks( void *c, void *w ) {
+HL_PRIM void hl_setup_callbacks2( void *c, void *w, int flags ) {
 	hlc_static_call = (fptr_static_call)c;
 	hlc_get_wrapper = (fptr_get_wrapper)w;
+	hlc_call_flags = flags;
 }
+
+HL_PRIM void hl_setup_callbacks( void *c, void *w ) {
+	hl_setup_callbacks2(c,w,0);
+}
+
 
 #define HL_MAX_ARGS 9
 
@@ -177,7 +190,7 @@ HL_PRIM vdynamic* hl_call_method( vdynamic *c, varray *args ) {
 		}
 		pargs[i] = p;
 	}
-	ret = hlc_static_call(cl->fun,cl->t,pargs,&out);
+	ret = hlc_static_call(hlc_call_flags & 1 ? &cl->fun : cl->fun,cl->t,pargs,&out);
 	tret = cl->t->fun->ret;
 	if( !hl_is_ptr(tret) ) {
 		vdynamic *r;
@@ -281,7 +294,7 @@ HL_PRIM void *hl_wrapper_call( void *_c, void **args, vdynamic *ret ) {
 			vargs[p++] = v;
 		}
 	}
-	pret = hlc_static_call(w->fun,w->hasValue ? w->t->fun->parent : w->t,vargs,ret);
+	pret = hlc_static_call(hlc_call_flags & 1 ? &w->fun : w->fun,w->hasValue ? w->t->fun->parent : w->t,vargs,ret);
 	aret = hl_is_ptr(w->t->fun->ret) ? &pret : pret;
 	if( aret == NULL ) aret = &pret;
 	switch( tfun->ret->kind ) {
@@ -320,6 +333,9 @@ HL_PRIM void *hl_dyn_call_obj( vdynamic *o, hl_type *ft, int hfield, void **args
 				w.cl.t = ft;
 				w.cl.fun = hlc_get_wrapper(ft);
 				w.cl.hasValue = 2;
+#				ifdef HL_64
+				w.cl.stackCount = 0;
+#				endif
 				w.cl.value = &w;
 				w.wrappedFun = tmp;
 				return hl_wrapper_call(&w,args,ret);
@@ -340,11 +356,17 @@ HL_PRIM void *hl_dyn_call_obj( vdynamic *o, hl_type *ft, int hfield, void **args
 					w.cl.t = ft;
 					w.cl.fun = hlc_get_wrapper(ft);
 					w.cl.hasValue = 2;
+#					ifdef HL_64
+					w.cl.stackCount = 0;
+#					endif
 					w.cl.value = &w;
 					if( l->field_index < 0 ) {
 						tmp.t = hl_get_closure_type(l->t);
 						tmp.fun = o->t->obj->rt->methods[-l->field_index-1];
 						tmp.hasValue = 1;
+#						ifdef HL_64
+						tmp.stackCount = 0;
+#						endif
 						tmp.value = o;
 						w.wrappedFun = &tmp;
 					} else {
@@ -378,6 +400,9 @@ HL_PRIM vclosure *hl_make_fun_wrapper( vclosure *v, hl_type *to ) {
 	c->cl.t = to;
 	c->cl.fun = wrap;
 	c->cl.hasValue = 2;
+#	ifdef HL_64
+	c->cl.stackCount = 0;
+#	endif
 	c->cl.value = c;
 	c->wrappedFun = v;
 	return (vclosure*)c;
@@ -392,13 +417,21 @@ HL_PRIM vdynamic *hl_make_var_args( vclosure *c ) {
 	return (vdynamic*)hl_alloc_closure_ptr(&hlt_var_args,fun_var_args,c);
 }
 
+HL_PRIM void hl_prim_not_loaded() {
+	hl_error("Primitive or library is missing");
+}
+
+HL_PRIM bool hl_is_prim_loaded( vdynamic *f ) {
+	return f && f->t->kind == HFUN && ((vclosure*)f)->fun != hl_prim_not_loaded;
+}
+
 DEFINE_PRIM(_DYN, no_closure, _DYN);
 DEFINE_PRIM(_DYN, make_closure, _DYN _DYN);
 DEFINE_PRIM(_DYN, get_closure_value, _DYN);
 DEFINE_PRIM(_BOOL, fun_compare, _DYN _DYN);
 DEFINE_PRIM(_DYN, make_var_args, _FUN(_DYN,_ARR));
 DEFINE_PRIM(_DYN, call_method, _DYN _ARR);
-
+DEFINE_PRIM(_BOOL, is_prim_loaded, _DYN);
 
 #if defined(HL_VCC) && !defined(HL_XBO)
 static int throw_handler( int code ) {

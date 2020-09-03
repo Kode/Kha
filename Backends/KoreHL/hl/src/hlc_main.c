@@ -108,15 +108,7 @@ static int throw_handler( int code ) {
 }
 #endif
 
-#ifdef KOREC
 int kickstart(int argc, char *argv[]) {
-#else
-	#ifdef HL_WIN_DESKTOP
-	int wmain(int argc, uchar *argv[]) {
-	#else
-	int main(int argc, char *argv[]) {
-	#endif
-#endif
 	vdynamic *ret;
 	bool isExc = false;
 	hl_type_fun tf = { 0 };
