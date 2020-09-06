@@ -1,6 +1,6 @@
 let project = new Project('Kha', __dirname);
 
-project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/alloc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
+project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/gc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
 project.addExcludes('hl/src/std/unicase.c');
 project.addExcludes('hl/src/std/debug.c');
 project.addIncludeDirs('hl/src', 'hl/include/pcre');
