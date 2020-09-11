@@ -96,6 +96,14 @@ class Video extends kha.Video {
 		element.currentTime = value / 1000;
 		return value;
 	}
+
+	override public function getVolume(): Float {
+		return element.volume;
+	}
+
+	override public function setVolume(volume: Float): Void {
+		element.volume = volume;
+	}
 	
 	override public function getLength(): Int {
 		if (Math.isFinite(element.duration)) {
