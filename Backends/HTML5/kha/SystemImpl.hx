@@ -57,7 +57,8 @@ class SystemImpl {
 	static var window: Window;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
-		Browser.console.error(error.stack);
+		Browser.console.error("Error: " + message);
+		Browser.console.error("Stack:\n" + error.stack);
 		return true;
 	}
 
