@@ -76,3 +76,22 @@ extern "C" int hl_kore_int32array_get(vbyte* i32array, int index) {
 	int* arr = (int*)i32array;
 	return arr[index];
 }
+
+extern "C" vbyte *hl_kore_uint8array_alloc(int elements) {
+	unsigned char *data = new unsigned char[elements];
+	return (vbyte*)data;
+}
+
+extern "C" void hl_kore_uint8array_free(vbyte *u8array) {
+	delete[] u8array;
+}
+
+extern "C" void hl_kore_uint8array_set(vbyte *u8array, int index, unsigned char value) {
+	unsigned char *arr = (unsigned char *)u8array;
+	arr[index] = value;
+}
+
+extern "C" unsigned char hl_kore_uint8array_get(vbyte *u8array, int index) {
+	unsigned char *arr = (unsigned char *)u8array;
+	return arr[index];
+}
