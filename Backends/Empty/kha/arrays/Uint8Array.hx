@@ -1,39 +1,39 @@
 package kha.arrays;
 
-abstract Int16Array(js.lib.Int16Array) {
+abstract Uint8Array(Dynamic) {
 	public inline function new(elements: Int) {
-		this = new js.lib.Int16Array(elements);
+		this = null;
 	}
 
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
-		return this.length;
+		return 0;
 	}
 
 	public inline function set(index: Int, value: Int): Int {
-		return this[index] = value;
+		return 0;
 	}
 
 	public inline function get(index: Int): Int {
-		return this[index];
+		return 0;
 	}
 
-	public inline function data(): js.lib.Int16Array {
+	public inline function data(): Dynamic {
 		return this;
 	}
 
 	@:arrayAccess
 	public inline function arrayRead(index: Int): Int {
-		return this[index];
+		return 0;
 	}
 
 	@:arrayAccess
 	public inline function arrayWrite(index: Int, value: Int): Int {
-		return this[index] = value;
+		return 0;
 	}
 
-	public inline function subarray(start: Int, ?end: Int): Int16Array {
-		return cast this.subarray(start, end);
+	public inline function subarray(start: Int, ?end: Int): Uint8Array {
+		return this;
 	}
 }
