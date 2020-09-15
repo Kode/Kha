@@ -45,7 +45,7 @@ class ImageShaderPainter {
 	var projectionMatrix: FastMatrix4;
 	static var standardImagePipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
-	static inline var bufferSize: Int = 1500;
+	static inline var bufferSize: Int = 750;
 	static inline var vertexSize: Int = 9;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
@@ -253,13 +253,13 @@ class ColoredShaderPainter {
 	static var standardColorPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 
-	static inline var bufferSize: Int = 1000;
+	static inline var bufferSize: Int = 500;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: Float32Array;
 	static var indexBuffer: IndexBuffer;
 
-	static inline var triangleBufferSize: Int = 1000;
+	static inline var triangleBufferSize: Int = 500;
 	static var triangleBufferIndex: Int;
 	static var triangleVertexBuffer: VertexBuffer;
 	static var triangleVertices: Float32Array;
@@ -496,7 +496,7 @@ class TextShaderPainter {
 	var projectionMatrix: FastMatrix4;
 	static var standardTextPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
-	static inline var bufferSize: Int = 1000;
+	static inline var bufferSize: Int = 500;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: Float32Array;
