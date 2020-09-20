@@ -4,6 +4,7 @@ const pcreVersion = '8.42';
 const tlsVersion = '2.9.0';
 const zlibVersion = '1.2.11';
 
+project.cpp = true;
 project.addFiles('Backends/Kore/khacpp/src/**.h', 'Backends/Kore/khacpp/src/**.cpp', 'Backends/Kore/khacpp/include/**.h');
 project.addFiles('Backends/Kore/khacpp/project/libs/common/**.h', 'Backends/Kore/khacpp/project/libs/common/**.cpp');
 if (platform === Platform.Windows || platform === Platform.WindowsApp) project.addFiles('Backends/Kore/khacpp/project/libs/msvccompat/**.cpp');

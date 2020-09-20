@@ -208,7 +208,7 @@ class Image implements Canvas implements Resource {
 
 	}
 
-	@:functionCode('texture = video->video->currentImage(); renderTarget = nullptr;')
+	@:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
 	private function initVideo(video: kha.kore.Video): Void {
 
 	}
