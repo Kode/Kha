@@ -29,6 +29,7 @@ If applicable, add screenshots to help explain your problem.
 - IDE used (if any):
 - Kha revision:
 - Kha build output (Using Kha...):
+- Application output (if it runs):
 
 **Additional context**
 Add any other context about the problem here.
