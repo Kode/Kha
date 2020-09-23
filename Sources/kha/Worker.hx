@@ -16,7 +16,7 @@ class Worker {
 
 	public static function notifyWorker(func: Dynamic->Void): Void {
 		#if !macro
-		untyped __js__("self").addEventListener("message", function (e) {
+		js.Syntax.code("self").addEventListener("message", function (e) {
 			func(e.data);
 		});
 		#end
@@ -24,7 +24,7 @@ class Worker {
 
 	public static function postFromWorker(message: Dynamic): Void {
 		#if !macro
-		untyped __js__("self").postMessage(message);
+		js.Syntax.code("self").postMessage(message);
 		#end
 	}
 
