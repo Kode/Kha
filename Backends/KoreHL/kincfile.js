@@ -15,6 +15,7 @@ project.addDefine('KORE');
 project.addDefine('KOREC');
 project.addDefine('ROTATE90');
 project.addDefine('LIBHL_STATIC');
+project.cpp = true;
 project.cpp11 = true;
 project.c11 = true;
 
