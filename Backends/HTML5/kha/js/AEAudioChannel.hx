@@ -11,6 +11,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	public function new(element: AudioElement, looping: Bool) {
 		this.element = element;
 		this.looping = looping;
+		this.element.onended = onFinishedCallback;
 	}
 	
 	public function play(): Void {
@@ -74,4 +75,6 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 	private function get_finished(): Bool {
 		return stopped || (!looping && position >= length);
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 }

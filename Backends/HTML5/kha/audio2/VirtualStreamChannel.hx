@@ -33,6 +33,8 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 		var now = Scheduler.realTime();
 		switch (mode) {
 			case Stopped:
+				if(lastPosition != 0)
+					onFinishedCallback();
 				lastPosition = 0;
 			case Paused:
 				// nothing
@@ -123,4 +125,6 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 			return mode == Stopped || (!looping && position >= length);
 		}
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 }

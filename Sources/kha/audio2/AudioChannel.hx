@@ -32,6 +32,7 @@ class AudioChannel implements kha.audio1.AudioChannel {
 				myPosition = 0;
 				if (!looping) {
 					stopped = true;
+					onFinishedCallback();
 					break;
 				}
 			}
@@ -90,6 +91,8 @@ class AudioChannel implements kha.audio1.AudioChannel {
 	function get_finished(): Bool {
 		return stopped;
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 
 	static inline function max(a: Int, b: Int) {
 		return a > b ? a : b;

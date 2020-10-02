@@ -13,6 +13,7 @@ class CompListener implements MediaPlayerOnCompletionListener {
 	
 	public function onCompletion(mp: MediaPlayer): Void {
 		mpc.playbackComplete = true;
+		mpc.onFinishedCallback();
 	}
 }
 
@@ -118,4 +119,5 @@ class MediaPlayerChannel implements AudioChannel {
 	private function get_finished(): Bool {
 		return sound.ownedByMPC.playbackComplete;
 	}
+	public var onFinishedCallback:Void->Void = function(){};
 }

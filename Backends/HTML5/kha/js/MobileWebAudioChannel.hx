@@ -26,6 +26,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		source.buffer = buffer;
 		source.onended = function () {
 			stopped = true;
+			onFinishedCallback();
 		}
 		gain = MobileWebAudio._context.createGain();
 		source.connect(gain);
@@ -97,4 +98,6 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 	private function get_finished(): Bool {
 		return stopped;
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 }

@@ -24,7 +24,10 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			return;
 		}
 		
+		var before = atend;
 		atend = kore_sound_next_vorbis_samples(_vorbis, samples.getData(), length, loop, atend);
+		if(!before && atend)
+			onFinishedCallback();
 	}
 	
 	public function play(): Void {
@@ -70,6 +73,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	private function get_finished(): Bool {
 		return atend;
 	}
+	public var onFinishedCallback:Void->Void = function(){};
 
 	@:hlNative("std", "kore_sound_init_vorbis") static function kore_sound_init_vorbis(data: Pointer, length: Int): Pointer { return null; }
 	@:hlNative("std", "kore_sound_next_vorbis_samples") static function kore_sound_next_vorbis_samples(vorbis: Pointer, samples: Pointer, length: Int, loop: Bool, atend: Bool): Bool { return false; }

@@ -38,6 +38,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			}
 			else {
 				atend = true;
+				onFinishedCallback();
 			}
 			for (i in count...length) {
 				samples[i] = 0;
@@ -89,5 +90,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	private function get_finished(): Bool {
 		return atend;
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 }
 #end

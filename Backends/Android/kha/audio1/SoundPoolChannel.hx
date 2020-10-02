@@ -64,6 +64,7 @@ class SoundPoolChannel implements AudioChannel {
 			return pos % length;
 		}
 		else if (pos > length) {
+			onFinishedCallback();
 			return length;
 		}
 		return pos;
@@ -91,4 +92,6 @@ class SoundPoolChannel implements AudioChannel {
 	private function get_finished(): Bool {
 		return get_position() == length;
 	}
+
+	public var onFinishedCallback:Void->Void = function(){};
 }
