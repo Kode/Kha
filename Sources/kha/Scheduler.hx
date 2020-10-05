@@ -91,6 +91,7 @@ class Scheduler {
 		vsync = Window.get(0).vSynced;
 		var hz = Display.primary.frequency;
 		if (hz >= 57 && hz <= 63) hz = 60;
+		else if (hz >= 110 && hz <= 130) hz = 120;
 		onedifhz = 1.0 / hz;
 
 		stopped = false;
