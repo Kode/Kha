@@ -456,6 +456,11 @@ class SystemImpl {
 		}
 	}
 
+	@:functionCode('Kore::System::copyToClipboard(text.c_str());')
+	public static function copyToClipboard(text: String) {
+		
+	}
+
 	@:functionCode('Kore::System::login();')
 	public static function login(): Void {
 
