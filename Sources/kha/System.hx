@@ -170,6 +170,10 @@ class System {
 		System.pasteListener = pasteListener;
 	}
 
+	/*public static function copyToClipboard(text: String) {
+		SystemImpl.copyToClipboard(text);
+	}*/
+
 	public static function notifyOnLoginLogout(loginListener: Void->Void, logoutListener: Void->Void) {
 		System.loginListener = loginListener;
 		System.logoutListener = logoutListener;

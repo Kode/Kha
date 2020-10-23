@@ -271,6 +271,12 @@ class SystemImpl {
 		loadFinished(defaultWidth, defaultHeight);
 	}
 
+	public static function copyToClipboard(text: String) {
+		var copyEvent = new ClipboardEvent('copy');
+		copyEvent.clipboardData.items.add(text, 'text/plain');
+		Browser.document.dispatchEvent(copyEvent);
+	}
+
 	public static function getMouse(num: Int): Mouse {
 		if (num != 0) return null;
 		return mouse;
