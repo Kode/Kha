@@ -213,8 +213,6 @@ class SystemImpl {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	static var manualClipboardCopy: String = null;
-
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		#if !kha_no_keyboard
 		keyboard = new Keyboard();
@@ -240,12 +238,7 @@ class SystemImpl {
 		}
 
 		function onCopy(e: ClipboardEvent): Void {
-			if (manualClipboardCopy != null) {
-				e.clipboardData.setData("text/plain", manualClipboardCopy);
-				manualClipboardCopy = null;
-				e.preventDefault();
-			}
-			else if (System.copyListener != null) {
+			if (System.copyListener != null) {
 				var data = System.copyListener();
 				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
@@ -279,16 +272,21 @@ class SystemImpl {
 	}
 
 	public static function copyToClipboard(text: String) {
-		manualClipboardCopy = text;
-		var dataTransfer = null;
+		var textArea = Browser.document.createElement("textarea");
+		untyped textArea.value = text;
+		textArea.style.top = "0";
+		textArea.style.left = "0";
+		textArea.style.position = "fixed";
+		Browser.document.body.appendChild(textArea);
+		textArea.focus();
+		untyped textArea.select();
 		try {
-			dataTransfer = Syntax.code('new DataTransfer()');
+  			Browser.document.execCommand('copy');
 		}
-		catch(e) {}
-		var copyEvent = new ClipboardEvent('copy', Syntax.code('{clipboardData: dataTransfer}'));
-		copyEvent.clipboardData.setData('text/plain', text);
-
-		Browser.document.dispatchEvent(copyEvent);
+		catch (err) {
+  			
+		}
+		Browser.document.body.removeChild(textArea);
 	}
 
 	public static function getMouse(num: Int): Mouse {
