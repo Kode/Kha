@@ -213,6 +213,8 @@ class SystemImpl {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
+	static var manualClipboardCopy: String = null;
+
 	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		#if !kha_no_keyboard
 		keyboard = new Keyboard();
@@ -237,15 +239,20 @@ class SystemImpl {
 			for (i in 0...256) pressedKeys.push(null);
 		}
 
-		function onCopy(e: ClipboardEvent):Void {
-			if (System.copyListener != null) {
+		function onCopy(e: ClipboardEvent): Void {
+			if (manualClipboardCopy != null) {
+				e.clipboardData.setData("text/plain", manualClipboardCopy);
+				manualClipboardCopy = null;
+				e.preventDefault();
+			}
+			else if (System.copyListener != null) {
 				var data = System.copyListener();
 				if (data != null) e.clipboardData.setData("text/plain", data);
 				e.preventDefault();
 			}
 		}
 
-		function onCut(e: ClipboardEvent):Void {
+		function onCut(e: ClipboardEvent): Void {
 			if (System.cutListener != null) {
 				var data = System.cutListener();
 				if (data != null) e.clipboardData.setData("text/plain", data);
@@ -253,7 +260,7 @@ class SystemImpl {
 			}
 		}
 
-		function onPaste(e: ClipboardEvent):Void {
+		function onPaste(e: ClipboardEvent): Void {
 			if (System.pasteListener != null) {
 				System.pasteListener(e.clipboardData.getData("text/plain"));
 				e.preventDefault();
@@ -272,8 +279,15 @@ class SystemImpl {
 	}
 
 	public static function copyToClipboard(text: String) {
-		var copyEvent = new ClipboardEvent('copy');
-		copyEvent.clipboardData.items.add(text, 'text/plain');
+		manualClipboardCopy = text;
+		var dataTransfer = null;
+		try {
+			dataTransfer = Syntax.code('new DataTransfer()');
+		}
+		catch(e) {}
+		var copyEvent = new ClipboardEvent('copy', Syntax.code('{clipboardData: dataTransfer}'));
+		copyEvent.clipboardData.setData('text/plain', text);
+
 		Browser.document.dispatchEvent(copyEvent);
 	}
 
