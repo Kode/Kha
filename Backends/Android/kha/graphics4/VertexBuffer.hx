@@ -26,7 +26,7 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			switch (element.data) {
 			case VertexData.ColorVertex:
-				offset += 4 * 1;
+				myStride += 4 * 1;
 			case VertexData.Float1:
 				myStride += 4 * 1;
 			case VertexData.Float2:
