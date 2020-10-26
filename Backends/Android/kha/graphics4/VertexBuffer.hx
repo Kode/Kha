@@ -25,6 +25,8 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
+			case VertexData.ColorVertex:
+				offset += 4 * 1;
 			case VertexData.Float1:
 				myStride += 4 * 1;
 			case VertexData.Float2:
@@ -55,6 +57,8 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			var size;
 			switch (element.data) {
+			case VertexData.ColorVertex:
+				size = 4;
 			case VertexData.Float1:
 				size = 1;
 			case VertexData.Float2:
@@ -73,6 +77,8 @@ class VertexBuffer {
 			sizes[index] = size;
 			offsets[index] = offset;
 			switch (element.data) {
+			case VertexData.ColorVertex:
+				offset += 4 * 1;
 			case VertexData.Float1:
 				offset += 4 * 1;
 			case VertexData.Float2:

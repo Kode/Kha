@@ -8,4 +8,5 @@ package kha.graphics4;
 	var Float4x4 = 4;
 	var Short2Norm = 5;
 	var Short4Norm = 6;
+	var ColorVertex = 7;
 }

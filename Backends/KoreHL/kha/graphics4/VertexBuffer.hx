@@ -28,6 +28,8 @@ class VertexBuffer {
 				data = 6;
 			case VertexData.Short4Norm:
 				data = 7;
+			case VertexData.ColorVertex:
+				data = 8;
 			}
 			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);
 		}

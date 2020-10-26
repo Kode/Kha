@@ -24,6 +24,8 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
+			case ColorVertex:
+				myStride += 4 * 1;
 			case Float1:
 				myStride += 4 * 1;
 			case Float2:
@@ -57,6 +59,9 @@ class VertexBuffer {
 			var size;
 			var type;
 			switch (element.data) {
+			case ColorVertex:
+				size = 4;
+				type = GL.UNSIGNED_BYTE;
 			case Float1:
 				size = 1;
 				type = GL.FLOAT;
@@ -83,6 +88,8 @@ class VertexBuffer {
 			offsets[index] = offset;
 			types[index] = type;
 			switch (element.data) {
+			case ColorVertex:
+				offset += 4 * 1;
 			case Float1:
 				offset += 4 * 1;
 			case Float2:

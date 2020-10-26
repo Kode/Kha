@@ -30,6 +30,8 @@ class VertexStructure {
 	
 	private function dataByteSize(data: VertexData) : Int {
 		switch (data) {
+			case ColorVertex:
+				return 4 * 1;
 			case Float1:
 				return 4 * 1;
 			case Float2:

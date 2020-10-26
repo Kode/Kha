@@ -51,6 +51,9 @@ class VertexBuffer {
 			case 6:
 				data = Kore::Graphics4::Short4NormVertexData;
 				break;
+			case 7:
+				data = Kore::Graphics4::ColorVertexData;
+				break;
 			}
 			structure2.add(structure->get(i)->name, data);
 		}

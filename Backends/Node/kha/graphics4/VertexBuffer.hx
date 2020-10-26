@@ -15,6 +15,8 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
+			case ColorVertex:
+				myStride += 4 * 1;
 			case Float1:
 				myStride += 4 * 1;
 			case Float2:

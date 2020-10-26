@@ -20,6 +20,8 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
+			case VertexData.ColorVertex:
+				myStride += 1;
 			case VertexData.Float1:
 				myStride += 1;
 			case VertexData.Float2:
@@ -63,6 +65,10 @@ class VertexBuffer {
 		var offset: Int = 0;
 		for (element in myStructure.elements) {
 			switch (element.data) {
+			case VertexData.ColorVertex:
+				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
+				offset += 1;
+				++index;
 			case VertexData.Float1:
 				kha.flash.graphics4.Graphics.context.setVertexBufferAt(index, vertexBuffer, offset, Context3DVertexBufferFormat.FLOAT_1);
 				offset += 1;
