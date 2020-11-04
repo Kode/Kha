@@ -9,12 +9,16 @@ import kha.graphics4.VertexData;
 class VertexBuffer {
 	public var buffer: Dynamic;
 	public var _data: Float32Array;
-	private var vertexCount: Int;
-	private var structure: VertexStructure;
+	var vertexCount: Int;
+	var structure: VertexStructure;
+	var mySize: Int;
+	var lockStart: Int = 0;
+	var lockEnd: Int = 0;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		this.vertexCount = vertexCount;
 		this.structure = structure;
+		mySize = vertexCount;
 		buffer = Krom.createVertexBuffer(vertexCount, structure.elements, usage, instanceDataStepRate);
 	}
 
@@ -24,7 +28,9 @@ class VertexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		_data = Krom.lockVertexBuffer(buffer);
+		lockStart = start != null ? start : 0; 
+		lockEnd = count != null ? start + count : mySize; 
+		_data = Krom.lockVertexBuffer(buffer, lockStart, lockEnd);
 		return _data;
 	}
 
@@ -33,7 +39,10 @@ class VertexBuffer {
 	}
 
 	public function unlock(?count: Int): Void {
-		Krom.unlockVertexBuffer(buffer);
+		if (count != null) {
+			lockEnd = lockStart + count;
+		}
+		Krom.unlockVertexBuffer(buffer, lockEnd);
 	}
 
 	public function stride(): Int {

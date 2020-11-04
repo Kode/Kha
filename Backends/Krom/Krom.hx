@@ -1,5 +1,5 @@
 extern class Krom {
-	static inline var KROM_API: Int = 5;
+	static inline var KROM_API: Int = 6;
 
 	static function clear(flags: Int, color: Int, depth: Float, stencil: Int): Void;
 
@@ -65,8 +65,8 @@ extern class Krom {
 	static function setIndexBuffer(buffer: Dynamic): Void;
 	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, usage: Int, instanceDataStepRate: Int): Dynamic;
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
-	static function lockVertexBuffer(buffer: Dynamic): kha.arrays.Float32Array;
-	static function unlockVertexBuffer(buffer: Dynamic): Void;
+	static function lockVertexBuffer(buffer: Dynamic, start: Int, count: Int): kha.arrays.Float32Array;
+	static function unlockVertexBuffer(buffer: Dynamic, count: Int): Void;
 	static function setVertexBuffer(buffer: Dynamic): Void;
 	static function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
 	static function drawIndexedVertices(start: Int, count: Int): Void;
