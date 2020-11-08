@@ -11,12 +11,12 @@ class Image implements Canvas implements Resource {
 	public var _rtid: Int;
 	public static var _lastId: Int = -1;
 	static var lastRtId: Int = -1;
-	var w: Int;
-	var h: Int;
-	var rw: Int;
-	var rh: Int;
-	var format: TextureFormat;
-	var bytes: Bytes = null;
+	private var w: Int;
+	private var h: Int;
+	private var rw: Int;
+	private var rh: Int;
+	private var myFormat: TextureFormat;
+	private var bytes: Bytes = null;
 
 	public function new(id: Int, rtid: Int, width: Int, height: Int, realWidth: Int, realHeight: Int, format: TextureFormat) {
 		this.id = id;
@@ -25,7 +25,7 @@ class Image implements Canvas implements Resource {
 		h = height;
 		rw = realWidth;
 		rh = realHeight;
-		this.format = format;
+		myFormat = format;
 	}
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -57,13 +57,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 1024 * 4;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return true;
 	}
 	
@@ -76,7 +76,7 @@ class Image implements Canvas implements Resource {
 
 	public function lock(level: Int = 0): Bytes {
 		if (bytes == null) {
-			switch (format) {
+			switch (myFormat) {
 				case RGBA32:
 					bytes = Bytes.alloc(4 * width * height);
 				case L8:
@@ -111,18 +111,20 @@ class Image implements Canvas implements Resource {
 	private function get_height(): Int { return h; }
 	public var depth(get, null): Int;
 	private function get_depth(): Int { return 1; }
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat { return myFormat; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return rw; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return rh; }
 
-	var graphics1: kha.graphics1.Graphics;
-	var graphics2: kha.graphics2.Graphics;
-	var graphics4: kha.graphics4.Graphics;
+	private var graphics1: kha.graphics1.Graphics;
+	private var graphics2: kha.graphics2.Graphics;
+	private var graphics4: kha.graphics4.Graphics;
 
 	public var g1(get, null): kha.graphics1.Graphics;
 
-	function get_g1(): kha.graphics1.Graphics {
+	private function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
 			graphics1 = new kha.graphics2.Graphics1(this);
 		}
@@ -131,7 +133,7 @@ class Image implements Canvas implements Resource {
 
 	public var g2(get, null): kha.graphics2.Graphics;
 
-	function get_g2(): kha.graphics2.Graphics {
+	private function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
 			graphics2 = new kha.graphics4.Graphics2(this);
 		}
@@ -140,7 +142,7 @@ class Image implements Canvas implements Resource {
 
 	public var g4(get, null): kha.graphics4.Graphics;
 
-	function get_g4(): kha.graphics4.Graphics {
+	private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
 			graphics4 = new kha.html5worker.Graphics(this);
 		}

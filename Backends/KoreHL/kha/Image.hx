@@ -13,7 +13,7 @@ class Image implements Canvas implements Resource {
 	public var _textureArray: Pointer;
 	public var _textureArrayTextures: Pointer;
 	
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var readable: Bool;
 
 	private var graphics1: kha.graphics1.Graphics;
@@ -22,7 +22,7 @@ class Image implements Canvas implements Resource {
 
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
-		image.format = TextureFormat.RGBA32;
+		image.myFormat = TextureFormat.RGBA32;
 		image.initVideo(cast(video, kha.korehl.Video));
 		return image;
 	}
@@ -49,7 +49,7 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
 		return image;
 	}
@@ -61,7 +61,7 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
 		return image;
 	}
@@ -73,7 +73,7 @@ class Image implements Canvas implements Resource {
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
 		var isFloat = format == "hdr" || format == "HDR";
-		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.myFormat = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromEncodedBytes(bytes.getData(), format);
 		doneCallback(image);
 	}
@@ -178,7 +178,7 @@ class Image implements Canvas implements Resource {
 	public static function fromFile(filename: String, readable: Bool): Image {
 		var image = new Image(readable);
 		var isFloat = StringTools.endsWith(filename, ".hdr");
-		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.myFormat = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromFile(filename);
 		return image;
 	}
@@ -217,13 +217,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 4096;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return kore_non_pow2_textures_supported();
 	}
 	
@@ -232,35 +232,38 @@ class Image implements Canvas implements Resource {
 	}
 
 	public var width(get, null): Int;
-	public var height(get, null): Int;
-	public var depth(get, null): Int;
-
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return _texture != null ? kore_texture_get_width(_texture) : kore_render_target_get_width(_renderTarget);
 	}
 
-	public function get_height(): Int {
+	public var height(get, null): Int;
+	private function get_height(): Int {
 		return _texture != null ? kore_texture_get_height(_texture) : kore_render_target_get_height(_renderTarget);
 	}
 
-	public function get_depth(): Int {
+	public var depth(get, null): Int;
+	private function get_depth(): Int {
 		return 1;
 	}
 
-	public var realWidth(get, null): Int;
-	public var realHeight(get, null): Int;
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat {
+		return myFormat;
+	}
 
-	public function get_realWidth(): Int {
+	public var realWidth(get, null): Int;
+	private function get_realWidth(): Int {
 		return _texture != null ? kore_texture_get_real_width(_texture) : kore_render_target_get_real_width(_renderTarget);
 	}
 
-	public function get_realHeight(): Int {
+	public var realHeight(get, null): Int;
+	private function get_realHeight(): Int {
 		return _texture != null ? kore_texture_get_real_height(_texture) : kore_render_target_get_real_height(_renderTarget);
 	}
 
 	public var stride(get, null): Int;
-	function get_stride(): Int {
-		return formatByteSize(format) * width;
+	private function get_stride(): Int {
+		return formatByteSize(myFormat) * width;
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool {
@@ -282,7 +285,7 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes = null;
 
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(formatByteSize(format) * width * height);
+		bytes = Bytes.alloc(formatByteSize(myFormat) * width * height);
 		return bytes;
 	}
 
@@ -295,7 +298,7 @@ class Image implements Canvas implements Resource {
 	public function getPixels(): Bytes {
 		if (_renderTarget == null) return null;
 		if (pixels == null) {
-			var size = formatByteSize(format) * width * height;
+			var size = formatByteSize(myFormat) * width * height;
 			pixels = Bytes.alloc(size);
 		}
 		kore_render_target_get_pixels(_renderTarget, pixels.getData().bytes);

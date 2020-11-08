@@ -11,7 +11,7 @@ import unityEngine.Texture2D;
 class Image implements Canvas implements Resource {
 	private var myWidth: Int;
 	private var myHeight: Int;
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	public var texture: Texture;
 
 	private var graphics1: kha.graphics1.Graphics;
@@ -52,7 +52,7 @@ class Image implements Canvas implements Resource {
 	public function new(width: Int, height: Int, format: TextureFormat, renderTexture: Bool) {
 		myWidth = width;
 		myHeight = height;
-		this.format = format;
+		myFormat = format;
 		if (renderTexture) texture = new RenderTexture(upperPowerOfTwo(width), upperPowerOfTwo(height), 0);
 		else texture = new Texture2D(width, height);
 	}
@@ -93,31 +93,37 @@ class Image implements Canvas implements Resource {
 
 	public var width(get, null): Int;
 
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return myWidth;
 	}
 
 	public var height(get, null): Int;
 
-	public function get_height(): Int {
+	private function get_height(): Int {
 		return myHeight;
 	}
 
 	public var depth(get, null): Int;
 
-	public function get_depth(): Int {
+	private function get_depth(): Int {
 		return 1;
+	}
+
+	public var format(get, null): TextureFormat;
+
+	private function get_format(): TextureFormat {
+		return myFormat;
 	}
 
 	public var realWidth(get, null): Int;
 
-	public function get_realWidth(): Int {
+	private function get_realWidth(): Int {
 		return texture.width;
 	}
 
 	public var realHeight(get, null): Int;
 
-	public function get_realHeight(): Int {
+	private function get_realHeight(): Int {
 		return texture.height;
 	}
 
@@ -132,7 +138,7 @@ class Image implements Canvas implements Resource {
 	public var bytes: Bytes;
 
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		bytes = Bytes.alloc(myFormat == TextureFormat.RGBA32 ? 4 * width * height : width * height);
 		return bytes;
 	}
 
@@ -152,13 +158,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 4096;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 

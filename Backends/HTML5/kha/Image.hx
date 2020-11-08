@@ -102,13 +102,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return SystemImpl.gl == null ? 1024 * 8 : SystemImpl.gl.getParameter(GL.MAX_TEXTURE_SIZE);
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return SystemImpl.gl != null;
 	}
 	
@@ -169,6 +169,11 @@ class Image implements Canvas implements Resource {
 	public var depth(get, null): Int;
 	private function get_depth(): Int {
 		return 1;
+	}
+
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat {
+		return TextureFormat.RGBA32;
 	}
 	
 	public var realWidth(get, null): Int;

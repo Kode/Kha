@@ -15,7 +15,7 @@ import kha.graphics4.Usage;
 
 @:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget; Kore::Graphics4::TextureArray* textureArray; Kore::Graphics4::Image** textureArrayTextures;")
 class Image implements Canvas implements Resource {
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var readable: Bool;
 
 	private var graphics1: kha.graphics1.Graphics;
@@ -24,7 +24,7 @@ class Image implements Canvas implements Resource {
 
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
-		image.format = TextureFormat.RGBA32;
+		image.myFormat = TextureFormat.RGBA32;
 		image.initVideo(cast(video, kha.kore.Video));
 		return image;
 	}
@@ -46,7 +46,7 @@ class Image implements Canvas implements Resource {
 	 */
 	public static function createArray(images:Array<Image>, format: TextureFormat = null):Image {
 		var image = new Image(false);
-		image.format = (format == null) ? TextureFormat.RGBA32 : format;
+		image.myFormat = (format == null) ? TextureFormat.RGBA32 : format;
 		initArrayTexture(image, images);
 		return image;
 	}
@@ -65,7 +65,7 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
 		return image;
 	}
@@ -78,7 +78,7 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
 		return image;
 	}
@@ -91,7 +91,7 @@ class Image implements Canvas implements Resource {
 	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
 		var image = new Image(readable);
 		var isFloat = format == "hdr" || format == "HDR";
-		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.myFormat = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromEncodedBytes(bytes.getData(), format);
 		doneCallback(image);
 	}
@@ -179,7 +179,7 @@ class Image implements Canvas implements Resource {
 	@:noCompletion
 	public static function _create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, antiAliasing: Bool, contextId: Int): Image {
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), antiAliasing, getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		else image.init(width, height, getTextureFormat(format));
 		return image;
@@ -188,7 +188,7 @@ class Image implements Canvas implements Resource {
 	@:noCompletion
 	public static function _create3(width: Int, height: Int, depth: Int, format: TextureFormat, readable: Bool, contextId: Int): Image {
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.init3D(width, height, depth, getTextureFormat(format));
 		return image;
 	}
@@ -215,7 +215,7 @@ class Image implements Canvas implements Resource {
 
 	public static function createEmpty(readable: Bool, floatFormat: Bool): Image {
 		var image = new Image(readable);
-		image.format = floatFormat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+		image.myFormat = floatFormat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		return image;
 	}
 
@@ -261,14 +261,14 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 4096;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
 	@:functionCode('return Kore::Graphics4::nonPow2TexturesSupported();')
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 	
@@ -278,34 +278,38 @@ class Image implements Canvas implements Resource {
 	}
 
 	public var width(get, null): Int;
-	public var height(get, null): Int;
-	public var depth(get, null): Int;
-
 	@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return 0;
 	}
 
+	public var height(get, null): Int;
 	@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
-	public function get_height(): Int {
+	private function get_height(): Int {
 		return 0;
 	}
 
+	public var depth(get, null): Int;
 	@:functionCode("if (texture != nullptr) return texture->depth; else return 0;")
-	public function get_depth(): Int {
+	private function get_depth(): Int {
 		return 0;
+	}
+
+	public var format(get, null): TextureFormat;
+	@:functionCode("if (texture != nullptr) return texture->format; else return 0;")
+	private function get_format(): TextureFormat {
+		return TextureFormat.RGBA32;
 	}
 
 	public var realWidth(get, null): Int;
-	public var realHeight(get, null): Int;
-
 	@:functionCode("if (texture != nullptr) return texture->texWidth; else return renderTarget->texWidth;")
-	public function get_realWidth(): Int {
+	private function get_realWidth(): Int {
 		return 0;
 	}
 
+	public var realHeight(get, null): Int;
 	@:functionCode("if (texture != nullptr) return texture->texHeight; else return renderTarget->texHeight;")
-	public function get_realHeight(): Int {
+	private function get_realHeight(): Int {
 		return 0;
 	}
 
@@ -390,7 +394,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function getPixels(): Bytes {
-		return getPixelsInternal(formatByteSize(format));
+		return getPixelsInternal(formatByteSize(myFormat));
 	}
 
 	private static function formatByteSize(format: TextureFormat): Int {

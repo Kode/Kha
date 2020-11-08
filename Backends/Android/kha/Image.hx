@@ -23,7 +23,7 @@ class Image implements Canvas implements Resource {
 	private var myHeight: Int;
 	private var myRealWidth: Int;
 	private var myRealHeight: Int;
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	public var tex: Int = -1;
 	public var framebuffer: Int = -1;
 	private var depthStencilBuffers: NativeArray<Int>;
@@ -37,7 +37,7 @@ class Image implements Canvas implements Resource {
 		myHeight = height;
 		myRealWidth = upperPowerOfTwo(width);
 		myRealHeight = upperPowerOfTwo(height);
-		this.format = format;
+		myFormat = format;
 		tex = createTexture();
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
 		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -337,6 +337,11 @@ class Image implements Canvas implements Resource {
 		return 1;
 	}
 
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat {
+		return myFormat;
+	}
+
 	public var realWidth(get, null): Int;
 
 	private function get_realWidth(): Int {
@@ -350,8 +355,8 @@ class Image implements Canvas implements Resource {
 	}
 
 	public var stride(get, null): Int;
-	function get_stride(): Int {
-		return format == TextureFormat.RGBA32 ? 4 * width : (format == TextureFormat.RGBA128 ? 16 * width : width);
+	private function get_stride(): Int {
+		return myFormat == TextureFormat.RGBA32 ? 4 * width : (myFormat == TextureFormat.RGBA128 ? 16 * width : width);
 	}
 
 	public function at(x: Int, y: Int): Int {
@@ -366,7 +371,7 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes = null;
 
 	public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : (format == TextureFormat.RGBA128 ? 16 * width * height : width * height));
+		bytes = Bytes.alloc(myFormat == TextureFormat.RGBA32 ? 4 * width * height : (myFormat == TextureFormat.RGBA128 ? 16 * width * height : width * height));
 		return bytes;
 	}
 
@@ -374,7 +379,7 @@ class Image implements Canvas implements Resource {
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex);
 		//Sys.gl.pixelStorei(Sys.gl.UNPACK_FLIP_Y_WEBGL, true);
 
-		switch (format) {
+		switch (myFormat) {
 		case L8:
 			GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(bytes.getData()));
 		case RGBA128:
@@ -412,13 +417,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 2048;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 	

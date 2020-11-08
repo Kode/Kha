@@ -23,7 +23,7 @@ class WebGLImage extends Image {
 
 	private var myWidth: Int;
 	private var myHeight: Int;
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var renderTarget: Bool;
 	private var samples: Int;
 	public var frameBuffer: Framebuffer = null;
@@ -31,8 +31,8 @@ class WebGLImage extends Image {
 	public var texture: Texture = null;
 	public var depthTexture: Texture = null;
 	public var MSAAFrameBuffer:Framebuffer=null;
-	var MSAAColorBuffer:Renderbuffer;
-	var MSAADepthBuffer:Renderbuffer;
+	private var MSAAColorBuffer:Renderbuffer;
+	private var MSAADepthBuffer:Renderbuffer;
 
 
 	private var graphics1: kha.graphics1.Graphics;
@@ -69,7 +69,7 @@ class WebGLImage extends Image {
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int) {
 		myWidth = width;
 		myHeight = height;
-		this.format = format;
+		myFormat = format;
 		this.renderTarget = renderTarget;
 		this.samples = samples;
 		image = null;
@@ -108,6 +108,10 @@ class WebGLImage extends Image {
 		return myHeight;
 	}
 
+	override private function get_format(): TextureFormat {
+		return myFormat;
+	}
+
 	override private function get_realWidth(): Int {
 		return myWidth;
 	}
@@ -117,7 +121,7 @@ class WebGLImage extends Image {
 	}
 
 	override function get_stride(): Int {
-		return formatByteSize(format) * width;
+		return formatByteSize(myFormat) * width;
 	}
 
 	override public function isOpaque(x: Int, y: Int): Bool {
@@ -142,7 +146,7 @@ class WebGLImage extends Image {
 		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 	}
 
-	function createImageData() {
+	private function createImageData() {
 		if (Std.is(image, Uint8Array)) {
 			data = new js.html.ImageData(new js.lib.Uint8ClampedArray(image.buffer), this.width, this.height);
 		}
@@ -190,7 +194,7 @@ class WebGLImage extends Image {
 		if (renderTarget) {
 			frameBuffer = SystemImpl.gl.createFramebuffer();
 			SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-			switch (format) {
+			switch (myFormat) {
 			case DEPTH16:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL.DEPTH_COMPONENT16 : GL.DEPTH_COMPONENT, realWidth, realHeight, 0, GL.DEPTH_COMPONENT, GL.UNSIGNED_SHORT, null);
 			case RGBA128:
@@ -207,7 +211,7 @@ class WebGLImage extends Image {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, realWidth, realHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 			}
 
-			if (format == DEPTH16) {
+			if (myFormat == DEPTH16) {
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, texture, 0);
@@ -225,7 +229,7 @@ class WebGLImage extends Image {
 					MSAAFrameBuffer = SystemImpl.gl.createFramebuffer();
 					MSAAColorBuffer = SystemImpl.gl.createRenderbuffer();
 					SystemImpl.gl.bindRenderbuffer(GL.RENDERBUFFER, MSAAColorBuffer);
-					var MSAAFormat=switch (format) {
+					var MSAAFormat=switch (myFormat) {
 					case RGBA128:
 						untyped SystemImpl.gl.RGBA32F;
 					case RGBA64:
@@ -261,7 +265,7 @@ class WebGLImage extends Image {
 			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, video);
 		}
 		else {
-			switch (format) {
+			switch (myFormat) {
 			case RGBA128:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.FLOAT, image);
 			case RGBA64:
@@ -387,7 +391,7 @@ class WebGLImage extends Image {
 	}
 
 	public function bytesToArray(bytes: Bytes): js.lib.ArrayBufferView {
-		return switch(format) {
+		return switch(myFormat) {
 			case RGBA32, L8:
 				new Uint8Array(bytes.getData());
 			case RGBA128, RGBA64, A32, A16:
@@ -400,7 +404,7 @@ class WebGLImage extends Image {
 	public var bytes: Bytes;
 
 	override public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(formatByteSize(format) * width * height);
+		bytes = Bytes.alloc(formatByteSize(myFormat) * width * height);
 		return bytes;
 	}
 
@@ -416,7 +420,7 @@ class WebGLImage extends Image {
 			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 
-			switch (format) {
+			switch (myFormat) {
 			case L8:
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.LUMINANCE, width, height, 0, GL.LUMINANCE, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 
@@ -455,19 +459,19 @@ class WebGLImage extends Image {
 	override public function getPixels(): Bytes {
 		if (frameBuffer == null) return null;
 		if (pixels == null) {
-			switch (format) {
+			switch (myFormat) {
 			case RGBA128, A32:
-				pixels = new Float32Array(Std.int(formatByteSize(format) / 4) * width * height);
+				pixels = new Float32Array(Std.int(formatByteSize(myFormat) / 4) * width * height);
 			case RGBA64, A16:
-				pixels = new Uint16Array(Std.int(formatByteSize(format) / 2) * width * height);
+				pixels = new Uint16Array(Std.int(formatByteSize(myFormat) / 2) * width * height);
 			case RGBA32, L8:
-				pixels = new Uint8Array(formatByteSize(format) * width * height);
+				pixels = new Uint8Array(formatByteSize(myFormat) * width * height);
 			default:
-				pixels = new Uint8Array(formatByteSize(format) * width * height);
+				pixels = new Uint8Array(formatByteSize(myFormat) * width * height);
 			}
 		}
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
-		switch (format) {
+		switch (myFormat) {
 		case RGBA128:
 			SystemImpl.gl.readPixels(0, 0, myWidth, myHeight, GL.RGBA, GL.FLOAT, pixels);
 		case RGBA64:
@@ -505,12 +509,12 @@ class WebGLImage extends Image {
 	override public function setMipmaps(mipmaps: Array<Image>): Void {
 		// Similar to generateMipmaps, specify all the levels down to 1x1 size
 		SystemImpl.gl.bindTexture(GL.TEXTURE_2D, texture);
-		if (format == TextureFormat.RGBA128) {
+		if (myFormat == TextureFormat.RGBA128) {
 			for (i in 0...mipmaps.length) {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, SystemImpl.gl2 ? GL_RGBA32F : GL.RGBA, mipmaps[i].width, mipmaps[i].height, 0, GL.RGBA, GL.FLOAT, cast(mipmaps[i], WebGLImage).image);
 			}
 		}
-		else if (format == TextureFormat.RGBA64) {
+		else if (myFormat == TextureFormat.RGBA64) {
 			for (i in 0...mipmaps.length) {
 				SystemImpl.gl.texImage2D(GL.TEXTURE_2D, i + 1, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, mipmaps[i].width, mipmaps[i].height, 0, GL.RGBA, SystemImpl.halfFloat.HALF_FLOAT_OES, cast(mipmaps[i], WebGLImage).image);
 			}

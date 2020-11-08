@@ -28,13 +28,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 0;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 	public static function renderTargetsInvertedY(): Bool {
@@ -57,12 +57,14 @@ class Image implements Canvas implements Resource {
 	private function get_height(): Int { return 0; }
 	public var depth(get, null): Int;
 	private function get_depth(): Int { return 1; }
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat { return TextureFormat.RGBA32; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return 0; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return 0; }
 	public var stride(get, null): Int;
-	function get_stride(): Int { return 0; }
+	private function get_stride(): Int { return 0; }
 	public var g1(get, null): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
 	public var g2(get, null): kha.graphics2.Graphics;
