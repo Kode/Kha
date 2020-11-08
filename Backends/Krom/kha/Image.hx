@@ -9,7 +9,7 @@ class Image implements Canvas implements Resource {
 	public var texture_: Dynamic;
 	public var renderTarget_: Dynamic;
 
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var readable: Bool;
 	
 	private var graphics1: kha.graphics1.Graphics;
@@ -88,7 +88,7 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		var readable = true;
 		var image = new Image(null);
-		image.format = format;
+		image.myFormat = format;
 		image.texture_ = Krom.createTextureFromBytes(bytes.getData(), width, height, getTextureFormat(format), readable);
 		return image;
 	}
@@ -97,7 +97,7 @@ class Image implements Canvas implements Resource {
 		if (format == null) format = TextureFormat.RGBA32;
 		var readable = true;
 		var image = new Image(null);
-		image.format = format;
+		image.myFormat = format;
 		image.texture_ = Krom.createTextureFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format), readable);
 		return image;
 	}
@@ -111,7 +111,7 @@ class Image implements Canvas implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		var image = new Image(null);
-		image.format = format;
+		image.myFormat = format;
 		image.texture_ = Krom.createTexture(width, height, getTextureFormat(format));
 		return image;
 	}
@@ -119,7 +119,7 @@ class Image implements Canvas implements Resource {
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		var image = new Image(null);
-		image.format = format;
+		image.myFormat = format;
 		image.texture_ = Krom.createTexture3D(width, height, depth, getTextureFormat(format));
 		return image;
 	}
@@ -127,20 +127,20 @@ class Image implements Canvas implements Resource {
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		if (format == null) format = TextureFormat.RGBA32;
 		var image = new Image(null);
-		image.format = format;
+		image.myFormat = format;
 		image.renderTarget_ = Krom.createRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		return image;
 	}
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 4096;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return true;
 	}
 	
@@ -169,7 +169,7 @@ class Image implements Canvas implements Resource {
 
 	public function getPixels(): Bytes {
 		if (renderTarget_ != null) {
-			if (pixels == null) pixels = Bytes.alloc(formatByteSize(format) * width * height);
+			if (pixels == null) pixels = Bytes.alloc(formatByteSize(myFormat) * width * height);
 			Krom.getRenderTargetPixels(renderTarget_, pixels.getData());
 			return pixels;
 		}
@@ -213,13 +213,15 @@ class Image implements Canvas implements Resource {
 	private function get_height(): Int { return texture_ == null ? renderTarget_.height : texture_.height; }
 	public var depth(get, null): Int;
 	private function get_depth(): Int { return texture_ != null ? texture_.depth : 1; }
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat { return myFormat; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return texture_ == null ? renderTarget_.width : texture_.realWidth; }
 	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int { return texture_ == null ? renderTarget_.height : texture_.realHeight; }
 
 	public var stride(get, null): Int;
-	function get_stride(): Int {
+	private function get_stride(): Int {
 		return texture_.stride;
 	}
 	

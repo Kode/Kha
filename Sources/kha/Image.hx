@@ -51,6 +51,8 @@ extern class Image implements Canvas implements Resource {
 
 	public var depth(get, null): Int;
 	
+	public var format(get, null): TextureFormat;
+	
 	// The width of the image in pixels and been power of two.
 	public var realWidth(get, null): Int;
 	

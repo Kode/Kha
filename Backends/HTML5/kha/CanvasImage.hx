@@ -17,7 +17,7 @@ class CanvasImage extends Image {
 	
 	private var myWidth: Int;
 	private var myHeight: Int;
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var renderTarget: Bool;
 	public var frameBuffer: Dynamic;
 	
@@ -37,7 +37,7 @@ class CanvasImage extends Image {
 	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool) {
 		myWidth = width;
 		myHeight = height;
-		this.format = format;
+		myFormat = format;
 		this.renderTarget = renderTarget;
 		image = null;
 		video = null;
@@ -75,6 +75,10 @@ class CanvasImage extends Image {
 		return myHeight;
 	}
 
+	override private function get_format(): TextureFormat {
+		return myFormat;
+	}
+
 	override private function get_realWidth(): Int {
 		return myWidth;
 	}
@@ -84,7 +88,7 @@ class CanvasImage extends Image {
 	}
 
 	override function get_stride(): Int {
-		return format == TextureFormat.RGBA32 ? 4 * width : width;
+		return myFormat == TextureFormat.RGBA32 ? 4 * width : width;
 	}
 	
 	override public function isOpaque(x: Int, y: Int): Bool {
@@ -163,7 +167,7 @@ class CanvasImage extends Image {
 	public var bytes: Bytes;
 	
 	override public function lock(level: Int = 0): Bytes {
-		bytes = Bytes.alloc(format == TextureFormat.RGBA32 ? 4 * width * height : width * height);
+		bytes = Bytes.alloc(myFormat == TextureFormat.RGBA32 ? 4 * width * height : width * height);
 		return bytes;
 	}
 	

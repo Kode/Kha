@@ -15,12 +15,14 @@ class Image implements Canvas implements Resource {
 	private var graphics2: EmptyGraphics2;
 	private var graphics4: EmptyGraphics4;
 	private var bytes: Bytes;
+	private var myFormat: TextureFormat;
 	
 	public function new(width: Int, height: Int, format: TextureFormat) {
 		w = width;
 		h = height;
 		var bytesPerPixel = 4;
 		if (format != null && format == TextureFormat.L8) bytesPerPixel = 1;
+		myFormat = format;
 		bytes = Bytes.alloc(width * height * bytesPerPixel);
 		graphics1 = new EmptyGraphics1(w, h);
 		graphics2 = new EmptyGraphics2(w, h);
@@ -49,13 +51,13 @@ class Image implements Canvas implements Resource {
 	
 	public static var maxSize(get, null): Int;
 	
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 1024 * 4;
 	}
 	
 	public static var nonPow2Supported(get, null): Bool;
 	
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 	public static function renderTargetsInvertedY(): Bool {
@@ -78,6 +80,8 @@ class Image implements Canvas implements Resource {
 	private function get_height(): Int { return h; }
 	public var depth(get, null): Int;
 	private function get_depth(): Int { return 1; }
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat { return myFormat; }
 	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int { return w; }
 	public var realHeight(get, null): Int;

@@ -77,40 +77,46 @@ class Image implements Canvas implements Resource {
 	private function get_g4(): kha.graphics4.Graphics { return null; }
 	
 	public var width(get, null): Int;
-	public var height(get, null): Int;
-	public var depth(get, null): Int;
-
 	@:functionCode('
 		return image.getWidth(null);
 	')
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return 0;
 	}
 	
+	public var height(get, null): Int;
 	@:functionCode('
 		return image.getHeight(null);
 	')
-	public function get_height(): Int {
+	private function get_height(): Int {
 		return 0;
 	}
 
-	public function get_depth(): Int {
+	public var depth(get, null): Int;
+	private function get_depth(): Int {
 		return 1;
+	}
+
+	public var format(get, null): TextureFormat;
+	@:functionCode('
+		return image.getType();
+	')
+	private function get_format(): TextureFormat {
+		return TextureFormat.RGBA32;
 	}
 	
 	public var realWidth(get, null): Int;
-	public var realHeight(get, null): Int;
-	
 	private function get_realWidth(): Int {
 		return width;
 	}
 	
+	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int {
 		return height;
 	}
 
 	public var stride(get, null): Int;
-	function get_stride(): Int {
+	private function get_stride(): Int {
 		return realWidth * 4;
 	}
 	

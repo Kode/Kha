@@ -39,31 +39,37 @@ class Image {
 		
 	public var width(get, null): Int;
 	
-	public function get_width(): Int {
+	private function get_width(): Int {
 		return texture.Width;
 	}
 	
 	public var height(get, null): Int;
 	
-	public function get_height(): Int {
+	private function get_height(): Int {
 		return texture.Height;
 	}
 
 	public var depth(get, null): Int;
 
-	public function get_depth(): Int {
+	private function get_depth(): Int {
 		return 1;
+	}
+
+	public var format(get, null): TextureFormat;
+
+	private function get_format(): TextureFormat {
+		return TextureFormat.RGBA32;
 	}
 	
 	public var realWidth(get, null): Int;
 	
-	public function get_realWidth(): Int {
+	private function get_realWidth(): Int {
 		return texture.Width;
 	}
 	
 	public var realHeight(get, null): Int;
 	
-	public function get_realHeight(): Int {
+	private function get_realHeight(): Int {
 		return texture.Height;
 	}
 	
@@ -123,13 +129,13 @@ class Image {
 	
 	public static var maxSize(get, null): Int;
 	
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 2048;
 	}
 	
 	public static var nonPow2Supported(get, null): Bool;
 	
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return true;
 	}
 	

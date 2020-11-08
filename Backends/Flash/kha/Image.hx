@@ -18,7 +18,7 @@ class Image implements Canvas implements Resource {
 	private var myHeight: Int;
 	private var texWidth: Int;
 	private var texHeight: Int;
-	private var format: TextureFormat;
+	private var myFormat: TextureFormat;
 	private var depthStencil: DepthStencilFormat;
 
 	private var data: BitmapData;
@@ -64,7 +64,7 @@ class Image implements Canvas implements Resource {
 		myHeight = height;
 		texWidth = upperPowerOfTwo(Std.int(myWidth));
 		texHeight = upperPowerOfTwo(Std.int(myHeight));
-		this.format = format;
+		myFormat = format;
 		this.depthStencil = depthStencil;
 		this.readable = readable;
 		tex = SystemImpl.context.createTexture(texWidth, texHeight, format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
@@ -115,13 +115,13 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, null): Int;
 
-	public static function get_maxSize(): Int {
+	private static function get_maxSize(): Int {
 		return 2048;
 	}
 
 	public static var nonPow2Supported(get, null): Bool;
 
-	public static function get_nonPow2Supported(): Bool {
+	private static function get_nonPow2Supported(): Bool {
 		return false;
 	}
 	
@@ -130,35 +130,38 @@ class Image implements Canvas implements Resource {
 	}
 
 	public var width(get, null): Int;
-	public var height(get, null): Int;
-	public var depth(get, null): Int;
-
 	private function get_width(): Int {
 		return Std.int(myWidth);
 	}
 
+	public var height(get, null): Int;
 	private function get_height(): Int {
 		return Std.int(myHeight);
 	}
 
+	public var depth(get, null): Int;
 	private function get_depth(): Int {
 		return 1;
 	}
 
-	public var realWidth(get, null): Int;
-	public var realHeight(get, null): Int;
+	public var format(get, null): TextureFormat;
+	private function get_format(): TextureFormat {
+		return myFormat;
+	}
 
+	public var realWidth(get, null): Int;
 	private function get_realWidth(): Int {
 		return texWidth;
 	}
 
+	public var realHeight(get, null): Int;
 	private function get_realHeight(): Int {
 		return texHeight;
 	}
 
 	public var stride(get, null): Int;
 	function get_stride(): Int {
-		switch (format) {
+		switch (myFormat) {
 			case RGBA32:
 				return texWidth * 4;
 			case L8:
@@ -212,7 +215,7 @@ class Image implements Canvas implements Resource {
 
 	public function lock(level: Int = 0): Bytes {
 		if (bytes == null) {
-			switch (format) {
+			switch (myFormat) {
 				case RGBA32:
 					bytes = Bytes.alloc(texWidth * texHeight * 4);
 				case L8:
@@ -227,7 +230,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function unlock(): Void {
-		switch (format) {
+		switch (myFormat) {
 			case L8:
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
 				for (y in 0...texHeight) for (x in 0...texWidth) {
