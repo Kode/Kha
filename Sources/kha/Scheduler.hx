@@ -177,6 +177,7 @@ class Scheduler {
 	public static function executeFrame(): Void {
 		var now: Float = realTime() - startTime;
 		var delta = now - lastTime;
+		lastTime = now;
 		
 		var frameEnd: Float = lastFrameEnd;
 		
@@ -191,13 +192,12 @@ class Scheduler {
 				}
 				else {
 					if (vsync) {
+						var measured = delta;
 						// this is optimized not to run at exact speed
 						// but to run as fluid as possible
-						var realdif = onedifhz;
-						while (realdif < delta - onedifhz) {
-							realdif += onedifhz;
-						}
-						
+						var frames = Math.round(delta / onedifhz);
+						var realdif = frames * onedifhz;
+
 						delta = realdif;
 						for (i in 0...DIF_COUNT - 2) {
 							delta += deltas[i];
@@ -208,6 +208,8 @@ class Scheduler {
 						deltas[DIF_COUNT - 2] = realdif;
 						
 						frameEnd += delta;
+
+						//trace("Measured: " + measured + " Frames: " + frames +  " Delta: " + delta + " ");
 					}
 					else {
 						for (i in 0...DIF_COUNT - 1) {
@@ -232,7 +234,6 @@ class Scheduler {
 				frameEnd += delta;
 			}
 			
-			lastTime = frameEnd;
 			if (!stopped) { // Stop simulation time
 				lastFrameEnd = frameEnd;
 			}
