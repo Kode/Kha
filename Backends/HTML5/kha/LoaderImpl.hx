@@ -86,6 +86,10 @@ class LoaderImpl {
 					return;
 				}
 			}
+			failed({
+				url: desc.files.join(','),
+				error: "Unable to find sound files with supported audio formats",
+			});
 		}
 		else if (SystemImpl.mobile) {
 			var element = Browser.document.createAudioElement();
@@ -123,6 +127,10 @@ class LoaderImpl {
 					return;
 				}
 			}
+			failed({
+				url: desc.files.join(','),
+				error: "Unable to find sound files with supported audio formats",
+			});
 		}
 		else {
 			new kha.js.Sound(desc.files, done, failed);
