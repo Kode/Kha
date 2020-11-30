@@ -41,7 +41,7 @@ class Image implements Canvas implements Resource {
 
 	// public static function createArray(images: Array<Image>, format: TextureFormat = null): Image {
 		// var image = new Image(false);
-		// image.format = (format == null) ? TextureFormat.RGBA32 : format;
+		// image.myFormat = (format == null) ? TextureFormat.RGBA32 : format;
 		// initArrayTexture(image, images);
 		// return image;
 	// }
@@ -142,7 +142,7 @@ class Image implements Canvas implements Resource {
 
 	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, contextId: Int): Image {
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
 		else image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
 		return image;
@@ -150,7 +150,7 @@ class Image implements Canvas implements Resource {
 
 	public static function create3(width: Int, height: Int, depth: Int, format: TextureFormat, readable: Bool, contextId: Int): Image {
 		var image = new Image(readable);
-		image.format = format;
+		image.myFormat = format;
 		image.init3D(width, height, depth, getTextureFormat(format));
 		return image;
 	}
