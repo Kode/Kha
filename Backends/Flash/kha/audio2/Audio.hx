@@ -36,7 +36,7 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 		if (channel != null) channel.stop();
 	}
 	
-	public var length(get, null): Float;
+	public var length(get, never): Float;
 	
 	private function get_length(): Float {
 		return music.length / 1000.0;
@@ -64,7 +64,7 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 		return myVolume = value;
 	}
 	
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	private function get_finished(): Bool {
 		return !running;

@@ -26,13 +26,13 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
-	public static var maxSize(get, null): Int;
+	public static var maxSize(get, never): Int;
 
 	private static function get_maxSize(): Int {
 		return 0;
 	}
 
-	public static var nonPow2Supported(get, null): Bool;
+	public static var nonPow2Supported(get, never): Bool;
 
 	private static function get_nonPow2Supported(): Bool {
 		return false;
@@ -51,24 +51,24 @@ class Image implements Canvas implements Resource {
 	public function setMipmaps(mipmaps: Array<Image>): Void { }
 	public function setDepthStencilFrom(image: Image): Void { }
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void { }
-	public var width(get, null): Int;
+	public var width(get, never): Int;
 	private function get_width(): Int { return 0; }
-	public var height(get, null): Int;
+	public var height(get, never): Int;
 	private function get_height(): Int { return 0; }
-	public var depth(get, null): Int;
+	public var depth(get, never): Int;
 	private function get_depth(): Int { return 1; }
-	public var format(get, null): TextureFormat;
+	public var format(get, never): TextureFormat;
 	private function get_format(): TextureFormat { return TextureFormat.RGBA32; }
-	public var realWidth(get, null): Int;
+	public var realWidth(get, never): Int;
 	private function get_realWidth(): Int { return 0; }
-	public var realHeight(get, null): Int;
+	public var realHeight(get, never): Int;
 	private function get_realHeight(): Int { return 0; }
-	public var stride(get, null): Int;
+	public var stride(get, never): Int;
 	private function get_stride(): Int { return 0; }
-	public var g1(get, null): kha.graphics1.Graphics;
+	public var g1(get, never): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
-	public var g2(get, null): kha.graphics2.Graphics;
+	public var g2(get, never): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return null; }
-	public var g4(get, null): kha.graphics4.Graphics;
+	public var g4(get, never): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics { return null; }
 }

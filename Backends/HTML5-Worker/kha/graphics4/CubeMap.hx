@@ -19,8 +19,8 @@ class CubeMap implements Canvas implements Resource {
 		
 	}
 
-	public var width(get, null): Int;
-	public var height(get, null): Int;
+	public var width(get, never): Int;
+	public var height(get, never): Int;
 	
 	function get_width(): Int {
 		return 512;
@@ -30,9 +30,9 @@ class CubeMap implements Canvas implements Resource {
 		return 512;
 	}
 
-	public var g1(get, null): kha.graphics1.Graphics;
-	public var g2(get, null): kha.graphics2.Graphics;
-	public var g4(get, null): kha.graphics4.Graphics;
+	public var g1(get, never): kha.graphics1.Graphics;
+	public var g2(get, never): kha.graphics2.Graphics;
+	public var g4(get, never): kha.graphics4.Graphics;
 	
 	function get_g1(): kha.graphics1.Graphics {
 		return null;

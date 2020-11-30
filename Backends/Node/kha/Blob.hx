@@ -38,7 +38,7 @@ class Blob implements Resource {
 		return _fromBuffer(buffer.slice(start, start + length));
 	}
 	
-	public var length(get, null): Int;
+	public var length(get, never): Int;
 	
 	public function get_length(): Int {
 		return buffer.length;

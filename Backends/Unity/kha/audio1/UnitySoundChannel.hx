@@ -50,7 +50,7 @@ class UnitySoundChannel implements kha.audio1.AudioChannel {
 		}
 	}
 
-	public var length(get, null): Float;
+	public var length(get, never): Float;
 
 	public function get_length(): Float {
 		return clip.length;
@@ -76,7 +76,7 @@ class UnitySoundChannel implements kha.audio1.AudioChannel {
 		return source != null ? (source.volume = untyped __cs__("(float)value")) : 0;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 
 	public function get_finished(): Bool {
 		return source == null || !source.isPlaying;

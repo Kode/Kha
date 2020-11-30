@@ -23,8 +23,8 @@ class Sys {
 		return 0;
 	}
 	
-	public static var pixelWidth(get, null): Int;
-	public static var pixelHeight(get, null): Int;
+	public static var pixelWidth(get, never): Int;
+	public static var pixelHeight(get, never): Int;
 	
 	//@:functionCode('
 	//	return kha.psm.Painter.graphics.Screen.Width;

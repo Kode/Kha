@@ -63,7 +63,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		atend = true;
 	}
 
-	public var length(get, null): Float; // Seconds
+	public var length(get, never): Float; // Seconds
 
 	@:functionCode('
 		if (vorbis == NULL) return 0;
@@ -105,7 +105,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		return myVolume = value;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 
 	private function get_finished(): Bool {
 		return atend;

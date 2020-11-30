@@ -36,7 +36,7 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 		player.Stop();
 	}
 
-	public var length(get, null): Float;
+	public var length(get, never): Float;
 	
 	@:functionCode('
 		if (player.NaturalDuration.HasTimeSpan) return player.NaturalDuration.TimeSpan.TotalMilliseconds * 1000.0;
@@ -46,7 +46,7 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 		return 0;
 	}
 	
-	public var position(get, null): Float; // Seconds
+	public var position(get, never): Float; // Seconds
 	
 	@:functionCode('return Math.round(player.Position.TotalMilliseconds) * 1000.0;')
 	function get_position(): Float {
@@ -63,7 +63,7 @@ class WpfAudioChannel implements kha.audio1.AudioChannel {
 		return player.Volume = value;
 	}
 	
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	function get_finished(): Bool {
 		return hasFinished;

@@ -86,7 +86,7 @@ class SoundPoolChannel implements AudioChannel {
 		return volume;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	private function get_finished(): Bool {
 		return get_position() == length;

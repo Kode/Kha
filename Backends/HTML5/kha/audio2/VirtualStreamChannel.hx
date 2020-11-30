@@ -75,7 +75,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 		}
 	}
 
-	public var length(get, null): Float; // Seconds
+	public var length(get, never): Float; // Seconds
 
 	function get_length(): Float {
 		return aeChannel.length;
@@ -113,7 +113,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 		return aeChannel.volume = value;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 
 	function get_finished(): Bool {
 		if (SystemImpl.mobileAudioPlaying) {
