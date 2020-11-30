@@ -46,7 +46,7 @@ class SoundPoolChannel implements AudioChannel {
 	}
 
 	@:isVar
-	public var length(get, never): Float;
+	public var length(get, null): Float;
 
 	private function get_length(): Float {
 		return length;
