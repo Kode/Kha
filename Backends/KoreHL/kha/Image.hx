@@ -188,7 +188,7 @@ class Image implements Canvas implements Resource {
 		_renderTarget = null;
 	}
 
-	public var g1(get, null): kha.graphics1.Graphics;
+	public var g1(get, never): kha.graphics1.Graphics;
 
 	private function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
@@ -197,7 +197,7 @@ class Image implements Canvas implements Resource {
 		return graphics1;
 	}
 
-	public var g2(get, null): kha.graphics2.Graphics;
+	public var g2(get, never): kha.graphics2.Graphics;
 
 	private function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
@@ -206,7 +206,7 @@ class Image implements Canvas implements Resource {
 		return graphics2;
 	}
 
-	public var g4(get, null): kha.graphics4.Graphics;
+	public var g4(get, never): kha.graphics4.Graphics;
 
 	private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
@@ -215,13 +215,13 @@ class Image implements Canvas implements Resource {
 		return graphics4;
 	}
 
-	public static var maxSize(get, null): Int;
+	public static var maxSize(get, never): Int;
 
 	private static function get_maxSize(): Int {
 		return 4096;
 	}
 
-	public static var nonPow2Supported(get, null): Bool;
+	public static var nonPow2Supported(get, never): Bool;
 
 	private static function get_nonPow2Supported(): Bool {
 		return kore_non_pow2_textures_supported();
@@ -231,37 +231,37 @@ class Image implements Canvas implements Resource {
 		return kore_graphics_render_targets_inverted_y();
 	}
 
-	public var width(get, null): Int;
+	public var width(get, never): Int;
 	private function get_width(): Int {
 		return _texture != null ? kore_texture_get_width(_texture) : kore_render_target_get_width(_renderTarget);
 	}
 
-	public var height(get, null): Int;
+	public var height(get, never): Int;
 	private function get_height(): Int {
 		return _texture != null ? kore_texture_get_height(_texture) : kore_render_target_get_height(_renderTarget);
 	}
 
-	public var depth(get, null): Int;
+	public var depth(get, never): Int;
 	private function get_depth(): Int {
 		return 1;
 	}
 
-	public var format(get, null): TextureFormat;
+	public var format(get, never): TextureFormat;
 	private function get_format(): TextureFormat {
 		return myFormat;
 	}
 
-	public var realWidth(get, null): Int;
+	public var realWidth(get, never): Int;
 	private function get_realWidth(): Int {
 		return _texture != null ? kore_texture_get_real_width(_texture) : kore_render_target_get_real_width(_renderTarget);
 	}
 
-	public var realHeight(get, null): Int;
+	public var realHeight(get, never): Int;
 	private function get_realHeight(): Int {
 		return _texture != null ? kore_texture_get_real_height(_texture) : kore_render_target_get_real_height(_renderTarget);
 	}
 
-	public var stride(get, null): Int;
+	public var stride(get, never): Int;
 	private function get_stride(): Int {
 		return formatByteSize(myFormat) * width;
 	}

@@ -47,7 +47,7 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 	
-	public var g1(get, null): kha.graphics1.Graphics;
+	public var g1(get, never): kha.graphics1.Graphics;
 	
 	private function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
@@ -56,7 +56,7 @@ class Image implements Canvas implements Resource {
 		return graphics1;
 	}
 	
-	public var g2(get, null): kha.graphics2.Graphics;
+	public var g2(get, never): kha.graphics2.Graphics;
 	
 	@:functionCode('
 		painter.graphics = image.createGraphics();
@@ -73,10 +73,10 @@ class Image implements Canvas implements Resource {
 		return painter;
 	}
 	
-	public var g4(get, null): kha.graphics4.Graphics;
+	public var g4(get, never): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics { return null; }
 	
-	public var width(get, null): Int;
+	public var width(get, never): Int;
 	@:functionCode('
 		return image.getWidth(null);
 	')
@@ -84,7 +84,7 @@ class Image implements Canvas implements Resource {
 		return 0;
 	}
 	
-	public var height(get, null): Int;
+	public var height(get, never): Int;
 	@:functionCode('
 		return image.getHeight(null);
 	')
@@ -92,12 +92,12 @@ class Image implements Canvas implements Resource {
 		return 0;
 	}
 
-	public var depth(get, null): Int;
+	public var depth(get, never): Int;
 	private function get_depth(): Int {
 		return 1;
 	}
 
-	public var format(get, null): TextureFormat;
+	public var format(get, never): TextureFormat;
 	@:functionCode('
 		return image.getType();
 	')
@@ -105,17 +105,17 @@ class Image implements Canvas implements Resource {
 		return TextureFormat.RGBA32;
 	}
 	
-	public var realWidth(get, null): Int;
+	public var realWidth(get, never): Int;
 	private function get_realWidth(): Int {
 		return width;
 	}
 	
-	public var realHeight(get, null): Int;
+	public var realHeight(get, never): Int;
 	private function get_realHeight(): Int {
 		return height;
 	}
 
-	public var stride(get, null): Int;
+	public var stride(get, never): Int;
 	private function get_stride(): Int {
 		return realWidth * 4;
 	}
