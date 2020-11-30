@@ -38,7 +38,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 		}
 	}
 
-	public var length(get, null): Float; // Seconds
+	public var length(get, never): Float; // Seconds
 	
 	private function get_length(): Float {
 		if (Math.isFinite(element.duration)) {
@@ -69,7 +69,7 @@ class AEAudioChannel implements kha.audio1.AudioChannel {
 		return element.volume = value;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 
 	private function get_finished(): Bool {
 		return stopped || (!looping && position >= length);

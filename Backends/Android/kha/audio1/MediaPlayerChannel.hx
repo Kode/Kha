@@ -64,7 +64,7 @@ class MediaPlayerChannel implements AudioChannel {
 		}
 	}
 
-	public var length(get, null): Float;
+	public var length(get, never): Float;
 
 	private function get_length(): Float {
 		try {
@@ -113,7 +113,7 @@ class MediaPlayerChannel implements AudioChannel {
 		}
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	private function get_finished(): Bool {
 		return sound.ownedByMPC.playbackComplete;

@@ -17,7 +17,7 @@ class NodeAudioChannel implements AudioChannel {
 		
 	}
 
-	public var length(get, null): Float;
+	public var length(get, never): Float;
 	
 	private function get_length(): Float {
 		return 0;
@@ -43,7 +43,7 @@ class NodeAudioChannel implements AudioChannel {
 		return 1;
 	}
 	
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	private function get_finished(): Bool {
 		return true;

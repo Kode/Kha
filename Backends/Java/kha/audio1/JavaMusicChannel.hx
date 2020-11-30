@@ -20,7 +20,7 @@ class JavaMusicChannel implements kha.audio1.AudioChannel {
 	public function stop(): Void {
 		music.stop();
 	}
-	public var length(get, null): Int;
+	public var length(get, never): Int;
 	
 	private function get_length(): Int {
 		return 0;
@@ -46,7 +46,7 @@ class JavaMusicChannel implements kha.audio1.AudioChannel {
 		return 1;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 	
 	private function get_finished(): Bool {
 		return false;

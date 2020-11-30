@@ -24,19 +24,19 @@ class Font implements Resource {
 		mySize = size;
 	}
 	
-	public var name(get, null): String;
+	public var name(get, never): String;
 	
 	public function get_name(): String {
 		return myName;
 	}
 	
-	public var style(get, null): FontStyle;
+	public var style(get, never): FontStyle;
 	
 	public function get_style(): FontStyle {
 		return myStyle;
 	}
 	
-	public var size(get, null): Float;
+	public var size(get, never): Float;
 	
 	public function get_size(): Float {
 		return mySize;

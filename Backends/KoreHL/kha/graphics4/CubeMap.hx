@@ -86,8 +86,8 @@ class CubeMap implements Canvas implements Resource {
 	public function lock(level: Int = 0): Bytes { return null; }
 	public function unlock(): Void { }
 
-	public var width(get, null): Int;
-	public var height(get, null): Int;
+	public var width(get, never): Int;
+	public var height(get, never): Int;
 
 	public function get_width(): Int {
 		return _texture != null ? kore_cubemap_texture_get_width(_texture) : kore_cubemap_target_get_width(_renderTarget);
@@ -97,11 +97,11 @@ class CubeMap implements Canvas implements Resource {
 		return _texture != null ? kore_cubemap_texture_get_height(_texture) : kore_cubemap_target_get_height(_renderTarget);
 	}
 
-	public var g1(get, null): kha.graphics1.Graphics;
+	public var g1(get, never): kha.graphics1.Graphics;
 	private function get_g1(): kha.graphics1.Graphics { return null; }
-	public var g2(get, null): kha.graphics2.Graphics;
+	public var g2(get, never): kha.graphics2.Graphics;
 	private function get_g2(): kha.graphics2.Graphics { return null; }
-	public var g4(get, null): kha.graphics4.Graphics;
+	public var g4(get, never): kha.graphics4.Graphics;
 	private function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
 			graphics4 = new kha.korehl.graphics4.Graphics(this);

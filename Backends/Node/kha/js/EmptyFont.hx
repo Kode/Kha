@@ -14,19 +14,19 @@ class EmptyFont implements Font {
 		mySize = size;
 	}
 	
-	public var name(get, null): String;
+	public var name(get, never): String;
 	
 	private function get_name(): String {
 		return myName;
 	}
 	
-	public var style(get, null): FontStyle;
+	public var style(get, never): FontStyle;
 	
 	private function get_style(): FontStyle {
 		return myStyle;
 	}
 	
-	public var size(get, null): Float;
+	public var size(get, never): Float;
 	
 	private function get_size(): Float {
 		return mySize;

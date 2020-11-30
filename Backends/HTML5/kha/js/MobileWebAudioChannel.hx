@@ -64,7 +64,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		source.stop();
 	}
 
-	public var length(get, null): Float; // Seconds
+	public var length(get, never): Float; // Seconds
 	
 	private function get_length(): Float {
 		return source.buffer.duration;
@@ -92,7 +92,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		return gain.gain.value = value;
 	}
 
-	public var finished(get, null): Bool;
+	public var finished(get, never): Bool;
 
 	private function get_finished(): Bool {
 		return stopped;
