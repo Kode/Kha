@@ -112,6 +112,11 @@ class SystemImpl {
 		return "en";
 	}
 
+	@:functionCode('return ::String(Kore::System::languageEx());')
+	public static function getLanguageEx(): String {
+		return "en_US";
+	}
+
 	public static function requestShutdown(): Bool {
 		untyped __cpp__('Kore::System::stop()');
 		return true;

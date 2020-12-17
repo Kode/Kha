@@ -267,6 +267,12 @@ class System {
 		return SystemImpl.getLanguage();
 	}
 
+	public static var languageEx(get, never): String;
+
+	private static function get_languageEx(): String {
+		return SystemImpl.getLanguageEx();
+	}
+
   /**
 	 * Schedules the application to stop as soon as possible. This is not possible on all targets.
 	 * @return Returns true if the application can be stopped
