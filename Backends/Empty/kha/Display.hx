@@ -7,6 +7,8 @@ class Display {
 
 	}
 
+	public static function init(): Void {}
+
 	public static var primary(get, never): Display;
 
 	static function get_primary(): Display {

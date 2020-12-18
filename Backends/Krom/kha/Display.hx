@@ -1,7 +1,7 @@
 package kha;
 
 class Display {
-	static var displays: Array<Display> = [];
+	static var displays: Array<Display>;
 	var num: Int;
 	var isPrimary: Bool;
 	
@@ -10,9 +10,13 @@ class Display {
 		this.isPrimary = isPrimary;
 	}
 	
-	static function init(): Void {
-		for (i in 0...Krom.displayCount()) {
-			displays.push(new Display(i, Krom.displayIsPrimary(i)));
+	public static function init(): Void {
+		if (displays == null) {
+			// TODO: Krom.displayInit();
+			displays = [];
+			for (i in 0...Krom.displayCount()) {
+				displays.push(new Display(i, Krom.displayIsPrimary(i)));
+			}
 		}
 	}
 

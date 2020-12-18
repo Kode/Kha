@@ -1,7 +1,7 @@
 package kha;
 
 class Display {
-    static var displays: Array<Display> = [];
+    static var displays: Array<Display> = null;
     var num: Int;
     var isPrimary: Bool;
     
@@ -10,9 +10,13 @@ class Display {
         this.isPrimary = isPrimary;
     }
     
-    static function init(): Void {
-        for (i in 0...kore_display_count()) {
-            displays.push(new Display(i, kore_display_is_primary(i)));
+    public static function init(): Void {
+        if (displays == null) {
+            kore_display_init();
+            displays = [];
+            for (i in 0...kore_display_count()) {
+                displays.push(new Display(i, kore_display_is_primary(i)));
+            }
         }
     }
 
@@ -89,6 +93,7 @@ class Display {
         return [];
     }
 
+    @:hlNative("std", "kore_display_init") static function kore_display_init(): Int { return 0; }
     @:hlNative("std", "kore_display_count") static function kore_display_count(): Int { return 0; }
     @:hlNative("std", "kore_display_width") static function kore_display_width(index: Int): Int { return 0; }
     @:hlNative("std", "kore_display_height") static function kore_display_height(index: Int): Int { return 0; }

@@ -18,8 +18,14 @@ class Display {
 		return 0;
 	}
 
-	static function init() {
+	@:functionCode('Kore::Display::init();')
+	static function initKoreDisplay(): Void {
+
+	}
+
+	public static function init() {
 		if (displays == null) {
+			initKoreDisplay();
 			displays = [];
 			for (i in 0...count()) {
 				displays.push(new Display(i));

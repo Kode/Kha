@@ -2,6 +2,10 @@
 #include <Kore/Display.h>
 #include <Kore/System.h>
 
+extern "C" int hl_kore_display_init() {
+	return Kore::Display::init();
+}
+
 extern "C" int hl_kore_display_count() {
 	return Kore::Display::count();
 }
