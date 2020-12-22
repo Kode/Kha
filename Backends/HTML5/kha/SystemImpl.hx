@@ -214,7 +214,7 @@ class SystemImpl {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
+	private static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		#if !kha_no_keyboard
 		keyboard = new Keyboard();
 		#end
@@ -567,9 +567,11 @@ class SystemImpl {
 		function detectRefreshRate(timestamp) {
 			var window: Dynamic = Browser.window;
 
-			if (initialTimestamp == 0) initialTimestamp = timestamp;
+			if (initialTimestamp == 0) {
+				initialTimestamp = timestamp;
+			}
 			var timeDifferential = (timestamp - prevTimestamp) - initialTimestamp;
-			prevTimestamp = (timestamp - initialTimestamp);
+			prevTimestamp = timestamp - initialTimestamp;
 			
 			if (timeDifferential != 0) {
 				timeDiffs.push(timeDifferential);
