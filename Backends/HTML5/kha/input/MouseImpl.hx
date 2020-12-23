@@ -56,7 +56,20 @@ class MouseImpl extends kha.input.Mouse {
 		case NotAllowed: "not-allowed";
 		case Wait: "wait";
 		case Crosshair: "crosshair";
-		case Custom(path):'url(\'$path\'),auto';
+		case Custom(image):
+			var canvas = js.Browser.document.createCanvasElement();
+			canvas.width = image.width;
+			canvas.height = image.height;
+			if(Std.isOfType(image,WebGLImage)){
+				canvas.getContext2d().drawImage(cast(image,WebGLImage).image,0,0);
+			}
+			else {
+				canvas.getContext2d().drawImage(cast(image,CanvasImage).image,0,0);
+			}
+			var dataURL = canvas.toDataURL("image/png");
+			dataURL = StringTools.replace(dataURL,"/^data:image\\/(png|jpg);base64,/", "");
+
+			'url(\'$dataURL\'),auto';
 		default: "default";
 		}
 	}
