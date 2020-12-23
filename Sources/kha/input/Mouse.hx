@@ -24,6 +24,7 @@ enum MouseCursor {
 	NotAllowed;
 	Wait;
 	Crosshair;
+	Custom(path:String);
 }
 
 @:allow(kha.SystemImpl)

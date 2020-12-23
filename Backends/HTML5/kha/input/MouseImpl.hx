@@ -56,6 +56,7 @@ class MouseImpl extends kha.input.Mouse {
 		case NotAllowed: "not-allowed";
 		case Wait: "wait";
 		case Crosshair: "crosshair";
+		case Custom(path):'url(\'$path\'),auto';
 		default: "default";
 		}
 	}
