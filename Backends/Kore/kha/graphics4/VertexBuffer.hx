@@ -90,6 +90,7 @@ class VertexBuffer {
 	public function lockInt16(?start: Int, ?count: Int): Int16Array {
 		if (start == null) start = 0;
 		if (count == null) count = this.count();
+		lastLockCount = count;
 		if (dataInt16 == null) dataInt16 = new Int16Array();
 		return lockInt16Private(start, count);
 	}
