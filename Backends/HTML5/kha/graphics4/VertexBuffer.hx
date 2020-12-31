@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import kha.arrays.Float32Array;
 import js.html.webgl.GL;
 import kha.arrays.ByteArray;
 import kha.graphics4.Usage;
@@ -101,7 +102,7 @@ class VertexBuffer {
 		}
 
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(0 * stride(), mySize * stride()).data(), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(0 * stride(), mySize * stride()), usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 
 	public function delete(): Void {
@@ -109,7 +110,7 @@ class VertexBuffer {
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	
-	public function lock(?start: Int, ?count: Int): ByteArray {
+	public function lock(?start: Int, ?count: Int): Float32Array {
 		lockStart = start != null ? start : 0; 
 		lockEnd = count != null ? start + count : mySize; 
 		return _data.subarray(lockStart * stride(), lockEnd * stride());
