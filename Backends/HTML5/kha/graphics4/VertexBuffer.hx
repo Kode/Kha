@@ -1,14 +1,13 @@
 package kha.graphics4;
 
 import js.html.webgl.GL;
-import kha.arrays.Float32Array;
-import kha.arrays.Int16Array;
+import kha.arrays.ByteArray;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 
 class VertexBuffer {
 	private var buffer: Dynamic;
-	public var _data: Float32Array;
+	public var _data: ByteArray;
 	private var mySize: Int;
 	private var myStride: Int;
 	private var sizes: Array<Int>;
@@ -42,7 +41,7 @@ class VertexBuffer {
 		}
 	
 		buffer = SystemImpl.gl.createBuffer();
-		_data = new Float32Array(Std.int(vertexCount * myStride / 4));
+		_data = ByteArray.make(vertexCount * myStride);
 		
 		sizes = new Array<Int>();
 		offsets = new Array<Int>();
@@ -110,20 +109,16 @@ class VertexBuffer {
 		SystemImpl.gl.deleteBuffer(buffer);
 	}
 	
-	public function lock(?start: Int, ?count: Int): Float32Array {
+	public function lock(?start: Int, ?count: Int): ByteArray {
 		lockStart = start != null ? start : 0; 
 		lockEnd = count != null ? start + count : mySize; 
 		return _data.subarray(lockStart * stride(), lockEnd * stride());
-	}
-
-	public function lockInt16(?start: Int, ?count: Int): Int16Array {
-		return new Int16Array(untyped lock(start, count).buffer);
 	}
 	
 	public function unlock(?count: Int): Void {
 		if (count != null) lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()).data());
+		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
 	}
 	
 	public function stride(): Int {

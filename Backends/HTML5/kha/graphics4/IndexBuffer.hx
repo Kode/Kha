@@ -26,7 +26,7 @@ class IndexBuffer {
 	
 	public function lock(?start: Int, ?count: Int): Uint32Array {
 		lockStart = start != null ? start : 0; 
-		lockEnd = count != null ? start + count : mySize; 
+		lockEnd = count != null ? start + count : mySize;
 		return _data.subarray(lockStart, lockEnd);
 	}
 	
@@ -34,7 +34,7 @@ class IndexBuffer {
 		if(count != null) lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		var data = _data.subarray(lockStart, lockEnd);
-		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new js.lib.Uint16Array(untyped data.data()) : data.data();
+		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new js.lib.Uint16Array(data) : data;
 		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, glData, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 	
