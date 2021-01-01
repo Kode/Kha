@@ -177,7 +177,6 @@ class Scheduler {
 	public static function executeFrame(): Void {
 		var now: Float = realTime() - startTime;
 		var delta = now - lastTime;
-		lastTime = now;
 		
 		var frameEnd: Float = lastFrameEnd;
 		
@@ -196,6 +195,10 @@ class Scheduler {
 						// this is optimized not to run at exact speed
 						// but to run as fluid as possible
 						var frames = Math.round(delta / onedifhz);
+						if (frames < 1) {
+							return;
+						}
+
 						var realdif = frames * onedifhz;
 
 						delta = realdif;
@@ -233,11 +236,13 @@ class Scheduler {
 			else {
 				frameEnd += delta;
 			}
-			
+
+			lastTime = now;
+
 			if (!stopped) { // Stop simulation time
 				lastFrameEnd = frameEnd;
 			}
-			
+
 			// Extend endpoint by paused time (individually paused tasks)
 			for (pausedTask in pausedTimeTasks) {
 				pausedTask.next += delta;
