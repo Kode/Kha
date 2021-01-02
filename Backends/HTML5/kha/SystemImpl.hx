@@ -55,6 +55,7 @@ class SystemImpl {
 	private static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	static var window: Window;
+	public static var estimatedRefreshRate: Int = 60;
 
 	private static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error("Error: " + message);
@@ -99,7 +100,7 @@ class SystemImpl {
 
 	private static function initSecondStep(callback: Window -> Void): Void {
 		init2(options.window.width, options.window.height);
-		callback(window);
+		initAnimate(callback);
 	}
 
 	public static function initSensor(): Void {
@@ -213,7 +214,7 @@ class SystemImpl {
 	private static var lastFirstTouchX: Int = 0;
 	private static var lastFirstTouchY: Int = 0;
 
-	public static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
+	private static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		#if !kha_no_keyboard
 		keyboard = new Keyboard();
 		#end
@@ -424,7 +425,59 @@ class SystemImpl {
 
 		kha.vr.VrInterface.instance = new VrInterface();
 
-		Scheduler.start();
+		// Autofocus
+		canvas.focus();
+
+		#if kha_disable_context_menu
+		canvas.oncontextmenu = function (event: Dynamic) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
+		#end
+
+		canvas.onmousedown = mouseDown;
+		canvas.onmousemove = mouseMove;
+		if(keyboard != null) {
+			canvas.onkeydown = keyDown;
+			canvas.onkeyup = keyUp;
+			canvas.onkeypress = keyPress;
+		}
+		canvas.onblur = onBlur;
+		canvas.onfocus = onFocus;
+		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
+		canvas.onmouseleave = mouseLeave;
+
+		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
+		canvas.addEventListener("touchstart", touchDown, false);
+		canvas.addEventListener("touchend", touchUp, false);
+		canvas.addEventListener("touchmove", touchMove, false);
+		canvas.addEventListener("touchcancel", touchCancel, false);
+
+#if kha_debug_html5
+		Browser.document.addEventListener('dragover', function( event ) {
+			event.preventDefault();
+		});
+
+		Browser.document.addEventListener('drop', function( event: js.html.DragEvent ) {
+			event.preventDefault();
+
+			if (event.dataTransfer != null && event.dataTransfer.files != null) {
+				for (file in event.dataTransfer.files) {
+					// https://developer.mozilla.org/en-US/docs/Web/API/File
+					//  - use mozFullPath or webkitRelativePath?
+					System.dropFiles(Syntax.code('file.path'));
+				}
+			}
+		});
+#end
+
+		Browser.window.addEventListener("unload", function () {
+			System.shutdown();
+		});
+	}
+
+	private static function initAnimate(callback: Window -> Void) {
+		var canvas: CanvasElement = getCanvasElement();
 
 		var window: Dynamic = Browser.window;
 		var requestAnimationFrame = window.requestAnimationFrame;
@@ -476,58 +529,96 @@ class SystemImpl {
 			}
 		}
 
-		if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
-		else requestAnimationFrame(animate);
+		var initialTimestamp: Int = 0;
+		var prevTimestamp: Int = 0;
+		var currentSamples: Int = 0;
+		var timeDiffs: Array<Int> = [];
 
-		// Autofocus
-		canvas.focus();
+		var SAMPLE_COUNT: Int = 90;
+		var MEAN_TRUNCATION_CUTOFF: Float = 1 / 3;
 
-		#if kha_disable_context_menu
-		canvas.oncontextmenu = function (event: Dynamic) {
-			event.stopPropagation();
-			event.preventDefault();
-		}
-		#end
+		function roundToKnownRefreshRate(hz:Int): Int {
+			var hz30 = {low: 27, high: 33, target: 30};
+			var hz60 = {low: 57, high: 63, target: 60};
+			var hz75 = {low: 72, high: 78, target: 75};
+			var hz90 = {low: 87, high: 93, target: 90};
+			var hz120 = {low: 117, high: 123, target: 120};
+			var hz144 = {low: 141, high: 147, target: 144};
+			var hz240 = {low: 237, high: 243, target: 240};
+			var hz340 = {low: 337, high: 343, target: 340};
+			var hz360 = {low: 357, high: 363, target: 360};
 
-		canvas.onmousedown = mouseDown;
-		canvas.onmousemove = mouseMove;
-		if(keyboard != null) {
-			canvas.onkeydown = keyDown;
-			canvas.onkeyup = keyUp;
-			canvas.onkeypress = keyPress;
-		}
-		canvas.onblur = onBlur;
-		canvas.onfocus = onFocus;
-		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
-		canvas.onmouseleave = mouseLeave;
+			var rates = [hz30, hz60, hz75, hz90, hz120, hz144, hz240, hz340, hz360];
 
-		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
-		canvas.addEventListener("touchstart", touchDown, false);
-		canvas.addEventListener("touchend", touchUp, false);
-		canvas.addEventListener("touchmove", touchMove, false);
-		canvas.addEventListener("touchcancel", touchCancel, false);
-
-#if kha_debug_html5
-		Browser.document.addEventListener('dragover', function( event ) {
-			event.preventDefault();
-		});
-
-		Browser.document.addEventListener('drop', function( event: js.html.DragEvent ) {
-			event.preventDefault();
-
-			if (event.dataTransfer != null && event.dataTransfer.files != null) {
-				for (file in event.dataTransfer.files) {
-					// https://developer.mozilla.org/en-US/docs/Web/API/File
-					//  - use mozFullPath or webkitRelativePath?
-					System.dropFiles(Syntax.code('file.path'));
+			var nearestHz = hz;
+			for (rate in rates) {
+				if (hz >= rate.low && hz <= rate.high) {
+					nearestHz = rate.target;
 				}
 			}
-		});
-#end
 
-		Browser.window.addEventListener("unload", function () {
-			System.shutdown();
-		});
+			return nearestHz;
+		}
+
+		//HTML5 has no real way to query the actual monitor refresh rate
+		//The only thing that can be done is attempt to measure the interval between requestAnimationFrame calls
+		//Without requestAnimationFrame we're out of luck
+		//We try and make a best guess while nothing intensive is happening
+		function detectRefreshRate(timestamp) {
+			var window: Dynamic = Browser.window;
+
+			if (initialTimestamp == 0) {
+				initialTimestamp = timestamp;
+			}
+			var timeDifferential = (timestamp - prevTimestamp) - initialTimestamp;
+			prevTimestamp = timestamp - initialTimestamp;
+			
+			if (timeDifferential != 0) {
+				timeDiffs.push(timeDifferential);
+			}
+
+			if (currentSamples < SAMPLE_COUNT) {
+				currentSamples++;
+
+				if (requestAnimationFrame == null) window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
+				else requestAnimationFrame(detectRefreshRate);
+			}
+			else {
+				//Remove extreme frametime values before averaging
+				{
+					haxe.ds.ArraySort.sort(timeDiffs, (a, b) -> {
+						a - b;
+					});
+					
+					var truncatedTimeDiffs: Array<Int> = [];
+					var cutoff = Math.round(timeDiffs.length * MEAN_TRUNCATION_CUTOFF);
+					for (i in cutoff...timeDiffs.length - cutoff) {
+						truncatedTimeDiffs.push(timeDiffs[i]);
+					}
+
+					var total = 0;
+					for (time in truncatedTimeDiffs) {
+						total += time;
+					}
+
+					var avg = total / truncatedTimeDiffs.length;
+					//We may have an accurate frequency, but it might be possible to be off the actual refresh rate by a few hz
+					//Manually round to common refresh rates as well, just for security's sake
+					estimatedRefreshRate = roundToKnownRefreshRate(Math.round(1000 / avg));
+				}
+
+				Scheduler.start();
+
+				if (requestAnimationFrame == null) window.setTimeout(animate, 1000.0 / 60.0);
+				else requestAnimationFrame(animate);
+
+				callback(SystemImpl.window);
+			}
+		}
+
+		//Run through refresh rate detection first and then start animating
+		if (requestAnimationFrame == null) window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
+		else requestAnimationFrame(detectRefreshRate);
 	}
 
 	public static function lockMouse(): Void {

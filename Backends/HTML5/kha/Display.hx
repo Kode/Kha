@@ -62,7 +62,7 @@ class Display {
 	public var frequency(get, never): Int;
 
 	function get_frequency(): Int {
-		return 60;
+		return SystemImpl.estimatedRefreshRate;
 	}
 
 	public var pixelsPerInch(get, never): Int;
