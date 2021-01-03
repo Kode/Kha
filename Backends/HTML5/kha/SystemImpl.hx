@@ -1239,7 +1239,7 @@ class SystemImpl {
 				return sysGamepads[index].id;
 		}
 
-		return "unkown";
+		return "unknown";
 	}
 
 	public static function getGamepadVendor(index: Int): String {
