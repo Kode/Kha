@@ -122,10 +122,7 @@ class SystemImpl {
 	private static var keyboard: Keyboard;
 	private static var mouse: kha.input.Mouse;
 	private static var pen: kha.input.Pen;
-	private static var gamepad1: Gamepad;
-	private static var gamepad2: Gamepad;
-	private static var gamepad3: Gamepad;
-	private static var gamepad4: Gamepad;
+	private static var gamepads: Array<Gamepad>;
 	private static var surface: Surface;
 	private static var mouseLockListeners: Array<Void->Void>;
 
@@ -166,10 +163,11 @@ class SystemImpl {
 		keyboard = new kha.kore.Keyboard();
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
-		gamepad1 = new Gamepad(0);
-		gamepad2 = new Gamepad(1);
-		gamepad3 = new Gamepad(2);
-		gamepad4 = new Gamepad(3);
+		gamepads = new Array<Gamepad>();
+		for (i in 0...4) {
+			gamepads[i] = new Gamepad(i);
+			gamepads[i].connected = checkGamepadConnected(i);
+		}
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
@@ -296,16 +294,18 @@ class SystemImpl {
 		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
 
-		if (gamepad1.connected && !checkGamepadConnected()) {
-			Gamepad.sendDisconnectEvent(0);
-		}
-		else if (!gamepad1.connected && checkGamepadConnected()) {
-			Gamepad.sendConnectEvent(0);
+		for (i in 0...4) {
+			if (gamepads[i].connected && !checkGamepadConnected(i)) {
+				Gamepad.sendDisconnectEvent(i);
+			}
+			else if (!gamepads[i].connected && checkGamepadConnected(i)) {
+				Gamepad.sendConnectEvent(i);
+			}
 		}
 	}
 
-	@:functionCode('return Kore::Gamepad::get(0)->connected();')
-	static function checkGamepadConnected(): Bool {
+	@:functionCode('return Kore::Gamepad::get(i)->connected();')
+	static function checkGamepadConnected(i: Int): Bool {
 		return true;
 	}
 
@@ -365,35 +365,35 @@ class SystemImpl {
 	}
 
 	public static function gamepad1Axis(axis: Int, value: Float): Void {
-		gamepad1.sendAxisEvent(axis, value);
+		gamepads[0].sendAxisEvent(axis, value);
 	}
 
 	public static function gamepad1Button(button: Int, value: Float): Void {
-		gamepad1.sendButtonEvent(button, value);
+		gamepads[0].sendButtonEvent(button, value);
 	}
 
 	public static function gamepad2Axis(axis: Int, value: Float): Void {
-		gamepad2.sendAxisEvent(axis, value);
+		gamepads[1].sendAxisEvent(axis, value);
 	}
 
 	public static function gamepad2Button(button: Int, value: Float): Void {
-		gamepad2.sendButtonEvent(button, value);
+		gamepads[1].sendButtonEvent(button, value);
 	}
 
 	public static function gamepad3Axis(axis: Int, value: Float): Void {
-		gamepad3.sendAxisEvent(axis, value);
+		gamepads[2].sendAxisEvent(axis, value);
 	}
 
 	public static function gamepad3Button(button: Int, value: Float): Void {
-		gamepad3.sendButtonEvent(button, value);
+		gamepads[2].sendButtonEvent(button, value);
 	}
 
 	public static function gamepad4Axis(axis: Int, value: Float): Void {
-		gamepad4.sendAxisEvent(axis, value);
+		gamepads[3].sendAxisEvent(axis, value);
 	}
 
 	public static function gamepad4Button(button: Int, value: Float): Void {
-		gamepad4.sendButtonEvent(button, value);
+		gamepads[3].sendButtonEvent(button, value);
 	}
 
 	public static function touchStart(index: Int, x: Int, y: Int): Void {
