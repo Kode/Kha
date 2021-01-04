@@ -175,7 +175,8 @@ class Scheduler {
 	}
 	
 	public static function executeFrame(): Void {
-		var now: Float = realTime() - startTime;
+		var real = realTime();
+		var now: Float = real - startTime;
 		var delta = now - lastTime;
 		
 		var frameEnd: Float = lastFrameEnd;
@@ -186,6 +187,7 @@ class Scheduler {
 				
 				if (delta > maxframetime) {
 					startTime += delta - maxframetime;
+					now = real - startTime;
 					delta = maxframetime;
 					frameEnd += delta;
 				}
