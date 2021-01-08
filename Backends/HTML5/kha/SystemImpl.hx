@@ -80,6 +80,10 @@ class SystemImpl {
 		Browser.window.setTimeout(function () {
 			initSecondStep(callback);
 		}, 1000);
+
+		chrome = true;
+		mobileAudioPlaying = true;
+
 		#else
 		mobile = isMobile();
 		ios = isIOS();
@@ -87,12 +91,7 @@ class SystemImpl {
 		firefox = isFirefox();
 		ie = isIE();
 
-		if (mobile || chrome || firefox) {
-			mobileAudioPlaying = false;
-		}
-		else {
-			mobileAudioPlaying = true;
-		}
+		mobileAudioPlaying = !mobile && !chrome && !firefox;
 
 		initSecondStep(callback);
 		#end
@@ -1247,7 +1246,9 @@ class SystemImpl {
 	}
 
 	private static function getGamepads(): Array<js.html.Gamepad> {
-		if (chrome && kha.vr.VrInterface.instance.IsVrEnabled()) return null; // Chrome crashes if navigator.getGamepads() is called when using VR
+		if (chrome && kha.vr.VrInterface.instance != null && kha.vr.VrInterface.instance.IsVrEnabled()) {
+			return null; // Chrome crashes if navigator.getGamepads() is called when using VR
+		}
 
 		if (untyped navigator.getGamepads) {
 			return js.Browser.navigator.getGamepads();
