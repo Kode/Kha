@@ -374,7 +374,7 @@ void run_kore() {
 	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second;
 	Kore::System::start();
 	Kore::log(Kore::Info, "Application stopped");
-#if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
+#if !defined(KORE_TIZEN) && !defined(KORE_HTML5)
 	Kore::threadsQuit();
 	Kore::System::stop();
 #endif
