@@ -48,11 +48,11 @@ typedef struct {
 	bool error;
 } kha_file_reference_t;
 
-void kha_loader_init();
+void kha_loader_init(void);
 kha_index_t kha_loader_load_blob(const char *filename);
 kha_index_t kha_loader_load_image(const char *filename, bool readable);
 kha_index_t kha_loader_load_sound(const char *filename);
-kha_file_reference_t kha_loader_get_file();
+kha_file_reference_t kha_loader_get_file(void);
 
 // cleanup temporary memory allocations
 void kha_loader_cleanup_blob(kha_blob_t blob);
