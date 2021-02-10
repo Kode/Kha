@@ -2,8 +2,8 @@
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git
 	branch = master
-[submodule "Backends/Kore/khacpp"]
-	path = Backends/Kore/khacpp
+[submodule "Backends/Kinc-hxcpp/khacpp"]
+	path = Backends/Kinc-hxcpp/khacpp
 	url = https://github.com/Kode/khacpp.git
 	branch = master
 [submodule "Tools/haxe"]
