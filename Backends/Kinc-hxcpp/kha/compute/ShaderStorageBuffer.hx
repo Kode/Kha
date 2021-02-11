@@ -3,8 +3,8 @@ package kha.compute;
 import kha.graphics4.VertexData;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Compute/Compute.h>
+#include <kinc/pch.h>
+#include <kinc/compute/compute.h>
 ')
 
 @:headerClassCode("

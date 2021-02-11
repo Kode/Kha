@@ -1,11 +1,11 @@
 package kha.compute;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Compute/Compute.h>
+#include <kinc/pch.h>
+#include <kinc/compute/compute.h>
 ')
 
-@:headerClassCode("Kore::ComputeConstantLocation location;")
+@:headerClassCode("kinc_compute_constant_location location;")
 class ConstantLocation {
 	public function new() {
 		

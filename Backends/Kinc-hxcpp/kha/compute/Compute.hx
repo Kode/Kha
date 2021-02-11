@@ -14,37 +14,37 @@ import kha.graphics4.TextureFilter;
 import kha.graphics4.MipMapFilter;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Compute/Compute.h>
+#include <kinc/pch.h>
+#include <kinc/compute/compute.h>
 ')
 
 class Compute {
 	public static function setBool(location: ConstantLocation, value: Bool) {
-		untyped __cpp__('Kore::Compute::setBool(location->location, value);');
+		untyped __cpp__('kinc_compute_set_bool(location->location, value);');
 	}
 
 	public static function setInt(location: ConstantLocation, value: Int) {
-		untyped __cpp__('Kore::Compute::setInt(location->location, value);');
+		untyped __cpp__('kinc_compute_set_int(location->location, value);');
 	}
 
 	public static function setFloat(location: ConstantLocation, value: FastFloat) {
-		untyped __cpp__('Kore::Compute::setFloat(location->location, value);');
+		untyped __cpp__('kinc_compute_set_float(location->location, value);');
 	}
 
 	public static function setFloat2(location: ConstantLocation, value1: FastFloat, value2: FastFloat) {
-		untyped __cpp__('Kore::Compute::setFloat2(location->location, value1, value2);');
+		untyped __cpp__('kinc_compute_set_float2(location->location, value1, value2);');
 	}
 
 	public static function setFloat3(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat) {
-		untyped __cpp__('Kore::Compute::setFloat3(location->location, value1, value2, value3);');
+		untyped __cpp__('kinc_compute_set_float3(location->location, value1, value2, value3);');
 	}
 
 	public static function setFloat4(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat) {
-		untyped __cpp__('Kore::Compute::setFloat4(location->location, value1, value2, value3, value4);');
+		untyped __cpp__('kinc_compute_set_float4(location->location, value1, value2, value3, value4);');
 	}
 
 	public static function setFloats(location: ConstantLocation, values: Float32Array) {
-		untyped __cpp__('Kore::Compute::setFloats(location->location, values->self.data, values->self.length());');
+		untyped __cpp__('kinc_compute_set_floats(location->location, values->self.data, values->self.length());');
 	}
 
 	public static function setVector2(location: ConstantLocation, value: FastVector2): Void {
@@ -68,23 +68,23 @@ class Compute {
 	}
 
 	@:functionCode('
-		Kore::mat4 value;
-		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20); value.Set(0, 3, matrix->_30);
-		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21); value.Set(1, 3, matrix->_31);
-		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22); value.Set(2, 3, matrix->_32);
-		value.Set(3, 0, matrix->_03); value.Set(3, 1, matrix->_13); value.Set(3, 2, matrix->_23); value.Set(3, 3, matrix->_33);
-		Kore::Compute::setMatrix(location->location, value);
+		kinc_matrix4x4_t value;
+		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 0, 1, matrix->_10); kinc_matrix4x4_set(&value, 0, 2, matrix->_20); kinc_matrix4x4_set(&value, 0, 3, matrix->_30);
+		kinc_matrix4x4_set(&value, 1, 0, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 1, 2, matrix->_21); kinc_matrix4x4_set(&value, 1, 3, matrix->_31);
+		kinc_matrix4x4_set(&value, 2, 0, matrix->_02); kinc_matrix4x4_set(&value, 2, 1, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 2, 3, matrix->_32);
+		kinc_matrix4x4_set(&value, 3, 0, matrix->_03); kinc_matrix4x4_set(&value, 3, 1, matrix->_13); kinc_matrix4x4_set(&value, 3, 2, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
+		kinc_compute_set_matrix4(location->location, &value);
 	')
 	private static function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {
 
 	}
 
 	@:functionCode('
-		Kore::mat3 value;
-		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20);
-		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21);
-		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22);
-		Kore::Compute::setMatrix(location->location, value);
+		kinc_matrix3x3_t value;
+		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 0, 1, matrix->_10); kinc_matrix3x3_set(&value, 0, 2, matrix->_20);
+		kinc_matrix3x3_set(&value, 1, 0, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 1, 2, matrix->_21);
+		kinc_matrix3x3_set(&value, 2, 0, matrix->_02); kinc_matrix3x3_set(&value, 2, 1, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
+		kinc_compute_set_matrix3(location->location, &value);
 	')
 	private static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {
 
@@ -93,7 +93,7 @@ class Compute {
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
 		untyped __cpp__('
 			#ifdef KORE_OPENGL
-			Kore::Compute::setBuffer(buffer->buffer, index);
+			kinc_compute_set_buffer(buffer->buffer, index);
 			#endif
 		');
 	}
@@ -103,8 +103,8 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (texture->texture != nullptr) Kore::Compute::setTexture(unit->unit, texture->texture, (Kore::Compute::Access)access);
-		else Kore::Compute::setTexture(unit->unit, texture->renderTarget, (Kore::Compute::Access)access);
+		if (texture->texture != nullptr) kinc_compute_set_texture(unit->unit, &texture->texture->kincTexture, (kinc_compute_access_t)access);
+		else kinc_compute_set_render_target(unit->unit, &texture->renderTarget->kincRenderTarget, (kinc_compute_access_t)access);
 	')
 	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
 
@@ -115,15 +115,15 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (texture->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, texture->texture);
-		else Kore::Compute::setSampledTexture(unit->unit, texture->renderTarget);
+		if (texture->texture != nullptr) kinc_compute_set_sampled_texture(unit->unit, &texture->texture->kincTexture);
+		else kinc_compute_set_sampled_render_target(unit->unit, &texture->renderTarget->kincRenderTarget);
 	')
 	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
 
 	}
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
-		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, texture->renderTarget);");
+		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &texture->renderTarget->kincRenderTarget);");
 	}
 
 	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
@@ -131,47 +131,47 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (cubeMap->texture != nullptr) Kore::Compute::setSampledTexture(unit->unit, cubeMap->texture);
-		else Kore::Compute::setSampledTexture(unit->unit, cubeMap->renderTarget);
+		if (cubeMap->texture != nullptr) kinc_compute_set_sampled_texture(unit->unit, &cubeMap->texture->kincTexture);
+		else kinc_compute_set_sampled_render_target(unit->unit, &cubeMap->renderTarget->kincRenderTarget);
 	')
 	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
 
 	}
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
-		untyped __cpp__("Kore::Compute::setSampledDepthTexture(unit->unit, cubeMap->renderTarget);");
+		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &cubeMap->renderTarget->kincRenderTarget);");
 	}
 
 	@:functionCode('
-		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
-		Kore::Compute::setTextureAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
+		kinc_compute_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
+		kinc_compute_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
 	')
 	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
-		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
-		Kore::Compute::setTexture3DAddressing(unit->unit, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wWrap);
+		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
+		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
+		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_W, (kinc_g4_texture_addressing_t)wWrap);
 	')
 	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Compute::setTextureMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
-		Kore::Compute::setTextureMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
-		Kore::Compute::setTextureMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+		kinc_compute_set_texture_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
+		kinc_compute_set_texture_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
+		kinc_compute_set_texture_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
 	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Compute::setTexture3DMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
-		Kore::Compute::setTexture3DMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
-		Kore::Compute::setTexture3DMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+		kinc_compute_set_texture3d_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
+		kinc_compute_set_texture3d_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
+		kinc_compute_set_texture3d_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
 	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
 
@@ -188,10 +188,10 @@ class Compute {
 	}
 
 	public static function setShader(shader: Shader) {
-		untyped __cpp__('Kore::Compute::setShader(shader->shader);');
+		untyped __cpp__('kinc_compute_set_shader(&shader->shader);');
 	}
 
 	public static function compute(x: Int, y: Int, z: Int) {
-		untyped __cpp__('Kore::Compute::compute(x, y, z);');
+		untyped __cpp__('kinc_compute(x, y, z);');
 	}
 }

@@ -4,22 +4,22 @@ import haxe.io.Bytes;
 import kha.Blob;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Compute/Compute.h>
+#include <kinc/pch.h>
+#include <kinc/compute/compute.h>
 ')
 
-@:headerClassCode("Kore::ComputeShader* shader;")
+@:headerClassCode("kinc_compute_shader shader;")
 class Shader {
 	public function new(sources: Array<Blob>, files: Array<String>) {
 		init(sources[0], files[0]);
 	}
 	
 	private function init(source: Blob, file: String): Void {
-		untyped __cpp__('shader = new Kore::ComputeShader(source->bytes->b->Pointer(), source->get_length());');
+		untyped __cpp__('kinc_compute_shader_init(&shader, source->bytes->b->Pointer(), source->get_length());');
 	}
 	
 	public function delete(): Void {
-		untyped __cpp__('delete shader; shader = nullptr;');
+		untyped __cpp__('kinc_compute_shader_destroy(&shader);');
 	}
 	
 	public function getConstantLocation(name: String): ConstantLocation {
@@ -29,7 +29,7 @@ class Shader {
 	}
 	
 	@:functionCode('
-		location->location = shader->getConstantLocation(name.c_str());
+		location->location = kinc_compute_shader_get_constant_location(&shader, name.c_str());
 	')
 	private function initConstantLocation(location: ConstantLocation, name: String): Void {
 		
@@ -42,7 +42,7 @@ class Shader {
 	}
 	
 	@:functionCode('
-		unit->unit = shader->getTextureUnit(name.c_str());
+		unit->unit = kinc_compute_shader_get_texture_unit(&shader, name.c_str());
 	')
 	private function initTextureUnit(unit: TextureUnit, name: String): Void {
 		
