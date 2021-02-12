@@ -8,12 +8,30 @@ import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
-#include <Kore/Graphics4/TextureArray.h>
+#include <kinc/pch.h>
+#include <kinc/graphics4/rendertarget.h>
+#include <kinc/graphics4/texture.h>
+#include <kinc/graphics4/texturearray.h>
+
+#include <assert.h>
+
+enum KhaImageType {
+	KhaImageTypeNone,
+	KhaImageTypeTexture,
+	KhaImageTypeRenderTarget,
+	KhaImageTypeTextureArray
+};
 ')
 
-@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget; Kore::Graphics4::TextureArray* textureArray; Kore::Graphics4::Image** textureArrayTextures;")
+@:headerClassCode('
+	KhaImageType imageType;
+	int originalWidth;
+	int originalHeight;
+	kinc_g4_texture_t texture;
+	kinc_g4_render_target_t renderTarget;
+	kinc_g4_texture_array_t textureArray;
+	kinc_g4_texture_t *textureArrayTextures;
+')
 class Image implements Canvas implements Resource {
 	private var myFormat: TextureFormat;
 	private var readable: Bool;
@@ -42,9 +60,9 @@ class Image implements Canvas implements Resource {
 	}
 	
 	/**
-	 * Textures in array mast be readable!
+	 * The provided images need to be readable.
 	 */
-	public static function createArray(images:Array<Image>, format: TextureFormat = null):Image {
+	public static function createArray(images: Array<Image>, format: TextureFormat = null): Image {
 		var image = new Image(false);
 		image.myFormat = (format == null) ? TextureFormat.RGBA32 : format;
 		initArrayTexture(image, images);
@@ -54,11 +72,11 @@ class Image implements Canvas implements Resource {
 	@:functionCode('
 		source->textureArrayTextures = new Kore::Graphics4::Image*[images->length];
 		for (unsigned i = 0; i < images->length; ++i) {
-			source->textureArrayTextures[i] = images->__get(i).StaticCast<  ::kha::Image >()->texture;
+			source->textureArrayTextures[i] = images->__get(i).StaticCast<::kha::Image>()->texture;
 		}
 		source->textureArray = new Kore::Graphics4::TextureArray(source->textureArrayTextures, images->length);
 	')
-	private static function initArrayTexture(source:Image, images:Array<Image>):Void {
+	static function initArrayTexture(source: Image, images: Array<Image>): Void {
 		
 	}
 	
@@ -70,7 +88,15 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, (Kore::Graphics1::Image::Format)format, readable);')
+	@:functionCode('
+		kinc_image_t image;
+		kinc_image_init(&image, bytes.GetPtr()->GetBase(), width, height, (kinc_image_format_t)format);
+		kinc_g4_texture_init_from_image(&texture, &image);
+		kinc_image_destroy(&image);
+		imageType = KhaImageTypeTexture;
+		originalWidth = width;
+		originalHeight = height;
+	')
 	private function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
 		
 	}
@@ -83,7 +109,15 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), width, height, depth, (Kore::Graphics1::Image::Format)format, readable);')
+	@:functionCode('
+		kinc_image_t image;
+		kinc_image_init3d(&image, bytes.GetPtr()->GetBase(), width, height, depth, (kinc_image_format_t)format);
+		kinc_g4_texture_init_from_image3d(&texture, &image);
+		kinc_image_destroy(&image);
+		imageType = KhaImageTypeTexture;
+		originalWidth = width;
+		originalHeight = height;
+	')
 	private function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
 		
 	}
@@ -96,7 +130,18 @@ class Image implements Canvas implements Resource {
 		doneCallback(image);
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str(), readable);')
+	@:functionCode('
+		size_t size = kinc_image_size_from_encoded_bytes(bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str());
+		void* data = malloc(size);
+		kinc_image_t image;
+		kinc_image_init_from_encoded_bytes(&image, data, bytes.GetPtr()->GetBase(), bytes.GetPtr()->length, format.c_str());
+		originalWidth = image.width;
+		originalHeight = image.height;
+		kinc_g4_texture_init_from_image(&texture, &image);
+		kinc_image_destroy(&image);
+		free(data);
+		imageType = KhaImageTypeTexture;
+	')
 	private function initFromEncodedBytes(bytes: BytesData, format: String): Void {
 		
 	}
@@ -107,7 +152,7 @@ class Image implements Canvas implements Resource {
 		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
 	}
 
-	@:functionCode("texture = nullptr; renderTarget = nullptr; textureArray = nullptr; textureArrayTextures = nullptr;")
+	@:functionCode("imageType = KhaImageTypeNone; originalWidth = 0; originalHeight = 0; textureArrayTextures = nullptr;")
 	function nullify() {
 
 	}
@@ -193,22 +238,38 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	@:functionCode('renderTarget = new Kore::Graphics4::RenderTarget(width, height, depthBufferBits, antiAliasing, (Kore::Graphics4::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
+	@:functionCode('
+		kinc_g4_render_target_init(&renderTarget, width, height, depthBufferBits, antiAliasing, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);
+		imageType = KhaImageTypeRenderTarget;
+		originalWidth = width;
+		originalHeight = height;
+	')
 	private function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {
 
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
+	@:functionCode('
+		kinc_g4_texture_init(&texture, width, height, (kinc_image_format_t)format);
+		imageType = KhaImageTypeTexture;
+		originalWidth = width;
+		originalHeight = height;
+	')
 	private function init(width: Int, height: Int, format: Int): Void {
 
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(width, height, depth, (Kore::Graphics4::Image::Format)format, readable); renderTarget = nullptr;')
+	@:functionCode('
+		kinc_g4_texture_init3d(&texture, width, height, depth, (kinc_image_format_t)format);
+		imageType = KhaImageTypeTexture;
+		originalWidth = width;
+		originalHeight = height;
+	')
 	private function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
 
 	}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
+	// TODO
+	//@:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
 	private function initVideo(video: kha.kore.Video): Void {
 
 	}
@@ -278,37 +339,37 @@ class Image implements Canvas implements Resource {
 	}
 
 	public var width(get, never): Int;
-	@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
+	@:functionCode("return originalWidth;")
 	private function get_width(): Int {
 		return 0;
 	}
 
 	public var height(get, never): Int;
-	@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
+	@:functionCode("return originalHeight;")
 	private function get_height(): Int {
 		return 0;
 	}
 
 	public var depth(get, never): Int;
-	@:functionCode("if (texture != nullptr) return texture->depth; else return 0;")
+	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_depth; else return 0;")
 	private function get_depth(): Int {
 		return 0;
 	}
 
 	public var format(get, never): TextureFormat;
-	@:functionCode("if (texture != nullptr) return texture->format; else return 0;")
+	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.format; else return 0;")
 	private function get_format(): TextureFormat {
 		return TextureFormat.RGBA32;
 	}
 
 	public var realWidth(get, never): Int;
-	@:functionCode("if (texture != nullptr) return texture->texWidth; else return renderTarget->texWidth;")
+	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_width; else if (imageType == KhaImageTypeRenderTarget) return renderTarget.width; else return 0;")
 	private function get_realWidth(): Int {
 		return 0;
 	}
 
 	public var realHeight(get, never): Int;
-	@:functionCode("if (texture != nullptr) return texture->texHeight; else return renderTarget->texHeight;")
+	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_height; else if (imageType == KhaImageTypeRenderTarget) return renderTarget.height; else return 0;")
 	private function get_realHeight(): Int {
 		return 0;
 	}
@@ -327,7 +388,23 @@ class Image implements Canvas implements Resource {
 		return Color.fromValue(atInternal(x, y));
 	}
 
-	@:functionCode("delete texture; texture = nullptr; delete renderTarget; renderTarget = nullptr; delete textureArray; textureArray = nullptr; delete[] textureArrayTextures; textureArrayTextures = nullptr;")
+	@:functionCode('
+		if (imageType == KhaImageTypeTexture) {
+			kinc_g4_texture_destroy(&texture);
+		}
+		else if (imageType == KhaImageTypeRenderTarget) {
+			kinc_g4_render_target_destroy(&renderTarget);
+		}
+		else if (imageType == KhaImageTypeTextureArray) {
+			kinc_g4_texture_array_destroy(&textureArray);
+			free(textureArrayTextures);
+			textureArrayTextures = NULL;
+		}
+		else {
+			assert(false);
+		}
+		imageType = KhaImageTypeNone;
+	')
 	public function unload(): Void {
 
 	}
@@ -335,7 +412,7 @@ class Image implements Canvas implements Resource {
 	private var bytes: Bytes = null;
 
 	@:functionCode('
-		int size = texture-> sizeOf(texture->format) * texture->width * texture->height;
+		int size = kinc_image_format_sizeof(texture.format) * originalWidth * originalHeight;
 		this->bytes = ::haxe::io::Bytes_obj::alloc(size);
 		return this->bytes;
 	')
@@ -344,30 +421,30 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode('
-		Kore::u8* b = bytes->b->Pointer();
-		Kore::u8* tex = texture->lock();
-		int size = texture->sizeOf(texture->format);
-		int stride = texture->stride();
-		for (int y = 0; y < texture->height; ++y) {
-			for (int x = 0; x < texture->width; ++x) {
+		uint8_t *b = bytes->b->Pointer();
+		uint8_t *tex = kinc_g4_texture_lock(&texture);
+		int size = kinc_image_format_sizeof(texture.format);
+		int stride = kinc_g4_texture_stride(&texture);
+		for (int y = 0; y < texture.tex_height; ++y) {
+			for (int x = 0; x < texture.tex_width; ++x) {
 #ifdef KORE_DIRECT3D
-				if (texture->format == Kore::Graphics4::Image::RGBA32) {
+				if (texture.format == KINC_IMAGE_FORMAT_RGBA32) {
 					//RBGA->BGRA
-					tex[y * stride + x * size + 0] = b[(y * texture->width + x) * size + 2];
-					tex[y * stride + x * size + 1] = b[(y * texture->width + x) * size + 1];
-					tex[y * stride + x * size + 2] = b[(y * texture->width + x) * size + 0];
-					tex[y * stride + x * size + 3] = b[(y * texture->width + x) * size + 3];
+					tex[y * stride + x * size + 0] = b[(y * originalWidth + x) * size + 2];
+					tex[y * stride + x * size + 1] = b[(y * originalWidth + x) * size + 1];
+					tex[y * stride + x * size + 2] = b[(y * originalWidth + x) * size + 0];
+					tex[y * stride + x * size + 3] = b[(y * originalWidth + x) * size + 3];
 				}
 				else
 #endif
 				{
 					for (int i = 0; i < size; ++i) {
-						tex[y * stride + x * size + i] = b[(y * texture->width + x) * size + i];
+						tex[y * stride + x * size + i] = b[(y * originalWidth + x) * size + i];
 					}
 				}
 			}
 		}
-		texture->unlock();
+		kinc_g4_texture_unlock(&texture);
 	')
 	public function unlock(): Void {
 		bytes = null;
@@ -379,14 +456,14 @@ class Image implements Canvas implements Resource {
 	private var pixelsAllocated: Bool = false;
 
 	@:functionCode('
-		if (renderTarget == nullptr) return nullptr;
+		if (imageType != KhaImageTypeRenderTarget) return NULL;
 		if (!this->pixelsAllocated) {
-			int size = formatSize * renderTarget->width * renderTarget->height;
+			int size = formatSize * renderTarget.width * renderTarget.height;
 			this->pixels = ::haxe::io::Bytes_obj::alloc(size);
 			this->pixelsAllocated = true;
 		}
-		Kore::u8* b = this->pixels->b->Pointer();
-		renderTarget->getPixels(b);
+		uint8_t *b = this->pixels->b->Pointer();
+		kinc_g4_render_target_get_pixels(&renderTarget, b);
 		return this->pixels;
 	')
 	private function getPixelsInternal(formatSize: Int): Bytes {
@@ -411,7 +488,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function generateMipmaps(levels: Int): Void {
-		untyped __cpp__("texture != nullptr ? texture->generateMipmaps(levels) : renderTarget->generateMipmaps(levels)");
+		untyped __cpp__("if (imageType == KhaImageTypeTexture) kinc_g4_texture_generate_mipmaps(&texture, levels); else if (imageType == KhaImageTypeRenderTarget) kinc_g4_render_target_generate_mipmaps(&renderTarget, levels)");
 	}
 
 	public function setMipmaps(mipmaps: Array<Image>): Void {
@@ -423,17 +500,17 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function setDepthStencilFrom(image: Image): Void {
-		untyped __cpp__("renderTarget->setDepthStencilFrom(image->renderTarget)");
+		untyped __cpp__("kinc_g4_render_target_set_depth_stencil_from(&renderTarget, &image->renderTarget)");
 	}
 
-	@:functionCode("if (texture != nullptr) texture->clear(x, y, z, width, height, depth, color);")
+	@:functionCode("if (imageType == KhaImageTypeTexture) kinc_g4_texture_clear(&texture, x, y, z, width, height, depth, color);")
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
 		
 	}
 
 	public var stride(get, never): Int;
 
-	@:functionCode("return texture->stride();")
+	@:functionCode("return kinc_g4_texture_stride(&texture);")
 	function get_stride(): Int {
 		return 0;
 	}

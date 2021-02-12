@@ -3,11 +3,11 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
+#include <kinc/pch.h>
+#include <kinc/graphics4/rendertarget.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::Texture* texture; Kore::Graphics4::RenderTarget* renderTarget;")
+@:headerClassCode("kinc_g4_render_target_t renderTarget;")
 class CubeMap implements Canvas implements Resource {
 
 	private var format: TextureFormat;
@@ -29,7 +29,7 @@ class CubeMap implements Canvas implements Resource {
 		return cubeMap;
 	}
 
-	@:functionCode('renderTarget = new Kore::Graphics4::RenderTarget(cubeMapSize, depthBufferBits, false, (Kore::Graphics4::RenderTargetFormat)format, stencilBufferBits, contextId); texture = nullptr;')
+	@:functionCode('kinc_g4_render_target_init_cube(&renderTarget, cubeMapSize, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);')
 	private function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
 
 	}
@@ -101,12 +101,12 @@ class CubeMap implements Canvas implements Resource {
 	public var width(get, never): Int;
 	public var height(get, never): Int;
 
-	@:functionCode("if (texture != nullptr) return texture->width; else return renderTarget->width;")
+	@:functionCode("return renderTarget.width;")
 	public function get_width(): Int {
 		return 0;
 	}
 
-	@:functionCode("if (texture != nullptr) return texture->height; else return renderTarget->height;")
+	@:functionCode("return renderTarget.height;")
 	public function get_height(): Int {
 		return 0;
 	}

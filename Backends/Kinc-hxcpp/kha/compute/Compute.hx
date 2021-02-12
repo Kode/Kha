@@ -103,8 +103,8 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (texture->texture != nullptr) kinc_compute_set_texture(unit->unit, &texture->texture->kincTexture, (kinc_compute_access_t)access);
-		else kinc_compute_set_render_target(unit->unit, &texture->renderTarget->kincRenderTarget, (kinc_compute_access_t)access);
+		if (texture->imageType == KhaImageTypeTexture) kinc_compute_set_texture(unit->unit, &texture->texture, (kinc_compute_access_t)access);
+		else if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_render_target(unit->unit, &texture->renderTarget, (kinc_compute_access_t)access);
 	')
 	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
 
@@ -115,15 +115,15 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (texture->texture != nullptr) kinc_compute_set_sampled_texture(unit->unit, &texture->texture->kincTexture);
-		else kinc_compute_set_sampled_render_target(unit->unit, &texture->renderTarget->kincRenderTarget);
+		if (texture->imageType == KhaImageTypeTexture) kinc_compute_set_sampled_texture(unit->unit, &texture->texture);
+		else if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_sampled_render_target(unit->unit, &texture->renderTarget);
 	')
 	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
 
 	}
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
-		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &texture->renderTarget->kincRenderTarget);");
+		untyped __cpp__("if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_sampled_depth_from_render_target(unit->unit, &texture->renderTarget);");
 	}
 
 	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
@@ -131,15 +131,14 @@ class Compute {
 	}
 
 	@:functionCode('
-		if (cubeMap->texture != nullptr) kinc_compute_set_sampled_texture(unit->unit, &cubeMap->texture->kincTexture);
-		else kinc_compute_set_sampled_render_target(unit->unit, &cubeMap->renderTarget->kincRenderTarget);
+		kinc_compute_set_sampled_render_target(unit->unit, &cubeMap->renderTarget);
 	')
 	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
 
 	}
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
-		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &cubeMap->renderTarget->kincRenderTarget);");
+		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &cubeMap->renderTarget);");
 	}
 
 	@:functionCode('

@@ -185,6 +185,9 @@ class LoaderImpl {
 					else {
 						::kha::Image image = createEmptyImage(file.data.image.readable, file.data.image.image.format == KINC_IMAGE_FORMAT_RGBA128);
 						image->texture = new Kore::Graphics4::Texture(file.data.image.image.data, file.data.image.image.width, file.data.image.image.height, (Kore::Graphics1::Image::Format)file.data.image.image.format, file.data.image.readable);
+						image->imageType = KhaImageTypeTexture;
+						image->originalWidth = file.data.image.image.width;
+						image->originalHeight = file.data.image.image.height;
 						imageLoaded(file.index, image);
 					}
 					break;
