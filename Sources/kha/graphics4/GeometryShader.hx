@@ -9,12 +9,8 @@ extern class GeometryShader {
 }
 #else
 class GeometryShader {
-	public function new(sources: Array<Blob>) {
+	public function new(sources: Array<Blob>) {}
 
-	}
-
-	public function delete(): Void {
-
-	}
+	public function delete(): Void {}
 }
 #end

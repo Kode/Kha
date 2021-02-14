@@ -9,12 +9,8 @@ extern class TessellationEvaluationShader {
 }
 #else
 class TessellationEvaluationShader {
-	public function new(sources: Array<Blob>, files: Array<String>) {
+	public function new(sources: Array<Blob>, files: Array<String>) {}
 
-	}
-
-	public function delete(): Void {
-
-	}
+	public function delete(): Void {}
 }
 #end

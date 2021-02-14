@@ -5,10 +5,11 @@ import haxe.io.Bytes;
 
 class BytesBlob implements Resource {
 	static inline var bufferSize: Int = 2000;
+
 	public var bytes: Bytes;
 
 	@:allow(kha.LoaderImpl)
-	private function new(bytes: Bytes) {
+	function new(bytes: Bytes) {
 		this.bytes = bytes;
 	}
 
@@ -27,7 +28,7 @@ class BytesBlob implements Resource {
 	public var length(get, null): Int;
 
 	@:keep
-	public function get_length(): Int {
+	function get_length(): Int {
 		return bytes.length;
 	}
 
@@ -51,23 +52,23 @@ class BytesBlob implements Resource {
 
 	public function readU16BE(position: Int): Int {
 		var first = bytes.get(position + 0);
-		var second  = bytes.get(position + 1);
+		var second = bytes.get(position + 1);
 		position += 2;
 		return first * 256 + second;
 	}
 
 	public function readU16LE(position: Int): Int {
 		var first = bytes.get(position + 0);
-		var second  = bytes.get(position + 1);
+		var second = bytes.get(position + 1);
 		position += 2;
 		return second * 256 + first;
 	}
 
 	public function readU32LE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
-		var third  = bytes.get(position + 1);
+		var third = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
-		var first  = bytes.get(position + 3);
+		var first = bytes.get(position + 3);
 		position += 4;
 
 		return fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
@@ -75,9 +76,9 @@ class BytesBlob implements Resource {
 
 	public function readU32BE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
-		var third  = bytes.get(position + 1);
+		var third = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
-		var first  = bytes.get(position + 3);
+		var first = bytes.get(position + 3);
 		position += 4;
 
 		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
@@ -85,45 +86,52 @@ class BytesBlob implements Resource {
 
 	public function readS16BE(position: Int): Int {
 		var first = bytes.get(position + 0);
-		var second  = bytes.get(position + 1);
+		var second = bytes.get(position + 1);
 		position += 2;
 		var sign = (first & 0x80) == 0 ? 1 : -1;
 		first = first & 0x7F;
-		if (sign == -1) return -0x7fff + first * 256 + second;
-		else return first * 256 + second;
+		if (sign == -1)
+			return -0x7fff + first * 256 + second;
+		else
+			return first * 256 + second;
 	}
 
 	public function readS16LE(position: Int): Int {
 		var first = bytes.get(position + 0);
-		var second  = bytes.get(position + 1);
+		var second = bytes.get(position + 1);
 		var sign = (second & 0x80) == 0 ? 1 : -1;
 		second = second & 0x7F;
 		position += 2;
-		if (sign == -1) return -0x7fff + second * 256 + first;
-		else return second * 256 + first;
+		if (sign == -1)
+			return -0x7fff + second * 256 + first;
+		else
+			return second * 256 + first;
 	}
 
 	public function readS32LE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
-		var third  = bytes.get(position + 1);
+		var third = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
-		var first  = bytes.get(position + 3);
+		var first = bytes.get(position + 3);
 		var sign = (first & 0x80) == 0 ? 1 : -1;
 		first = first & 0x7F;
 		position += 4;
-		if (sign == -1) return -0x7fffffff + fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
-		else return fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
+		if (sign == -1)
+			return -0x7fffffff + fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
+		else
+			return fourth + third * 256 + second * 256 * 256 + first * 256 * 256 * 256;
 	}
 
 	public function readS32BE(position: Int): Int {
 		var fourth = bytes.get(position + 0);
-		var third  = bytes.get(position + 1);
+		var third = bytes.get(position + 1);
 		var second = bytes.get(position + 2);
-		var first  = bytes.get(position + 3);
+		var first = bytes.get(position + 3);
 		var sign = (fourth & 0x80) == 0 ? 1 : -1;
 		fourth = fourth & 0x7F;
 		position += 4;
-		if (sign == -1) return -0x7fffffff + first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
+		if (sign == -1)
+			return -0x7fffffff + first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
 		return first + second * 256 + third * 256 * 256 + fourth * 256 * 256 * 256;
 	}
 
@@ -135,18 +143,21 @@ class BytesBlob implements Resource {
 		return readF32(readS32BE(position));
 	}
 
-	private static function readF32(i: Int): Float {
+	static function readF32(i: Int): Float {
 		var sign: Float = ((i & 0x80000000) == 0) ? 1 : -1;
 		var exp: Int = ((i >> 23) & 0xFF);
 		var man: Int = (i & 0x7FFFFF);
 		switch (exp) {
 			case 0:
-				//zero, do nothing, ignore negative zero and subnormals
+				// zero, do nothing, ignore negative zero and subnormals
 				return 0.0;
 			case 0xFF:
-				if (man != 0) return Math.NaN;
-				else if (sign > 0) return Math.POSITIVE_INFINITY;
-				else return Math.NEGATIVE_INFINITY;
+				if (man != 0)
+					return Math.NaN;
+				else if (sign > 0)
+					return Math.POSITIVE_INFINITY;
+				else
+					return Math.NEGATIVE_INFINITY;
 			default:
 				return sign * ((man + 0x800000) / 8388608.0) * Math.pow(2, exp - 127);
 		}
@@ -156,7 +167,7 @@ class BytesBlob implements Resource {
 		return bytes.toString();
 	}
 
-	private static function bit(value: Int, position: Int): Bool {
+	static function bit(value: Int, position: Int): Bool {
 		var b = (value >>> position) & 1 == 1;
 		if (b) {
 			var a = 3;
@@ -172,7 +183,8 @@ class BytesBlob implements Resource {
 
 	static function toText(chars: Vector<Int>, length: Int): String {
 		var value = "";
-		for (i in 0...length) value += String.fromCharCode(chars[i]);
+		for (i in 0...length)
+			value += String.fromCharCode(chars[i]);
 		return value;
 	}
 

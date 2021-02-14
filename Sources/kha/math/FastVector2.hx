@@ -20,13 +20,14 @@ class FastVector2 {
 		this.y = v.y;
 	}
 
-	private inline function get_length(): FastFloat {
+	inline function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y);
 	}
 
-	private inline function set_length(length: FastFloat): FastFloat {
+	inline function set_length(length: FastFloat): FastFloat {
 		var currentLength = get_length();
-		if (currentLength == 0) return 0;
+		if (currentLength == 0)
+			return 0;
 		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;
@@ -65,7 +66,7 @@ class FastVector2 {
 	}
 
 	@:extern public inline function angle(v: FastVector2): FastFloat {
-		return Math.atan2(y,x) - Math.atan2(v.y,v.x);
+		return Math.atan2(y, x) - Math.atan2(v.y, v.x);
 	}
 
 	public function toString() {

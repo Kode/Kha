@@ -30,7 +30,8 @@ class Pen {
 	/**
 	 * Creates event handlers from passed functions like `notify` function, but only for window with `windowId:Int` id argument. The windows are not supported by all the targets.
 	 */
-	public function notifyWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void, moveListener: Int->Int->Float->Void): Void {
+	public function notifyWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void,
+			moveListener: Int->Int->Float->Void): Void {
 		if (downListener != null) {
 			if (windowDownListeners == null) {
 				windowDownListeners = [];
@@ -65,7 +66,8 @@ class Pen {
 	/**
 	 * Removes event handlers for `windowId:Int` from the passed functions that were passed to `notifyWindowed` function.
 	 */
-	public function removeWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void, moveListener: Int->Int->Float->Void): Void {
+	public function removeWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void,
+			moveListener: Int->Int->Float->Void): Void {
 		if (downListener != null && windowDownListeners != null) {
 			if (windowId < windowDownListeners.length) {
 				windowDownListeners[windowId].remove(downListener);
@@ -85,16 +87,17 @@ class Pen {
 		}
 	}
 
-	private static var instance: Pen;
+	static var instance: Pen;
+
 	var windowDownListeners: Array<Array<Int->Int->Float->Void>>;
 	var windowUpListeners: Array<Array<Int->Int->Float->Void>>;
 	var windowMoveListeners: Array<Array<Int->Int->Float->Void>>;
 
-	private function new() {
+	function new() {
 		instance = this;
 	}
-	
-	private function sendDownEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+
+	function sendDownEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
 		if (windowDownListeners != null) {
 			for (listener in windowDownListeners[windowId]) {
 				listener(x, y, pressure);
@@ -102,7 +105,7 @@ class Pen {
 		}
 	}
 
-	private function sendUpEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+	function sendUpEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
 		if (windowUpListeners != null) {
 			for (listener in windowUpListeners[windowId]) {
 				listener(x, y, pressure);
@@ -110,7 +113,7 @@ class Pen {
 		}
 	}
 
-	private function sendMoveEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+	function sendMoveEvent(windowId: Int, x: Int, y: Int, pressure: Float): Void {
 		if (windowMoveListeners != null) {
 			for (listener in windowMoveListeners[windowId]) {
 				listener(x, y, pressure);

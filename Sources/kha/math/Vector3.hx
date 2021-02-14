@@ -19,13 +19,14 @@ class Vector3 {
 		this.z = v.z;
 	}
 
-	private inline function get_length(): Float {
+	inline function get_length(): Float {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 
-	private function set_length(length: Float): Float {
+	function set_length(length: Float): Float {
 		var currentLength = get_length();
-		if (currentLength == 0) return 0;
+		if (currentLength == 0)
+			return 0;
 		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;

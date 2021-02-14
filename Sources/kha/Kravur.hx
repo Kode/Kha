@@ -7,9 +7,7 @@ import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
 
 class AlignedQuad {
-	public function new() {
-
-	}
+	public function new() {}
 
 	// top-left
 	public var x0: Float;
@@ -27,13 +25,15 @@ class AlignedQuad {
 }
 
 class KravurImage {
-	private var mySize: Float;
+	var mySize: Float;
 
-	private var chars: Vector<Stbtt_bakedchar>;
-	private var texture: Image;
+	var chars: Vector<Stbtt_bakedchar>;
+	var texture: Image;
+
 	public var width: Int;
 	public var height: Int;
-	private var baseline: Float;
+
+	var baseline: Float;
 
 	public static var charBlocks: Array<Int>;
 
@@ -49,10 +49,11 @@ class KravurImage {
 		texture = Image.create(width, height, TextureFormat.L8);
 		var bytes = texture.lock();
 		var pos: Int = 0;
-		for (y in 0...height) for (x in 0...width) {
-			bytes.set(pos, pixels.readU8(pos));
-			++pos;
-		}
+		for (y in 0...height)
+			for (x in 0...width) {
+				bytes.set(pos, pixels.readU8(pos));
+				++pos;
+			}
 		texture.unlock();
 	}
 
@@ -61,11 +62,13 @@ class KravurImage {
 	}
 
 	public function getBakedQuad(q: AlignedQuad, char_index: Int, xpos: Float, ypos: Float): AlignedQuad {
-		if (char_index >= chars.length) return null;
+		if (char_index >= chars.length)
+			return null;
 		var ipw: Float = 1.0 / width;
 		var iph: Float = 1.0 / height;
 		var b = chars[char_index];
-		if (b == null) return null;
+		if (b == null)
+			return null;
 		var round_x: Int = Math.round(xpos + b.xoff);
 		var round_y: Int = Math.round(ypos + b.yoff);
 
@@ -84,18 +87,22 @@ class KravurImage {
 		return q;
 	}
 
-	private function getCharWidth(charIndex: Int): Float {
-		if (chars.length == 0) return 0;
+	function getCharWidth(charIndex: Int): Float {
+		if (chars.length == 0)
+			return 0;
 		var offset = charBlocks[0];
-		if (charIndex < offset) return chars[0].xadvance;
+		if (charIndex < offset)
+			return chars[0].xadvance;
 
-		for (i in 1...Std.int(charBlocks.length/2)) {
-			var prevEnd = charBlocks[i*2-1];
-			var start = charBlocks[i*2];
-			if (charIndex > start-1) offset += start-1 - prevEnd;
+		for (i in 1...Std.int(charBlocks.length / 2)) {
+			var prevEnd = charBlocks[i * 2 - 1];
+			var start = charBlocks[i * 2];
+			if (charIndex > start - 1)
+				offset += start - 1 - prevEnd;
 		}
 
-		if (charIndex - offset >= chars.length) return chars[0].xadvance;
+		if (charIndex - offset >= chars.length)
+			return chars[0].xadvance;
 		return chars[charIndex - offset].xadvance;
 	}
 
@@ -127,11 +134,10 @@ class KravurImage {
 class Kravur implements Resource {
 	// Do not put static data in Kravur because it is overwritten
 	// when <canvas> is used - but it's still used by the overwriting class.
-
-	private var oldGlyphs: Array<Int>;
-	private var blob: Blob;
-	private var images: Map<Int, KravurImage> = new Map();
-	private var fontIndex: Int;
+	var oldGlyphs: Array<Int>;
+	var blob: Blob;
+	var images: Map<Int, KravurImage> = new Map();
+	var fontIndex: Int;
 
 	public function new(blob: Blob, fontIndex: Int = 0) {
 		this.blob = blob;
@@ -155,7 +161,9 @@ class Kravur implements Resource {
 					KravurImage.charBlocks.push(glyphs[i - 1]);
 					KravurImage.charBlocks.push(glyphs[i]);
 					nextChar = glyphs[i] + 1;
-				} else nextChar++;
+				}
+				else
+					nextChar++;
 			}
 			KravurImage.charBlocks.push(glyphs[glyphs.length - 1]);
 		}
@@ -177,8 +185,10 @@ class Kravur implements Resource {
 			}
 			var status: Int = -1;
 			while (status <= 0) {
-				if (height < width) height *= 2;
-				else width *= 2;
+				if (height < width)
+					height *= 2;
+				else
+					width *= 2;
 				pixels = Blob.alloc(width * height);
 				status = StbTruetype.stbtt_BakeFontBitmap(blob, offset, fontSize, pixels, width, height, glyphs, baked);
 			}

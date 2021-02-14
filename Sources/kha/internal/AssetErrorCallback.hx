@@ -1,3 +1,3 @@
 package kha.internal;
 
-typedef AssetErrorCallback = AssetError -> Void;
+typedef AssetErrorCallback = AssetError->Void;

@@ -6,10 +6,10 @@ import haxe.macro.Expr;
 
 class EntityBuilder {
 	public static var nextId: Int = 0;
-	
+
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
-		
+
 		var isBaseEntity = false;
 		for (i in Context.getLocalClass().get().interfaces) {
 			var intf = i.t.get();
@@ -18,25 +18,21 @@ class EntityBuilder {
 				break;
 			}
 		}
-		
-		var receive = macro {
-			
-		};
-		
-		var send = macro {
-			
-		};
-		
+
+		var receive = macro {};
+
+		var send = macro {};
+
 		if (!isBaseEntity) {
 			receive = macro {
 				offset += super._receive(offset, bytes);
 			};
-			
+
 			send = macro {
 				offset += super._send(offset, bytes);
 			};
 		}
-		
+
 		var index: Int = 0;
 		for (field in fields) {
 			var replicated = false;
@@ -46,61 +42,62 @@ class EntityBuilder {
 					break;
 				}
 			}
-			if (!replicated) continue;
-			
+			if (!replicated)
+				continue;
+
 			switch (field.kind) {
-			case FVar(t, e):
-				var fieldname = field.name;
-				switch (t) {
-				case TPath(p):
-					switch (p.name) {
-					case "Int":
-						send = macro {
-							$send;
-							bytes.setInt32(offset + $v { index }, this.$fieldname);
-						};
-						receive = macro {
-							$receive;
-							this.$fieldname = bytes.getInt32(offset + $v { index } );
-						};
-						index += 4;
-					case "Float":
-						send = macro {
-							$send;
-							bytes.setDouble(offset + $v { index }, this.$fieldname);
-						};
-						receive = macro {
-							$receive;
-							this.$fieldname = bytes.getDouble(offset + $v { index } );
-						};
-						index += 8;
-					case "Bool":
-						send = macro {
-							$send;
-							bytes.set(offset + $v { index }, this.$fieldname ? 1 : 0);
-						};
-						receive = macro {
-							$receive;
-							this.$fieldname = bytes.get(offset + $v { index } ) == 1 ? true : false;
-						};
-						index += 1;
+				case FVar(t, e):
+					var fieldname = field.name;
+					switch (t) {
+						case TPath(p):
+							switch (p.name) {
+								case "Int":
+									send = macro {
+										$send;
+										bytes.setInt32(offset + $v{index}, this.$fieldname);
+									};
+									receive = macro {
+										$receive;
+										this.$fieldname = bytes.getInt32(offset + $v{index});
+									};
+									index += 4;
+								case "Float":
+									send = macro {
+										$send;
+										bytes.setDouble(offset + $v{index}, this.$fieldname);
+									};
+									receive = macro {
+										$receive;
+										this.$fieldname = bytes.getDouble(offset + $v{index});
+									};
+									index += 8;
+								case "Bool":
+									send = macro {
+										$send;
+										bytes.set(offset + $v{index}, this.$fieldname ? 1 : 0);
+									};
+									receive = macro {
+										$receive;
+										this.$fieldname = bytes.get(offset + $v{index}) == 1 ? true : false;
+									};
+									index += 1;
+							}
+						default:
 					}
 				default:
-				}
-			default:
 			}
 		}
-		
+
 		send = macro {
 			$send;
-			return $v { index };
+			return $v{index};
 		};
-		
+
 		receive = macro {
 			$receive;
-			return $v { index };
+			return $v{index};
 		};
-		
+
 		fields.push({
 			name: "_send",
 			doc: null,
@@ -110,20 +107,24 @@ class EntityBuilder {
 				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
 				expr: send,
-				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
+				args: [
 					{
-					value: null,
-					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-					opt: null,
-					name: "bytes"}]
+						value: null,
+						type: Context.toComplexType(Context.getType("Int")),
+						opt: null,
+						name: "offset"
+					},
+					{
+						value: null,
+						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+						opt: null,
+						name: "bytes"
+					}
+				]
 			}),
 			pos: Context.currentPos()
 		});
-		
+
 		fields.push({
 			name: "_receive",
 			doc: null,
@@ -133,20 +134,24 @@ class EntityBuilder {
 				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
 				expr: receive,
-				args: [{
-					value: null,
-					type: Context.toComplexType(Context.getType("Int")),
-					opt: null,
-					name: "offset" },
+				args: [
 					{
-					value: null,
-					type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
-					opt: null,
-					name: "bytes"}]
+						value: null,
+						type: Context.toComplexType(Context.getType("Int")),
+						opt: null,
+						name: "offset"
+					},
+					{
+						value: null,
+						type: Context.toComplexType(Context.getType("haxe.io.Bytes")),
+						opt: null,
+						name: "bytes"
+					}
+				]
 			}),
 			pos: Context.currentPos()
 		});
-		
+
 		fields.push({
 			name: "_id",
 			doc: null,
@@ -155,22 +160,22 @@ class EntityBuilder {
 			kind: FFun({
 				ret: Context.toComplexType(Context.getType("Int")),
 				params: null,
-				expr: macro { return __id; },
+				expr: macro {return __id;},
 				args: []
 			}),
 			pos: Context.currentPos()
 		});
-		
+
 		var size = macro {
-			return $v { index };
+			return $v{index};
 		};
-		
+
 		if (!isBaseEntity) {
 			size = macro {
-				return super._size() + $v { index };
+				return super._size() + $v{index};
 			};
 		}
-		
+
 		fields.push({
 			name: "_size",
 			doc: null,
@@ -184,18 +189,18 @@ class EntityBuilder {
 			}),
 			pos: Context.currentPos()
 		});
-			
+
 		if (isBaseEntity) {
 			fields.push({
 				name: "__id",
 				doc: null,
 				meta: [],
 				access: [APublic],
-				kind: FVar(macro: Int, macro kha.netsync.EntityBuilder.nextId++),
+				kind: FVar(macro:Int, macro kha.netsync.EntityBuilder.nextId++),
 				pos: Context.currentPos()
 			});
 		}
-		
+
 		return fields;
 	}
 }

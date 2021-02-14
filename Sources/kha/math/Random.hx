@@ -6,23 +6,23 @@ package kha.math;
 // which is also public domain
 
 /**
-Random number generator
+	Random number generator
 
-Please use this one instead of the native Haxe one to
-keep consistency between different platforms.
+	Please use this one instead of the native Haxe one to
+	keep consistency between different platforms.
 **/
 class Random {
-	var a:Int;
-	var b:Int;
-	var c:Int;
-	var d:Int;
+	var a: Int;
+	var b: Int;
+	var c: Int;
+	var d: Int;
 
 	public function new(seed: Int): Void {
 		d = seed;
 		a = 0x36aef51a;
 		b = 0x21d4b3eb;
 		c = 0xf2517abf;
-		//Immediately skip a few possibly poor results the easy way
+		// Immediately skip a few possibly poor results the easy way
 		for (i in 0...15) {
 			this.Get();
 		}

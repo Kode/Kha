@@ -7,19 +7,17 @@ import kha.audio2.ogg.vorbis.Reader;
 /**
  * Contains compressed or uncompressed audio data.
  */
- @:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
+@:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
 	public var length: Float = 0; // in seconds
 	public var channels: Int = 0;
 	public var sampleRate: Int = 0;
-	
-	public function new() {
-		
-	}
 
-#if kha_kore
+	public function new() {}
+
+	#if kha_kore
 	public function uncompress(done: Void->Void): Void {
 		if (uncompressedData != null) {
 			done();
@@ -56,20 +54,20 @@ class Sound implements Resource {
 		compressedData = null;
 		done();
 	}
-#else
+	#else
 	public function uncompress(done: Void->Void): Void {
 		#if (!kha_no_ogg)
 		if (uncompressedData != null) {
 			done();
 			return;
 		}
-		
+
 		var output = new BytesOutput();
 		var header = Reader.readAll(compressedData, output, true);
 		var soundBytes = output.getBytes();
 		var count = Std.int(soundBytes.length / 4);
 		if (header.channel == 1) {
-			length = count / kha.audio2.Audio.samplesPerSecond;// header.sampleRate;
+			length = count / kha.audio2.Audio.samplesPerSecond; // header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count * 2);
 			for (i in 0...count) {
 				uncompressedData[i * 2 + 0] = soundBytes.getFloat(i * 4);
@@ -77,7 +75,7 @@ class Sound implements Resource {
 			}
 		}
 		else {
-			length = count / 2 / kha.audio2.Audio.samplesPerSecond; //header.sampleRate;
+			length = count / 2 / kha.audio2.Audio.samplesPerSecond; // header.sampleRate;
 			uncompressedData = new kha.arrays.Float32Array(count);
 			for (i in 0...count) {
 				uncompressedData[i] = soundBytes.getFloat(i * 4);
@@ -89,7 +87,7 @@ class Sound implements Resource {
 		done();
 		#end
 	}
-#end
+	#end
 
 	public function unload() {
 		compressedData = null;

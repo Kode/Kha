@@ -20,7 +20,7 @@ class ShadersBuilder {
 
 		var files: Iterable<Dynamic> = content.files;
 
-		var init = macro { };
+		var init = macro {};
 
 		for (file in files) {
 			var name: String = file.name;
@@ -39,7 +39,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APrivate, AStatic],
-						kind: FVar(macro: String, macro $v { serialized[i] } ),
+						kind: FVar(macro:String, macro $v{serialized[i]}),
 						pos: Context.currentPos()
 					});
 				}
@@ -50,7 +50,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.compute.Shader, macro null),
+						kind: FVar(macro:kha.compute.Shader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -59,11 +59,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.compute.Shader(blobs, $v { filenames });
+							$i{fixedName} = new kha.compute.Shader(blobs, $v{filenames});
 						}
 					};
 				}
@@ -73,7 +73,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.graphics4.GeometryShader, macro null),
+						kind: FVar(macro:kha.graphics4.GeometryShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -82,11 +82,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.graphics4.GeometryShader(blobs, $v { filenames });
+							$i{fixedName} = new kha.graphics4.GeometryShader(blobs, $v{filenames});
 						}
 					};
 				}
@@ -96,7 +96,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.graphics4.TessellationControlShader, macro null),
+						kind: FVar(macro:kha.graphics4.TessellationControlShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -105,11 +105,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.graphics4.TessellationControlShader(blobs, $v { filenames });
+							$i{fixedName} = new kha.graphics4.TessellationControlShader(blobs, $v{filenames});
 						}
 					};
 				}
@@ -119,7 +119,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.graphics4.TessellationEvaluationShader, macro null),
+						kind: FVar(macro:kha.graphics4.TessellationEvaluationShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -128,11 +128,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.graphics4.TessellationEvaluationShader(blobs, $v { filenames });
+							$i{fixedName} = new kha.graphics4.TessellationEvaluationShader(blobs, $v{filenames});
 						}
 					};
 				}
@@ -142,7 +142,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.graphics4.VertexShader, macro null),
+						kind: FVar(macro:kha.graphics4.VertexShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -151,11 +151,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.graphics4.VertexShader(blobs, $v { filenames });
+							$i{fixedName} = new kha.graphics4.VertexShader(blobs, $v{filenames});
 						}
 					};
 				}
@@ -165,7 +165,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro: kha.graphics4.FragmentShader, macro null),
+						kind: FVar(macro:kha.graphics4.FragmentShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -174,11 +174,11 @@ class ShadersBuilder {
 						{
 							var blobs = new Array<Blob>();
 							for (i in 0...$v{filenames.length}) {
-								var data = Reflect.field(Shaders, $v { dataName } + i);
+								var data = Reflect.field(Shaders, $v{dataName} + i);
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i { fixedName } = new kha.graphics4.FragmentShader(blobs, $v { filenames });
+							$i{fixedName} = new kha.graphics4.FragmentShader(blobs, $v{filenames});
 						}
 					};
 				}

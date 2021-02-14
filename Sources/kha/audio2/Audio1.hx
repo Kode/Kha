@@ -6,25 +6,25 @@ import sys.thread.Mutex;
 import haxe.ds.Vector;
 
 class Audio1 {
-	private static inline var channelCount: Int = 32;
-	private static var soundChannels: Vector<AudioChannel>;
-	private static var streamChannels: Vector<StreamChannel>;
+	static inline var channelCount: Int = 32;
+	static var soundChannels: Vector<AudioChannel>;
+	static var streamChannels: Vector<StreamChannel>;
 
-	private static var internalSoundChannels: Vector<AudioChannel>;
-	private static var internalStreamChannels: Vector<StreamChannel>;
-	private static var sampleCache1: kha.arrays.Float32Array;
-	private static var sampleCache2: kha.arrays.Float32Array;
-	private static var lastAllocationCount: Int = 0;
+	static var internalSoundChannels: Vector<AudioChannel>;
+	static var internalStreamChannels: Vector<StreamChannel>;
+	static var sampleCache1: kha.arrays.Float32Array;
+	static var sampleCache2: kha.arrays.Float32Array;
+	static var lastAllocationCount: Int = 0;
 
-#if cpp
+	#if cpp
 	static var mutex: Mutex;
-#end
+	#end
 
 	@:noCompletion
 	public static function _init(): Void {
-#if cpp
+		#if cpp
 		mutex = new Mutex();
-#end
+		#end
 		soundChannels = new Vector<AudioChannel>(channelCount);
 		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
@@ -34,12 +34,12 @@ class Audio1 {
 		lastAllocationCount = 0;
 		Audio.audioCallback = mix;
 	}
-	
-	private static inline function max(a: Float, b: Float): Float {
+
+	static inline function max(a: Float, b: Float): Float {
 		return a > b ? a : b;
 	}
 
-	private static inline function min(a: Float, b: Float): Float {
+	static inline function min(a: Float, b: Float): Float {
 		return a < b ? a : b;
 	}
 
@@ -76,28 +76,30 @@ class Audio1 {
 			sampleCache2[i] = 0;
 		}
 
-#if cpp
+		#if cpp
 		mutex.acquire();
-#end
+		#end
 		for (i in 0...channelCount) {
 			internalSoundChannels[i] = soundChannels[i];
 		}
 		for (i in 0...channelCount) {
 			internalStreamChannels[i] = streamChannels[i];
 		}
-#if cpp
+		#if cpp
 		mutex.release();
-#end
+		#end
 
 		for (channel in internalSoundChannels) {
-			if (channel == null || channel.finished) continue;
+			if (channel == null || channel.finished)
+				continue;
 			channel.nextSamples(sampleCache1, samples, buffer.samplesPerSecond);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
 			}
 		}
 		for (channel in internalStreamChannels) {
-			if (channel == null || channel.finished) continue;
+			if (channel == null || channel.finished)
+				continue;
 			channel.nextSamples(sampleCache1, samples, buffer.samplesPerSecond);
 			for (i in 0...samples) {
 				sampleCache2[i] += sampleCache1[i] * channel.volume;
@@ -128,9 +130,9 @@ class Audio1 {
 		channel.data = sound.uncompressedData;
 		var foundChannel = false;
 
-#if cpp
+		#if cpp
 		mutex.acquire();
-#end
+		#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
 				soundChannels[i] = channel;
@@ -138,17 +140,17 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+		#if cpp
 		mutex.release();
-#end
+		#end
 
 		return foundChannel ? channel : null;
 	}
 
 	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
-#if cpp
+		#if cpp
 		mutex.acquire();
-#end
+		#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == channel) {
 				soundChannels[i] = null;
@@ -160,24 +162,25 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+		#if cpp
 		mutex.release();
-#end
+		#end
 	}
 
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		{
 			// try to use hardware accelerated audio decoding
 			var hardwareChannel = Audio.stream(sound, loop);
-			if (hardwareChannel != null) return hardwareChannel;
+			if (hardwareChannel != null)
+				return hardwareChannel;
 		}
 
 		var channel: StreamChannel = new StreamChannel(sound.compressedData, loop);
 		var foundChannel = false;
 
-#if cpp
+		#if cpp
 		mutex.acquire();
-#end
+		#end
 		for (i in 0...channelCount) {
 			if (streamChannels[i] == null || streamChannels[i].finished) {
 				streamChannels[i] = channel;
@@ -185,9 +188,9 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+		#if cpp
 		mutex.release();
-#end
+		#end
 
 		return foundChannel ? channel : null;
 	}

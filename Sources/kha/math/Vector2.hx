@@ -16,13 +16,14 @@ class Vector2 {
 		this.y = v.y;
 	}
 
-	private inline function get_length(): Float {
+	inline function get_length(): Float {
 		return Math.sqrt(x * x + y * y);
 	}
 
-	private function set_length(length: Float): Float {
+	function set_length(length: Float): Float {
 		var currentLength = get_length();
-		if (currentLength == 0) return 0;
+		if (currentLength == 0)
+			return 0;
 		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;
@@ -61,7 +62,7 @@ class Vector2 {
 	}
 
 	@:extern public inline function angle(v: Vector2): Float {
-		return Math.atan2(y,x) - Math.atan2(v.y,v.x);
+		return Math.atan2(y, x) - Math.atan2(v.y, v.x);
 	}
 
 	@:extern public inline function fast(): FastVector2 {

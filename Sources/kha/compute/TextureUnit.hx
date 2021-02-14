@@ -1,5 +1,3 @@
 package kha.compute;
 
-extern class TextureUnit {
-
-}
+extern class TextureUnit {}

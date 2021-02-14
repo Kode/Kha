@@ -3,30 +3,26 @@ package kha.vr;
 import kha.math.FastMatrix4;
 
 class VrInterface {
-
 	public static var instance: VrInterface;
-	
+
 	// Returns the current sensor state
 	public function GetSensorState(): SensorState {
 		return null;
 	}
-	
+
 	// Returns the predicted sensor state at the specified time
 	public function GetPredictedSensorState(time: Float): SensorState {
 		return null;
 	}
-	
+
 	// Sends a black image to the warp swap thread
-	public function WarpSwapBlack(): Void {
-	}
-	
+	public function WarpSwapBlack(): Void {}
+
 	// Sends the Oculus loading symbol to the warp swap thread
-	public function WarpSwapLoadingIcon(): Void {
-	}
-	
+	public function WarpSwapLoadingIcon(): Void {}
+
 	// Sends the set of images to the warp swap thread
-	public function WarpSwap(parms: TimeWarpParms): Void {
-	}
+	public function WarpSwap(parms: TimeWarpParms): Void {}
 
 	// Return true if VR displays are presenting
 	public function IsPresenting(): Bool {
@@ -37,7 +33,7 @@ class VrInterface {
 	public function IsVrEnabled(): Bool {
 		return false;
 	}
-	
+
 	// This returns the time that the TimeWarp thread uses
 	// Since it is created from the library's vsync counting code, we should use this
 	public function GetTimeInSeconds(): Float {
@@ -54,20 +50,14 @@ class VrInterface {
 		return null;
 	}
 
-	// Browsers will only allow to enter WebVR if requestPresent is called in response to user interaction. 
-	public function onVRRequestPresent(): Void {
-	}
+	// Browsers will only allow to enter WebVR if requestPresent is called in response to user interaction.
+	public function onVRRequestPresent(): Void {}
 
 	// Exit WebVR
-	public function onVRExitPresent(): Void {
-	}
+	public function onVRExitPresent(): Void {}
 
 	// Reset position and orientation
-	public function onResetPose(): Void {
-	}
+	public function onResetPose(): Void {}
 
-	private function new() {
-		
-	}
-	
+	function new() {}
 }

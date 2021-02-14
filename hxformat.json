@@ -1,0 +1,9 @@
+{
+	"whitespace": {
+		"typeHintColonPolicy": "after"
+	},
+	"sameLine": {
+		"ifElse": "next",
+		"tryCatch": "next"
+	}
+}

@@ -2,16 +2,14 @@ package kha.netsync;
 
 class Example implements Entity {
 	@replicated
-	private var test: Float;
+	var test: Float;
 	@replicated
-	private var bla: Int;
+	var bla: Int;
 
 	public function new() {
-		//super();
+		// super();
 		test = 3;
 	}
-	
-	public function simulate(tdif: Float): Void {
-		
-	}
+
+	public function simulate(tdif: Float): Void {}
 }

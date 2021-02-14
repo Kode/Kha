@@ -15,16 +15,12 @@ class HdrFormat {
 	static var buffer: UInt8Array;
 	static var bufferLength: Int;
 	static var fileOffset: Int;
-	
-	function new() {
-
-	}
 
 	static function readBuf(buf: UInt8Array): Int {
 		var bytesRead = 0;
 		do {
 			buf[bytesRead++] = buffer[fileOffset];
-		} while(++fileOffset < bufferLength && bytesRead < buf.length);
+		} while (++fileOffset < bufferLength && bytesRead < buf.length);
 		return bytesRead;
 	}
 
@@ -32,7 +28,7 @@ class HdrFormat {
 		var bytesRead = 0;
 		do {
 			buf[offset + bytesRead++] = buffer[fileOffset];
-		} while(++fileOffset < bufferLength && bytesRead < length);
+		} while (++fileOffset < bufferLength && bytesRead < length);
 		return bytesRead;
 	}
 
@@ -52,7 +48,7 @@ class HdrFormat {
 		var ptr_end: Int;
 		var count: Int;
 		var buf = new UInt8Array(2);
-		var bufferLength = buffer.length;
+		// var bufferLength = buffer.length;
 
 		while (num_scanlines > 0) {
 			if (readBuf(rgbe) < rgbe.length) {
@@ -60,7 +56,7 @@ class HdrFormat {
 				return;
 			}
 
-			if ((rgbe[0] != 2)||(rgbe[1] != 2)||((rgbe[2] & 0x80) != 0)) {
+			if ((rgbe[0] != 2) || (rgbe[1] != 2) || ((rgbe[2] & 0x80) != 0)) {
 				// This file is not run length encoded
 				data[offset++] = rgbe[0];
 				data[offset++] = rgbe[1];
@@ -70,8 +66,8 @@ class HdrFormat {
 				return;
 			}
 
-			if ((((rgbe[2] & 0xFF)<<8) | (rgbe[3] & 0xFF)) != scanline_width) {
-				trace("Wrong scanline width " + (((rgbe[2] & 0xFF)<<8) | (rgbe[3] & 0xFF)) + ", expected " + scanline_width);
+			if ((((rgbe[2] & 0xFF) << 8) | (rgbe[3] & 0xFF)) != scanline_width) {
+				trace("Wrong scanline width " + (((rgbe[2] & 0xFF) << 8) | (rgbe[3] & 0xFF)) + ", expected " + scanline_width);
 				return;
 			}
 
@@ -95,7 +91,7 @@ class HdrFormat {
 							trace("Bad scanline data");
 							return;
 						}
-						while(count-- > 0) {
+						while (count-- > 0) {
 							scanline_buffer[ptr++] = buf[1];
 						}
 					}
@@ -140,18 +136,18 @@ class HdrFormat {
 				break;
 			}
 			buf += String.fromCharCode(b);
-		} while(++fileOffset < bufferLength);
+		} while (++fileOffset < bufferLength);
 		return buf;
 	}
 
-	public static function parse(bytes:Bytes) {
+	public static function parse(bytes: Bytes) {
 		buffer = UInt8Array.fromBytes(bytes);
 		bufferLength = buffer.length;
 		fileOffset = 0;
 		var width = 0;
 		var height = 0;
 		var exposure = 1.0;
-		var gamma = 1.0;
+		// var gamma = 1.0;
 		var rle = false;
 
 		for (i in 0...20) {
@@ -167,8 +163,8 @@ class HdrFormat {
 				width = Std.parseInt(widthHeightPattern.matched(2));
 				break;
 			}
-			//else if (radiancePattern.match(line)) {}
-			//else if (commentPattern.match(line)) {}
+			// else if (radiancePattern.match(line)) {}
+			// else if (commentPattern.match(line)) {}
 		}
 
 		if (!rle) {

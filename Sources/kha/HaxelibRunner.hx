@@ -13,7 +13,8 @@ class HaxelibRunner {
 				Path.join([Sys.getCwd(), "Kore", "Tools", "krafix", "krafix"]),
 				Path.join([Sys.getCwd(), "Kore", "Tools", "kraffiti", "kraffiti"])
 			];
-			for (tool in tools) chmod(tool);
+			for (tool in tools)
+				chmod(tool);
 		}
 
 		var io = Path.join([Sys.getCwd(), "Tools", "nodejs", "node" + sysExt()]);
@@ -37,11 +38,11 @@ class HaxelibRunner {
 			Sys.exit(Sys.command(io, args));
 	}
 
-	private static function chmod(path: String): Void {
+	static function chmod(path: String): Void {
 		Sys.command("chmod", ["a+x", path + sysExt()]);
 	}
 
-	private static function haxePath(): String {
+	static function haxePath(): String {
 		var path = Sys.getEnv("HAXEPATH");
 		if (path == null) {
 			path = "/usr/local/lib/haxe";
@@ -52,18 +53,18 @@ class HaxelibRunner {
 		return Path.normalize(path);
 	}
 
-	private static function sysExt(): String {
+	static function sysExt(): String {
 		switch (Sys.systemName()) {
-		case "Linux":
-			var process = new sys.io.Process("uname", ["-m"]);
-			var value = process.stdout.readAll().toString();
-			return "-linux" + (value.indexOf("64") != -1 ? "64" : "32");
-		case "Windows":
-			return ".exe";
-		case "Mac":
-			return "-osx";
-		default:
-			return "";
+			case "Linux":
+				var process = new sys.io.Process("uname", ["-m"]);
+				var value = process.stdout.readAll().toString();
+				return "-linux" + (value.indexOf("64") != -1 ? "64" : "32");
+			case "Windows":
+				return ".exe";
+			case "Mac":
+				return "-osx";
+			default:
+				return "";
 		}
 	}
 }

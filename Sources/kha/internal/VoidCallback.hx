@@ -1,3 +1,3 @@
 package kha.internal;
 
-typedef VoidCallback = Void -> Void;
+typedef VoidCallback = Void->Void;

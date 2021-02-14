@@ -12,7 +12,7 @@ extern class Audio {
 	 * See kha.audio2.Audio1 for sample code.
 	 */
 	public static var audioCallback: Int->Buffer->Void;
-	
+
 	/**
 	 * Similar to kha.audio1.Audio.stream, but only for hardware accelerated audio playback.
 	 * Expect this to return null and provide a pure software alternative.

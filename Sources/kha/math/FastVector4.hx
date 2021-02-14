@@ -26,13 +26,14 @@ class FastVector4 {
 		this.w = v.w;
 	}
 
-	private inline function get_length(): FastFloat {
+	inline function get_length(): FastFloat {
 		return Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	private function set_length(length: FastFloat): FastFloat {
+	function set_length(length: FastFloat): FastFloat {
 		var currentLength = get_length();
-		if (currentLength == 0) return 0;
+		if (currentLength == 0)
+			return 0;
 		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;

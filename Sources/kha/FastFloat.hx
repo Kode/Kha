@@ -8,8 +8,7 @@ package kha;
 	strongly advised to only use it where that does not
 	matter (typically graphics code,  avoid it in gameplay
 	code at all costs).
-*/
-
+ */
 #if cpp
 typedef FastFloat = cpp.Float32;
 #elseif hl

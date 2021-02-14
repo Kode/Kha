@@ -7,7 +7,7 @@ enum BlockInterventions {
 	Default;
 	Full;
 	None;
-	Custom(func: (code: KeyCode)->Bool);
+	Custom(func: (code: KeyCode) -> Bool);
 }
 
 @:allow(kha.SystemImpl)
@@ -31,7 +31,7 @@ class Keyboard extends Controller {
 	 *   None - do not block any key.
 	 *   Custom(func:(code:Int)->Bool) - set custom handler for keydown event (should return true if keycode blocked).
 	 */
-	public static function disableSystemInterventions(behavior: BlockInterventions):Void {
+	public static function disableSystemInterventions(behavior: BlockInterventions): Void {
 		keyBehavior = behavior;
 	}
 
@@ -41,41 +41,44 @@ class Keyboard extends Controller {
 	 * @param upListener function with `key:KeyCode` argument, fired when a key is released.
 	 * @param pressListener (optional) function with `char:String` argument, fired when a key that produces a character value is pressed down.
 	 */
-	public function notify(downListener: (key: KeyCode)->Void, upListener: (key: KeyCode)->Void, pressListener: (char: String)->Void = null): Void {
-		if (downListener != null) downListeners.push(downListener);
-		if (upListener != null) upListeners.push(upListener);
-		if (pressListener != null) pressListeners.push(pressListener);
+	public function notify(downListener: (key: KeyCode) -> Void, upListener: (key: KeyCode) -> Void, pressListener: (char: String) -> Void = null): Void {
+		if (downListener != null)
+			downListeners.push(downListener);
+		if (upListener != null)
+			upListeners.push(upListener);
+		if (pressListener != null)
+			pressListeners.push(pressListener);
 	}
 
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: (key: KeyCode)->Void, upListener: (key: KeyCode)->Void, pressListener: (char: String)->Void): Void {
-		if (downListener != null) downListeners.remove(downListener);
-		if (upListener != null) upListeners.remove(upListener);
-		if (pressListener != null) pressListeners.remove(pressListener);
+	public function remove(downListener: (key: KeyCode) -> Void, upListener: (key: KeyCode) -> Void, pressListener: (char: String) -> Void): Void {
+		if (downListener != null)
+			downListeners.remove(downListener);
+		if (upListener != null)
+			upListeners.remove(upListener);
+		if (pressListener != null)
+			pressListeners.remove(pressListener);
 	}
 
 	/**
 	 * Show virtual keyboard (if it exists).
 	 */
-	public function show(): Void {
-
-	}
+	public function show(): Void {}
 
 	/**
 	 * Hide virtual keyboard (if it exists).
 	 */
-	public function hide(): Void {
+	public function hide(): Void {}
 
-	}
+	static var instance: Keyboard;
 
-	private static var instance: Keyboard;
-	private var downListeners: Array<(key: KeyCode)->Void>;
-	private var upListeners: Array<(key: KeyCode)->Void>;
-	private var pressListeners: Array<(char: String)->Void>;
+	var downListeners: Array<(key: KeyCode) -> Void>;
+	var upListeners: Array<(key: KeyCode) -> Void>;
+	var pressListeners: Array<(char: String) -> Void>;
 
-	private function new() {
+	function new() {
 		super();
 		downListeners = [];
 		upListeners = [];
@@ -84,9 +87,9 @@ class Keyboard extends Controller {
 	}
 
 	@input
-	private function sendDownEvent(code: KeyCode): Void {
+	function sendDownEvent(code: KeyCode): Void {
 		#if sys_server
-		//js.Node.console.log(kha.Scheduler.time() + " Down: " + key + " from " + kha.network.Session.the().me.id);
+		// js.Node.console.log(kha.Scheduler.time() + " Down: " + key + " from " + kha.network.Session.the().me.id);
 		#end
 		for (listener in downListeners) {
 			listener(code);
@@ -94,9 +97,9 @@ class Keyboard extends Controller {
 	}
 
 	@input
-	private function sendUpEvent(code: KeyCode): Void {
+	function sendUpEvent(code: KeyCode): Void {
 		#if sys_server
-		//js.Node.console.log(kha.Scheduler.time() + " Up: " + key + " from " + kha.network.Session.the().me.id);
+		// js.Node.console.log(kha.Scheduler.time() + " Up: " + key + " from " + kha.network.Session.the().me.id);
 		#end
 		for (listener in upListeners) {
 			listener(code);
@@ -104,7 +107,7 @@ class Keyboard extends Controller {
 	}
 
 	@input
-	private function sendPressEvent(char: String): Void {
+	function sendPressEvent(char: String): Void {
 		for (listener in pressListeners) {
 			listener(char);
 		}

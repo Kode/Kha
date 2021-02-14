@@ -8,9 +8,9 @@ import kha.graphics4.Usage;
 import kha.Image;
 
 class Graphics1 implements kha.graphics1.Graphics {
-	private var canvas: Canvas;
-	private var texture: Image;
-	private var pixels: Bytes;
+	var canvas: Canvas;
+	var texture: Image;
+	var pixels: Bytes;
 
 	public function new(canvas: Canvas) {
 		this.canvas = canvas;

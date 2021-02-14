@@ -4,7 +4,6 @@ import haxe.Json;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
-
 #if macro
 import sys.io.File;
 #end
@@ -30,13 +29,16 @@ class AssetsBuilder {
 		}
 		if (output.lastIndexOf("/") >= 0) {
 			var system = output.substring(output.lastIndexOf("/") + 1);
-			if (system.endsWith("-build")) system = system.substr(0, system.length - "-build".length);
+			if (system.endsWith("-build"))
+				system = system.substr(0, system.length - "-build".length);
 			output = output.substring(0, output.lastIndexOf("/"));
 			return output + "/" + system + "-resources/";
 		}
 		else {
-			if (output.endsWith("-build")) output = output.substr(0, output.length - "-build".length);
-			if (output == "") output = "empty";
+			if (output.endsWith("-build"))
+				output = output.substr(0, output.length - "-build".length);
+			if (output == "")
+				output = "empty";
 			return output + "-resources/";
 		}
 		#else
@@ -57,7 +59,6 @@ class AssetsBuilder {
 			final pos = Context.currentPos();
 
 			if (file.type == type) {
-
 				names.push(macro $v{name});
 
 				switch (type) {
@@ -66,7 +67,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro: kha.Image, macro null),
+							kind: FVar(macro:kha.Image, macro null),
 							pos: pos
 						});
 					case "sound":
@@ -74,7 +75,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro: kha.Sound, macro null),
+							kind: FVar(macro:kha.Sound, macro null),
 							pos: pos
 						});
 					case "blob":
@@ -82,7 +83,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro: kha.Blob, macro null),
+							kind: FVar(macro:kha.Blob, macro null),
 							pos: pos
 						});
 					case "font":
@@ -90,7 +91,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro: kha.Font, macro null),
+							kind: FVar(macro:kha.Font, macro null),
 							pos: pos
 						});
 					case "video":
@@ -98,7 +99,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro: kha.Video, macro null),
+							kind: FVar(macro:kha.Video, macro null),
 							pos: pos
 						});
 				}
@@ -107,7 +108,7 @@ class AssetsBuilder {
 					name: name + "Name",
 					meta: [],
 					access: [APublic],
-					kind: FVar(macro: String, macro $v { name }),
+					kind: FVar(macro:String, macro $v{name}),
 					pos: pos
 				});
 
@@ -115,31 +116,31 @@ class AssetsBuilder {
 					name: name + "Description",
 					meta: [{pos: pos, name: ":keep"}],
 					access: [APublic],
-					kind: FVar(macro: Dynamic, macro $v { file }),
+					kind: FVar(macro:Dynamic, macro $v{file}),
 					pos: pos
 				});
 
-				var loadExpressions = macro { };
+				var loadExpressions = macro {};
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Assets.loadImage($v{name}, function (image: Image) done(), failure);
+							Assets.loadImage($v{name}, function(image: Image) done(), failure);
 						};
 					case "sound":
 						loadExpressions = macro {
-							Assets.loadSound($v{name}, function (sound: Sound) done(), failure);
+							Assets.loadSound($v{name}, function(sound: Sound) done(), failure);
 						};
 					case "blob":
 						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function (blob: Blob) done(), failure);
+							Assets.loadBlob($v{name}, function(blob: Blob) done(), failure);
 						};
 					case "font":
 						loadExpressions = macro {
-							Assets.loadFont($v{name}, function (font: Font) done(), failure);
+							Assets.loadFont($v{name}, function(font: Font) done(), failure);
 						};
 					case "video":
 						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function (video: Video) done(), failure);
+							Assets.loadVideo($v{name}, function(video: Video) done(), failure);
 						};
 				}
 
@@ -151,17 +152,20 @@ class AssetsBuilder {
 						ret: null,
 						params: null,
 						expr: loadExpressions,
-						args: [{
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
-							opt: null,
-							name: "done"
-						}, {
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
-							opt: true,
-							name: "failure"
-						}]
+						args: [
+							{
+								value: null,
+								type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
+								opt: null,
+								name: "done"
+							},
+							{
+								value: null,
+								type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
+								opt: true,
+								name: "failure"
+							}
+						]
 					}),
 					pos: pos
 				});
@@ -188,7 +192,7 @@ class AssetsBuilder {
 			name: "names",
 			meta: [],
 			access: [APublic],
-			kind: FVar(macro: Array<String>, macro $a { names }),
+			kind: FVar(macro:Array<String>, macro $a{names}),
 			pos: Context.currentPos()
 		});
 

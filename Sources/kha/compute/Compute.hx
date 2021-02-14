@@ -32,8 +32,10 @@ extern class Compute {
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image): Void;
 	public static function setSampledCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
-	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
-	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	public static function setShader(shader: Shader): Void;
 	public static function compute(x: Int, y: Int, z: Int): Void;
 }

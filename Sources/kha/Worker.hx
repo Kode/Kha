@@ -2,7 +2,6 @@ package kha;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
-
 #if macro
 import kha.internal.AssetsBuilder;
 import sys.io.File;
@@ -13,10 +12,9 @@ using haxe.macro.ExprTools;
 #if kha_html5
 class Worker {
 	#if kha_in_worker
-
 	public static function notifyWorker(func: Dynamic->Void): Void {
 		#if !macro
-		js.Syntax.code("self").addEventListener("message", function (e) {
+		js.Syntax.code("self").addEventListener("message", function(e) {
 			func(e.data);
 		});
 		#end
@@ -29,9 +27,7 @@ class Worker {
 	}
 
 	public static function pumpMessages(): Void {}
-
 	#else
-
 	#if macro
 	static var threads = new Array<String>();
 	#else
@@ -51,7 +47,7 @@ class Worker {
 
 	public function notify(func: Dynamic->Void): Void {
 		#if !macro
-		worker.addEventListener("message", function (e) {
+		worker.addEventListener("message", function(e) {
 			func(e.data);
 		});
 		#end
@@ -75,18 +71,17 @@ class Worker {
 		File.saveContent(AssetsBuilder.findResources() + "workers.txt", threadstring);
 		return Context.parse("kha.Worker._create(\"" + name + ".js\")", Context.currentPos());
 	}
-
 	#end
 }
 #end
 
 #if kha_kore
-
 import sys.thread.Thread;
 import kha.Scheduler;
 
 class Worker {
 	public static var _mainThread: Thread;
+
 	var thread: Thread;
 
 	function new(thread: Thread) {
@@ -98,7 +93,7 @@ class Worker {
 	}
 
 	public function notify(func: Dynamic->Void): Void {
-		Scheduler.addFrameTask(function () {
+		Scheduler.addFrameTask(function() {
 			var message = Thread.readMessage(false);
 			if (message != null) {
 				func(message);

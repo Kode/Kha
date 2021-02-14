@@ -1,17 +1,18 @@
 package kha;
+
 @:enum abstract WindowFeatures(Int) to Int {
-    var None = 0;
-    var FeatureResizable = 1;
-    var FeatureMinimizable = 2;
-    var FeatureMaximizable = 4;
-    var FeatureBorderless = 8;
-    var FeatureOnTop = 16;	
-	
-    function new (value:Int) {
-        this = value;
-    }
-    
-    @:op(A | B) static function or( a:WindowFeatures, b:WindowFeatures) : WindowFeatures;
+	var None = 0;
+	var FeatureResizable = 1;
+	var FeatureMinimizable = 2;
+	var FeatureMaximizable = 4;
+	var FeatureBorderless = 8;
+	var FeatureOnTop = 16;
+
+	function new(value: Int) {
+		this = value;
+	}
+
+	@:op(A | B) static function or(a: WindowFeatures, b: WindowFeatures): WindowFeatures;
 }
 
 @:structInit
@@ -23,11 +24,11 @@ class WindowOptions {
 	@:optional public var height: Int = 600;
 	@:optional public var display: Int = -1;
 	@:optional public var visible: Bool = true;
-	@:optional public var windowFeatures:WindowFeatures = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
+	@:optional public var windowFeatures: WindowFeatures = FeatureResizable | FeatureMaximizable | FeatureMinimizable;
 	@:optional public var mode: WindowMode = Windowed;
 
-	public function new(title: String = null, ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, ?display: Int = -1,
-	?visible: Bool = true, ?windowFeatures:WindowFeatures, ?mode: WindowMode = WindowMode.Windowed) {
+	public function new(title: String = null, ?x: Int = -1, ?y: Int = -1, ?width: Int = 800, ?height: Int = 600, ?display: Int = -1, ?visible: Bool = true,
+			?windowFeatures: WindowFeatures, ?mode: WindowMode = WindowMode.Windowed) {
 		this.title = title;
 		this.x = x;
 		this.y = y;

@@ -33,14 +33,19 @@ class PipelineStateBase {
 		colorWriteMasksGreen = [];
 		colorWriteMasksBlue = [];
 		colorWriteMasksAlpha = [];
-		for (i in 0...8) colorWriteMasksRed.push(true);
-		for (i in 0...8) colorWriteMasksGreen.push(true);
-		for (i in 0...8) colorWriteMasksBlue.push(true);
-		for (i in 0...8) colorWriteMasksAlpha.push(true);
+		for (i in 0...8)
+			colorWriteMasksRed.push(true);
+		for (i in 0...8)
+			colorWriteMasksGreen.push(true);
+		for (i in 0...8)
+			colorWriteMasksBlue.push(true);
+		for (i in 0...8)
+			colorWriteMasksAlpha.push(true);
 
 		colorAttachmentCount = 1;
 		colorAttachments = [];
-		for (i in 0...8) colorAttachments.push(TextureFormat.RGBA32);
+		for (i in 0...8)
+			colorAttachments.push(TextureFormat.RGBA32);
 
 		depthStencilAttachment = DepthStencilFormat.NoDepthAndStencil;
 

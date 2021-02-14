@@ -22,13 +22,14 @@ class Vector4 {
 		this.w = v.w;
 	}
 
-	private inline function get_length(): Float {
+	inline function get_length(): Float {
 		return Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	private function set_length(length: Float): Float {
+	function set_length(length: Float): Float {
 		var currentLength = get_length();
-		if (currentLength == 0) return 0;
+		if (currentLength == 0)
+			return 0;
 		var mul = length / currentLength;
 		x *= mul;
 		y *= mul;
@@ -49,7 +50,7 @@ class Vector4 {
 		return new Vector4(x * value, y * value, z * value, w * value);
 	}
 
-	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
+	@:deprecated("Use the immutable normalized() instead")
 	@:extern public inline function normalize(): Void {
 		#if haxe4 inline #end set_length(1);
 	}

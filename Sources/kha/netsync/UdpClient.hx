@@ -7,13 +7,15 @@ import js.node.Dgram;
 #end
 
 class UdpClient implements Client {
-	private var myId: Int;
+	var myId: Int;
+
 	public var onReceive: Bytes->Void = null;
+
 	#if sys_server
-	private var socket: Dynamic;
+	var socket: Dynamic;
 	#end
-	private var address: String;
-	private var port: Int;
+	var address: String;
+	var port: Int;
 
 	#if sys_server
 	public function new(id: Int, socket: Dynamic, address: String, port: Int) {
@@ -33,24 +35,22 @@ class UdpClient implements Client {
 		socket.send(buffer, 0, bytes.length, port, address);
 		#end
 	}
-	
+
 	public function receive(receiver: Bytes->Void): Void {
 		onReceive = receiver;
 	}
-	
-	public function onClose(close: Void->Void): Void {
-		
-	}
-	
+
+	public function onClose(close: Void->Void): Void {}
+
 	public var controllers(get, null): Array<Controller>;
-	
-	public function get_controllers(): Array<Controller> {
+
+	function get_controllers(): Array<Controller> {
 		return null;
 	}
-	
+
 	public var id(get, null): Int;
-	
-	public function get_id(): Int {
+
+	function get_id(): Int {
 		return myId;
 	}
 }

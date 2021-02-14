@@ -61,36 +61,43 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	 * Contains a byte representing the red color component.
 	 */
 	public var Rb(get, set): Int;
+
 	/**
 	 * Contains a byte representing the green color component.
 	 */
 	public var Gb(get, set): Int;
+
 	/**
 	 * Contains a byte representing the blue color component.
 	 */
 	public var Bb(get, set): Int;
+
 	/**
 	 * Contains a byte representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	 */
 	public var Ab(get, set): Int;
+
 	/**
 	 * Contains a float representing the red color component.
 	 */
 	public var R(get, set): FastFloat;
+
 	/**
 	 * Contains a float representing the green color component.
 	 */
 	public var G(get, set): FastFloat;
+
 	/**
 	 * Contains a float representing the blue color component.
 	 */
 	public var B(get, set): FastFloat;
+
 	/**
 	 * Contains a float representing the alpha color component (more exactly the opacity component - a value of 0 is fully transparent).
 	 */
 	public var A(get, set): FastFloat;
 
-	private function new(value: Int) {
+	function new(value: Int) {
 		this = value;
 	}
 
@@ -99,83 +106,83 @@ abstract Color(Int) from Int from UInt to Int to UInt {
 	 */
 	public var value(get, set): Int;
 
-	private inline function get_value(): Int {
+	inline function get_value(): Int {
 		return this;
 	}
 
-	private inline function set_value(value: Int): Int {
+	inline function set_value(value: Int): Int {
 		this = value;
 		return this;
 	}
 
-	private inline function get_Rb(): Int {
+	inline function get_Rb(): Int {
 		return (this & 0x00ff0000) >>> 16;
 	}
 
-	private inline function get_Gb(): Int {
+	inline function get_Gb(): Int {
 		return (this & 0x0000ff00) >>> 8;
 	}
 
-	private inline function get_Bb(): Int {
+	inline function get_Bb(): Int {
 		return this & 0x000000ff;
 	}
 
-	private inline function get_Ab(): Int {
+	inline function get_Ab(): Int {
 		return this >>> 24;
 	}
 
-	private inline function set_Rb(i: Int): Int {
+	inline function set_Rb(i: Int): Int {
 		this = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
 		return i;
 	}
 
-	private inline function set_Gb(i: Int): Int {
+	inline function set_Gb(i: Int): Int {
 		this = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
 		return i;
 	}
 
-	private inline function set_Bb(i: Int): Int {
+	inline function set_Bb(i: Int): Int {
 		this = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
 		return i;
 	}
 
-	private inline function set_Ab(i: Int): Int {
+	inline function set_Ab(i: Int): Int {
 		this = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
 		return i;
 	}
 
-	private inline function get_R(): FastFloat {
+	inline function get_R(): FastFloat {
 		return get_Rb() * invMaxChannelValue;
 	}
 
-	private inline function get_G(): FastFloat {
+	inline function get_G(): FastFloat {
 		return get_Gb() * invMaxChannelValue;
 	}
 
-	private inline function get_B(): FastFloat {
+	inline function get_B(): FastFloat {
 		return get_Bb() * invMaxChannelValue;
 	}
 
-	private inline function get_A(): FastFloat {
+	inline function get_A(): FastFloat {
 		return get_Ab() * invMaxChannelValue;
 	}
 
-	private inline function set_R(f: FastFloat): FastFloat {
+	inline function set_R(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private inline function set_G(f: FastFloat): FastFloat {
+	inline function set_G(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
 		return f;
 	}
 
-	private inline function set_B(f: FastFloat): FastFloat {
+	inline function set_B(f: FastFloat): FastFloat {
 		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
 		return f;
 	}
 
-	private inline function set_A(f: FastFloat): FastFloat {
+	inline function set_A(f: FastFloat): FastFloat {
 		this = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
 		return f;
 	}

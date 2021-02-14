@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package haxe;
 
 /**
@@ -36,11 +37,10 @@ package haxe;
 	the child class.
 **/
 class Timer {
-
 	#if macro
-		private var event : MainLoop.MainEvent;
+	var event: MainLoop.MainEvent;
 	#else
-		private var id : Null<Int>;
+	var id: Null<Int>;
 	#end
 
 	/**
@@ -54,17 +54,17 @@ class Timer {
 
 		The accuracy of this may be platform-dependent.
 	**/
-	public function new( time_ms : Int ){
+	public function new(time_ms: Int) {
 		var me = this;
 		#if macro
-			var dt = time_ms / 1000;
-			event = MainLoop.add(function() {
-				@:privateAccess event.nextRun += dt;
-				run();
-			});
-			event.delay(dt);
+		var dt = time_ms / 1000;
+		event = MainLoop.add(function() {
+			@:privateAccess event.nextRun += dt;
+			run();
+		});
+		event.delay(dt);
 		#else
-			id = kha.Scheduler.addTimeTask(function() me.run(), time_ms / 1000, time_ms / 1000);
+		id = kha.Scheduler.addTimeTask(function() me.run(), time_ms / 1000, time_ms / 1000);
 		#end
 	}
 
@@ -78,15 +78,15 @@ class Timer {
 	**/
 	public function stop() {
 		#if macro
-			if( event != null ) {
-				event.stop();
-				event = null;
-			}
+		if (event != null) {
+			event.stop();
+			event = null;
+		}
 		#else
-			if( id == null )
-				return;
-			kha.Scheduler.removeTimeTask(id);
-			id = null;
+		if (id == null)
+			return;
+		kha.Scheduler.removeTimeTask(id);
+		id = null;
 		#end
 	}
 
@@ -101,9 +101,7 @@ class Timer {
 		Once bound, it can still be rebound to different functions until `this`
 		Timer is stopped through a call to `this.stop`.
 	**/
-	public dynamic function run() {
-
-	}
+	public dynamic function run() {}
 
 	/**
 		Invokes `f` after `time_ms` milliseconds.
@@ -114,7 +112,7 @@ class Timer {
 
 		If `f` is null, the result is unspecified.
 	**/
-	public static function delay( f : Void -> Void, time_ms : Int ) {
+	public static function delay(f: Void->Void, time_ms: Int) {
 		var t = new haxe.Timer(time_ms);
 		t.run = function() {
 			t.stop();
@@ -134,7 +132,7 @@ class Timer {
 
 		If `f` is null, the result is unspecified.
 	**/
-	public static function measure<T>( f : Void -> T, ?pos : PosInfos ) : T {
+	public static function measure<T>(f: Void->T, ?pos: PosInfos): T {
 		var t0 = stamp();
 		var r = f();
 		Log.trace((stamp() - t0) + "s", pos);
@@ -147,12 +145,11 @@ class Timer {
 		The value itself might differ depending on platforms, only differences
 		between two values make sense.
 	**/
-	public static inline function stamp() : Float {
+	public static inline function stamp(): Float {
 		#if macro
-			return Sys.time();
+		return Sys.time();
 		#else
-			return kha.Scheduler.realTime();
+		return kha.Scheduler.realTime();
 		#end
 	}
-
 }
