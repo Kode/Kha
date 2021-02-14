@@ -2,6 +2,7 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
+
 	var defaultWidth: Int;
 	var defaultHeight: Int;
 
@@ -22,7 +23,7 @@ class Window {
 	}
 
 	public static var all(get, never): Array<Window>;
-	
+
 	static function get_all(): Array<Window> {
 		return windows;
 	}
@@ -99,13 +100,9 @@ class Window {
 		return false;
 	}
 
-	function requestFullscreen(): Void {
-		
-	}
+	function requestFullscreen(): Void {}
 
-	function exitFullscreen(): Void {
-		
-	}
+	function exitFullscreen(): Void {}
 
 	public var visible(get, set): Bool;
 
