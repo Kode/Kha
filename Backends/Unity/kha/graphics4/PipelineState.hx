@@ -22,8 +22,8 @@ class PipelineState extends PipelineStateBase {
 		return new kha.unity.TextureUnit(name);
 	}
 	/*
-	public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
-		return null;
-	}
-	*/
+		public function getAttributeLocation(name: String): kha.graphics4.AttributeLocation {
+			return null;
+		}
+	 */
 }

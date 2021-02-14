@@ -5,8 +5,9 @@ import cs.NativeArray;
 class IndexBuffer {
 	public var nativeIndices: NativeArray<Int>;
 	public var nativeCutIndices: NativeArray<Int>;
-	private var indices: Array<Int>;
-	private var indexCount: Int;
+
+	var indices: Array<Int>;
+	var indexCount: Int;
 
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		this.indexCount = indexCount;

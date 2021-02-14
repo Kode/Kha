@@ -6,7 +6,7 @@ import kha.internal.IntBox;
 class Audio {
 	public static var disableGcInteractions = false;
 	static var intBox: IntBox = new IntBox(0);
-	private static var buffer: Buffer;
+	static var buffer: Buffer;
 
 	public static function _init() {
 		var bufferSize = 1024 * 2;
@@ -14,7 +14,8 @@ class Audio {
 	}
 
 	public static function _callCallback(samples: Int): Void {
-		if (buffer == null) return;
+		if (buffer == null)
+			return;
 		if (audioCallback != null) {
 			intBox.value = samples;
 			audioCallback(intBox, buffer);
@@ -31,7 +32,8 @@ class Audio {
 	}
 
 	public static function _readSample(): Float {
-		if (buffer == null) return 0;
+		if (buffer == null)
+			return 0;
 		var value = buffer.data.get(buffer.readLocation);
 		buffer.readLocation += 1;
 		if (buffer.readLocation >= buffer.size) {

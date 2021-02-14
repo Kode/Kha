@@ -2,6 +2,7 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
+
 	var num: Int;
 	var windowTitle: String;
 
@@ -103,7 +104,7 @@ class Window {
 	}
 
 	function set_title(value: String): String {
-		//Krom.setWindowTitle(num, value);
+		// Krom.setWindowTitle(num, value);
 		windowTitle = value;
 		return windowTitle;
 	}

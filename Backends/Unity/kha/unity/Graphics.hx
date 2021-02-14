@@ -31,10 +31,10 @@ import unityEngine.Matrix4x4;
 import unityEngine.RenderTexture;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var vertexBuffer: VertexBuffer;
-	private var indexBuffer: IndexBuffer;
-	private var pipeline: PipelineState;
-	private var target: Image;
+	var vertexBuffer: VertexBuffer;
+	var indexBuffer: IndexBuffer;
+	var pipeline: PipelineState;
+	var target: Image;
 
 	public function new(target: Image) {
 		this.target = target;
@@ -46,7 +46,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		else {
 			RenderTexture.active = cast target.texture;
-			//setViewport(target.width, target.height);
+			// setViewport(target.width, target.height);
 		}
 	}
 
@@ -55,7 +55,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function beginEye(eye: Int): Void {}
 
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(0, 0, w, h));')
-	private function setViewport(w: Int, h: Int): Void {}
+	function setViewport(w: Int, h: Int): Void {}
 
 	public function end(): Void {
 		RenderTexture.active = null;
@@ -73,12 +73,13 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var c = new unityEngine.Color(0, 0, 0, 0);
-		if (color != null) c = new unityEngine.Color(color.R, color.G, color.B, color.A);
+		if (color != null)
+			c = new unityEngine.Color(color.R, color.G, color.B, color.A);
 		GL.Clear(depth != null, color != null, c, depth != null ? depth : 0);
 	}
 
 	@:functionCode('UnityEngine.GL.Viewport(new UnityEngine.Rect(x, y, width, height));')
-	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{}
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {}
 
 	public function setCullMode(mode: CullMode): Void {}
 
@@ -86,7 +87,8 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setBlendingMode(source: BlendingOperation, destination: BlendingOperation): Void {}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {}
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
+		referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {}
 
@@ -103,7 +105,8 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTexture(unit: TextureUnit, texture: Image): Void {
-		if (texture == null) return;
+		if (texture == null)
+			return;
 		pipeline.material.SetTexture(cast(unit, kha.unity.TextureUnit).name, texture.texture);
 	}
 
@@ -115,9 +118,11 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
+	public function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
+	public function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
 	public function setTextureCompareMode(texunit: TextureUnit, enabled: Bool): Void {}
 
@@ -152,21 +157,13 @@ class Graphics implements kha.graphics4.Graphics {
 		pipeline.material.SetInt(loc.name, value);
 	}
 
-	public function setInt2(location: ConstantLocation, value: Int): Void {
-		
-	}
+	public function setInt2(location: ConstantLocation, value: Int): Void {}
 
-	public function setInt3(location: ConstantLocation, value1: Int, value2: Int): Void {
-		
-	}
+	public function setInt3(location: ConstantLocation, value1: Int, value2: Int): Void {}
 
-	public function setInt4(location: ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
-		
-	}
+	public function setInt4(location: ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {}
 
-	public function setInts(location: ConstantLocation, values: kha.array.Int32Array): Void {
-		
-	}
+	public function setInts(location: ConstantLocation, values: kha.array.Int32Array): Void {}
 
 	public function setFloat(location: ConstantLocation, value: Float): Void {
 		var loc = cast(location, kha.unity.ConstantLocation);

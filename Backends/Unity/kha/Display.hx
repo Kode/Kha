@@ -2,6 +2,7 @@ package kha;
 
 class Display {
 	static var displays: Array<Display> = [];
+
 	var num: Int;
 	var isPrimary: Bool;
 
@@ -14,8 +15,7 @@ class Display {
 	static function init(): Void {
 		if (displays == null) {
 			displays = [];
-			for(i in 0...DisplayImpl.count())
-			{
+			for (i in 0...DisplayImpl.count()) {
 				new Display(i, false);
 			}
 			displays[0].isPrimary = true;

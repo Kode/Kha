@@ -18,11 +18,12 @@ private class SourceMonitor extends unityEngine.MonoBehaviour {
 }
 
 class UnitySoundChannel implements kha.audio1.AudioChannel {
-	static private var gameObject: GameObject = new GameObject("Audio Source");
-	static private var monitor = untyped __cs__("global::kha.audio1.UnitySoundChannel.gameObject.AddComponent<global::kha.audio1._UnitySoundChannel.SourceMonitor>()");
-	private var source: AudioSource;
-	private var clip: AudioClip;
-	private var loop: Bool;
+	static var gameObject: GameObject = new GameObject("Audio Source");
+	static var monitor = untyped __cs__("global::kha.audio1.UnitySoundChannel.gameObject.AddComponent<global::kha.audio1._UnitySoundChannel.SourceMonitor>()");
+
+	var source: AudioSource;
+	var clip: AudioClip;
+	var loop: Bool;
 
 	public function new(filename: String, loop: Bool = false) {
 		clip = UnityBackend.loadSound(filename);
@@ -52,33 +53,33 @@ class UnitySoundChannel implements kha.audio1.AudioChannel {
 
 	public var length(get, never): Float;
 
-	public function get_length(): Float {
+	function get_length(): Float {
 		return clip.length;
 	}
 
 	public var position(get, set): Float;
 
-	public function get_position(): Float {
+	function get_position(): Float {
 		return source != null ? source.time : 0;
 	}
 
-	public function set_position(value:Float): Float {
+	function set_position(value: Float): Float {
 		return source != null ? (source.volume = untyped __cs__("(float)value")) : 0;
 	}
 
 	public var volume(get, set): Float;
 
-	public function get_volume(): Float {
+	function get_volume(): Float {
 		return source != null ? source.volume : 0;
 	}
 
-	public function set_volume(value: Float): Float {
+	function set_volume(value: Float): Float {
 		return source != null ? (source.volume = untyped __cs__("(float)value")) : 0;
 	}
 
 	public var finished(get, never): Bool;
 
-	public function get_finished(): Bool {
+	function get_finished(): Bool {
 		return source == null || !source.isPlaying;
 	}
 }
