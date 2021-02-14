@@ -7,24 +7,26 @@ import kha.math.FastMatrix3;
 import js.html.CanvasRenderingContext2D;
 
 class CanvasGraphics extends Graphics {
-	private var canvas: CanvasRenderingContext2D;
-	private var webfont: kha.js.Font;
-	private var myColor: Color;
-	private var scaleQuality: ImageScaleQuality;
-	private var clipping: Bool = false;
-	private static var instance: CanvasGraphics;
+	var canvas: CanvasRenderingContext2D;
+	var webfont: kha.js.Font;
+	var myColor: Color;
+	var scaleQuality: ImageScaleQuality;
+	var clipping: Bool = false;
+
+	static var instance: CanvasGraphics;
 
 	public function new(canvas: CanvasRenderingContext2D) {
 		super();
 		this.canvas = canvas;
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
-		//webfont = new Font("Arial", new FontStyle(false, false, false), 12);
-		//canvas.globalCompositeOperation = "normal";
+		// webfont = new Font("Arial", new FontStyle(false, false, false), 12);
+		// canvas.globalCompositeOperation = "normal";
 	}
 
 	public static function stringWidth(font: kha.Font, text: String): Float {
-		if (instance == null) return 5 * text.length;
+		if (instance == null)
+			return 5 * text.length;
 		else {
 			instance.font = font;
 			return instance.canvas.measureText(text).width;
@@ -32,11 +34,13 @@ class CanvasGraphics extends Graphics {
 	}
 
 	override public function begin(clear: Bool = true, clearColor: Color = null): Void {
-		if (clear) this.clear(clearColor);
+		if (clear)
+			this.clear(clearColor);
 	}
 
 	override public function clear(color: Color = null): Void {
-		if (color == null) color = 0x00000000;
+		if (color == null)
+			color = 0x00000000;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		if (color.A == 0) // if color is transparent, clear the screen. Note: in Canvas, transparent colors will overlay, not overwrite.
@@ -46,15 +50,12 @@ class CanvasGraphics extends Graphics {
 		this.color = myColor;
 	}
 
-	override public function end(): Void {
-
-	}
+	override public function end(): Void {}
 
 	/*override public function translate(x: Float, y: Float) {
 		tx = x;
 		ty = y;
 	}*/
-
 	override public function drawImage(img: kha.Image, x: Float, y: Float) {
 		canvas.globalAlpha = opacity;
 		canvas.drawImage(cast(img, CanvasImage).image, x, y);
@@ -84,28 +85,26 @@ class CanvasGraphics extends Graphics {
 				canvas.drawImage(cast(image, CanvasImage).image, sx, sy, sw, sh, dx, dy, dw, dh);
 			}
 		}
-		catch (ex: Dynamic) {
-
-		}
+		catch (ex:Dynamic) {}
 		canvas.globalAlpha = 1;
 	}
 
-	override public function set_color(color: Color): Color {
+	override function set_color(color: Color): Color {
 		myColor = color;
 		canvas.strokeStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		canvas.fillStyle = "rgba(" + color.Rb + "," + color.Gb + "," + color.Bb + "," + color.A + ")";
 		return color;
 	}
 
-	override public function get_color(): Color {
+	override function get_color(): Color {
 		return myColor;
 	}
 
-	override private function get_imageScaleQuality(): ImageScaleQuality {
+	override function get_imageScaleQuality(): ImageScaleQuality {
 		return scaleQuality;
 	}
 
-	override private function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
+	override function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
 		if (value == ImageScaleQuality.Low) {
 			untyped canvas.mozImageSmoothingEnabled = false;
 			untyped canvas.webkitImageSmoothingEnabled = false;
@@ -168,8 +167,8 @@ class CanvasGraphics extends Graphics {
 	var bakedQuadCache = new kha.Kravur.AlignedQuad();
 
 	override public function drawString(text: String, x: Float, y: Float) {
-		//canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
-		//canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
+		// canvas.fillText(text, tx + x, ty + y + webfont.getHeight());
+		// canvas.drawImage(cast(webfont.getTexture(), Image).image, 0, 0, 50, 50, tx + x, ty + y, 50, 50);
 
 		var image = webfont.getImage(fontSize, myColor);
 		if (image.width > 0) {
@@ -181,7 +180,8 @@ class CanvasGraphics extends Graphics {
 
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
-						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0,
+							q.y0, q.x1 - q.x0, q.y1 - q.y0);
 					xpos += q.xadvance;
 				}
 			}
@@ -199,20 +199,21 @@ class CanvasGraphics extends Graphics {
 
 				if (q != null) {
 					if (q.s1 - q.s0 > 0 && q.t1 - q.t0 > 0 && q.x1 - q.x0 > 0 && q.y1 - q.y0 > 0)
-						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0, q.y0, q.x1 - q.x0, q.y1 - q.y0);
+						canvas.drawImage(image, q.s0 * image.width, q.t0 * image.height, (q.s1 - q.s0) * image.width, (q.t1 - q.t0) * image.height, q.x0,
+							q.y0, q.x1 - q.x0, q.y1 - q.y0);
 					xpos += q.xadvance;
 				}
 			}
 		}
 	}
 
-	override public function set_font(font: kha.Font): kha.Font {
+	override function set_font(font: kha.Font): kha.Font {
 		webfont = cast(font, kha.js.Font);
-		//canvas.font = webfont.size + "px " + webfont.name;
+		// canvas.font = webfont.size + "px " + webfont.name;
 		return cast webfont;
 	}
 
-	override public function get_font(): kha.Font {
+	override function get_font(): kha.Font {
 		return cast webfont;
 	}
 
@@ -258,7 +259,6 @@ class CanvasGraphics extends Graphics {
 	}
 
 	override public function setTransformation(transformation: FastMatrix3): Void {
-		canvas.setTransform(transformation._00, transformation._01, transformation._10,
-			transformation._11, transformation._20, transformation._21);
+		canvas.setTransform(transformation._00, transformation._01, transformation._10, transformation._11, transformation._20, transformation._21);
 	}
 }

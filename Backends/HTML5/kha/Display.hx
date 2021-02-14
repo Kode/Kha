@@ -5,9 +5,7 @@ import js.Browser;
 class Display {
 	static var instance: Display = new Display();
 
-	function new() {
-
-	}
+	function new() {}
 
 	public static function init(): Void {}
 
@@ -75,7 +73,7 @@ class Display {
 		dpiElement.style.left = "-100%";
 		dpiElement.style.top = "-100%";
 		Browser.document.body.appendChild(dpiElement);
-		var dpi:Int = dpiElement.offsetHeight;
+		var dpi: Int = dpiElement.offsetHeight;
 		dpiElement.remove();
 		return dpi;
 	}

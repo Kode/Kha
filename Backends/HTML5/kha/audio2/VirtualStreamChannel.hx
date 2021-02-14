@@ -35,7 +35,7 @@ class VirtualStreamChannel implements kha.audio1.AudioChannel {
 			case Stopped:
 				lastPosition = 0;
 			case Paused:
-				// nothing
+			// nothing
 			case Playing:
 				lastPosition += now - lastTickTime;
 				while (lastPosition > length) {

@@ -5,14 +5,14 @@ import js.html.audio.AudioBufferSourceNode;
 import js.html.audio.GainNode;
 
 class MobileWebAudioChannel implements kha.audio1.AudioChannel {
-	private var buffer: AudioBuffer;
-	private var loop: Bool;
-	private var source: AudioBufferSourceNode;
-	private var gain: GainNode;
-	private var startTime: Float;
-	private var pauseTime: Float;
-	private var paused: Bool = false;
-	private var stopped: Bool = false;
+	var buffer: AudioBuffer;
+	var loop: Bool;
+	var source: AudioBufferSourceNode;
+	var gain: GainNode;
+	var startTime: Float;
+	var pauseTime: Float;
+	var paused: Bool = false;
+	var stopped: Bool = false;
 
 	public function new(sound: MobileWebAudioSound, loop: Bool) {
 		this.buffer = sound._buffer;
@@ -20,18 +20,18 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		createSource();
 	}
 
-	private function createSource(): Void {
+	function createSource(): Void {
 		source = MobileWebAudio._context.createBufferSource();
 		source.loop = loop;
 		source.buffer = buffer;
-		source.onended = function () {
+		source.onended = function() {
 			stopped = true;
 		}
 		gain = MobileWebAudio._context.createGain();
 		source.connect(gain);
 		gain.connect(MobileWebAudio._context.destination);
 	}
-	
+
 	public function play(): Void {
 		if (paused || stopped) {
 			createSource();
@@ -52,7 +52,8 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		final wasStopped = paused || stopped;
 		pauseTime = MobileWebAudio._context.currentTime - startTime;
 		paused = true;
-		if (wasStopped) return;
+		if (wasStopped)
+			return;
 		source.stop();
 	}
 
@@ -60,22 +61,26 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		final wasStopped = paused || stopped;
 		paused = false;
 		stopped = true;
-		if (wasStopped) return;
+		if (wasStopped)
+			return;
 		source.stop();
 	}
 
 	public var length(get, never): Float; // Seconds
-	
-	private function get_length(): Float {
+
+	function get_length(): Float {
 		return source.buffer.duration;
 	}
 
 	public var position(get, set): Float; // Seconds
-	
-	private function get_position(): Float {
-		if (stopped) return length;
-		if (paused) return pauseTime;
-		else return MobileWebAudio._context.currentTime - startTime;
+
+	function get_position(): Float {
+		if (stopped)
+			return length;
+		if (paused)
+			return pauseTime;
+		else
+			return MobileWebAudio._context.currentTime - startTime;
 	}
 
 	function set_position(value: Float): Float {
@@ -84,17 +89,17 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 
 	public var volume(get, set): Float;
 
-	private function get_volume(): Float {
+	function get_volume(): Float {
 		return gain.gain.value;
 	}
 
-	private function set_volume(value: Float): Float {
+	function set_volume(value: Float): Float {
 		return gain.gain.value = value;
 	}
 
 	public var finished(get, never): Bool;
 
-	private function get_finished(): Bool {
+	function get_finished(): Bool {
 		return stopped;
 	}
 }

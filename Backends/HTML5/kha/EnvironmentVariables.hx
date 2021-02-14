@@ -17,7 +17,7 @@ class EnvironmentVariables {
 
 			return null;
 		}
-		catch (error: Dynamic) {
+		catch (error:Dynamic) {
 			return null;
 		}
 	}

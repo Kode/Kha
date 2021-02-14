@@ -19,7 +19,7 @@ using StringTools;
 	override public function play(): Void {
 		super.play();
 		element.play();
-	}
+	} 
 
 	override public function pause(): Void {
 		try {
@@ -55,13 +55,16 @@ using StringTools;
 	}
 }*/
 class Sound extends kha.Sound {
-	private var filenames: Array<String>;
+	var filenames: Array<String>;
+
 	static var loading: Array<Sound> = new Array();
-	private var done: kha.Sound -> Void;
-	private var failed: AssetError -> Void;
+
+	var done: kha.Sound->Void;
+	var failed: AssetError->Void;
+
 	public var element: AudioElement;
 
-	public function new(filenames: Array<String>, done: kha.Sound -> Void, failed: AssetError -> Void) {
+	public function new(filenames: Array<String>, done: kha.Sound->Void, failed: AssetError->Void) {
 		super();
 
 		this.done = done;
@@ -72,9 +75,12 @@ class Sound extends kha.Sound {
 
 		this.filenames = [];
 		for (filename in filenames) {
-			if (element.canPlayType("audio/ogg") != "" && filename.endsWith(".ogg")) this.filenames.push(filename);
-			if (element.canPlayType("audio/mp4") != "" && filename.endsWith(".mp4")) this.filenames.push(filename);
-			if (element.canPlayType("audio/wav") != "" && filename.endsWith(".wav")) this.filenames.push(filename);
+			if (element.canPlayType("audio/ogg") != "" && filename.endsWith(".ogg"))
+				this.filenames.push(filename);
+			if (element.canPlayType("audio/mp4") != "" && filename.endsWith(".mp4"))
+				this.filenames.push(filename);
+			if (element.canPlayType("audio/wav") != "" && filename.endsWith(".wav"))
+				this.filenames.push(filename);
 		}
 
 		element.addEventListener("error", errorListener, false);
@@ -85,7 +91,7 @@ class Sound extends kha.Sound {
 		element.load();
 	}
 
-	//override public function play(): kha.SoundChannel {
+	// override public function play(): kha.SoundChannel {
 	//	try {
 	//		element.play();
 	//	}
@@ -93,8 +99,8 @@ class Sound extends kha.Sound {
 	//		trace(e);
 	//	}
 	//	return new SoundChannel(element);
-	//}
-	private function errorListener(eventInfo: ErrorEvent): Void {
+	// }
+	function errorListener(eventInfo: ErrorEvent): Void {
 		if (element.error.code == MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
 			for (i in 0...filenames.length - 1) {
 				if (element.src == filenames[i]) {
@@ -105,15 +111,15 @@ class Sound extends kha.Sound {
 			}
 		}
 
-		failed({ url: element.src });
+		failed({url: element.src});
 		finishAsset();
 	}
 
-	private function canPlayThroughListener(eventInfo: Event): Void {
+	function canPlayThroughListener(eventInfo: Event): Void {
 		finishAsset();
 	}
 
-	private function finishAsset() {
+	function finishAsset() {
 		element.removeEventListener("error", errorListener, false);
 		element.removeEventListener("canplaythrough", canPlayThroughListener, false);
 		done(this);

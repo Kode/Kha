@@ -29,28 +29,28 @@ import kha.WebGLImage;
 
 class Graphics implements kha.graphics4.Graphics {
 	var currentPipeline: PipelineState = null;
-	private var depthTest: Bool = false;
-	private var depthMask: Bool = false;
-	private var colorMaskRed: Bool = true;
-	private var colorMaskGreen: Bool = true;
-	private var colorMaskBlue: Bool = true;
-	private var colorMaskAlpha: Bool = true;
-	private var indicesCount: Int;
-	private var renderTarget: Canvas;
-	private var renderTargetFrameBuffer: Dynamic;
-	private var renderTargetMSAA: Dynamic;
-	private var renderTargetTexture: Dynamic;
-	private var isCubeMap: Bool = false;
-	private var isDepthAttachment: Bool = false;
-	private var instancedExtension: Dynamic;
-	private var blendMinMaxExtension: Dynamic;
-	private var useVertexAttributes:Int=0;
+	var depthTest: Bool = false;
+	var depthMask: Bool = false;
+	var colorMaskRed: Bool = true;
+	var colorMaskGreen: Bool = true;
+	var colorMaskBlue: Bool = true;
+	var colorMaskAlpha: Bool = true;
+	var indicesCount: Int;
+	var renderTarget: Canvas;
+	var renderTargetFrameBuffer: Dynamic;
+	var renderTargetMSAA: Dynamic;
+	var renderTargetTexture: Dynamic;
+	var isCubeMap: Bool = false;
+	var isDepthAttachment: Bool = false;
+	var instancedExtension: Dynamic;
+	var blendMinMaxExtension: Dynamic;
+	var useVertexAttributes: Int = 0;
 
 	// WebGL2 constants
 	// https://www.khronos.org/registry/webgl/specs/2.0.0/
-	private static inline var GL_TEXTURE_COMPARE_MODE = 0x884C;
-	private static inline var GL_TEXTURE_COMPARE_FUNC = 0x884D;
-	private static inline var GL_COMPARE_REF_TO_TEXTURE = 0x884E;
+	static inline var GL_TEXTURE_COMPARE_MODE = 0x884C;
+	static inline var GL_TEXTURE_COMPARE_FUNC = 0x884D;
+	static inline var GL_COMPARE_REF_TO_TEXTURE = 0x884E;
 
 	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
@@ -64,8 +64,9 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	private function init() {
-		if (renderTarget == null) return;
+	function init() {
+		if (renderTarget == null)
+			return;
 		isCubeMap = Std.is(renderTarget, CubeMap);
 		if (isCubeMap) {
 			var cubeMap: CubeMap = cast(renderTarget, CubeMap);
@@ -76,7 +77,7 @@ class Graphics implements kha.graphics4.Graphics {
 		else {
 			var image: WebGLImage = cast(renderTarget, WebGLImage);
 			renderTargetFrameBuffer = image.frameBuffer;
-			renderTargetMSAA=image.MSAAFrameBuffer;
+			renderTargetMSAA = image.MSAAFrameBuffer;
 			renderTargetTexture = image.texture;
 		}
 	}
@@ -95,7 +96,8 @@ class Graphics implements kha.graphics4.Graphics {
 			if (additionalRenderTargets != null) {
 				SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL, GL.TEXTURE_2D, renderTargetTexture, 0);
 				for (i in 0...additionalRenderTargets.length) {
-					SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, GL.TEXTURE_2D, cast(additionalRenderTargets[i], WebGLImage).texture, 0);
+					SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL + i + 1, GL.TEXTURE_2D,
+						cast(additionalRenderTargets[i], WebGLImage).texture, 0);
 				}
 				var attachments = [SystemImpl.drawBuffers.COLOR_ATTACHMENT0_WEBGL];
 				for (i in 0...additionalRenderTargets.length) {
@@ -110,7 +112,8 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.enable(GL.BLEND);
 		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTargetFrameBuffer);
-		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, isDepthAttachment ? GL.DEPTH_ATTACHMENT : GL.COLOR_ATTACHMENT0, GL.TEXTURE_CUBE_MAP_POSITIVE_X + face, renderTargetTexture, 0);
+		SystemImpl.gl.framebufferTexture2D(GL.FRAMEBUFFER, isDepthAttachment ? GL.DEPTH_ATTACHMENT : GL.COLOR_ATTACHMENT0,
+			GL.TEXTURE_CUBE_MAP_POSITIVE_X + face, renderTargetTexture, 0);
 		SystemImpl.gl.viewport(0, 0, renderTarget.width, renderTarget.height);
 	}
 
@@ -120,7 +123,8 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
 		if (eye == 0) {
 			SystemImpl.gl.viewport(0, 0, Std.int(System.windowWidth() * 0.5), System.windowHeight());
-		} else {
+		}
+		else {
 			SystemImpl.gl.viewport(Std.int(System.windowWidth() * 0.5), 0, Std.int(System.windowWidth() * 0.5), System.windowHeight());
 		}
 	}
@@ -129,10 +133,8 @@ class Graphics implements kha.graphics4.Graphics {
 		if (renderTargetMSAA != null) {
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.READ_FRAMEBUFFER, renderTargetFrameBuffer);
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetMSAA);
-			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height,
-								0, 0, renderTarget.width, renderTarget.height,
-								GL.COLOR_BUFFER_BIT, GL.NEAREST);
-			
+			untyped SystemImpl.gl.blitFramebuffer(0, 0, renderTarget.width, renderTarget.height, 0, 0, renderTarget.width, renderTarget.height,
+				GL.COLOR_BUFFER_BIT, GL.NEAREST);
 		}
 		#if (debug || kha_debug_html5)
 		var error = SystemImpl.gl.getError();
@@ -157,9 +159,7 @@ class Graphics implements kha.graphics4.Graphics {
 		#end
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -224,85 +224,85 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
-		case Always:
-			write ? SystemImpl.gl.enable(GL.DEPTH_TEST) : SystemImpl.gl.disable(GL.DEPTH_TEST);
-			depthTest = write;
-			SystemImpl.gl.depthFunc(GL.ALWAYS);
-		case Never:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.NEVER);
-		case Equal:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.EQUAL);
-		case NotEqual:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.NOTEQUAL);
-		case Less:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.LESS);
-		case LessEqual:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.LEQUAL);
-		case Greater:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.GREATER);
-		case GreaterEqual:
-			SystemImpl.gl.enable(GL.DEPTH_TEST);
-			depthTest = true;
-			SystemImpl.gl.depthFunc(GL.GEQUAL);
+			case Always:
+				write ? SystemImpl.gl.enable(GL.DEPTH_TEST) : SystemImpl.gl.disable(GL.DEPTH_TEST);
+				depthTest = write;
+				SystemImpl.gl.depthFunc(GL.ALWAYS);
+			case Never:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.NEVER);
+			case Equal:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.EQUAL);
+			case NotEqual:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.NOTEQUAL);
+			case Less:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.LESS);
+			case LessEqual:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.LEQUAL);
+			case Greater:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.GREATER);
+			case GreaterEqual:
+				SystemImpl.gl.enable(GL.DEPTH_TEST);
+				depthTest = true;
+				SystemImpl.gl.depthFunc(GL.GEQUAL);
 		}
 		SystemImpl.gl.depthMask(write);
 		depthMask = write;
 	}
 
-	private static function getBlendFunc(factor: BlendingFactor): Int {
+	static function getBlendFunc(factor: BlendingFactor): Int {
 		switch (factor) {
-		case BlendZero, Undefined:
-			return GL.ZERO;
-		case BlendOne:
-			return GL.ONE;
-		case SourceAlpha:
-			return GL.SRC_ALPHA;
-		case DestinationAlpha:
-			return GL.DST_ALPHA;
-		case InverseSourceAlpha:
-			return GL.ONE_MINUS_SRC_ALPHA;
-		case InverseDestinationAlpha:
-			return GL.ONE_MINUS_DST_ALPHA;
-		case SourceColor:
-			return GL.SRC_COLOR;
-		case DestinationColor:
-			return GL.DST_COLOR;
-		case InverseSourceColor:
-			return GL.ONE_MINUS_SRC_COLOR;
-		case InverseDestinationColor:
-			return GL.ONE_MINUS_DST_COLOR;
+			case BlendZero, Undefined:
+				return GL.ZERO;
+			case BlendOne:
+				return GL.ONE;
+			case SourceAlpha:
+				return GL.SRC_ALPHA;
+			case DestinationAlpha:
+				return GL.DST_ALPHA;
+			case InverseSourceAlpha:
+				return GL.ONE_MINUS_SRC_ALPHA;
+			case InverseDestinationAlpha:
+				return GL.ONE_MINUS_DST_ALPHA;
+			case SourceColor:
+				return GL.SRC_COLOR;
+			case DestinationColor:
+				return GL.DST_COLOR;
+			case InverseSourceColor:
+				return GL.ONE_MINUS_SRC_COLOR;
+			case InverseDestinationColor:
+				return GL.ONE_MINUS_DST_COLOR;
 		}
 	}
 
-	private static function getBlendOp(op: BlendingOperation): Int {
+	static function getBlendOp(op: BlendingOperation): Int {
 		switch (op) {
-		case Add:
-			return GL.FUNC_ADD;
-		case Subtract:
-			return GL.FUNC_SUBTRACT;
-		case ReverseSubtract:
-			return GL.FUNC_REVERSE_SUBTRACT;
-		case Min:
-			return 0x8007;
-		case Max:
-			return 0x8008;
+			case Add:
+				return GL.FUNC_ADD;
+			case Subtract:
+				return GL.FUNC_SUBTRACT;
+			case ReverseSubtract:
+				return GL.FUNC_REVERSE_SUBTRACT;
+			case Min:
+				return 0x8007;
+			case Max:
+				return 0x8008;
 		}
 	}
 
-	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation,
-		alphaSource: BlendingFactor, alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
+	public function setBlendingMode(source: BlendingFactor, destination: BlendingFactor, operation: BlendingOperation, alphaSource: BlendingFactor,
+			alphaDestination: BlendingFactor, alphaOperation: BlendingOperation): Void {
 		if (source == BlendOne && destination == BlendZero) {
 			SystemImpl.gl.disable(GL.BLEND);
 		}
@@ -318,14 +318,14 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
-		for(i in 0...useVertexAttributes){
+		for (i in 0...useVertexAttributes) {
 			SystemImpl.gl.disableVertexAttribArray(i);
 		}
 		useVertexAttributes = cast(vertexBuffer, VertexBuffer).set(0);
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-		for(i in 0...useVertexAttributes){
+		for (i in 0...useVertexAttributes) {
 			SystemImpl.gl.disableVertexAttribArray(i);
 		}
 		var offset: Int = 0;
@@ -344,13 +344,12 @@ class Graphics implements kha.graphics4.Graphics {
 		cast(indexBuffer, IndexBuffer).set();
 	}
 
-	//public function maxTextureSize(): Int {
+	// public function maxTextureSize(): Int {
 	//	return Sys.gl == null ? 8192 : Sys.gl.getParameter(Sys.gl.MAX_TEXTURE_SIZE);
-	//}
-
-	//public function supportsNonPow2Textures(): Bool {
+	// }
+	// public function supportsNonPow2Textures(): Bool {
 	//	return false;
-	//}
+	// }
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
@@ -367,7 +366,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		//not implemented yet.
+		// not implemented yet.
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -380,53 +379,52 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
-
-	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+			minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(texunit, TextureUnit).value);
 
 		switch (uAddressing) {
-		case Clamp:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-		case Repeat:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.REPEAT);
-		case Mirror:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.MIRRORED_REPEAT);
+			case Clamp:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+			case Repeat:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.REPEAT);
+			case Mirror:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.MIRRORED_REPEAT);
 		}
 
 		switch (vAddressing) {
-		case Clamp:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
-		case Repeat:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.REPEAT);
-		case Mirror:
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.MIRRORED_REPEAT);
+			case Clamp:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+			case Repeat:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.REPEAT);
+			case Mirror:
+				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.MIRRORED_REPEAT);
 		}
 
 		switch (minificationFilter) {
-		case PointFilter:
-			switch (mipmapFilter) {
-			case NoMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-			case PointMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_NEAREST);
-			case LinearMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
-			}
-		case LinearFilter, AnisotropicFilter:
-			switch (mipmapFilter) {
-			case NoMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-			case PointMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_NEAREST);
-			case LinearMipFilter:
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
-			}
-			if (minificationFilter == AnisotropicFilter) {
-				SystemImpl.gl.texParameteri(GL.TEXTURE_2D, SystemImpl.anisotropicFilter.TEXTURE_MAX_ANISOTROPY_EXT, 4);
-			}
+			case PointFilter:
+				switch (mipmapFilter) {
+					case NoMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+					case PointMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_NEAREST);
+					case LinearMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
+				}
+			case LinearFilter, AnisotropicFilter:
+				switch (mipmapFilter) {
+					case NoMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+					case PointMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_NEAREST);
+					case LinearMipFilter:
+						SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_LINEAR);
+				}
+				if (minificationFilter == AnisotropicFilter) {
+					SystemImpl.gl.texParameteri(GL.TEXTURE_2D, SystemImpl.anisotropicFilter.TEXTURE_MAX_ANISOTROPY_EXT, 4);
+				}
 		}
 
 		switch (magnificationFilter) {
@@ -437,9 +435,8 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		if (enabled) {
@@ -481,22 +478,24 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
-		case None:
-			SystemImpl.gl.disable(GL.CULL_FACE);
-		case Clockwise:
-			SystemImpl.gl.enable(GL.CULL_FACE);
-			SystemImpl.gl.cullFace(GL.BACK);
-		case CounterClockwise:
-			SystemImpl.gl.enable(GL.CULL_FACE);
-			SystemImpl.gl.cullFace(GL.FRONT);
+			case None:
+				SystemImpl.gl.disable(GL.CULL_FACE);
+			case Clockwise:
+				SystemImpl.gl.enable(GL.CULL_FACE);
+				SystemImpl.gl.cullFace(GL.BACK);
+			case CounterClockwise:
+				SystemImpl.gl.enable(GL.CULL_FACE);
+				SystemImpl.gl.cullFace(GL.FRONT);
 		}
 	}
 
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
-		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination, pipe.alphaBlendOperation);
+		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, pipe.stencilReferenceValue,
+			pipe.stencilReadMask, pipe.stencilWriteMask);
+		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination,
+			pipe.alphaBlendOperation);
 		currentPipeline = pipe;
 		pipe.set();
 		colorMaskRed = pipe.colorWriteMaskRed;
@@ -589,23 +588,41 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 
-	private var matrixCache = new Float32Array(16);
+	var matrixCache = new Float32Array(16);
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
-		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
-		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
-		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
+		matrixCache[0] = matrix._00;
+		matrixCache[1] = matrix._01;
+		matrixCache[2] = matrix._02;
+		matrixCache[3] = matrix._03;
+		matrixCache[4] = matrix._10;
+		matrixCache[5] = matrix._11;
+		matrixCache[6] = matrix._12;
+		matrixCache[7] = matrix._13;
+		matrixCache[8] = matrix._20;
+		matrixCache[9] = matrix._21;
+		matrixCache[10] = matrix._22;
+		matrixCache[11] = matrix._23;
+		matrixCache[12] = matrix._30;
+		matrixCache[13] = matrix._31;
+		matrixCache[14] = matrix._32;
+		matrixCache[15] = matrix._33;
 		var rawMatrixCache = new js.lib.Float32Array(matrixCache.buffer, matrixCache.byteOffset, matrixCache.length);
 		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, rawMatrixCache);
 	}
 
-	private var matrix3Cache = new Float32Array(9);
+	var matrix3Cache = new Float32Array(9);
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
-		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
-		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
+		matrix3Cache[0] = matrix._00;
+		matrix3Cache[1] = matrix._01;
+		matrix3Cache[2] = matrix._02;
+		matrix3Cache[3] = matrix._10;
+		matrix3Cache[4] = matrix._11;
+		matrix3Cache[5] = matrix._12;
+		matrix3Cache[6] = matrix._20;
+		matrix3Cache[7] = matrix._21;
+		matrix3Cache[8] = matrix._22;
 		var rawMatrix3Cache = new js.lib.Float32Array(matrix3Cache.buffer, matrix3Cache.byteOffset, matrix3Cache.length);
 		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, rawMatrix3Cache);
 	}
@@ -616,7 +633,7 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.drawElements(GL.TRIANGLES, count == -1 ? indicesCount : count, type, start * size);
 	}
 
-	private function convertStencilAction(action: StencilAction) {
+	function convertStencilAction(action: StencilAction) {
 		switch (action) {
 			case StencilAction.Decrement:
 				return GL.DECR;
@@ -658,11 +675,11 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: StencilValue, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep
-			&& depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
-				SystemImpl.gl.disable(GL.STENCIL_TEST);
-			}
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
+			referenceValue: StencilValue, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep && depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
+			SystemImpl.gl.disable(GL.STENCIL_TEST);
+		}
 		else {
 			SystemImpl.gl.enable(GL.STENCIL_TEST);
 			var stencilFunc = convertCompareMode(compareMode);
@@ -677,7 +694,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount : Int, start: Int = 0, count: Int = -1) {
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1) {
 		if (instancedRenderingAvailable()) {
 			var type = SystemImpl.elementIndexUint == null ? GL.UNSIGNED_SHORT : GL.UNSIGNED_INT;
 			var typeSize = SystemImpl.elementIndexUint == null ? 2 : 4;

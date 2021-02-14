@@ -6,7 +6,7 @@ import js.html.XMLHttpRequest;
 import kha.audio2.Audio;
 
 /*
-class WebAudioChannel extends kha.SoundChannel {
+	class WebAudioChannel extends kha.SoundChannel {
 	private var buffer: Dynamic;
 	private var startTime: Float;
 	private var offset: Float;
@@ -16,7 +16,7 @@ class WebAudioChannel extends kha.SoundChannel {
 		super();
 		this.offset = 0;
 		this.buffer = buffer;
-		this.startTime = Audio._context.currentTime;
+		this.startTime = Audio._context.currentTime; 
 		this.source = Audio._context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.connect(Audio._context.destination);
@@ -53,17 +53,17 @@ class WebAudioChannel extends kha.SoundChannel {
 	override public function getLength(): Int {
 		return Math.floor(buffer.duration * 1000); //Miliseconds
 	}
-}
-*/
+	}
+ */
 class WebAudioSound extends kha.Sound {
-	public function new(filename: String, done: kha.Sound -> Void, failed: AssetError -> Void) {
+	public function new(filename: String, done: kha.Sound->Void, failed: AssetError->Void) {
 		super();
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", filename, true);
 		request.responseType = "arraybuffer";
 
 		request.onerror = function() {
-			failed({ url: filename });
+			failed({url: filename});
 		};
 
 		request.onload = function() {
@@ -74,13 +74,12 @@ class WebAudioSound extends kha.Sound {
 		request.send(null);
 	}
 
-	private function superUncompress(done: Void->Void): Void {
+	function superUncompress(done: Void->Void): Void {
 		super.uncompress(done);
 	}
 
 	override public function uncompress(done: Void->Void): Void {
-		Audio._context.decodeAudioData(compressedData.getData(),
-		function (buffer: js.html.audio.AudioBuffer) {
+		Audio._context.decodeAudioData(compressedData.getData(), function(buffer: js.html.audio.AudioBuffer) {
 			final ch0 = buffer.getChannelData(0);
 			final ch1 = buffer.numberOfChannels == 1 ? ch0 : buffer.getChannelData(1);
 			final len = ch0.length;
@@ -94,24 +93,22 @@ class WebAudioSound extends kha.Sound {
 			function uncompressInner() {
 				var chk_len = idx + 11025;
 				var next_chk = chk_len > lidx ? lidx : chk_len;
-				while(idx < next_chk) {
+				while (idx < next_chk) {
 					uncompressedData[idx] = ch0[i];
-					uncompressedData[idx+1] = ch1[i];
+					uncompressedData[idx + 1] = ch1[i];
 					idx += 2;
 					++i;
 				}
 				if (idx < lidx)
-					js.Browser.window.setTimeout(uncompressInner,0);
+					js.Browser.window.setTimeout(uncompressInner, 0);
 				else {
 					compressedData = null;
 					done();
 				}
 			};
 			uncompressInner();
-		},
-		function () {
+		}, function() {
 			superUncompress(done);
 		});
 	}
-
 }

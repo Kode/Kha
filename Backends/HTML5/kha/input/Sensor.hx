@@ -3,21 +3,22 @@ package kha.input;
 import kha.SystemImpl;
 
 class Sensor {
-	private static var isInited: Bool = false;
-	private static var accelerometer: Sensor = new Sensor();
-	private static var gyroscope: Sensor = new Sensor();
-	private var listeners: Array<Float -> Float -> Float -> Void> = new Array();
+	static var isInited: Bool = false;
+	static var accelerometer: Sensor = new Sensor();
+	static var gyroscope: Sensor = new Sensor();
+
+	var listeners: Array<Float->Float->Float->Void> = new Array();
 
 	public static function get(type: SensorType): Sensor {
 		switch (type) {
-		case Accelerometer:
-			return accelerometer;
-		case Gyroscope:
-			return gyroscope;
+			case Accelerometer:
+				return accelerometer;
+			case Gyroscope:
+				return gyroscope;
 		}
 	}
 
-	public function notify(listener: Float -> Float -> Float -> Void): Void {
+	public function notify(listener: Float->Float->Float->Void): Void {
 		if (!isInited) {
 			SystemImpl.initSensor();
 			isInited = true;
@@ -25,9 +26,7 @@ class Sensor {
 		listeners.push(listener);
 	}
 
-	private function new() {
-
-	}
+	function new() {}
 
 	public static function _changed(type: Int, x: Float, y: Float, z: Float): Void {
 		var sensor = get(type == 0 ? SensorType.Accelerometer : SensorType.Gyroscope);

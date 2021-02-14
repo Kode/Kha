@@ -10,7 +10,8 @@ import kha.Kravur;
 @:keepInit
 class Font implements Resource {
 	public var kravur: Kravur;
-	private var images: Map<Int, Map<Int, ImageElement>> = new Map();
+
+	var images: Map<Int, Map<Int, ImageElement>> = new Map();
 
 	public function new(blob: Blob) {
 		this.kravur = Syntax.code("new kha_js_Font.Kravur(blob);");
