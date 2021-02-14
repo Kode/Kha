@@ -67,7 +67,7 @@ abstract Float32Array(Float32ArrayPrivate) {
 		return this.self.get(index);
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Float32Array {
+	// public inline function subarray(start: Int, ?end: Int): Float32Array {
 	//	return cast this.self.subarray(start, end);
-	//}
+	// }
 }

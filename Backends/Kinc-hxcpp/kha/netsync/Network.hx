@@ -6,17 +6,16 @@ import haxe.io.Bytes;
 #include <Kore/pch.h>
 #include <Kore/Network/Socket.h>
 ')
-
 @:headerClassCode('
 	Kore::Socket *socket;
 ')
 class Network {
-	private var url: String;
-	private var port: Int;
-	private var bufferPos: Int;
-	private var buffer: Bytes;
-	private var tempBuffer: Bytes;
-	private var listener: Bytes->Void;
+	var url: String;
+	var port: Int;
+	var bufferPos: Int;
+	var buffer: Bytes;
+	var tempBuffer: Bytes;
+	var listener: Bytes->Void;
 
 	public function new(url: String, port: Int, errorCallback: Void->Void, closeCallback: Void->Void) {
 		this.url = url;
@@ -35,25 +34,23 @@ class Network {
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
 	}
-	
+
 	@:functionCode('
 		// TODO: mandatory
 		socket->send(url, port, (const unsigned char*)bytes->b->getBase(), bytes->length);
 	')
-	public function send(bytes: Bytes, mandatory: Bool): Void {
-		
-	}
-	
+	public function send(bytes: Bytes, mandatory: Bool): Void {}
+
 	public function listen(listener: Bytes->Void): Void {
 		this.listener = listener;
 	}
 
-	private function update() {
+	function update() {
 		var received = getBytesFromSocket(tempBuffer);
 		buffer.blit(bufferPos, tempBuffer, 0, received);
 		bufferPos += received;
-		//if (received > 0) trace("received " + received + " bytes");
-		
+		// if (received > 0) trace("received " + received + " bytes");
+
 		// TODO: Handle partial packets, don't choke on garbage
 		if (listener != null && bufferPos > 0) {
 			var result = Bytes.alloc(bufferPos);
@@ -74,7 +71,7 @@ class Network {
 			return 0;
 		}
 	')
-	private function getBytesFromSocket(inBuffer: Bytes): Int {
+	function getBytesFromSocket(inBuffer: Bytes): Int {
 		return 0;
 	}
 }

@@ -10,11 +10,10 @@ import kha.graphics4.VertexStructure;
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
 ')
-
 @:headerClassCode("Kore::Graphics4::VertexBuffer* buffer;")
 class VertexBuffer {
-	private var data: Float32Array;
-	@:keep private var dataInt16: Int16Array;
+	var data: Float32Array;
+	@:keep var dataInt16: Int16Array;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		init(vertexCount, structure, usage, instanceDataStepRate);
@@ -56,24 +55,24 @@ class VertexBuffer {
 		}
 		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, (Kore::Graphics4::Usage)usage, instanceDataStepRate);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
-
-	}
+	function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode('
 		data->self.data = buffer->lock(start, count);
 		data->self.myLength = count * buffer->stride() / 4;
 		return data;
 	')
-	private function lockPrivate(start: Int, count: Int): Float32Array {
+	function lockPrivate(start: Int, count: Int): Float32Array {
 		return data;
 	}
 
 	var lastLockCount: Int = 0;
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		if (start == null) start = 0;
-		if (count == null) count = this.count();
+		if (start == null)
+			start = 0;
+		if (count == null)
+			count = this.count();
 		lastLockCount = count;
 		return lockPrivate(start, count);
 	}
@@ -83,22 +82,23 @@ class VertexBuffer {
 		dataInt16->self.myLength = count * buffer->stride() / 2;
 		return dataInt16;
 	')
-	private function lockInt16Private(start: Int, count: Int): Int16Array {
+	function lockInt16Private(start: Int, count: Int): Int16Array {
 		return dataInt16;
 	}
 
 	public function lockInt16(?start: Int, ?count: Int): Int16Array {
-		if (start == null) start = 0;
-		if (count == null) count = this.count();
+		if (start == null)
+			start = 0;
+		if (count == null)
+			count = this.count();
 		lastLockCount = count;
-		if (dataInt16 == null) dataInt16 = new Int16Array();
+		if (dataInt16 == null)
+			dataInt16 = new Int16Array();
 		return lockInt16Private(start, count);
 	}
 
 	@:functionCode('buffer->unlock(count); data->self.data = nullptr; if (!hx::IsNull(dataInt16)) dataInt16->self.data = nullptr;')
-	function unlockPrivate(count: Int): Void {
-
-	}
+	function unlockPrivate(count: Int): Void {}
 
 	public function unlock(?count: Int): Void {
 		unlockPrivate(count == null ? lastLockCount : count);

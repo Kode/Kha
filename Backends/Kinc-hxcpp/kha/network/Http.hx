@@ -6,7 +6,6 @@ import haxe.io.Bytes;
 #include <Kore/pch.h>
 #include <Kore/Network/Http.h>
 ')
-
 @:headerClassCode('
 	static void internalCallback(int error, int response, const char* body, void* data) {
 		int callbackindex = (int)(Kore::spint)data;
@@ -24,20 +23,19 @@ import haxe.io.Bytes;
 	}
 ')
 class Http {
-	private static var callbacks: Array<Int->Int->String->Void>;
+	static var callbacks: Array<Int->Int->String->Void>;
 
 	@:functionCode('
 		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method, header, internalCallback, (void*)callbackindex);
 	')
-	private static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, header: String, callbackindex: Int): Void {
+	static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, header: String, callbackindex: Int): Void {}
 
-	}
-
-	private static function internalCallback2(error: Int, response: Int, body: String, callbackindex: Int): Void {
+	static function internalCallback2(error: Int, response: Int, body: String, callbackindex: Int): Void {
 		callbacks[callbackindex](error, response, body);
 	}
 
-	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, headers: Map<String, String>, callback: Int->Int->String->Void /*error, response, body*/): Void {
+	public static function request(url: String, path: String, data: String, port: Int, secure: Bool, method: HttpMethod, headers: Map<String, String>,
+			callback: Int->Int->String->Void /*error, response, body*/): Void {
 		if (callbacks == null) {
 			callbacks = new Array<Int->Int->String->Void>();
 		}

@@ -16,7 +16,8 @@ class Audio {
 
 	@:noCompletion
 	public static function _callCallback(samples: Int, sampleRate: Int): Void {
-		if (buffer == null) return;
+		if (buffer == null)
+			return;
 		buffer.samplesPerSecond = sampleRate;
 		if (audioCallback != null) {
 			intBox.value = samples;
@@ -35,7 +36,8 @@ class Audio {
 
 	@:noCompletion
 	public static function _readSample(): Float {
-		if (buffer == null) return 0;
+		if (buffer == null)
+			return 0;
 		var value = buffer.data.get(buffer.readLocation);
 		++buffer.readLocation;
 		if (buffer.readLocation >= buffer.size) {

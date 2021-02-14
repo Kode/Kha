@@ -22,7 +22,6 @@ enum KhaImageType {
 	KhaImageTypeTextureArray
 };
 ')
-
 @:headerClassCode('
 	KhaImageType imageType;
 	int originalWidth;
@@ -34,12 +33,12 @@ enum KhaImageType {
 	kinc_g4_texture_array_t textureArray;
 ')
 class Image implements Canvas implements Resource {
-	private var myFormat: TextureFormat;
-	private var readable: Bool;
+	var myFormat: TextureFormat;
+	var readable: Bool;
 
-	private var graphics1: kha.graphics1.Graphics;
-	private var graphics2: kha.graphics2.Graphics;
-	private var graphics4: kha.graphics4.Graphics;
+	var graphics1: kha.graphics1.Graphics;
+	var graphics2: kha.graphics2.Graphics;
+	var graphics4: kha.graphics4.Graphics;
 
 	public static function createFromVideo(video: Video): Image {
 		var image = new Image(false);
@@ -56,10 +55,11 @@ class Image implements Canvas implements Resource {
 		return _create3(width, height, depth, format == null ? TextureFormat.RGBA32 : format, false, 0);
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil,
+			antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, antiAliasingSamples > 1, contextId);
 	}
-	
+
 	/**
 	 * The provided images need to be readable.
 	 */
@@ -69,7 +69,7 @@ class Image implements Canvas implements Resource {
 		initArrayTexture(image, images);
 		return image;
 	}
-	
+
 	@:functionCode('
 		kinc_image_t *kincImages = (kinc_image_t*)malloc(sizeof(kinc_image_t) * images->length);
 		for (unsigned i = 0; i < images->length; ++i) {
@@ -81,10 +81,8 @@ class Image implements Canvas implements Resource {
 		}
 		free(kincImages);
 	')
-	static function initArrayTexture(source: Image, images: Array<Image>): Void {
-		
-	}
-	
+	static function initArrayTexture(source: Image, images: Array<Image>): Void {}
+
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
 		var image = new Image(readable);
@@ -105,9 +103,7 @@ class Image implements Canvas implements Resource {
 		originalWidth = width;
 		originalHeight = height;
 	')
-	function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {
-		
-	}
+	function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {}
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		var readable = true;
@@ -129,11 +125,10 @@ class Image implements Canvas implements Resource {
 		originalWidth = width;
 		originalHeight = height;
 	')
-	function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {
-		
-	}
-	
-	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image -> Void, errorCallback: String->Void, readable: Bool = false): Void {
+	function initFromBytes3D(bytes: BytesData, width: Int, height: Int, depth: Int, format: Int): Void {}
+
+	public static function fromEncodedBytes(bytes: Bytes, format: String, doneCallback: Image->Void, errorCallback: String->Void,
+			readable: Bool = false): Void {
 		var image = new Image(readable);
 		var isFloat = format == "hdr" || format == "HDR";
 		image.myFormat = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
@@ -158,9 +153,7 @@ class Image implements Canvas implements Resource {
 		}
 		imageType = KhaImageTypeTexture;
 	')
-	function initFromEncodedBytes(bytes: BytesData, format: String): Void {
-		
-	}
+	function initFromEncodedBytes(bytes: BytesData, format: String): Void {}
 
 	function new(readable: Bool) {
 		this.readable = readable;
@@ -175,9 +168,7 @@ class Image implements Canvas implements Resource {
 		imageData = NULL;
 		ownsImageData = false;
 	')
-	function nullify() {
-
-	}
+	function nullify() {}
 
 	@:void static function finalize(image: Image): Void {
 		image.unload();
@@ -185,26 +176,26 @@ class Image implements Canvas implements Resource {
 
 	static function getRenderTargetFormat(format: TextureFormat): Int {
 		switch (format) {
-		case RGBA32:	// Target32Bit
-			return 0;
-		case RGBA64:	// Target64BitFloat
-			return 1;
-		case A32:		// Target32BitRedFloat
-			return 2;
-		case RGBA128:	// Target128BitFloat
-			return 3;
-		case DEPTH16:	// Target16BitDepth
-			return 4;
-		case L8:
-			return 5;	// Target8BitRed
-		case A16:
-			return 6;	// Target16BitRedFloat
-		default:
-			return 0;
+			case RGBA32: // Target32Bit
+				return 0;
+			case RGBA64: // Target64BitFloat
+				return 1;
+			case A32: // Target32BitRedFloat
+				return 2;
+			case RGBA128: // Target128BitFloat
+				return 3;
+			case DEPTH16: // Target16BitDepth
+				return 4;
+			case L8:
+				return 5; // Target8BitRed
+			case A16:
+				return 6; // Target16BitRedFloat
+			default:
+				return 0;
 		}
 	}
 
-	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+	static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
 		return switch (depthAndStencil) {
 			case NoDepthAndStencil: -1;
 			case DepthOnly: 24;
@@ -225,30 +216,34 @@ class Image implements Canvas implements Resource {
 			case Depth16: 0;
 		}
 	}
-	
+
 	static function getTextureFormat(format: TextureFormat): Int {
 		switch (format) {
-		case RGBA32:
-			return 0;
-		case RGBA128:
-			return 3;
-		case RGBA64:
-			return 4;
-		case A32:
-			return 5;
-		case A16:
-			return 7;
-		default:
-			return 1; // Grey8
+			case RGBA32:
+				return 0;
+			case RGBA128:
+				return 3;
+			case RGBA64:
+				return 4;
+			case A32:
+				return 5;
+			case A16:
+				return 7;
+			default:
+				return 1; // Grey8
 		}
 	}
 
 	@:noCompletion
-	public static function _create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat, antiAliasing: Bool, contextId: Int): Image {
+	public static function _create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat,
+			antiAliasing: Bool, contextId: Int): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
-		if (renderTarget) image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), antiAliasing, getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
-		else image.init(width, height, getTextureFormat(format));
+		if (renderTarget)
+			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), antiAliasing, getRenderTargetFormat(format),
+				getStencilBufferBits(depthStencil), contextId);
+		else
+			image.init(width, height, getTextureFormat(format));
 		return image;
 	}
 
@@ -266,9 +261,7 @@ class Image implements Canvas implements Resource {
 		originalWidth = width;
 		originalHeight = height;
 	')
-	function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-
-	}
+	function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
 
 	@:functionCode('
 		kinc_g4_texture_init(&texture, width, height, (kinc_image_format_t)format);
@@ -276,9 +269,7 @@ class Image implements Canvas implements Resource {
 		originalWidth = width;
 		originalHeight = height;
 	')
-	function init(width: Int, height: Int, format: Int): Void {
-
-	}
+	function init(width: Int, height: Int, format: Int): Void {}
 
 	@:functionCode('
 		kinc_g4_texture_init3d(&texture, width, height, depth, (kinc_image_format_t)format);
@@ -286,15 +277,11 @@ class Image implements Canvas implements Resource {
 		originalWidth = width;
 		originalHeight = height;
 	')
-	function init3D(width: Int, height: Int, depth:Int, format: Int): Void {
-
-	}
+	function init3D(width: Int, height: Int, depth: Int, format: Int): Void {}
 
 	// TODO
-	//@:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
-	function initVideo(video: kha.kore.Video): Void {
-
-	}
+	// @:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
+	function initVideo(video: kha.kore.Video): Void {}
 
 	public static function createEmpty(readable: Bool, floatFormat: Bool): Image {
 		var image = new Image(readable);
@@ -303,21 +290,20 @@ class Image implements Canvas implements Resource {
 	}
 
 	/*public static function fromFile(filename: String, readable: Bool): Image {
-		var image = new Image(readable);
-		var isFloat = StringTools.endsWith(filename, ".hdr");
-		image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
-		image.initFromFile(filename);
-		return image;
-	}
+			var image = new Image(readable);
+			var isFloat = StringTools.endsWith(filename, ".hdr");
+			image.format = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
+			image.initFromFile(filename);
+			return image;
+		}
 
-	@:functionCode('texture = new Kore::Graphics4::Texture(filename.c_str(), readable);')
-	private function initFromFile(filename: String): Void {
+		@:functionCode('texture = new Kore::Graphics4::Texture(filename.c_str(), readable);')
+		private function initFromFile(filename: String): Void {
 
 	}*/
-
 	public var g1(get, never): kha.graphics1.Graphics;
 
-	private function get_g1(): kha.graphics1.Graphics {
+	function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
 			graphics1 = new kha.graphics2.Graphics1(this);
 		}
@@ -326,7 +312,7 @@ class Image implements Canvas implements Resource {
 
 	public var g2(get, never): kha.graphics2.Graphics;
 
-	private function get_g2(): kha.graphics2.Graphics {
+	function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
 			graphics2 = new kha.kore.graphics4.Graphics2(this);
 		}
@@ -335,7 +321,7 @@ class Image implements Canvas implements Resource {
 
 	public var g4(get, never): kha.graphics4.Graphics;
 
-	private function get_g4(): kha.graphics4.Graphics {
+	function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
 			graphics4 = new kha.kore.graphics4.Graphics(this);
 		}
@@ -344,55 +330,61 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, never): Int;
 
-	private static function get_maxSize(): Int {
+	static function get_maxSize(): Int {
 		return 4096;
 	}
 
 	public static var nonPow2Supported(get, never): Bool;
 
 	@:functionCode('return Kore::Graphics4::nonPow2TexturesSupported();')
-	private static function get_nonPow2Supported(): Bool {
+	static function get_nonPow2Supported(): Bool {
 		return false;
 	}
-	
+
 	@:functionCode('return Kore::Graphics4::renderTargetsInvertedY();')
 	public static function renderTargetsInvertedY(): Bool {
 		return false;
 	}
 
 	public var width(get, never): Int;
+
 	@:functionCode("return originalWidth;")
-	private function get_width(): Int {
+	function get_width(): Int {
 		return 0;
 	}
 
 	public var height(get, never): Int;
+
 	@:functionCode("return originalHeight;")
-	private function get_height(): Int {
+	function get_height(): Int {
 		return 0;
 	}
 
 	public var depth(get, never): Int;
+
 	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_depth; else return 0;")
-	private function get_depth(): Int {
+	function get_depth(): Int {
 		return 0;
 	}
 
 	public var format(get, never): TextureFormat;
+
 	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.format; else return 0;")
-	private function get_format(): TextureFormat {
+	function get_format(): TextureFormat {
 		return TextureFormat.RGBA32;
 	}
 
 	public var realWidth(get, never): Int;
+
 	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_width; else if (imageType == KhaImageTypeRenderTarget) return renderTarget.width; else return 0;")
-	private function get_realWidth(): Int {
+	function get_realWidth(): Int {
 		return 0;
 	}
 
 	public var realHeight(get, never): Int;
+
 	@:functionCode("if (imageType == KhaImageTypeTexture) return texture.tex_height; else if (imageType == KhaImageTypeRenderTarget) return renderTarget.height; else return 0;")
-	private function get_realHeight(): Int {
+	function get_realHeight(): Int {
 		return 0;
 	}
 
@@ -445,9 +437,7 @@ class Image implements Canvas implements Resource {
 		imageData = NULL;
 		imageType = KhaImageTypeNone;
 	')
-	public function unload(): Void {
-
-	}
+	public function unload(): Void {}
 
 	var bytes: Bytes = null;
 
@@ -491,9 +481,9 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:ifFeature("kha.Image.getPixelsInternal")
-	private var pixels: Bytes = null;
+	var pixels: Bytes = null;
 	@:ifFeature("kha.Image.getPixelsInternal")
-	private var pixelsAllocated: Bool = false;
+	var pixelsAllocated: Bool = false;
 
 	@:functionCode('
 		if (imageType != KhaImageTypeRenderTarget) return NULL;
@@ -506,7 +496,7 @@ class Image implements Canvas implements Resource {
 		kinc_g4_render_target_get_pixels(&renderTarget, b);
 		return this->pixels;
 	')
-	private function getPixelsInternal(formatSize: Int): Bytes {
+	function getPixelsInternal(formatSize: Int): Bytes {
 		return null;
 	}
 
@@ -514,8 +504,8 @@ class Image implements Canvas implements Resource {
 		return getPixelsInternal(formatByteSize(myFormat));
 	}
 
-	private static function formatByteSize(format: TextureFormat): Int {
-		return switch(format) {
+	static function formatByteSize(format: TextureFormat): Int {
+		return switch (format) {
 			case RGBA32: 4;
 			case L8: 1;
 			case RGBA128: 16;
@@ -550,9 +540,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode("if (imageType == KhaImageTypeTexture) kinc_g4_texture_clear(&texture, x, y, z, width, height, depth, color);")
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
-	}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 
 	public var stride(get, never): Int;
 

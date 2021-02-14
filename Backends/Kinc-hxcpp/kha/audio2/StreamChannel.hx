@@ -3,13 +3,12 @@ package kha.audio2;
 import haxe.io.Bytes;
 
 @:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>')
-
 @:headerClassCode('stb_vorbis* vorbis;')
 class StreamChannel implements kha.audio1.AudioChannel {
-	private var atend: Bool = false;
-	@:keep private var loop: Bool;
-	private var myVolume: Float;
-	private var paused: Bool = false;
+	var atend: Bool = false;
+	@:keep var loop: Bool;
+	var myVolume: Float;
+	var paused: Bool = false;
 
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
@@ -18,9 +17,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	@:functionCode('vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, NULL, NULL);')
-	private function initVorbis(data: Bytes): Void {
-
-	}
+	function initVorbis(data: Bytes): Void {}
 
 	@:functionCode('
 		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
@@ -36,9 +33,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			}
 		}
 	')
-	private function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {
-
-	}
+	function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {}
 
 	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
 		if (paused) {
@@ -69,7 +64,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		if (vorbis == NULL) return 0;
 		return stb_vorbis_stream_length_in_seconds(vorbis);
 	')
-	private function get_length(): Int {
+	function get_length(): Int {
 		return 0;
 	}
 
@@ -81,7 +76,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			(float)stb_vorbis_stream_length_in_samples(vorbis) *
 			stb_vorbis_stream_length_in_seconds(vorbis);
 	')
-	private function get_position(): Float {
+	function get_position(): Float {
 		return 0;
 	}
 
@@ -91,23 +86,23 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		stb_vorbis_seek_frame(vorbis, rate * value);
 		return value;
 	')
-	private function set_position(value: Float): Float {
+	function set_position(value: Float): Float {
 		return value;
 	}
 
 	public var volume(get, set): Float;
 
-	private function get_volume(): Float {
+	function get_volume(): Float {
 		return myVolume;
 	}
 
-	private function set_volume(value: Float): Float {
+	function set_volume(value: Float): Float {
 		return myVolume = value;
 	}
 
 	public var finished(get, never): Bool;
 
-	private function get_finished(): Bool {
+	function get_finished(): Bool {
 		return atend;
 	}
 }

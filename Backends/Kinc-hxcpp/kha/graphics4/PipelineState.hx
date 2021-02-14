@@ -11,7 +11,6 @@ import kha.graphics4.VertexStructure;
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Graphics4/PipelineState.h>
 ')
-
 @:cppFileCode('
 static Kore::Graphics4::ZCompareMode convertCompareMode(int mode) {
 	switch (mode) {
@@ -77,7 +76,6 @@ static Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
 	}
 }
 ')
-
 @:headerClassCode("Kore::Graphics4::PipelineState* pipeline;")
 @:keep
 class PipelineState extends PipelineStateBase {
@@ -135,11 +133,10 @@ class PipelineState extends PipelineStateBase {
 		}
 		pipeline->compile();
 	')
-	private function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure, size: Int): Void {
+	function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure,
+		size: Int): Void {}
 
-	}
-
-	private static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
+	static function getDepthBufferBits(depthAndStencil: DepthStencilFormat): Int {
 		return switch (depthAndStencil) {
 			case NoDepthAndStencil: 0;
 			case DepthOnly: 24;
@@ -150,7 +147,7 @@ class PipelineState extends PipelineStateBase {
 		}
 	}
 
-	private static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
+	static function getStencilBufferBits(depthAndStencil: DepthStencilFormat): Int {
 		return switch (depthAndStencil) {
 			case NoDepthAndStencil: 0;
 			case DepthOnly: 0;
@@ -166,15 +163,11 @@ class PipelineState extends PipelineStateBase {
 			case Static(value): value;
 			default: 0;
 		}
-		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, depthWrite,
-		stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
-		getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment));
-		linkWithStructures2(
-			inputLayout.length > 0 ? inputLayout[0] : null,
-			inputLayout.length > 1 ? inputLayout[1] : null,
-			inputLayout.length > 2 ? inputLayout[2] : null,
-			inputLayout.length > 3 ? inputLayout[3] : null,
-			inputLayout.length);
+		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, depthWrite, stencilReferenceValue,
+			getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
+			getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment));
+		linkWithStructures2(inputLayout.length > 0 ? inputLayout[0] : null, inputLayout.length > 1 ? inputLayout[1] : null,
+			inputLayout.length > 2 ? inputLayout[2] : null, inputLayout.length > 3 ? inputLayout[3] : null, inputLayout.length);
 	}
 
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
@@ -184,9 +177,7 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str()).kincConstant;')
-	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
-
-	}
+	function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {}
 
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.kore.graphics4.TextureUnit();
@@ -195,34 +186,32 @@ class PipelineState extends PipelineStateBase {
 	}
 
 	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str()).kincUnit;')
-	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
+	function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {}
 
-	}
-
-	private static function getBlendFunc(factor: BlendingFactor): Int {
+	static function getBlendFunc(factor: BlendingFactor): Int {
 		switch (factor) {
-		case BlendOne, Undefined:
-			return 0;
-		case BlendZero:
-			return 1;
-		case SourceAlpha:
-			return 2;
-		case DestinationAlpha:
-			return 3;
-		case InverseSourceAlpha:
-			return 4;
-		case InverseDestinationAlpha:
-			return 5;
-		case SourceColor:
-			return 6;
-		case DestinationColor:
-			return 7;
-		case InverseSourceColor:
-			return 8;
-		case InverseDestinationColor:
-			return 9;
-		default:
-			return 0;
+			case BlendOne, Undefined:
+				return 0;
+			case BlendZero:
+				return 1;
+			case SourceAlpha:
+				return 2;
+			case DestinationAlpha:
+				return 3;
+			case InverseSourceAlpha:
+				return 4;
+			case InverseDestinationAlpha:
+				return 5;
+			case SourceColor:
+				return 6;
+			case DestinationColor:
+				return 7;
+			case InverseSourceColor:
+				return 8;
+			case InverseDestinationColor:
+				return 9;
+			default:
+				return 0;
 		}
 	}
 
@@ -272,15 +261,12 @@ class PipelineState extends PipelineStateBase {
 
 		pipeline->conservativeRasterization = conservativeRasterization;
 	')
-	private function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
-	stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int, stencilAttachmentBits: Int): Void {
-
-	}
+	function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
+		stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int,
+		stencilAttachmentBits: Int): Void {}
 
 	@:functionCode('Kore::Graphics4::setPipeline(pipeline);')
-	private function set2(): Void {
-
-	}
+	function set2(): Void {}
 
 	public function set(): Void {
 		set2();

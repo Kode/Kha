@@ -75,7 +75,7 @@ abstract Uint32Array(Uint32ArrayPrivate) {
 		return this.self.set(index, value);
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Uint32Array {
+	// public inline function subarray(start: Int, ?end: Int): Uint32Array {
 	//	return cast this.self.subarray(start, end);
-	//}
+	// }
 }

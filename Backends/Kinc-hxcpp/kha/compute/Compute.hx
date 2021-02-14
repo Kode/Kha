@@ -17,7 +17,6 @@ import kha.graphics4.MipMapFilter;
 #include <kinc/pch.h>
 #include <kinc/compute/compute.h>
 ')
-
 class Compute {
 	public static function setBool(location: ConstantLocation, value: Bool) {
 		untyped __cpp__('kinc_compute_set_bool(location->location, value);');
@@ -75,9 +74,7 @@ class Compute {
 		kinc_matrix4x4_set(&value, 3, 0, matrix->_03); kinc_matrix4x4_set(&value, 3, 1, matrix->_13); kinc_matrix4x4_set(&value, 3, 2, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
 		kinc_compute_set_matrix4(location->location, &value);
 	')
-	private static function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {
-
-	}
+	static function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {}
 
 	@:functionCode('
 		kinc_matrix3x3_t value;
@@ -86,9 +83,7 @@ class Compute {
 		kinc_matrix3x3_set(&value, 2, 0, matrix->_02); kinc_matrix3x3_set(&value, 2, 1, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
 		kinc_compute_set_matrix3(location->location, &value);
 	')
-	private static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {
-
-	}
+	static function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {}
 
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
 		untyped __cpp__('
@@ -106,9 +101,7 @@ class Compute {
 		if (texture->imageType == KhaImageTypeTexture) kinc_compute_set_texture(unit->unit, &texture->texture, (kinc_compute_access_t)access);
 		else if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_render_target(unit->unit, &texture->renderTarget, (kinc_compute_access_t)access);
 	')
-	private static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {
-
-	}
+	static function setTexturePrivate(unit: TextureUnit, texture: Image, access: Int): Void {}
 
 	public static function setSampledTexture(unit: TextureUnit, texture: Image) {
 		setSampledTexturePrivate(unit, texture);
@@ -118,9 +111,7 @@ class Compute {
 		if (texture->imageType == KhaImageTypeTexture) kinc_compute_set_sampled_texture(unit->unit, &texture->texture);
 		else if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_sampled_render_target(unit->unit, &texture->renderTarget);
 	')
-	private static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {
-
-	}
+	static function setSampledTexturePrivate(unit: TextureUnit, texture: Image): Void {}
 
 	public static function setSampledDepthTexture(unit: TextureUnit, texture: Image) {
 		untyped __cpp__("if (texture->imageType == KhaImageTypeRenderTarget) kinc_compute_set_sampled_depth_from_render_target(unit->unit, &texture->renderTarget);");
@@ -133,9 +124,7 @@ class Compute {
 	@:functionCode('
 		kinc_compute_set_sampled_render_target(unit->unit, &cubeMap->renderTarget);
 	')
-	private static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {
-
-	}
+	static function setSampledCubeMapPrivate(unit: TextureUnit, cubeMap: CubeMap): Void {}
 
 	public static function setSampledDepthCubeMap(unit: TextureUnit, cubeMap: CubeMap) {
 		untyped __cpp__("kinc_compute_set_sampled_depth_from_render_target(unit->unit, &cubeMap->renderTarget);");
@@ -145,43 +134,37 @@ class Compute {
 		kinc_compute_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
 		kinc_compute_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
 	')
-	private static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
-
-	}
+	static function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {}
 
 	@:functionCode('
 		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
 		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
 		kinc_compute_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_W, (kinc_g4_texture_addressing_t)wWrap);
 	')
-	private static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
-
-	}
+	static function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {}
 
 	@:functionCode('
 		kinc_compute_set_texture_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
 		kinc_compute_set_texture_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
 		kinc_compute_set_texture_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
-	private static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
-
-	}
+	static function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {}
 
 	@:functionCode('
 		kinc_compute_set_texture3d_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
 		kinc_compute_set_texture3d_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
 		kinc_compute_set_texture3d_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
-	private static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
+	static function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {}
 
-	}
-
-	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public static function setTextureParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+			minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		setTextureWrapNative(unit, uAddressing, vAddressing);
 		setTextureFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}
 
-	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public static function setTexture3DParameters(unit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+			wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		setTexture3DWrapNative(unit, uAddressing, vAddressing, wAddressing);
 		setTexture3DFiltersNative(unit, minificationFilter, magnificationFilter, mipmapFilter);
 	}

@@ -11,7 +11,7 @@ using StringTools;
 ')
 @:ifFeature("kha.Storage.*")
 class KoreStorageFile extends StorageFile {
-	private var name: String;
+	var name: String;
 
 	public function new(name: String) {
 		this.name = name;
@@ -35,9 +35,7 @@ class KoreStorageFile extends StorageFile {
 		if (!writer.open(name)) return;
 		writer.write(data->bytes->b->Pointer(), data->get_length());
 	')
-	private function writeInternal(data: Blob): Void {
-
-	}
+	function writeInternal(data: Blob): Void {}
 
 	override public function write(data: Blob): Void {
 		if (data != null) {
@@ -46,11 +44,11 @@ class KoreStorageFile extends StorageFile {
 	}
 
 	@:keep
-	private static function createBlob(size: Int): Blob {
+	static function createBlob(size: Int): Blob {
 		return Blob.alloc(size);
 	}
 
-	private static function unused(): Void {
+	static function unused(): Void {
 		Bytes.alloc(0);
 	}
 }

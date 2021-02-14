@@ -4,7 +4,6 @@ package kha;
 #include <Kore/pch.h>
 #include <Kore/Window.h>
 ')
-
 @:cppFileCode('
 namespace {
 	char windowTitles[10][256];
@@ -46,11 +45,11 @@ Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions fra
 	return framebuffer;
 }
 ')
-
 class Window {
 	static var windows: Array<Window> = [];
 	static var resizeCallbacks: Array<Array<Int->Int->Void>> = [];
 	static var ppiCallbacks: Array<Array<Int->Void>> = [];
+
 	var num: Int;
 	var visibility: Bool;
 	var windowTitle: String;
@@ -64,14 +63,14 @@ class Window {
 		resizeCallbacks[num] = [];
 		ppiCallbacks[num] = [];
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep
 	static function unused(): Void {
 		Display.primary.x;
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	public static function _init(win: WindowOptions = null, frame: FramebufferOptions = null): Void {
@@ -93,9 +92,7 @@ class Window {
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		Kore::Window::create(&window, &framebuffer);
 	')
-	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {
-
-	}
+	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {}
 
 	public static function destroy(window: Window): Void {
 		koreDestroy(window.num);
@@ -110,7 +107,7 @@ class Window {
 	}
 
 	public static var all(get, never): Array<Window>;
-	
+
 	static function get_all(): Array<Window> {
 		return windows;
 	}
@@ -180,11 +177,10 @@ class Window {
 
 	public var mode(get, set): WindowMode;
 
-	
 	function get_mode(): WindowMode {
 		return cast getKoreMode();
 	}
-	
+
 	@:functionCode('return Kore::Window::get(this->num)->mode();')
 	function getKoreMode(): Int {
 		return 0;
@@ -223,7 +219,7 @@ class Window {
 	public function notifyOnResize(callback: Int->Int->Void): Void {
 		resizeCallbacks[num].push(callback);
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep
@@ -232,12 +228,12 @@ class Window {
 			callback(width, height);
 		}
 	}
-	
+
 	@:functionCode('Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);')
 	public function notifyOnPpiChange(callback: Int->Void): Void {
 		ppiCallbacks[num].push(callback);
 	}
-	
+
 	@:noCompletion
 	@:noDoc
 	@:keep

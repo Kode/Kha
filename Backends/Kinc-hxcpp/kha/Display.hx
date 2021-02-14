@@ -4,9 +4,9 @@ package kha;
 #include <Kore/pch.h>
 #include <Kore/Display.h>
 ')
-
 class Display {
 	var num: Int;
+
 	static var displays: Array<Display> = null;
 
 	function new(num: Int) {
@@ -19,9 +19,7 @@ class Display {
 	}
 
 	@:functionCode('Kore::Display::init();')
-	static function initKoreDisplay(): Void {
-
-	}
+	static function initKoreDisplay(): Void {}
 
 	public static function init() {
 		if (displays == null) {

@@ -6,46 +6,45 @@ import kha.arrays.Uint32Array;
 #include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
 ')
-
 @:headerClassCode("Kore::Graphics4::IndexBuffer* buffer;")
 class IndexBuffer {
-	private var data: Uint32Array;
-	private var myCount: Int;
-	
+	var data: Uint32Array;
+	var myCount: Int;
+
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
 		data = new Uint32Array();
 		untyped __cpp__('buffer = new Kore::Graphics4::IndexBuffer(indexCount);');
 	}
-	
+
 	public function delete(): Void {
 		untyped __cpp__('delete buffer; buffer = nullptr;');
 	}
-	
+
 	@:functionCode('
 		data->self.data = (unsigned int*)buffer->lock() + start;
 		data->self.myLength = count;
 		return data;
 	')
-	private function lockPrivate(start: Int, count: Int): Uint32Array {
+	function lockPrivate(start: Int, count: Int): Uint32Array {
 		return data;
 	}
 
 	public function lock(?start: Int, ?count: Int): Uint32Array {
-		if (start == null) start = 0;
-		if (count == null) count = this.count();
+		if (start == null)
+			start = 0;
+		if (count == null)
+			count = this.count();
 		return lockPrivate(start, count);
 	}
-	
+
 	@:functionCode('buffer->unlock(); data->self.data = nullptr;')
-	public function unlockPrivate(): Void {
-		
-	}
+	public function unlockPrivate(): Void {}
 
 	public function unlock(?count: Int): Void {
 		unlockPrivate();
 	}
-	
+
 	public function count(): Int {
 		return myCount;
 	}

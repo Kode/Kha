@@ -6,14 +6,13 @@ import kha.graphics4.VertexData;
 #include <kinc/pch.h>
 #include <kinc/compute/compute.h>
 ')
-
 @:headerClassCode("
 #ifdef KORE_OPENGL
 Kore::ShaderStorageBuffer* buffer;
 #endif")
 class ShaderStorageBuffer {
-	private var data: Array<Int>;
-	private var myCount: Int;
+	var data: Array<Int>;
+	var myCount: Int;
 
 	public function new(indexCount: Int, type: VertexData) {
 		myCount = indexCount;
@@ -45,7 +44,7 @@ class ShaderStorageBuffer {
 	buffer = new Kore::ShaderStorageBuffer(indexCount, type2);
 	#endif
 	")
-	private function init(indexCount: Int, type: VertexData) {
+	function init(indexCount: Int, type: VertexData) {
 		myCount = indexCount;
 		data = new Array<Int>();
 		data[myCount - 1] = 0;
@@ -56,9 +55,7 @@ class ShaderStorageBuffer {
 		delete buffer; buffer = nullptr;
 		#endif
 	")
-	public function delete(): Void {
-		
-	}
+	public function delete(): Void {}
 
 	public function lock(): Array<Int> {
 		return data;
@@ -73,9 +70,7 @@ class ShaderStorageBuffer {
 		buffer->unlock();
 		#endif
 	")
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	public function count(): Int {
 		return myCount;

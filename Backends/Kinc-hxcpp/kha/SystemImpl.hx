@@ -11,24 +11,22 @@ import kha.input.Surface;
 import kha.System;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.DepthStencilFormat;
-
 #if ANDROID
-	#if VR_CARDBOARD
-		import kha.kore.vr.CardboardVrInterface;
-	#end
-	#if !VR_CARDBOARD
-		import kha.kore.vr.VrInterface;
-	#end
+#if VR_CARDBOARD
+import kha.kore.vr.CardboardVrInterface;
+#end
+#if !VR_CARDBOARD
+import kha.kore.vr.VrInterface;
+#end
 #end
 #if !ANDROID
-	#if VR_RIFT
-		import kha.kore.vr.VrInterfaceRift;
-	#end
-	#if !VR_RIFT
-		import kha.vr.VrInterfaceEmulated;
-	#end
+#if VR_RIFT
+import kha.kore.vr.VrInterfaceRift;
 #end
-
+#if !VR_RIFT
+import kha.vr.VrInterfaceEmulated;
+#end
+#end
 @:headerCode('
 #include <Kore/pch.h>
 #include <Kore/System.h>
@@ -54,17 +52,20 @@ class SystemImpl {
 	public static var needs3d: Bool = false;
 
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return mouse;
 	}
 
 	public static function getPen(num: Int): Pen {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return pen;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return keyboard;
 	}
 
@@ -104,7 +105,7 @@ class SystemImpl {
 		return '';
 	}
 
-	public static function vibrate(ms:Int): Void {
+	public static function vibrate(ms: Int): Void {
 		untyped __cpp__("Kore::System::vibrate(ms)");
 	}
 
@@ -118,15 +119,15 @@ class SystemImpl {
 		return true;
 	}
 
-	private static var framebuffers: Array<Framebuffer> = new Array();
-	private static var keyboard: Keyboard;
-	private static var mouse: kha.input.Mouse;
-	private static var pen: kha.input.Pen;
-	private static var gamepads: Array<Gamepad>;
-	private static var surface: Surface;
-	private static var mouseLockListeners: Array<Void->Void>;
+	static var framebuffers: Array<Framebuffer> = new Array();
+	static var keyboard: Keyboard;
+	static var mouse: kha.input.Mouse;
+	static var pen: kha.input.Pen;
+	static var gamepads: Array<Gamepad>;
+	static var surface: Surface;
+	static var mouseLockListeners: Array<Void->Void>;
 
-	public static function init(options: SystemOptions, callback: Window -> Void): Void {
+	public static function init(options: SystemOptions, callback: Window->Void): Void {
 		initKore(options.title, options.width, options.height, options.window, options.framebuffer);
 		Window._init();
 
@@ -136,14 +137,14 @@ class SystemImpl {
 
 		Shaders.init();
 
-#if (!VR_GEAR_VR && !VR_RIFT)
+		#if (!VR_GEAR_VR && !VR_RIFT)
 		var g4 = new kha.kore.graphics4.Graphics();
 		g4.window = 0;
-		//var g5 = new kha.kore.graphics5.Graphics();
+		// var g5 = new kha.kore.graphics5.Graphics();
 		var framebuffer = new Framebuffer(0, null, null, g4 /*, g5*/);
-		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4/*, g5*/);
+		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.kore.graphics4.Graphics2(framebuffer), g4 /*, g5*/);
 		framebuffers.push(framebuffer);
-#end
+		#end
 
 		postInit(callback);
 	}
@@ -156,7 +157,7 @@ class SystemImpl {
 		framebuffers.push(framebuffer);
 	}
 
-	static function postInit(callback: Window -> Void) {
+	static function postInit(callback: Window->Void) {
 		mouseLockListeners = new Array();
 		haxe.Timer.stamp();
 		Sensor.get(SensorType.Accelerometer); // force compilation
@@ -178,44 +179,44 @@ class SystemImpl {
 		untyped __cpp__('run_kore()');
 	}
 
-	private static function loadFinished() {
+	static function loadFinished() {
 		Scheduler.start();
 
 		/*
-		#if ANDROID
-			#if VR_GEAR_VR
-				kha.vr.VrInterface.instance = new kha.kore.vr.VrInterface();
+			#if ANDROID
+				#if VR_GEAR_VR
+					kha.vr.VrInterface.instance = new kha.kore.vr.VrInterface();
+				#end
+				#if !VR_GEAR_VR
+					kha.vr.VrInterface.instance = new CardboardVrInterface();
+				#end
 			#end
-			#if !VR_GEAR_VR
-				kha.vr.VrInterface.instance = new CardboardVrInterface();
+			#if !ANDROID
+				#if VR_RIFT
+					kha.vr.VrInterface.instance = new VrInterfaceRift();
+				#end
+				#if !VR_RIFT
+					kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
+				#end
 			#end
-		#end
-        #if !ANDROID
-			#if VR_RIFT
-				kha.vr.VrInterface.instance = new VrInterfaceRift();
-			#end
-			#if !VR_RIFT
-				kha.vr.VrInterface.instance = new kha.vr.VrInterfaceEmulated();
-			#end
-		#end
-		*/
+		 */
 
 		// (DK) moved
-/*		Shaders.init();
+		/*Shaders.init();
 
-		#if (!VR_GEAR_VR && !VR_RIFT)
-		var g4 = new kha.kore.graphics4.Graphics();
-		framebuffers.push(new Framebuffer(null, null, g4));
-		framebuffers[0].init(new kha.graphics2.Graphics1(framebuffers[0]), new kha.kore.graphics4.Graphics2(framebuffers[0]), g4);
+			#if (!VR_GEAR_VR && !VR_RIFT)
+			var g4 = new kha.kore.graphics4.Graphics();
+			framebuffers.push(new Framebuffer(null, null, g4));
+			framebuffers[0].init(new kha.graphics2.Graphics1(framebuffers[0]), new kha.kore.graphics4.Graphics2(framebuffers[0]), g4);
 
-		g4 = new kha.kore.graphics4.Graphics();
-		framebuffers.push(new Framebuffer(null, null, g4));
-		framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
-		#end
-*/	}
+			g4 = new kha.kore.graphics4.Graphics();
+			framebuffers.push(new Framebuffer(null, null, g4));
+			framebuffers[1].init(new kha.graphics2.Graphics1(framebuffers[1]), new kha.kore.graphics4.Graphics2(framebuffers[1]), g4);
+			#end
+		 */}
 
 	public static function lockMouse(windowId: Int = 0): Void {
-		if(!isMouseLocked()){
+		if (!isMouseLocked()) {
 			untyped __cpp__("Kore::Mouse::the()->lock(windowId);");
 			for (listener in mouseLockListeners) {
 				listener();
@@ -224,7 +225,7 @@ class SystemImpl {
 	}
 
 	public static function unlockMouse(windowId: Int = 0): Void {
-		if(isMouseLocked()){
+		if (isMouseLocked()) {
 			untyped __cpp__("Kore::Mouse::the()->unlock(windowId);");
 			for (listener in mouseLockListeners) {
 				listener();
@@ -240,13 +241,13 @@ class SystemImpl {
 		return untyped __cpp__('Kore::Mouse::the()->isLocked(windowId)');
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void, windowId: Int = 0): Void {
+	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void, windowId: Int = 0): Void {
+	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
 			mouseLockListeners.remove(func);
 		}
@@ -266,19 +267,19 @@ class SystemImpl {
 
 	public static function frame() {
 		/*
-		#if !ANDROID
-		#if !VR_RIFT
-			if (framebuffer == null) return;
-			var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
-			vrInterface.framebuffer = framebuffer;
-		#end
-		#else
-			#if VR_CARDBOARD
-				var vrInterface: CardboardVrInterface = cast(VrInterface.instance, CardboardVrInterface);
+			#if !ANDROID
+			#if !VR_RIFT
+				if (framebuffer == null) return;
+				var vrInterface: VrInterfaceEmulated = cast(VrInterface.instance, VrInterfaceEmulated);
 				vrInterface.framebuffer = framebuffer;
 			#end
-		#end
-		*/
+			#else
+				#if VR_CARDBOARD
+					var vrInterface: CardboardVrInterface = cast(VrInterface.instance, CardboardVrInterface);
+					vrInterface.framebuffer = framebuffer;
+				#end
+			#end
+		 */
 
 		LoaderImpl.tick();
 		Scheduler.executeFrame();
@@ -457,14 +458,10 @@ class SystemImpl {
 	}
 
 	@:functionCode('Kore::System::copyToClipboard(text.c_str());')
-	public static function copyToClipboard(text: String) {
-		
-	}
+	public static function copyToClipboard(text: String) {}
 
 	@:functionCode('Kore::System::login();')
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	@:functionCode('return Kore::System::waitingForLogin();')
 	public static function waitingForLogin(): Bool {
@@ -472,14 +469,10 @@ class SystemImpl {
 	}
 
 	@:functionCode('kinc_disallow_user_change();')
-	public static function disallowUserChange(): Void {
-
-	}
+	public static function disallowUserChange(): Void {}
 
 	@:functionCode('kinc_allow_user_change();')
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 
 	public static function loginevent(): Void {
 		if (System.loginListener != null) {
@@ -498,9 +491,7 @@ class SystemImpl {
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		init_kore(name, width, height, &window, &framebuffer);
 	')
-	private static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {
-
-	}
+	static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {}
 
 	public static function setKeepScreenOn(on: Bool): Void {
 		untyped __cpp__("Kore::System::setKeepScreenOn(on)");

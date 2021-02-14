@@ -75,7 +75,7 @@ abstract Int16Array(Int16ArrayPrivate) {
 		return this.self.set(index, value);
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Int16Array {
+	// public inline function subarray(start: Int, ?end: Int): Int16Array {
 	//	return cast this.self.subarray(start, end);
-	//}
+	// }
 }
