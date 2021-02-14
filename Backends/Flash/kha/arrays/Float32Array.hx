@@ -4,7 +4,7 @@ import flash.utils.ByteArray;
 import kha.FastFloat;
 
 abstract Float32Array(ByteArray) {
-	private static inline var elementSize = 4;
+	static inline var elementSize = 4;
 
 	public inline function new(elements: Int) {
 		this = new ByteArray();

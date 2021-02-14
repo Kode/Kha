@@ -47,9 +47,10 @@ import kha.math.Vector4;
 
 class Graphics implements kha.graphics4.Graphics {
 	public static var context: Context3D;
-	private var target: Image;
-	
-	private var textureRegisterUsed:Vector<Int>;
+
+	var target: Image;
+
+	var textureRegisterUsed: Vector<Int>;
 
 	public static function initContext(context: Context3D): Void {
 		context.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
@@ -61,13 +62,9 @@ class Graphics implements kha.graphics4.Graphics {
 		textureRegisterUsed = new Vector();
 	}
 
-	public function flush(): Void {
+	public function flush(): Void {}
 
-	}
-
-	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {
-
-	}
+	public function init(?backbufferFormat: TextureFormat, antiAliasingSamples: Int = 1): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -79,9 +76,12 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {
 		var mask: UInt = 0;
-		if (color != null) mask |= Context3DClearMask.COLOR;
-		if (depth != null) mask |= Context3DClearMask.DEPTH;
-		if (stencil != null) mask |= Context3DClearMask.STENCIL;
+		if (color != null)
+			mask |= Context3DClearMask.COLOR;
+		if (depth != null)
+			mask |= Context3DClearMask.DEPTH;
+		if (stencil != null)
+			mask |= Context3DClearMask.STENCIL;
 		var r = color == null ? 0.0 : color.R;
 		var g = color == null ? 0.0 : color.G;
 		var b = color == null ? 0.0 : color.B;
@@ -89,43 +89,43 @@ class Graphics implements kha.graphics4.Graphics {
 		context.clear(r, g, b, a, depth == null ? 1.0 : depth, stencil == null ? 0 : stencil, mask);
 	}
 
-	public function viewport(x : Int, y : Int, width : Int, height : Int): Void{
-		//TODO better access to stage3d
+	public function viewport(x: Int, y: Int, width: Int, height: Int): Void {
+		// TODO better access to stage3d
 		var stage3D = flash.Lib.current.stage.stage3Ds[0];
 		stage3D.x = x;
 		stage3D.y = y;
-		context.configureBackBuffer(width,height,0,false);
+		context.configureBackBuffer(width, height, 0, false);
 	}
 
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
-		case Clockwise:
-			context.setCulling(Context3DTriangleFace.FRONT);
-		case CounterClockwise:
-			context.setCulling(Context3DTriangleFace.BACK);
-		case None:
-			context.setCulling(Context3DTriangleFace.NONE);
+			case Clockwise:
+				context.setCulling(Context3DTriangleFace.FRONT);
+			case CounterClockwise:
+				context.setCulling(Context3DTriangleFace.BACK);
+			case None:
+				context.setCulling(Context3DTriangleFace.NONE);
 		}
 	}
 
-	private function getCompareMode(mode: CompareMode): Context3DCompareMode {
+	function getCompareMode(mode: CompareMode): Context3DCompareMode {
 		switch (mode) {
-		case Always:
-			return Context3DCompareMode.ALWAYS;
-		case Equal:
-			return Context3DCompareMode.EQUAL;
-		case Greater:
-			return Context3DCompareMode.GREATER;
-		case GreaterEqual:
-			return Context3DCompareMode.GREATER_EQUAL;
-		case Less:
-			return Context3DCompareMode.LESS;
-		case LessEqual:
-			return Context3DCompareMode.LESS_EQUAL;
-		case Never:
-			return Context3DCompareMode.NEVER;
-		case NotEqual:
-			return Context3DCompareMode.NOT_EQUAL;
+			case Always:
+				return Context3DCompareMode.ALWAYS;
+			case Equal:
+				return Context3DCompareMode.EQUAL;
+			case Greater:
+				return Context3DCompareMode.GREATER;
+			case GreaterEqual:
+				return Context3DCompareMode.GREATER_EQUAL;
+			case Less:
+				return Context3DCompareMode.LESS;
+			case LessEqual:
+				return Context3DCompareMode.LESS_EQUAL;
+			case Never:
+				return Context3DCompareMode.NEVER;
+			case NotEqual:
+				return Context3DCompareMode.NOT_EQUAL;
 		}
 	}
 
@@ -133,38 +133,36 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setDepthTest(write, getCompareMode(mode));
 	}
 
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
-	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
-	}
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
-	private function getStencilAction(action: StencilAction): Context3DStencilAction {
+	function getStencilAction(action: StencilAction): Context3DStencilAction {
 		switch (action) {
-		case Keep:
-			return Context3DStencilAction.KEEP;
-		case Replace:
-			return Context3DStencilAction.SET;
-		case Zero:
-			return Context3DStencilAction.ZERO;
-		case Invert:
-			return Context3DStencilAction.INVERT;
-		case Increment:
-			return Context3DStencilAction.INCREMENT_SATURATE;
-		case IncrementWrap:
-			return Context3DStencilAction.INCREMENT_WRAP;
-		case Decrement:
-			return Context3DStencilAction.DECREMENT_SATURATE;
-		case DecrementWrap:
-			return Context3DStencilAction.DECREMENT_WRAP;
+			case Keep:
+				return Context3DStencilAction.KEEP;
+			case Replace:
+				return Context3DStencilAction.SET;
+			case Zero:
+				return Context3DStencilAction.ZERO;
+			case Invert:
+				return Context3DStencilAction.INVERT;
+			case Increment:
+				return Context3DStencilAction.INCREMENT_SATURATE;
+			case IncrementWrap:
+				return Context3DStencilAction.INCREMENT_WRAP;
+			case Decrement:
+				return Context3DStencilAction.DECREMENT_SATURATE;
+			case DecrementWrap:
+				return Context3DStencilAction.DECREMENT_WRAP;
 		}
 	}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
+			referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
 		context.setStencilReferenceValue(referenceValue, readMask, writeMask);
-		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, getCompareMode(compareMode), getStencilAction(bothPass), getStencilAction(depthFail), getStencilAction(stencilFail));
+		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, getCompareMode(compareMode), getStencilAction(bothPass), getStencilAction(depthFail),
+			getStencilAction(stencilFail));
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
@@ -175,57 +173,53 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setScissorRectangle(null);
 	}
 
-	private function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
+	function getWrapMode(addressing: TextureAddressing): Context3DWrapMode {
 		switch (addressing) {
-		case Clamp:
-			return Context3DWrapMode.CLAMP;
-		case Mirror, Repeat:
-			return Context3DWrapMode.REPEAT;
+			case Clamp:
+				return Context3DWrapMode.CLAMP;
+			case Mirror, Repeat:
+				return Context3DWrapMode.REPEAT;
 		}
 	}
 
-	private function getFilter(filter: TextureFilter): Context3DTextureFilter {
+	function getFilter(filter: TextureFilter): Context3DTextureFilter {
 		switch (filter) {
-		case PointFilter:
-			return Context3DTextureFilter.NEAREST;
-		case LinearFilter, AnisotropicFilter:
-			return Context3DTextureFilter.LINEAR;
+			case PointFilter:
+				return Context3DTextureFilter.NEAREST;
+			case LinearFilter, AnisotropicFilter:
+				return Context3DTextureFilter.LINEAR;
 		}
 	}
 
-	private function getMipFilter(mipFilter: MipMapFilter): Context3DMipFilter {
+	function getMipFilter(mipFilter: MipMapFilter): Context3DMipFilter {
 		switch (mipFilter) {
-		case NoMipFilter:
-			return Context3DMipFilter.MIPNONE;
-		case PointMipFilter:
-			return Context3DMipFilter.MIPNEAREST;
-		case LinearMipFilter:
-			return Context3DMipFilter.MIPLINEAR;
+			case NoMipFilter:
+				return Context3DMipFilter.MIPNONE;
+			case PointMipFilter:
+				return Context3DMipFilter.MIPNEAREST;
+			case LinearMipFilter:
+				return Context3DMipFilter.MIPLINEAR;
 		}
 	}
 
 	// Flash only supports one texture addressing and filtering mode - we use the v and mag values here
-	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+			minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		context.setSamplerStateAt(cast(texunit, TextureUnit).unit, getWrapMode(vAddressing), getFilter(magnificationFilter), getMipFilter(mipmapFilter));
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	}
-
-	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
-		
-	}
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
 	public function maxBoundTextures(): Int {
 		return 8;
 	}
 
-	private function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
+	function getBlendFactor(op: BlendingFactor): Context3DBlendFactor {
 		switch (op) {
 			case BlendZero, Undefined:
 				return Context3DBlendFactor.ZERO;
@@ -256,29 +250,27 @@ class Graphics implements kha.graphics4.Graphics {
 		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 
-	//public function createVertexBuffer(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
+	// public function createVertexBuffer(vertexCount: Int, structure: kha.graphics4.VertexStructure, usage: Usage, canRead: Bool = false): kha.graphics4.VertexBuffer {
 	//	return new VertexBuffer(vertexCount, structure, usage);
-	//}
+	// }
 
 	public function setVertexBuffer(vertexBuffer: kha.graphics4.VertexBuffer): Void {
 		vertexBuffer.set();
 	}
 
-	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {}
 
-	}
-
-	//public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
+	// public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
 	//	return new IndexBuffer(indexCount, usage);
-	//}
+	// }
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		indexBuffer.set();
 	}
 
-	//public function createProgram(): kha.graphics4.Program {
+	// public function createProgram(): kha.graphics4.Program {
 	//	return new Program();
-	//}
+	// }
 
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
@@ -289,23 +281,21 @@ class Graphics implements kha.graphics4.Graphics {
 				stencilReferenceValue = value;
 			default:
 		}
-		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
+		setStencilParameters(pipe.stencilMode, pipe.stencilBothPass, pipe.stencilDepthFail, pipe.stencilFail, stencilReferenceValue, pipe.stencilReadMask,
+			pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination);
 		context.setColorMask(pipe.colorWriteMaskRed, pipe.colorWriteMaskGreen, pipe.colorWriteMaskBlue, pipe.colorWriteMaskAlpha);
 		pipe.set();
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
+	public function setStencilReferenceValue(value: Int): Void {}
 
-	}
-
-	//public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
+	// public function createTexture(width: Int, height: Int, format: TextureFormat, usage: Usage, canRead: Bool = false, levels: Int = 1): Texture {
 	//	return new Image(width, height, format, false, false, canRead);
-	//}
-
-	//public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
+	// }
+	// public function createRenderTargetTexture(width: Int, height: Int, format: TextureFormat, depthStencil: Bool, antiAliasingSamples: Int = 1): Texture {
 	//	return new Image(width, height, format, true, depthStencil, false);
-	//}
+	// }
 
 	public function maxTextureSize(): Int {
 		return 2048;
@@ -319,30 +309,20 @@ class Graphics implements kha.graphics4.Graphics {
 		textureRegisterUsed.push(cast(unit, TextureUnit).unit);
 		context.setTextureAt(cast(unit, TextureUnit).unit, texture == null ? null : cast(texture, Image).getFlashTexture());
 	}
-	
-	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-			
-	}
-	
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
 
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
 		context.drawTriangles(IndexBuffer.current.indexBuffer, start, count >= 0 ? Std.int(count / 3) : count);
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-
-	}
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
 
 	public function instancedRenderingAvailable(): Bool {
 		return false;
@@ -392,7 +372,8 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setInts(location: kha.graphics4.ConstantLocation, values: kha.arrays.Int32Array): Void {
 		var flashLocation: ConstantLocation = cast location;
 		var vals = new flash.Vector<Float>(values.length);
-		for (i in 0...values.length) vals[i] = values.get(i);
+		for (i in 0...values.length)
+			vals[i] = values.get(i);
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vals);
 	}
 
@@ -460,76 +441,83 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
 		var projection = new Matrix3D();
 		var vec = new Vector<Float>(16);
-		vec[ 0] = matrix._00; vec[ 1] = matrix._01; vec[ 2] = matrix._02; vec[ 3] = matrix._03;
-		vec[ 4] = matrix._10; vec[ 5] = matrix._11; vec[ 6] = matrix._12; vec[ 7] = matrix._13;
-		vec[ 8] = matrix._20; vec[ 9] = matrix._21; vec[10] = matrix._22; vec[11] = matrix._23;
-		vec[12] = matrix._30; vec[13] = matrix._31; vec[14] = matrix._32; vec[15] = matrix._33;
+		vec[0] = matrix._00;
+		vec[1] = matrix._01;
+		vec[2] = matrix._02;
+		vec[3] = matrix._03;
+		vec[4] = matrix._10;
+		vec[5] = matrix._11;
+		vec[6] = matrix._12;
+		vec[7] = matrix._13;
+		vec[8] = matrix._20;
+		vec[9] = matrix._21;
+		vec[10] = matrix._22;
+		vec[11] = matrix._23;
+		vec[12] = matrix._30;
+		vec[13] = matrix._31;
+		vec[14] = matrix._32;
+		vec[15] = matrix._33;
 		projection.copyRawDataFrom(vec);
 		var flashLocation = cast(location, ConstantLocation);
 		context.setProgramConstantsFromMatrix(flashLocation.type, flashLocation.value, projection, true);
 	}
 
-	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		
-	}
+	public function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: kha.arrays.Float32Array): Void {
 		var flashLocation: ConstantLocation = cast location;
 		var vals = new flash.Vector<Float>(values.length);
-		for (i in 0...values.length) vals[i] = values.get(i);
+		for (i in 0...values.length)
+			vals[i] = values.get(i);
 		context.setProgramConstantsFromVector(flashLocation.type, flashLocation.value, vals);
 	}
 
-	//public function renderToBackbuffer(): Void {
+	// public function renderToBackbuffer(): Void {
 	//	context.setRenderToBackBuffer();
-	//}
-
-	//public function renderToTexture(texture: Texture): Void {
+	// }
+	// public function renderToTexture(texture: Texture): Void {
 	//	context.setRenderToTexture(cast(texture, Image).getFlashTexture(), cast(texture, Image).hasDepthStencil());
-	//}
+	// }
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
-		if (target == null) context.setRenderToBackBuffer();
-		else context.setRenderToTexture(target.getFlashTexture(), enableDepthStencil(target.depthStencilFormat()));
+		if (target == null)
+			context.setRenderToBackBuffer();
+		else
+			context.setRenderToTexture(target.getFlashTexture(), enableDepthStencil(target.depthStencilFormat()));
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
+	public function beginEye(eye: Int): Void {}
 
-	public function beginEye(eye: Int): Void {
-		
-	}
-
-	function enableDepthStencil( format : DepthStencilFormat ) : Bool {
+	function enableDepthStencil(format: DepthStencilFormat): Bool {
 		return switch (format) {
 			case NoDepthAndStencil: false;
 			case DepthOnly: true;
 			case DepthAutoStencilAuto: true;
 			case Depth24Stencil8: {
-				#if debug
-				trace('DepthStencilFormat "Depth24Stencil8" is not supported, using target defaults');
-				#end
-				true;
-			}
+					#if debug
+					trace('DepthStencilFormat "Depth24Stencil8" is not supported, using target defaults');
+					#end
+					true;
+				}
 			case Depth32Stencil8: {
-				#if debug
-				trace('DepthStencilFormat "Depth32Stencil8" is not supported, using target defaults');
-				#end
-				true;
-			}
+					#if debug
+					trace('DepthStencilFormat "Depth32Stencil8" is not supported, using target defaults');
+					#end
+					true;
+				}
 			case Depth16: {
-				#if debug
-				trace('DepthStencilFormat "Depth16" is not supported, using target defaults');
-				#end
-				true;
-			}
+					#if debug
+					trace('DepthStencilFormat "Depth16" is not supported, using target defaults');
+					#end
+					true;
+				}
 		}
 	}
 
 	public function end(): Void {
-		for (reg in textureRegisterUsed) 
-		{
+		for (reg in textureRegisterUsed) {
 			context.setTextureAt(reg, null);
 		}
 		textureRegisterUsed.length = 0;

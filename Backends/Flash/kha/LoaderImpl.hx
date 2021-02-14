@@ -14,9 +14,9 @@ import flash.ui.Mouse;
 import flash.utils.ByteArray;
 import haxe.io.Bytes;
 #if KHA_EMBEDDED_ASSETS
-import Assets;//include so classes are not excluded from compilation
-#end
+import Assets; // include so classes are not excluded from compilation
 
+#end
 using StringTools;
 
 class LoaderImpl {
@@ -26,8 +26,7 @@ class LoaderImpl {
 		Assets.visit();
 		#end
 	}*/
-
-	private static function adjustFilename(filename: String): String {
+	static function adjustFilename(filename: String): String {
 		filename = filename.replace(".", "_");
 		filename = filename.replace("-", "_");
 		filename = filename.replace("/", "_");
@@ -76,24 +75,19 @@ class LoaderImpl {
 
 		#end
 	}*/
-
-	public static function loadImageFromDescription(desc: Dynamic, done: Image -> Void, failed: AssetError -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: Image->Void, failed: AssetError->Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 
 		#if KHA_EMBEDDED_ASSETS
-
 		var file: String = adjustFilename(desc.files[0]);
 		done(Image.fromBitmapData(cast Type.createInstance(Type.resolveClass("Assets_" + file), [0, 0]), readable));
-
 		#else
-
 		var urlRequest = new URLRequest(desc.files[0]);
 		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e: Event) {
 			done(Image.fromBitmap(loader.content, readable));
 		});
 		loader.load(urlRequest);
-
 		#end
 	}
 
@@ -101,14 +95,11 @@ class LoaderImpl {
 		return ["png", "jpg"];
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob -> Void, failed: AssetError -> Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
 		#if KHA_EMBEDDED_ASSETS
-
 		var file: String = adjustFilename(desc.files[0]);
 		done(Blob.fromBytes(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
-
 		#else
-
 		var urlRequest = new URLRequest(desc.files[0]);
 		var urlLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -116,24 +107,20 @@ class LoaderImpl {
 			done(new Blob(urlLoader.data));
 		});
 		urlLoader.load(urlRequest);
-
 		#end
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font -> Void, failed: AssetError -> Void): Void {
-		loadBlobFromDescription(desc, function (blob: Blob) {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void, failed: AssetError->Void): Void {
+		loadBlobFromDescription(desc, function(blob: Blob) {
 			done(new Kravur(blob));
 		}, failed);
 	}
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound -> Void, failed: Dynamic -> Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: Dynamic->Void) {
 		#if KHA_EMBEDDED_ASSETS
-
 		var file: String = adjustFilename(desc.files[0]);
 		done(new kha.flash.Sound(Bytes.ofData(cast Type.createInstance(Type.resolveClass("Assets_" + file), []))));
-
 		#else
-
 		for (i in 0...desc.files.length) {
 			var file: String = desc.files[i];
 			if (file.endsWith(".mp3")) {
@@ -165,7 +152,6 @@ class LoaderImpl {
 				return;
 			}
 		}
-
 		#end
 	}
 
@@ -173,39 +159,38 @@ class LoaderImpl {
 		return ["mp3", "ogg"];
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video -> Void, failed: AssetError -> Void) {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void, failed: AssetError->Void) {
 		done(new kha.flash.Video(desc.files[0]));
 	}
 
 	public static function getVideoFormats(): Array<String> {
 		return ["mp4"];
 	}
-
 	/*override function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
-		return Kravur.get(name, style, size);
-	}
-
-	override public function loadURL(url: String): Void {
-		try {
-			flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
+			return Kravur.get(name, style, size);
 		}
-		catch (ex: Dynamic) {
-			trace(ex);
+
+		override public function loadURL(url: String): Void {
+			try {
+				flash.Lib.getURL(new flash.net.URLRequest(url), "_top");
+			}
+			catch (ex: Dynamic) {
+				trace(ex);
+			}
 		}
-	}
 
-	override function setNormalCursor() {
-		Mouse.cursor = "auto";
-	}
+		override function setNormalCursor() {
+			Mouse.cursor = "auto";
+		}
 
-	override function setHandCursor() {
-		Mouse.cursor = "button";
-	}
+		override function setHandCursor() {
+			Mouse.cursor = "button";
+		}
 
-	override function setCursorBusy(busy: Bool) {
-		if (busy)
-			Mouse.hide();
-		else
-			Mouse.show();
+		override function setCursorBusy(busy: Bool) {
+			if (busy)
+				Mouse.hide();
+			else
+				Mouse.show();
 	}*/
 }

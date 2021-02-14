@@ -4,6 +4,7 @@
 		"kha.graphics2.truetype",
 		"kha.graphics4.hxsl",
 		"js",
-		"hxcpp"
+		"hxcpp",
+		"kha.flash.utils"
 	]
 }

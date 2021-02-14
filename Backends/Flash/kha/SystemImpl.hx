@@ -29,24 +29,25 @@ import flash.Vector;
 import kha.System;
 
 class SystemImpl {
-	private static var width: Int;
-	private static var height: Int;
-	private static var frame: Framebuffer;
-	private static var pressedKeys: Array<Bool>;
-	private static var stage: Stage;
-	private static var stage3D: Stage3D;
-	private static var keyboard: Keyboard;
-	private static var mouse: Mouse;
-	private static var callback: Window -> Void;
+	static var width: Int;
+	static var height: Int;
+	static var frame: Framebuffer;
+	static var pressedKeys: Array<Bool>;
+	static var stage: Stage;
+	static var stage3D: Stage3D;
+	static var keyboard: Keyboard;
+	static var mouse: Mouse;
+	static var callback: Window->Void;
 	public static var context: Context3D;
 
-	public static function init(options: SystemOptions, callback: Window -> Void) {
+	public static function init(options: SystemOptions, callback: Window->Void) {
 		SystemImpl.callback = callback;
 		SystemImpl.width = options.width;
 		SystemImpl.height = options.height;
 		pressedKeys = new Array<Bool>();
-		for (i in 0...256) pressedKeys.push(false);
-		//Loader.init(new kha.flash.Loader(this));
+		for (i in 0...256)
+			pressedKeys.push(false);
+		// Loader.init(new kha.flash.Loader(this));
 		Scheduler.init();
 
 		stage = flash.Lib.current.stage;
@@ -58,7 +59,7 @@ class SystemImpl {
 		stage3D.requestContext3D(cast Context3DRenderMode.AUTO /* Context3DRenderMode.SOFTWARE */, Context3DProfile.STANDARD);
 	}
 
-	private static function onReady(_): Void {
+	static function onReady(_): Void {
 		context = stage3D.context3D;
 		context.configureBackBuffer(width, height, 0, true);
 		keyboard = new Keyboard();
@@ -70,7 +71,7 @@ class SystemImpl {
 
 		new Window();
 		Shaders.init();
-		//painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
+		// painter = new kha.flash.ShaderPainter(game.width, game.height); //new Painter(context);
 		kha.flash.graphics4.Graphics.initContext(context);
 		var g4 = new kha.flash.graphics4.Graphics();
 		frame = new Framebuffer(0, null, null, g4);
@@ -100,7 +101,7 @@ class SystemImpl {
 		stage.addEventListener(Event.ENTER_FRAME, update);
 	}
 
-	private static function update(_): Void {
+	static function update(_): Void {
 		Scheduler.executeFrame();
 		context.setRenderToBackBuffer();
 		context.clear(0, 0, 0, 0);
@@ -109,17 +110,20 @@ class SystemImpl {
 	}
 
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return mouse;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return keyboard;
 	}
 
-	private static function keyDownHandler(event: KeyboardEvent): Void {
-		if (pressedKeys[event.keyCode]) return;
+	static function keyDownHandler(event: KeyboardEvent): Void {
+		if (pressedKeys[event.keyCode])
+			return;
 		pressedKeys[event.keyCode] = true;
 		keyboard.sendDownEvent(cast event.keyCode);
 		if (event.charCode != 0) {
@@ -127,66 +131,66 @@ class SystemImpl {
 		}
 	}
 
-	private static function keyUpHandler(event: KeyboardEvent): Void {
+	static function keyUpHandler(event: KeyboardEvent): Void {
 		pressedKeys[event.keyCode] = false;
 		keyboard.sendUpEvent(cast event.keyCode);
 	}
 
-	private static var mouseX: Int;
-	private static var mouseY: Int;
+	static var mouseX: Int;
+	static var mouseY: Int;
 
-	private static function setMousePosition(event: MouseEvent): Void {
+	static function setMousePosition(event: MouseEvent): Void {
 		mouseX = Std.int(event.stageX);
 		mouseY = Std.int(event.stageY);
 	}
 
-	private static function mouseLeaveHandler(event: Event): Void {
+	static function mouseLeaveHandler(event: Event): Void {
 		mouse.sendLeaveEvent(0);
 	}
 
-	private static function mouseDownHandler(event: MouseEvent): Void {
+	static function mouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, 0, mouseX, mouseY);
 	}
 
-	private static function mouseUpHandler(event: MouseEvent): Void {
+	static function mouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(0, 0, mouseX, mouseY);
 	}
 
-	private static function rightMouseDownHandler(event: MouseEvent): Void {
+	static function rightMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, 1, mouseX, mouseY);
 	}
 
-	private static function rightMouseUpHandler(event: MouseEvent): Void {
+	static function rightMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 	}
 
-	private static function middleMouseDownHandler(event: MouseEvent): Void {
+	static function middleMouseDownHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendDownEvent(0, 2, mouseX, mouseY);
 	}
 
-	private static function middleMouseUpHandler(event: MouseEvent): Void {
+	static function middleMouseUpHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 	}
 
-	private static function mouseMoveHandler(event: MouseEvent): Void {
+	static function mouseMoveHandler(event: MouseEvent): Void {
 		var movementX = Std.int(event.stageX) - mouseX;
 		var movementY = Std.int(event.stageY) - mouseY;
 		setMousePosition(event);
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
 	}
 
-	private static function mouseWheelHandler(event: MouseEvent): Void {
+	static function mouseWheelHandler(event: MouseEvent): Void {
 		setMousePosition(event);
 		mouse.sendWheelEvent(0, -event.delta);
 	}
 
-	private static function resizeHandler(event: Event): Void {
+	static function resizeHandler(event: Event): Void {
 		if (frame != null && stage.stageWidth >= 32 && stage.stageHeight >= 32) {
 			context.configureBackBuffer(stage.stageWidth, stage.stageHeight, 0, true);
 		}
@@ -204,9 +208,7 @@ class SystemImpl {
 		return "Flash";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms: Int): Void {}
 
 	public static function getLanguage(): String {
 		return Capabilities.language.substr(0, 2);
@@ -220,9 +222,7 @@ class SystemImpl {
 		return true;
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
 	public static function loadUrl(url: String): Void {
 		Lib.getURL(new URLRequest(url), "_blank");
@@ -244,31 +244,21 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
+	public static function setSafeZone(value: Float): Void {}
 
-	}
-
-	public static function unlockAchievement(id: Int): Void {
-
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
-
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 }

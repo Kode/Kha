@@ -5,13 +5,15 @@ import kha.arrays.Uint32Array;
 import kha.graphics4.Usage;
 
 class IndexBuffer {
-	public var indexBuffer: IndexBuffer3D;
-	private var indices: Uint32Array;
-	private var lockedIndices: Uint32Array;
 	public static var current: IndexBuffer;
 
+	public var indexBuffer: IndexBuffer3D;
+
+	var indices: Uint32Array;
+	var lockedIndices: Uint32Array;
+
 	public function new(indexCount: Int, usage: Usage) {
-		indexBuffer = kha.flash.graphics4.Graphics.context.createIndexBuffer(indexCount);// , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
+		indexBuffer = kha.flash.graphics4.Graphics.context.createIndexBuffer(indexCount); // , usage == Usage.DynamicUsage ? "dynamicDraw" : "staticDraw");
 		indices = new Uint32Array(indexCount);
 		lockedIndices = new Uint32Array(indexCount);
 		lockedIndices[indexCount - 1] = 0;

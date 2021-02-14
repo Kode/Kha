@@ -12,13 +12,13 @@ class Sound extends kha.Sound {
 	public var _mp3format: Bool;
 	@:noCompletion
 	public var _mp3: flash.media.Sound;
-	
+
 	public function new(bytes: Bytes) {
 		super();
 		compressedData = bytes;
 		_mp3 = null;
 	}
-	
+
 	@:noCompletion
 	public function _prepareMp3(): Bool {
 		if (_mp3 == null) {
@@ -27,18 +27,18 @@ class Sound extends kha.Sound {
 		}
 		return _mp3format;
 	}
-	
+
 	override public function uncompress(done: Void->Void): Void {
 		if (uncompressedData != null) {
 			done();
 			return;
 		}
-		
+
 		if (_mp3format) {
 			_prepareMp3();
 			var length = 44100 * _mp3.length;
 			var array = new ByteArray();
-			var extractedLength: Int = cast (_mp3.extract(array, length));
+			var extractedLength: Int = cast(_mp3.extract(array, length));
 			uncompressedData = new kha.arrays.Float32Array(extractedLength);
 			array.position = 0;
 			for (i in 0...extractedLength) {
@@ -54,7 +54,7 @@ class Sound extends kha.Sound {
 			super.uncompress(done);
 		}
 	}
-	
+
 	override public function unload(): Void {
 		super.unload();
 		_mp3 = null;

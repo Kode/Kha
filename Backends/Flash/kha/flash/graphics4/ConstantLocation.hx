@@ -7,7 +7,7 @@ class ConstantLocation implements kha.graphics4.ConstantLocation {
 		this.value = value;
 		this.type = type;
 	}
-	
+
 	public var value: Int;
 	public var type: Context3DProgramType;
 }

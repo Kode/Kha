@@ -13,21 +13,21 @@ import flash.display3D.textures.Texture;
 import flash.geom.Matrix;
 
 class Image implements Canvas implements Resource {
-	private var tex: Texture;
-	private var myWidth: Int;
-	private var myHeight: Int;
-	private var texWidth: Int;
-	private var texHeight: Int;
-	private var myFormat: TextureFormat;
-	private var depthStencil: DepthStencilFormat;
+	var tex: Texture;
+	var myWidth: Int;
+	var myHeight: Int;
+	var texWidth: Int;
+	var texHeight: Int;
+	var myFormat: TextureFormat;
+	var depthStencil: DepthStencilFormat;
 
-	private var data: BitmapData;
-	private var bytes: Bytes;
-	private var readable: Bool;
+	var data: BitmapData;
+	var bytes: Bytes;
+	var readable: Bool;
 
-	private var graphics1: kha.graphics1.Graphics;
-	private var graphics2: kha.graphics2.Graphics;
-	private var graphics4: kha.graphics4.Graphics;
+	var graphics1: kha.graphics1.Graphics;
+	var graphics2: kha.graphics2.Graphics;
+	var graphics4: kha.graphics4.Graphics;
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, false, NoDepthAndStencil, usage == Usage.ReadableUsage);
@@ -37,10 +37,11 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null,
+			depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
 		return new Image(width, height, format == null ? TextureFormat.RGBA32 : format, true, depthStencil, false);
 	}
-	
+
 	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
@@ -48,9 +49,11 @@ class Image implements Canvas implements Resource {
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
 		return null;
 	}
-	
-	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image -> Void, errorCallback: String->Void, readable:Bool = false): Void {
-		function handleError(e:flash.events.Event) errorCallback(e.toString());
+
+	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image->Void, errorCallback: String->Void,
+			readable: Bool = false): Void {
+		function handleError(e: flash.events.Event)
+			errorCallback(e.toString());
 		var loader = new flash.display.Loader();
 		loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, function(_) doneCallback(Image.fromBitmap(loader.content, readable)));
 		loader.contentLoaderInfo.addEventListener(flash.events.IOErrorEvent.IO_ERROR, handleError);
@@ -67,7 +70,8 @@ class Image implements Canvas implements Resource {
 		myFormat = format;
 		this.depthStencil = depthStencil;
 		this.readable = readable;
-		tex = SystemImpl.context.createTexture(texWidth, texHeight, format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
+		tex = SystemImpl.context.createTexture(texWidth, texHeight,
+			format == TextureFormat.RGBA128 ? Context3DTextureFormat.RGBA_HALF_FLOAT : Context3DTextureFormat.BGRA, renderTarget);
 	}
 
 	public static function fromBitmap(image: DisplayObject, readable: Bool): Image {
@@ -82,13 +86,14 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function uploadBitmap(bitmap: BitmapData, readable: Bool): Void {
-		if (readable) data = bitmap;
+		if (readable)
+			data = bitmap;
 		tex.uploadFromBitmapData(bitmap, 0);
 	}
 
 	public var g1(get, never): kha.graphics1.Graphics;
 
-	private function get_g1(): kha.graphics1.Graphics {
+	function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
 			graphics1 = new kha.graphics2.Graphics1(this);
 		}
@@ -97,7 +102,7 @@ class Image implements Canvas implements Resource {
 
 	public var g2(get, never): kha.graphics2.Graphics;
 
-	private function get_g2(): kha.graphics2.Graphics {
+	function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
 			graphics2 = new kha.flash.graphics4.Graphics2(this);
 		}
@@ -106,7 +111,7 @@ class Image implements Canvas implements Resource {
 
 	public var g4(get, never): kha.graphics4.Graphics;
 
-	private function get_g4(): kha.graphics4.Graphics {
+	function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
 			graphics4 = new kha.flash.graphics4.Graphics(this);
 		}
@@ -115,51 +120,58 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, never): Int;
 
-	private static function get_maxSize(): Int {
+	static function get_maxSize(): Int {
 		return 2048;
 	}
 
 	public static var nonPow2Supported(get, never): Bool;
 
-	private static function get_nonPow2Supported(): Bool {
+	static function get_nonPow2Supported(): Bool {
 		return false;
 	}
-	
+
 	public static function renderTargetsInvertedY(): Bool {
 		return false;
 	}
 
 	public var width(get, never): Int;
-	private function get_width(): Int {
+
+	function get_width(): Int {
 		return Std.int(myWidth);
 	}
 
 	public var height(get, never): Int;
-	private function get_height(): Int {
+
+	function get_height(): Int {
 		return Std.int(myHeight);
 	}
 
 	public var depth(get, never): Int;
-	private function get_depth(): Int {
+
+	function get_depth(): Int {
 		return 1;
 	}
 
 	public var format(get, never): TextureFormat;
-	private function get_format(): TextureFormat {
+
+	function get_format(): TextureFormat {
 		return myFormat;
 	}
 
 	public var realWidth(get, never): Int;
-	private function get_realWidth(): Int {
+
+	function get_realWidth(): Int {
 		return texWidth;
 	}
 
 	public var realHeight(get, never): Int;
-	private function get_realHeight(): Int {
+
+	function get_realHeight(): Int {
 		return texHeight;
 	}
 
 	public var stride(get, never): Int;
+
 	function get_stride(): Int {
 		switch (myFormat) {
 			case RGBA32:
@@ -181,8 +193,10 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool {
-		if (data != null) return (data.getPixel32(x, y) >> 24 & 0xFF) != 0;
-		if (bytes != null) return bytes.get(y * texWidth * 4 + x * 4 + 3) != 0;
+		if (data != null)
+			return (data.getPixel32(x, y) >> 24 & 0xFF) != 0;
+		if (bytes != null)
+			return bytes.get(y * texWidth * 4 + x * 4 + 3) != 0;
 		return true;
 	}
 
@@ -194,15 +208,15 @@ class Image implements Canvas implements Resource {
 		return tex;
 	}
 
-	//public function hasDepthStencil(): Bool {
-		//return depthStencil;
-	//}
+	// public function hasDepthStencil(): Bool {
+	// return depthStencil;
+	// }
 
 	public function depthStencilFormat(): DepthStencilFormat {
 		return depthStencil;
 	}
 
-	private static function upperPowerOfTwo(v: Int): Int {
+	static function upperPowerOfTwo(v: Int): Int {
 		v--;
 		v |= v >>> 1;
 		v |= v >>> 2;
@@ -233,26 +247,28 @@ class Image implements Canvas implements Resource {
 		switch (myFormat) {
 			case L8:
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 4);
-				for (y in 0...texHeight) for (x in 0...texWidth) {
-					var value = bytes.get(y * texWidth + x);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, value);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, value);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, value);
-					rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, 255);
-				}
+				for (y in 0...texHeight)
+					for (x in 0...texWidth) {
+						var value = bytes.get(y * texWidth + x);
+						rgbaBytes.set(y * texWidth * 4 + x * 4 + 0, value);
+						rgbaBytes.set(y * texWidth * 4 + x * 4 + 1, value);
+						rgbaBytes.set(y * texWidth * 4 + x * 4 + 2, value);
+						rgbaBytes.set(y * texWidth * 4 + x * 4 + 3, 255);
+					}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 			case RGBA128:
 				var rgbaBytes = Bytes.alloc(texWidth * texHeight * 8);
-				for (y in 0...texHeight) for (x in 0...texWidth) {
-					var value1 = bytes.getDouble(y * texWidth * 16 + x * 16 +  0);
-					var value2 = bytes.getDouble(y * texWidth * 16 + x * 16 +  4);
-					var value3 = bytes.getDouble(y * texWidth * 16 + x * 16 +  8);
-					var value4 = bytes.getDouble(y * texWidth * 16 + x * 16 + 12);
-					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 0, value1);
-					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 2, value2);
-					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 4, value3);
-					rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 6, value4);
-				}
+				for (y in 0...texHeight)
+					for (x in 0...texWidth) {
+						var value1 = bytes.getDouble(y * texWidth * 16 + x * 16 + 0);
+						var value2 = bytes.getDouble(y * texWidth * 16 + x * 16 + 4);
+						var value3 = bytes.getDouble(y * texWidth * 16 + x * 16 + 8);
+						var value4 = bytes.getDouble(y * texWidth * 16 + x * 16 + 12);
+						rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 0, value1);
+						rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 2, value2);
+						rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 4, value3);
+						rgbaBytes.setFloat(y * texWidth * 8 + x * 8 + 6, value4);
+					}
 				tex.uploadFromByteArray(rgbaBytes.getData(), 0);
 			case RGBA32:
 				tex.uploadFromByteArray(bytes.getData(), 0);
@@ -260,26 +276,19 @@ class Image implements Canvas implements Resource {
 				tex.uploadFromByteArray(bytes.getData(), 0);
 		}
 
-		if (!readable) bytes = null;
+		if (!readable)
+			bytes = null;
 	}
 
 	public function getPixels(): Bytes {
 		return null;
 	}
 
-	public function generateMipmaps(levels: Int): Void {
+	public function generateMipmaps(levels: Int): Void {}
 
-	}
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
 
-	public function setMipmaps(mipmaps: Array<Image>): Void {
+	public function setDepthStencilFrom(image: Image): Void {}
 
-	}
-
-	public function setDepthStencilFrom(image: Image): Void {
-		
-	}
-
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {
-		
-	}
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 }

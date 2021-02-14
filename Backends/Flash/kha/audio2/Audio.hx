@@ -6,13 +6,13 @@ import flash.media.SoundTransform;
 import kha.internal.IntBox;
 
 class HardwareAudioChannel implements kha.audio1.AudioChannel {
-	private var music: flash.media.Sound;
-	private var channel: flash.media.SoundChannel;
-	private var running: Bool;
-	private var loop: Bool;
-	private var myVolume: Float;
-	private var transform: SoundTransform;
-	
+	var music: flash.media.Sound;
+	var channel: flash.media.SoundChannel;
+	var running: Bool;
+	var loop: Bool;
+	var myVolume: Float;
+	var transform: SoundTransform;
+
 	public function new(music: flash.media.Sound, loop: Bool) {
 		this.music = music;
 		this.loop = loop;
@@ -20,53 +20,55 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 		myVolume = 1;
 		transform = new SoundTransform();
 	}
-	
+
 	public function play(): Void {
-		if (channel != null) channel.stop();
+		if (channel != null)
+			channel.stop();
 		running = true;
 		channel = music.play(0, loop ? 2147483647 : 1);
-		channel.addEventListener(Event.SOUND_COMPLETE, function(_) { running = false; } );
+		channel.addEventListener(Event.SOUND_COMPLETE, function(_) {
+			running = false;
+		});
 	}
-	
-	public function pause(): Void {
-		
-	}
-	
+
+	public function pause(): Void {}
+
 	public function stop(): Void {
-		if (channel != null) channel.stop();
+		if (channel != null)
+			channel.stop();
 	}
-	
+
 	public var length(get, never): Float;
-	
-	private function get_length(): Float {
+
+	function get_length(): Float {
 		return music.length / 1000.0;
 	}
-	
+
 	public var position(get, set): Float;
-	
-	private function get_position(): Float {
+
+	function get_position(): Float {
 		return channel.position / 1000.0;
 	}
-	
+
 	function set_position(value: Float): Float {
 		return value;
 	}
 
 	public var volume(get, set): Float;
 
-	private function get_volume(): Float {
+	function get_volume(): Float {
 		return myVolume;
 	}
 
-	private function set_volume(value: Float): Float {
+	function set_volume(value: Float): Float {
 		transform.volume = value;
 		channel.soundTransform = transform;
 		return myVolume = value;
 	}
-	
+
 	public var finished(get, never): Bool;
-	
-	private function get_finished(): Bool {
+
+	function get_finished(): Bool {
 		return !running;
 	}
 }
@@ -74,19 +76,19 @@ class HardwareAudioChannel implements kha.audio1.AudioChannel {
 class Audio {
 	public static var disableGcInteractions = false;
 	static var intBox: IntBox = new IntBox(0);
-	private static var buffer: Buffer;
-	private static inline var bufferSize = 4096;
-	
+	static var buffer: Buffer;
+	static inline var bufferSize = 4096;
+
 	@:noCompletion
 	public static function _init(): Void {
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
-		
+
 		var sound = new flash.media.Sound();
 		sound.addEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
 		sound.play(0, 1, null);
 	}
-	
-	private static function onSampleData(event: SampleDataEvent): Void {
+
+	static function onSampleData(event: SampleDataEvent): Void {
 		if (audioCallback != null) {
 			intBox.value = bufferSize * 2;
 			audioCallback(intBox, buffer);
@@ -106,12 +108,12 @@ class Audio {
 				event.data.writeFloat(0);
 			}
 		}
-    }
+	}
 
 	public static var samplesPerSecond: Int;
-	
+
 	public static var audioCallback: IntBox->Buffer->Void;
-	
+
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		var flashSound: kha.flash.Sound = cast sound;
 		if (flashSound._prepareMp3()) {
