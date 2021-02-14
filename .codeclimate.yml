@@ -1,6 +1,3 @@
-engines:
- haxe-checkstyle:
+plugins:
+  haxe-checkstyle:
     enabled: true
-ratings:
-  paths:
-    - "**.hx"
