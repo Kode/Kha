@@ -6,29 +6,29 @@ import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
 
 class VertexBuffer {
-	private var data: Float32Array;
-	private var mySize: Int;
-	private var myStride: Int;
+	var data: Float32Array;
+	var mySize: Int;
+	var myStride: Int;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case Float1:
-				myStride += 4 * 1;
-			case Float2:
-				myStride += 4 * 2;
-			case Float3:
-				myStride += 4 * 3;
-			case Float4:
-				myStride += 4 * 4;
-			case Float4x4:
-				myStride += 4 * 4 * 4;
-			case Short2Norm:
-				myStride += 2 * 2;
-			case Short4Norm:
-				myStride += 2 * 4;
+				case Float1:
+					myStride += 4 * 1;
+				case Float2:
+					myStride += 4 * 2;
+				case Float3:
+					myStride += 4 * 3;
+				case Float4:
+					myStride += 4 * 4;
+				case Float4x4:
+					myStride += 4 * 4 * 4;
+				case Short2Norm:
+					myStride += 2 * 2;
+				case Short4Norm:
+					myStride += 2 * 4;
 			}
 		}
 
@@ -43,9 +43,7 @@ class VertexBuffer {
 		return data;
 	}
 
-	public function unlock(?count: Int): Void {
-
-	}
+	public function unlock(?count: Int): Void {}
 
 	public function stride(): Int {
 		return myStride;

@@ -13,32 +13,30 @@ import kha.js.EmptyGraphics4;
 import kha.netsync.Session;
 
 class SystemImpl {
-	private static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
-	private static var width: Int;
-	private static var height: Int;
+	static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
+	static var width: Int;
+	static var height: Int;
 
-	private static inline var networkSendRate = 0.05;
+	static inline var networkSendRate = 0.05;
 
-	public static function init(options: SystemOptions, callback: Window -> Void): Void {
+	public static function init(options: SystemOptions, callback: Window->Void): Void {
 		SystemImpl.width = options.width;
 		SystemImpl.height = options.height;
 		init2();
 		callback(null);
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Window -> Void) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Window->Void) {
 		trace('initEx is not supported on the node target, running init() with first window options');
 
-		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+		init({title: title, width: options[0].width, height: options[0].height}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);
 		}
 	}
 
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function _updateSize(width: Int, height: Int): Void {
 		SystemImpl.width = width;
@@ -82,9 +80,7 @@ class SystemImpl {
 		return "nodejs";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms: Int): Void {}
 
 	public static function getLanguage(): String {
 		return "en";
@@ -95,17 +91,17 @@ class SystemImpl {
 		return true;
 	}
 
-	private static var frame: Framebuffer = null;
-	private static var keyboard: Keyboard;
-	private static var mouse: kha.input.Mouse;
-	private static var gamepad: Gamepad;
+	static var frame: Framebuffer = null;
+	static var keyboard: Keyboard;
+	static var mouse: kha.input.Mouse;
+	static var gamepad: Gamepad;
 
 	public static var mouseX: Int;
 	public static var mouseY: Int;
 
-	private static var lastTime: Float = 0;
+	static var lastTime: Float = 0;
 
-	private static function init2() {
+	static function init2() {
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
 		gamepad = new Gamepad();
@@ -121,7 +117,7 @@ class SystemImpl {
 		synch();
 	}
 
-	private static function run() {
+	static function run() {
 		Scheduler.executeFrame();
 		var time = Scheduler.time();
 
@@ -137,7 +133,7 @@ class SystemImpl {
 		Node.setTimeout(run, 1);
 	}
 
-	private static function synch() {
+	static function synch() {
 		if (Session.the() != null) {
 			Session.the().update();
 		}
@@ -145,22 +141,20 @@ class SystemImpl {
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return keyboard;
 	}
 
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return mouse;
 	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(): Void {}
 
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -170,46 +164,29 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function canSwitchFullscreen() : Bool{
+	public static function canSwitchFullscreen(): Bool {
 		return false;
 	}
 
-	public static function isFullscreen() : Bool{
+	public static function isFullscreen(): Bool {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-  	}
+	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function notifyOfFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	}
-
-
-	public static function removeFromFullscreenChange(func : Void -> Void, error  : Void -> Void) : Void{
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
@@ -227,31 +204,21 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
-
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 }

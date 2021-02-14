@@ -7,7 +7,6 @@ using StringTools;
 
 @:keep
 class Sound extends kha.Sound {
-
 	function initWav(filename: String) {
 		uncompressedData = new kha.arrays.Float32Array();
 		var dataSize = new kha.arrays.Uint32Array(1);
@@ -19,7 +18,7 @@ class Sound extends kha.Sound {
 	function initOgg(filename: String) {
 		compressedData = File.getBytes(filename);
 	}
-	
+
 	public function new(filename: String) {
 		super();
 		if (filename.endsWith(".wav")) {
@@ -33,5 +32,7 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outLength: hl.Ref<Float>): Pointer { return null; }
+	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outLength: hl.Ref<Float>): Pointer {
+		return null;
+	}
 }

@@ -9,12 +9,13 @@ import kha.math.Matrix3;
 import kha.Rotation;
 
 class EmptyGraphics2 extends Graphics {
-	private var width: Int;
-	private var height: Int;
-	private var myColor: Color;
-	private var myFont: kha.Font;
-	private static var instance: EmptyGraphics2;
-	
+	var width: Int;
+	var height: Int;
+	var myColor: Color;
+	var myFont: kha.Font;
+
+	static var instance: EmptyGraphics2;
+
 	public function new(width: Int, height: Int) {
 		super();
 		this.width = width;
@@ -22,20 +23,20 @@ class EmptyGraphics2 extends Graphics {
 		instance = this;
 		myColor = Color.fromBytes(0, 0, 0);
 	}
-	
-	override public function set_color(color: Color): Color {
+
+	override function set_color(color: Color): Color {
 		return myColor = color;
 	}
-	
-	override public function get_color(): Color {
+
+	override function get_color(): Color {
 		return myColor;
 	}
-	
-	override public function set_font(font: kha.Font): kha.Font {
+
+	override function set_font(font: kha.Font): kha.Font {
 		return myFont = font;
 	}
-	
-	override public function get_font(): kha.Font {
+
+	override function get_font(): kha.Font {
 		return myFont;
 	}
 }
