@@ -5,31 +5,31 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 abstract Uint32Array(IntBuffer) {
-	private static inline var elementSize = 4;
-		
+	static inline var elementSize = 4;
+
 	public inline function new(elements: Int) {
 		this = ByteBuffer.allocateDirect(elements * elementSize).order(ByteOrder.nativeOrder()).asIntBuffer();
 	}
-	
+
 	public var length(get, never): Int;
 
 	inline function get_length(): Int {
 		return this.remaining();
 	}
-	
+
 	public function set(index: Int, value: Int): Int {
 		this.put(index, value);
 		return value;
 	}
-	
+
 	public inline function get(index: Int): Int {
 		return this.get(index);
 	}
-	
+
 	public inline function data(): IntBuffer {
 		return this;
 	}
-	
+
 	@:arrayAccess
 	public inline function arrayRead(index: Int): Int {
 		return this.get(index);
@@ -41,7 +41,7 @@ abstract Uint32Array(IntBuffer) {
 		return value;
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Uint32Array {
+	// public inline function subarray(start: Int, ?end: Int): Uint32Array {
 	//	return cast this.subarray(start, end);
-	//}
+	// }
 }

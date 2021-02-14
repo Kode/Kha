@@ -11,13 +11,13 @@ import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexData;
 
 class VertexBuffer {
-	private var buffer: Int;
-	private var data: Float32Array;
-	private var mySize: Int;
-	private var myStride: Int;
-	private var sizes: Array<Int>;
-	private var offsets: Array<Int>;
-	private var usage: Usage;
+	var buffer: Int;
+	var data: Float32Array;
+	var mySize: Int;
+	var myStride: Int;
+	var sizes: Array<Int>;
+	var offsets: Array<Int>;
+	var usage: Usage;
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		this.usage = usage;
@@ -25,20 +25,20 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case VertexData.Float1:
-				myStride += 4 * 1;
-			case VertexData.Float2:
-				myStride += 4 * 2;
-			case VertexData.Float3:
-				myStride += 4 * 3;
-			case VertexData.Float4:
-				myStride += 4 * 4;
-			case VertexData.Float4x4:
-				myStride += 4 * 4 * 4;
-			case VertexData.Short2Norm:
-				myStride += 2 * 2;
-			case VertexData.Short4Norm:
-				myStride += 2 * 4;
+				case VertexData.Float1:
+					myStride += 4 * 1;
+				case VertexData.Float2:
+					myStride += 4 * 2;
+				case VertexData.Float3:
+					myStride += 4 * 3;
+				case VertexData.Float4:
+					myStride += 4 * 4;
+				case VertexData.Float4x4:
+					myStride += 4 * 4 * 4;
+				case VertexData.Short2Norm:
+					myStride += 2 * 2;
+				case VertexData.Short4Norm:
+					myStride += 2 * 4;
 			}
 		}
 
@@ -55,44 +55,44 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			var size;
 			switch (element.data) {
-			case VertexData.Float1:
-				size = 1;
-			case VertexData.Float2:
-				size = 2;
-			case VertexData.Float3:
-				size = 3;
-			case VertexData.Float4:
-				size = 4;
-			case VertexData.Float4x4:
-				size = 4 * 4;
-			case VertexData.Short2Norm:
-				size = 2;
-			case VertexData.Short4Norm:
-				size = 4;
+				case VertexData.Float1:
+					size = 1;
+				case VertexData.Float2:
+					size = 2;
+				case VertexData.Float3:
+					size = 3;
+				case VertexData.Float4:
+					size = 4;
+				case VertexData.Float4x4:
+					size = 4 * 4;
+				case VertexData.Short2Norm:
+					size = 2;
+				case VertexData.Short4Norm:
+					size = 4;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
 			switch (element.data) {
-			case VertexData.Float1:
-				offset += 4 * 1;
-			case VertexData.Float2:
-				offset += 4 * 2;
-			case VertexData.Float3:
-				offset += 4 * 3;
-			case VertexData.Float4:
-				offset += 4 * 4;
-			case VertexData.Float4x4:
-				offset += 4 * 4 * 4;
-			case VertexData.Short2Norm:
-				offset += 2 * 2;
-			case VertexData.Short4Norm:
-				offset += 2 * 4;
+				case VertexData.Float1:
+					offset += 4 * 1;
+				case VertexData.Float2:
+					offset += 4 * 2;
+				case VertexData.Float3:
+					offset += 4 * 3;
+				case VertexData.Float4:
+					offset += 4 * 4;
+				case VertexData.Float4x4:
+					offset += 4 * 4 * 4;
+				case VertexData.Short2Norm:
+					offset += 2 * 2;
+				case VertexData.Short4Norm:
+					offset += 2 * 4;
 			}
 			++index;
 		}
 	}
 
-	private static function createBuffer(): Int {
+	static function createBuffer(): Int {
 		var buffers = new NativeArray<Int>(1);
 		GLES20.glGenBuffers(1, buffers, 0);
 		return buffers[0];

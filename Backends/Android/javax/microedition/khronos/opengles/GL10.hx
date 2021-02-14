@@ -1,5 +1,3 @@
 package javax.microedition.khronos.opengles;
 
-extern class GL10 {
-	
-}
+extern class GL10 {}

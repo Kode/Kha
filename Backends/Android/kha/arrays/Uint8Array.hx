@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 abstract Uint8Array(IntBuffer) {
-	private static inline var elementSize = 1;
+	static inline var elementSize = 1;
 
 	public inline function new(elements: Int) {
 		this = ByteBuffer.allocateDirect(elements * elementSize).order(ByteOrder.nativeOrder()).asIntBuffer();
@@ -41,7 +41,7 @@ abstract Uint8Array(IntBuffer) {
 		return value;
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Uint8Array {
+	// public inline function subarray(start: Int, ?end: Int): Uint8Array {
 	//	return cast this.subarray(start, end);
-	//}
+	// }
 }

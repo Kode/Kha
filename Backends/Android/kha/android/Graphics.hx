@@ -37,9 +37,9 @@ import kha.math.Vector3;
 import kha.math.Vector4;
 
 class Graphics implements kha.graphics4.Graphics {
-	private var framebuffer: Dynamic;
-	private var indexBuffer: IndexBuffer;
-	private var renderTarget: Image;
+	var framebuffer: Dynamic;
+	var indexBuffer: IndexBuffer;
+	var renderTarget: Image;
 
 	public function new(renderTarget: Image = null) {
 		this.renderTarget = renderTarget;
@@ -59,13 +59,9 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function beginFace(face: Int): Void {
+	public function beginFace(face: Int): Void {}
 
-	}
-
-	public function beginEye(eye: Int): Void {
-		
-	}
+	public function beginEye(eye: Int): Void {}
 
 	public function end(): Void {
 		/*if (GLES20.glGetError() != GLES20.GL_NO_ERROR) {
@@ -73,9 +69,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}*/
 	}
 
-	public function flush(): Void {
-
-	}
+	public function flush(): Void {}
 
 	public function vsynced(): Bool {
 		return true;
@@ -111,54 +105,54 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setDepthMode(write: Bool, mode: CompareMode): Void {
 		switch (mode) {
-		case Always:
-			write ? GLES20.glEnable(GLES20.GL_DEPTH_TEST) : GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_ALWAYS);
-		case Never:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_NEVER);
-		case Equal:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_EQUAL);
-		case NotEqual:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_NOTEQUAL);
-		case Less:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_LESS);
-		case LessEqual:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_LEQUAL);
-		case Greater:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_GREATER);
-		case GreaterEqual:
-			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-			GLES20.glDepthFunc(GLES20.GL_GEQUAL);
+			case Always:
+				write ? GLES20.glEnable(GLES20.GL_DEPTH_TEST) : GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_ALWAYS);
+			case Never:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_NEVER);
+			case Equal:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_EQUAL);
+			case NotEqual:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_NOTEQUAL);
+			case Less:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_LESS);
+			case LessEqual:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+			case Greater:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_GREATER);
+			case GreaterEqual:
+				GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+				GLES20.glDepthFunc(GLES20.GL_GEQUAL);
 		}
 		GLES20.glDepthMask(write);
 	}
 
-	private static function getBlendFunc(op: BlendingFactor): Int {
+	static function getBlendFunc(op: BlendingFactor): Int {
 		switch (op) {
-		case BlendZero, Undefined:
-			return GLES20.GL_ZERO;
-		case BlendOne:
-			return GLES20.GL_ONE;
-		case SourceAlpha:
-			return GLES20.GL_SRC_ALPHA;
-		case DestinationAlpha:
-			return GLES20.GL_DST_ALPHA;
-		case InverseSourceAlpha:
-			return GLES20.GL_ONE_MINUS_SRC_ALPHA;
-		case InverseDestinationAlpha:
-			return GLES20.GL_ONE_MINUS_DST_ALPHA;
-		default:
-			return GLES20.GL_ZERO;
+			case BlendZero, Undefined:
+				return GLES20.GL_ZERO;
+			case BlendOne:
+				return GLES20.GL_ONE;
+			case SourceAlpha:
+				return GLES20.GL_SRC_ALPHA;
+			case DestinationAlpha:
+				return GLES20.GL_DST_ALPHA;
+			case InverseSourceAlpha:
+				return GLES20.GL_ONE_MINUS_SRC_ALPHA;
+			case InverseDestinationAlpha:
+				return GLES20.GL_ONE_MINUS_DST_ALPHA;
+			default:
+				return GLES20.GL_ZERO;
 		}
 	}
 
-	private function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
+	function setBlendingMode(source: BlendingFactor, destination: BlendingFactor): Void {
 		if (source == BlendOne && destination == BlendZero) {
 			GLES20.glDisable(GLES20.GL_BLEND);
 		}
@@ -176,27 +170,21 @@ class Graphics implements kha.graphics4.Graphics {
 		cast(vertexBuffer, VertexBuffer).set();
 	}
 
-	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
-
-	}
+	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {}
 
 	public function createIndexBuffer(indexCount: Int, usage: Usage, canRead: Bool = false): kha.graphics4.IndexBuffer {
 		return new IndexBuffer(indexCount, usage);
 	}
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
-		//indicesCount = indexBuffer.count();
-		//cast(indexBuffer, IndexBuffer).set();
+		// indicesCount = indexBuffer.count();
+		// cast(indexBuffer, IndexBuffer).set();
 		this.indexBuffer = indexBuffer;
 	}
 
-	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
-	
-	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		
-	}
+	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
+
+	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {}
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
@@ -207,63 +195,56 @@ class Graphics implements kha.graphics4.Graphics {
 			texture.set(cast(stage, TextureUnit).value);
 		}
 	}
-	
-	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
-	
-	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-	
-	}
 
-	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
+	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	}
+	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
+	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {}
 
-	}
+	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {}
 
-	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
+	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+			minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + cast(texunit, TextureUnit).value);
 
 		switch (uAddressing) {
-		case Clamp:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-		case Repeat:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-		case Mirror:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
+			case Clamp:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+			case Repeat:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+			case Mirror:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
 		}
 
 		switch (vAddressing) {
-		case Clamp:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-		case Repeat:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
-		case Mirror:
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
+			case Clamp:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+			case Repeat:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+			case Mirror:
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
 		}
 
 		switch (minificationFilter) {
-		case PointFilter:
-			switch (mipmapFilter) {
-			case NoMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-			case PointMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
-			case LinearMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_LINEAR);
-			}
-		case LinearFilter, AnisotropicFilter:
-			switch (mipmapFilter) {
-			case NoMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-			case PointMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_NEAREST);
-			case LinearMipFilter:
-				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-			}
+			case PointFilter:
+				switch (mipmapFilter) {
+					case NoMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+					case PointMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
+					case LinearMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_LINEAR);
+				}
+			case LinearFilter, AnisotropicFilter:
+				switch (mipmapFilter) {
+					case NoMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+					case PointMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_NEAREST);
+					case LinearMipFilter:
+						GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+				}
 		}
 
 		switch (magnificationFilter) {
@@ -274,17 +255,12 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 	}
 
-	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-	
-	}
+	public function setTexture3DParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
+		wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {}
 
-	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
+	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
-	}
-
-	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {
-		
-	}
+	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool): Void {}
 
 	public function maxBoundTextures(): Int {
 		return 8;
@@ -292,14 +268,14 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setCullMode(mode: CullMode): Void {
 		switch (mode) {
-		case None:
-			GLES20.glDisable(GLES20.GL_CULL_FACE);
-		case Clockwise:
-			GLES20.glEnable(GLES20.GL_CULL_FACE);
-			GLES20.glCullFace(GLES20.GL_FRONT);
-		case CounterClockwise:
-			GLES20.glEnable(GLES20.GL_CULL_FACE);
-			GLES20.glCullFace(GLES20.GL_BACK);
+			case None:
+				GLES20.glDisable(GLES20.GL_CULL_FACE);
+			case Clockwise:
+				GLES20.glEnable(GLES20.GL_CULL_FACE);
+				GLES20.glCullFace(GLES20.GL_FRONT);
+			case CounterClockwise:
+				GLES20.glEnable(GLES20.GL_CULL_FACE);
+				GLES20.glCullFace(GLES20.GL_BACK);
 		}
 	}
 
@@ -312,14 +288,13 @@ class Graphics implements kha.graphics4.Graphics {
 				stencilReferenceValue = value;
 			default:
 		}
-		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, stencilReferenceValue, pipeline.stencilReadMask, pipeline.stencilWriteMask);
+		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, stencilReferenceValue,
+			pipeline.stencilReadMask, pipeline.stencilWriteMask);
 		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
 		pipeline.set();
 	}
 
-	public function setStencilReferenceValue(value: Int): Void {
-
-	}
+	public function setStencilReferenceValue(value: Int): Void {}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
 		GLES20.glUniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
@@ -387,22 +362,40 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glUniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 
-	private var matrixCache = new NativeArray<Single>(16);
+	var matrixCache = new NativeArray<Single>(16);
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
-		matrixCache[ 0] = matrix._00; matrixCache[ 1] = matrix._01; matrixCache[ 2] = matrix._02; matrixCache[ 3] = matrix._03;
-		matrixCache[ 4] = matrix._10; matrixCache[ 5] = matrix._11; matrixCache[ 6] = matrix._12; matrixCache[ 7] = matrix._13;
-		matrixCache[ 8] = matrix._20; matrixCache[ 9] = matrix._21; matrixCache[10] = matrix._22; matrixCache[11] = matrix._23;
-		matrixCache[12] = matrix._30; matrixCache[13] = matrix._31; matrixCache[14] = matrix._32; matrixCache[15] = matrix._33;
+		matrixCache[0] = matrix._00;
+		matrixCache[1] = matrix._01;
+		matrixCache[2] = matrix._02;
+		matrixCache[3] = matrix._03;
+		matrixCache[4] = matrix._10;
+		matrixCache[5] = matrix._11;
+		matrixCache[6] = matrix._12;
+		matrixCache[7] = matrix._13;
+		matrixCache[8] = matrix._20;
+		matrixCache[9] = matrix._21;
+		matrixCache[10] = matrix._22;
+		matrixCache[11] = matrix._23;
+		matrixCache[12] = matrix._30;
+		matrixCache[13] = matrix._31;
+		matrixCache[14] = matrix._32;
+		matrixCache[15] = matrix._33;
 		GLES20.glUniformMatrix4fv(cast(location, ConstantLocation).value, 1, false, matrixCache, 0);
 	}
 
-	private var matrix3Cache = new NativeArray<Single>(9);
+	var matrix3Cache = new NativeArray<Single>(9);
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
-		matrix3Cache[0] = matrix._00; matrix3Cache[1] = matrix._01; matrix3Cache[2] = matrix._02;
-		matrix3Cache[3] = matrix._10; matrix3Cache[4] = matrix._11; matrix3Cache[5] = matrix._12;
-		matrix3Cache[6] = matrix._20; matrix3Cache[7] = matrix._21; matrix3Cache[8] = matrix._22;
+		matrix3Cache[0] = matrix._00;
+		matrix3Cache[1] = matrix._01;
+		matrix3Cache[2] = matrix._02;
+		matrix3Cache[3] = matrix._10;
+		matrix3Cache[4] = matrix._11;
+		matrix3Cache[5] = matrix._12;
+		matrix3Cache[6] = matrix._20;
+		matrix3Cache[7] = matrix._21;
+		matrix3Cache[8] = matrix._22;
 		GLES20.glUniformMatrix3fv(cast(location, ConstantLocation).value, 1, false, matrix3Cache, 0);
 	}
 
@@ -410,22 +403,18 @@ class Graphics implements kha.graphics4.Graphics {
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count == -1 ? indexBuffer.count() : count, GLES20.GL_UNSIGNED_SHORT, indexBuffer.data);
 	}
 
-	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {
-
-	}
+	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
 
 	public function instancedRenderingAvailable(): Bool {
 		return false;
 	}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction, referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		if (	compareMode == CompareMode.Always
-			&&	bothPass == StencilAction.Keep
-			&&	depthFail == StencilAction.Keep
-			&&	stencilFail == StencilAction.Keep)
-		{
+	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
+			referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
+		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep && depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
 			GLES20.glDisable(GLES20.GL_STENCIL_TEST);
-		} else {
+		}
+		else {
 			GLES20.glEnable(GLES20.GL_STENCIL_TEST);
 
 			var stencilFunc = switch (compareMode) {
@@ -459,12 +448,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function scissor(x: Int, y: Int, width: Int, height: Int): Void {
-        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
-        // Workaround to transform opengl y coordinate into kha's
-        GLES20.glScissor(x,System.windowHeight()-y-height,width,height);
+		GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+		// Workaround to transform opengl y coordinate into kha's
+		GLES20.glScissor(x, System.windowHeight() - y - height, width, height);
 	}
 
 	public function disableScissor(): Void {
-        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+		GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 	}
 }

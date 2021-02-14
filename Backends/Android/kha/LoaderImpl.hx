@@ -14,14 +14,14 @@ import kha.FontStyle;
 import kha.Kravur;
 
 class LoaderImpl {
-	private static var assetManager: AssetManager;
+	static var assetManager: AssetManager;
 
 	public static function init(context: Context) {
 		assetManager = context.getAssets();
 		Image.assets = assetManager;
 	}
 
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image->Void, failed: AssetError -> Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image->Void, failed: AssetError->Void) {
 		done(Image.createFromFile(desc.files[0]));
 	}
 
@@ -29,12 +29,12 @@ class LoaderImpl {
 		return ["png", "jpg"];
 	}
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: AssetError -> Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: AssetError->Void) {
 		var sound: kha.Sound = null;
 		try {
 			sound = new kha.android.Sound(assetManager.openFd(desc.files[0]));
 		}
-		catch (ex: IOException) {
+		catch (ex:IOException) {
 			ex.printStackTrace();
 		}
 		done(sound);
@@ -54,13 +54,12 @@ class LoaderImpl {
 		}
 		done(music);
 	}*/
-
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void, failed: AssetError -> Void) {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void, failed: AssetError->Void) {
 		var video: kha.Video = null;
 		try {
 			video = new kha.android.Video(assetManager.openFd(desc.files[0]));
 		}
-		catch (ex: IOException) {
+		catch (ex:IOException) {
 			ex.printStackTrace();
 		}
 		done(video);
@@ -73,8 +72,7 @@ class LoaderImpl {
 	/*function loadFont(name: String, style: FontStyle, size: Float): kha.Font {
 		return Kravur.get(name, style, size);
 	}*/
-
-	public static function loadBlobFromDescription(desc: Dynamic, done: kha.Blob->Void, failed: AssetError -> Void): Void {
+	public static function loadBlobFromDescription(desc: Dynamic, done: kha.Blob->Void, failed: AssetError->Void): Void {
 		var bytes: Array<Int> = new Array<Int>();
 		try {
 			var stream: java.io.InputStream = new java.io.BufferedInputStream(assetManager.open(desc.files[0]));
@@ -84,26 +82,26 @@ class LoaderImpl {
 			}
 			stream.close();
 		}
-		catch (ex: IOException) {
+		catch (ex:IOException) {
 			ex.printStackTrace();
 		}
 		var array = new BytesData(bytes.length);
-		for (i in 0...bytes.length) array[i] = bytes[i];
+		for (i in 0...bytes.length)
+			array[i] = bytes[i];
 		var hbytes = Bytes.ofData(array);
 		done(new kha.Blob(hbytes));
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void, failed: AssetError -> Void): Void {
-		loadBlobFromDescription(desc, function (blob: Blob) {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void, failed: AssetError->Void): Void {
+		loadBlobFromDescription(desc, function(blob: Blob) {
 			done(new Kravur(blob));
 		}, failed);
 	}
-
 	/*override public function showKeyboard(): Void {
-		Starter.showKeyboard = true;
-	}
+			Starter.showKeyboard = true;
+		}
 
-	override public function hideKeyboard(): Void {
-		Starter.showKeyboard = false;
+		override public function hideKeyboard(): Void {
+			Starter.showKeyboard = false;
 	}*/
 }

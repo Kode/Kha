@@ -1,5 +1,3 @@
 package android.content.res;
 
-extern class Configuration {
-	
-}
+extern class Configuration {}

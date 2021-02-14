@@ -3,9 +3,7 @@ package kha;
 class Display {
 	static var instance: Display = new Display();
 
-	function new() {
-
-	}
+	function new() {}
 
 	public static function init(): Void {}
 
@@ -70,7 +68,7 @@ class Display {
 		tech.kode.kha.KhaActivity.the().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return (int)(metrics.density * android.util.DisplayMetrics.DENSITY_DEFAULT);
 	')
-	public function get_pixelsPerInch(): Int {
+	function get_pixelsPerInch(): Int {
 		return 0;
 	}
 

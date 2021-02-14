@@ -12,42 +12,45 @@ using StringTools;
 
 @:access(haxe.io.Bytes)
 class AndroidStorageFile extends StorageFile {
-	private var DEFAULT_BUFFER_SIZE = 1024 * 4;
-	
-	private var name: String;
-	
+	var DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+	var name: String;
+
 	public function new(name: String) {
 		this.name = name;
 	}
-	
-	private inline function writeInMode(data: Blob, mode: Int): Void {
+
+	inline function writeInMode(data: Blob, mode: Int): Void {
 		try {
 			var context = KhaActivity.the().getApplicationContext();
 			var outputStream = context.openFileOutput(name, mode);
 			outputStream.write(data.toBytes().b);
 			outputStream.close();
-		} catch (e: IOException) {
+		}
+		catch (e:IOException) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	override public function read(): Blob {
 		var context = KhaActivity.the().getApplicationContext();
-		
+
 		try {
 			var inputStream = context.openFileInput(name);
-			if (inputStream == null) return null;
-			
+			if (inputStream == null)
+				return null;
+
 			var output = new ByteArrayOutputStream();
 			var buffer = new NativeArray<Int8>(DEFAULT_BUFFER_SIZE);
-			
+
 			var n = 0;
 			while (-1 != (n = inputStream.read(buffer))) {
 				output.write(buffer, 0, n);
 			}
-			
+
 			return Blob.fromBytes(Bytes.ofData(output.toByteArray()));
-		} catch (e: IOException) {
+		}
+		catch (e:IOException) {
 			return null;
 		}
 	}
@@ -55,19 +58,21 @@ class AndroidStorageFile extends StorageFile {
 	override public function write(data: Blob): Void {
 		writeInMode(data, Context.MODE_PRIVATE);
 	}
-	
+
 	override public function append(data: Blob): Void {
 		writeInMode(data, Context.MODE_APPEND);
 	}
-	
-	override public function canAppend(): Bool { return true; }
+
+	override public function canAppend(): Bool {
+		return true;
+	}
 }
 
 class Storage {
 	public static function namedFile(name: String): StorageFile {
 		name = name.replace("\\", ".");
 		name = name.replace("/", ".");
-		
+
 		return new AndroidStorageFile(name);
 	}
 

@@ -15,6 +15,6 @@ extern class Context {
 
 	public function getAssets(): AssetManager;
 
-	public function openFileOutput (name: String, mode: Int): FileOutputStream;
-	public function openFileInput (name: String): FileInputStream;
+	public function openFileOutput(name: String, mode: Int): FileOutputStream;
+	public function openFileInput(name: String): FileInputStream;
 }

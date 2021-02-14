@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 abstract Float32Array(java.NativeArray<Single>) {
-	private static inline var elementSize = 4;
+	static inline var elementSize = 4;
 
 	public inline function new(elements: Int) {
 		this = new java.NativeArray<Single>(elements * elementSize);
@@ -28,11 +28,11 @@ abstract Float32Array(java.NativeArray<Single>) {
 		return this[index];
 	}
 
-	public inline function data(count:Int): FloatBuffer {
+	public inline function data(count: Int): FloatBuffer {
 		return FloatBuffer.wrap(this, 0, count);
 	}
 
-	//public inline function subarray(start: Int, ?end: Int): Float32Array {
+	// public inline function subarray(start: Int, ?end: Int): Float32Array {
 	//	return cast this.subarray(start, end);
-	//}
+	// }
 }

@@ -10,12 +10,12 @@ import android.view.ViewOnTouchListener;
 import java.lang.Runnable;
 
 class OnTouchRunner implements Runnable {
-	private var renderer: KhaRenderer;
-	private var event: MotionEvent;
-	private var id: Int;
-	private var x: Single;
-	private var y: Single;
-	private var action: Int;
+	var renderer: KhaRenderer;
+	var event: MotionEvent;
+	var id: Int;
+	var x: Single;
+	var y: Single;
+	var action: Int;
 
 	public function new(renderer: KhaRenderer, id: Int, x: Single, y: Single, action: Int) {
 		this.renderer = renderer;
@@ -31,41 +31,41 @@ class OnTouchRunner implements Runnable {
 }
 
 class OnKeyDownRunner implements Runnable {
-    private var renderer: KhaRenderer;
-    private var keyCode: Int;
-    private var char: String;
+	var renderer: KhaRenderer;
+	var keyCode: Int;
+	var char: String;
 
-    public function new(renderer: KhaRenderer, keyCode: Int, char: String) {
-        this.renderer = renderer;
-        this.keyCode = keyCode;
-        this.char = char;
-    }
+	public function new(renderer: KhaRenderer, keyCode: Int, char: String) {
+		this.renderer = renderer;
+		this.keyCode = keyCode;
+		this.char = char;
+	}
 
-    public function run(): Void {
-        renderer.key(keyCode, true, char);
-    }
+	public function run(): Void {
+		renderer.key(keyCode, true, char);
+	}
 }
 
 class OnKeyUpRunner implements Runnable {
-    private var renderer: KhaRenderer;
-    private var keyCode: Int;
-    private var char: String;
+	var renderer: KhaRenderer;
+	var keyCode: Int;
+	var char: String;
 
-    public function new(renderer: KhaRenderer, keyCode: Int, char: String) {
-        this.renderer = renderer;
-        this.keyCode = keyCode;
-        this.char = char;
-    }
+	public function new(renderer: KhaRenderer, keyCode: Int, char: String) {
+		this.renderer = renderer;
+		this.keyCode = keyCode;
+		this.char = char;
+	}
 
-    public function run(): Void {
-        renderer.key(keyCode, false, char);
-    }
+	public function run(): Void {
+		renderer.key(keyCode, false, char);
+	}
 }
 
 @:keep
 class KhaView extends GLSurfaceView implements ViewOnTouchListener {
-	private var renderer: KhaRenderer;
-	private var inputManager: InputMethodManager;
+	var renderer: KhaRenderer;
+	var inputManager: InputMethodManager;
 
 	public function new(activity: KhaActivity) {
 		super(activity);
@@ -74,28 +74,19 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 		setPreserveEGLContextOnPause(true);
 		setEGLContextClientVersion(2);
 		setEGLConfigChooser(8, 8, 8, 8, 16, 8);
-   		setRenderer(renderer = new KhaRenderer(activity.getApplicationContext(), this));
-   		setOnTouchListener(this);
-   		initInputManager(activity);
-        setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE
-        );
+		setRenderer(renderer = new KhaRenderer(activity.getApplicationContext(), this));
+		setOnTouchListener(this);
+		initInputManager(activity);
+		setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
 	}
 
 	@:functionCode('inputManager = (android.view.inputmethod.InputMethodManager)activity.getSystemService(android.content.Context.INPUT_METHOD_SERVICE);')
-	private function initInputManager(activity: KhaActivity): Void {
+	function initInputManager(activity: KhaActivity): Void {}
 
-	}
-
-	//unused
-	//@:overload public function new(context: Context) {
+	// unused
+	// @:overload public function new(context: Context) {
 	//	super(context);
-	//}
+	// }
 
 	public function showKeyboard(): Void {
 		inputManager.toggleSoftInputFromWindow(getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
@@ -114,18 +105,20 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 		var action = -1;
 		action = (maskedAction == MotionEvent.ACTION_DOWN || maskedAction == MotionEvent.ACTION_POINTER_DOWN) ? ACTION_DOWN : -1;
 		action = (action == -1 && maskedAction == MotionEvent.ACTION_MOVE) ? ACTION_MOVE : action;
-		action = (action == -1 && (maskedAction == MotionEvent.ACTION_UP || maskedAction == MotionEvent.ACTION_POINTER_UP || maskedAction == MotionEvent.ACTION_CANCEL))
-				? ACTION_UP : action;
+		action = (action == -1
+			&& (maskedAction == MotionEvent.ACTION_UP
+				|| maskedAction == MotionEvent.ACTION_POINTER_UP
+				|| maskedAction == MotionEvent.ACTION_CANCEL)) ? ACTION_UP : action;
 
 		switch action {
-			case 1: //ACTION_MOVE
+			case 1: // ACTION_MOVE
 				var pointerCount = event.getPointerCount();
-				for(i in 0...pointerCount) {
+				for (i in 0...pointerCount) {
 					queueEvent(new OnTouchRunner(renderer, event.getPointerId(i), event.getX(i), event.getY(i), action));
 				}
 
 			default:
-			queueEvent(new OnTouchRunner(renderer, event.getPointerId(index), event.getX(index), event.getY(index), action));
+				queueEvent(new OnTouchRunner(renderer, event.getPointerId(index), event.getX(index), event.getY(index), action));
 		}
 		return true;
 	}
@@ -136,11 +129,11 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
 			return false;
 		}
-		
+
 		/*if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			return true;
 		}*/
-		
+
 		this.queueEvent(new OnKeyDownRunner(renderer, keyCode, String.fromCharCode(event.getUnicodeChar())));
 		return true;
 	}
@@ -151,25 +144,24 @@ class KhaView extends GLSurfaceView implements ViewOnTouchListener {
 			|| event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
 			return false;
 		}
-		this.queueEvent(new OnKeyUpRunner(renderer, keyCode, '')); //doesn't make sense to send text
-	    return true;
+		this.queueEvent(new OnKeyUpRunner(renderer, keyCode, '')); // doesn't make sense to send text
+		return true;
 	}
 
-	//public function accelerometer(x: Single, y: Single, z: Single): Void {
+	// public function accelerometer(x: Single, y: Single, z: Single): Void {
 	//	queueEvent(new Runnable() {
 	//		@Override
 	//		public void run() {
 	//			renderer.accelerometer(x, y, z);
 	//		}
 	//	});
-	//}
-
-	//public function gyro(x: Single, y: Single, z: Single): Void {
+	// }
+	// public function gyro(x: Single, y: Single, z: Single): Void {
 	//	queueEvent(new Runnable() {
 	//		@Override
 	//		public void run() {
 	//			renderer.gyro(x, y, z);
 	//		}
 	//	});
-	//}
+	// }
 }

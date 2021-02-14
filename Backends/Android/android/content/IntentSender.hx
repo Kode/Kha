@@ -1,5 +1,3 @@
 package android.content;
 
-extern class IntentSender {
-	
-}
+extern class IntentSender {}
