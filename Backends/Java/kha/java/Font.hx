@@ -9,39 +9,40 @@ import java.awt.Font in JFont;
 // 	private static java.awt.image.BufferedImage testImage = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB);
 // 	private static java.awt.Graphics2D testGraphics;
 // 	public java.awt.Font font;
-
 // 	static {
 // 		testGraphics = testImage.createGraphics();
 // 	}
 // ')
 class Font implements Resource {
-	private static var testImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-	private static var testGraphics:Graphics2D;
-	public var font:JFont;
+	static var testImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+	static var testGraphics: Graphics2D;
+
+	public var font: JFont;
 	public var myName: String;
 	public var myStyle: FontStyle;
 	public var mySize: Float;
 
 	public function new(name: String, style: FontStyle, size: Float) {
-		if (testGraphics == null) testGraphics = testImage.createGraphics();
+		if (testGraphics == null)
+			testGraphics = testImage.createGraphics();
 		init(name, style, size);
 	}
 
 	public var name(get, never): String;
 
-	public function get_name(): String {
+	function get_name(): String {
 		return myName;
 	}
 
 	public var style(get, never): FontStyle;
 
-	public function get_style(): FontStyle {
+	function get_style(): FontStyle {
 		return myStyle;
 	}
 
 	public var size(get, never): Float;
 
-	public function get_size(): Float {
+	function get_size(): Float {
 		return mySize;
 	}
 

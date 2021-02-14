@@ -15,20 +15,18 @@ import java.lang.Throwable;
 import java.NativeArray;
 
 @:access(kha.System)
-class JWindow extends JFrame
-implements java.awt.event.KeyListener
-implements java.awt.event.MouseListener
-implements java.awt.event.MouseMotionListener
-implements java.awt.event.MouseWheelListener {
+class JWindow extends JFrame implements java.awt.event.KeyListener implements java.awt.event.MouseListener implements java.awt.event.MouseMotionListener
+		implements java.awt.event.MouseWheelListener {
 	public var instance: JWindow;
-	private var WIDTH: Int;
-	private var HEIGHT: Int;
-	private var syncrate = 60;
-	private var canvas: java.awt.Canvas;
-	private var vsynced = false;
-	private var reset = false;
-	private var framebuffer: kha.Framebuffer;
-	private var painter: kha.java.Painter;
+
+	var WIDTH: Int;
+	var HEIGHT: Int;
+	var syncrate = 60;
+	var canvas: java.awt.Canvas;
+	var vsynced = false;
+	var reset = false;
+	var framebuffer: kha.Framebuffer;
+	var painter: kha.java.Painter;
 
 	public static var mouseX: Int;
 	public static var mouseY: Int;
@@ -49,7 +47,7 @@ implements java.awt.event.MouseWheelListener {
 		mainLoop();
 	}
 
-	private function setupWindow(): Void {
+	function setupWindow(): Void {
 		setIgnoreRepaint(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		canvas = new java.awt.Canvas();
@@ -71,7 +69,7 @@ implements java.awt.event.MouseWheelListener {
 		canvas.addMouseWheelListener(this);
 	}
 
-	private function createVSyncedDoubleBuffer(): Void {
+	function createVSyncedDoubleBuffer(): Void {
 		vsynced = true;
 		canvas.createBufferStrategy(2);
 		var bufferStrategy: java.awt.image.BufferStrategy = canvas.getBufferStrategy();
@@ -84,16 +82,16 @@ implements java.awt.event.MouseWheelListener {
 				// java.lang.reflect.Constructor<?>
 				// new Class[] { java.awt.BufferCapabilities.class, vstClass }
 				untyped var _class = untyped __java__("java.awt.BufferCapabilities.class");
-				var classes:NativeArray<Class<Dynamic>> = NativeArray.make(_class, vstClass);
+				var classes: NativeArray<Class<Dynamic>> = NativeArray.make(_class, vstClass);
 				var ebcConstructor = ebcClass.getConstructor(classes);
 				var vSyncType: Object = vstClass.getField("VSYNC_ON").get(null);
 				// (java.awt.BufferCapabilities)
 				// new Object[]
-				var objs:NativeArray<Object> = NativeArray.make(cast (caps, Object), vSyncType);
+				var objs: NativeArray<Object> = NativeArray.make(cast(caps, Object), vSyncType);
 				var newCaps: java.awt.BufferCapabilities = ebcConstructor.newInstance(objs);
 				canvas.createBufferStrategy(2, newCaps);
-				//setCanChangeRefreshRate(false);
-				//setRefreshRate(60);
+				// setCanChangeRefreshRate(false);
+				// setRefreshRate(60);
 			}
 			catch (t:Throwable) {
 				vsynced = false;
@@ -101,10 +99,11 @@ implements java.awt.event.MouseWheelListener {
 				canvas.createBufferStrategy(2);
 			}
 		}
-		if (vsynced) checkVSync();
+		if (vsynced)
+			checkVSync();
 	}
 
-	private function checkVSync(): Void {
+	function checkVSync(): Void {
 		var starttime = Sys.nanoTime();
 		for (i in 0...3) {
 			canvas.getBufferStrategy().show();
@@ -115,13 +114,15 @@ implements java.awt.event.MouseWheelListener {
 			vsynced = true;
 			Sys.out.println("VSync enabled.");
 		}
-		else Sys.out.println("VSync not enabled, sorry.");
+		else
+			Sys.out.println("VSync not enabled, sorry.");
 	}
 
-	private function mainLoop(): Void {
+	function mainLoop(): Void {
 		var lasttime = Sys.nanoTime();
 		while (true) {
-			if (vsynced) update();
+			if (vsynced)
+				update();
 			else {
 				var time = Sys.nanoTime();
 				while (time >= lasttime + 1000 * 1000 * 1000 / syncrate) {
@@ -130,16 +131,17 @@ implements java.awt.event.MouseWheelListener {
 				}
 			}
 			render();
-			if (reset) resetGame();
+			if (reset)
+				resetGame();
 		}
 	}
 
-	private function createGame(): Void {
+	function createGame(): Void {
 		WIDTH = System.windowWidth();
 		HEIGHT = System.windowHeight();
 	}
 
-	private function resetGame(): Void {
+	function resetGame(): Void {
 		reset = false;
 		createGame();
 	}
@@ -149,7 +151,7 @@ implements java.awt.event.MouseWheelListener {
 		Scheduler.executeFrame();
 	}
 
-	private function render(): Void {
+	function render(): Void {
 		var bf: java.awt.image.BufferStrategy = canvas.getBufferStrategy();
 		var g: java.awt.Graphics2D = null;
 		try {
@@ -158,7 +160,9 @@ implements java.awt.event.MouseWheelListener {
 			painter.setRenderHint();
 			System.render([framebuffer]);
 		}
-		catch(e: Any) {trace(e);}
+		catch (e:Any) {
+			trace(e);
+		}
 		g.dispose();
 		bf.show();
 		java.awt.Toolkit.getDefaultToolkit().sync();
@@ -166,7 +170,7 @@ implements java.awt.event.MouseWheelListener {
 
 	@Override
 	public function keyPressed(e: java.awt.event.KeyEvent): Void {
-		var keyCode: Int = e.getKeyCode();
+		// var keyCode: Int = e.getKeyCode();
 		// switch (keyCode) {
 		// case java.awt.event.KeyEvent.VK_RIGHT:
 		// 	pressKey(keyCode, KeyCode.RIGHT);
@@ -190,7 +194,7 @@ implements java.awt.event.MouseWheelListener {
 
 	@Override
 	public function keyReleased(e: java.awt.event.KeyEvent): Void {
-		var keyCode: Int = e.getKeyCode();
+		// var keyCode: Int = e.getKeyCode();
 		// switch (keyCode) {
 		// case java.awt.event.KeyEvent.VK_RIGHT:
 		// 	releaseKey(keyCode, KeyCode.RIGHT);
@@ -214,7 +218,7 @@ implements java.awt.event.MouseWheelListener {
 
 	@Override
 	public function keyTyped(e: java.awt.event.KeyEvent): Void {
-		//game.charKey(e.getKeyChar());
+		// game.charKey(e.getKeyChar());
 	}
 
 	public function getSyncrate(): Int {
@@ -222,19 +226,13 @@ implements java.awt.event.MouseWheelListener {
 	}
 
 	@Override
-	public function mouseClicked(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseClicked(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
-	public function mouseEntered(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseEntered(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
-	public function mouseExited(arg0: java.awt.event.MouseEvent): Void {
-
-	}
+	public function mouseExited(arg0: java.awt.event.MouseEvent): Void {}
 
 	@Override
 	public function mousePressed(arg0: java.awt.event.MouseEvent): Void {
@@ -284,15 +282,17 @@ implements java.awt.event.MouseWheelListener {
 @:allow(kha.SystemImpl.JWindow)
 class SystemImpl {
 	public static var graphics(default, null): Graphics;
-	private static var keyboard: Keyboard;
-	private static var mouse: Mouse;
-	private static var keyreleased: Array<Bool>;
+	static var keyboard: Keyboard;
+	static var mouse: Mouse;
+	static var keyreleased: Array<Bool>;
 
-	public static function init(options: SystemOptions, callback: Window -> Void) {
+	public static function init(options: SystemOptions, callback: Window->Void) {
 		init2();
 		Scheduler.init();
-		if (options.width != -1) myPixelWidth = options.width;
-		if (options.height != -1) myPixelHeight = options.height;
+		if (options.width != -1)
+			myPixelWidth = options.width;
+		if (options.height != -1)
+			myPixelHeight = options.height;
 
 		var window = new Window(options.width, options.height);
 		Scheduler.start();
@@ -301,11 +301,11 @@ class SystemImpl {
 		jWindow.start();
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Window -> Void) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Window->Void) {
 		init({title: title, width: options[0].width, height: options[0].height}, callback);
 	}
 
-	private static var startTime: Float;
+	static var startTime: Float;
 
 	public static function init2(): Void {
 		graphics = new Graphics();
@@ -316,23 +316,27 @@ class SystemImpl {
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num == 0) return keyboard;
-		else return null;
+		if (num == 0)
+			return keyboard;
+		else
+			return null;
 	}
 
 	public static function getMouse(num: Int): Mouse {
-		if (num == 0) return mouse;
-		else return null;
+		if (num == 0)
+			return mouse;
+		else
+			return null;
 	}
 
-	private function pressKey(keyCode: Int, button: KeyCode): Void {
-		if (keyreleased[keyCode]) { //avoid auto-repeat
+	function pressKey(keyCode: Int, button: KeyCode): Void {
+		if (keyreleased[keyCode]) { // avoid auto-repeat
 			keyreleased[keyCode] = false;
 			keyboard.sendDownEvent(button);
 		}
 	}
 
-	private function releaseKey(keyCode: Int, button: KeyCode): Void {
+	function releaseKey(keyCode: Int, button: KeyCode): Void {
 		keyreleased[keyCode] = true;
 		keyboard.sendUpEvent(button);
 	}
@@ -365,17 +369,15 @@ class SystemImpl {
 		return "java";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms: Int): Void {}
 
 	public static function getLanguage(): String {
 		final lang = java.util.Locale.getDefault().getLanguage();
 		return lang.substr(0, 2).toLowerCase();
 	}
 
-	private static var myPixelWidth = 640;
-	private static var myPixelHeight = 480;
+	static var myPixelWidth = 640;
+	static var myPixelHeight = 480;
 
 	public static function windowWidth(id: Int): Int {
 		return myPixelWidth;
@@ -389,9 +391,7 @@ class SystemImpl {
 		return 96;
 	}
 
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
+	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function requestShutdown(): Bool {
 		return false;
@@ -401,34 +401,21 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function isFullscreen(): Bool{
+	public static function isFullscreen(): Bool {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void{
+	public function lockMouse(): Void {}
 
-	}
-
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error : Void -> Void): Void{
-
-	}
-
-	public function lockMouse(): Void {
-
-	}
-
-	public function unlockMouse(): Void {
-
-	}
+	public function unlockMouse(): Void {}
 
 	public function canLockMouse(): Bool {
 		return false;
@@ -438,22 +425,13 @@ class SystemImpl {
 		return false;
 	}
 
-	public function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	public function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function safeZone(): Float {
 		return 1.0;
@@ -463,29 +441,19 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
+	public static function allowUserChange(): Void {}
 
-	public static function allowUserChange(): Void {
-
-	}
-
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
+	public static function setSafeZone(value: Float): Void {}
 
-	}
-
-	public static function unlockAchievement(id: Int): Void {
-
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unkown";

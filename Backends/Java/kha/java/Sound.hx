@@ -118,9 +118,7 @@ class Sound extends kha.Sound {
 		}
 		index = thread.addSound(this);
 	')
-	function init(filename : String) {
-
-	}
+	function init(filename: String) {}
 
 	@:functionCode('
 		thread.play(index);
@@ -136,14 +134,12 @@ class Sound extends kha.Sound {
 		}
 		thread.stop(index);
 	')
-	public function stop() : Void {
-
-	}
+	public function stop(): Void {}
 
 	@:functionCode('
 		return clip != null;
 	')
-	public function isLoaded() : Bool {
+	public function isLoaded(): Bool {
 		return true;
 	}
 
@@ -154,14 +150,12 @@ class Sound extends kha.Sound {
 		}
 		else clip.setFramePosition(0);
 	')
-	public function realplay() : Void {
-
-	}
+	public function realplay(): Void {}
 
 	@:functionCode('
 		return clip.isRunning();
 	')
-	public function isRunning() : Bool {
+	public function isRunning(): Bool {
 		return true;
 	}
 }

@@ -11,20 +11,22 @@ import sys.io.File;
 using StringTools;
 
 class JavaStorageFile extends StorageFile {
-	private var file: Path;
+	var file: Path;
 
 	public function new(filename: String) {
 		this.file = new Path(filename);
-		//if (file.dir != null) Directory.CreateDirectory(file.dir);
+		// if (file.dir != null) Directory.CreateDirectory(file.dir);
 	}
 
 	override public function read(): Blob {
 		try {
-			if (file == null) return null;
-			if (File.getContent(file.toString()) == null) return null;
+			if (file == null)
+				return null;
+			if (File.getContent(file.toString()) == null)
+				return null;
 			return Blob.fromBytes(File.getBytes(file.toString()));
 		}
-		catch (e: Dynamic) {
+		catch (e:Dynamic) {
 			return null;
 		}
 	}
