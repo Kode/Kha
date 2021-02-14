@@ -1,11 +1,11 @@
 package kha.kore.graphics4;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
+#include <kinc/pch.h>
+#include <kinc/graphics4/textureunit.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::TextureUnit unit;")
+@:headerClassCode("kinc_g4_texture_unit_t unit;")
 class TextureUnit implements kha.graphics4.TextureUnit {
 	public function new() {
 		

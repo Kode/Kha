@@ -38,9 +38,10 @@ import kha.Video;
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Display.h>
 #include <Kore/Window.h>
+#include <kinc/graphics4/graphics.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::RenderTarget* renderTarget;")
+@:headerClassCode("kinc_g4_render_target_t renderTarget;")
 class Graphics implements kha.graphics4.Graphics {
 	private var target: Canvas;
 	public var window: Null<Int>;
@@ -155,16 +156,13 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setCubeMap(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__(
-			"if (cubeMap->texture != nullptr) Kore::Graphics4::setTexture(koreUnit->unit, cubeMap->texture);
-			else cubeMap->renderTarget->useColorAsTexture(koreUnit->unit)"
-		);
+		untyped __cpp__('kinc_g4_render_target_use_color_as_texture(&cubeMap->renderTarget, koreUnit->unit)');
 	}
 
 	public function setCubeMapDepth(unit: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("cubeMap->renderTarget->useDepthAsTexture(koreUnit->unit);");
+		untyped __cpp__('kinc_g4_render_target_use_depth_as_texture(&cubeMap->renderTarget, koreUnit->unit);');
 	}
 
 	@:functionCode('Kore::Graphics4::scissor(x, y, width, height);')
@@ -182,35 +180,35 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	@:functionCode('
-		Kore::Graphics4::setTextureAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
-		Kore::Graphics4::setTextureAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
+		kinc_g4_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
+		kinc_g4_set_texture_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
 	')
 	private function setTextureWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Graphics4::setTexture3DAddressing(unit->unit, Kore::Graphics4::U, (Kore::Graphics4::TextureAddressing)uWrap);
-		Kore::Graphics4::setTexture3DAddressing(unit->unit, Kore::Graphics4::V, (Kore::Graphics4::TextureAddressing)vWrap);
-		Kore::Graphics4::setTexture3DAddressing(unit->unit, Kore::Graphics4::W, (Kore::Graphics4::TextureAddressing)wWrap);
+		kinc_g4_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uWrap);
+		kinc_g4_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vWrap);
+		kinc_g4_set_texture3d_addressing(unit->unit, KINC_G4_TEXTURE_DIRECTION_W, (kinc_g4_texture_addressing_t)wWrap);
 	')
 	private function setTexture3DWrapNative(unit: TextureUnit, uWrap: Int, vWrap: Int, wWrap: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Graphics4::setTextureMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
-		Kore::Graphics4::setTextureMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
-		Kore::Graphics4::setTextureMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+		kinc_g4_set_texture_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
+		kinc_g4_set_texture_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
+		kinc_g4_set_texture_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
 	private function setTextureFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
 
 	}
 
 	@:functionCode('
-		Kore::Graphics4::setTexture3DMinificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)minificationFilter);
-		Kore::Graphics4::setTexture3DMagnificationFilter(unit->unit, (Kore::Graphics4::TextureFilter)magnificationFilter);
-		Kore::Graphics4::setTexture3DMipmapFilter(unit->unit, (Kore::Graphics4::MipmapFilter)mipMapFilter);
+		kinc_g4_set_texture3d_minification_filter(unit->unit, (kinc_g4_texture_filter_t)minificationFilter);
+		kinc_g4_set_texture3d_magnification_filter(unit->unit, (kinc_g4_texture_filter_t)magnificationFilter);
+		kinc_g4_set_texture3d_mipmap_filter(unit->unit, (kinc_g4_mipmap_filter_t)mipMapFilter);
 	')
 	private function setTexture3DFiltersNative(unit: TextureUnit, minificationFilter: Int, magnificationFilter: Int, mipMapFilter: Int): Void {
 
@@ -228,17 +226,17 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("Kore::Graphics4::setTextureCompareMode(koreUnit->unit, enabled);");
+		untyped __cpp__("kinc_g4_set_texture_compare_mode(koreUnit->unit, enabled);");
 	}
 
 	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		var koreUnit = cast(texunit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("Kore::Graphics4::setCubeMapCompareMode(koreUnit->unit, enabled);");
+		untyped __cpp__("kinc_g4_set_cubemap_compare_mode(koreUnit->unit, enabled);");
 	}
 
 	@:functionCode('
-		if (texture->texture != nullptr) Kore::Graphics4::setTexture(unit->unit, texture->texture);
-		else texture->renderTarget->useColorAsTexture(unit->unit);
+		if (texture->imageType == KhaImageTypeTexture) kinc_g4_set_texture(unit->unit, &texture->texture);
+		else if (texture->imageType == KhaImageTypeRenderTarget) kinc_g4_render_target_use_color_as_texture(&texture->renderTarget, unit->unit);
 	')
 	private function setTextureInternal(unit: kha.kore.graphics4.TextureUnit, texture: kha.Image): Void {
 
@@ -252,13 +250,13 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setTextureDepth(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("texture->renderTarget->useDepthAsTexture(koreUnit->unit);");
+		untyped __cpp__('kinc_g4_render_target_use_depth_as_texture(&texture->renderTarget, koreUnit->unit);');
 	}
 
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) return;
 		var koreUnit = cast(unit, kha.kore.graphics4.TextureUnit);
-		untyped __cpp__("if (texture->textureArray != nullptr) Kore::Graphics4::setTextureArray(koreUnit->unit, texture->textureArray);");
+		untyped __cpp__('if (texture->imageType == KhaImageTypeTextureArray) kinc_g4_set_texture_array(koreUnit->unit, &texture->textureArray);');
 	}
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
@@ -266,9 +264,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setTextureInternal(cast unit, Image.createFromVideo(texture));
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setImageTexture(unit->unit, texture->texture);
-	')
+	@:functionCode('kinc_g4_set_image_texture(unit->unit, &texture->texture);')
 	private function setImageTextureInternal(unit: kha.kore.graphics4.TextureUnit, texture: kha.Image): Void {
 
 	}
@@ -310,9 +306,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setBoolPrivate(cast location, value);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setBool(location->location, value);
-	')
+	@:functionCode('kinc_g4_set_bool(location->location, value);')
 	private function setBoolPrivate(location: kha.kore.graphics4.ConstantLocation, value: Bool): Void {
 
 	}
@@ -321,9 +315,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setIntPrivate(cast location, value);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setInt(location->location, value);
-	')
+	@:functionCode('kinc_g4_set_int(location->location, value);')
 	private function setIntPrivate(location: ConstantLocation, value: Int): Void {
 
 	}
@@ -332,9 +324,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setInt2Private(cast location, value1, value2);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setInt2(location->location, value1, value2);
-	')
+	@:functionCode('kinc_g4_set_int2(location->location, value1, value2);')
 	private function setInt2Private(location: ConstantLocation, value1: Int, value2: Int): Void {
 
 	}
@@ -343,9 +333,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setInt3Private(cast location, value1, value2, value3);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setInt3(location->location, value1, value2, value3);
-	')
+	@:functionCode('kinc_g4_set_int3(location->location, value1, value2, value3);')
 	private function setInt3Private(location: ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
 
 	}
@@ -354,9 +342,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setInt4Private(cast location, value1, value2, value3, value4);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setInt4(location->location, value1, value2, value3, value4);
-	')
+	@:functionCode('kinc_g4_set_int4(location->location, value1, value2, value3, value4);')
 	private function setInt4Private(location: ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
 
 	}
@@ -365,9 +351,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setIntsPrivate(cast location, values);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setInts(location->location, values->self.data, values->self.length());
-	')
+	@:functionCode('kinc_g4_set_ints(location->location, values->self.data, values->self.length());')
 	private function setIntsPrivate(location: ConstantLocation, values: kha.arrays.Int32Array): Void {
 
 	}
@@ -376,9 +360,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloatPrivate(cast location, value);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat(location->location, value);
-	')
+	@:functionCode('kinc_g4_set_float(location->location, value);')
 	private function setFloatPrivate(location: ConstantLocation, value: FastFloat): Void {
 
 	}
@@ -387,9 +369,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloat2Private(cast location, value1, value2);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat2(location->location, value1, value2);
-	')
+	@:functionCode('kinc_g4_set_float2(location->location, value1, value2);')
 	private function setFloat2Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
 
 	}
@@ -398,9 +378,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloat3Private(cast location, value1, value2, value3);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat3(location->location, value1, value2, value3);
-	')
+	@:functionCode('kinc_g4_set_float3(location->location, value1, value2, value3);')
 	private function setFloat3Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
 
 	}
@@ -409,9 +387,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloat4Private(cast location, value1, value2, value3, value4);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat4(location->location, value1, value2, value3, value4);
-	')
+	@:functionCode('kinc_g4_set_float4(location->location, value1, value2, value3, value4);')
 	private function setFloat4Private(location: ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
 
 	}
@@ -420,9 +396,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setVector2Private(cast location, value.x, value.y);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat2(location->location, x, y);
-	')
+	@:functionCode('kinc_g4_set_float2(location->location, x, y);')
 	private function setVector2Private(location: ConstantLocation, x: FastFloat, y: FastFloat): Void {
 
 	}
@@ -431,9 +405,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setVector3Private(cast location, value.x, value.y, value.z);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat3(location->location, x, y, z);
-	')
+	@:functionCode('kinc_g4_set_float3(location->location, x, y, z);')
 	private function setVector3Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat): Void {
 
 	}
@@ -442,9 +414,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setVector4Private(cast location, value.x, value.y, value.z, value.w);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloat4(location->location, x, y, z, w);
-	')
+	@:functionCode('kinc_g4_set_float4(location->location, x, y, z, w);')
 	private function setVector4Private(location: ConstantLocation, x: FastFloat, y: FastFloat, z: FastFloat, w: FastFloat): Void {
 
 	}
@@ -453,9 +423,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloatsPrivate(cast location, values);
 	}
 
-	@:functionCode('
-		Kore::Graphics4::setFloats(location->location, values->self.data, values->self.length());
-	')
+	@:functionCode('kinc_g4_set_floats(location->location, values->self.data, values->self.length());')
 	private function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {
 
 	}
@@ -465,12 +433,12 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	@:functionCode('
-		Kore::mat4 value;
-		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20); value.Set(0, 3, matrix->_30);
-		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21); value.Set(1, 3, matrix->_31);
-		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22); value.Set(2, 3, matrix->_32);
-		value.Set(3, 0, matrix->_03); value.Set(3, 1, matrix->_13); value.Set(3, 2, matrix->_23); value.Set(3, 3, matrix->_33);
-		Kore::Graphics4::setMatrix(location->location, value);
+		kinc_matrix4x4_t value;
+		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 0, 1, matrix->_10); kinc_matrix4x4_set(&value, 0, 2, matrix->_20); kinc_matrix4x4_set(&value, 0, 3, matrix->_30);
+		kinc_matrix4x4_set(&value, 1, 0, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 1, 2, matrix->_21); kinc_matrix4x4_set(&value, 1, 3, matrix->_31);
+		kinc_matrix4x4_set(&value, 2, 0, matrix->_02); kinc_matrix4x4_set(&value, 2, 1, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 2, 3, matrix->_32);
+		kinc_matrix4x4_set(&value, 3, 0, matrix->_03); kinc_matrix4x4_set(&value, 3, 1, matrix->_13); kinc_matrix4x4_set(&value, 3, 2, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
+		kinc_g4_set_matrix4(location->location, &value);
 	')
 	private function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {
 
@@ -481,11 +449,11 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	@:functionCode('
-		Kore::mat3 value;
-		value.Set(0, 0, matrix->_00); value.Set(0, 1, matrix->_10); value.Set(0, 2, matrix->_20);
-		value.Set(1, 0, matrix->_01); value.Set(1, 1, matrix->_11); value.Set(1, 2, matrix->_21);
-		value.Set(2, 0, matrix->_02); value.Set(2, 1, matrix->_12); value.Set(2, 2, matrix->_22);
-		Kore::Graphics4::setMatrix(location->location, value);
+		kinc_matrix3x3_t value;
+		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 0, 1, matrix->_10); kinc_matrix3x3_set(&value, 0, 2, matrix->_20);
+		kinc_matrix3x3_set(&value, 1, 0, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 1, 2, matrix->_21);
+		kinc_matrix3x3_set(&value, 2, 0, matrix->_02); kinc_matrix3x3_set(&value, 2, 1, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
+		kinc_g4_set_matrix3(location->location, &value);
 	')
 	private function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {
 
@@ -518,18 +486,18 @@ class Graphics implements kha.graphics4.Graphics {
 	@:functionCode('
 		Kore::Graphics4::drawIndexedVerticesInstanced(instanceCount);
 	')
-	private function drawAllIndexedVerticesInstanced(instanceCount: Int): Void {
+	function drawAllIndexedVerticesInstanced(instanceCount: Int): Void {
 
 	}
 
 	@:functionCode('
 		Kore::Graphics4::drawIndexedVerticesInstanced(instanceCount, start, count);
 	')
-	private function drawSomeIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void {
+	function drawSomeIndexedVerticesInstanced(instanceCount: Int, start: Int, count: Int): Void {
 
 	}
 
-	private function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
+	function renderToTexture(additionalRenderTargets: Array<Canvas>): Void {
 		if (additionalRenderTargets != null) {
 			var len = additionalRenderTargets.length;
 
@@ -541,15 +509,21 @@ class Graphics implements kha.graphics4.Graphics {
 			var image6 = cast(additionalRenderTargets[5], Image);
 			var image7 = cast(additionalRenderTargets[6], Image);
 
-			untyped __cpp__("Kore::Graphics4::RenderTarget* renderTargets[8] = { renderTarget, image1 == null() ? nullptr : image1->renderTarget, image2 == null() ? nullptr : image2->renderTarget, image3 == null() ? nullptr : image3->renderTarget, image4 == null() ? nullptr : image4->renderTarget, image5 == null() ? nullptr : image5->renderTarget, image6 == null() ? nullptr : image6->renderTarget, image7 == null() ? nullptr : image7->renderTarget }; Kore::Graphics4::setRenderTargets(renderTargets, len + 1);");
+			untyped __cpp__('
+				kinc_g4_render_target_t *renderTargets[8] = { &renderTarget, image1 == null() ? nullptr : &image1->renderTarget, image2 == null() ? nullptr : &image2->renderTarget, image3 == null() ? nullptr : &image3->renderTarget, image4 == null() ? nullptr : &image4->renderTarget, image5 == null() ? nullptr : &image5->renderTarget, image6 == null() ? nullptr : &image6->renderTarget, image7 == null() ? nullptr : &image7->renderTarget };
+				kinc_g4_set_render_targets(renderTargets, len + 1);
+			');
 		}
 		else {
-			untyped __cpp__("Kore::Graphics4::setRenderTarget(renderTarget)");
+			untyped __cpp__('
+				kinc_g4_render_target_t *renderTargets[1] = { &renderTarget };
+				kinc_g4_set_render_targets(renderTargets, 1)
+			');
 		}
 	}
 
-	@:functionCode('Kore::Graphics4::restoreRenderTarget();')
-	private function renderToBackbuffer(): Void {
+	@:functionCode('kinc_g4_restore_render_target();')
+	function renderToBackbuffer(): Void {
 
 	}
 
@@ -583,7 +557,7 @@ class Graphics implements kha.graphics4.Graphics {
 			throw "End before you begin";
 		}
 
-		untyped __cpp__("Kore::Graphics4::setRenderTargetFace(renderTarget, face)");
+		untyped __cpp__('kinc_g4_set_render_target_face(&renderTarget, face)');
 	}
 
 	public function beginEye(eye: Int): Void {

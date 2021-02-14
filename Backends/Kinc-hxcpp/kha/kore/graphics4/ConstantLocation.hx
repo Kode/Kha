@@ -1,11 +1,11 @@
 package kha.kore.graphics4;
 
 @:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Shader.h>
+#include <kinc/pch.h>
+#include <kinc/graphics4/constantlocation.h>
 ')
 
-@:headerClassCode("Kore::Graphics4::ConstantLocation location;")
+@:headerClassCode("kinc_g4_constant_location_t location;")
 class ConstantLocation implements kha.graphics4.ConstantLocation {
 	public function new() {
 		

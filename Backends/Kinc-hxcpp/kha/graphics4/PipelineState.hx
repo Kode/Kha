@@ -183,7 +183,7 @@ class PipelineState extends PipelineStateBase {
 		return location;
 	}
 
-	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str());')
+	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str()).kincConstant;')
 	private function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {
 
 	}
@@ -194,7 +194,7 @@ class PipelineState extends PipelineStateBase {
 		return unit;
 	}
 
-	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str());')
+	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str()).kincUnit;')
 	private function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {
 
 	}
