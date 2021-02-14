@@ -2,14 +2,15 @@ package kha;
 
 class Display {
 	static var displays: Array<Display>;
+
 	var num: Int;
 	var isPrimary: Bool;
-	
+
 	function new(num: Int, isPrimary: Bool) {
 		this.num = num;
 		this.isPrimary = isPrimary;
 	}
-	
+
 	public static function init(): Void {
 		if (displays == null) {
 			// TODO: Krom.displayInit();

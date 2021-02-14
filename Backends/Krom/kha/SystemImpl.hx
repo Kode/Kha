@@ -8,29 +8,28 @@ import kha.input.MouseImpl;
 import kha.input.Pen;
 import kha.input.Surface;
 import kha.System;
-
 import haxe.ds.Vector;
 
 class SystemImpl {
-	private static var start: Float;
-	private static var framebuffer: Framebuffer;
-	private static var keyboard: Keyboard;
-	private static var mouse: Mouse;
-	private static var pen: Pen;
-	private static var maxGamepads: Int = 4;
-	private static var gamepads: Array<Gamepad>;
-	private static var mouseLockListeners: Array<Void->Void> = [];
+	static var start: Float;
+	static var framebuffer: Framebuffer;
+	static var keyboard: Keyboard;
+	static var mouse: Mouse;
+	static var pen: Pen;
+	static var maxGamepads: Int = 4;
+	static var gamepads: Array<Gamepad>;
+	static var mouseLockListeners: Array<Void->Void> = [];
 
-	private static function renderCallback(): Void {
+	static function renderCallback(): Void {
 		Scheduler.executeFrame();
 		System.render([framebuffer]);
 	}
 
-	private static function dropFilesCallback(filePath: String): Void {
+	static function dropFilesCallback(filePath: String): Void {
 		System.dropFiles(filePath);
 	}
 
-	private static function copyCallback(): String {
+	static function copyCallback(): String {
 		if (System.copyListener != null) {
 			return System.copyListener();
 		}
@@ -39,7 +38,7 @@ class SystemImpl {
 		}
 	}
 
-	private static function cutCallback(): String {
+	static function cutCallback(): String {
 		if (System.cutListener != null) {
 			return System.cutListener();
 		}
@@ -48,88 +47,89 @@ class SystemImpl {
 		}
 	}
 
-	private static function pasteCallback(data: String): Void {
+	static function pasteCallback(data: String): Void {
 		if (System.pasteListener != null) {
 			System.pasteListener(data);
 		}
 	}
 
-	private static function foregroundCallback(): Void {
+	static function foregroundCallback(): Void {
 		System.foreground();
 	}
 
-	private static function resumeCallback(): Void {
+	static function resumeCallback(): Void {
 		System.resume();
 	}
 
-	private static function pauseCallback(): Void {
+	static function pauseCallback(): Void {
 		System.pause();
 	}
 
-	private static function backgroundCallback(): Void {
+	static function backgroundCallback(): Void {
 		System.background();
 	}
 
-	private static function shutdownCallback(): Void {
+	static function shutdownCallback(): Void {
 		System.shutdown();
 	}
 
-	private static function keyboardDownCallback(code: Int): Void {
+	static function keyboardDownCallback(code: Int): Void {
 		keyboard.sendDownEvent(cast code);
 	}
 
-	private static function keyboardUpCallback(code: Int): Void {
+	static function keyboardUpCallback(code: Int): Void {
 		keyboard.sendUpEvent(cast code);
 	}
 
-	private static function keyboardPressCallback(charCode: Int): Void {
+	static function keyboardPressCallback(charCode: Int): Void {
 		keyboard.sendPressEvent(String.fromCharCode(charCode));
 	}
 
-	private static function mouseDownCallback(button: Int, x: Int, y: Int): Void {
+	static function mouseDownCallback(button: Int, x: Int, y: Int): Void {
 		mouse.sendDownEvent(0, button, x, y);
 	}
 
-	private static function mouseUpCallback(button: Int, x: Int, y: Int): Void {
+	static function mouseUpCallback(button: Int, x: Int, y: Int): Void {
 		mouse.sendUpEvent(0, button, x, y);
 	}
 
-	private static function mouseMoveCallback(x: Int, y: Int, mx: Int, my: Int): Void {
+	static function mouseMoveCallback(x: Int, y: Int, mx: Int, my: Int): Void {
 		mouse.sendMoveEvent(0, x, y, mx, my);
 	}
 
-	private static function mouseWheelCallback(delta: Int): Void {
+	static function mouseWheelCallback(delta: Int): Void {
 		mouse.sendWheelEvent(0, delta);
 	}
 
-	private static function penDownCallback(x: Int, y: Int, pressure: Float): Void {
+	static function penDownCallback(x: Int, y: Int, pressure: Float): Void {
 		pen.sendDownEvent(0, x, y, pressure);
 	}
 
-	private static function penUpCallback(x: Int, y: Int, pressure: Float): Void {
+	static function penUpCallback(x: Int, y: Int, pressure: Float): Void {
 		pen.sendUpEvent(0, x, y, pressure);
 	}
 
-	private static function penMoveCallback(x: Int, y: Int, pressure: Float): Void {
+	static function penMoveCallback(x: Int, y: Int, pressure: Float): Void {
 		pen.sendMoveEvent(0, x, y, pressure);
 	}
 
-	private static function gamepadAxisCallback(gamepad: Int, axis: Int, value: Float): Void {
+	static function gamepadAxisCallback(gamepad: Int, axis: Int, value: Float): Void {
 		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
 
-	private static function gamepadButtonCallback(gamepad: Int, button: Int, value: Float): Void {
+	static function gamepadButtonCallback(gamepad: Int, button: Int, value: Float): Void {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
-	private static function audioCallback(samples: Int) : Void {
+	static function audioCallback(samples: Int): Void {
 		kha.audio2.Audio._callCallback(samples);
 		var buffer = @:privateAccess kha.audio2.Audio.buffer;
 		Krom.writeAudioBuffer(buffer.data.buffer, samples);
 	}
 
-	public static function init(options: SystemOptions, callback: Window -> Void): Void {
-		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync, cast options.window.mode, options.window.windowFeatures, Krom.KROM_API);
+	public static function init(options: SystemOptions, callback: Window->Void): Void {
+		Krom.init(options.title, options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync,
+			cast options.window.mode, options.window.windowFeatures, Krom.KROM_API);
 
 		start = Krom.getTime();
 
@@ -180,9 +180,7 @@ class SystemImpl {
 		callback(Window.get(0));
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void): Void {
-
-	}
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Void->Void): Void {}
 
 	static function translateWindowMode(value: Null<WindowMode>): Int {
 		if (value == null) {
@@ -216,12 +214,12 @@ class SystemImpl {
 		return Krom.systemId();
 	}
 
-	public static function vibrate(ms:Int): Void {
-		//TODO: Implement
+	public static function vibrate(ms: Int): Void {
+		// TODO: Implement
 	}
 
 	public static function getLanguage(): String {
-		return "en"; //TODO: Implement
+		return "en"; // TODO: Implement
 	}
 
 	public static function requestShutdown(): Bool {
@@ -242,7 +240,7 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
-		if(!isMouseLocked()){
+		if (!isMouseLocked()) {
 			Krom.lockMouse();
 			for (listener in mouseLockListeners) {
 				listener();
@@ -251,7 +249,7 @@ class SystemImpl {
 	}
 
 	public static function unlockMouse(): Void {
-		if(isMouseLocked()){
+		if (isMouseLocked()) {
 			Krom.unlockMouse();
 			for (listener in mouseLockListeners) {
 				listener();
@@ -267,13 +265,13 @@ class SystemImpl {
 		return Krom.isMouseLocked();
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {
 		if (canLockMouse() && func != null) {
 			mouseLockListeners.push(func);
 		}
 	}
 
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {
 		if (canLockMouse() && func != null) {
 			mouseLockListeners.remove(func);
 		}
@@ -287,9 +285,7 @@ class SystemImpl {
 		Krom.showMouse(true);
 	}
 
-	static function unload(): Void {
-
-	}
+	static function unload(): Void {}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -299,34 +295,19 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function changeResolution(width: Int, height: Int): Void {}
 
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
@@ -340,31 +321,21 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
-		
-	}
+	public static function setSafeZone(value: Float): Void {}
 
-	public static function unlockAchievement(id: Int): Void {
-		
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
-
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 }

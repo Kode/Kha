@@ -2,6 +2,7 @@ package kha;
 
 class Window {
 	static var windows: Array<Window> = [];
+
 	var num: Int;
 	var windowTitle: String;
 
@@ -23,7 +24,7 @@ class Window {
 	}
 
 	public static var all(get, never): Array<Window>;
-	
+
 	static function get_all(): Array<Window> {
 		return windows;
 	}
@@ -61,7 +62,7 @@ class Window {
 	function get_width(): Int {
 		return Krom.windowWidth(num);
 	}
-	
+
 	function set_width(value: Int): Int {
 		return 800;
 	}

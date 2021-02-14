@@ -6,7 +6,7 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
-	private var pipeline: Dynamic;
+	var pipeline: Dynamic;
 
 	public function new() {
 		super();
@@ -32,27 +32,28 @@ class PipelineState extends PipelineStateBase {
 				stencilReferenceValue = value;
 			default:
 		}
-		Krom.compilePipeline(pipeline, structure0, structure1, structure2, structure3, inputLayout.length, vertexShader.shader, fragmentShader.shader, gs, tcs, tes, {
-			cullMode: cullMode,
-			depthWrite: this.depthWrite,
-			depthMode: depthMode,
-			stencilMode: stencilMode,
-			stencilBothPass: stencilBothPass,
-			stencilDepthFail: stencilDepthFail,
-			stencilFail: stencilFail,
-			stencilReferenceValue: stencilReferenceValue,
-			stencilReadMask: stencilReadMask,
-			stencilWriteMask: stencilWriteMask,
-			blendSource: convertBlendingFactor(blendSource),
-			blendDestination: convertBlendingFactor(blendDestination),
-			alphaBlendSource: convertBlendingFactor(alphaBlendSource),
-			alphaBlendDestination: convertBlendingFactor(alphaBlendDestination),
-			colorWriteMaskRed: colorWriteMasksRed,
-			colorWriteMaskGreen: colorWriteMasksGreen,
-			colorWriteMaskBlue: colorWriteMasksBlue,
-			colorWriteMaskAlpha: colorWriteMasksAlpha,
-			conservativeRasterization: conservativeRasterization
-		});
+		Krom.compilePipeline(pipeline, structure0, structure1, structure2, structure3, inputLayout.length, vertexShader.shader, fragmentShader.shader, gs,
+			tcs, tes, {
+				cullMode: cullMode,
+				depthWrite: this.depthWrite,
+				depthMode: depthMode,
+				stencilMode: stencilMode,
+				stencilBothPass: stencilBothPass,
+				stencilDepthFail: stencilDepthFail,
+				stencilFail: stencilFail,
+				stencilReferenceValue: stencilReferenceValue,
+				stencilReadMask: stencilReadMask,
+				stencilWriteMask: stencilWriteMask,
+				blendSource: convertBlendingFactor(blendSource),
+				blendDestination: convertBlendingFactor(blendDestination),
+				alphaBlendSource: convertBlendingFactor(alphaBlendSource),
+				alphaBlendDestination: convertBlendingFactor(alphaBlendDestination),
+				colorWriteMaskRed: colorWriteMasksRed,
+				colorWriteMaskGreen: colorWriteMasksGreen,
+				colorWriteMaskBlue: colorWriteMasksBlue,
+				colorWriteMaskAlpha: colorWriteMasksAlpha,
+				conservativeRasterization: conservativeRasterization
+			});
 	}
 
 	public function set(): Void {
@@ -67,7 +68,7 @@ class PipelineState extends PipelineStateBase {
 		return Krom.getTextureUnit(pipeline, name);
 	}
 
-	private static function convertBlendingFactor(factor: BlendingFactor): Int {
+	static function convertBlendingFactor(factor: BlendingFactor): Int {
 		switch (factor) {
 			case Undefined, BlendOne:
 				return 0;
