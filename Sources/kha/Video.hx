@@ -57,11 +57,11 @@ class Video implements Resource {
 
 	public var position(get, set): Int;
 
-	private function get_position(): Int {
+	function get_position(): Int {
 		return 0;
 	}
 
-	private function set_position(value: Int): Int {
+	function set_position(value: Int): Int {
 		return 0;
 	}
 

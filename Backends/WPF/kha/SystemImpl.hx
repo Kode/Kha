@@ -29,8 +29,9 @@ import system.windows.FrameworkElement;
 		}
 ')
 class StoryPublishCanvas extends system.windows.controls.Canvas {
-	private var mousePosX: Int;
-	private var mousePosY: Int;
+	var mousePosX: Int;
+	var mousePosY: Int;
+
 	public var drawMousePos: Bool;
 
 	public function setMousePos(posX: Int, posY: Int): Void {
@@ -112,17 +113,13 @@ class MainWindow extends system.windows.Window {
 		Background = new global::System.Windows.Media.SolidColorBrush(global::System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 		global::System.Windows.Media.CompositionTarget.Rendering += new global::System.EventHandler(CompositionTarget_Rendering);
 	')
-	public function new(title: String, width: Int, height: Int) {
-
-	}
+	public function new(title: String, width: Int, height: Int) {}
 
 	@:functionCode('
 		Width = width + (global::System.Windows.SystemParameters.ResizeFrameVerticalBorderWidth * 2);
 		Height = height + global::System.Windows.SystemParameters.WindowCaptionHeight + (global::System.Windows.SystemParameters.ResizeFrameHorizontalBorderHeight * 2);
 	')
-	public function resize(width: Int, height: Int): Void {
-
-	}
+	public function resize(width: Int, height: Int): Void {}
 }
 
 @:classCode('
@@ -237,7 +234,7 @@ class MainWindow extends system.windows.Window {
 	}
 ')
 class SystemImpl {
-	private static var watch: Stopwatch;
+	static var watch: Stopwatch;
 
 	public static var graphics(default, null): kha.wpf.Graphics;
 
@@ -250,27 +247,29 @@ class SystemImpl {
 	}
 
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return mouse;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return keyboard;
 	}
 
-	private static var mainWindow: MainWindow;
-	private static var openWindow: Bool = true;
-	private static var autostartGame: Bool = true;
-	private static var showMousePos: Bool = false;
-	private static var painter: kha.wpf.Painter;
-	private static var framebuffer: Framebuffer;
-	private static var keyboard: Keyboard;
-	private static var mouse: kha.input.Mouse;
-	private static var title: String;
+	static var mainWindow: MainWindow;
+	static var openWindow: Bool = true;
+	static var autostartGame: Bool = true;
+	static var showMousePos: Bool = false;
+	static var painter: kha.wpf.Painter;
+	static var framebuffer: Framebuffer;
+	static var keyboard: Keyboard;
+	static var mouse: kha.input.Mouse;
+	static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
 
-	public static function init(options: SystemOptions, callback: Void -> Void) {
+	public static function init(options: SystemOptions, callback: Void->Void) {
 		title = options.title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
@@ -288,7 +287,7 @@ class SystemImpl {
 		painter = new kha.wpf.Painter(options.width, options.height);
 		framebuffer = new Framebuffer(0, null, painter, null);
 		Scheduler.start();
-		//if (autostartGame) gameToStart.loadFinished();
+		// if (autostartGame) gameToStart.loadFinished();
 
 		callback();
 
@@ -300,10 +299,10 @@ class SystemImpl {
 		}
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int -> Void, callback: Void -> Void) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Void->Void) {
 		trace('initEx is not supported on the WPF target, running init() with first window options');
 
-		init({ title : title, width : options[0].width, height : options[0].height}, callback);
+		init({title: title, width: options[0].width, height: options[0].height}, callback);
 
 		if (windowCallback != null) {
 			windowCallback(0);
@@ -319,17 +318,11 @@ class SystemImpl {
 	}
 
 	@:functionCode('global::System.Windows.MessageBox.Show(msg, "Exeption", global::System.Windows.MessageBoxButton.OK, global::System.Windows.MessageBoxImage.Error);')
-	private static function displayErrorMessage(msg: String) {
+	static function displayErrorMessage(msg: String) {}
 
-	}
+	public static function lockMouse(): Void {}
 
-	public static function lockMouse(): Void {
-
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -339,22 +332,16 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
-
-	public static function removeFromMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
+	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
 	@:functionCode('
 		if (global::System.Windows.Application.Current == null) {
 			new global::System.Windows.Application().Run(mainWindow);
 		}
 	')
-	static function startWindow(): Void {
-
-	}
+	static function startWindow(): Void {}
 
 	public static var mouseX: Int;
 	public static var mouseY: Int;
@@ -440,9 +427,7 @@ class SystemImpl {
 		return "WPF";
 	}
 
-	public static function vibrate(ms:Int): Void {
-
-	}
+	public static function vibrate(ms: Int): Void {}
 
 	public static function getLanguage(): String {
 		final lang = cs.system.globalization.CultureInfo.CurrentCulture.Name;
@@ -450,9 +435,7 @@ class SystemImpl {
 	}
 
 	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
-	public static function requestShutdown(): Void {
-
-	}
+	public static function requestShutdown(): Void {}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -462,35 +445,23 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-  	}
+	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	//@:functionCode('mainWindow.resize(width, height);')
+	// @:functionCode('mainWindow.resize(width, height);')
 	public static function changeResolution(width: Int, height: Int): Void {
 		painter.width = width;
 		painter.height = height;
 	}
 
-	public static function setKeepScreenOn(on: Bool): Void {
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
@@ -508,11 +479,7 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
-
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 }
