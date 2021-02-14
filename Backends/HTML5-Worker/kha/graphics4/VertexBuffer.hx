@@ -7,8 +7,10 @@ import kha.graphics4.VertexData;
 
 class VertexBuffer {
 	static var lastId: Int = -1;
+
 	public var _id: Int;
 	public var _data: Float32Array;
+
 	var mySize: Int;
 	var myStride: Int;
 	var sizes: Array<Int>;
@@ -25,20 +27,20 @@ class VertexBuffer {
 		myStride = 0;
 		for (element in structure.elements) {
 			switch (element.data) {
-			case Float1:
-				myStride += 4 * 1;
-			case Float2:
-				myStride += 4 * 2;
-			case Float3:
-				myStride += 4 * 3;
-			case Float4:
-				myStride += 4 * 4;
-			case Float4x4:
-				myStride += 4 * 4 * 4;
-			case Short2Norm:
-				myStride += 2 * 2;
-			case Short4Norm:
-				myStride += 4 * 2;
+				case Float1:
+					myStride += 4 * 1;
+				case Float2:
+					myStride += 4 * 2;
+				case Float3:
+					myStride += 4 * 3;
+				case Float4:
+					myStride += 4 * 4;
+				case Float4x4:
+					myStride += 4 * 4 * 4;
+				case Short2Norm:
+					myStride += 2 * 2;
+				case Short4Norm:
+					myStride += 4 * 2;
 			}
 		}
 
@@ -54,38 +56,38 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			var size = 0;
 			switch (element.data) {
-			case Float1:
-				size = 1;
-			case Float2:
-				size = 2;
-			case Float3:
-				size = 3;
-			case Float4:
-				size = 4;
-			case Float4x4:
-				size = 4 * 4;
-			case Short2Norm:
-				myStride += 2 * 2;
-			case Short4Norm:
-				myStride += 4 * 2;
+				case Float1:
+					size = 1;
+				case Float2:
+					size = 2;
+				case Float3:
+					size = 3;
+				case Float4:
+					size = 4;
+				case Float4x4:
+					size = 4 * 4;
+				case Short2Norm:
+					myStride += 2 * 2;
+				case Short4Norm:
+					myStride += 4 * 2;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
 			switch (element.data) {
-			case Float1:
-				offset += 4 * 1;
-			case Float2:
-				offset += 4 * 2;
-			case Float3:
-				offset += 4 * 3;
-			case Float4:
-				offset += 4 * 4;
-			case Float4x4:
-				offset += 4 * 4 * 4;
-			case Short2Norm:
-				myStride += 2 * 2;
-			case Short4Norm:
-				myStride += 4 * 2;
+				case Float1:
+					offset += 4 * 1;
+				case Float2:
+					offset += 4 * 2;
+				case Float3:
+					offset += 4 * 3;
+				case Float4:
+					offset += 4 * 4;
+				case Float4x4:
+					offset += 4 * 4 * 4;
+				case Short2Norm:
+					myStride += 2 * 2;
+				case Short4Norm:
+					myStride += 4 * 2;
 			}
 			++index;
 		}
@@ -98,7 +100,13 @@ class VertexBuffer {
 				data: element.data
 			});
 		}
-		Worker.postMessage({ command: 'createVertexBuffer', id: _id, size: vertexCount, structure: {elements: elements}, usage: usage});
+		Worker.postMessage({
+			command: 'createVertexBuffer',
+			id: _id,
+			size: vertexCount,
+			structure: {elements: elements},
+			usage: usage
+		});
 	}
 
 	public function delete(): Void {
@@ -106,14 +114,21 @@ class VertexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		lockStart = start != null ? start : 0; 
-		lockCount = count != null ? count : mySize; 
+		lockStart = start != null ? start : 0;
+		lockCount = count != null ? count : mySize;
 		return _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride());
 	}
 
 	public function unlock(?count: Int): Void {
-		if(count != null) lockCount = count;
-		Worker.postMessage({ command: 'updateVertexBuffer', id: _id, data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).data(), start: lockStart, count: lockCount });
+		if (count != null)
+			lockCount = count;
+		Worker.postMessage({
+			command: 'updateVertexBuffer',
+			id: _id,
+			data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).data(),
+			start: lockStart,
+			count: lockCount
+		});
 	}
 
 	public function stride(): Int {

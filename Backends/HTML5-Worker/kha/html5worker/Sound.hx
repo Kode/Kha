@@ -6,7 +6,7 @@ import haxe.ds.Vector;
 class Sound extends kha.Sound {
 	public var _id: Int;
 	public var _callback: Void->Void;
-	
+
 	public function new(id: Int) {
 		super();
 		this._id = id;
@@ -14,7 +14,7 @@ class Sound extends kha.Sound {
 
 	override public function uncompress(done: Void->Void): Void {
 		compressedData = null;
-		Worker.postMessage({ command: 'uncompressSound', id: _id });
+		Worker.postMessage({command: 'uncompressSound', id: _id});
 		_callback = done;
 	}
 

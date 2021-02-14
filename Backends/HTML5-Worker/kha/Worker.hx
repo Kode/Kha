@@ -5,12 +5,12 @@ class Worker {
 		try {
 			untyped __js__("self.postMessage(m)");
 		}
-		catch (e: Dynamic) {
+		catch (e:Dynamic) {
 			trace(e);
 		}
 	}
 
-	public static function handleMessages(messageHandler: Dynamic->Void){
+	public static function handleMessages(messageHandler: Dynamic->Void) {
 		untyped __js__("self.onmessage = messageHandler");
-	} 
+	}
 }

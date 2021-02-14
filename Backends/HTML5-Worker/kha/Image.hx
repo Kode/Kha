@@ -9,14 +9,16 @@ import kha.graphics4.Usage;
 class Image implements Canvas implements Resource {
 	public var id: Int;
 	public var _rtid: Int;
+
 	public static var _lastId: Int = -1;
 	static var lastRtId: Int = -1;
-	private var w: Int;
-	private var h: Int;
-	private var rw: Int;
-	private var rh: Int;
-	private var myFormat: TextureFormat;
-	private var bytes: Bytes = null;
+
+	var w: Int;
+	var h: Int;
+	var rw: Int;
+	var rh: Int;
+	var myFormat: TextureFormat;
+	var bytes: Bytes = null;
 
 	public function new(id: Int, rtid: Int, width: Int, height: Int, realWidth: Int, realHeight: Int, format: TextureFormat) {
 		this.id = id;
@@ -29,10 +31,19 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		if (format == null) format = TextureFormat.RGBA32;
-		if (usage == null) usage = Usage.StaticUsage;
+		if (format == null)
+			format = TextureFormat.RGBA32;
+		if (usage == null)
+			usage = Usage.StaticUsage;
 		var id = ++_lastId;
-		Worker.postMessage({ command: 'createImage', id: id, width: width, height: height, format: format, usage: usage });
+		Worker.postMessage({
+			command: 'createImage',
+			id: id,
+			width: width,
+			height: height,
+			format: format,
+			usage: usage
+		});
 		return new Image(id, -1, width, height, width, height, format);
 	}
 
@@ -40,10 +51,17 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
-	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
-		if (format == null) format = TextureFormat.RGBA32;
+	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null,
+			depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+		if (format == null)
+			format = TextureFormat.RGBA32;
 		var rtid = ++lastRtId;
-		Worker.postMessage({ command: 'createRenderTarget', id: rtid, width: width, height: height });
+		Worker.postMessage({
+			command: 'createRenderTarget',
+			id: rtid,
+			width: width,
+			height: height
+		});
 		return new Image(-1, rtid, width, height, width, height, format);
 	}
 
@@ -57,22 +75,25 @@ class Image implements Canvas implements Resource {
 
 	public static var maxSize(get, never): Int;
 
-	private static function get_maxSize(): Int {
+	static function get_maxSize(): Int {
 		return 1024 * 4;
 	}
 
 	public static var nonPow2Supported(get, never): Bool;
 
-	private static function get_nonPow2Supported(): Bool {
+	static function get_nonPow2Supported(): Bool {
 		return true;
 	}
-	
+
 	public static function renderTargetsInvertedY(): Bool {
 		return true;
 	}
 
-	public function isOpaque(x: Int, y: Int): Bool { return false; }
-	public function unload(): Void { }
+	public function isOpaque(x: Int, y: Int): Bool {
+		return false;
+	}
+
+	public function unload(): Void {}
 
 	public function lock(level: Int = 0): Bytes {
 		if (bytes == null) {
@@ -97,34 +118,64 @@ class Image implements Canvas implements Resource {
 	}
 
 	public function unlock(): Void {
-		Worker.postMessage({ command: 'unlockImage', id: id, bytes: bytes.getData() });
+		Worker.postMessage({command: 'unlockImage', id: id, bytes: bytes.getData()});
 	}
 
-	public function getPixels(): Bytes { return null; }
-	public function generateMipmaps(levels: Int): Void { }
-	public function setMipmaps(mipmaps: Array<Image>): Void { }
-	public function setDepthStencilFrom(image: Image): Void { }
-	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void { }
-	public var width(get, never): Int;
-	private function get_width(): Int { return w; }
-	public var height(get, never): Int;
-	private function get_height(): Int { return h; }
-	public var depth(get, never): Int;
-	private function get_depth(): Int { return 1; }
-	public var format(get, never): TextureFormat;
-	private function get_format(): TextureFormat { return myFormat; }
-	public var realWidth(get, never): Int;
-	private function get_realWidth(): Int { return rw; }
-	public var realHeight(get, never): Int;
-	private function get_realHeight(): Int { return rh; }
+	public function getPixels(): Bytes {
+		return null;
+	}
 
-	private var graphics1: kha.graphics1.Graphics;
-	private var graphics2: kha.graphics2.Graphics;
-	private var graphics4: kha.graphics4.Graphics;
+	public function generateMipmaps(levels: Int): Void {}
+
+	public function setMipmaps(mipmaps: Array<Image>): Void {}
+
+	public function setDepthStencilFrom(image: Image): Void {}
+
+	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
+
+	public var width(get, never): Int;
+
+	function get_width(): Int {
+		return w;
+	}
+
+	public var height(get, never): Int;
+
+	function get_height(): Int {
+		return h;
+	}
+
+	public var depth(get, never): Int;
+
+	function get_depth(): Int {
+		return 1;
+	}
+
+	public var format(get, never): TextureFormat;
+
+	function get_format(): TextureFormat {
+		return myFormat;
+	}
+
+	public var realWidth(get, never): Int;
+
+	function get_realWidth(): Int {
+		return rw;
+	}
+
+	public var realHeight(get, never): Int;
+
+	function get_realHeight(): Int {
+		return rh;
+	}
+
+	var graphics1: kha.graphics1.Graphics;
+	var graphics2: kha.graphics2.Graphics;
+	var graphics4: kha.graphics4.Graphics;
 
 	public var g1(get, never): kha.graphics1.Graphics;
 
-	private function get_g1(): kha.graphics1.Graphics {
+	function get_g1(): kha.graphics1.Graphics {
 		if (graphics1 == null) {
 			graphics1 = new kha.graphics2.Graphics1(this);
 		}
@@ -133,7 +184,7 @@ class Image implements Canvas implements Resource {
 
 	public var g2(get, never): kha.graphics2.Graphics;
 
-	private function get_g2(): kha.graphics2.Graphics {
+	function get_g2(): kha.graphics2.Graphics {
 		if (graphics2 == null) {
 			graphics2 = new kha.graphics4.Graphics2(this);
 		}
@@ -142,7 +193,7 @@ class Image implements Canvas implements Resource {
 
 	public var g4(get, never): kha.graphics4.Graphics;
 
-	private function get_g4(): kha.graphics4.Graphics {
+	function get_g4(): kha.graphics4.Graphics {
 		if (graphics4 == null) {
 			graphics4 = new kha.html5worker.Graphics(this);
 		}

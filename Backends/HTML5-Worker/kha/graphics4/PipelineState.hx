@@ -7,9 +7,11 @@ import kha.graphics4.VertexStructure;
 
 class PipelineState extends PipelineStateBase {
 	static var lastId: Int = -1;
+
 	public var _id: Int;
-	private var textures: Array<String>;
-	private var textureValues: Array<Dynamic>;
+
+	var textures: Array<String>;
+	var textureValues: Array<Dynamic>;
 
 	public function new() {
 		super();
@@ -18,9 +20,7 @@ class PipelineState extends PipelineStateBase {
 		textureValues = new Array<Dynamic>();
 	}
 
-	public function delete(): Void {
-
-	}
+	public function delete(): Void {}
 
 	public function compile(): Void {
 		var index = 0;
@@ -71,18 +71,35 @@ class PipelineState extends PipelineStateBase {
 			conservativeRasterization: conservativeRasterization
 		};
 
-		Worker.postMessage({ command: 'compilePipeline', id: _id, frag: fragmentShader.files[0], vert: vertexShader.files[0], layout: layout, state: state });
+		Worker.postMessage({
+			command: 'compilePipeline',
+			id: _id,
+			frag: fragmentShader.files[0],
+			vert: vertexShader.files[0],
+			layout: layout,
+			state: state
+		});
 	}
 
 	public function getConstantLocation(name: String): kha.graphics4.ConstantLocation {
 		var loc = new kha.html5worker.ConstantLocation();
-		Worker.postMessage({ command: 'createConstantLocation', id: loc._id, name: name, pipeline: _id });
+		Worker.postMessage({
+			command: 'createConstantLocation',
+			id: loc._id,
+			name: name,
+			pipeline: _id
+		});
 		return loc;
 	}
 
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
 		var unit = new kha.html5worker.TextureUnit();
-		Worker.postMessage({ command: 'createTextureUnit', id: unit._id, name: name, pipeline: _id });
+		Worker.postMessage({
+			command: 'createTextureUnit',
+			id: unit._id,
+			name: name,
+			pipeline: _id
+		});
 		return unit;
 	}
 }

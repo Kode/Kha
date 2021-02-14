@@ -31,7 +31,7 @@ class SystemImpl {
 	static var surface: Surface;
 	static var gamepads: Array<Gamepad>;
 
-	public static function init(options: SystemOptions, callback: Window -> Void) {
+	public static function init(options: SystemOptions, callback: Window->Void) {
 		Worker.handleMessages(messageHandler);
 
 		Shaders.init();
@@ -46,11 +46,11 @@ class SystemImpl {
 				});
 			}
 		}
-		Worker.postMessage({ command: 'setShaders', shaders: shaders });
+		Worker.postMessage({command: 'setShaders', shaders: shaders});
 
 		SystemImpl.options = options;
 
-		//haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
+		// haxe.Log.trace = untyped js.Boot.__trace; // Hack for JS trace problems
 
 		keyboard = new Keyboard();
 		mouse = new Mouse();
@@ -102,7 +102,7 @@ class SystemImpl {
 		return "HTML5-Worker";
 	}
 
-	public static function vibrate(ms:Int): Void {
+	public static function vibrate(ms: Int): Void {
 		js.Browser.navigator.vibrate(ms);
 	}
 
@@ -116,22 +116,20 @@ class SystemImpl {
 	}
 
 	public static function getMouse(num: Int): Mouse {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return mouse;
 	}
 
 	public static function getKeyboard(num: Int): Keyboard {
-		if (num != 0) return null;
+		if (num != 0)
+			return null;
 		return keyboard;
 	}
 
-	public static function lockMouse(): Void {
+	public static function lockMouse(): Void {}
 
-	}
-
-	public static function unlockMouse(): Void {
-
-	}
+	public static function unlockMouse(): Void {}
 
 	public static function canLockMouse(): Bool {
 		return false;
@@ -141,17 +139,11 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function notifyOfMouseLockChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function removeFromMouseLockChange(func : Void -> Void, error  : Void -> Void) : Void {
-
-	}
-
-	static function unload(_): Void {
-
-	}
+	static function unload(_): Void {}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -161,33 +153,19 @@ class SystemImpl {
 		return false;
 	}
 
-	public static function requestFullscreen(): Void {
+	public static function requestFullscreen(): Void {}
 
-	}
+	public static function exitFullscreen(): Void {}
 
-	public static function exitFullscreen(): Void {
+	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	}
+	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {}
 
-	public static function notifyOfFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
+	public static function changeResolution(width: Int, height: Int): Void {}
 
-	}
+	public static function setKeepScreenOn(on: Bool): Void {}
 
-	public static function removeFromFullscreenChange(func: Void -> Void, error: Void -> Void): Void {
-
-	}
-
-	public static function changeResolution(width: Int, height: Int): Void {
-
-	}
-
-	public static function setKeepScreenOn(on: Bool): Void {
-
-	}
-
-	public static function loadUrl(url: String): Void {
-
-	}
+	public static function loadUrl(url: String): Void {}
 
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
@@ -199,40 +177,40 @@ class SystemImpl {
 
 	static function messageHandler(value: Dynamic): Void {
 		switch (value.data.command) {
-		case 'patch':
-			js.Lib.eval(value.data.source);
-		case 'loadedImage':
-			LoaderImpl._loadedImage(value.data);
-		case 'loadedSound':
-			LoaderImpl._loadedSound(value.data);
-		case 'loadedBlob':
-			LoaderImpl._loadedBlob(value.data);
-		case 'uncompressedSound':
-			LoaderImpl._uncompressedSound(value.data);
-		case 'frame':
-			if (frame != null) {
-				Scheduler.executeFrame();
-				Worker.postMessage({ command: 'beginFrame' });
-				System.render([frame]);
-				Worker.postMessage({ command: 'endFrame' });
-			}
-		case 'setWindowSize':
-			width = value.data.width;
-			height = value.data.height;
-		case 'keyDown':
-			keyboard.sendDownEvent(cast value.data.key);
-		case 'keyUp':
-			keyboard.sendUpEvent(cast value.data.key);
-		case 'keyPress':
-			keyboard.sendPressEvent(value.data.character);
-		case 'mouseDown':
-			mouse.sendDownEvent(0, value.data.button, value.data.x, value.data.y);
-		case 'mouseUp':
-			mouse.sendUpEvent(0, value.data.button, value.data.x, value.data.y);
-		case 'mouseMove':
-			mouse.sendMoveEvent(0, value.data.x, value.data.y, value.data.mx, value.data.my);
-		case 'mouseWheel':
-			mouse.sendWheelEvent(0, value.data.delta);
+			case 'patch':
+				js.Lib.eval(value.data.source);
+			case 'loadedImage':
+				LoaderImpl._loadedImage(value.data);
+			case 'loadedSound':
+				LoaderImpl._loadedSound(value.data);
+			case 'loadedBlob':
+				LoaderImpl._loadedBlob(value.data);
+			case 'uncompressedSound':
+				LoaderImpl._uncompressedSound(value.data);
+			case 'frame':
+				if (frame != null) {
+					Scheduler.executeFrame();
+					Worker.postMessage({command: 'beginFrame'});
+					System.render([frame]);
+					Worker.postMessage({command: 'endFrame'});
+				}
+			case 'setWindowSize':
+				width = value.data.width;
+				height = value.data.height;
+			case 'keyDown':
+				keyboard.sendDownEvent(cast value.data.key);
+			case 'keyUp':
+				keyboard.sendUpEvent(cast value.data.key);
+			case 'keyPress':
+				keyboard.sendPressEvent(value.data.character);
+			case 'mouseDown':
+				mouse.sendDownEvent(0, value.data.button, value.data.x, value.data.y);
+			case 'mouseUp':
+				mouse.sendUpEvent(0, value.data.button, value.data.x, value.data.y);
+			case 'mouseMove':
+				mouse.sendMoveEvent(0, value.data.x, value.data.y, value.data.mx, value.data.my);
+			case 'mouseWheel':
+				mouse.sendWheelEvent(0, value.data.delta);
 		}
 	}
 
@@ -240,31 +218,21 @@ class SystemImpl {
 		return 1.0;
 	}
 
-	public static function login(): Void {
-
-	}
+	public static function login(): Void {}
 
 	public static function automaticSafeZone(): Bool {
 		return true;
 	}
 
-	public static function setSafeZone(value: Float): Void {
+	public static function setSafeZone(value: Float): Void {}
 
-	}
-
-	public static function unlockAchievement(id: Int): Void {
-
-	}
+	public static function unlockAchievement(id: Int): Void {}
 
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
 
-	public static function disallowUserChange(): Void {
+	public static function disallowUserChange(): Void {}
 
-	}
-
-	public static function allowUserChange(): Void {
-
-	}
+	public static function allowUserChange(): Void {}
 }
