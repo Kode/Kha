@@ -1,10 +1,10 @@
 package kha;
 
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/Window.h>
-')
-@:cppFileCode('
+")
+@:cppFileCode("
 namespace {
 	char windowTitles[10][256];
 	int titleIndex = 0;
@@ -44,7 +44,7 @@ Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions fra
 	framebuffer.samplesPerPixel = frame->samplesPerPixel;
 	return framebuffer;
 }
-')
+")
 class Window {
 	static var windows: Array<Window> = [];
 	static var resizeCallbacks: Array<Array<Int->Int->Void>> = [];
@@ -87,11 +87,11 @@ class Window {
 		return window;
 	}
 
-	@:functionCode('
+	@:functionCode("
 		Kore::WindowOptions window = convertWindowOptions(win);
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		Kore::Window::create(&window, &framebuffer);
-	')
+	")
 	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {}
 
 	public static function destroy(window: Window): Void {
@@ -99,7 +99,7 @@ class Window {
 		windows.remove(window);
 	}
 
-	@:functionCode('Kore::Window::destroy(Kore::Window::get(num));')
+	@:functionCode("Kore::Window::destroy(Kore::Window::get(num));")
 	static function koreDestroy(num: Int) {}
 
 	public static function get(index: Int): Window {
@@ -112,65 +112,65 @@ class Window {
 		return windows;
 	}
 
-	@:functionCode('Kore::Window::get(this->num)->resize(width, height);')
+	@:functionCode("Kore::Window::get(this->num)->resize(width, height);")
 	public function resize(width: Int, height: Int): Void {}
 
-	@:functionCode('Kore::Window::get(this->num)->move(x, y);')
+	@:functionCode("Kore::Window::get(this->num)->move(x, y);")
 	public function move(x: Int, y: Int): Void {}
 
-	@:functionCode('Kore::Window::get(this->num)->changeWindowFeatures(features);')
+	@:functionCode("Kore::Window::get(this->num)->changeWindowFeatures(features);")
 	public function changeWindowFeatures(features: Int): Void {}
 
-	@:functionCode('
+	@:functionCode("
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		Kore::Window::get(this->num)->changeFramebuffer(&framebuffer);
-	')
+	")
 	public function changeFramebuffer(frame: FramebufferOptions): Void {}
 
 	public var x(get, set): Int;
 
-	@:functionCode('return Kore::Window::get(this->num)->x();')
+	@:functionCode("return Kore::Window::get(this->num)->x();")
 	function get_x(): Int {
 		return 0;
 	}
 
-	@:functionCode('int y = Kore::Window::get(this->num)->y(); Kore::Window::get(this->num)->move(value, y);')
+	@:functionCode("int y = Kore::Window::get(this->num)->y(); Kore::Window::get(this->num)->move(value, y);")
 	function set_x(value: Int): Int {
 		return 0;
 	}
 
 	public var y(get, set): Int;
 
-	@:functionCode('return Kore::Window::get(this->num)->y();')
+	@:functionCode("return Kore::Window::get(this->num)->y();")
 	function get_y(): Int {
 		return 0;
 	}
 
-	@:functionCode('int x = Kore::Window::get(this->num)->x(); Kore::Window::get(this->num)->move(x, value);')
+	@:functionCode("int x = Kore::Window::get(this->num)->x(); Kore::Window::get(this->num)->move(x, value);")
 	function set_y(value: Int): Int {
 		return 0;
 	}
 
 	public var width(get, set): Int;
 
-	@:functionCode('return Kore::Window::get(this->num)->width();')
+	@:functionCode("return Kore::Window::get(this->num)->width();")
 	function get_width(): Int {
 		return 800;
 	}
 
-	@:functionCode('int height = Kore::Window::get(this->num)->height(); Kore::Window::get(this->num)->resize(value, height);')
+	@:functionCode("int height = Kore::Window::get(this->num)->height(); Kore::Window::get(this->num)->resize(value, height);")
 	function set_width(value: Int): Int {
 		return 800;
 	}
 
 	public var height(get, set): Int;
 
-	@:functionCode('return Kore::Window::get(this->num)->height();')
+	@:functionCode("return Kore::Window::get(this->num)->height();")
 	function get_height(): Int {
 		return 600;
 	}
 
-	@:functionCode('int width = Kore::Window::get(this->num)->width(); Kore::Window::get(this->num)->move(width, value);')
+	@:functionCode("int width = Kore::Window::get(this->num)->width(); Kore::Window::get(this->num)->move(width, value);")
 	function set_height(value: Int): Int {
 		return 600;
 	}
@@ -181,12 +181,12 @@ class Window {
 		return cast getKoreMode();
 	}
 
-	@:functionCode('return Kore::Window::get(this->num)->mode();')
+	@:functionCode("return Kore::Window::get(this->num)->mode();")
 	function getKoreMode(): Int {
 		return 0;
 	}
 
-	@:functionCode('Kore::Window::get(this->num)->changeWindowMode((Kore::WindowMode)mode); return mode;')
+	@:functionCode("Kore::Window::get(this->num)->changeWindowMode((Kore::WindowMode)mode); return mode;")
 	function set_mode(mode: WindowMode): WindowMode {
 		return mode;
 	}
@@ -197,7 +197,7 @@ class Window {
 		return visibility;
 	}
 
-	@:functionCode('if (value) Kore::Window::get(this->num)->show(); else Kore::Window::get(this->num)->hide();')
+	@:functionCode("if (value) Kore::Window::get(this->num)->show(); else Kore::Window::get(this->num)->hide();")
 	function set_visible(value: Bool): Bool {
 		visibility = value;
 		return value;
@@ -209,13 +209,13 @@ class Window {
 		return windowTitle;
 	}
 
-	@:functionCode('Kore::Window::get(this->num)->setTitle(value.c_str());')
+	@:functionCode("Kore::Window::get(this->num)->setTitle(value.c_str());")
 	function set_title(value: String): String {
 		windowTitle = value;
 		return windowTitle;
 	}
 
-	@:functionCode('Kore::Window::get(this->num)->setResizeCallback(resizeCallback, (void*)this->num);')
+	@:functionCode("Kore::Window::get(this->num)->setResizeCallback(resizeCallback, (void*)this->num);")
 	public function notifyOnResize(callback: Int->Int->Void): Void {
 		resizeCallbacks[num].push(callback);
 	}
@@ -229,7 +229,7 @@ class Window {
 		}
 	}
 
-	@:functionCode('Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);')
+	@:functionCode("Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);")
 	public function notifyOnPpiChange(callback: Int->Void): Void {
 		ppiCallbacks[num].push(callback);
 	}
@@ -245,7 +245,7 @@ class Window {
 
 	public var vSynced(get, never): Bool;
 
-	@:functionCode('return Kore::Window::get(this->num)->vSynced();')
+	@:functionCode("return Kore::Window::get(this->num)->vSynced();")
 	function get_vSynced(): Bool {
 		return true;
 	}

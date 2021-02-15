@@ -2,10 +2,10 @@ package kha.graphics4;
 
 import haxe.io.Bytes;
 
-@:headerCode('
+@:headerCode("
 #include <kinc/pch.h>
 #include <kinc/graphics4/rendertarget.h>
-')
+")
 @:headerClassCode("kinc_g4_render_target_t renderTarget;")
 class CubeMap implements Canvas implements Resource {
 	var format: TextureFormat;
@@ -26,7 +26,7 @@ class CubeMap implements Canvas implements Resource {
 		return cubeMap;
 	}
 
-	@:functionCode('kinc_g4_render_target_init_cube(&renderTarget, cubeMapSize, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);')
+	@:functionCode("kinc_g4_render_target_init_cube(&renderTarget, cubeMapSize, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);")
 	function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
 
 	static function getRenderTargetFormat(format: TextureFormat): Int {

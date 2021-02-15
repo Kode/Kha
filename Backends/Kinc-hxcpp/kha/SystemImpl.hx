@@ -27,7 +27,7 @@ import kha.kore.vr.VrInterfaceRift;
 import kha.vr.VrInterfaceEmulated;
 #end
 #end
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/System.h>
 #include <Kore/Input/Gamepad.h>
@@ -46,7 +46,7 @@ void post_kore_init();
 void run_kore();
 const char* getGamepadId(int index);
 const char* getGamepadVendor(int index);
-')
+")
 @:keep
 class SystemImpl {
 	public static var needs3d: Bool = false;
@@ -69,23 +69,21 @@ class SystemImpl {
 		return keyboard;
 	}
 
-	@:functionCode('
-		return Kore::System::time();
-	')
+	@:functionCode("return Kore::System::time();")
 	public static function getTime(): Float {
 		return 0;
 	}
 
 	public static function windowWidth(windowId: Int): Int {
-		return untyped __cpp__('Kore::System::windowWidth(windowId)');
+		return untyped __cpp__("Kore::System::windowWidth(windowId)");
 	}
 
 	public static function windowHeight(windowId: Int): Int {
-		return untyped __cpp__('Kore::System::windowHeight(windowId)');
+		return untyped __cpp__("Kore::System::windowHeight(windowId)");
 	}
 
 	public static function screenDpi(): Int {
-		return untyped __cpp__('Kore::Display::primary()->pixelsPerInch()');
+		return untyped __cpp__("Kore::Display::primary()->pixelsPerInch()");
 	}
 
 	public static function getVsync(): Bool {
@@ -100,22 +98,22 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 
-	@:functionCode('return ::String(Kore::System::systemId());')
+	@:functionCode("return ::String(Kore::System::systemId());")
 	public static function getSystemId(): String {
-		return '';
+		return "";
 	}
 
 	public static function vibrate(ms: Int): Void {
 		untyped __cpp__("Kore::System::vibrate(ms)");
 	}
 
-	@:functionCode('return ::String(Kore::System::language());')
+	@:functionCode("return ::String(Kore::System::language());")
 	public static function getLanguage(): String {
 		return "en";
 	}
 
 	public static function requestShutdown(): Bool {
-		untyped __cpp__('Kore::System::stop()');
+		untyped __cpp__("Kore::System::stop()");
 		return true;
 	}
 
@@ -133,7 +131,7 @@ class SystemImpl {
 
 		kha.Worker._mainThread = sys.thread.Thread.current();
 
-		untyped __cpp__('post_kore_init()');
+		untyped __cpp__("post_kore_init()");
 
 		Shaders.init();
 
@@ -176,7 +174,7 @@ class SystemImpl {
 		loadFinished();
 		callback(Window.get(0));
 
-		untyped __cpp__('run_kore()');
+		untyped __cpp__("run_kore()");
 	}
 
 	static function loadFinished() {
@@ -234,11 +232,11 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(windowId: Int = 0): Bool {
-		return untyped __cpp__('Kore::Mouse::the()->canLock(windowId)');
+		return untyped __cpp__("Kore::Mouse::the()->canLock(windowId)");
 	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
-		return untyped __cpp__('Kore::Mouse::the()->isLocked(windowId)');
+		return untyped __cpp__("Kore::Mouse::the()->isLocked(windowId)");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
@@ -286,12 +284,12 @@ class SystemImpl {
 		System.render(framebuffers);
 		if (kha.kore.graphics4.Graphics.lastWindow != -1) {
 			var win = kha.kore.graphics4.Graphics.lastWindow;
-			untyped __cpp__('Kore::Graphics4::end(win)');
+			untyped __cpp__("kinc_g4_end({0})", win);
 		}
 		else {
-			untyped __cpp__('Kore::Graphics4::begin(0)');
-			untyped __cpp__('Kore::Graphics4::clear(Kore::Graphics4::ClearColorFlag | Kore::Graphics4::ClearDepthFlag | Kore::Graphics4::ClearStencilFlag)');
-			untyped __cpp__('Kore::Graphics4::end(0)');
+			untyped __cpp__("kinc_g4_begin(0)");
+			untyped __cpp__("kinc_g4_clear(KINC_G4_CLEAR_COLOR | KINC_G4_CLEAR_DEPTH | KINC_G4_CLEAR_STENCIL, 0, 0.0f, 0)");
+			untyped __cpp__("kinc_g4_end(0)");
 		}
 		kha.kore.graphics4.Graphics.lastWindow = -1;
 
@@ -305,7 +303,7 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode('return Kore::Gamepad::get(i)->connected();')
+	@:functionCode("return Kore::Gamepad::get(i)->connected();")
 	static function checkGamepadConnected(i: Int): Bool {
 		return true;
 	}
@@ -457,21 +455,21 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode('Kore::System::copyToClipboard(text.c_str());')
+	@:functionCode("Kore::System::copyToClipboard(text.c_str());")
 	public static function copyToClipboard(text: String) {}
 
-	@:functionCode('Kore::System::login();')
+	@:functionCode("Kore::System::login();")
 	public static function login(): Void {}
 
-	@:functionCode('return Kore::System::waitingForLogin();')
+	@:functionCode("return Kore::System::waitingForLogin();")
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
 
-	@:functionCode('kinc_disallow_user_change();')
+	@:functionCode("kinc_disallow_user_change();")
 	public static function disallowUserChange(): Void {}
 
-	@:functionCode('kinc_allow_user_change();')
+	@:functionCode("kinc_allow_user_change();")
 	public static function allowUserChange(): Void {}
 
 	public static function loginevent(): Void {
@@ -486,11 +484,11 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode('
+	@:functionCode("
 		Kore::WindowOptions window = convertWindowOptions(win);
 		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
 		init_kore(name, width, height, &window, &framebuffer);
-	')
+	")
 	static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {}
 
 	public static function setKeepScreenOn(on: Bool): Void {
@@ -501,29 +499,29 @@ class SystemImpl {
 		untyped __cpp__("Kore::System::loadURL(url)");
 	}
 
-	@:functionCode('return ::String(::getGamepadId(index));')
+	@:functionCode("return ::String(::getGamepadId(index));")
 	public static function getGamepadId(index: Int): String {
 		return "unknown";
 	}
 
-	@:functionCode('return ::String(::getGamepadVendor(index));')
+	@:functionCode("return ::String(::getGamepadVendor(index));")
 	public static function getGamepadVendor(index: Int): String {
 		return "unknown";
 	}
 
 	public static function safeZone(): Float {
-		return untyped __cpp__('Kore::System::safeZone()');
+		return untyped __cpp__("Kore::System::safeZone()");
 	}
 
 	public static function automaticSafeZone(): Bool {
-		return untyped __cpp__('Kore::System::automaticSafeZone()');
+		return untyped __cpp__("Kore::System::automaticSafeZone()");
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		untyped __cpp__('Kore::System::setSafeZone(value)');
+		untyped __cpp__("Kore::System::setSafeZone(value)");
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		untyped __cpp__('Kore::System::unlockAchievement(id)');
+		untyped __cpp__("Kore::System::unlockAchievement(id)");
 	}
 }

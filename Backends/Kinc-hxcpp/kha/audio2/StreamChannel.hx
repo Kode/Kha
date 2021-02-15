@@ -2,8 +2,8 @@ package kha.audio2;
 
 import haxe.io.Bytes;
 
-@:headerCode('#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>')
-@:headerClassCode('stb_vorbis* vorbis;')
+@:headerCode("#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
+@:headerClassCode("stb_vorbis* vorbis;")
 class StreamChannel implements kha.audio1.AudioChannel {
 	var atend: Bool = false;
 	@:keep var loop: Bool;
@@ -16,10 +16,10 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		initVorbis(data);
 	}
 
-	@:functionCode('vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, NULL, NULL);')
+	@:functionCode("vorbis = stb_vorbis_open_memory(data->b->Pointer(), data->length, NULL, NULL);")
 	function initVorbis(data: Bytes): Void {}
 
-	@:functionCode('
+	@:functionCode("
 		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
 		if (read < length / 2) {
 			if (loop) {
@@ -32,7 +32,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 				samples->self.data[i] = 0;
 			}
 		}
-	')
+	")
 	function nextVorbisSamples(samples: kha.arrays.Float32Array, length: Int): Void {}
 
 	public function nextSamples(samples: kha.arrays.Float32Array, length: Int, sampleRate: Int): Void {
@@ -60,32 +60,32 @@ class StreamChannel implements kha.audio1.AudioChannel {
 
 	public var length(get, never): Float; // Seconds
 
-	@:functionCode('
+	@:functionCode("
 		if (vorbis == NULL) return 0;
 		return stb_vorbis_stream_length_in_seconds(vorbis);
-	')
+	")
 	function get_length(): Int {
 		return 0;
 	}
 
 	public var position(get, set): Float; // Seconds
 
-	@:functionCode('
+	@:functionCode("
 		if (vorbis == NULL) return 0;
 		return stb_vorbis_get_sample_offset(vorbis) /
 			(float)stb_vorbis_stream_length_in_samples(vorbis) *
 			stb_vorbis_stream_length_in_seconds(vorbis);
-	')
+	")
 	function get_position(): Float {
 		return 0;
 	}
 
-	@:functionCode('
+	@:functionCode("
 		if (vorbis == NULL) return value;
 		unsigned int rate = stb_vorbis_get_info(vorbis).sample_rate;
 		stb_vorbis_seek_frame(vorbis, rate * value);
 		return value;
-	')
+	")
 	function set_position(value: Float): Float {
 		return value;
 	}

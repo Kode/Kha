@@ -15,6 +15,12 @@
 		},
 		{
 			"type": "RedundantModifier"
+		},
+		{
+			"type": "StringLiteral",
+			"props": {
+				"policy": "doubleAndInterpolation"
+			}
 		}
 	]
 }

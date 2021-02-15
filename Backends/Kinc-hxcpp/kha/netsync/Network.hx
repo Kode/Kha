@@ -2,13 +2,11 @@ package kha.netsync;
 
 import haxe.io.Bytes;
 
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/Network/Socket.h>
-')
-@:headerClassCode('
-	Kore::Socket *socket;
-')
+")
+@:headerClassCode("Kore::Socket *socket;")
 class Network {
 	var url: String;
 	var port: Int;
@@ -27,18 +25,18 @@ class Network {
 		kha.Scheduler.addFrameTask(update, 0);
 	}
 
-	@:functionCode('
+	@:functionCode("
 		socket = new Kore::Socket();
 		socket->open(port);
-	')
+	")
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
 	}
 
-	@:functionCode('
+	@:functionCode("
 		// TODO: mandatory
 		socket->send(url, port, (const unsigned char*)bytes->b->getBase(), bytes->length);
-	')
+	")
 	public function send(bytes: Bytes, mandatory: Bool): Void {}
 
 	public function listen(listener: Bytes->Void): Void {
@@ -60,7 +58,7 @@ class Network {
 		}
 	}
 
-	@:functionCode('
+	@:functionCode("
 		unsigned int recAddr;
 		unsigned int recPort;
 		int size = socket->receive((unsigned char*)inBuffer->b->getBase(), inBuffer->length, recAddr, recPort);
@@ -70,7 +68,7 @@ class Network {
 		else {
 			return 0;
 		}
-	')
+	")
 	function getBytesFromSocket(inBuffer: Bytes): Int {
 		return 0;
 	}

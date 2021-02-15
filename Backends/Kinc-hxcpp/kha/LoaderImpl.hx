@@ -4,11 +4,11 @@ import kha.arrays.Float32Array;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/System.h>
 #include <khalib/loader.h>
-')
+")
 class BlobCallback {
 	public var success: Blob->Void;
 	public var error: AssetError->Void;
@@ -48,7 +48,7 @@ class LoaderImpl {
 		soundCallbacks[loadSound(desc.files[0])] = new SoundCallback(done, failed);
 	}
 
-	@:functionCode('return kha_loader_load_sound(filename);')
+	@:functionCode("return kha_loader_load_sound(filename);")
 	static function loadSound(filename: String): cpp.UInt64 {
 		return 0;
 	}
@@ -63,7 +63,7 @@ class LoaderImpl {
 		imageCallbacks[loadImage(desc.files[0], readable)] = new ImageCallback(done, failed);
 	}
 
-	@:functionCode('return kha_loader_load_image(filename, readable);')
+	@:functionCode("return kha_loader_load_image(filename, readable);")
 	static function loadImage(filename: String, readable: Bool): cpp.UInt64 {
 		return 0;
 	}
@@ -76,7 +76,7 @@ class LoaderImpl {
 		blobCallbacks[loadBlob(desc.files[0])] = new BlobCallback(done, failed);
 	}
 
-	@:functionCode('return kha_loader_load_blob(filename);')
+	@:functionCode("return kha_loader_load_blob(filename);")
 	static function loadBlob(filename: String): cpp.UInt64 {
 		return 0;
 	}
@@ -91,7 +91,7 @@ class LoaderImpl {
 		done(new kha.kore.Video(desc.files[0]));
 	}
 
-	@:functionCode('return ::String(Kore::System::videoFormats()[0]);')
+	@:functionCode("return ::String(Kore::System::videoFormats()[0]);")
 	static function videoFormat(): String {
 		return "";
 	}
@@ -100,13 +100,13 @@ class LoaderImpl {
 		return [videoFormat()];
 	}
 
-	@:functionCode('Kore::System::showKeyboard();')
+	@:functionCode("Kore::System::showKeyboard();")
 	public static function showKeyboard(): Void {}
 
-	@:functionCode('Kore::System::hideKeyboard();')
+	@:functionCode("Kore::System::hideKeyboard();")
 	public static function hideKeyboard(): Void {}
 
-	@:functionCode('Kore::System::loadURL(url);')
+	@:functionCode("Kore::System::loadURL(url);")
 	public static function loadURL(url: String): Void {}
 
 	@:keep static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
@@ -157,7 +157,7 @@ class LoaderImpl {
 		imageCallbacks[index].error({url: filename});
 	}
 
-	@:functionCode('
+	@:functionCode("
 		kha_file_reference_t file = kha_loader_get_file();
 		while (file.index != 0) {
 			switch (file.type) {
@@ -210,6 +210,6 @@ class LoaderImpl {
 
 			file = kha_loader_get_file();
 		}
-	')
+	")
 	public static function tick(): Void {}
 }

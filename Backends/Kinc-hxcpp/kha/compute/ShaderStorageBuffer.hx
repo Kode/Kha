@@ -2,10 +2,10 @@ package kha.compute;
 
 import kha.graphics4.VertexData;
 
-@:headerCode('
+@:headerCode("
 #include <kinc/pch.h>
 #include <kinc/compute/compute.h>
-')
+")
 @:headerClassCode("
 #ifdef KORE_OPENGL
 Kore::ShaderStorageBuffer* buffer;

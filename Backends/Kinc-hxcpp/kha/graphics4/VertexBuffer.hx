@@ -6,11 +6,11 @@ import kha.graphics4.VertexData;
 import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
 
-@:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
-')
-@:headerClassCode("Kore::Graphics4::VertexBuffer* buffer;")
+@:headerCode("
+#include <kinc/pch.h>
+#include <kinc/graphics4/vertexbuffer.h>
+")
+@:headerClassCode("kinc_g4_vertex_buffer_t buffer;")
 class VertexBuffer {
 	var data: Float32Array;
 	@:keep var dataInt16: Int16Array;
@@ -21,47 +21,48 @@ class VertexBuffer {
 	}
 
 	public function delete(): Void {
-		untyped __cpp__('delete buffer; buffer = nullptr;');
+		untyped __cpp__("kinc_g4_vertex_buffer_destroy(&buffer);");
 	}
 
 	@:functionCode("
-		Kore::Graphics4::VertexStructure structure2;
+		kinc_g4_vertex_structure_t structure2;
+		kinc_g4_vertex_structure_init(&structure2);
 		for (int i = 0; i < structure->size(); ++i) {
-			Kore::Graphics4::VertexData data;
+			kinc_g4_vertex_data_t data;
 			switch (structure->get(i)->data) {
 			case 0:
-				data = Kore::Graphics4::Float1VertexData;
+				data = KINC_G4_VERTEX_DATA_FLOAT1;
 				break;
 			case 1:
-				data = Kore::Graphics4::Float2VertexData;
+				data = KINC_G4_VERTEX_DATA_FLOAT2;
 				break;
 			case 2:
-				data = Kore::Graphics4::Float3VertexData;
+				data = KINC_G4_VERTEX_DATA_FLOAT3;
 				break;
 			case 3:
-				data = Kore::Graphics4::Float4VertexData;
+				data = KINC_G4_VERTEX_DATA_FLOAT4;
 				break;
 			case 4:
-				data = Kore::Graphics4::Float4x4VertexData;
+				data = KINC_G4_VERTEX_DATA_FLOAT4X4;
 				break;
 			case 5:
-				data = Kore::Graphics4::Short2NormVertexData;
+				data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
 				break;
 			case 6:
-				data = Kore::Graphics4::Short4NormVertexData;
+				data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
 				break;
 			}
-			structure2.add(structure->get(i)->name, data);
+			kinc_g4_vertex_structure_add(&structure2, structure->get(i)->name, data);
 		}
-		buffer = new Kore::Graphics4::VertexBuffer(vertexCount, structure2, (Kore::Graphics4::Usage)usage, instanceDataStepRate);
+		kinc_g4_vertex_buffer_init(&buffer, vertexCount, &structure2, (kinc_g4_usage_t)usage, instanceDataStepRate);
 	")
 	function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
-	@:functionCode('
-		data->self.data = buffer->lock(start, count);
-		data->self.myLength = count * buffer->stride() / 4;
+	@:functionCode("
+		data->self.data = kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		data->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 4;
 		return data;
-	')
+	")
 	function lockPrivate(start: Int, count: Int): Float32Array {
 		return data;
 	}
@@ -77,11 +78,11 @@ class VertexBuffer {
 		return lockPrivate(start, count);
 	}
 
-	@:functionCode('
-		dataInt16->self.data = (short*)buffer->lock(start, count);
-		dataInt16->self.myLength = count * buffer->stride() / 2;
+	@:functionCode("
+		dataInt16->self.data = (short*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		dataInt16->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 2;
 		return dataInt16;
-	')
+	")
 	function lockInt16Private(start: Int, count: Int): Int16Array {
 		return dataInt16;
 	}
@@ -97,19 +98,19 @@ class VertexBuffer {
 		return lockInt16Private(start, count);
 	}
 
-	@:functionCode('buffer->unlock(count); data->self.data = nullptr; if (!hx::IsNull(dataInt16)) dataInt16->self.data = nullptr;')
+	@:functionCode("kinc_g4_vertex_buffer_unlock(&buffer, count); data->self.data = nullptr; if (!hx::IsNull(dataInt16)) dataInt16->self.data = nullptr;")
 	function unlockPrivate(count: Int): Void {}
 
 	public function unlock(?count: Int): Void {
 		unlockPrivate(count == null ? lastLockCount : count);
 	}
 
-	@:functionCode("return buffer->stride();")
+	@:functionCode("return kinc_g4_vertex_buffer_stride(&buffer);")
 	public function stride(): Int {
 		return 0;
 	}
 
-	@:functionCode("return buffer->count();")
+	@:functionCode("return kinc_g4_vertex_buffer_count(&buffer);")
 	public function count(): Int {
 		return 0;
 	}

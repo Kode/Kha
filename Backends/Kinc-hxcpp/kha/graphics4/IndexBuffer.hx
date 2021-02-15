@@ -2,11 +2,11 @@ package kha.graphics4;
 
 import kha.arrays.Uint32Array;
 
-@:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
-')
-@:headerClassCode("Kore::Graphics4::IndexBuffer* buffer;")
+@:headerCode("
+#include <kinc/pch.h>
+#include <kinc/graphics4/indexbuffer.h>
+")
+@:headerClassCode("kinc_g4_index_buffer_t buffer;")
 class IndexBuffer {
 	var data: Uint32Array;
 	var myCount: Int;
@@ -14,18 +14,18 @@ class IndexBuffer {
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
 		data = new Uint32Array();
-		untyped __cpp__('buffer = new Kore::Graphics4::IndexBuffer(indexCount);');
+		untyped __cpp__("kinc_g4_index_buffer_init(&buffer, indexCount, KINC_G4_INDEX_BUFFER_FORMAT_32BIT);");
 	}
 
 	public function delete(): Void {
-		untyped __cpp__('delete buffer; buffer = nullptr;');
+		untyped __cpp__("kinc_g4_index_buffer_destroy(&buffer);");
 	}
 
-	@:functionCode('
-		data->self.data = (unsigned int*)buffer->lock() + start;
+	@:functionCode("
+		data->self.data = (unsigned int*)kinc_g4_index_buffer_lock(&buffer) + start;
 		data->self.myLength = count;
 		return data;
-	')
+	")
 	function lockPrivate(start: Int, count: Int): Uint32Array {
 		return data;
 	}
@@ -38,7 +38,7 @@ class IndexBuffer {
 		return lockPrivate(start, count);
 	}
 
-	@:functionCode('buffer->unlock(); data->self.data = nullptr;')
+	@:functionCode("kinc_g4_index_buffer_unlock(&buffer); data->self.data = nullptr;")
 	public function unlockPrivate(): Void {}
 
 	public function unlock(?count: Int): Void {

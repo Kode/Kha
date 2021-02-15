@@ -4,11 +4,11 @@ import haxe.io.Bytes;
 
 using StringTools;
 
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/IO/FileWriter.h>
-')
+")
 @:ifFeature("kha.Storage.*")
 class KoreStorageFile extends StorageFile {
 	var name: String;
@@ -17,7 +17,7 @@ class KoreStorageFile extends StorageFile {
 		this.name = name;
 	}
 
-	@:functionCode('
+	@:functionCode("
 		Kore::FileReader reader;
 		if (!reader.open(name, Kore::FileReader::Save)) return null();
 		 ::kha::internal::BytesBlob blob = createBlob(reader.size());
@@ -25,16 +25,16 @@ class KoreStorageFile extends StorageFile {
 			blob->bytes->b->Pointer()[i] = reader.readU8();
 		}
 		return blob;
-	')
+	")
 	override public function read(): Blob {
 		return null;
 	}
 
-	@:functionCode('
+	@:functionCode("
 		Kore::FileWriter writer;
 		if (!writer.open(name)) return;
 		writer.write(data->bytes->b->Pointer(), data->get_length());
-	')
+	")
 	function writeInternal(data: Blob): Void {}
 
 	override public function write(data: Blob): Void {

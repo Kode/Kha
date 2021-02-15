@@ -6,133 +6,135 @@ import kha.graphics4.VertexElement;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
-@:headerCode('
-#include <Kore/pch.h>
-#include <Kore/Graphics4/Graphics.h>
-#include <Kore/Graphics4/PipelineState.h>
-')
-@:cppFileCode('
-static Kore::Graphics4::ZCompareMode convertCompareMode(int mode) {
+@:headerCode("
+#include <kinc/pch.h>
+#include <kinc/graphics4/graphics.h>
+#include <kinc/graphics4/pipeline.h>
+#include <kinc/graphics4/vertexstructure.h>
+")
+@:cppFileCode("
+static kinc_g4_compare_mode_t convertCompareMode(int mode) {
 	switch (mode) {
 	case 0:
-		return Kore::Graphics4::ZCompareAlways;
+		return KINC_G4_COMPARE_ALWAYS;
 	case 1:
-		return Kore::Graphics4::ZCompareNever;
+		return KINC_G4_COMPARE_NEVER;
 	case 2:
-		return Kore::Graphics4::ZCompareEqual;
+		return KINC_G4_COMPARE_EQUAL;
 	case 3:
-		return Kore::Graphics4::ZCompareNotEqual;
+		return KINC_G4_COMPARE_NOT_EQUAL;
 	case 4:
-		return Kore::Graphics4::ZCompareLess;
+		return KINC_G4_COMPARE_LESS;
 	case 5:
-		return Kore::Graphics4::ZCompareLessEqual;
+		return KINC_G4_COMPARE_LESS_EQUAL;
 	case 6:
-		return Kore::Graphics4::ZCompareGreater;
+		return KINC_G4_COMPARE_GREATER;
 	case 7:
 	default:
-		return Kore::Graphics4::ZCompareGreaterEqual;
+		return KINC_G4_COMPARE_GREATER_EQUAL;
 	}
 }
 
-static Kore::Graphics4::StencilAction convertStencilAction(int action) {
+static kinc_g4_stencil_action_t convertStencilAction(int action) {
 	switch (action) {
 	case 0:
-		return Kore::Graphics4::Keep;
+		return KINC_G4_STENCIL_KEEP;
 	case 1:
-		return Kore::Graphics4::Zero;
+		return KINC_G4_STENCIL_ZERO;
 	case 2:
-		return Kore::Graphics4::Replace;
+		return KINC_G4_STENCIL_REPLACE;
 	case 3:
-		return Kore::Graphics4::Increment;
+		return KINC_G4_STENCIL_INCREMENT;
 	case 4:
-		return Kore::Graphics4::IncrementWrap;
+		return KINC_G4_STENCIL_INCREMENT_WRAP;
 	case 5:
-		return Kore::Graphics4::Decrement;
+		return KINC_G4_STENCIL_DECREMENT;
 	case 6:
-		return Kore::Graphics4::DecrementWrap;
+		return KINC_G4_STENCIL_DECREMENT_WRAP;
 	case 7:
 	default:
-		return Kore::Graphics4::Invert;
+		return KINC_G4_STENCIL_INVERT;
 	}
 }
 
-static Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
+static kinc_g4_render_target_format_t convertColorAttachment(int format) {
 	switch (format) {
 	case 0:
-		return Kore::Graphics4::Target32Bit;
+		return KINC_G4_RENDER_TARGET_FORMAT_32BIT;
 	case 1:
-		return Kore::Graphics4::Target8BitRed;
+		return KINC_G4_RENDER_TARGET_FORMAT_8BIT_RED;
 	case 2:
-		return Kore::Graphics4::Target128BitFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_128BIT_FLOAT;
 	case 3:
-		return Kore::Graphics4::Target16BitDepth;
+		return KINC_G4_RENDER_TARGET_FORMAT_16BIT_DEPTH;
 	case 4:
-		return Kore::Graphics4::Target64BitFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_64BIT_FLOAT;
 	case 5:
-		return Kore::Graphics4::Target32BitRedFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_32BIT_RED_FLOAT;
 	case 6:
 	default:
-		return Kore::Graphics4::Target16BitRedFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_16BIT_RED_FLOAT;
 	}
 }
-')
-@:headerClassCode("Kore::Graphics4::PipelineState* pipeline;")
+")
+@:headerClassCode("kinc_g4_pipeline_t pipeline;")
 @:keep
 class PipelineState extends PipelineStateBase {
 	public function new() {
 		super();
-		untyped __cpp__('pipeline = new Kore::Graphics4::PipelineState;');
+		untyped __cpp__("kinc_g4_pipeline_init(&pipeline);");
 	}
 
 	public function delete(): Void {
-		untyped __cpp__('delete pipeline; pipeline = nullptr;');
+		untyped __cpp__("kinc_g4_pipeline_destroy(&pipeline);");
 	}
 
-	@:functionCode('
-		pipeline->vertexShader = vertexShader->shader;
-		pipeline->fragmentShader = fragmentShader->shader;
-		if (geometryShader != null()) pipeline->geometryShader = geometryShader->shader;
-		if (tessellationControlShader != null()) pipeline->tessellationControlShader = tessellationControlShader->shader;
-		if (tessellationEvaluationShader != null()) pipeline->tessellationEvaluationShader = tessellationEvaluationShader->shader;
-		Kore::Graphics4::VertexStructure s0, s1, s2, s3;
-		Kore::Graphics4::VertexStructure* structures2[4] = { &s0, &s1, &s2, &s3 };
+	@:functionCode("
+		pipeline.vertex_shader = &vertexShader->shader;
+		pipeline.fragment_shader = &fragmentShader->shader;
+		if (geometryShader != null()) pipeline.geometry_shader = &geometryShader->shader;
+		if (tessellationControlShader != null()) pipeline.tessellation_control_shader = &tessellationControlShader->shader;
+		if (tessellationEvaluationShader != null()) pipeline.tessellation_evaluation_shader = &tessellationEvaluationShader->shader;
+		kinc_g4_vertex_structure_t s0, s1, s2, s3;
+		kinc_g4_vertex_structure_t* structures2[4] = { &s0, &s1, &s2, &s3 };
 		::kha::graphics4::VertexStructure* structures[4] = { &structure0, &structure1, &structure2, &structure3 };
 		for (int i1 = 0; i1 < size; ++i1) {
+			kinc_g4_vertex_structure_init(structures2[i1]);
 			structures2[i1]->instanced = (*structures[i1])->instanced;
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
-				Kore::Graphics4::VertexData data;
+				kinc_g4_vertex_data_t data;
 				switch ((*structures[i1])->get(i2)->data) {
 				case 0:
-					data = Kore::Graphics4::Float1VertexData;
+					data = KINC_G4_VERTEX_DATA_FLOAT1;
 					break;
 				case 1:
-					data = Kore::Graphics4::Float2VertexData;
+					data = KINC_G4_VERTEX_DATA_FLOAT2;
 					break;
 				case 2:
-					data = Kore::Graphics4::Float3VertexData;
+					data = KINC_G4_VERTEX_DATA_FLOAT3;
 					break;
 				case 3:
-					data = Kore::Graphics4::Float4VertexData;
+					data = KINC_G4_VERTEX_DATA_FLOAT4;
 					break;
 				case 4:
-					data = Kore::Graphics4::Float4x4VertexData;
+					data = KINC_G4_VERTEX_DATA_FLOAT4X4;
 					break;
 				case 5:
-					data = Kore::Graphics4::Short2NormVertexData;
+					data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
 					break;
 				case 6:
-					data = Kore::Graphics4::Short4NormVertexData;
+					data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
 					break;
 				}
-				pipeline->inputLayout[i1] = structures2[i1];
-				pipeline->inputLayout[i1]->add((*structures[i1])->get(i2)->name, data);
+				pipeline.input_layout[i1] = structures2[i1];
+				kinc_g4_vertex_structure_add(pipeline.input_layout[i1], (*structures[i1])->get(i2)->name, data);
 			}
 		}
 		for (int i = size; i < 16; ++i) {
-			pipeline->inputLayout[i] = nullptr;
+			pipeline.input_layout[i] = nullptr;
 		}
-		pipeline->compile();
-	')
+		kinc_g4_pipeline_compile(&pipeline);
+	")
 	function linkWithStructures2(structure0: VertexStructure, structure1: VertexStructure, structure2: VertexStructure, structure3: VertexStructure,
 		size: Int): Void {}
 
@@ -176,7 +178,7 @@ class PipelineState extends PipelineStateBase {
 		return location;
 	}
 
-	@:functionCode('location->location = pipeline->getConstantLocation(name.c_str()).kincConstant;')
+	@:functionCode("location->location = kinc_g4_pipeline_get_constant_location(&pipeline, name.c_str());")
 	function initConstantLocation(location: kha.kore.graphics4.ConstantLocation, name: String): Void {}
 
 	public function getTextureUnit(name: String): kha.graphics4.TextureUnit {
@@ -185,7 +187,7 @@ class PipelineState extends PipelineStateBase {
 		return unit;
 	}
 
-	@:functionCode('unit->unit = pipeline->getTextureUnit(name.c_str()).kincUnit;')
+	@:functionCode("unit->unit = kinc_g4_pipeline_get_texture_unit(&pipeline, name.c_str());")
 	function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {}
 
 	static function getBlendFunc(factor: BlendingFactor): Int {
@@ -215,57 +217,57 @@ class PipelineState extends PipelineStateBase {
 		}
 	}
 
-	@:functionCode('
+	@:functionCode("
 		switch (cullMode) {
 		case 0:
-			pipeline->cullMode = Kore::Graphics4::Clockwise;
+			pipeline.cull_mode = KINC_G4_CULL_CLOCKWISE;
 			break;
 		case 1:
-			pipeline->cullMode = Kore::Graphics4::CounterClockwise;
+			pipeline.cull_mode = KINC_G4_CULL_COUNTER_CLOCKWISE;
 			break;
 		case 2:
-			pipeline->cullMode = Kore::Graphics4::NoCulling;
+			pipeline.cull_mode = KINC_G4_CULL_NOTHING;
 			break;
 		}
 
-		pipeline->depthMode = convertCompareMode(depthMode);
-		pipeline->depthWrite = depthWrite;
+		pipeline.depth_mode = convertCompareMode(depthMode);
+		pipeline.depth_write = depthWrite;
 
-		pipeline->stencilMode = convertCompareMode(stencilMode);
-		pipeline->stencilBothPass = convertStencilAction(stencilBothPass);
-		pipeline->stencilDepthFail = convertStencilAction(stencilDepthFail);
-		pipeline->stencilFail = convertStencilAction(stencilFail);
-		pipeline->stencilReferenceValue = stencilReferenceValue;
-		pipeline->stencilReadMask = stencilReadMask;
-		pipeline->stencilWriteMask = stencilWriteMask;
+		pipeline.stencil_mode = convertCompareMode(stencilMode);
+		pipeline.stencil_both_pass = convertStencilAction(stencilBothPass);
+		pipeline.stencil_depth_fail = convertStencilAction(stencilDepthFail);
+		pipeline.stencil_fail = convertStencilAction(stencilFail);
+		pipeline.stencil_reference_value = stencilReferenceValue;
+		pipeline.stencil_read_mask = stencilReadMask;
+		pipeline.stencil_write_mask = stencilWriteMask;
 
-		pipeline->blendSource = (Kore::Graphics4::BlendingOperation)blendSource;
-		pipeline->blendDestination = (Kore::Graphics4::BlendingOperation)blendDestination;
-		pipeline->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
-		pipeline->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
+		pipeline.blend_source = (kinc_g4_blending_operation_t)blendSource;
+		pipeline.blend_destination = (kinc_g4_blending_operation_t)blendDestination;
+		pipeline.alpha_blend_source = (kinc_g4_blending_operation_t)alphaBlendSource;
+		pipeline.alpha_blend_destination = (kinc_g4_blending_operation_t)alphaBlendDestination;
 
 		for (int i = 0; i < 8; ++i) {
-			pipeline->colorWriteMaskRed[i] = colorWriteMasksRed[i];
-			pipeline->colorWriteMaskGreen[i] = colorWriteMasksGreen[i];
-			pipeline->colorWriteMaskBlue[i] = colorWriteMasksBlue[i];
-			pipeline->colorWriteMaskAlpha[i] = colorWriteMasksAlpha[i];
+			pipeline.color_write_mask_red[i] = colorWriteMasksRed[i];
+			pipeline.color_write_mask_green[i] = colorWriteMasksGreen[i];
+			pipeline.color_write_mask_blue[i] = colorWriteMasksBlue[i];
+			pipeline.color_write_mask_alpha[i] = colorWriteMasksAlpha[i];
 		}
 
-		pipeline->colorAttachmentCount = colorAttachmentCount;
+		pipeline.color_attachment_count = colorAttachmentCount;
 		for (int i = 0; i < 8; ++i) {
-			pipeline->colorAttachment[i] = convertColorAttachment(colorAttachments[i]);
+			pipeline.color_attachment[i] = convertColorAttachment(colorAttachments[i]);
 		}
 
-		pipeline->depthAttachmentBits = depthAttachmentBits;
-		pipeline->stencilAttachmentBits = stencilAttachmentBits;
+		pipeline.depth_attachment_bits = depthAttachmentBits;
+		pipeline.stencil_attachment_bits = stencilAttachmentBits;
 
-		pipeline->conservativeRasterization = conservativeRasterization;
-	')
+		pipeline.conservative_rasterization = conservativeRasterization;
+	")
 	function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
 		stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int,
 		stencilAttachmentBits: Int): Void {}
 
-	@:functionCode('Kore::Graphics4::setPipeline(pipeline);')
+	@:functionCode("kinc_g4_set_pipeline(&pipeline);")
 	function set2(): Void {}
 
 	public function set(): Void {

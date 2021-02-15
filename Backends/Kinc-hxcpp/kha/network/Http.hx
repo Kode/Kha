@@ -2,11 +2,11 @@ package kha.network;
 
 import haxe.io.Bytes;
 
-@:headerCode('
+@:headerCode("
 #include <Kore/pch.h>
 #include <Kore/Network/Http.h>
-')
-@:headerClassCode('
+")
+@:headerClassCode("
 	static void internalCallback(int error, int response, const char* body, void* data) {
 		int callbackindex = (int)(Kore::spint)data;
 		if (error == 0) {
@@ -21,13 +21,11 @@ import haxe.io.Bytes;
 			internalCallback2(error, response, null(), callbackindex);
 		}
 	}
-')
+")
 class Http {
 	static var callbacks: Array<Int->Int->String->Void>;
 
-	@:functionCode('
-		Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method, header, internalCallback, (void*)callbackindex);
-	')
+	@:functionCode("Kore::httpRequest(url, path, data, port, secure, (Kore::HttpMethod)method, header, internalCallback, (void*)callbackindex);")
 	static function request2(url: String, path: String, data: String, port: Int, secure: Bool, method: Int, header: String, callbackindex: Int): Void {}
 
 	static function internalCallback2(error: Int, response: Int, body: String, callbackindex: Int): Void {
