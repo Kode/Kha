@@ -28,24 +28,22 @@ import kha.vr.VrInterfaceEmulated;
 #end
 #end
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/System.h>
-#include <Kore/Input/Gamepad.h>
-#include <Kore/Input/Mouse.h>
-#include <Kore/Input/Pen.h>
-#include <Kore/Display.h>
-#include <Kore/Window.h>
-
+#include <kinc/pch.h>
 #include <kinc/system.h>
+#include <kinc/input/gamepad.h>
+#include <kinc/input/mouse.h>
+#include <kinc/input/pen.h>
+#include <kinc/display.h>
+#include <kinc/window.h>
 
-Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win);
-Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame);
+kinc_window_options_t convertWindowOptions(::kha::WindowOptions win);
+kinc_framebuffer_options_t convertFramebufferOptions(::kha::FramebufferOptions frame);
 
-void init_kore(const char* name, int width, int height, Kore::WindowOptions* win, Kore::FramebufferOptions* frame);
-void post_kore_init();
-void run_kore();
-const char* getGamepadId(int index);
-const char* getGamepadVendor(int index);
+void init_kinc(const char *name, int width, int height, kinc_window_options_t *win, kinc_framebuffer_options_t *frame);
+void post_kinc_init();
+void run_kinc();
+const char *getGamepadId(int index);
+const char *getGamepadVendor(int index);
 ")
 @:keep
 class SystemImpl {
@@ -69,21 +67,21 @@ class SystemImpl {
 		return keyboard;
 	}
 
-	@:functionCode("return Kore::System::time();")
+	@:functionCode("return kinc_time();")
 	public static function getTime(): Float {
 		return 0;
 	}
 
 	public static function windowWidth(windowId: Int): Int {
-		return untyped __cpp__("Kore::System::windowWidth(windowId)");
+		return untyped __cpp__("kinc_window_width(windowId)");
 	}
 
 	public static function windowHeight(windowId: Int): Int {
-		return untyped __cpp__("Kore::System::windowHeight(windowId)");
+		return untyped __cpp__("kinc_window_height(windowId)");
 	}
 
 	public static function screenDpi(): Int {
-		return untyped __cpp__("Kore::Display::primary()->pixelsPerInch()");
+		return untyped __cpp__("kinc_display_current_mode(kinc_primary_display()).pixels_per_inch");
 	}
 
 	public static function getVsync(): Bool {
@@ -98,22 +96,22 @@ class SystemImpl {
 		return ScreenRotation.RotationNone;
 	}
 
-	@:functionCode("return ::String(Kore::System::systemId());")
+	@:functionCode("return ::String(kinc_system_id());")
 	public static function getSystemId(): String {
 		return "";
 	}
 
 	public static function vibrate(ms: Int): Void {
-		untyped __cpp__("Kore::System::vibrate(ms)");
+		untyped __cpp__("kinc_vibrate(ms)");
 	}
 
-	@:functionCode("return ::String(Kore::System::language());")
+	@:functionCode("return ::String(kinc_language());")
 	public static function getLanguage(): String {
 		return "en";
 	}
 
 	public static function requestShutdown(): Bool {
-		untyped __cpp__("Kore::System::stop()");
+		untyped __cpp__("kinc_stop()");
 		return true;
 	}
 
@@ -126,12 +124,12 @@ class SystemImpl {
 	static var mouseLockListeners: Array<Void->Void>;
 
 	public static function init(options: SystemOptions, callback: Window->Void): Void {
-		initKore(options.title, options.width, options.height, options.window, options.framebuffer);
+		initKinc(options.title, options.width, options.height, options.window, options.framebuffer);
 		Window._init();
 
 		kha.Worker._mainThread = sys.thread.Thread.current();
 
-		untyped __cpp__("post_kore_init()");
+		untyped __cpp__("post_kinc_init()");
 
 		Shaders.init();
 
@@ -174,7 +172,7 @@ class SystemImpl {
 		loadFinished();
 		callback(Window.get(0));
 
-		untyped __cpp__("run_kore()");
+		untyped __cpp__("run_kinc()");
 	}
 
 	static function loadFinished() {
@@ -215,7 +213,7 @@ class SystemImpl {
 
 	public static function lockMouse(windowId: Int = 0): Void {
 		if (!isMouseLocked()) {
-			untyped __cpp__("Kore::Mouse::the()->lock(windowId);");
+			untyped __cpp__("kinc_mouse_lock(windowId);");
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -224,7 +222,7 @@ class SystemImpl {
 
 	public static function unlockMouse(windowId: Int = 0): Void {
 		if (isMouseLocked()) {
-			untyped __cpp__("Kore::Mouse::the()->unlock(windowId);");
+			untyped __cpp__("kinc_mouse_unlock(windowId);");
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -232,11 +230,11 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(windowId: Int = 0): Bool {
-		return untyped __cpp__("Kore::Mouse::the()->canLock(windowId)");
+		return untyped __cpp__("kinc_mouse_can_lock(windowId)");
 	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
-		return untyped __cpp__("Kore::Mouse::the()->isLocked(windowId)");
+		return untyped __cpp__("kinc_mouse_is_locked(windowId)");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
@@ -252,15 +250,15 @@ class SystemImpl {
 	}
 
 	public static function hideSystemCursor(): Void {
-		untyped __cpp__("Kore::Mouse::the()->show(false);");
+		untyped __cpp__("kinc_mouse_hide();");
 	}
 
 	public static function showSystemCursor(): Void {
-		untyped __cpp__("Kore::Mouse::the()->show(true);");
+		untyped __cpp__("kinc_mouse_show();");
 	}
 
 	public static function setSystemCursor(cursor: Int): Void {
-		untyped __cpp__("Kore::Mouse::the()->setCursor(cursor)");
+		untyped __cpp__("kinc_mouse_set_cursor(cursor)");
 	}
 
 	public static function frame() {
@@ -303,7 +301,7 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode("return Kore::Gamepad::get(i)->connected();")
+	@:functionCode("return kinc_gamepad_connected(i);")
 	static function checkGamepadConnected(i: Int): Bool {
 		return true;
 	}
@@ -363,36 +361,12 @@ class SystemImpl {
 		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
-	public static function gamepad1Axis(axis: Int, value: Float): Void {
-		gamepads[0].sendAxisEvent(axis, value);
+	public static function gamepadAxis(gamepad: Int, axis: Int, value: Float): Void {
+		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
 
-	public static function gamepad1Button(button: Int, value: Float): Void {
-		gamepads[0].sendButtonEvent(button, value);
-	}
-
-	public static function gamepad2Axis(axis: Int, value: Float): Void {
-		gamepads[1].sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad2Button(button: Int, value: Float): Void {
-		gamepads[1].sendButtonEvent(button, value);
-	}
-
-	public static function gamepad3Axis(axis: Int, value: Float): Void {
-		gamepads[2].sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad3Button(button: Int, value: Float): Void {
-		gamepads[2].sendButtonEvent(button, value);
-	}
-
-	public static function gamepad4Axis(axis: Int, value: Float): Void {
-		gamepads[3].sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad4Button(button: Int, value: Float): Void {
-		gamepads[3].sendButtonEvent(button, value);
+	public static function gamepadButton(gamepad: Int, button: Int, value: Float): Void {
+		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
 	public static function touchStart(index: Int, x: Int, y: Int): Void {
@@ -455,13 +429,13 @@ class SystemImpl {
 		}
 	}
 
-	@:functionCode("Kore::System::copyToClipboard(text.c_str());")
+	@:functionCode("kinc_copy_to_clipboard(text.c_str());")
 	public static function copyToClipboard(text: String) {}
 
-	@:functionCode("Kore::System::login();")
+	@:functionCode("kinc_login();")
 	public static function login(): Void {}
 
-	@:functionCode("return Kore::System::waitingForLogin();")
+	@:functionCode("return kinc_waiting_for_login();")
 	public static function waitingForLogin(): Bool {
 		return false;
 	}
@@ -485,18 +459,18 @@ class SystemImpl {
 	}
 
 	@:functionCode("
-		Kore::WindowOptions window = convertWindowOptions(win);
-		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
-		init_kore(name, width, height, &window, &framebuffer);
+		kinc_window_options_t window = convertWindowOptions(win);
+		kinc_framebuffer_options_t framebuffer = convertFramebufferOptions(frame);
+		init_kinc(name, width, height, &window, &framebuffer);
 	")
-	static function initKore(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {}
+	static function initKinc(name: String, width: Int, height: Int, win: WindowOptions, frame: FramebufferOptions): Void {}
 
 	public static function setKeepScreenOn(on: Bool): Void {
-		untyped __cpp__("Kore::System::setKeepScreenOn(on)");
+		untyped __cpp__("kinc_set_keep_screen_on(on)");
 	}
 
 	public static function loadUrl(url: String): Void {
-		untyped __cpp__("Kore::System::loadURL(url)");
+		untyped __cpp__("kinc_load_url(url)");
 	}
 
 	@:functionCode("return ::String(::getGamepadId(index));")
@@ -510,18 +484,18 @@ class SystemImpl {
 	}
 
 	public static function safeZone(): Float {
-		return untyped __cpp__("Kore::System::safeZone()");
+		return untyped __cpp__("kinc_safe_zone()");
 	}
 
 	public static function automaticSafeZone(): Bool {
-		return untyped __cpp__("Kore::System::automaticSafeZone()");
+		return untyped __cpp__("kinc_automatic_safe_zone()");
 	}
 
 	public static function setSafeZone(value: Float): Void {
-		untyped __cpp__("Kore::System::setSafeZone(value)");
+		untyped __cpp__("kinc_set_safe_zone(value)");
 	}
 
 	public static function unlockAchievement(id: Int): Void {
-		untyped __cpp__("Kore::System::unlockAchievement(id)");
+		untyped __cpp__("kinc_unlock_achievement(id)");
 	}
 }

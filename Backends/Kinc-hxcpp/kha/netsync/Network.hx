@@ -3,10 +3,10 @@ package kha.netsync;
 import haxe.io.Bytes;
 
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/Network/Socket.h>
+#include <kinc/pch.h>
+#include <kinc/network/socket.h>
 ")
-@:headerClassCode("Kore::Socket *socket;")
+@:headerClassCode("kinc_socket_t socket;")
 class Network {
 	var url: String;
 	var port: Int;
@@ -26,8 +26,8 @@ class Network {
 	}
 
 	@:functionCode("
-		socket = new Kore::Socket();
-		socket->open(port);
+		kinc_socket_init(&socket);
+		kinc_socket_open(&socket, port);
 	")
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
@@ -35,7 +35,7 @@ class Network {
 
 	@:functionCode("
 		// TODO: mandatory
-		socket->send(url, port, (const unsigned char*)bytes->b->getBase(), bytes->length);
+		kinc_socket_send_url(&socket, url, port, (const unsigned char*)bytes->b->getBase(), bytes->length);
 	")
 	public function send(bytes: Bytes, mandatory: Bool): Void {}
 
@@ -61,7 +61,7 @@ class Network {
 	@:functionCode("
 		unsigned int recAddr;
 		unsigned int recPort;
-		int size = socket->receive((unsigned char*)inBuffer->b->getBase(), inBuffer->length, recAddr, recPort);
+		int size = kinc_socket_receive(&socket, (unsigned char*)inBuffer->b->getBase(), inBuffer->length, &recAddr, &recPort);
 		if (size >= 0) {
 			return size;
 		}

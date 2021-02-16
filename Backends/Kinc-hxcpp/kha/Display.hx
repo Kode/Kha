@@ -1,8 +1,8 @@
 package kha;
 
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/Display.h>
+#include <kinc/pch.h>
+#include <kinc/display.h>
 ")
 class Display {
 	var num: Int;
@@ -13,12 +13,12 @@ class Display {
 		this.num = num;
 	}
 
-	@:functionCode("return Kore::Display::count();")
+	@:functionCode("return kinc_count_displays();")
 	static function count(): Int {
 		return 0;
 	}
 
-	@:functionCode("Kore::Display::init();")
+	@:functionCode("kinc_display_init();")
 	static function initKoreDisplay(): Void {}
 
 	public static function init() {
@@ -31,12 +31,7 @@ class Display {
 		}
 	}
 
-	@:functionCode("
-		for (int i = 0; i < Kore::Display::count(); ++i) {
-			if (Kore::Display::get(i) == Kore::Display::primary()) return i;
-		}
-		return 0;
-	")
+	@:functionCode("return kinc_primary_display();")
 	static function primaryId() {
 		return 0;
 	}
@@ -57,56 +52,56 @@ class Display {
 
 	public var available(get, never): Bool;
 
-	@:functionCode("return Kore::Display::get(num)->available();")
+	@:functionCode("return kinc_display_available(num);")
 	function get_available(): Bool {
 		return true;
 	}
 
 	public var name(get, never): String;
 
-	@:functionCode("return ::String(Kore::Display::get(num)->name());")
+	@:functionCode("return ::String(kinc_display_name(num));")
 	function get_name(): String {
 		return "Display";
 	}
 
 	public var x(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->x();")
+	@:functionCode("return kinc_display_current_mode(num).x;")
 	function get_x(): Int {
 		return 0;
 	}
 
 	public var y(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->y();")
+	@:functionCode("return kinc_display_current_mode(num).y;")
 	function get_y(): Int {
 		return 0;
 	}
 
 	public var width(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->width();")
+	@:functionCode("return kinc_display_current_mode(num).width;")
 	function get_width(): Int {
 		return 800;
 	}
 
 	public var height(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->height();")
+	@:functionCode("return kinc_display_current_mode(num).height;")
 	function get_height(): Int {
 		return 600;
 	}
 
 	public var frequency(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->frequency();")
+	@:functionCode("return kinc_display_current_mode(num).frequency;")
 	function get_frequency(): Int {
 		return 60;
 	}
 
 	public var pixelsPerInch(get, never): Int;
 
-	@:functionCode("return Kore::Display::get(num)->pixelsPerInch();")
+	@:functionCode("return kinc_display_current_mode(num).pixels_per_inch;")
 	function get_pixelsPerInch(): Int {
 		return 72;
 	}
@@ -115,28 +110,28 @@ class Display {
 
 	var allModes: Array<DisplayMode> = null;
 
-	@:functionCode("return Kore::Display::get(num)->countAvailableModes();")
+	@:functionCode("return kinc_display_count_available_modes(num);")
 	function modeCount(): Int {
 		return 0;
 	}
 
-	@:functionCode("return Kore::Display::get(num)->availableMode(num).width;")
-	function getModeWidth(num: Int) {
+	@:functionCode("return kinc_display_available_mode(num, modeIndex).width;")
+	function getModeWidth(modeIndex: Int) {
 		return 800;
 	}
 
-	@:functionCode("return Kore::Display::get(num)->availableMode(num).height;")
-	function getModeHeight(num: Int) {
+	@:functionCode("return kinc_display_available_mode(num, modeIndex).height;")
+	function getModeHeight(modeIndex: Int) {
 		return 600;
 	}
 
-	@:functionCode("return Kore::Display::get(num)->availableMode(num).frequency;")
-	function getModeFrequency(num: Int) {
+	@:functionCode("return kinc_display_available_mode(num, modeIndex).frequency;")
+	function getModeFrequency(modeIndex: Int) {
 		return 60;
 	}
 
-	@:functionCode("return Kore::Display::get(num)->availableMode(num).bitsPerPixel;")
-	function getModeBitsPerPixel(num: Int) {
+	@:functionCode("return kinc_display_available_mode(num, modeIndex).bits_per_pixel;")
+	function getModeBitsPerPixel(modeIndex: Int) {
 		return 32;
 	}
 

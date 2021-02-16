@@ -5,9 +5,9 @@ import haxe.io.Bytes;
 using StringTools;
 
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/IO/FileReader.h>
-#include <Kore/IO/FileWriter.h>
+#include <kinc/pch.h>
+#include <kinc/io/filereader.h>
+#include <kinc/io/filewriter.h>
 ")
 @:ifFeature("kha.Storage.*")
 class KoreStorageFile extends StorageFile {
@@ -18,12 +18,11 @@ class KoreStorageFile extends StorageFile {
 	}
 
 	@:functionCode("
-		Kore::FileReader reader;
-		if (!reader.open(name, Kore::FileReader::Save)) return null();
-		 ::kha::internal::BytesBlob blob = createBlob(reader.size());
-		for (int i = 0; i < reader.size(); ++i) {
-			blob->bytes->b->Pointer()[i] = reader.readU8();
-		}
+		kinc_file_reader_t file;
+		if (!kinc_file_reader_open(&file, name, KINC_FILE_TYPE_SAVE)) return null();
+		::kha::internal::BytesBlob blob = createBlob(kinc_file_reader_size(&file));
+		kinc_file_reader_read(&file, blob->bytes->b->Pointer(), kinc_file_reader_size(&file));
+		kinc_file_reader_close(&file);
 		return blob;
 	")
 	override public function read(): Blob {
@@ -31,9 +30,10 @@ class KoreStorageFile extends StorageFile {
 	}
 
 	@:functionCode("
-		Kore::FileWriter writer;
-		if (!writer.open(name)) return;
-		writer.write(data->bytes->b->Pointer(), data->get_length());
+		kinc_file_writer_t file;
+		if (!kinc_file_writer_open(&file, name)) return;
+		kinc_file_writer_write(&file, data->bytes->b->Pointer(), data->get_length());
+		kinc_file_writer_close(&file);
 	")
 	function writeInternal(data: Blob): Void {}
 

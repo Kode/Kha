@@ -5,8 +5,9 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/System.h>
+#include <kinc/pch.h>
+#include <kinc/input/keyboard.h>
+#include <kinc/system.h>
 #include <khalib/loader.h>
 ")
 class BlobCallback {
@@ -91,7 +92,7 @@ class LoaderImpl {
 		done(new kha.kore.Video(desc.files[0]));
 	}
 
-	@:functionCode("return ::String(Kore::System::videoFormats()[0]);")
+	@:functionCode("return ::String(kinc_video_formats()[0]);")
 	static function videoFormat(): String {
 		return "";
 	}
@@ -100,13 +101,13 @@ class LoaderImpl {
 		return [videoFormat()];
 	}
 
-	@:functionCode("Kore::System::showKeyboard();")
+	@:functionCode("kinc_keyboard_show();")
 	public static function showKeyboard(): Void {}
 
-	@:functionCode("Kore::System::hideKeyboard();")
+	@:functionCode("kinc_keyboard_hide();")
 	public static function hideKeyboard(): Void {}
 
-	@:functionCode("Kore::System::loadURL(url);")
+	@:functionCode("kinc_load_url(url);")
 	public static function loadURL(url: String): Void {}
 
 	@:keep static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {

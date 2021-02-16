@@ -1,8 +1,8 @@
 package kha;
 
 @:headerCode("
-#include <Kore/pch.h>
-#include <Kore/Window.h>
+#include <kinc/pch.h>
+#include <kinc/window.h>
 ")
 @:cppFileCode("
 namespace {
@@ -18,8 +18,8 @@ namespace {
 	}
 }
 
-Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
-	Kore::WindowOptions window;
+kinc_window_options_t convertWindowOptions(::kha::WindowOptions win) {
+	kinc_window_options_t window;
 	strcpy(windowTitles[titleIndex], win->title.c_str());
 	window.title = windowTitles[titleIndex];
 	++titleIndex;
@@ -27,21 +27,21 @@ Kore::WindowOptions convertWindowOptions(::kha::WindowOptions win) {
 	window.y = win->y;
 	window.width = win->width;
 	window.height = win->height;
-	window.displayIndex = win->display;
+	window.display_index = win->display;
 	window.visible = win->visible;
-	window.windowFeatures = win->windowFeatures;
-	window.mode = (Kore::WindowMode)win->mode;
+	window.window_features = win->windowFeatures;
+	window.mode = (kinc_window_mode_t)win->mode;
 	return window;
 }
 
-Kore::FramebufferOptions convertFramebufferOptions(::kha::FramebufferOptions frame) {
-	Kore::FramebufferOptions framebuffer;
+kinc_framebuffer_options_t convertFramebufferOptions(::kha::FramebufferOptions frame) {
+	kinc_framebuffer_options_t framebuffer;
 	framebuffer.frequency = frame->frequency;
-	framebuffer.verticalSync = frame->verticalSync;
-	framebuffer.colorBufferBits = frame->colorBufferBits;
-	framebuffer.depthBufferBits = frame->depthBufferBits;
-	framebuffer.stencilBufferBits = frame->stencilBufferBits;
-	framebuffer.samplesPerPixel = frame->samplesPerPixel;
+	framebuffer.vertical_sync = frame->verticalSync;
+	framebuffer.color_bits = frame->colorBufferBits;
+	framebuffer.depth_bits = frame->depthBufferBits;
+	framebuffer.stencil_bits = frame->stencilBufferBits;
+	framebuffer.samples_per_pixel = frame->samplesPerPixel;
 	return framebuffer;
 }
 ")
@@ -88,9 +88,9 @@ class Window {
 	}
 
 	@:functionCode("
-		Kore::WindowOptions window = convertWindowOptions(win);
-		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
-		Kore::Window::create(&window, &framebuffer);
+		kinc_window_options_t window = convertWindowOptions(win);
+		kinc_framebuffer_options_t framebuffer = convertFramebufferOptions(frame);
+		kinc_window_create(&window, &framebuffer);
 	")
 	static function koreCreate(win: WindowOptions, frame: FramebufferOptions) {}
 
@@ -99,7 +99,7 @@ class Window {
 		windows.remove(window);
 	}
 
-	@:functionCode("Kore::Window::destroy(Kore::Window::get(num));")
+	@:functionCode("kinc_window_destroy(num);")
 	static function koreDestroy(num: Int) {}
 
 	public static function get(index: Int): Window {
@@ -112,65 +112,65 @@ class Window {
 		return windows;
 	}
 
-	@:functionCode("Kore::Window::get(this->num)->resize(width, height);")
+	@:functionCode("kinc_window_resize(num, width, height);")
 	public function resize(width: Int, height: Int): Void {}
 
-	@:functionCode("Kore::Window::get(this->num)->move(x, y);")
+	@:functionCode("kinc_window_move(num, x, y);")
 	public function move(x: Int, y: Int): Void {}
 
-	@:functionCode("Kore::Window::get(this->num)->changeWindowFeatures(features);")
+	@:functionCode("kinc_window_change_features(num, features);")
 	public function changeWindowFeatures(features: Int): Void {}
 
 	@:functionCode("
-		Kore::FramebufferOptions framebuffer = convertFramebufferOptions(frame);
-		Kore::Window::get(this->num)->changeFramebuffer(&framebuffer);
+		kinc_framebuffer_options_t framebuffer = convertFramebufferOptions(frame);
+		kinc_window_change_framebuffer(num, &framebuffer);
 	")
 	public function changeFramebuffer(frame: FramebufferOptions): Void {}
 
 	public var x(get, set): Int;
 
-	@:functionCode("return Kore::Window::get(this->num)->x();")
+	@:functionCode("return kinc_window_x(num);")
 	function get_x(): Int {
 		return 0;
 	}
 
-	@:functionCode("int y = Kore::Window::get(this->num)->y(); Kore::Window::get(this->num)->move(value, y);")
+	@:functionCode("int y = kinc_window_y(num); kinc_window_move(num, value, y);")
 	function set_x(value: Int): Int {
 		return 0;
 	}
 
 	public var y(get, set): Int;
 
-	@:functionCode("return Kore::Window::get(this->num)->y();")
+	@:functionCode("return kinc_window_y(num);")
 	function get_y(): Int {
 		return 0;
 	}
 
-	@:functionCode("int x = Kore::Window::get(this->num)->x(); Kore::Window::get(this->num)->move(x, value);")
+	@:functionCode("int x = kinc_window_x(num); kinc_window_move(num, x, value);")
 	function set_y(value: Int): Int {
 		return 0;
 	}
 
 	public var width(get, set): Int;
 
-	@:functionCode("return Kore::Window::get(this->num)->width();")
+	@:functionCode("return kinc_window_width(num);")
 	function get_width(): Int {
 		return 800;
 	}
 
-	@:functionCode("int height = Kore::Window::get(this->num)->height(); Kore::Window::get(this->num)->resize(value, height);")
+	@:functionCode("int height = kinc_window_height(num); kinc_window_resize(num, value, height);")
 	function set_width(value: Int): Int {
 		return 800;
 	}
 
 	public var height(get, set): Int;
 
-	@:functionCode("return Kore::Window::get(this->num)->height();")
+	@:functionCode("return kinc_window_height(num);")
 	function get_height(): Int {
 		return 600;
 	}
 
-	@:functionCode("int width = Kore::Window::get(this->num)->width(); Kore::Window::get(this->num)->move(width, value);")
+	@:functionCode("int width = kinc_window_width(num); kinc_window_move(num, width, value);")
 	function set_height(value: Int): Int {
 		return 600;
 	}
@@ -178,15 +178,15 @@ class Window {
 	public var mode(get, set): WindowMode;
 
 	function get_mode(): WindowMode {
-		return cast getKoreMode();
+		return cast getKincMode();
 	}
 
-	@:functionCode("return Kore::Window::get(this->num)->mode();")
-	function getKoreMode(): Int {
+	@:functionCode("return kinc_window_get_mode(num);")
+	function getKincMode(): Int {
 		return 0;
 	}
 
-	@:functionCode("Kore::Window::get(this->num)->changeWindowMode((Kore::WindowMode)mode); return mode;")
+	@:functionCode("kinc_window_change_mode(num, (kinc_window_mode_t)mode); return mode;")
 	function set_mode(mode: WindowMode): WindowMode {
 		return mode;
 	}
@@ -197,7 +197,7 @@ class Window {
 		return visibility;
 	}
 
-	@:functionCode("if (value) Kore::Window::get(this->num)->show(); else Kore::Window::get(this->num)->hide();")
+	@:functionCode("if (value) kinc_window_show(num); else kinc_window_hide(num);")
 	function set_visible(value: Bool): Bool {
 		visibility = value;
 		return value;
@@ -209,13 +209,13 @@ class Window {
 		return windowTitle;
 	}
 
-	@:functionCode("Kore::Window::get(this->num)->setTitle(value.c_str());")
+	@:functionCode("kinc_window_set_title(num, value.c_str());")
 	function set_title(value: String): String {
 		windowTitle = value;
 		return windowTitle;
 	}
 
-	@:functionCode("Kore::Window::get(this->num)->setResizeCallback(resizeCallback, (void*)this->num);")
+	@:functionCode("kinc_window_set_resize_callback(num, resizeCallback, (void*)this->num);")
 	public function notifyOnResize(callback: Int->Int->Void): Void {
 		resizeCallbacks[num].push(callback);
 	}
@@ -229,7 +229,7 @@ class Window {
 		}
 	}
 
-	@:functionCode("Kore::Window::get(this->num)->setPpiChangedCallback(ppiCallback, (void*)this->num);")
+	@:functionCode("kinc_window_set_ppi_changed_callback(num, ppiCallback, (void*)this->num);")
 	public function notifyOnPpiChange(callback: Int->Void): Void {
 		ppiCallbacks[num].push(callback);
 	}
@@ -245,7 +245,7 @@ class Window {
 
 	public var vSynced(get, never): Bool;
 
-	@:functionCode("return Kore::Window::get(this->num)->vSynced();")
+	@:functionCode("return kinc_window_vsynced(num);")
 	function get_vSynced(): Bool {
 		return true;
 	}
