@@ -355,7 +355,7 @@ int kickstart(int argc, char **argv) {
 #ifdef NDEBUG
 	} catch (Dynamic e) {
 		__hx_dump_stack();
-		Kore::log(Kore::Error, "Error %s", e == null() ? "null" : e->toString().__CStr());
+		kinc_log(KINC_LOG_LEVEL_ERROR, "Error %s", e == null() ? "null" : e->toString().__CStr());
 #ifdef KORE_WINDOWS
 		MessageBoxW(NULL, e->toString().__WCStr(), NULL, MB_OK);
 #endif
