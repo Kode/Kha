@@ -7,7 +7,7 @@ import kha.audio2.ogg.vorbis.Reader;
 /**
  * Contains compressed or uncompressed audio data.
  */
-@:cppFileCode("\n#include <Kore/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
+@:cppFileCode("\n#include <kinc/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
@@ -28,7 +28,7 @@ class Sound implements Resource {
 		var channels: Int = 0;
 		var samplesPerSecond: Int = 0;
 
-		untyped __cpp__("Kore::s16* data = nullptr");
+		untyped __cpp__("int16_t *data = nullptr");
 		untyped __cpp__("samples = stb_vorbis_decode_memory((Kore::u8*)compressedData->b->GetBase(), compressedData->length, &channels, &samplesPerSecond, &data)");
 
 		if (channels == 1) {

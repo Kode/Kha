@@ -6,51 +6,51 @@ import kha.FastFloat;
 @:unreflective
 @:structAccess
 @:include("khalib/float32x4.h")
-@:native("Kore::float32x4")
+@:native("kinc_float32x4_t")
 extern class Float32x4 {
-	@:native("Kore::float32x4")
+	@:native("kinc_float32x4_t")
 	public static function create(): Float32x4;
 
-	@:native("Kore::loadAll")
+	@:native("kinc_float32x4_load_all")
 	public static function loadAllFast(t: FastFloat): Float32x4;
 
-	@:native("Kore::load")
+	@:native("kinc_float32x4_load")
 	public static function load(a: Float, b: Float, c: Float, d: Float): Float32x4;
 
-	@:native("Kore::load")
+	@:native("kinc_float32x4_load")
 	public static function loadFast(a: FastFloat, b: FastFloat, c: FastFloat, d: FastFloat): Float32x4;
 
-	@:native("Kore::get")
+	@:native("kinc_float32x4_get")
 	public static function get(t: Float32x4, index: Int): Float;
 
-	@:native("Kore::get")
+	@:native("kinc_float32x4_get")
 	public static function getFast(t: Float32x4, index: Int): FastFloat;
 
-	@:native("Kore::abs")
+	@:native("kinc_float32x4_abs")
 	public static function abs(t: Float32x4): Float32x4;
 
-	@:native("Kore::add")
+	@:native("kinc_float32x4_add")
 	public static function add(a: Float32x4, b: Float32x4): Float32x4;
 
-	@:native("Kore::div")
+	@:native("kinc_float32x4_div")
 	public static function div(a: Float32x4, b: Float32x4): Float32x4;
 
-	@:native("Kore::mul")
+	@:native("kinc_float32x4_mul")
 	public static function mul(a: Float32x4, b: Float32x4): Float32x4;
 
-	@:native("Kore::neg")
+	@:native("kinc_float32x4_neg")
 	public static function neg(t: Float32x4): Float32x4;
 
-	@:native("Kore::reciprocalApproximation")
+	@:native("kinc_float32x4_reciprocal_approximation")
 	public static function reciprocalApproximation(t: Float32x4): Float32x4;
 
-	@:native("Kore::reciprocalSqrtApproximation")
+	@:native("kinc_float32x4_reciprocal_sqrt_approximation")
 	public static function reciprocalSqrtApproximation(t: Float32x4): Float32x4;
 
-	@:native("Kore::sub")
+	@:native("kinc_float32x4_sub")
 	public static function sub(a: Float32x4, b: Float32x4): Float32x4;
 
-	@:native("Kore::sqrt")
+	@:native("kinc_float32x4_sqrt")
 	public static function sqrt(t: Float32x4): Float32x4;
 }
 #else
