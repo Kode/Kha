@@ -59,6 +59,10 @@ class Gamepad {
 	public var vendor(get, null): String;
 	public var connected(default, null): Bool;
 
+	public function rumble(leftAmount:Float, rightAmount:Float) {
+		SystemImpl.setGamepadRumble(index, leftAmount, rightAmount);
+	}
+	
 	function get_id(): String {
 		return SystemImpl.getGamepadId(index);
 	}

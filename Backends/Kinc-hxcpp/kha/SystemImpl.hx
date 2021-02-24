@@ -44,6 +44,7 @@ void post_kinc_init();
 void run_kinc();
 const char *getGamepadId(int index);
 const char *getGamepadVendor(int index);
+void setGamepadRumble(int index, float left, float right);
 ")
 @:keep
 class SystemImpl {
@@ -481,6 +482,10 @@ class SystemImpl {
 	@:functionCode("return ::String(::getGamepadVendor(index));")
 	public static function getGamepadVendor(index: Int): String {
 		return "unknown";
+	}
+
+	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float): Void {
+		untyped __cpp__("::setGamepadRumble(index, leftAmount, rightAmount)");
 	}
 
 	public static function safeZone(): Float {
