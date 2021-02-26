@@ -237,12 +237,20 @@ namespace {
 	char cutCopyString[4096];
 
 	char *copy() {
-		strcpy(cutCopyString, SystemImpl_obj::copy().c_str());
+		String text = SystemImpl_obj::copy();
+		if (hx::IsNull(text)) {
+			return NULL;
+		}
+		strcpy(cutCopyString, text.c_str());
 		return cutCopyString;
 	}
 
 	char *cut() {
-		strcpy(cutCopyString, SystemImpl_obj::cut().c_str());
+		String text = SystemImpl_obj::cut();
+		if (hx::IsNull(text)) {
+			return NULL;
+		}
+		strcpy(cutCopyString, text.c_str());
 		return cutCopyString;
 	}
 
