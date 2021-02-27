@@ -884,7 +884,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	function setProjection(): Void {
 		var width = canvas.width;
 		var height = canvas.height;
-		if (Std.is(canvas, Framebuffer)) {
+		if (Std.isOfType(canvas, Framebuffer)) {
 			projectionMatrix.setFrom(FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000));
 		}
 		else {

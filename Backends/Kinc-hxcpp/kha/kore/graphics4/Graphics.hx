@@ -57,7 +57,7 @@ class Graphics implements kha.graphics4.Graphics {
 	function init() {
 		if (target == null)
 			return;
-		if (Std.is(target, CubeMap)) {
+		if (Std.isOfType(target, CubeMap)) {
 			var cubeMap = cast(target, CubeMap);
 			untyped __cpp__("renderTarget = {0}->renderTarget", cubeMap);
 		}
