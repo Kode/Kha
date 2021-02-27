@@ -36,7 +36,7 @@ class IndexBuffer {
 			lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		var data = _data.subarray(lockStart, lockEnd);
-		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new js.lib.Uint16Array(data) : data;
+		var glData: Dynamic = SystemImpl.elementIndexUint == null ? new js.lib.Uint16Array(data.buffer) : data;
 		SystemImpl.gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, glData, usage == Usage.DynamicUsage ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 
