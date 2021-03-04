@@ -317,6 +317,8 @@ class SystemImpl {
 		return "unknown";
 	}
 
+	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float): Void {}
+	
 	public static function safeZone(): Float {
 		return 1.0;
 	}

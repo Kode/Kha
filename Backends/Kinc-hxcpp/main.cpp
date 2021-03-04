@@ -315,6 +315,10 @@ const char *getGamepadVendor(int index) {
 	return kinc_gamepad_vendor(index);
 }
 
+void setGamepadRumble(int index, float left, float right) {
+	kinc_gamepad_rumble(index, left, right);
+}
+
 void post_kinc_init() {
 #ifdef VR_GEAR_VR
 	// Enter VR mode

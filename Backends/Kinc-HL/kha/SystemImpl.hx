@@ -385,6 +385,8 @@ class SystemImpl {
 	public static function getGamepadVendor(index: Int): String {
 		return "";
 	}
+	
+	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float) {}
 
 	public static function safeZone(): Float {
 		return 1.0;
