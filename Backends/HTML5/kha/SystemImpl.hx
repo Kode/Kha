@@ -281,7 +281,7 @@ class SystemImpl {
 		textArea.focus();
 		untyped textArea.select();
 		try {
-			Browser.document.execCommand('copy');
+			Browser.document.execCommand("copy");
 		}
 		catch (err) {}
 		Browser.document.body.removeChild(textArea);
@@ -391,7 +391,7 @@ class SystemImpl {
 				anisotropicFilter = SystemImpl.gl.getExtension("EXT_texture_filter_anisotropic");
 				if (anisotropicFilter == null)
 					anisotropicFilter = SystemImpl.gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-				drawBuffers = SystemImpl.gl.getExtension('WEBGL_draw_buffers');
+				drawBuffers = SystemImpl.gl.getExtension("WEBGL_draw_buffers");
 				elementIndexUint = SystemImpl.gl.getExtension("OES_element_index_uint");
 				gl = true;
 				Shaders.init();
@@ -466,18 +466,18 @@ class SystemImpl {
 		canvas.addEventListener("touchcancel", touchCancel, false);
 
 		#if kha_debug_html5
-		Browser.document.addEventListener('dragover', function(event) {
+		Browser.document.addEventListener("dragover", function(event) {
 			event.preventDefault();
 		});
 
-		Browser.document.addEventListener('drop', function(event: js.html.DragEvent) {
+		Browser.document.addEventListener("drop", function(event: js.html.DragEvent) {
 			event.preventDefault();
 
 			if (event.dataTransfer != null && event.dataTransfer.files != null) {
 				for (file in event.dataTransfer.files) {
 					// https://developer.mozilla.org/en-US/docs/Web/API/File
 					//  - use mozFullPath or webkitRelativePath?
-					System.dropFiles(Syntax.code('file.path'));
+					System.dropFiles(Syntax.code("file.path"));
 				}
 			}
 		});
@@ -678,23 +678,23 @@ class SystemImpl {
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {
-		js.Browser.document.addEventListener('pointerlockchange', func, false);
-		js.Browser.document.addEventListener('mozpointerlockchange', func, false);
-		js.Browser.document.addEventListener('webkitpointerlockchange', func, false);
+		js.Browser.document.addEventListener("pointerlockchange", func, false);
+		js.Browser.document.addEventListener("mozpointerlockchange", func, false);
+		js.Browser.document.addEventListener("webkitpointerlockchange", func, false);
 
-		js.Browser.document.addEventListener('pointerlockerror', error, false);
-		js.Browser.document.addEventListener('mozpointerlockerror', error, false);
-		js.Browser.document.addEventListener('webkitpointerlockerror', error, false);
+		js.Browser.document.addEventListener("pointerlockerror", error, false);
+		js.Browser.document.addEventListener("mozpointerlockerror", error, false);
+		js.Browser.document.addEventListener("webkitpointerlockerror", error, false);
 	}
 
 	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {
-		js.Browser.document.removeEventListener('pointerlockchange', func, false);
-		js.Browser.document.removeEventListener('mozpointerlockchange', func, false);
-		js.Browser.document.removeEventListener('webkitpointerlockchange', func, false);
+		js.Browser.document.removeEventListener("pointerlockchange", func, false);
+		js.Browser.document.removeEventListener("mozpointerlockchange", func, false);
+		js.Browser.document.removeEventListener("webkitpointerlockchange", func, false);
 
-		js.Browser.document.removeEventListener('pointerlockerror', error, false);
-		js.Browser.document.removeEventListener('mozpointerlockerror', error, false);
-		js.Browser.document.removeEventListener('webkitpointerlockerror', error, false);
+		js.Browser.document.removeEventListener("pointerlockerror", error, false);
+		js.Browser.document.removeEventListener("mozpointerlockerror", error, false);
+		js.Browser.document.removeEventListener("webkitpointerlockerror", error, false);
 	}
 
 	static function setMouseXY(event: MouseEvent): Void {
@@ -729,7 +729,7 @@ class SystemImpl {
 			var context = kha.audio2.Audio._context;
 
 			if (context == null) {
-				context = Syntax.code('kha_audio2_Audio1._context');
+				context = Syntax.code("kha_audio2_Audio1._context");
 			}
 
 			if (context != null) {
@@ -797,25 +797,25 @@ class SystemImpl {
 				khanvas.setCapture();
 			}
 			else {
-				khanvas.ownerDocument.addEventListener('mousemove', documentMouseMove, true);
+				khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
 			}
-			khanvas.ownerDocument.addEventListener('mouseup', mouseLeftUp);
+			khanvas.ownerDocument.addEventListener("mouseup", mouseLeftUp);
 		}
 		else if (event.which == 2) { // middle button
 			mouse.sendDownEvent(0, 2, mouseX, mouseY);
-			khanvas.ownerDocument.addEventListener('mouseup', mouseMiddleUp);
+			khanvas.ownerDocument.addEventListener("mouseup", mouseMiddleUp);
 		}
 		else if (event.which == 3) { // right button
 			mouse.sendDownEvent(0, 1, mouseX, mouseY);
-			khanvas.ownerDocument.addEventListener('mouseup', mouseRightUp);
+			khanvas.ownerDocument.addEventListener("mouseup", mouseRightUp);
 		}
 		else if (event.which == 4) { // backwards sidebutton
 			mouse.sendDownEvent(0, 3, mouseX, mouseY);
-			khanvas.ownerDocument.addEventListener('mouseup', mouseBackUp);
+			khanvas.ownerDocument.addEventListener("mouseup", mouseBackUp);
 		}
 		else if (event.which == 5) { // forwards sidebutton
 			mouse.sendDownEvent(0, 4, mouseX, mouseY);
-			khanvas.ownerDocument.addEventListener('mouseup', mouseForwardUp);
+			khanvas.ownerDocument.addEventListener("mouseup", mouseForwardUp);
 		}
 		insideInputEvent = false;
 	}
@@ -827,7 +827,7 @@ class SystemImpl {
 			return;
 
 		insideInputEvent = true;
-		khanvas.ownerDocument.removeEventListener('mouseup', mouseLeftUp);
+		khanvas.ownerDocument.removeEventListener("mouseup", mouseLeftUp);
 		if (khanvas.releaseCapture != null) {
 			khanvas.ownerDocument.releaseCapture();
 		}
@@ -847,7 +847,7 @@ class SystemImpl {
 			return;
 
 		insideInputEvent = true;
-		khanvas.ownerDocument.removeEventListener('mouseup', mouseMiddleUp);
+		khanvas.ownerDocument.removeEventListener("mouseup", mouseMiddleUp);
 		mouse.sendUpEvent(0, 2, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -859,7 +859,7 @@ class SystemImpl {
 			return;
 
 		insideInputEvent = true;
-		khanvas.ownerDocument.removeEventListener('mouseup', mouseRightUp);
+		khanvas.ownerDocument.removeEventListener("mouseup", mouseRightUp);
 		mouse.sendUpEvent(0, 1, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -871,7 +871,7 @@ class SystemImpl {
 			return;
 
 		insideInputEvent = true;
-		khanvas.ownerDocument.removeEventListener('mouseup', mouseBackUp);
+		khanvas.ownerDocument.removeEventListener("mouseup", mouseBackUp);
 		mouse.sendUpEvent(0, 3, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -883,7 +883,7 @@ class SystemImpl {
 			return;
 
 		insideInputEvent = true;
-		khanvas.ownerDocument.removeEventListener('mouseup', mouseForwardUp);
+		khanvas.ownerDocument.removeEventListener("mouseup", mouseForwardUp);
 		mouse.sendUpEvent(0, 4, mouseX, mouseY);
 		insideInputEvent = false;
 	}
@@ -1153,13 +1153,13 @@ class SystemImpl {
 					return "´";
 		}
 		if (keycode >= 96 && keycode <= 105) { // num block
-			return String.fromCharCode('0'.code - 96 + keycode);
+			return String.fromCharCode("0".code - 96 + keycode);
 		}
-		if (keycode >= 'A'.code && keycode <= 'Z'.code) {
+		if (keycode >= "A".code && keycode <= "Z".code) {
 			if (shift)
 				return String.fromCharCode(keycode);
 			else
-				return String.fromCharCode(keycode - 'A'.code + 'a'.code);
+				return String.fromCharCode(keycode - "A".code + "a".code);
 		}
 		return String.fromCharCode(keycode);
 	}
@@ -1269,27 +1269,27 @@ class SystemImpl {
 	}
 
 	public static function notifyOfFullscreenChange(func: Void->Void, error: Void->Void): Void {
-		js.Browser.document.addEventListener('fullscreenchange', func, false);
-		js.Browser.document.addEventListener('mozfullscreenchange', func, false);
-		js.Browser.document.addEventListener('webkitfullscreenchange', func, false);
-		js.Browser.document.addEventListener('MSFullscreenChange', func, false);
+		js.Browser.document.addEventListener("fullscreenchange", func, false);
+		js.Browser.document.addEventListener("mozfullscreenchange", func, false);
+		js.Browser.document.addEventListener("webkitfullscreenchange", func, false);
+		js.Browser.document.addEventListener("MSFullscreenChange", func, false);
 
-		js.Browser.document.addEventListener('fullscreenerror', error, false);
-		js.Browser.document.addEventListener('mozfullscreenerror', error, false);
-		js.Browser.document.addEventListener('webkitfullscreenerror', error, false);
-		js.Browser.document.addEventListener('MSFullscreenError', error, false);
+		js.Browser.document.addEventListener("fullscreenerror", error, false);
+		js.Browser.document.addEventListener("mozfullscreenerror", error, false);
+		js.Browser.document.addEventListener("webkitfullscreenerror", error, false);
+		js.Browser.document.addEventListener("MSFullscreenError", error, false);
 	}
 
 	public static function removeFromFullscreenChange(func: Void->Void, error: Void->Void): Void {
-		js.Browser.document.removeEventListener('fullscreenchange', func, false);
-		js.Browser.document.removeEventListener('mozfullscreenchange', func, false);
-		js.Browser.document.removeEventListener('webkitfullscreenchange', func, false);
-		js.Browser.document.removeEventListener('MSFullscreenChange', func, false);
+		js.Browser.document.removeEventListener("fullscreenchange", func, false);
+		js.Browser.document.removeEventListener("mozfullscreenchange", func, false);
+		js.Browser.document.removeEventListener("webkitfullscreenchange", func, false);
+		js.Browser.document.removeEventListener("MSFullscreenChange", func, false);
 
-		js.Browser.document.removeEventListener('fullscreenerror', error, false);
-		js.Browser.document.removeEventListener('mozfullscreenerror', error, false);
-		js.Browser.document.removeEventListener('webkitfullscreenerror', error, false);
-		js.Browser.document.removeEventListener('MSFullscreenError', error, false);
+		js.Browser.document.removeEventListener("fullscreenerror", error, false);
+		js.Browser.document.removeEventListener("mozfullscreenerror", error, false);
+		js.Browser.document.removeEventListener("webkitfullscreenerror", error, false);
+		js.Browser.document.removeEventListener("MSFullscreenError", error, false);
 	}
 
 	public static function setKeepScreenOn(on: Bool): Void {}
