@@ -67,21 +67,9 @@ class SystemImpl {
 		SystemImpl.options = options;
 		#if kha_debug_html5
 		Browser.window.onerror = cast errorHandler;
-		/*
-			var electron = Syntax.code("require('electron')");
-			if (electron.webFrame.setZoomLevelLimits != null) { // TODO: Figure out why this check is sometimes required
-				electron.webFrame.setZoomLevelLimits(1, 1);
-			}
-			var wndOpts = {
-				type: 'showWindow',
-				title: options.title,
-				x: options.window.x,
-				y: options.window.y,
-				width: options.width,
-				height: options.height,
-			}
-			electron.ipcRenderer.send('asynchronous-message', wndOpts); // Wait a second so the debugger can attach
-		 */
+
+		var showWindow = Syntax.code("window.electron.showWindow");
+		showWindow(options.title, options.window.x, options.window.y, options.width, options.height);
 
 		initSecondStep(callback);
 
