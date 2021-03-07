@@ -82,9 +82,8 @@ class SystemImpl {
 			}
 			electron.ipcRenderer.send('asynchronous-message', wndOpts); // Wait a second so the debugger can attach
 		 */
-		Browser.window.setTimeout(function() {
-			initSecondStep(callback);
-		}, 1000);
+
+		initSecondStep(callback);
 
 		chrome = true;
 		mobileAudioPlaying = true;
