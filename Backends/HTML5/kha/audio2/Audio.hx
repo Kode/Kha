@@ -24,7 +24,7 @@ class Audio {
 		}
 		catch (e:Dynamic) {}
 		try {
-			Syntax.code('this._context = new webkitAudioContext();');
+			Syntax.code("this._context = new webkitAudioContext();");
 			return;
 		}
 		catch (e:Dynamic) {}

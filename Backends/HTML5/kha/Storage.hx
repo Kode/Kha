@@ -39,7 +39,7 @@ class LocalStorageFile extends StorageFile {
 	 */
 	static function encode(source: BytesData): String {
 		var reserved = [0, 10, 13, 61];
-		var output = '';
+		var output = "";
 		var converted, ele;
 		var bytes = new js.lib.Uint8Array(source);
 		for (i in 0...bytes.length) {

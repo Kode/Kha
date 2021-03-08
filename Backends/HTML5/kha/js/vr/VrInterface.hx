@@ -30,7 +30,7 @@ class VrInterface extends kha.vr.VrInterface {
 	public function new() {
 		super();
 		#if kha_webvr
-		var displayEnabled: Bool = Syntax.code('navigator.getVRDisplays');
+		var displayEnabled: Bool = Syntax.code("navigator.getVRDisplays");
 		#else
 		var displayEnabled = false;
 		#end
@@ -42,11 +42,11 @@ class VrInterface extends kha.vr.VrInterface {
 	}
 
 	function getVRDisplays() {
-		var vrDisplayInstance = Syntax.code('navigator.getVRDisplays()');
+		var vrDisplayInstance = Syntax.code("navigator.getVRDisplays()");
 		vrDisplayInstance.then(function(displays) {
 			if (displays.length > 0) {
-				frameData = Syntax.code('new VRFrameData()');
-				vrDisplay = Syntax.code('displays[0]');
+				frameData = Syntax.code("new VRFrameData()");
+				vrDisplay = Syntax.code("displays[0]");
 				vrDisplay.depthNear = 0.1;
 				vrDisplay.depthFar = 1024.0;
 

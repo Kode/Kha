@@ -66,7 +66,7 @@ class Display {
 	public var pixelsPerInch(get, never): Int;
 
 	function get_pixelsPerInch(): Int {
-		var dpiElement = Browser.document.createElement('div');
+		var dpiElement = Browser.document.createElement("div");
 		dpiElement.style.position = "absolute";
 		dpiElement.style.width = "1in";
 		dpiElement.style.height = "1in";

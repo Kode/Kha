@@ -25,7 +25,7 @@ class MobileWebAudioSound extends kha.Sound {
 				_buffer = buffer;
 				done(this);
 			}, function() {
-				failed({url: filename, error: 'Audio format not supported'});
+				failed({url: filename, error: "Audio format not supported"});
 			});
 		};
 		request.send(null);
