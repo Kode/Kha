@@ -198,22 +198,13 @@ class LoaderImpl {
 			loadRemote(desc, done, failed);
 		}
 		else {
-			var fs = Syntax.code("require('electron').remote.require('fs')");
-			var path = Syntax.code("require('electron').remote.require('path')");
-			var app = Syntax.code("require('electron').remote.require('electron').app");
-			var url = if (path.isAbsolute(desc.files[0])) desc.files[0] else path.join(app.getAppPath(), desc.files[0]);
-			fs.readFile(url, function(err, data) {
-				if (err != null) {
-					failed({url: url, error: err});
-					return;
-				}
-
-				var byteArray: Dynamic = Syntax.code("new Uint8Array(data)");
+			var loadBlob = Syntax.code("window.electron.loadBlob");
+			loadBlob(desc, (byteArray: Dynamic) -> {
 				var bytes = Bytes.alloc(byteArray.byteLength);
 				for (i in 0...byteArray.byteLength)
 					bytes.set(i, byteArray[i]);
 				done(new Blob(bytes));
-			});
+			}, failed);
 		}
 		#else
 		loadRemote(desc, done, failed);
