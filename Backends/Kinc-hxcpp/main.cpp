@@ -41,6 +41,9 @@ namespace {
 	kinc_mutex_t mutex;
 	bool shift = false;
 
+	size_t cutCopyStringSize = 1024;
+	char *cutCopyString;
+
 	void keyDown(int code) {
 		SystemImpl_obj::keyDown(code);
 	}
@@ -179,6 +182,7 @@ namespace {
 
 	void shutdown() {
 		SystemImpl_obj::shutdown();
+		free(cutCopyString);
 	}
 
 	void dropFiles(wchar_t *filePath) {
@@ -234,14 +238,22 @@ namespace {
 		}
 	}
 
-	char cutCopyString[4096];
+	void copyToCutCopyString(const char *text) {
+		size_t textLength = strlen(text);
+		if (textLength >= cutCopyStringSize) {
+			free(cutCopyString);
+			cutCopyStringSize = textLength + 1;
+			cutCopyString = (char *) malloc(cutCopyStringSize);
+		}
+		strcpy(cutCopyString, text);
+	}
 
 	char *copy() {
 		String text = SystemImpl_obj::copy();
 		if (hx::IsNull(text)) {
 			return NULL;
 		}
-		strcpy(cutCopyString, text.c_str());
+		copyToCutCopyString(text.c_str());
 		return cutCopyString;
 	}
 
@@ -250,7 +262,7 @@ namespace {
 		if (hx::IsNull(text)) {
 			return NULL;
 		}
-		strcpy(cutCopyString, text.c_str());
+		copyToCutCopyString(text.c_str());
 		return cutCopyString;
 	}
 
@@ -273,6 +285,8 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_init(name, width, height, win, frame);
 
 	kinc_mutex_init(&mutex);
+
+	cutCopyString = (char *) malloc(cutCopyStringSize);
 
 	kinc_set_foreground_callback(foreground);
 	kinc_set_resume_callback(resume);
