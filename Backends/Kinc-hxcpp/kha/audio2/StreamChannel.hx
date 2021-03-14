@@ -28,7 +28,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 			else {
 				atend = true;
 			}
-			for (int i = read; i < length; ++i) {
+			for (int i = read * 2; i < length; ++i) {
 				samples->self.data[i] = 0;
 			}
 		}
