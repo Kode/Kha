@@ -170,9 +170,12 @@ class Image implements Canvas implements Resource {
 	")
 	function nullify() {}
 
-	@:void static function finalize(image: Image): Void {
-		image.unload();
-	}
+	@:functionCode("
+		if (image->imageType != KhaImageTypeNone) {
+			image->unload();
+		}
+	")
+	@:void static function finalize(image: Image): Void {}
 
 	static function getRenderTargetFormat(format: TextureFormat): Int {
 		switch (format) {
