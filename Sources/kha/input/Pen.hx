@@ -12,26 +12,26 @@ class Pen {
 
 	/**
 	 * Creates event handlers from passed functions.
-	 * @param downListener function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is pressed down. `pressure` is force of pressure on the screen in the range from `0` to `1`.
-	 * @param upListener function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is released.
-	 * @param moveListener function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is moved.
+	 * @param downListener (optional) function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is pressed down. `pressure` is force of pressure on the screen in the range from `0` to `1`.
+	 * @param upListener (optional) function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is released.
+	 * @param moveListener (optional) function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when a pen is moved.
 	 */
-	public function notify(downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void, moveListener: Int->Int->Float->Void): Void {
+	public function notify(?downListener: Int->Int->Float->Void, ?upListener: Int->Int->Float->Void, ?moveListener: Int->Int->Float->Void): Void {
 		notifyWindowed(0, downListener, upListener, moveListener);
 	}
 
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void, moveListener: Int->Int->Float->Void): Void {
+	public function remove(?downListener: Int->Int->Float->Void, ?upListener: Int->Int->Float->Void, ?moveListener: Int->Int->Float->Void): Void {
 		removeWindowed(0, downListener, upListener, moveListener);
 	}
 
 	/**
 	 * Creates event handlers from passed functions like `notify` function, but only for window with `windowId:Int` id argument. The windows are not supported by all the targets.
 	 */
-	public function notifyWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void,
-			moveListener: Int->Int->Float->Void): Void {
+	public function notifyWindowed(windowId: Int, ?downListener: Int->Int->Float->Void, ?upListener: Int->Int->Float->Void,
+			?moveListener: Int->Int->Float->Void): Void {
 		if (downListener != null) {
 			if (windowDownListeners == null) {
 				windowDownListeners = [];
@@ -66,8 +66,8 @@ class Pen {
 	/**
 	 * Removes event handlers for `windowId:Int` from the passed functions that were passed to `notifyWindowed` function.
 	 */
-	public function removeWindowed(windowId: Int, downListener: Int->Int->Float->Void, upListener: Int->Int->Float->Void,
-			moveListener: Int->Int->Float->Void): Void {
+	public function removeWindowed(windowId: Int, ?downListener: Int->Int->Float->Void, ?upListener: Int->Int->Float->Void,
+			?moveListener: Int->Int->Float->Void): Void {
 		if (downListener != null && windowDownListeners != null) {
 			if (windowId < windowDownListeners.length) {
 				windowDownListeners[windowId].remove(downListener);

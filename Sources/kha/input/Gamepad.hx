@@ -11,28 +11,28 @@ class Gamepad {
 		return instances[index];
 	}
 
-	public static function notifyOnConnect(connectListener: Int->Void, disconnectListener: Int->Void): Void {
+	public static function notifyOnConnect(?connectListener: Int->Void, ?disconnectListener: Int->Void): Void {
 		if (connectListener != null)
 			connectListeners.push(connectListener);
 		if (disconnectListener != null)
 			disconnectListeners.push(disconnectListener);
 	}
 
-	public static function removeConnect(connectListener: Int->Void, disconnectListener: Int->Void): Void {
+	public static function removeConnect(?connectListener: Int->Void, ?disconnectListener: Int->Void): Void {
 		if (connectListener != null)
 			connectListeners.remove(connectListener);
 		if (disconnectListener != null)
 			disconnectListeners.remove(disconnectListener);
 	}
 
-	public function notify(axisListener: Int->Float->Void, buttonListener: Int->Float->Void): Void {
+	public function notify(?axisListener: Int->Float->Void, ?buttonListener: Int->Float->Void): Void {
 		if (axisListener != null)
 			axisListeners.push(axisListener);
 		if (buttonListener != null)
 			buttonListeners.push(buttonListener);
 	}
 
-	public function remove(axisListener: Int->Float->Void, buttonListener: Int->Float->Void): Void {
+	public function remove(?axisListener: Int->Float->Void, ?buttonListener: Int->Float->Void): Void {
 		if (axisListener != null)
 			axisListeners.remove(axisListener);
 		if (buttonListener != null)
