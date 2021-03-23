@@ -520,14 +520,13 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-				// Lookup the size the browser is displaying the canvas.
-				// TODO deal with window.devicePixelRatio ?
-				var displayWidth = canvas.clientWidth;
-				var displayHeight = canvas.clientHeight;
+				// clientWidth/Height is in downscaled "css pixels" when a <meta viewport="" /> is set in the html file
+				var displayWidth = canvas.clientWidth * Std.int(js.Browser.window.devicePixelRatio);
+				var displayHeight = canvas.clientHeight * Std.int(js.Browser.window.devicePixelRatio);
 
-				// Check if the canvas is not the same size.
+				// Check if the canvas rendering buffer is not the same size.
 				if (canvas.width != displayWidth || canvas.height != displayHeight) {
-					// Make the canvas the same size
+					// Make the canvas rendering buffer the same size
 					canvas.width = displayWidth;
 					canvas.height = displayHeight;
 				}
