@@ -37,11 +37,11 @@ class Keyboard extends Controller {
 
 	/**
 	 * Creates event handlers from passed functions.
-	 * @param downListener function with `key:KeyCode` argument, fired when a key is pressed down.
-	 * @param upListener function with `key:KeyCode` argument, fired when a key is released.
+	 * @param downListener (optional) function with `key:KeyCode` argument, fired when a key is pressed down.
+	 * @param upListener (optional) function with `key:KeyCode` argument, fired when a key is released.
 	 * @param pressListener (optional) function with `char:String` argument, fired when a key that produces a character value is pressed down.
 	 */
-	public function notify(downListener: (key: KeyCode) -> Void, upListener: (key: KeyCode) -> Void, pressListener: (char: String) -> Void = null): Void {
+	public function notify(?downListener: (key: KeyCode) -> Void, ?upListener: (key: KeyCode) -> Void, ?pressListener: (char: String) -> Void = null): Void {
 		if (downListener != null)
 			downListeners.push(downListener);
 		if (upListener != null)
@@ -53,7 +53,7 @@ class Keyboard extends Controller {
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: (key: KeyCode) -> Void, upListener: (key: KeyCode) -> Void, pressListener: (char: String) -> Void): Void {
+	public function remove(?downListener: (key: KeyCode) -> Void, ?upListener: (key: KeyCode) -> Void, ?pressListener: (char: String) -> Void): Void {
 		if (downListener != null)
 			downListeners.remove(downListener);
 		if (upListener != null)

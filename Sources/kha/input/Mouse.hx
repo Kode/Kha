@@ -53,30 +53,30 @@ class Mouse extends Controller {
 
 	/**
 	 * Creates event handlers from passed functions.
-	 * @param downListener function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is pressed down. `button:Int` is `0` for left button, `1` for right and `2` for middle.
-	 * @param upListener function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is released.
-	 * @param moveListener function with `x:Int`,`y:Int`,`moveX:Int`,`moveY:Int` arguments, fired when a mouse is moved. `moveX`/`moveY` is the difference between the current coordinates and the last position of the mouse.
-	 * @param wheelListener function with `delta:Int` argument, fired when the wheel rotates. It can have a value of `1` or `-1` depending on the rotation.
+	 * @param downListener (optional) function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is pressed down. `button:Int` is `0` for left button, `1` for right and `2` for middle.
+	 * @param upListener (optional) function with `button:Int`,`x:Int`,`y:Int` arguments, fired when a mouse is released.
+	 * @param moveListener (optional) function with `x:Int`,`y:Int`,`moveX:Int`,`moveY:Int` arguments, fired when a mouse is moved. `moveX`/`moveY` is the difference between the current coordinates and the last position of the mouse.
+	 * @param wheelListener (optional) function with `delta:Int` argument, fired when the wheel rotates. It can have a value of `1` or `-1` depending on the rotation.
 	 * @param leaveListener (optional) function without` arguments, when fired mouse leave canvas.
 	 */
-	public function notify(downListener: (button: Int, x: Int, y: Int) -> Void, upListener: (button: Int, x: Int, y: Int) -> Void,
-			moveListener: (x: Int, y: Int, moveX: Int, moveY: Int) -> Void, wheelListener: (delta: Int) -> Void, leaveListener: () -> Void = null): Void {
+	public function notify(?downListener: (button: Int, x: Int, y: Int) -> Void, ?upListener: (button: Int, x: Int, y: Int) -> Void,
+			?moveListener: (x: Int, y: Int, moveX: Int, moveY: Int) -> Void, ?wheelListener: (delta: Int) -> Void, ?leaveListener: () -> Void = null): Void {
 		notifyWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(downListener: (button: Int, x: Int, y: Int) -> Void, upListener: (button: Int, x: Int, y: Int) -> Void,
-			moveListener: (x: Int, y: Int, moveX: Int, moveY: Int) -> Void, wheelListener: (delta: Int) -> Void, leaveListener: () -> Void = null): Void {
+	public function remove(?downListener: (button: Int, x: Int, y: Int) -> Void, ?upListener: (button: Int, x: Int, y: Int) -> Void,
+			?moveListener: (x: Int, y: Int, moveX: Int, moveY: Int) -> Void, ?wheelListener: (delta: Int) -> Void, ?leaveListener: () -> Void = null): Void {
 		removeWindowed(0, downListener, upListener, moveListener, wheelListener, leaveListener);
 	}
 
 	/**
 	 * Creates event handlers from passed functions like `notify` function, but only for window with `windowId:Int` id argument. The windows are not supported by all the targets.
 	 */
-	public function notifyWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void,
-			wheelListener: Int->Void, leaveListener: Void->Void = null): Void {
+	public function notifyWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void, ?moveListener: Int->Int->Int->Int->Void,
+			?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners == null) {
 				windowDownListeners = new Array();
@@ -141,8 +141,8 @@ class Mouse extends Controller {
 	/**
 	 * Removes event handlers for `windowId:Int` from the passed functions that were passed to `notifyWindowed` function.
 	 */
-	public function removeWindowed(windowId: Int, downListener: Int->Int->Int->Void, upListener: Int->Int->Int->Void, moveListener: Int->Int->Int->Int->Void,
-			wheelListener: Int->Void, leaveListener: Void->Void = null): Void {
+	public function removeWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void, ?moveListener: Int->Int->Int->Int->Void,
+			?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners != null) {
 				if (windowId < windowDownListeners.length) {

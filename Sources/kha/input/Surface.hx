@@ -35,12 +35,12 @@ class Surface {
 
 	/**
 	 * Creates event handlers from passed functions.
-	 * @param touchStartListener function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is pressed down. The finger `id` goes from 0 increasing by one. When the finger releases the screen, the old `id` is freed up and will be occupied with pressing the next finger (when releasing a finger, the shift of ids does not occur).
-	 * @param touchEndListener function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is released.
-	 * @param moveListener function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is moved.
+	 * @param touchStartListener (optional) function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is pressed down. The finger `id` goes from 0 increasing by one. When the finger releases the screen, the old `id` is freed up and will be occupied with pressing the next finger (when releasing a finger, the shift of ids does not occur).
+	 * @param touchEndListener (optional) function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is released.
+	 * @param moveListener (optional) function with `id:Int`,`x:Int`,`y:Int` arguments, fired when a surface is moved.
 	 */
-	public function notify(touchStartListener: (id: Int, x: Int, y: Int) -> Void, touchEndListener: (id: Int, x: Int, y: Int) -> Void,
-			moveListener: (id: Int, x: Int, y: Int) -> Void): Void {
+	public function notify(?touchStartListener: (id: Int, x: Int, y: Int) -> Void, ?touchEndListener: (id: Int, x: Int, y: Int) -> Void,
+			?moveListener: (id: Int, x: Int, y: Int) -> Void): Void {
 		if (touchStartListener != null)
 			touchStartListeners.push(touchStartListener);
 		if (touchEndListener != null)
@@ -52,8 +52,8 @@ class Surface {
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notify` function.
 	 */
-	public function remove(touchStartListener: (id: Int, x: Int, y: Int) -> Void, touchEndListener: (id: Int, x: Int, y: Int) -> Void,
-			moveListener: (id: Int, x: Int, y: Int) -> Void): Void {
+	public function remove(?touchStartListener: (id: Int, x: Int, y: Int) -> Void, ?touchEndListener: (id: Int, x: Int, y: Int) -> Void,
+			?moveListener: (id: Int, x: Int, y: Int) -> Void): Void {
 		if (touchStartListener != null)
 			touchStartListeners.remove(touchStartListener);
 		if (touchEndListener != null)
