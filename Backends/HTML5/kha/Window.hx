@@ -88,7 +88,7 @@ class Window {
 	public var width(get, set): Int;
 
 	function get_width(): Int {
-		return canvas.width;
+		return canvas.width == 0 ? defaultWidth : canvas.width;
 	}
 
 	function set_width(value: Int): Int {
@@ -98,7 +98,7 @@ class Window {
 	public var height(get, set): Int;
 
 	function get_height(): Int {
-		return canvas.height;
+		return canvas.height == 0 ? defaultHeight : canvas.height;
 	}
 
 	function set_height(value: Int): Int {
