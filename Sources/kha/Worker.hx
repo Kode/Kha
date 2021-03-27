@@ -78,38 +78,51 @@ class Worker {
 import sys.thread.Thread;
 import sys.thread.Tls;
 import kha.Scheduler;
-using Lambda;
 
-private typedef Message = {
-	thread: Thread,
-	message: Dynamic
+private class Message {
+	public final threadId: Int;
+	public final message: Dynamic;
+
+	public function new(message: Dynamic) {
+		this.threadId = @:privateAccess Worker.threadId.value;
+		this.message = message;
+	}
 }
 
 class Worker {
 	public static var _mainThread: Thread;
-	// for some reason we cannot have a Map<Thread, Dynamic->Void>
-	static var notifyFuncs: Array<{thread:Thread, func:Dynamic->Void}> = [];
+
+	static var notifyFuncs: Array<Dynamic->Void> = [];
 	static var taskId: Int = -1;
+	static var nextThreadId: Int = 0;
+	static var threadId = new Tls<Int>();
 
 	var thread: Thread;
+	var id: Int;
 
-	function new(thread: Thread) {
+	function new(thread: Thread, id: Int) {
 		this.thread = thread;
+		this.id = id;
 	}
 
 	public static function create(clazz: Class<Dynamic>): Worker {
-		return new Worker(Thread.create(Reflect.field(clazz, "main")));
+		var id = nextThreadId++;
+		return new Worker(Thread.create(function() {
+			receiver.value = null;
+			threadId.value = id;
+			Reflect.field(clazz, "main")();
+		}), id);
 	}
 
 	public function notify(func: Dynamic->Void): Void {
-		notifyFuncs.push({thread:this.thread, func:func});
+		notifyFuncs[id] = func;
 		if (taskId != -1) return;
 		taskId = Scheduler.addFrameTask(function() {
 			var message:Message = Thread.readMessage(false);
 			if (message != null) {
-				var func = notifyFuncs.find(it -> return it.thread == message.thread);
+				var func = notifyFuncs[message.threadId];
 				if (func != null) {
-					func.func(message.message);
+					func(message.message);
 				}
 			}
 		}, 0);
@@ -129,7 +142,7 @@ class Worker {
 	}
 
 	public static function postFromWorker(message: Dynamic): Void {
-		_mainThread.sendMessage({thread: Thread.current(), message: message});
+		_mainThread.sendMessage(new Message(message));
 	}
 }
 #end
