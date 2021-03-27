@@ -76,10 +76,20 @@ class Worker {
 
 #if kha_kore
 import sys.thread.Thread;
+import sys.thread.Tls;
 import kha.Scheduler;
+using Lambda;
+
+private typedef Message = {
+	thread: Thread,
+	message: Dynamic
+}
 
 class Worker {
 	public static var _mainThread: Thread;
+	// for some reason we cannot have a Map<Thread, Dynamic->Void>
+	static var notifyFuncs: Array<{thread:Thread, func:Dynamic->Void}> = [];
+	static var taskId: Int = -1;
 
 	var thread: Thread;
 
@@ -92,10 +102,15 @@ class Worker {
 	}
 
 	public function notify(func: Dynamic->Void): Void {
-		Scheduler.addFrameTask(function() {
-			var message = Thread.readMessage(false);
+		notifyFuncs.push({thread:this.thread, func:func});
+		if (taskId != -1) return;
+		taskId = Scheduler.addFrameTask(function() {
+			var message:Message = Thread.readMessage(false);
 			if (message != null) {
-				func(message);
+				var func = notifyFuncs.find(it -> return it.thread == message.thread);
+				if (func != null) {
+					func.func(message.message);
+				}
 			}
 		}, 0);
 	}
@@ -114,7 +129,7 @@ class Worker {
 	}
 
 	public static function postFromWorker(message: Dynamic): Void {
-		_mainThread.sendMessage(message);
+		_mainThread.sendMessage({thread: Thread.current(), message: message});
 	}
 }
 #end
