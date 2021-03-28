@@ -9,7 +9,7 @@ import sys.io.File;
 
 using haxe.macro.ExprTools;
 
-#if kha_html5
+#if (kha_html5 || kha_krom)
 class Worker {
 	#if kha_in_worker
 	public static function notifyWorker(func: Dynamic->Void): Void {
