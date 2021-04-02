@@ -108,7 +108,8 @@ class Assets {
 			filesLeft--;
 			bytesLeft -= bytes;
 			progress = 1 - (bytesLeft / byteCount);
-			if (filesLeft == 0) callback();
+			if (filesLeft == 0)
+				callback();
 		}
 
 		function onError(err: AssetError, bytes: Int): Void {
@@ -116,12 +117,12 @@ class Assets {
 			onLoaded(bytes);
 		}
 
-		function loadFunc(desc: Dynamic, done: (bytes: Int)->Void, failure: (err: AssetError, bytes: Int)->Void): Void {
+		function loadFunc(desc: Dynamic, done: (bytes: Int) -> Void, failure: (err: AssetError, bytes: Int) -> Void): Void {
 			final name = desc.name;
 			final size = desc.file_sizes[0];
 			switch (desc.type) {
 				case "image":
-					Assets.loadImage(name, function (image: Image) done(size), function(err: AssetError) {
+					Assets.loadImage(name, function(image: Image) done(size), function(err: AssetError) {
 						onError(err, size);
 					});
 				case "sound":
@@ -131,20 +132,21 @@ class Assets {
 								done(size);
 							});
 						}
-						else done(size);
+						else
+							done(size);
 					}, function(err: AssetError) {
 						onError(err, size);
 					});
 				case "blob":
-					Assets.loadBlob(name, function (blob: Blob) done(size), function(err: AssetError) {
+					Assets.loadBlob(name, function(blob: Blob) done(size), function(err: AssetError) {
 						onError(err, size);
 					});
 				case "font":
-					Assets.loadFont(name, function (font: Font) done(size), function(err: AssetError) {
+					Assets.loadFont(name, function(font: Font) done(size), function(err: AssetError) {
 						onError(err, size);
 					});
 				case "video":
-					Assets.loadVideo(name, function (video: Video) done(size), function(err: AssetError) {
+					Assets.loadVideo(name, function(video: Video) done(size), function(err: AssetError) {
 						onError(err, size);
 					});
 			}

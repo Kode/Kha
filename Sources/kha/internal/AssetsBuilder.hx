@@ -56,7 +56,6 @@ class AssetsBuilder {
 		for (file in files) {
 			var name = file.name;
 			final pos = Context.currentPos();
-			var filename: String = file.files[0];
 			var filesize: Int = file.file_sizes[0];
 
 			if (file.type == type) {
@@ -126,31 +125,31 @@ class AssetsBuilder {
 					doc: null,
 					meta: [],
 					access: [APublic],
-					kind: FVar(macro: Dynamic, macro $v { filesize }),
+					kind: FVar(macro:Dynamic, macro $v{filesize}),
 					pos: Context.currentPos()
 				});
 
-				var loadExpressions = macro { };
+				var loadExpressions = macro {};
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Assets.loadImage($v{name}, function (image: Image) done($v{filesize}), failure);
+							Assets.loadImage($v{name}, function(image: Image) done($v{filesize}), failure);
 						};
 					case "sound":
 						loadExpressions = macro {
-							Assets.loadSound($v{name}, function (sound: Sound) done($v{filesize}), failure);
+							Assets.loadSound($v{name}, function(sound: Sound) done($v{filesize}), failure);
 						};
 					case "blob":
 						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function (blob: Blob) done($v{filesize}), failure);
+							Assets.loadBlob($v{name}, function(blob: Blob) done($v{filesize}), failure);
 						};
 					case "font":
 						loadExpressions = macro {
-							Assets.loadFont($v{name}, function (font: Font) done($v{filesize}), failure);
+							Assets.loadFont($v{name}, function(font: Font) done($v{filesize}), failure);
 						};
 					case "video":
 						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function (video: Video) done($v{filesize}), failure);
+							Assets.loadVideo($v{name}, function(video: Video) done($v{filesize}), failure);
 						};
 				}
 
@@ -162,17 +161,20 @@ class AssetsBuilder {
 						ret: null,
 						params: null,
 						expr: loadExpressions,
-						args: [{
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.IntCallback")),
-							opt: null,
-							name: "done"
-						}, {
-							value: null,
-							type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
-							opt: true,
-							name: "failure"
-						}]
+						args: [
+							{
+								value: null,
+								type: Context.toComplexType(Context.getType("kha.internal.IntCallback")),
+								opt: null,
+								name: "done"
+							},
+							{
+								value: null,
+								type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
+								opt: true,
+								name: "failure"
+							}
+						]
 					}),
 					pos: pos
 				});
