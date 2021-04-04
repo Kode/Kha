@@ -26,7 +26,6 @@ class Worker {
 		#end
 	}
 
-	public static function pumpMessages(): Void {}
 	#else
 	#if macro
 	static var threads = new Array<String>();
@@ -105,22 +104,17 @@ class Worker {
 		thread.sendMessage(message);
 	}
 
-	static var receiver: Dynamic->Void;
-
 	public static function notifyWorker(func: Dynamic->Void): Void {
-		receiver = func;
+		while (true) {
+			var message = Thread.readMessage(true);
+			if (message != null) {
+				func(message);
+			}
+		}
 	}
 
 	public static function postFromWorker(message: Dynamic): Void {
 		_mainThread.sendMessage(message);
-	}
-
-	public static function pumpMessages(): Void {
-		var message = Thread.readMessage(true);
-		while (message != null) {
-			receiver(message);
-			message = Thread.readMessage(true);
-		}
 	}
 }
 #end
