@@ -27,7 +27,7 @@ class Network {
 
 	@:functionCode("
 		kinc_socket_init(&socket);
-		kinc_socket_open(&socket, port);
+		kinc_socket_open(&socket, KINC_SOCKET_PROTOCOL_UDP, port, false);
 	")
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
