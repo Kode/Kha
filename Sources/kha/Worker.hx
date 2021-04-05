@@ -108,7 +108,6 @@ class Worker {
 	public static function create(clazz: Class<Dynamic>): Worker {
 		var id = nextThreadId++;
 		return new Worker(Thread.create(function() {
-			receiver.value = null;
 			threadId.value = id;
 			Reflect.field(clazz, "main")();
 		}), id);
@@ -121,9 +120,7 @@ class Worker {
 			var message:Message = Thread.readMessage(false);
 			if (message != null) {
 				var func = notifyFuncs[message.threadId];
-				if (func != null) {
-					func(message.message);
-				}
+				func(message.message);
 			}
 		}, 0);
 	}
