@@ -473,7 +473,8 @@ class SystemImpl {
 			event.preventDefault();
 			if (event.dataTransfer != null && event.dataTransfer.files != null) {
 				for (file in event.dataTransfer.files) {
-					System.dropFiles(file.name);
+					LoaderImpl.dropFiles.set(file.name, file);
+					System.dropFiles("drop://" + file.name);
 				}
 			}
 		});
