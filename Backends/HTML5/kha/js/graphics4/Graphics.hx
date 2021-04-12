@@ -493,9 +493,9 @@ class Graphics implements kha.graphics4.Graphics {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
 		setStencilParameters(true, pipe.stencilFrontMode, pipe.stencilFrontBothPass, pipe.stencilFrontDepthFail, pipe.stencilFrontFail,
-			pipe.stencilFrontReferenceValue, pipe.stencilFrontReadMask, pipe.stencilFrontWriteMask);
+			pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setStencilParameters(false, pipe.stencilBackMode, pipe.stencilBackBothPass, pipe.stencilBackDepthFail, pipe.stencilBackFail,
-			pipe.stencilBackReferenceValue, pipe.stencilBackReadMask, pipe.stencilBackWriteMask);
+			pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination,
 			pipe.alphaBlendOperation);
 		currentPipeline = pipe;
@@ -506,10 +506,9 @@ class Graphics implements kha.graphics4.Graphics {
 		colorMaskAlpha = pipe.colorWriteMaskAlpha;
 	}
 
-	public function setStencilReferenceValue(front: Bool, value: Int): Void {
-		SystemImpl.gl.stencilFuncSeparate(front ? GL.FRONT : GL.BACK,
-			convertCompareMode(front ? currentPipeline.stencilFrontMode : currentPipeline.stencilBackMode), value,
-			front ? currentPipeline.stencilBackReadMask : currentPipeline.stencilBackReadMask);
+	public function setStencilReferenceValue(value: Int): Void {
+		SystemImpl.gl.stencilFuncSeparate(GL.FRONT, convertCompareMode(currentPipeline.stencilFrontMode), value, currentPipeline.stencilReadMask);
+		SystemImpl.gl.stencilFuncSeparate(GL.BACK, convertCompareMode(currentPipeline.stencilBackMode), value, currentPipeline.stencilReadMask);
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {

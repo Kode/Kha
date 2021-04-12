@@ -165,9 +165,10 @@ class PipelineState extends PipelineStateBase {
 			case Static(value): value;
 			default: 0;
 		}
-		setStates(cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, depthWrite, stencilReferenceValue,
-			getBlendFunc(blendSource), getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination),
-			getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment));
+		setStates(cullMode, depthMode, stencilFrontMode, stencilFrontBothPass, stencilFrontDepthFail, stencilFrontFail, stencilBackMode, stencilBackBothPass,
+			stencilBackDepthFail, stencilBackFail, depthWrite, stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination),
+			getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination), getDepthBufferBits(depthStencilAttachment),
+			getStencilBufferBits(depthStencilAttachment));
 		linkWithStructures2(inputLayout.length > 0 ? inputLayout[0] : null, inputLayout.length > 1 ? inputLayout[1] : null,
 			inputLayout.length > 2 ? inputLayout[2] : null, inputLayout.length > 3 ? inputLayout[3] : null, inputLayout.length);
 	}
@@ -233,10 +234,14 @@ class PipelineState extends PipelineStateBase {
 		pipeline.depth_mode = convertCompareMode(depthMode);
 		pipeline.depth_write = depthWrite;
 
-		pipeline.stencil_mode = convertCompareMode(stencilMode);
-		pipeline.stencil_both_pass = convertStencilAction(stencilBothPass);
-		pipeline.stencil_depth_fail = convertStencilAction(stencilDepthFail);
-		pipeline.stencil_fail = convertStencilAction(stencilFail);
+		pipeline.stencil_front_mode = convertCompareMode(stencilFrontMode);
+		pipeline.stencil_front_both_pass = convertStencilAction(stencilFrontBothPass);
+		pipeline.stencil_front_depth_fail = convertStencilAction(stencilFrontDepthFail);
+		pipeline.stencil_front_fail = convertStencilAction(stencilFrontFail);
+		pipeline.stencil_back_mode = convertCompareMode(stencilBackMode);
+		pipeline.stencil_back_both_pass = convertStencilAction(stencilBackBothPass);
+		pipeline.stencil_back_depth_fail = convertStencilAction(stencilBackDepthFail);
+		pipeline.stencil_back_fail = convertStencilAction(stencilBackFail);
 		pipeline.stencil_reference_value = stencilReferenceValue;
 		pipeline.stencil_read_mask = stencilReadMask;
 		pipeline.stencil_write_mask = stencilWriteMask;
@@ -263,8 +268,9 @@ class PipelineState extends PipelineStateBase {
 
 		pipeline.conservative_rasterization = conservativeRasterization;
 	")
-	function setStates(cullMode: Int, depthMode: Int, stencilMode: Int, stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, depthWrite: Bool,
-		stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int,
+	function setStates(cullMode: Int, depthMode: Int, stencilFrontMode: Int, stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int,
+		stencilBackMode: Int, stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, depthWrite: Bool, stencilReferenceValue: Int,
+		blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int,
 		stencilAttachmentBits: Int): Void {}
 
 	@:functionCode("kinc_g4_set_pipeline(&pipeline);")

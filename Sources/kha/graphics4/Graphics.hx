@@ -47,7 +47,7 @@ interface Graphics {
 	function maxBoundTextures(): Int;
 	// function maxTextureSize(): Int;
 	// function supportsNonPow2Textures(): Bool;
-	function setStencilReferenceValue(front: Bool, value: Int): Void;
+	function setStencilReferenceValue(value: Int): Void;
 
 	function instancedRenderingAvailable(): Bool;
 
