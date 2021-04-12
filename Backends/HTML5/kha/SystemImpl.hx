@@ -517,8 +517,8 @@ class SystemImpl {
 
 			if (canvas.getContext != null) {
 				// clientWidth/Height is in downscaled "css pixels" when a <meta viewport="" /> is set in the html file
-				var displayWidth = canvas.clientWidth * Std.int(js.Browser.window.devicePixelRatio);
-				var displayHeight = canvas.clientHeight * Std.int(js.Browser.window.devicePixelRatio);
+				var displayWidth = Std.int(canvas.clientWidth * js.Browser.window.devicePixelRatio);
+				var displayHeight = Std.int(canvas.clientHeight * js.Browser.window.devicePixelRatio);
 
 				// Check if the canvas rendering buffer is not the same size.
 				if (canvas.width != displayWidth || canvas.height != displayHeight) {
