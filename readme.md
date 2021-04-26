@@ -42,7 +42,6 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Xbox One
 * Nintendo Switch
 * Tizen
-* Flash
 * Unity 3D
 * Node.js (for automatically created server versions)
 * Java and AWT
