@@ -105,6 +105,7 @@ extern class Krom {
 	static function unlockMouse(): Void;
 	static function canLockMouse(): Bool;
 	static function isMouseLocked(): Bool;
+	static function setMousePosition(windowId: Int, x: Int, y: Int): Void;
 	static function showMouse(show: Bool): Void;
 	static function setAudioCallback(callback: Int->Void): Void;
 	static function getTime(): Float;
