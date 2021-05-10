@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include "loader.h"
 
 #include <kinc/audio1/sound.h>

@@ -4,7 +4,6 @@ import haxe.io.Bytes;
 import kha.Blob;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/compute/compute.h>
 ")
 @:headerClassCode("kinc_compute_shader shader;")

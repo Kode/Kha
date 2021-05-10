@@ -3,7 +3,6 @@ package kha.graphics4;
 import kha.arrays.Uint32Array;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/indexbuffer.h>
 ")
 @:headerClassCode("kinc_g4_index_buffer_t buffer;")

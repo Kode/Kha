@@ -8,7 +8,6 @@ import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/rendertarget.h>
 #include <kinc/graphics4/texture.h>
 #include <kinc/graphics4/texturearray.h>

@@ -1,7 +1,6 @@
 package kha;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/display.h>
 ")
 class Display {

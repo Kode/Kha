@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/Audio1/Sound.h>
 #include <hl.h>
 

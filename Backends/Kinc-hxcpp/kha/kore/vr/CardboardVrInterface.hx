@@ -29,7 +29,6 @@ import kha.Loader;
 
 #if ANDROID
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Vr/VrInterface.h>
 ')
 #end

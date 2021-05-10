@@ -4,7 +4,6 @@ import haxe.io.Bytes;
 import kha.Blob;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/Graphics.h>
 ')
 

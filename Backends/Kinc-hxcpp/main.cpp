@@ -1,5 +1,3 @@
-#include <kinc/pch.h>
-
 #include <khalib/loader.h>
 
 #include <kinc/audio2/audio.h>

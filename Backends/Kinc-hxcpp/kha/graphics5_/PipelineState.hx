@@ -7,7 +7,6 @@ import kha.graphics5.VertexShader;
 import kha.graphics5.VertexStructure;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/Graphics.h>
 #include <Kore/Graphics5/PipelineState.h>
 ')

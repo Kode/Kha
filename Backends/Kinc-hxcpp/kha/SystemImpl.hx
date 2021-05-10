@@ -28,7 +28,6 @@ import kha.vr.VrInterfaceEmulated;
 #end
 #end
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/system.h>
 #include <kinc/input/gamepad.h>
 #include <kinc/input/mouse.h>

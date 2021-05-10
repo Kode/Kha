@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <hl.h>
 
 extern "C" vbyte* hl_kore_float32array_alloc(int elements) {

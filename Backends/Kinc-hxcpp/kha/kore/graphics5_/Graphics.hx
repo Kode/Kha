@@ -9,7 +9,6 @@ import kha.graphics5.RayTracePipeline;
 #end
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/Graphics.h>
 #include <Kore/Graphics5/RayTrace.h>
 ')

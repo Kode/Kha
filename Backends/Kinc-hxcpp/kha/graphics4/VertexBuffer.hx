@@ -7,7 +7,6 @@ import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/vertexbuffer.h>
 ")
 @:headerClassCode("kinc_g4_vertex_buffer_t buffer;")

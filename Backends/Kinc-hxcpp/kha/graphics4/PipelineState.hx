@@ -7,7 +7,6 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/pipeline.h>
 #include <kinc/graphics4/vertexstructure.h>

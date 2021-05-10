@@ -6,7 +6,6 @@ import kha.graphics5.VertexElement;
 import kha.graphics5.VertexStructure;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/Graphics.h>
 ')
 

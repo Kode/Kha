@@ -14,7 +14,6 @@ import kha.graphics4.TextureFilter;
 import kha.graphics4.MipMapFilter;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/compute/compute.h>
 ")
 class Compute {

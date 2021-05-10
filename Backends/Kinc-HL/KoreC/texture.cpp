@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Video.h>
 #include <hl.h>

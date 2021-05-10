@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/System.h>
 #include <Kore/Log.h>
 #include <Kore/Input/Keyboard.h>

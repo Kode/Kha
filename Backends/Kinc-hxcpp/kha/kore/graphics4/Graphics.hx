@@ -34,7 +34,6 @@ import kha.math.Vector4;
 import kha.Video;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/display.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/rendertarget.h>
