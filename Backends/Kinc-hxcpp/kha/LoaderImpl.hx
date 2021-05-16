@@ -7,6 +7,7 @@ import haxe.io.BytesData;
 @:headerCode("
 #include <kinc/input/keyboard.h>
 #include <kinc/system.h>
+#include <kinc/video.h>
 #include <khalib/loader.h>
 ")
 class BlobCallback {
