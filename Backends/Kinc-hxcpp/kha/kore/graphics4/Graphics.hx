@@ -378,10 +378,10 @@ class Graphics implements kha.graphics4.Graphics {
 
 	@:functionCode("
 		kinc_matrix4x4_t value;
-		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 0, 1, matrix->_10); kinc_matrix4x4_set(&value, 0, 2, matrix->_20); kinc_matrix4x4_set(&value, 0, 3, matrix->_30);
-		kinc_matrix4x4_set(&value, 1, 0, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 1, 2, matrix->_21); kinc_matrix4x4_set(&value, 1, 3, matrix->_31);
-		kinc_matrix4x4_set(&value, 2, 0, matrix->_02); kinc_matrix4x4_set(&value, 2, 1, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 2, 3, matrix->_32);
-		kinc_matrix4x4_set(&value, 3, 0, matrix->_03); kinc_matrix4x4_set(&value, 3, 1, matrix->_13); kinc_matrix4x4_set(&value, 3, 2, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
+		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 1, 0, matrix->_10); kinc_matrix4x4_set(&value, 2, 0, matrix->_20); kinc_matrix4x4_set(&value, 3, 0, matrix->_30);
+		kinc_matrix4x4_set(&value, 0, 1, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 2, 1, matrix->_21); kinc_matrix4x4_set(&value, 3, 1, matrix->_31);
+		kinc_matrix4x4_set(&value, 0, 2, matrix->_02); kinc_matrix4x4_set(&value, 1, 2, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 3, 2, matrix->_32);
+		kinc_matrix4x4_set(&value, 0, 3, matrix->_03); kinc_matrix4x4_set(&value, 1, 3, matrix->_13); kinc_matrix4x4_set(&value, 2, 3, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
 		kinc_g4_set_matrix4(location->location, &value);
 	")
 	function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {}
@@ -392,9 +392,9 @@ class Graphics implements kha.graphics4.Graphics {
 
 	@:functionCode("
 		kinc_matrix3x3_t value;
-		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 0, 1, matrix->_10); kinc_matrix3x3_set(&value, 0, 2, matrix->_20);
-		kinc_matrix3x3_set(&value, 1, 0, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 1, 2, matrix->_21);
-		kinc_matrix3x3_set(&value, 2, 0, matrix->_02); kinc_matrix3x3_set(&value, 2, 1, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
+		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 1, 0, matrix->_10); kinc_matrix3x3_set(&value, 2, 0, matrix->_20);
+		kinc_matrix3x3_set(&value, 0, 1, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 2, 1, matrix->_21);
+		kinc_matrix3x3_set(&value, 0, 2, matrix->_02); kinc_matrix3x3_set(&value, 1, 2, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
 		kinc_g4_set_matrix3(location->location, &value);
 	")
 	function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {}
