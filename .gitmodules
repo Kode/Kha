@@ -1,7 +1,7 @@
 [submodule "Tools/khamake"]
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git
-	branch = master
+	branch = jscompat
 [submodule "Backends/Kore/khacpp"]
 	path = Backends/Kore/khacpp
 	url = https://github.com/Kode/khacpp.git
@@ -14,17 +14,17 @@
 [submodule "Tools/oggenc"]
 	path = Tools/oggenc
 	url = https://github.com/Kode/oggenc_bin.git
-	branch = master
+	branch = jscompat
 	shallow = true
 [submodule "Tools/kravur"]
 	path = Tools/kravur
 	url = https://github.com/Kode/kravur_bin.git
-	branch = master
+	branch = jscompat
 	shallow = true
 [submodule "Tools/lame"]
 	path = Tools/lame
 	url = https://github.com/Kode/lame_bin.git
-	branch = master
+	branch = jscompat
 	shallow = true
 [submodule "Kinc"]
 	path = Kinc
