@@ -222,7 +222,7 @@ class SystemImpl {
 
 	public static function unlockMouse(windowId: Int = 0): Void {
 		if (isMouseLocked()) {
-			untyped __cpp__("kinc_mouse_unlock(windowId);");
+			untyped __cpp__("kinc_mouse_unlock();");
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -230,11 +230,11 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(windowId: Int = 0): Bool {
-		return untyped __cpp__("kinc_mouse_can_lock(windowId)");
+		return untyped __cpp__("kinc_mouse_can_lock()");
 	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
-		return untyped __cpp__("kinc_mouse_is_locked(windowId)");
+		return untyped __cpp__("kinc_mouse_is_locked()");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
