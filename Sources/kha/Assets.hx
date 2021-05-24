@@ -132,8 +132,9 @@ class Assets {
 								done(size);
 							});
 						}
-						else
+						else {
 							done(size);
+						}
 					}, function(err: AssetError) {
 						onError(err, size);
 					});
