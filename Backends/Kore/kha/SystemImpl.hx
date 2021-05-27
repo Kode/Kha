@@ -117,6 +117,16 @@ class SystemImpl {
 		return "en_US";
 	}
 
+	@:functionCode('return Kore::System::dlcCount();')
+	public static function getDlcCount(): Int {
+		return 0;
+	}
+
+	@:functionCode('return ::String(Kore::System::dlc(index));')
+	public static function getDlc(index: Int): String {
+		return "_";
+	}
+
 	public static function requestShutdown(): Bool {
 		untyped __cpp__('Kore::System::stop()');
 		return true;

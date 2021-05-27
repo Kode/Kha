@@ -273,6 +273,14 @@ class System {
 		return SystemImpl.getLanguageEx();
 	}
 
+	public static function getDlcCount(): Int {
+		return SystemImpl.getDlcCount();
+	}
+
+	public static function getDlc(index: Int): String {
+		return SystemImpl.getDlc(index);
+	}
+
   /**
 	 * Schedules the application to stop as soon as possible. This is not possible on all targets.
 	 * @return Returns true if the application can be stopped
