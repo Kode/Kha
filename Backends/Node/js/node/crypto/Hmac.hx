@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
 import js.node.Buffer;
@@ -39,8 +40,8 @@ extern class Hmac extends js.node.stream.Transform<Hmac> {
 
 		This can be called many times with new data as it is streamed.
 	**/
-	@:overload(function(data:Buffer):Void {})
-	function update(data:String, ?input_encoding:String):Void;
+	@:overload(function(data:Buffer):Hmac {})
+	function update(data:String, ?input_encoding:String):Hmac;
 
 	/**
 		Calculates the digest of all of the passed data to the hmac.

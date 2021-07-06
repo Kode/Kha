@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,24 +19,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.domain;
 
 import haxe.Constraints.Function;
-
+import js.node.Timers.Timeout;
 import js.node.events.EventEmitter;
-import js.Node.TimerObject;
 
 /**
 	Enumeration of events emitted by `Domain` objects.
 **/
+@:deprecated
 @:enum abstract DomainEvent<T:Function>(Event<T>) to Event<T> {
-	var Error : DomainEvent<DomainError->Void> = "error";
-	var Dispose : DomainEvent<Void->Void> = "dispose";
+	var Error:DomainEvent<DomainError->Void> = "error";
+	var Dispose:DomainEvent<Void->Void> = "dispose";
 }
 
 /**
 	Any time an Error object is routed through a domain, a few extra fields are added to it.
 **/
+@:deprecated
 typedef DomainError = {
 	/**
 		The domain that first handled the error.
@@ -63,6 +65,7 @@ typedef DomainError = {
 	The Domain class encapsulates the functionality of routing errors
 	and uncaught exceptions to the active Domain object.
 **/
+@:deprecated
 extern class Domain extends EventEmitter<Domain> {
 	/**
 		Run the supplied function in the context of the domain, implicitly binding all event emitters, timers,
@@ -75,7 +78,7 @@ extern class Domain extends EventEmitter<Domain> {
 	/**
 		An array of timers and event emitters that have been explicitly added to the domain.
 	**/
-	var members(default,null):Array<haxe.extern.EitherType<IEventEmitter,TimerObject>>;
+	var members(default, null):Array<haxe.extern.EitherType<IEventEmitter, Timeout>>;
 
 	/**
 		Explicitly adds an `emitter` to the domain.
@@ -89,13 +92,13 @@ extern class Domain extends EventEmitter<Domain> {
 		If the Timer or EventEmitter was already bound to a domain, it is removed from that one,
 		and bound to this one instead.
 	**/
-	@:overload(function(emitter:TimerObject):Void {})
+	@:overload(function(emitter:Timeout):Void {})
 	function add(emitter:IEventEmitter):Void;
 
 	/**
 		The opposite of `add`. Removes domain handling from the specified emitter.
 	**/
-	@:overload(function(emitter:TimerObject):Void {})
+	@:overload(function(emitter:Timeout):Void {})
 	function remove(emitter:IEventEmitter):Void;
 
 	/**

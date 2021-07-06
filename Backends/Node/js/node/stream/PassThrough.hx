@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,12 +19,18 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.stream;
 
 /**
-    This is a trivial implementation of a `Transform` stream that simply passes the input bytes across to the output.
-    Its purpose is mainly for examples and testing, but there are occasionally use cases where it can come in handy
-    as a building block for novel sorts of streams.
+	The `stream.PassThrough` class is a trivial implementation of a `Transform` stream
+	that simply passes the input bytes across to the output.
+	Its purpose is primarily for examples and testing, but there are some use cases
+	where `stream.PassThrough` is useful as a building block for novel sorts of streams.
+
+	@see https://nodejs.org/api/stream.html#stream_class_stream_passthrough
 **/
 @:jsRequire("stream", "PassThrough")
-extern class PassThrough extends Transform<PassThrough> {}
+extern class PassThrough extends Transform<PassThrough> {
+	function new();
+}

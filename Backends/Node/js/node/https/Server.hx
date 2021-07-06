@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,10 +19,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.https;
 
 /**
-    HTTPS server class.
-    It emits events same as `http.Server`. See `http.Server` for more information.
+	This class is a subclass of `tls.Server` and emits events same as `http.Server`.
+	See [http.Server](https://nodejs.org/api/http.html#http_class_http_server) for more information.
 **/
+@:jsRequire("https", "Server")
 extern class Server extends js.node.tls.Server {}

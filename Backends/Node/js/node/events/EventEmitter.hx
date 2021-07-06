@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,129 +19,246 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.events;
 
 import haxe.Constraints.Function;
+import haxe.extern.Rest;
+#if haxe4
+import haxe.extern.EitherType;
+import js.lib.Symbol;
+#end
 
 /**
 	Enumeration of events emitted by all `EventEmitter` instances.
 **/
 @:enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
 	/**
-		This event is emitted any time someone adds a new listener.
+		The `EventEmitter` instance will emit its own `'newListener'` event before
+		a listener is added to its internal array of listeners.
 
-		Listener arguments:
-			event - The event name
-			listener - The event handler function
-
-		It is unspecified if listener is in the list returned by emitter.listeners(event).
+		@see https://nodejs.org/api/events.html#events_event_newlistener
 	**/
-	var NewListener : EventEmitterEvent<String->Function->Void> = "newListener";
+	#if haxe4
+	var NewListener:EventEmitterEvent<(eventName:EitherType<String, Symbol>, listener:Function) -> Void> = "newListener";
+	#else
+	var NewListener:EventEmitterEvent<String->Function->Void> = "newListener";
+	#end
 
 	/**
-		This event is emitted any time someone removes a listener.
+		The `'removeListener'` event is emitted after the `listener` is removed.
 
-		Listener arguments:
-			event - The event name
-			listener - The event handler function
-
-		It is unspecified if listener is in the list returned by emitter.listeners(event).
+		@see https://nodejs.org/api/events.html#events_event_removelistener
 	**/
-	var RemoveListener : EventEmitterEvent<String->Function->Void> = "removeListener";
+	#if haxe4
+	var RemoveListener:EventEmitterEvent<(eventName:EitherType<String, Symbol>, listener:Function) -> Void> = "removeListener";
+	#else
+	var RemoveListener:EventEmitterEvent<String->Function->Void> = "removeListener";
+	#end
+}
+
+/**
+	The `EventEmitter` class is defined and exposed by the `events` module:
+
+	@see https://nodejs.org/api/events.html#events_class_eventemitter
+**/
+@:jsRequire("events", "EventEmitter")
+extern class EventEmitter<TSelf:EventEmitter<TSelf>> implements IEventEmitter {
+	function new();
+
+	/**
+		By default, a maximum of `10` listeners can be registered for any single
+		event. This limit can be changed for individual `EventEmitter` instances
+		using the `emitter.setMaxListeners(n)` method. To change the default
+		for all `EventEmitter` instances, the `EventEmitter.defaultMaxListeners`
+		property can be used. If this value is not a positive number, a `TypeError`
+		will be thrown.
+
+		@see https://nodejs.org/api/events.html#events_eventemitter_defaultmaxlisteners
+	**/
+	static var defaultMaxListeners:Int;
+
+	/**
+		Alias for `emitter.on(eventName, listener)`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_addlistener_eventname_listener
+	**/
+	function addListener<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Synchronously calls each of the listeners registered for the event named
+		`eventName`, in the order they were registered, passing the supplied arguments
+		to each.
+
+		@see https://nodejs.org/api/events.html#events_emitter_emit_eventname_args
+	**/
+	function emit<T:Function>(eventName:Event<T>, args:Rest<Dynamic>):Bool;
+
+	/**
+		Returns an array listing the events for which the emitter has registered
+		listeners. The values in the array will be strings or `Symbol`s.
+
+		@see https://nodejs.org/api/events.html#events_emitter_eventnames
+	**/
+	#if haxe4
+	function eventNames():Array<EitherType<String, Symbol>>;
+	#else
+	function eventNames():Array<String>;
+	#end
+
+	/**
+		Returns the current max listener value for the `EventEmitter` which is either
+		set by `emitter.setMaxListeners(n)` or defaults to
+		`EventEmitter.defaultMaxListeners`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_getmaxlisteners
+	**/
+	function getMaxListeners():Int;
+
+	/**
+		Returns the number of listeners listening to the event named `eventName`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_listenercount_eventname
+	**/
+	function listenerCount<T:Function>(eventName:Event<T>):Int;
+
+	/**
+		Returns a copy of the array of listeners for the event named `eventName`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_listeners_eventname
+	**/
+	function listeners<T:Function>(eventName:Event<T>):Array<T>;
+
+	/**
+		Alias for `emitter.removeListener()`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_off_eventname_listener
+	**/
+	function off<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Adds the `listener` function to the end of the listeners array for the
+		event named `eventName`. No checks are made to see if the `listener` has
+		already been added. Multiple calls passing the same combination of `eventName`
+		and `listener` will result in the `listener` being added, and called, multiple
+		times.
+
+		@see https://nodejs.org/api/events.html#events_emitter_on_eventname_listener
+	**/
+	function on<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Adds a one-time `listener` function for the event named `eventName`. The
+		next time `eventName` is triggered, this listener is removed and then invoked.
+
+		@see https://nodejs.org/api/events.html#events_emitter_once_eventname_listener
+	**/
+	function once<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Adds the `listener` function to the beginning of the listeners array for the
+		event named `eventName`. No checks are made to see if the `listener` has
+		already been added. Multiple calls passing the same combination of `eventName`
+		and `listener` will result in the `listener` being added, and called, multiple
+		times.
+
+		@see https://nodejs.org/api/events.html#events_emitter_prependlistener_eventname_listener
+	**/
+	function prependListener<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Adds a one-time `listener` function for the event named `eventName` to the
+		beginning of the listeners array. The next time `eventName` is triggered, this
+		listener is removed, and then invoked.
+
+		@see https://nodejs.org/api/events.html#events_emitter_prependoncelistener_eventname_listener
+	**/
+	function prependOnceListener<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		Removes all listeners, or those of the specified `eventName`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_removealllisteners_eventname
+	**/
+	function removeAllListeners<T:Function>(?eventName:Event<T>):TSelf;
+
+	/**
+		Removes the specified `listener` from the listener array for the event named
+		`eventName`.
+
+		@see https://nodejs.org/api/events.html#events_emitter_removelistener_eventname_listener
+	**/
+	function removeListener<T:Function>(eventName:Event<T>, listener:T):TSelf;
+
+	/**
+		By default `EventEmitter`s will print a warning if more than `10` listeners are
+		added for a particular event. This is a useful default that helps finding
+		memory leaks. Obviously, not all events should be limited to just 10 listeners.
+		The `emitter.setMaxListeners()` method allows the limit to be modified for this
+		specific `EventEmitter` instance. The value can be set to `Infinity` (or `0`)
+		to indicate an unlimited number of listeners.
+
+		@see https://nodejs.org/api/events.html#events_emitter_setmaxlisteners_n
+	**/
+	function setMaxListeners(n:Int):Void;
+
+	/**
+		Returns a copy of the array of listeners for the event named `eventName`,
+		including any wrappers (such as those created by `.once()`).
+
+		@see https://nodejs.org/api/events.html#events_emitter_rawlisteners_eventname
+	**/
+	function rawListeners<T:Function>(eventName:Event<T>):Array<T>;
+}
+
+/**
+	`IEventEmitter` interface is used as "any EventEmitter".
+
+	See `EventEmitter` for actual class documentation.
+**/
+@:remove
+extern interface IEventEmitter {
+	function addListener<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function emit<T:Function>(eventName:Event<T>, args:Rest<Dynamic>):Bool;
+
+	#if haxe4
+	function eventNames():Array<EitherType<String, Symbol>>;
+	#else
+	function eventNames():Array<String>;
+	#end
+
+	function getMaxListeners():Int;
+
+	function listenerCount<T:Function>(eventName:Event<T>):Int;
+
+	function listeners<T:Function>(eventName:Event<T>):Array<T>;
+
+	function off<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function on<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function once<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function prependListener<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function prependOnceListener<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function removeAllListeners<T:Function>(?eventName:Event<T>):IEventEmitter;
+
+	function removeListener<T:Function>(eventName:Event<T>, listener:T):IEventEmitter;
+
+	function setMaxListeners(n:Int):Void;
+
+	function rawListeners<T:Function>(eventName:Event<T>):Array<T>;
 }
 
 /**
 	Abstract type for events. Its type parameter is a signature
 	of a listener for a concrete event.
 **/
-abstract Event<T:Function>(String) from String to String {}
-
-/**
-	All objects which emit events are instances of `EventEmitter`.
-
-	Typically, event names are represented by a camel-cased string, however,
-	there aren't any strict restrictions on that, as any string will be accepted.
-
-	Functions can then be attached to objects, to be executed when an event is emitted.
-	These functions are called listeners.
-
-	When an `EventEmitter` instance experiences an error, the typical action is to emit an 'error' event.
-	Error events are treated as a special case in node. If there is no listener for it, then the default action
-	is to print a stack trace and exit the program.
-
-	All `EventEmitter`s emit the event `newListener` when new listeners are added
-	and `removeListener` when a listener is removed.
-**/
-@:jsRequire("events", "EventEmitter")
-extern class EventEmitter<TSelf:EventEmitter<TSelf>> implements IEventEmitter {
-
-	function new();
-
-	/**
-		Adds a `listener` to the end of the listeners array for the specified `event`.
-	**/
-	function addListener<T:Function>(event:Event<T>, listener:T):TSelf;
-	function on<T:Function>(event:Event<T>, listener:T):TSelf;
-
-	/**
-		Adds a one time `listener` for the `event`.
-
-		This listener is invoked only the next time the event is fired, after which it is removed.
-	**/
-	function once<T:Function>(event:Event<T>, listener:T):TSelf;
-
-	/**
-		Remove a `listener` from the listener array for the specified `event`.
-
-		Caution: changes array indices in the listener array behind the listener.
-	**/
-	function removeListener<T:Function>(event:Event<T>, listener:T):TSelf;
-
-	/**
-		Removes all listeners, or those of the specified `event`.
-	**/
-	function removeAllListeners<T:Function>(?event:Event<T>):TSelf;
-
-	/**
-		By default `EventEmitter`s will print a warning if more than 10 listeners are added for a particular event.
-		This is a useful default which helps finding memory leaks.
-
-		Obviously not all Emitters should be limited to 10. This function allows that to be increased.
-		Set to zero for unlimited.
-	**/
-	function setMaxListeners(n:Int):Void;
-
-	/**
-		Returns an array of listeners for the specified event.
-	**/
-	function listeners<T:Function>(event:Event<T>):Array<T>;
-
-	/**
-		Execute each of the listeners in order with the supplied arguments.
-		Returns true if event had listeners, false otherwise.
-	**/
-	function emit<T:Function>(event:Event<T>, args:haxe.extern.Rest<Dynamic>):Bool;
-
-	/**
-		Return the number of listeners for a given event.
-	**/
-	static function listenerCount<T:Function>(emitter:IEventEmitter, event:Event<T>):Int;
-}
-
-
-/**
-    `IEventEmitter` interface is used as "any EventEmitter".
-
-    See `EventEmitter` for actual class documentation.
-**/
-@:remove
-extern interface IEventEmitter {
-    function addListener<T:Function>(event:Event<T>, listener:T):IEventEmitter;
-    function on<T:Function>(event:Event<T>, listener:T):IEventEmitter;
-    function once<T:Function>(event:Event<T>, listener:T):IEventEmitter;
-    function removeListener<T:Function>(event:Event<T>, listener:T):IEventEmitter;
-    function removeAllListeners<T:Function>(?event:Event<T>):IEventEmitter;
-    function setMaxListeners(n:Int):Void;
-    function listeners<T:Function>(event:Event<T>):Array<T>;
-    function emit<T:Function>(event:Event<T>, args:haxe.extern.Rest<Dynamic>):Bool;
-}
+#if haxe4
+abstract Event<T:Function>(Dynamic) from String to String from Symbol to Symbol {}
+#else
+abstract Event<T:Function>(Dynamic) from String to String {}
+#end

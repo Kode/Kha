@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,13 +19,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
-
-import js.node.Stream.IStream;
 import js.node.child_process.ChildProcess as ChildProcessObject;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Common options for all `ChildProcess` methods.
@@ -50,14 +54,22 @@ private typedef ChildProcessCommonOptions = {
 		Sets the group identity of the process. See setgid(2).
 	**/
 	@:optional var gid:Int;
-}
 
+	/**
+		Shell to execute the command with.
+		Default: '/bin/sh' on UNIX, 'cmd.exe' on Windows.
+
+		The shell should understand the -c switch on UNIX or /s /c on Windows.
+		On Windows, command line parsing should be compatible with cmd.exe.
+	**/
+	@:optional var shell:EitherType<Bool, String>;
+}
 
 /**
 	Common options for `spawn` and `spawnSync` methods.
 **/
 private typedef ChildProcessSpawnOptionsBase = {
-	>ChildProcessCommonOptions,
+	> ChildProcessCommonOptions,
 
 	/**
 		Child's stdio configuration.
@@ -65,75 +77,61 @@ private typedef ChildProcessSpawnOptionsBase = {
 	@:optional var stdio:ChildProcessSpawnOptionsStdio;
 }
 
-
 /**
 	Options for the `spawn` method.
 **/
 typedef ChildProcessSpawnOptions = {
-	>ChildProcessSpawnOptionsBase,
+	> ChildProcessSpawnOptionsBase,
 
 	/**
 		The child will be a process group leader.
 	**/
 	@:optional var detached:Bool;
-
-	/**
-		Specifies specific file descriptors for the stdio of the child process.
-		This API was not portable to all platforms and therefore removed.
-		With `customFds` it was possible to hook up the new process' [stdin, stdout, stderr] to existing streams;
-		-1 meant that a new stream should be created.
-
-		Use at your own risk.
-	**/
-	@:deprecated
-	@:optional var customFds:Array<Int>;
 }
-
 
 /**
 	Options for the `spawnSync` method.
 **/
 typedef ChildProcessSpawnSyncOptions = {
-	>ChildProcessSpawnOptionsBase,
-	>ChildProcessExecOptionsBase,
+	> ChildProcessSpawnOptionsBase,
+	> ChildProcessExecOptionsBase,
 
-	@:optional var input:EitherType<String,Buffer>;
+	@:optional var input:EitherType<String, Buffer>;
 }
-
 
 /**
 	The `stdio` option is an array where each index corresponds to a fd in the child.
 	The value is one of the following:
 
 		* 'pipe' - Create a pipe between the child process and the parent process.
-			       The parent end of the pipe is exposed to the parent as a property on the child_process object as ChildProcess.stdio[fd].
-			       Pipes created for fds 0 - 2 are also available as ChildProcess.stdin, ChildProcess.stdout and ChildProcess.stderr, respectively.
+				   The parent end of the pipe is exposed to the parent as a property on the child_process object as ChildProcess.stdio[fd].
+				   Pipes created for fds 0 - 2 are also available as ChildProcess.stdin, ChildProcess.stdout and ChildProcess.stderr, respectively.
 
 		* 'ipc' - Create an IPC channel for passing messages/file descriptors between parent and child.
-			      A ChildProcess may have at most one IPC stdio file descriptor. Setting this option enables the ChildProcess.send() method.
-			      If the child writes JSON messages to this file descriptor, then this will trigger ChildProcess.on('message').
-			      If the child is a Node.js program, then the presence of an IPC channel will enable process.send() and process.on('message').
+				  A ChildProcess may have at most one IPC stdio file descriptor. Setting this option enables the ChildProcess.send() method.
+				  If the child writes JSON messages to this file descriptor, then this will trigger ChildProcess.on('message').
+				  If the child is a Node.js program, then the presence of an IPC channel will enable process.send() and process.on('message').
 
 		* 'ignore' - Do not set this file descriptor in the child. Note that Node will always open fd 0 - 2 for the processes it spawns.
-		             When any of these is ignored node will open /dev/null and attach it to the child's fd.
+					 When any of these is ignored node will open /dev/null and attach it to the child's fd.
 
 		* Stream object - Share a readable or writable stream that refers to a tty, file, socket, or a pipe with the child process.
-		                  The stream's underlying file descriptor is duplicated in the child process to the fd that corresponds to the index
-		                  in the stdio array. Note that the stream must have an underlying descriptor (file streams do not until the 'open'
-		                  event has occurred).
+						  The stream's underlying file descriptor is duplicated in the child process to the fd that corresponds to the index
+						  in the stdio array. Note that the stream must have an underlying descriptor (file streams do not until the 'open'
+						  event has occurred).
 
 		* Positive integer - The integer value is interpreted as a file descriptor that is is currently open in the parent process.
-		                     It is shared with the child process, similar to how Stream objects can be shared.
+							 It is shared with the child process, similar to how Stream objects can be shared.
 
 		* null - Use default value. For stdio fds 0, 1 and 2 (in other words, stdin, stdout, and stderr) a pipe is created.
-		         For fd 3 and up, the default is 'ignore'.
+				 For fd 3 and up, the default is 'ignore'.
 
-     As a shorthand, the stdio argument may also be one of the following strings, rather than an array:
+	 As a shorthand, the stdio argument may also be one of the following strings, rather than an array:
 		ignore - ['ignore', 'ignore', 'ignore']
 		pipe - ['pipe', 'pipe', 'pipe']
 		inherit - [process.stdin, process.stdout, process.stderr] or [0,1,2]
 **/
-typedef ChildProcessSpawnOptionsStdio = EitherType<ChildProcessSpawnOptionsStdioSimple,ChildProcessSpawnOptionsStdioFull>;
+typedef ChildProcessSpawnOptionsStdio = EitherType<ChildProcessSpawnOptionsStdioSimple, ChildProcessSpawnOptionsStdioFull>;
 
 /**
 	A shorthand for the `stdio` argument in `ChildProcessSpawnOptions`
@@ -196,7 +194,7 @@ typedef ChildProcessSpawnOptionsStdioFull = Array<Dynamic>;
 	Common options for `exec` and `execFile` methods.
 **/
 private typedef ChildProcessExecOptionsBase = {
-	>ChildProcessCommonOptions,
+	> ChildProcessCommonOptions,
 
 	/**
 		Default: 'utf8'
@@ -225,30 +223,21 @@ private typedef ChildProcessExecOptionsBase = {
 	Options for the `exec` method.
 **/
 typedef ChildProcessExecOptions = {
-	>ChildProcessExecOptionsBase,
-
-	/**
-		Shell to execute the command with.
-		Default: '/bin/sh' on UNIX, 'cmd.exe' on Windows.
-
-		The shell should understand the -c switch on UNIX or /s /c on Windows.
-		On Windows, command line parsing should be compatible with cmd.exe.
-	**/
-	@:optional var shell:String;
+	> ChildProcessExecOptionsBase,
 }
 
 /**
 	Options for the `execFile` method.
 **/
 typedef ChildProcessExecFileOptions = {
-	>ChildProcessExecOptionsBase,
+	> ChildProcessExecOptionsBase,
 }
 
 /**
 	Options for the `fork` method.
 **/
 typedef ChildProcessForkOptions = {
-	>ChildProcessCommonOptions,
+	> ChildProcessCommonOptions,
 
 	/**
 		Executable used to create the child process
@@ -272,28 +261,28 @@ typedef ChildProcessForkOptions = {
 	An error passed to the `ChildProcess.exec` callback.
 **/
 @:native("Error")
-extern class ChildProcessExecError extends js.lib.Error {
+extern class ChildProcessExecError extends Error {
 	/**
 		the exit code of the child proces.
 	**/
-	var code(default,null):Int;
+	var code(default, null):Int;
 
 	/**
 		the signal that terminated the process.
 	**/
-	var signal(default,null):String;
+	var signal(default, null):String;
 }
 
 /**
-	A callback type for the `ChildProcess.exec`.
-	It received three arguments: error, stdout, stderr.
+	A callback type for `ChildProcess.exec`.
+	It receives three arguments: `error`, `stdout`, `stderr`.
 
-	On success, error will be null. On error, error will be an instance of `Error`
+	On success, error will be `null`. On error, `error` will be an instance of `Error`
 	and `error.code` will be the exit code of the child process, and `error.signal` will be set
 	to the signal that terminated the process (see `ChildProcessExecError`).
 **/
-typedef ChildProcessExecCallback = Null<ChildProcessExecError> -> Buffer -> Buffer -> Void;
-
+typedef ChildProcessExecCallback = #if (haxe_ver >= 4) (error : Null<ChildProcessExecError>, stdout : EitherType<Buffer, String>, stderr : EitherType<Buffer,
+	String>) -> Void; #else Null<ChildProcessExecError>->EitherType<Buffer, String>->EitherType<Buffer, String>->Void; #end
 
 /**
 	Object returned from the `spawnSync` method.
@@ -307,17 +296,17 @@ typedef ChildProcessSpawnSyncResult = {
 	/**
 		Array of results from stdio output
 	**/
-	var output:Array<EitherType<Buffer,String>>;
+	var output:Array<EitherType<Buffer, String>>;
 
 	/**
 		The contents of output[1]
 	**/
-	var stdout:EitherType<Buffer,String>;
+	var stdout:EitherType<Buffer, String>;
 
 	/**
 		The contents of output[2]
 	**/
-	var stderr:EitherType<Buffer,String>;
+	var stderr:EitherType<Buffer, String>;
 
 	/**
 		The exit code of the child process
@@ -332,9 +321,8 @@ typedef ChildProcessSpawnSyncResult = {
 	/**
 		The error object if the child process failed or timed out
 	**/
-	var error:js.lib.Error;
+	var error:Error;
 }
-
 
 @:jsRequire("child_process")
 extern class ChildProcess {
@@ -411,9 +399,9 @@ extern class ChildProcess {
 		If the process times out, or has a non-zero exit code, this method will throw.
 		The Error object will contain the entire result from `spawnSync`
 	**/
-	@:overload(function(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String,Buffer> {})
-	@:overload(function(command:String, args:Array<String>, ?options:ChildProcessSpawnSyncOptions):EitherType<String,Buffer> {})
-	static function execFileSync(command:String, ?args:Array<String>):EitherType<String,Buffer>;
+	@:overload(function(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer> {})
+	@:overload(function(command:String, args:Array<String>, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer> {})
+	static function execFileSync(command:String, ?args:Array<String>):EitherType<String, Buffer>;
 
 	/**
 		Synchronous version of `exec`.
@@ -426,5 +414,5 @@ extern class ChildProcess {
 		If the process times out, or has a non-zero exit code, this method will throw.
 		The Error object will contain the entire result from `spawnSync`
 	**/
-	static function execSync(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String,Buffer>;
+	static function execSync(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer>;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,14 +19,21 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.fs;
 
+import js.node.Fs.FsPath;
 import js.node.events.EventEmitter;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of possible types of changes for 'change' event.
 **/
-@:enum abstract FSWatcherChangeType(String) to String {
+@:enum abstract FSWatcherChangeType(String) from String to String {
 	var Change = "change";
 	var Rename = "rename";
 }
@@ -42,19 +49,18 @@ import js.node.events.EventEmitter;
 			event - The type of fs change
 			filename - The filename that changed (if relevant/available)
 	**/
-	var Change : FSWatcherEvent<FSWatcherChangeType->String->Void> = "change";
+	var Change:FSWatcherEvent<FSWatcherChangeType->FsPath->Void> = "change";
 
 	/**
 		Emitted when an error occurs.
 	**/
-	var Error : FSWatcherEvent<js.lib.Error->Void> = "error";
+	var Error:FSWatcherEvent<Error->Void> = "error";
 }
 
 /**
 	Objects returned from `Fs.watch` are of this type.
 **/
 extern class FSWatcher extends EventEmitter<FSWatcher> {
-
 	/**
 		Stop watching for changes on the given `FSWatcher`.
 	**/

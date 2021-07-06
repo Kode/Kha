@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,88 +19,158 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
+import haxe.DynamicAccess;
+import js.node.repl.REPLServer;
 import js.node.stream.Readable.IReadable;
 import js.node.stream.Writable.IWritable;
-import js.node.repl.REPLServer;
+#if haxe4
+import js.lib.Error;
+import js.lib.Symbol;
+#else
+import js.Error;
+#end
 
 /**
-	A Read-Eval-Print-Loop (REPL) is available both as a standalone program and easily includable in other programs.
-	The REPL provides a way to interactively run JavaScript and see the results.
-	It can be used for debugging, testing, or just trying things out.
+	The `repl` module provides a Read-Eval-Print-Loop (REPL) implementation that is available both as a standalone
+	program or includible in other applications.
 
-	By executing node without any arguments from the command-line you will be dropped into the REPL.
-	It has simplistic emacs line-editing.
+	@see https://nodejs.org/api/repl.html#repl_repl
 **/
 @:jsRequire("repl")
 extern class Repl {
 	/**
-		Returns and starts a REPLServer instance.
+		The `repl.start()` method creates and starts a `repl.REPLServer` instance.
+
+		@see https://nodejs.org/api/repl.html#repl_repl_start_options
 	**/
+	@:overload(function(prompt:String):REPLServer {})
 	static function start(options:ReplOptions):REPLServer;
+
+	/**
+		Evaluates expressions in sloppy mode.
+
+		@see https://nodejs.org/api/repl.html#repl_repl_start_options
+	**/
+	#if haxe4
+	static final REPL_MODE_SLOPPY:Symbol;
+	#else
+	static var REPL_MODE_SLOPPY(default, never):Dynamic;
+	#end
+
+	/**
+		Evaluates expressions in strict mode.
+		This is equivalent to prefacing every repl statement with `'use strict'`.
+
+		@see https://nodejs.org/api/repl.html#repl_repl_start_options
+	**/
+	#if haxe4
+	static final REPL_MODE_STRICT:Symbol;
+	#else
+	static var REPL_MODE_STRICT(default, never):Dynamic;
+	#end
 }
 
 /**
-	Options for `Repl.start` method.
+	Options object used by `Repl.start`.
+
+	@see https://nodejs.org/api/repl.html#repl_repl_start_options
 **/
 typedef ReplOptions = {
 	/**
-		The prompt and stream for all I/O.
-		Defaults to '>'.
+		The input prompt to display.
+
+		Default: `'> '` (with a trailing space).
 	**/
 	@:optional var prompt:String;
 
 	/**
-		the readable stream to listen to.
-		Defaults to `Process.stdin`.
+		The `Readable` stream from which REPL input will be read.
+
+		Default: `process.stdin`.
 	**/
 	@:optional var input:IReadable;
 
 	/**
-		the writable stream to write readline data to.
-		Defaults to `Process.stdout`.
+		The `Writable` stream to which REPL output will be written.
+
+		Default: `process.stdout`.
 	**/
 	@:optional var output:IWritable;
 
 	/**
-		pass `true` if the stream should be treated like a TTY, and have ANSI/VT100 escape codes written to it.
-		Defaults to checking `isTTY` on the output stream upon instantiation.
+		If `true`, specifies that the `output` should be treated as a TTY terminal.
+
+		Default: checking the value of the `isTTY` property on the `output` stream upon instantiation.
 	**/
 	@:optional var terminal:Bool;
 
 	/**
-		function that will be used to eval each given line.
-		Defaults to an async wrapper for `eval`.
-		Arguments: cmd, context, filename, callback
+		The function to be used when evaluating each given line of input.
+
+		Default: an async wrapper for the JavaScript `eval()` function.
 	**/
-	@:optional var eval:String->Dynamic<Dynamic>->String->(js.lib.Error->Dynamic->Void)->Void;
+	#if haxe4
+	@:optional var eval:(code:String, context:DynamicAccess<Dynamic>, file:String, cb:(error:Null<Error>, ?result:Dynamic) -> Void) -> Void;
+	#else
+	@:optional var eval:String->DynamicAccess<Dynamic>->String->(Null<Error>->?Dynamic->Void)->Void;
+	#end
 
 	/**
-		whether or not the writer function should output colors.
-		If a different writer function is set then this does nothing.
-		Defaults to the repl's terminal value.
+		If `true`, specifies that the default `writer` function should include ANSI color styling to REPL output.
+		If a custom `writer` function is provided then this has no effect.
+
+		Default: checking color support on the `output` stream if the REPL instance's `terminal` value is `true`.
 	**/
 	@:optional var useColors:Bool;
 
 	/**
-		if set to `true`, then the repl will use the `global` object,
-		instead of running scripts in a separate context.
-		Defaults to `false`.
+		If `true`, specifies that the default evaluation function will use the JavaScript `global` as the context as
+		opposed to creating a new separate context for the REPL instance.
+		The node CLI REPL sets this value to `true`.
+
+		Default: `false`.
 	**/
 	@:optional var useGlobal:Bool;
 
 	/**
-		if set to `true`, then the repl will not output the return value of command if it's `undefined`.
-		Defaults to `false`.
+		If `true`, specifies that the default writer will not output the return value of a command if it evaluates to
+		`undefined`.
 
-		JavaScript `undefined` value is available in Haxe using `js.Lib.undefined`.
+		Default: `false`.
 	**/
 	@:optional var ignoreUndefined:Bool;
 
 	/**
-		the function to invoke for each command that gets evaluated which returns the formatting (including coloring) to display.
-		Defaults to `Util.inspect`.
+		The function to invoke to format the output of each command before writing to `output`.
+
+		Default: `util.inspect()`.
 	**/
 	@:optional var writer:Dynamic->Void;
+
+	/**
+		An optional function used for custom Tab auto completion.
+	**/
+	@:optional var completer:Readline.ReadlineCompleterCallback;
+
+	/**
+		A flag that specifies whether the default evaluator executes all JavaScript commands in strict mode or default
+		(sloppy) mode.
+		Acceptable values are `repl.REPL_MODE_SLOPPY` or `repl.REPL_MODE_STRICT`.
+	**/
+	#if haxe4
+	@:optional var replMode:Symbol;
+	#else
+	@:optional var replMode:Dynamic;
+	#end
+
+	/**
+		Stop evaluating the current piece of code when `SIGINT` is received, i.e. `Ctrl+C` is pressed.
+		This cannot be used together with a custom `eval` function.
+
+		Default: `false`.
+	**/
+	@:optional var breakEvalOnSigint:Bool;
 }

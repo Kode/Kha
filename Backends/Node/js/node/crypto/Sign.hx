@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,8 +19,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
+import haxe.extern.EitherType;
 import js.node.Buffer;
 import js.node.stream.Writable;
 
@@ -35,7 +37,6 @@ import js.node.stream.Writable;
 	The legacy `update` method is also supported.
 **/
 extern class Sign extends Writable<Sign> {
-
 	/**
 		Updates the sign object with data.
 		This can be called many times with new data as it is streamed.
@@ -51,6 +52,6 @@ extern class Sign extends Writable<Sign> {
 
 		Note: sign object can not be used after `sign` method has been called.
 	**/
-	@:overload(function(private_key:String):Buffer {})
-	function sign(private_key:String, output_format:String):String;
+	@:overload(function(private_key:EitherType<String, {key:String, passphrase:String}>):Buffer {})
+	function sign(private_key:EitherType<String, {key:String, passphrase:String}>, output_format:String):String;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,177 +19,273 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.stream;
 
-import haxe.extern.EitherType;
-import js.node.Buffer;
-import js.node.events.EventEmitter.Event;
+import js.node.Iterator;
 import js.node.Stream;
+import js.node.events.EventEmitter.Event;
 import js.node.stream.Writable.IWritable;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
-	Enumeration of events emitted by the `Readable` class.
+	Readable streams are an abstraction for a source from which data is consumed.
+
+	@see https://nodejs.org/api/stream.html#stream_readable_streams
 **/
 @:enum abstract ReadableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		When a chunk of data can be read from the stream, it will emit a `readable` event.
+		The `'close'` event is emitted when the stream and any of its underlying
+		resources (a file descriptor, for example) have been closed.
+		The event indicates that no more events will be emitted, and no further computation will occur.
 
-		In some cases, listening for a `readable` event will cause some data to be read into
-		the internal buffer from the underlying system, if it hadn't already.
-
-		Once the internal buffer is drained, a 'readable' event will fire again when more data is available.
+		@see https://nodejs.org/api/stream.html#stream_event_close_1
 	**/
-	var Readable : ReadableEvent<Void->Void> = "readable";
+	var Close:ReadableEvent<Void->Void> = "close";
 
 	/**
-		If you attach a 'data' event listener, then it will switch the stream into flowing mode,
-		and data will be passed to your handler as soon as it is available.
+		The `'data'` event is emitted whenever the stream is relinquishing ownership of
+		a chunk of data to a consumer. This may occur whenever the stream is switched
+		in flowing mode by calling `readable.pipe()`, `readable.resume()`, or by
+		attaching a listener callback to the `'data'` event. The `'data'` event will
+		also be emitted whenever the `readable.read()` method is called and a chunk of
+		data is available to be returned.
 
-		If you just want to get all the data out of the stream as fast as possible, this is the best way to do so.
+		@see https://nodejs.org/api/stream.html#stream_event_data
 	**/
-	var Data : ReadableEvent<haxe.extern.EitherType<Buffer,String>->Void> = "data";
+	var Data:ReadableEvent<Dynamic->Void> = "data";
 
 	/**
-		This event fires when there will be no more data to read.
+		The `'end'` event is emitted when there is no more data to be consumed from
+		the stream.
 
-		Note that the 'end' event will not fire unless the data is completely consumed.
-		This can be done by switching into flowing mode, or by calling 'read' repeatedly until you get to the end.
+		@see https://nodejs.org/api/stream.html#stream_event_end
 	**/
-	var End : ReadableEvent<Void->Void> = "end";
+	var End:ReadableEvent<Void->Void> = "end";
 
 	/**
-		Emitted when the underlying resource (for example, the backing file descriptor) has been closed.
+		The `'error'` event may be emitted by a `Readable` implementation at any time.
+		Typically, this may occur if the underlying stream is unable to generate data
+		due to an underlying internal failure, or when a stream implementation attempts
+		to push an invalid chunk of data.
 
-		Not all streams will emit this.
+		@see https://nodejs.org/api/stream.html#stream_event_error_1
 	**/
-	var Close : ReadableEvent<Void->Void> = "close";
+	var Error:ReadableEvent<Error->Void> = "error";
 
 	/**
-		Emitted if there was an error receiving data.
+		The `'pause'` event is emitted when `stream.pause()` is called
+		and `readableFlowing` is not `false`.
+
+		@see https://nodejs.org/api/stream.html#stream_event_pause
 	**/
-	var Error : ReadableEvent<js.lib.Error->Void> = "error";
+	var Pause:ReadableEvent<Void->Void> = "pause";
+
+	/**
+		The `'readable'` event is emitted when there is data available to be read from
+		the stream. In some cases, attaching a listener for the `'readable'` event will
+		cause some amount of data to be read into an internal buffer.
+
+		@see https://nodejs.org/api/stream.html#stream_event_readable
+	**/
+	var Readable:ReadableEvent<Void->Void> = "readable";
+
+	/**
+		The `'resume'` event is emitted when `stream.resume()` is
+		called and `readableFlowing` is not `true`.
+
+		@see https://nodejs.org/api/stream.html#stream_event_resume
+	**/
+	var Resume:ReadableEvent<Void->Void> = "resume";
 }
 
 /**
-	The Readable stream interface is the abstraction for a source of data that you are reading from.
-	In other words, data comes out of a Readable stream.
-
-	A Readable stream will not start emitting data until you indicate that you are ready to receive it.
-
-	Readable streams have two "modes": a flowing mode and a non-flowing mode.
-	When in flowing mode, data is read from the underlying system and provided to your program as fast as possible.
-	In non-flowing mode, you must explicitly call `read` to get chunks of data out.
-
-	Examples of readable streams include:
-		- http responses, on the client
-		- http requests, on the server
-		- fs read streams
-		- zlib streams
-		- crypto streams
-		- tcp sockets
-		- child process stdout and stderr
-		- process.stdin
+	@see https://nodejs.org/api/stream.html#stream_class_stream_readable
 **/
 @:jsRequire("stream", "Readable")
 extern class Readable<TSelf:Readable<TSelf>> extends Stream<TSelf> implements IReadable {
 	/**
-		The `read` method pulls some data out of the internal buffer and returns it.
-		If there is no data available, then it will return null.
+		Destroy the stream. Optionally emit an `'error'` event, and emit a `'close'` event unless `emitClose` is set in `false`.
+		After this call, the readable stream will release any internal resources and subsequent calls to `push()` will be ignored.
+		Implementors should not override this method, but instead implement `readable._destroy()`.
 
-		If you pass in a `size` argument, then it will return that many bytes.
-		If `size` bytes are not available, then it will return null.
-
-		If you do not specify a `size` argument, then it will return all the data in the internal buffer.
-
-		This method should only be called in non-flowing mode.
-		In flowing-mode, this method is called automatically until the internal buffer is drained.
+		@see https://nodejs.org/api/stream.html#stream_readable_destroy_error
 	**/
-	function read(?size:Int):Null<EitherType<String,Buffer>>;
+	function destroy(?error:Error):TSelf;
 
 	/**
-		Call this function to cause the stream to return strings of the specified encoding instead of `Buffer` objects.
-		For example, if you do `setEncoding('utf8')`, then the output data will be interpreted as UTF-8 data,
-		and returned as strings. If you do `setEncoding('hex')`, then the data will be encoded in hexadecimal string format.
+		Is `true` after `readable.destroy()` has been called.
 
-		This properly handles multi-byte characters that would otherwise be potentially mangled if you simply pulled
-		the `Buffer`s directly and called `buf.toString(encoding)` on them.
-
-		If you want to read the data as strings, always use this method.
+		@see https://nodejs.org/api/stream.html#stream_readable_destroyed
 	**/
-	function setEncoding(encoding:String):Void;
+	var destroyed(default, null):Bool;
 
 	/**
-		This method will cause the readable stream to resume emitting 'data' events.
+		The `readable.isPaused()` method returns the current operating state of the `Readable`.
+		This is used primarily by the mechanism that underlies the `readable.pipe()` method.
+		In most typical cases, there will be no reason to use this method directly.
 
-		This method will switch the stream into flowing-mode.
-		If you do not want to consume the data from a stream, but you do want to get to its `end` event,
-		you can call `resume` to open the flow of data.
+		@see https://nodejs.org/api/stream.html#stream_readable_ispaused
 	**/
-	function resume():Void;
+	function isPaused():Bool;
 
 	/**
-		This method will cause a stream in flowing-mode to stop emitting 'data' events.
+		The `readable.pause()` method will cause a stream in flowing mode to stop emitting `'data'` events,
+		switching out of flowing mode. Any data that becomes available will remain in the internal buffer.
 
-		Any data that becomes available will remain in the internal buffer.
-
-		This method is only relevant in flowing mode. When called on a non-flowing stream,
-		it will switch into flowing mode, but remain paused.
+		@see https://nodejs.org/api/stream.html#stream_readable_pause
 	**/
-	function pause():Void;
+	function pause():TSelf;
 
 	/**
-		This method pulls all the data out of a readable stream, and writes it to the supplied destination,
-		automatically managing the flow so that the destination is not overwhelmed by a fast readable stream.
+		The `readable.pipe()` method attaches a `Writable` stream to the `readable`,
+		causing it to switch automatically into flowing mode and push all of its data to the attached `Writable`.
+		The flow of data will be automatically managed so that the destination `Writable` stream
+		is not overwhelmed by a faster `Readable` stream.
 
-		Multiple destinations can be piped to safely.
-
-		This function returns the destination stream, so you can set up pipe chains.
-
-		By default `end` is called on the destination when the source stream emits 'end',
-		so that destination is no longer writable. Pass `{end: false}` as `options`
-		to keep the destination stream open.
-
-		Note that `Process.stderr` and `Process.stdout` are never closed until the process exits,
-		regardless of the specified options.
+		@see https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options
 	**/
 	function pipe<T:IWritable>(destination:T, ?options:{?end:Bool}):T;
 
 	/**
-		This method will remove the hooks set up for a previous `pipe` call.
+		The `readable.read()` method pulls some data out of the internal buffer and returns it.
+		If no data available to be read, `null` is returned. By default,
+		the data will be returned as a `Buffer` object unless an encoding has been specified using
+		the `readable.setEncoding()` method or the stream is operating in object mode.
 
-		If the `destination` is not specified, then all pipes are removed.
-
-		If the `destination` is specified, but no pipe is set up for it, then this is a no-op.
+		@see https://nodejs.org/api/stream.html#stream_readable_read_size
 	**/
-	@:overload(function():Void {})
-	function unpipe(destination:IWritable):Void;
+	function read(?size:Int):Null<Dynamic>;
 
 	/**
-		This is useful in certain cases where a stream is being consumed by a parser,
-		which needs to "un-consume" some data that it has optimistically pulled out of the source,
-		so that the stream can be passed on to some other party.
+		Is `true` if it is safe to call `readable.read()`.
 
-		If you find that you must often call `unshift` in your programs,
-		consider implementing a `Transform` stream instead.
+		@see https://nodejs.org/api/stream.html#stream_readable_readable
 	**/
-	@:overload(function(chunk:Buffer):Void {})
-	function unshift(chunk:String):Void;
+	var readable(default, null):Bool;
 
 	/**
-		Versions of Node prior to v0.10 had streams that did not implement the entire Streams API as it is today.
+		Getter for the property `encoding` of a given `Readable` stream.
+		The `encoding` property can be set using the `readable.setEncoding()` method.
 
-		If you are using an older Node library that emits 'data' events and has a 'pause' method that is advisory only,
-		then you can use the `wrap` method to create a `Readable` stream that uses the old stream as its data source.
+		@see https://nodejs.org/api/stream.html#stream_readable_readableencoding
+	**/
+	var readableEncoding(default, null):Null<String>;
+
+	/**
+		Becomes `true` when `'end'` event is emitted.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_readableended
+	**/
+	var readableEnded(default, null):Bool;
+
+	/**
+		Returns the value of `highWaterMark` passed when constructing this `Readable`.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_readablehighwatermark
+	**/
+	var readableHighWaterMark(default, null):Int;
+
+	/**
+		This property contains the number of bytes (or objects) in the queue ready to be read.
+		The value provides introspection data regarding the status of the `highWaterMark`.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_readablelength
+	**/
+	var readableLength(default, null):Int;
+
+	/**
+		Getter for the property `objectMode` of a given `Readable` stream.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_readableobjectmode
+	**/
+	var readableObjectMode(default, null):Bool;
+
+	/**
+		The `readable.resume()` method causes an explicitly paused `Readable` stream to resume emitting `'data'` events,
+		switching the stream into flowing mode.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_resume
+	**/
+	function resume():TSelf;
+
+	/**
+		The `readable.setEncoding()` method sets the character encoding for data read from the `Readable` stream.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_setencoding_encoding
+	**/
+	function setEncoding(encoding:String):TSelf;
+
+	/**
+		The `readable.unpipe()` method detaches a `Writable` stream previously attached using the `stream.pipe()` method.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_unpipe_destination
+	**/
+	function unpipe(?destination:IWritable):TSelf;
+
+	/**
+		Passing `chunk` as `null` signals the end of the stream (EOF), after which no more data can be written.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_unshift_chunk_encoding
+	**/
+	function unshift(chunk:Null<Dynamic>, ?encoding:String):Void;
+
+	/**
+		Prior to Node.js 0.10, streams did not implement the entire `stream` module API as it is currently defined.
+		(See Compatibility for more information.)
+
+		@see https://nodejs.org/api/stream.html#stream_readable_wrap_stream
 	**/
 	function wrap(stream:Dynamic):IReadable;
 
+	// --------- API for implementing a Readable Stream -----------------------
 
-	// --------- API for stream implementors - see node.js API documentation ---------
-	// TODO: add state objects here and in other streams
-	private function new(?options:ReadableNewOptions);
+	/**
+		@see https://nodejs.org/api/stream.html#stream_new_stream_readable_options
+	**/
+	function new(?options:ReadableNewOptions);
+
+	/**
+		This function **MUST NOT** be called by application code directly.
+		It should be implemented by child classes, and called by the internal `Readable` class methods only.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_read_size_1
+	**/
 	private function _read(size:Int):Void;
-	@:overload(function(chunk:Buffer):Bool {})
-	private function push(chunk:String, ?encoding:String):Bool;
+
+	/**
+		The `_destroy()` method is called by `readable.destroy()`.
+		It can be overridden by child classes but it **must not** be called directly.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_destroy_err_callback
+	**/
+	private function _destroy(err:Null<Error>, callback:Null<Error>->Void):Void;
+
+	/**
+		The `readable.push()` method is intended be called only by `Readable` implementers,
+		and only from within the `readable._read()` method.
+
+		@see https://nodejs.org/api/stream.html#stream_readable_push_chunk_encoding
+	**/
+	private function push(chunk:Null<Dynamic>, ?encoding:String):Bool;
+
+	// --------- TTY module API  ----------------------------------------------
+
+	/**
+		Terminal read streams (i.e. process.stdin) have this property set to true.
+		It is false for any other read streams.
+
+		@see https://nodejs.org/api/tty.html#tty_readstream_istty
+	**/
+	var isTTY(default, null):Bool;
+
+	// --------- static API  --------------------------------------------------
+	// TODO @:overload(function<T>(iterable:AsyncIterator<T>, ?options:ReadableNewOptions):IReadable {})
+	static function from<T>(iterable:Iterator<T>, ?options:ReadableNewOptions):IReadable;
 }
 
 /**
@@ -197,32 +293,94 @@ extern class Readable<TSelf:Readable<TSelf>> extends Stream<TSelf> implements IR
 	For stream implementors only, see node.js API documentation
 **/
 typedef ReadableNewOptions = {
+	/**
+		The maximum number of bytes to store in the internal buffer before ceasing to read from the underlying resource.
+		Default: `16384` (16kb), or `16` for `objectMode` streams.
+	**/
 	@:optional var highWaterMark:Int;
+
+	/**
+		If specified, then buffers will be decoded to strings using the specified encoding.
+		Default: `null`.
+	**/
 	@:optional var encoding:String;
+
+	/**
+		Whether this stream should behave as a stream of objects.
+		Meaning that `stream.read(n)` returns a single value instead of a `Buffer` of size `n`.
+		Default: `false`.
+	**/
 	@:optional var objectMode:Bool;
+
+	/**
+		Whether or not the stream should emit `'close'` after it has been destroyed.
+		Default: `true`.
+	**/
+	@:optional var emitClose:Bool;
+
+	/**
+		Implementation for the `stream._read()` method.
+	**/
+	#if haxe4
+	@:optional var read:(size:Int) -> Void;
+	#else
+	@:optional var read:Int->Void;
+	#end
+
+	/**
+		Implementation for the `stream._destroy()` method.
+	**/
+	#if haxe4
+	@:optional var destroy:(err:Null<Error>, callback:Null<Error>->Void) -> Void;
+	#else
+	@:optional var destroy:Null<Error>->(Null<Error>->Void)->Void;
+	#end
+
+	/**
+		Whether this stream should automatically call `.destroy()` on itself after ending.
+		Default: `false`.
+	**/
+	@:optional var autoDestroy:Bool;
 }
 
 /**
-    `IReadable` interface is used as "any Readable".
+	`IReadable` interface is used as "any Readable".
 
-    See `Readable` for actual class documentation.
+	See `Readable` for actual class documentation.
 **/
 @:remove
 extern interface IReadable extends IStream {
-    function read(?size:Int):Null<EitherType<String,Buffer>>;
+	function destroy(?error:Error):IReadable;
 
-    function setEncoding(encoding:String):Void;
+	var destroyed(default, null):Bool;
 
-    function resume():Void;
-    function pause():Void;
+	function isPaused():Bool;
 
-    function pipe<T:IWritable>(destination:T, ?options:{?end:Bool}):T;
+	function pause():IReadable;
 
-    @:overload(function():Void {})
-    function unpipe(destination:IWritable):Void;
+	function pipe<T:IWritable>(destination:T, ?options:{?end:Bool}):T;
 
-    @:overload(function(chunk:Buffer):Void {})
-    function unshift(chunk:String):Void;
+	function read(?size:Int):Null<Dynamic>;
 
-    function wrap(stream:Dynamic):IReadable;
+	var readable(default, null):Bool;
+
+	var readableEncoding(default, null):Null<String>;
+
+	var readableEnded(default, null):Bool;
+
+	var readableHighWaterMark(default, null):Int;
+
+	var readableLength(default, null):Int;
+
+	var readableObjectMode(default, null):Bool;
+
+	function resume():IReadable;
+
+	function setEncoding(encoding:String):IReadable;
+
+	function unpipe(?destination:IWritable):IReadable;
+
+	function unshift(chunk:Null<Dynamic>, ?encoding:String):Void;
+
+	function wrap(stream:Dynamic):IReadable;
 }

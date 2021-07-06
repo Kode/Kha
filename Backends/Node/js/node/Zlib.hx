@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,11 +19,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
-import js.lib.Error;
+import haxe.extern.EitherType;
 import js.node.Buffer;
 import js.node.zlib.*;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 typedef ZlibOptions = {
 	/**
@@ -65,67 +71,70 @@ typedef ZlibOptions = {
 **/
 @:jsRequire("zlib")
 extern class Zlib {
-
 	/**
 		Allowed `flush` values.
 	**/
-	static var Z_NO_FLUSH(default,null):Int;
-	static var Z_PARTIAL_FLUSH(default,null):Int;
-	static var Z_SYNC_FLUSH(default,null):Int;
-	static var Z_FULL_FLUSH(default,null):Int;
-	static var Z_FINISH(default,null):Int;
-	static var Z_BLOCK(default,null):Int;
-	static var Z_TREES(default,null):Int;
+	static var Z_NO_FLUSH(default, null):Int;
+
+	static var Z_PARTIAL_FLUSH(default, null):Int;
+	static var Z_SYNC_FLUSH(default, null):Int;
+	static var Z_FULL_FLUSH(default, null):Int;
+	static var Z_FINISH(default, null):Int;
+	static var Z_BLOCK(default, null):Int;
+	static var Z_TREES(default, null):Int;
 
 	/**
 		Return codes for the compression/decompression functions.
 		Negative values are errors, positive values are used for special but normal events.
 	**/
-	static var Z_OK(default,null):Int;
-	static var Z_STREAM_END(default,null):Int;
-	static var Z_NEED_DICT(default,null):Int;
-	static var Z_ERRNO(default,null):Int;
-	static var Z_STREAM_ERROR(default,null):Int;
-	static var Z_DATA_ERROR(default,null):Int;
-	static var Z_MEM_ERROR(default,null):Int;
-	static var Z_BUF_ERROR(default,null):Int;
-	static var Z_VERSION_ERROR(default,null):Int;
+	static var Z_OK(default, null):Int;
+
+	static var Z_STREAM_END(default, null):Int;
+	static var Z_NEED_DICT(default, null):Int;
+	static var Z_ERRNO(default, null):Int;
+	static var Z_STREAM_ERROR(default, null):Int;
+	static var Z_DATA_ERROR(default, null):Int;
+	static var Z_MEM_ERROR(default, null):Int;
+	static var Z_BUF_ERROR(default, null):Int;
+	static var Z_VERSION_ERROR(default, null):Int;
 
 	/**
 		Compression levels.
 	**/
-	static var Z_NO_COMPRESSION(default,null):Int;
-	static var Z_BEST_SPEED(default,null):Int;
-	static var Z_BEST_COMPRESSION(default,null):Int;
-	static var Z_DEFAULT_COMPRESSION(default,null):Int;
+	static var Z_NO_COMPRESSION(default, null):Int;
+
+	static var Z_BEST_SPEED(default, null):Int;
+	static var Z_BEST_COMPRESSION(default, null):Int;
+	static var Z_DEFAULT_COMPRESSION(default, null):Int;
 
 	/**
 		Compression strategy.
 	**/
-	static var Z_FILTERED(default,null):Int;
-	static var Z_HUFFMAN_ONLY(default,null):Int;
-	static var Z_RLE(default,null):Int;
-	static var Z_FIXED(default,null):Int;
-	static var Z_DEFAULT_STRATEGY(default,null):Int;
+	static var Z_FILTERED(default, null):Int;
+
+	static var Z_HUFFMAN_ONLY(default, null):Int;
+	static var Z_RLE(default, null):Int;
+	static var Z_FIXED(default, null):Int;
+	static var Z_DEFAULT_STRATEGY(default, null):Int;
 
 	/**
 		Possible values of the data_type field.
 	**/
-	static var Z_BINARY(default,null):Int;
-	static var Z_TEXT(default,null):Int;
-	static var Z_ASCII(default,null):Int;
-	static var Z_UNKNOWN(default,null):Int;
+	static var Z_BINARY(default, null):Int;
+
+	static var Z_TEXT(default, null):Int;
+	static var Z_ASCII(default, null):Int;
+	static var Z_UNKNOWN(default, null):Int;
 
 	/**
 		The deflate compression method (the only one supported in this version).
 	**/
-	static var Z_DEFLATED(default,null):Int;
+	static var Z_DEFLATED(default, null):Int;
 
 	/**
 		For initializing zalloc, zfree, opaque.
 	**/
-	static var Z_NULL(default,null):Int;
-
+	static var Z_NULL(default, null):Int;
 
 	/**
 		Returns a new `Gzip` object with an `options`.
@@ -165,42 +174,77 @@ extern class Zlib {
 	/**
 		Compress a string with `Deflate`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function deflate(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function deflate(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Compress a string with `Deflate` (synchronous version).
+	**/
+	static function deflateSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Compress a string with `DeflateRaw`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function deflateRaw(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function deflateRaw(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Compress a string with `DeflateRaw` (synchronous version).
+	**/
+	static function deflateRawSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Compress a string with `Gzip`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function gzip(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function gzip(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Compress a string with `Gzip` (synchronous version).
+	**/
+	static function gzipSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Decompress a raw Buffer with `Gunzip`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function gunzip(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function gunzip(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Decompress a raw Buffer with `Gunzip` (synchronous version).
+	**/
+	static function gunzipSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Decompress a raw Buffer with `Inflate`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function inflate(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function inflate(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Decompress a raw Buffer with `Inflate` (synchronous version).
+	**/
+	static function inflateSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Decompress a raw Buffer with `InflateRaw`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function inflateRaw(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function inflateRaw(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Decompress a raw Buffer with `InflateRaw` (synchronous version).
+	**/
+	static function inflateRawSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 
 	/**
 		Decompress a raw Buffer with `Unzip`.
 	**/
-	@:overload(function(buf:Buffer, callback:Error->Buffer->Void):Void {})
-	static function unzip(buf:String, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:EitherType<String, Buffer>, options:ZlibOptions, callback:Error->Buffer->Void):Void {})
+	static function unzip(buf:EitherType<String, Buffer>, callback:Error->Buffer->Void):Void;
+
+	/**
+		Decompress a raw Buffer with `Unzip` (synchronous version).
+	**/
+	static function unzipSync(buf:EitherType<String, Buffer>, ?options:ZlibOptions):Buffer;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,10 +19,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.net;
 
-import js.lib.Error;
+import haxe.extern.EitherType;
+import js.node.Dns;
 import js.node.events.EventEmitter.Event;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events for `Socket` objects.
@@ -32,12 +39,12 @@ import js.node.events.EventEmitter.Event;
 		Emitted after resolving the hostname but before connecting.
 		Not applicable to UNIX sockets.
 	**/
-	var Lookup : SocketEvent<Null<Error>->String->String->Void> = "lookup";
+	var Lookup:SocketEvent<Null<Error>->String->DnsAddressFamily->Void> = "lookup";
 
 	/**
 		Emitted when a socket connection is successfully established. See `Socket.connect`.
 	**/
-	var Connect : SocketEvent<Void->Void> = "connect";
+	var Connect:SocketEvent<Void->Void> = "connect";
 
 	/**
 		Emitted when data is received.
@@ -46,7 +53,7 @@ import js.node.events.EventEmitter.Event;
 
 		Note that the data will be lost if there is no listener when a Socket emits a 'data' event.
 	**/
-	var Data : SocketEvent<haxe.extern.EitherType<Buffer,String>->Void> = "data";
+	var Data:SocketEvent<EitherType<Buffer, String>->Void> = "data";
 
 	/**
 		Emitted when the other end of the socket sends a FIN packet.
@@ -56,7 +63,7 @@ import js.node.events.EventEmitter.Event;
 		the socket will not automatically `end` its side allowing the user to write arbitrary amounts of data,
 		with the caveat that the user is required to `end` their side now.
 	**/
-	var End : SocketEvent<Void->Void> = "end";
+	var End:SocketEvent<Void->Void> = "end";
 
 	/**
 		Emitted if the socket times out from inactivity.
@@ -64,18 +71,18 @@ import js.node.events.EventEmitter.Event;
 		The user must manually close the connection.
 		See also: `Socket.setTimeout`
 	**/
-	var Timeout : SocketEvent<Void->Void> = "timeout";
+	var Timeout:SocketEvent<Void->Void> = "timeout";
 
 	/**
 		Emitted when the write buffer becomes empty. Can be used to throttle uploads.
 		See also: the return values of `Socket.write`
 	**/
-	var Drain : SocketEvent<Void->Void> = "drain";
+	var Drain:SocketEvent<Void->Void> = "drain";
 
 	/**
 		Emitted when an error occurs. The 'close' event will be called directly following this event.
 	**/
-	var Error : SocketEvent<js.lib.Error->Void> = "error";
+	var Error:SocketEvent<Error->Void> = "error";
 
 	/**
 		Emitted once the socket is fully closed.
@@ -84,24 +91,32 @@ import js.node.events.EventEmitter.Event;
 		Listener arguments:
 			had_error - true if the socket had a transmission error
 	**/
-	var Close : SocketEvent<Bool->Void> = "close";
+	var Close:SocketEvent<Bool->Void> = "close";
+}
+
+typedef SocketOptionsBase = {
+	/**
+		If true, then the socket won't automatically send a FIN packet
+		when the other end of the socket sends a FIN packet.
+
+		The socket becomes non-readable, but still writable. You should call the `end` method explicitly.
+		See `end` event for more information.
+
+		Default: false
+	**/
+	@:optional var allowHalfOpen:Bool;
 }
 
 /**
 	Options for creating new `Socket` object.
 **/
 typedef SocketOptions = {
+	> SocketOptionsBase,
+
 	/**
 		allows you to specify the existing file descriptor of socket.
 	**/
 	@:optional var fd:Null<Int>;
-
-	/**
-		If true, then the socket won't automatically send a FIN packet when the other end of the socket sends a FIN packet.
-		The socket becomes non-readable, but still writable. You should call the `end` method explicitly.
-		See 'end' event for more information.
-	**/
-	@:optional var allowHalfOpen:Bool;
 
 	/**
 		allow reads on this socket (NOTE: Works only when `fd` is passed)
@@ -115,9 +130,55 @@ typedef SocketOptions = {
 }
 
 /**
+	Options for the `Socket.connect` method (TCP version).
+**/
+typedef SocketConnectOptionsTcp = {
+	/**
+		Port the client should connect to
+	**/
+	var port:Int;
+
+	/**
+		Host the client should connect to.
+		Defaults to 'localhost'.
+	**/
+	@:optional var host:String;
+
+	/**
+		Local interface to bind to for network connections.
+	**/
+	@:optional var localAddress:String;
+
+	/**
+		Local port to bind to for network connections.
+	**/
+	@:optional var localPort:Int;
+
+	/**
+		Version of IP stack. Defaults to 4.
+	**/
+	@:optional var family:DnsAddressFamily;
+
+	/**
+		Custom lookup function. Defaults to `Dns.lookup`.
+	**/
+	@:optional var lookup:String->DnsLookupOptions->DnsLookupCallbackSingle->Void;
+}
+
+/**
+	Options for the `Socket.connect` method (Local domain socket version).
+**/
+typedef SocketConnectOptionsUnix = {
+	/**
+		Path the client should connect to
+	**/
+	var path:String;
+}
+
+/**
 	Bound address, the address family name and port of the socket as reported by the operating system.
 **/
-typedef NetworkAdress = {
+typedef SocketAdress = {
 	/**
 		Connection port.
 	**/
@@ -126,12 +187,20 @@ typedef NetworkAdress = {
 	/**
 		IP Family.
 	**/
-	var family:String;
+	var family:SocketAdressFamily;
 
 	/**
 		IP Address.
 	**/
 	var address:String;
+}
+
+/**
+	Enumeration of possible socket family values.
+**/
+@:enum abstract SocketAdressFamily(String) to String {
+	var IPv4 = "IPv4";
+	var IPv6 = "IPv6";
 }
 
 @:jsRequire("net", "Socket")
@@ -143,6 +212,7 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 
 	/**
 		Opens the connection for a given socket.
+
 		If `port` and `host` are given, then the socket will be opened as a TCP socket,
 		if `host` is omitted, localhost will be assumed.
 		If a `path` is given, the socket will be opened as a unix socket to that path.
@@ -158,7 +228,8 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	**/
 	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, ?connectListener:Void->Void):Socket {})
-	function connect(port:Int, host:String, ?connectListener:Void->Void):Socket;
+	@:overload(function(port:Int, host:String, ?connectListener:Void->Void):Socket {})
+	function connect(options:EitherType<SocketConnectOptionsTcp, SocketConnectOptionsUnix>, ?connectListener:Void->Void):Socket;
 
 	/**
 		`Socket` has the property that `socket.write` always works. This is to help users get up and running quickly.
@@ -176,9 +247,23 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	var bufferSize:Int;
 
 	/**
-		Ensures that no more I/O activity happens on this socket. Only necessary in case of errors (parse error or so).
+		A boolean value that indicates if the connection is destroyed or not.
+		Once a connection is destroyed no further data can be transferred using it.
+
+		define in Stream/Readable.hx
 	**/
-	function destroy():Void;
+	// var destroyed(default, null):Bool;
+
+	#if haxe4
+	/**
+		Ensures that no more I/O activity happens on this socket.
+		Only necessary in case of errors (parse error or so).
+
+		If `exception` is specified, an 'error' event will be emitted and
+		any listeners for that event will receive exception as an argument.
+	**/
+	function destroy(?exception:Error):Void;
+	#end
 
 	/**
 		Sets the socket to timeout after `timeout` milliseconds of inactivity on the socket.
@@ -219,51 +304,64 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	/**
 		Returns the bound address, the address family name and port of the socket as reported by the operating system.
 	**/
-	function address():NetworkAdress;
+	function address():SocketAdress;
 
 	/**
 		Calling `unref` on a socket will allow the program to exit if this is the only active socket in the event system.
 		If the socket is already `unref`d calling `unref` again will have no effect.
 	**/
-	function unref():Void;
+	function unref():Socket;
 
 	/**
 		Opposite of `unref`, calling `ref` on a previously `unref`d socket will not let the program exit
 		if it's the only socket left (the default behavior).
 		If the socket is `ref`d calling `ref` again will have no effect.
 	**/
-	function ref():Void;
+	function ref():Socket;
 
 	/**
 		The string representation of the remote IP address.
 		For example, '74.125.127.100' or '2001:4860:a005::68'.
 	**/
-	var remoteAddress(default,null):String;
+	var remoteAddress(default, null):String;
+
+	/**
+		The string representation of the remote IP family.
+		'IPv4' or 'IPv6'.
+	**/
+	var remoteFamily(default, null):SocketAdressFamily;
 
 	/**
 		The numeric representation of the remote port. For example, 80 or 21.
 	**/
-	var remotePort(default,null):Int;
+	var remotePort(default, null):Int;
 
 	/**
 		The string representation of the local IP address the remote client is connecting on.
 		For example, if you are listening on '0.0.0.0' and the client connects on '192.168.1.1',
 		the value would be '192.168.1.1'.
 	**/
-	var localAddress(default,null):String;
+	var localAddress(default, null):String;
 
 	/**
 		The numeric representation of the local port. For example, 80 or 21.
 	**/
-	var localPort(default,null):Int;
+	var localPort(default, null):Int;
 
 	/**
 		The amount of received bytes.
 	**/
-	var bytesRead(default,null):Int;
+	var bytesRead(default, null):Int;
 
 	/**
 		The amount of bytes sent.
 	**/
-	var bytesWritten(default,null):Int;
+	var bytesWritten(default, null):Int;
+
+	/**
+		Always true for TLSSocket instances.
+
+		May be used to distinguish TLS sockets from regular ones.
+	**/
+	var encrypted(default, null):Bool;
 }

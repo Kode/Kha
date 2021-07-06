@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,11 +19,37 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
+import js.node.Buffer;
+
 /**
-	Object returned by `Crypto.createCredentials`.
+	SPKAC is a Certificate Signing Request mechanism originally implemented by Netscape
+	and now specified formally as part of HTML5's keygen element.
 **/
-extern class Credentials {
-    var context(default,null):SecureContext;
+@:jsRequire("crypto", "Certificate")
+extern class Certificate {
+	function new();
+
+	/**
+		Returns the challenge component in the form of a Node.js `Buffer`.
+
+		The `spkac` data structure includes a public key and a challenge.
+	**/
+	@:overload(function(spkac:String):Buffer {})
+	function exportChallenge(spkac:Buffer):Buffer;
+
+	/**
+		Returns the public key component in the form of a Node.js `Buffer`.
+
+		The `spkac` data structure includes a public key and a challenge.
+	**/
+	@:overload(function(spkac:String):Buffer {})
+	function exportPublicKey(spkac:Buffer):Buffer;
+
+	/**
+		Returns true if the given `spkac` data structure is valid, false otherwise.
+	**/
+	function verifySpkac(spkac:Buffer):Bool;
 }

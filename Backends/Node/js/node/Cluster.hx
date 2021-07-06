@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,13 +19,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
 import haxe.DynamicAccess;
-import js.node.events.EventEmitter;
 import js.node.cluster.Worker;
+import js.node.events.EventEmitter;
 
-@:enum abstract ClusterEvent(String) to String {
+@:enum abstract ClusterEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		When a new worker is forked the cluster module will emit a 'fork' event.
 		This can be used to log worker activity, and create your own timeout.
@@ -33,7 +34,7 @@ import js.node.cluster.Worker;
 		Listener arguments:
 			* worker:Worker
 	**/
-	var Fork = "fork";
+	var Fork:ClusterEvent<Worker->Void> = "fork";
 
 	/**
 		After forking a new worker, the worker should respond with an online message.
@@ -45,7 +46,7 @@ import js.node.cluster.Worker;
 		Listener arguments:
 			* worker:Worker
 	**/
-	var Online = "online";
+	var Online:ClusterEvent<Worker->Void> = "online";
 
 	/**
 		After calling `listen` from a worker, when the 'listening' event is emitted on the server,
@@ -55,11 +56,11 @@ import js.node.cluster.Worker;
 		the `address` object contains the following connection properties: address, port and addressType.
 		This is very useful if the worker is listening on more than one address.
 
- 		Listener arguments:
+		 		Listener arguments:
 			* worker:Worker
 			* address:ListeningEventAddress
 	**/
-	var Listening = "listening";
+	var Listening:ClusterEvent<Worker->ListeningEventAddress->Void> = "listening";
 
 	/**
 		Emitted after the worker IPC channel has disconnected.
@@ -75,7 +76,7 @@ import js.node.cluster.Worker;
 		Listener arguments:
 			* worker:Worker
 	**/
-	var Disconnect = "disconnect";
+	var Disconnect:ClusterEvent<Worker->Void> = "disconnect";
 
 	/**
 		When any of the workers die the cluster module will emit the 'exit' event.
@@ -86,12 +87,12 @@ import js.node.cluster.Worker;
 			* code:Int - the exit code, if it exited normally.
 			* signal:String - the name of the signal (eg. 'SIGHUP') that caused the process to be killed.
 	**/
-	var Exit = "exit";
+	var Exit:ClusterEvent<Worker->Int->String->Void> = "exit";
 
 	/**
 		Emitted the first time that `Cluster.setupMaster` is called.
 	**/
-	var Setup = "setup";
+	var Setup:ClusterEvent<ClusterSettings->Void> = "setup";
 }
 
 /**
@@ -103,7 +104,7 @@ typedef ListeningEventAddress = {
 	var addressType:ListeningEventAddressType;
 }
 
-@:enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int,String>) to haxe.extern.EitherType<Int,String> {
+@:enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to haxe.extern.EitherType<Int, String> {
 	var TCPv4 = 4;
 	var TCPv6 = 6;
 	var Unix = -1;
@@ -111,6 +112,11 @@ typedef ListeningEventAddress = {
 	var UDPv6 = "udp6";
 }
 
+@:jsRequire("cluster")
+@:enum extern abstract ClusterSchedulingPolicy(Int) {
+	var SCHED_NONE;
+	var SCHED_RR;
+}
 
 /**
 	A single instance of Node runs in a single thread.
@@ -122,8 +128,7 @@ typedef ListeningEventAddress = {
 	Also note that, on Windows, it is not yet possible to set up a named pipe server in a worker.
 **/
 @:jsRequire("cluster")
-extern class Cluster extends EventEmitter<Cluster>
-{
+extern class Cluster extends EventEmitter<Cluster> {
 	/**
 		A reference to the `Cluster` object returned by node.js module.
 
@@ -132,25 +137,41 @@ extern class Cluster extends EventEmitter<Cluster>
 	public static inline var instance:Cluster = cast Cluster;
 
 	/**
+		The scheduling policy, either `SCHED_RR` for round-robin
+		or `SCHED_NONE` to leave it to the operating system.
+
+		This is a global setting and effectively frozen once you spawn the first worker
+		or call `setupMaster`, whatever comes first.
+
+		`SCHED_RR` is the default on all operating systems except Windows.
+		Windows will change to `SCHED_RR` once libuv is able to effectively distribute IOCP handles
+		without incurring a large performance hit.
+
+		`schedulingPolicy` can also be set through the NODE_CLUSTER_SCHED_POLICY environment variable.
+		Valid values are "rr" and "none".
+	**/
+	var schedulingPolicy:ClusterSchedulingPolicy;
+
+	/**
 		After calling `setupMaster` (or `fork`) this settings object will contain the settings, including the default values.
 
 		It is effectively frozen after being set, because `setupMaster` can only be called once.
 
 		This object is not supposed to be changed or set manually, by you.
 	**/
-	var settings(default,null):ClusterSettings;
+	var settings(default, null):ClusterSettings;
 
 	/**
 		True if the process is a master.
 		This is determined by the process.env.NODE_UNIQUE_ID.
 		If process.env.NODE_UNIQUE_ID is undefined, then `isMaster` is true.
 	**/
-	var isMaster(default,null):Bool;
+	var isMaster(default, null):Bool;
 
 	/**
 		True if the process is not a master (it is the negation of `isMaster`).
 	**/
-	var isWorker(default,null):Bool;
+	var isWorker(default, null):Bool;
 
 	/**
 		`setupMaster` is used to change the default `fork` behavior.
@@ -192,7 +213,7 @@ extern class Cluster extends EventEmitter<Cluster>
 
 		Not available in the master process.
 	**/
-	var worker(default,null):Worker;
+	var worker(default, null):Worker;
 
 	/**
 		A hash that stores the active worker objects, keyed by `id` field.
@@ -205,7 +226,7 @@ extern class Cluster extends EventEmitter<Cluster>
 		Should you wish to reference a worker over a communication channel, using the worker's unique `id`
 		is the easiest way to find the worker.
 	**/
-	var workers(default,null):DynamicAccess<Worker>;
+	var workers(default, null):DynamicAccess<Worker>;
 }
 
 typedef ClusterSettings = {
@@ -213,23 +234,33 @@ typedef ClusterSettings = {
 		list of string arguments passed to the node executable.
 		Default: process.execArgv
 	**/
-	@:optional var execArgv(default,null):Array<String>;
+	@:optional var execArgv(default, null):Array<String>;
 
 	/**
 		file path to worker file.
 		Default: process.argv[1]
 	**/
-	@:optional var exec(default,null):String;
+	@:optional var exec(default, null):String;
 
 	/**
 		string arguments passed to worker.
 		Default: process.argv.slice(2)
 	**/
-	@:optional var args(default,null):Array<String>;
+	@:optional var args(default, null):Array<String>;
 
 	/**
 		whether or not to send output to parent's stdio.
 		Default: false
 	**/
-	@:optional var silent(default,null):Bool;
+	@:optional var silent(default, null):Bool;
+
+	/**
+		Sets the user identity of the process.
+	**/
+	@:optional var uid(default, null):Int;
+
+	/**
+		Sets the group identity of the process.
+	**/
+	@:optional var gid(default, null):Int;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,130 +19,221 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
-import haxe.DynamicAccess;
+import js.node.url.URL;
 
 /**
-	This module has utilities for URL resolution and parsing.
+	The `url` module provides utilities for URL resolution and parsing.
 **/
 @:jsRequire("url")
 extern class Url {
 	/**
-		Take a URL string, and return an object.
-		Pass true as `parseQueryString` to also parse the query string using the querystring module. Defaults to false.
-		Pass true as `slashesDenoteHost` to treat //foo/bar as { host: 'foo', pathname: '/bar' } rather than { pathname: '//foo/bar' }. Defaults to false.
+		Returns the Punycode ASCII serialization of the `domain`. If `domain` is an invalid domain, the empty string is returned.
+
+		It performs the inverse operation to `url.domainToUnicode()`.
 	**/
-	static function parse(urlStr:String, ?parseQueryString:Bool, ?slashesDenoteHost:Bool):UrlData;
+	static function domainToASCII(domain:String):String;
 
 	/**
-		Take a parsed URL object, and return a formatted URL string.
-		* `href will be ignored.
-		* `protocol` is treated the same with or without the trailing : (colon).
-			* The protocols http, https, ftp, gopher, file will be postfixed with :// (colon-slash-slash).
-			* All other protocols mailto, xmpp, aim, sftp, foo, etc will be postfixed with : (colon)
-		* `slashes` set to true if the protocol requires :// (colon-slash-slash)
-			* Only needs to be set for protocols not previously listed as requiring slashes, such as mongodb://localhost:8000/
-		* `auth` will be used if present.
-		* `hostname` will only be used if `host` is absent.
-		* `port` will only be used if `host` is absent.
-		* `host` will be used in place of `hostname` and `port`
-		* `pathname` is treated the same with or without the leading / (slash)
-		* `search` will be used in place of `query`
-		* `query` (object) will only be used if `search` is absent.
-		* `search` is treated the same with or without the leading ? (question mark)
-		* `hash` is treated the same with or without the leading # (pound sign, anchor)
- 	**/
-	static function format(urlObj:UrlData):String;
+		Returns the Unicode serialization of the `domain`. If `domain` is an invalid domain, the empty string is returned.
+
+		It performs the inverse operation to `url.dmainToASCII()`.
+	**/
+	static function domainToUnicode(domain:String):String;
 
 	/**
-		Take a base URL, and a href URL, and resolve them as a browser would for an anchor tag.
+		This function ensures the correct decodings of percent-encoded characters as well as ensuring a cross-platform valid absolute path string.
+	**/
+	@:overload(function(url:String):String {})
+	static function fileURLToPath(url:URL):String;
+
+	/**
+		Returns a customizable serialization of a URL `String` representation of a [WHATWG URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) object.
+
+		The URL object has both a `toString()` method and href property that return string serializations of the URL.
+		These are not, however, customizable in any way.
+		The `url.format(URL[, options])` method allows for basic customization of the output.
+
+		`format(urlObject:UrlObject)` and `format(urlObject:String)` are deprecated.
+	**/
+	@:overload(function(urlObject:UrlObject):String {})
+	@:overload(function(urlObject:String):String {})
+	static function format(url:URL, ?options:UrlFormatOptions):String;
+
+	/**
+		This function ensures that `path` is resolved absolutely,
+		and that the URL control characters are correctly encoded when converting into a File URL.
+	**/
+	static function pathToFileURL(path:String):URL;
+
+	/**
+		Takes a URL string, parses it, and returns a URL object.
+
+		If `parseQueryString` is true, the `query` property will always be set to an object returned by the `Querystring.parse` method.
+		If false, the `query` property on the returned URL object will be an unparsed, undecoded string.
+		Defaults to false.
+
+		If `slashesDenoteHost` is true, the first token after the literal string `//` and preceding the next `/` will be interpreted as the host.
+		For instance, given `//foo/bar`, the result would be `{host: 'foo', pathname: '/bar'}` rather than `{pathname: '//foo/bar'}`.
+		Defaults to false.
+	**/
+	@:deprecated
+	static function parse(urlString:String, ?parseQueryString:Bool, ?slashesDenoteHost:Bool):UrlObject;
+
+	/**
+		Resolves a target URL relative to a base URL in a manner similar to that of a Web browser resolving an anchor tag HREF.
+
 		Examples:
-			resolve('/one/two/three', 'four')         // '/one/two/four'
-			resolve('http://example.com/', '/one')    // 'http://example.com/one'
-			resolve('http://example.com/one', '/two') // 'http://example.com/two'
+
+		```haxe
+		resolve('/one/two/three', 'four')         // '/one/two/four'
+		resolve('http://example.com/', '/one')    // 'http://example.com/one'
+		resolve('http://example.com/one', '/two') // 'http://example.com/two'
+		```
 	**/
+	@:deprecated
 	static function resolve(from:String, to:String):String;
+}
+
+typedef UrlFormatOptions = {
+	/**
+		`true` if the serialized URL string should include the username and password, `false` otherwise.
+
+		Default: `true`.
+	**/
+	@:optional var auth:Bool;
+
+	/**
+		`true` if the serialized URL string should include the fragment, `false` otherwise.
+
+		Default: `true`.
+	**/
+	@:optional var fragment:Bool;
+
+	/**
+		`true` if the serialized URL string should include the search query, `false` otherwise.
+
+		Default: `true`.
+	**/
+	@:optional var search:Bool;
+
+	/**
+		`true` if Unicode characters appearing in the host component of the URL string should be encoded directly as opposed to being Punycode encoded.
+
+		Default: `false`.
+	**/
+	@:optional var unicode:Bool;
 }
 
 /**
 	Parsed URL objects have some or all of the following fields, depending on whether or not they exist in the URL string.
-	Any parts that are not in the URL string will not be in the parsed object. TODO: actually when testing this, I found out that they are present but null
+	Any parts that are not in the URL string will not be in the parsed object.
 **/
-typedef UrlData = {
+@:deprecated
+typedef UrlObject = {
 	/**
-		The full URL that was originally parsed. Both the protocol and host are lowercased.
-		Example: 'http://user:pass@host.com:8080/p/a/t/h?query=string#hash'
+		The full URL string that was parsed with both the `protocol` and `host` components converted to lower-case.
+
+		For example: 'http://user:pass@host.com:8080/p/a/t/h?query=string#hash'
 	**/
 	@:optional var href:String;
 
 	/**
-		The request protocol, lowercased.
-		Example: 'http:'
+		The URL's lower-cased protocol scheme.
+
+		For example: 'http:'
 	**/
 	@:optional var protocol:String;
 
 	/**
-		The protocol requires slashes after the colon.
-		Example: true or false
+		True if two ASCII forward-slash characters (`/`) are required following the colon in the `protocol`.
 	**/
 	@:optional var slashes:Bool;
 
 	/**
-		The full lowercased host portion of the URL, including port information.
-		Example: 'host.com:8080'
+		The full lower-cased host portion of the URL, including the `port` if specified.
+
+		For example: 'host.com:8080'
 	**/
 	@:optional var host:String;
 
 	/**
-		The authentication information portion of a URL.
-		Example: 'user:pass'
+		The username and password portion of the URL, also referred to as "userinfo".
+		This string subset follows the `protocol` and double slashes (if present) and precedes the `host` component,
+		delimited by an ASCII "at sign" (`@`).
+
+		The format of the string is `{username}[:{password}]`, with the `[:{password}]` portion being optional.
+
+		For example: 'user:pass'
 	**/
 	@:optional var auth:String;
 
 	/**
-		Just the lowercased hostname portion of the host.
+		The lower-cased host name portion of the `host` component without the `port` included.
+
+		For example: 'host.com'
 	**/
 	@:optional var hostname:String;
 
 	/**
-		The port number portion of the host.
-		Example: '8080'
+		The numeric port portion of the `host` component.
+
+		For example: '8080'
 	**/
 	@:optional var port:String;
 
 	/**
-		The path section of the URL, that comes after the host and before the query,
-		including the initial slash if present.
-		Example: '/p/a/t/h'
+		The entire path section of the URL. This is everything following the `host` (including the `port`) and
+		before the start of the `query` or `hash` components, delimited by either the ASCII question mark (`?`) or
+		hash (`#`) characters.
+
+		For example '/p/a/t/h'
+
+		No decoding of the path string is performed.
 	**/
 	@:optional var pathname:String;
 
 	/**
-		The 'query string' portion of the URL, including the leading question mark.
-		Example: '?query=string'
+		The entire "query string" portion of the URL, including the leading ASCII question mark (`?`) character.
+
+		For example: '?query=string'
+
+		No decoding of the query string is performed.
 	**/
 	@:optional var search:String;
 
 	/**
-		Concatenation of pathname and search.
-		Example: '/p/a/t/h?query=string'
+		Concatenation of the `pathname` and `search` components.
+
+		For example: '/p/a/t/h?query=string'
+
+		No decoding of the path is performed.
 	**/
 	@:optional var path:String;
 
 	/**
-		Either the 'params' portion of the query string, or a querystring - parsed object.
-		Example: 'query=string' or {'query':'string'}
+		Either the query string without the leading ASCII question mark (`?`),
+		or an object returned by the `Querystring.parse` method.
 
-		The type of this field can be implicitly converted to String or DynamicAccess<String>,
+		Whether the `query` property is a string or object is determined by the `parseQueryString` argument passed to `Url.parse`.
+
+		For example: 'query=string' or {'query': 'string'}
+
+		If returned as a string, no decoding of the query string is performed.
+		If returned as an object, both keys and values are decoded.
+
+		The type of this field can be implicitly converted to `String` or `DynamicAccess<String>`,
 		where either one is expected, so if you know the actual type, just assign it
 		to properly typed variable (e.g. var s:String = url.query)
 	**/
-	@:optional var query:haxe.extern.EitherType<String,DynamicAccess<String>>;
+	@:optional var query:haxe.extern.EitherType<String, haxe.DynamicAccess<String>>;
 
 	/**
-		The 'fragment' portion of the URL including the pound - sign.
-		Example: '#hash'
+		The "fragment" portion of the URL including the leading ASCII hash (`#`) character.
+
+		For example: '#hash'
 	**/
 	@:optional var hash:String;
 }
