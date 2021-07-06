@@ -13,7 +13,7 @@ class IndexBuffer {
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
 		data = new Uint32Array();
-		untyped __cpp__("kinc_g4_index_buffer_init(&buffer, indexCount, KINC_G4_INDEX_BUFFER_FORMAT_32BIT);");
+		untyped __cpp__("kinc_g4_index_buffer_init(&buffer, indexCount, KINC_G4_INDEX_BUFFER_FORMAT_32BIT, (kinc_g4_usage_t)usage);");
 	}
 
 	public function delete(): Void {
