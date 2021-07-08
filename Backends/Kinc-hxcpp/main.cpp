@@ -83,6 +83,18 @@ namespace {
 		SystemImpl_obj::penMove(windowId, x, y, pressure);
 	}
 
+	void penEraserDown(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penEraserDown(windowId, x, y, pressure);
+	}
+
+	void penEraserUp(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penEraserUp(windowId, x, y, pressure);
+	}
+
+	void penEraserMove(int windowId, int x, int y, float pressure) {
+		SystemImpl_obj::penEraserMove(windowId, x, y, pressure);
+	}
+
 	void accelerometerChanged(float x, float y, float z) {
 		Sensor_obj::_changed(0, x, y, z);
 	}
@@ -296,6 +308,9 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_pen_press_callback = penDown;
 	kinc_pen_release_callback = penUp;
 	kinc_pen_move_callback = penMove;
+	kinc_eraser_press_callback = penEraserDown;
+	kinc_eraser_release_callback = penEraserUp;
+	kinc_eraser_move_callback = penEraserMove;
 	kinc_gamepad_axis_callback = gamepadAxis;
 	kinc_gamepad_button_callback = gamepadButton;
 	kinc_surface_touch_start_callback = touchStart;

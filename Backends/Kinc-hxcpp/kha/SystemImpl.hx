@@ -361,6 +361,18 @@ class SystemImpl {
 		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
+	public static function penEraserDown(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserDownEvent(windowId, x, y, pressure);
+	}
+
+	public static function penEraserUp(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserUpEvent(windowId, x, y, pressure);
+	}
+
+	public static function penEraserMove(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserMoveEvent(windowId, x, y, pressure);
+	}
+
 	public static function gamepadAxis(gamepad: Int, axis: Int, value: Float): Void {
 		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
