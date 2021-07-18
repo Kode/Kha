@@ -14,6 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - uses: krdlab/setup-haxe@v1
+      with:
+        haxe-version: 4.2.3
+    - run: |
+      haxe -version
+      haxelib install dox
     - uses: actions/checkout@v1
     - name: Get Submodules
       run: git submodule update --init --recursive
