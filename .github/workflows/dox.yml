@@ -1,0 +1,52 @@
+name: dox
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: krdlab/setup-haxe@v1
+      with:
+        haxe-version: 4.2.3
+    - uses: actions/checkout@v1
+    - name: Install dox
+      run: haxelib install dox
+    - name: Get Submodules
+      run: git submodule update --init --recursive
+    - name: Get Node.js
+      run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
+    - name: Setup Node.js
+      run: nodejs_bin/copysysbin.sh
+    - name: Create documentation
+      run: nodejs_bin/node make.js empty --kha . --from Tests/Empty
+    - name: Clone website
+      run: git clone -b gh-pages https://github.com/Kode/Kha.git Kha-pages
+    - name: Remove old documentation
+      run: rm -r Kha-pages/api
+    - name: Copy new documentation
+      run: cp -R build/pages Kha-pages/api
+    - name: Set name
+      run: git config --global user.name "Robbot"
+    - name: Set email
+      run: git config --global user.email "robbot2019@robdangero.us"
+    - name: Add documentation
+      run: git -C Kha-pages add .
+    - name: Commit documentation
+      id: commit
+      continue-on-error: true
+      run: git -C Kha-pages commit -m "Update documentation to $GITHUB_SHA."
+    - name: Push documentation
+      if: steps.commit.outcome == 'success'
+      continue-on-error: true
+      run: git -C Kha-pages push https://Kode-Robbot:$ROBBOT_PASS@github.com/Kode/Kha.git gh-pages
+      env:
+        ROBBOT_PASS: ${{ secrets.ROBBOT_PASS }}

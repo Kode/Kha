@@ -47,18 +47,36 @@ class Image implements Canvas implements Resource {
 		return false;
 	}
 
+	/**
+	 * Returns the color of a pixel identified by its x/y-coordinates. This only works for images for which
+	 * the readable flag is set to true because by default images only exist in video-memory. To load images
+	 * which are readable use a line ala project.addAssets('Assets/image.png', { readable: true }); in
+	 * your khafile.
+	 * For reading the content of render-targets use getPixels() instead.
+	 */
 	public function at(x: Int, y: Int): Color {
 		return Color.Black;
 	}
 
 	public function unload(): Void {}
 
+	/**
+	 * Returns a writable Bytes object. Once unlock() is called the content of the Bytes object
+	 * is written into the image.
+	 * This can not be used to read the current content of an image - for this use at() or getPixels() instead.
+	 */
 	public function lock(level: Int = 0): Bytes {
 		return null;
 	}
 
 	public function unlock(): Void {}
 
+	/**
+	 * Returns the content of an image. This only works if the image is a render-target and it is very slow
+	 * because data will be copied from video-memory to main-memory. This is useful for making screenshots
+	 * but please avoid using it for regular rendering.
+	 * For reading the content of images which are not render-targets use at() instead.
+	 */
 	public function getPixels(): Bytes {
 		return null;
 	}
