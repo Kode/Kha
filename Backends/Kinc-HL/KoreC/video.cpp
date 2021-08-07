@@ -22,12 +22,12 @@ extern "C" void hl_kore_video_stop(vbyte* video) {
 
 extern "C" int hl_kore_video_get_duration(vbyte* video) {
 	Kore::Video* vid = (Kore::Video*)video;
-	return static_cast<int>(vid->duration * 1000.0);
+	return static_cast<int>(vid->duration() * 1000.0);
 }
 
 extern "C" int hl_kore_video_get_position(vbyte* video) {
 	Kore::Video* vid = (Kore::Video*)video;
-	return static_cast<int>(vid->position * 1000.0);
+	return static_cast<int>(vid->position() * 1000.0);
 }
 
 extern "C" void hl_kore_video_set_position(vbyte* video, int value) {
@@ -37,7 +37,7 @@ extern "C" void hl_kore_video_set_position(vbyte* video, int value) {
 
 extern "C" bool hl_kore_video_is_finished(vbyte* video) {
 	Kore::Video* vid = (Kore::Video*)video;
-	return vid->finished;
+	return vid->finished();
 }
 
 extern "C" int hl_kore_video_width(vbyte* video) {
