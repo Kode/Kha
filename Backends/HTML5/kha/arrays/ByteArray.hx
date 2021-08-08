@@ -18,7 +18,7 @@ abstract ByteArray(DataView) to DataView {
 	}
 
 	static public function make(byteLength: Int): ByteArray {
-		return new ByteArray(new ByteBuffer(byteLength));
+		return new ByteArray(ByteBuffer.create(byteLength));
 	}
 
 	public inline function getInt8(byteOffset: Int): Int {
