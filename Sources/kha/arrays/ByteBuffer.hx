@@ -11,8 +11,8 @@ extern class ByteBuffer {
 	/**
 	 * Returns a shallow copy of a range of bytes from this buffer.
 	 * @param begin start of the range, inclusive
-	 * @param end end of the range, exclusive ; defaults to whole buffer
+	 * @param end end of the range, exclusive
 	 * @return ByteBuffer
 	 */
-	public function slice(begin: Int, ?end: Int): ByteBuffer;
+	public function slice(begin: Int, end: Int): ByteBuffer;
 }
