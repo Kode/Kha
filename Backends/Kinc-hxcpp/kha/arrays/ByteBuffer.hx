@@ -6,7 +6,7 @@ package kha.arrays;
 @:native("bytearray")
 extern class ByteBuffer {
 	@:native("bytearray")
-	public static function create(length: Int): ByteBuffer;
+	public static function create(): ByteBuffer;
 
 	public var byteLength(get, never): Int;
 

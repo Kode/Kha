@@ -16,7 +16,7 @@ class VertexBuffer {
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		init(vertexCount, structure, usage, instanceDataStepRate);
-		data = new Float32Array();
+		data = new Float32Array(0);
 	}
 
 	public function delete(): Void {
@@ -93,7 +93,7 @@ class VertexBuffer {
 			count = this.count();
 		lastLockCount = count;
 		if (dataInt16 == null)
-			dataInt16 = new Int16Array();
+			dataInt16 = new Int16Array(0);
 		return lockInt16Private(start, count);
 	}
 

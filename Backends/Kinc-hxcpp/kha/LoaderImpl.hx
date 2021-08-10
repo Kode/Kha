@@ -143,7 +143,7 @@ class LoaderImpl {
 	}
 
 	@:keep static function createFloat32Array() {
-		return new Float32Array();
+		return new Float32Array(0);
 	}
 
 	@:keep static function createEmptyImage(readable: Bool, floatFormat: Bool) {
