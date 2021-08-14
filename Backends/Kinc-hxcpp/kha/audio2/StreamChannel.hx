@@ -20,7 +20,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	function initVorbis(data: Bytes): Void {}
 
 	@:functionCode("
-		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
+		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, (float*)samples->self.data, length);
 		if (read < length / 2) {
 			if (loop) {
 				stb_vorbis_seek_start(vorbis);

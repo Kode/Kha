@@ -21,7 +21,7 @@ class IndexBuffer {
 	}
 
 	@:functionCode("
-		data->self.data = (unsigned int*)kinc_g4_index_buffer_lock(&buffer) + start;
+		data->self.data = (uint8_t*)kinc_g4_index_buffer_lock(&buffer) + start;
 		data->self.myLength = count;
 		return data;
 	")

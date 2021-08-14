@@ -58,7 +58,7 @@ class VertexBuffer {
 	function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode("
-		data->self.data = kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		data->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
 		data->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 4;
 		return data;
 	")
@@ -78,7 +78,7 @@ class VertexBuffer {
 	}
 
 	@:functionCode("
-		dataInt16->self.data = (short*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		dataInt16->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
 		dataInt16->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 2;
 		return dataInt16;
 	")

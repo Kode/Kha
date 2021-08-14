@@ -23,13 +23,13 @@ abstract ByteArray(ByteArrayPrivate) {
 	public var buffer(get, never): ByteBuffer;
 
 	inline function get_buffer(): ByteBuffer {
-		return null;
+		return this.self;
 	}
 
 	public var byteLength(get, never): Int;
 
 	inline function get_byteLength(): Int {
-		return 0;
+		return this.self.byteLength;
 	}
 
 	public var byteOffset(get, never): Int;
@@ -43,7 +43,7 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public static inline function make(byteLength: Int): ByteArray {
-		return new ByteArray(null, 0, byteLength);
+		return new ByteArray(ByteBuffer.create(), 0, byteLength);
 	}
 
 	public function getInt8(byteOffset: Int): Int {

@@ -196,8 +196,8 @@ class LoaderImpl {
 						soundErrored(file.index, file.name);
 					}
 					else if (file.data.sound.samples != NULL) {
-						::kha::arrays::Float32ArrayPrivate buffer = createFloat32Array();
-						buffer->self.data = file.data.sound.samples;
+						::kha::arrays::ByteArrayPrivate buffer = createFloat32Array();
+						buffer->self.data = (uint8_t*)file.data.sound.samples;
 						buffer->self.myLength = file.data.sound.size;
 						soundLoadedUncompressed(file.index, buffer, file.data.sound.channels, file.data.sound.sample_rate, file.data.sound.length);
 					}
