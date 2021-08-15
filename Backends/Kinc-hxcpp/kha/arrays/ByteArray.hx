@@ -4,12 +4,13 @@ import cpp.vm.Gc;
 
 class ByteArrayPrivate {
 	public var self: ByteBuffer;
+	public var offset: Int;
+	public var length: Int;
 
-	public inline function new(elements: Int = 0) {
-		self = ByteBuffer.create();
-		if (elements > 0) {
-			self.alloc(elements);
-		}
+	public inline function new(buffer: ByteBuffer, offset: Int, length: Int) {
+		self = buffer;
+		this.offset = offset;
+		this.length = length;
 
 		Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
 	}
@@ -29,25 +30,30 @@ abstract ByteArray(ByteArrayPrivate) {
 	public var byteLength(get, never): Int;
 
 	inline function get_byteLength(): Int {
-		return this.self.byteLength;
+		return this.length;
 	}
 
 	public var byteOffset(get, never): Int;
 
 	inline function get_byteOffset(): Int {
-		return 0;
+		return this.offset;
 	}
 
 	public inline function new(buffer: ByteBuffer, ?byteOffset: Int, ?byteLength: Int): Void {
-		this = new ByteArrayPrivate(byteLength != null ? byteLength : buffer.byteLength);
+		var offset: Int = byteOffset != null ? byteOffset : 0;
+		this = new ByteArrayPrivate(buffer, offset, byteLength != null ? byteLength : buffer.byteLength - offset);
 	}
 
 	public static inline function make(byteLength: Int): ByteArray {
-		return new ByteArray(ByteBuffer.create(), 0, byteLength);
+		var buffer = ByteBuffer.create();
+		if (byteLength > 0) {
+			buffer.alloc(byteLength);
+		}
+		return new ByteArray(buffer, 0, byteLength);
 	}
 
 	public function getInt8(byteOffset: Int): Int {
-		return 0;
+		return this.self[this.offset + byteOffset];
 	}
 
 	public function getUint8(byteOffset: Int): Int {
