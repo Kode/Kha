@@ -117,27 +117,63 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public function getInt16LE(byteOffset: Int): Int {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(int16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int i = ({0}.data[{1} + {2} + 0] << 0) | ({0}.data[{1} + {2} + 1] << 8)", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getUint16LE(byteOffset: Int): Int {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(uint16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int i = ({0}.data[{1} + {2} + 0] << 0) | ({0}.data[{1} + {2} + 1] << 8)", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getInt32LE(byteOffset: Int): Int {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(int32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		return
+			untyped __cpp__("({0}.data[{1} + {2} + 0] << 0) | ({0}.data[{1} + {2} + 1] << 8) | ({0}.data[{1} + {2} + 2] << 16) | ({0}.data[{1} + {2} + 3] << 24)",
+				this.self,
+			this.offset, byteOffset);
+		#end
 	}
 
 	public function getUint32LE(byteOffset: Int): Int {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(uint32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		return
+			untyped __cpp__("({0}.data[{1} + {2} + 0] << 0) | ({0}.data[{1} + {2} + 1] << 8) | ({0}.data[{1} + {2} + 2] << 16) | ({0}.data[{1} + {2} + 3] << 24)",
+				this.self,
+			this.offset, byteOffset);
+		#end
 	}
 
 	public function getFloat32LE(byteOffset: Int): FastFloat {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(float *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int32_t i = ({0}.data[{1} + {2} + 0] << 0) | ({0}.data[{1} + {2} + 1] << 8) | ({0}.data[{1} + {2} + 2] << 16) | ({0}.data[{1} + {2} + 3] << 24)",
+			this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getFloat64LE(byteOffset: Int): Float {
-		return 0;
+		#if !sys_bigendian
+		return untyped __cpp__("*(double *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int64_t i = ((int64_t){0}.data[{1} + {2} + 0] << 0) | ((int64_t){0}.data[{1} + {2} + 1] << 8) | ((int64_t){0}.data[{1} + {2} + 2] << 16) | ((int64_t){0}.data[{1} + {2} + 3] << 24) | ((int64_t){0}.data[{1} + {2} + 4] << 32) | ((int64_t){0}.data[{1} + {2} + 5] << 40) | ((int64_t){0}.data[{1} + {2} + 6] << 48) | ((int64_t){0}.data[{1} + {2} + 7] << 56)",
+			this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(double *)&i;");
+		#end
 	}
 
 	public function setInt16LE(byteOffset: Int, value: Int): Void {}
@@ -153,27 +189,63 @@ abstract ByteArray(ByteArrayPrivate) {
 	public function setFloat64LE(byteOffset: Int, value: Float): Void {}
 
 	public function getInt16BE(byteOffset: Int): Int {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(int16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int i = ({0}.data[{1} + {2} + 1] << 0) | ({0}.data[{1} + {2} + 0] << 8)", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getUint16BE(byteOffset: Int): Int {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(uint16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int i = ({0}.data[{1} + {2} + 1] << 0) | ({0}.data[{1} + {2} + 0] << 8)", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getInt32BE(byteOffset: Int): Int {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(int32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		return
+			untyped __cpp__("({0}.data[{1} + {2} + 3] << 0) | ({0}.data[{1} + {2} + 2] << 8) | ({0}.data[{1} + {2} + 1] << 16) | ({0}.data[{1} + {2} + 0] << 24)",
+				this.self,
+			this.offset, byteOffset);
+		#end
 	}
 
 	public function getUint32BE(byteOffset: Int): Int {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(uint32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		return
+			untyped __cpp__("({0}.data[{1} + {2} + 3] << 0) | ({0}.data[{1} + {2} + 2] << 8) | ({0}.data[{1} + {2} + 1] << 16) | ({0}.data[{1} + {2} + 0] << 24)",
+				this.self,
+			this.offset, byteOffset);
+		#end
 	}
 
 	public function getFloat32BE(byteOffset: Int): FastFloat {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(float *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int32_t i = ({0}.data[{1} + {2} + 3] << 0) | ({0}.data[{1} + {2} + 2] << 8) | ({0}.data[{1} + {2} + 1] << 16) | ({0}.data[{1} + {2} + 0] << 24)",
+			this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&i;");
+		#end
 	}
 
 	public function getFloat64BE(byteOffset: Int): Float {
-		return 0;
+		#if sys_bigendian
+		return untyped __cpp__("*(double *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
+		#else
+		untyped __cpp__("int64_t i = ((int64_t){0}.data[{1} + {2} + 7] << 0) | ((int64_t){0}.data[{1} + {2} + 6] << 8) | ((int64_t){0}.data[{1} + {2} + 5] << 16) | ((int64_t){0}.data[{1} + {2} + 4] << 24) | ((int64_t){0}.data[{1} + {2} + 3] << 32) | ((int64_t){0}.data[{1} + {2} + 2] << 40) | ((int64_t){0}.data[{1} + {2} + 1] << 48) | ((int64_t){0}.data[{1} + {2} + 0] << 56)",
+			this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(double *)&i;");
+		#end
 	}
 
 	public function setInt16BE(byteOffset: Int, value: Int): Void {}
