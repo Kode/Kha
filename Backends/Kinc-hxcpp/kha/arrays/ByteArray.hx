@@ -53,52 +53,68 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public function getInt8(byteOffset: Int): Int {
-		return untyped __cpp__("*(int8_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(int8_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getUint8(byteOffset: Int): Int {
-		return untyped __cpp__("*(uint8_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(uint8_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getInt16(byteOffset: Int): Int {
-		return untyped __cpp__("*(int16_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(int16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getUint16(byteOffset: Int): Int {
-		return untyped __cpp__("*(uint16_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(uint16_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getInt32(byteOffset: Int): Int {
-		return untyped __cpp__("*(int32_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(int32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getUint32(byteOffset: Int): Int {
-		return untyped __cpp__("*(uint32_t *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(uint32_t *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getFloat32(byteOffset: Int): FastFloat {
-		return untyped __cpp__("*(float *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(float *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
 	public function getFloat64(byteOffset: Int): Float {
-		return untyped __cpp__("*(double *)({0}.data[{1} + {2}])", this.self, this.offset, byteOffset);
+		return untyped __cpp__("*(double *)&{0}.data[{1} + {2}]", this.self, this.offset, byteOffset);
 	}
 
-	public function setInt8(byteOffset: Int, value: Int): Void {}
+	public function setInt8(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((int8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setUint8(byteOffset: Int, value: Int): Void {}
+	public function setUint8(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((uint8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setInt16(byteOffset: Int, value: Int): Void {}
+	public function setInt16(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((int16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setUint16(byteOffset: Int, value: Int): Void {}
+	public function setUint16(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((uint16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setInt32(byteOffset: Int, value: Int): Void {}
+	public function setInt32(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((int32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setUint32(byteOffset: Int, value: Int): Void {}
+	public function setUint32(byteOffset: Int, value: Int): Void {
+		return untyped __cpp__("*((uint32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setFloat32(byteOffset: Int, value: FastFloat): Void {}
+	public function setFloat32(byteOffset: Int, value: FastFloat): Void {
+		return untyped __cpp__("*((float *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
-	public function setFloat64(byteOffset: Int, value: Float): Void {}
+	public function setFloat64(byteOffset: Int, value: Float): Void {
+		return untyped __cpp__("*((double *)&{0}.data[{1} + {2}]) = {3}", this.self, this.offset, byteOffset, value);
+	}
 
 	public function getInt16LE(byteOffset: Int): Int {
 		return 0;
@@ -173,6 +189,8 @@ abstract ByteArray(ByteArrayPrivate) {
 	public function setFloat64BE(byteOffset: Int, value: Float): Void {}
 
 	public function subarray(start: Int, ?end: Int): ByteArray {
-		return null;
+		var offset: Int = this.offset + start;
+		var length: Int = end == null ? this.length - start : end - start;
+		return new ByteArray(this.self, offset, length);
 	}
 }
