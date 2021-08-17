@@ -184,6 +184,9 @@ class LoaderImpl {
 						if (file.data.image.readable) {
 							image->imageData = (uint8_t*)kincImage.data;
 						}
+						else {
+							free(file.data.image.image.data);
+						}
 						kinc_image_destroy(&kincImage);
 						image->imageType = KhaImageTypeTexture;
 						image->originalWidth = file.data.image.image.width;
