@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,77 +19,95 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
 import js.node.vm.Script;
 
 /**
-    Using this class JavaScript code can be compiled and
-    run immediately or compiled, saved, and run later.
+	Options object used by Vm.run* methods.
 **/
-@:jsRequire("vm")
-extern class Vm {
-    /**
-        Compiles `code`, runs it and returns the result.
-        Running code does not have access to local scope.
-
-        `filename` is optional, it's used only in stack traces.
-
-        In case of syntax error in `code` emits the syntax error to stderr and throws an exception.
-    **/
-    static function runInThisContext(code:String, ?filename:String):Dynamic;
-
-    /**
-        Compiles `code`, then runs it in sandbox and returns the result.
-        Running code does not have access to local scope.
-
-        The object `sandbox` will be used as the global object for code.
-        `sandbox` and `filename` are optional, `filename` is only used in stack traces.
-
-        In case of syntax error in `code` emits the syntax error to stderr and throws an exception.
-    **/
-    @:overload(function(code:String, sandbox:{}, ?filename:String):Dynamic {})
-    static function runInNewContext(code:String, ?filename:String):Dynamic;
-
-    /**
-        Compiles `code`, then runs it in `context` and returns the result.
-
-        A (V8) context comprises a global object, together with a set of built-in objects and functions.
-        Running code does not have access to local scope and the global object held within context will be
-        used as the global object for code.
-
-        `filename` is optional, it's used only in stack traces.
-
-        Note that running untrusted code is a tricky business requiring great care.
-        To prevent accidental global variable leakage, `runInContext` is quite useful,
-        but safely running untrusted code requires a separate process.
-
-        In case of syntax error in `code` emits the syntax error to stderr and throws an exception.
-    **/
-    static function runInContext(code:String, context:VmContext, ?filename:String):Dynamic;
-
-    /**
-        Creates a new context which is suitable for use as the 2nd argument of a subsequent call to `runInContext`.
-        A (V8) context comprises a global object together with a set of build-in objects and functions.
-
-        The optional argument `initSandbox` will be shallow-copied to seed the initial contents of the global object used by the context.
-    **/
-    static function createContext(?initSandbox:{}):VmContext;
-
-    /**
-        Compiles `code` but does not run it. Instead, it returns a `Script` object representing this compiled code.
-        This script can be run later many times using its methods.
-
-        The returned script is not bound to any global object. It is bound before each run, just for that run.
-
-        `filename` is optional, it's only used in stack traces.
-
-        In case of syntax error in `code` prints the syntax error to stderr and throws an exception.
-    **/
-    static function createScript(code:String, ?filename:String):Script;
+typedef VmRunOptions = {
+	> ScriptOptions,
+	> ScriptRunOptions,
 }
 
 /**
-    Type of context objects returned by `Vm.createContext`.
+	Using this class JavaScript code can be compiled and
+	run immediately or compiled, saved, and run later.
 **/
-extern class VmContext {}
+@:jsRequire("vm")
+extern class Vm {
+	/**
+		Compiles `code`, runs it and returns the result.
+		Running code does not have access to local scope.
+
+		`filename` is optional, it's used only in stack traces.
+
+		In case of syntax error in `code` emits the syntax error to stderr and throws an exception.
+	**/
+	static function runInThisContext(code:String, ?options:VmRunOptions):Dynamic;
+
+	/**
+		Compiles `code`, contextifies `sandbox` if passed or creates a new contextified sandbox if it's omitted,
+		and then runs the code with the sandbox as the global object and returns the result.
+
+		`runInNewContext` takes the same options as `runInThisContext`.
+
+		Note that running untrusted code is a tricky business requiring great care. `runInNewContext` is quite useful,
+		but safely running untrusted code requires a separate process.
+	**/
+	@:overload(function(code:String, ?sandbox:{}):Dynamic {})
+	static function runInNewContext(code:String, sandbox:{}, ?options:VmRunOptions):Dynamic;
+
+	/**
+		Compiles `code`, then runs it in `contextifiedSandbox` and returns the result.
+
+		Running code does not have access to local scope. The `contextifiedSandbox` object must have been previously
+		contextified via `createContext`; it will be used as the global object for code.
+
+		`runInContext` takes the same options as `runInThisContext`.
+
+		Note that running untrusted code is a tricky business requiring great care. `runInContext` is quite useful,
+		but safely running untrusted code requires a separate process.
+	**/
+	static function runInContext(code:String, contextifiedSandbox:VmContext<Dynamic>, ?options:VmRunOptions):Dynamic;
+
+	/**
+
+		If given a sandbox object, will "contextify" that sandbox so that it can be used in calls to `runInContext` or
+		`Script.runInContext`. Inside scripts run as such, sandbox will be the global object, retaining all its existing
+		properties but also having the built-in objects and functions any standard global object has. Outside of scripts
+		run by the vm module, sandbox will be unchanged.
+
+		If not given a sandbox object, returns a new, empty contextified sandbox object you can use.
+
+		This function is useful for creating a sandbox that can be used to run multiple scripts, e.g. if you were
+		emulating a web browser it could be used to create a single sandbox representing a window's global object,
+		then run all <script> tags together inside that sandbox.
+	**/
+	static function createContext<T:{}>(?sandbox:T):VmContext<T>;
+
+	/**
+		Returns whether or not a sandbox object has been contextified by calling `createContext` on it.
+	**/
+	static function isContext(sandbox:{}):Bool;
+
+	/**
+		Compiles and executes `code` inside the V8 debug context.
+		The primary use case is to get access to the V8 debug object:
+
+		Note that the debug context and object are intrinsically tied to V8's debugger implementation
+		and may change (or even get removed) without prior warning.
+	**/
+	static function runInDebugContext(code:String):Dynamic;
+
+	@:deprecated("use new js.node.vm.Script(...) instead")
+	static function createScript(code:String, ?options:ScriptOptions):Script;
+}
+
+/**
+	Type of context objects returned by `Vm.createContext`.
+**/
+@:forward
+abstract VmContext<T:{}>(T) from T to T {}

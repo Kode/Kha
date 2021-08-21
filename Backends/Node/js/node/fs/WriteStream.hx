@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,22 +19,36 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.fs;
 
+import js.node.Fs.FsPath;
 import js.node.events.EventEmitter.Event;
 
 @:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-        Emitted when the `WriteStream`'s file is opened.
+		Emitted when the `WriteStream`'s file is opened.
 
-        Listener arguments:
-            fd - file descriptor used by the `WriteStream`.
-    **/
-	var Open : WriteStreamEvent<Int->Void> = "open";
+		Listener arguments:
+			fd - file descriptor used by the `WriteStream`.
+	**/
+	var Open:WriteStreamEvent<Int->Void> = "open";
 }
 
 /**
-    Writable file stream.
+	Writable file stream.
 **/
 extern class WriteStream extends js.node.stream.Writable<WriteStream> {
+	/**
+		The path to the file the stream is writing to as specified in the first argument to `Fs.createWriteStream`.
+		If path is passed as a string, then writeStream.path will be a string.
+		If path is passed as a Buffer, then writeStream.path will be a Buffer.
+	**/
+	var path:FsPath;
+
+	/**
+		The number of bytes written so far.
+		Does not include data that is still queued for writing.
+	**/
+	var bytesWritten:Int;
 }

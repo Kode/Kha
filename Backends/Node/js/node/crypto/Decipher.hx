@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
 import js.node.Buffer;
@@ -34,7 +35,6 @@ import js.node.Buffer;
 	The legacy `update` and `final` methods are also supported.
 **/
 extern class Decipher extends js.node.stream.Transform<Decipher> {
-
 	/**
 		Updates the decipher with `data`, which is encoded in 'binary', 'base64' or 'hex'.
 		If no encoding is provided, then a buffer is expected.
@@ -53,8 +53,8 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 
 		Note: decipher object can not be used after `final` method has been called.
 	**/
-	@:overload(function():Buffer {})
-	function final(output_encoding:String):String;
+	@:native("final") @:overload(function():Buffer {})
+	function finalContents(output_encoding:String):String;
 
 	/**
 		You can disable auto padding if the data has been encrypted without standard block padding
@@ -66,4 +66,18 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	**/
 	@:overload(function():Void {})
 	function setAutoPadding(auto_padding:Bool):Void;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method must be used
+		to pass in the received authentication tag. If no tag is provided or if the ciphertext
+		has been tampered with, `final` will throw, thus indicating that the ciphertext should be
+		discarded due to failed authentication.
+	**/
+	function setAuthTag(buffer:Buffer):Void;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method sets the value
+		used for the additional authenticated data (AAD) input parameter.
+	**/
+	function setAAD(buffer:Buffer):Void;
 }

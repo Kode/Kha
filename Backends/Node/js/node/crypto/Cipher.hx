@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
 import js.node.Buffer;
@@ -34,7 +35,6 @@ import js.node.Buffer;
 	The legacy `update` and `final` methods are also supported.
 **/
 extern class Cipher extends js.node.stream.Transform<Cipher> {
-
 	/**
 		Updates the cipher with `data`, the encoding of which is given in `input_encoding`
 		and can be 'utf8', 'ascii' or 'binary'. If no encoding is provided, then a buffer is expected.
@@ -55,8 +55,8 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		Note: cipher object can not be used after `final` method has been called.
 	**/
-	@:overload(function():Buffer {})
-	function final(output_encoding:String):String;
+	@:native("final") @:overload(function():Buffer {})
+	function finalContents(output_encoding:String):String;
 
 	/**
 		You can disable automatic padding of the input data to block size.
@@ -68,4 +68,17 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 	**/
 	@:overload(function():Void {})
 	function setAutoPadding(auto_padding:Bool):Void;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method returns a `Buffer`
+		that represents the authentication tag that has been computed from the given data.
+		Should be called after encryption has been completed using the `final` method!
+	**/
+	function getAuthTag():Buffer;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method sets the value
+		used for the additional authenticated data (AAD) input parameter.
+	**/
+	function setAAD(buffer:Buffer):Void;
 }

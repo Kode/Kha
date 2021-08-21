@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,24 +19,25 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
-import js.node.Buffer;
 import js.node.dgram.Socket;
 
 /**
-    Datagram sockets
+	Datagram sockets
 **/
 @:jsRequire("dgram")
 extern class Dgram {
-    /**
-        Creates a datagram `Socket` of the specified types.
+	/**
+		Creates a datagram `Socket` of the specified types.
 
-        Takes an optional `callback` which is added as a listener for 'message' events.
+		Takes an optional `callback` which is added as a listener for 'message' events.
 
-        Call `socket.bind` if you want to receive datagrams. `socket.bind` will bind to
-        the "all interfaces" address on a random port (it does the right thing for both `udp4` and `udp6` sockets).
-        You can then retrieve the address and port with `socket.address().address` and `socket.address().port`.
-    **/
-    static function createSocket(type:SocketType, ?callback:MessageListener):Socket;
+		Call `socket.bind` if you want to receive datagrams. `socket.bind` will bind to
+		the "all interfaces" address on a random port (it does the right thing for both `udp4` and `udp6` sockets).
+		You can then retrieve the address and port with `socket.address().address` and `socket.address().port`.
+	**/
+	@:overload(function(type:SocketType, ?callback:MessageListener):Socket {})
+	static function createSocket(options:SocketOptions, ?callback:MessageListener):Socket;
 }

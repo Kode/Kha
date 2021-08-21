@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,7 +19,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-package js.node.tls;
 
-extern class EncryptedStream extends CryptoStream {
+package js.node;
+
+@:jsRequire("constants")
+extern class Constants {
+	static var ENGINE_METHOD_RSA(default, null):Int;
+	static var ENGINE_METHOD_DSA(default, null):Int;
+	static var ENGINE_METHOD_DH(default, null):Int;
+	static var ENGINE_METHOD_RAND(default, null):Int;
+	static var ENGINE_METHOD_ECDH(default, null):Int;
+	static var ENGINE_METHOD_ECDSA(default, null):Int;
+	static var ENGINE_METHOD_CIPHERS(default, null):Int;
+	static var ENGINE_METHOD_DIGESTS(default, null):Int;
+	static var ENGINE_METHOD_STORE(default, null):Int;
+	static var ENGINE_METHOD_PKEY_METH(default, null):Int;
+	static var ENGINE_METHOD_PKEY_ASN1_METH(default, null):Int;
+	static var ENGINE_METHOD_ALL(default, null):Int;
+	static var ENGINE_METHOD_NONE(default, null):Int;
+
+	static var RSA_NO_PADDING(default, null):Int;
+	static var RSA_PKCS1_PADDING(default, null):Int;
+	static var RSA_PKCS1_OAEP_PADDING(default, null):Int;
 }

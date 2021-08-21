@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,15 +19,21 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
-
+import haxe.extern.Rest;
+import js.node.child_process.ChildProcess.ChildProcessSendOptions;
 import js.node.events.EventEmitter;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
-
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events emitted by the Process class.
@@ -41,8 +47,7 @@ import js.node.stream.Writable;
 		This is a good hook to perform checks on the module's state (like for unit tests).
 		The callback takes one argument, the code the process is exiting with.
 	**/
-	var Exit : ProcessEvent<Int->Void> = "exit";
-
+	var Exit:ProcessEvent<Int->Void> = "exit";
 
 	/**
 		Emitted when node empties it's event loop and has nothing else to schedule.
@@ -54,20 +59,17 @@ import js.node.stream.Writable;
 		or uncaught exceptions, and should not be used as an alternative to the `exit` event
 		unless the intention is to schedule more work.
 	**/
-	var BeforeExit : ProcessEvent<Int->Void> = "beforeExit";
-
+	var BeforeExit:ProcessEvent<Int->Void> = "beforeExit";
 
 	/**
 		Emitted when an exception bubbles all the way back to the event loop.
 		If a listener is added for this exception, the default action (which is to print a stack trace and exit)
 		will not occur.
 	**/
-	var UncaughtException : ProcessEvent<js.lib.Error->Void> = "uncaughtException";
+	var UncaughtException:ProcessEvent<Error->Void> = "uncaughtException";
 }
 
-
 extern class Process extends EventEmitter<Process> {
-
 	/**
 		A Writable Stream to stdout.
 
@@ -137,9 +139,18 @@ extern class Process extends EventEmitter<Process> {
 	var env:DynamicAccess<String>;
 
 	/**
-		Ends the process with the specified `code`. If omitted, exit uses the 'success' code 0.
+		Ends the process with the specified `code`. If the `code` is omitted, exit uses either the
+		'success' code `0` or the value of `process.exitCode` if specified.
 	**/
 	function exit(?code:Int):Void;
+
+	/**
+		A number which will be the process exit code, when the process either exits gracefully,
+		or is exited via `process.exit()` without specifying a code.
+
+		Specifying a code to `process.exit(code)` will override any previous setting of `process.exitCode`.
+	**/
+	var exitCode:Null<Int>;
 
 	/**
 		Gets the group identity of the process. See getgid(2).
@@ -187,7 +198,7 @@ extern class Process extends EventEmitter<Process> {
 		Note: this function is only available on POSIX platforms (i.e. not Windows)
 		The list can contain group IDs, group names or both.
 	**/
-	function setgroups(groups:Array<EitherType<String,Int>>):Void;
+	function setgroups(groups:Array<EitherType<String, Int>>):Void;
 
 	/**
 		Reads /etc/group and initializes the group access list, using all groups of which the user is a member.
@@ -195,12 +206,12 @@ extern class Process extends EventEmitter<Process> {
 
 		Note: this function is only available on POSIX platforms (i.e. not Windows)
 	**/
-	function initgroups(user:EitherType<String,Int>, extra_group:EitherType<String,Int>):Void;
+	function initgroups(user:EitherType<String, Int>, extra_group:EitherType<String, Int>):Void;
 
 	/**
 		A compiled-in property that exposes NODE_VERSION.
 	**/
-	var version(default,null):String;
+	var version(default, null):String;
 
 	/**
 		A property exposing version strings of node and its dependencies.
@@ -230,7 +241,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The PID of the process.
 	**/
-	var pid(default,null):Int;
+	var pid(default, null):Int;
 
 	/**
 		Getter/setter to set what is displayed in 'ps'.
@@ -249,7 +260,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 	**/
-	var platform : String;
+	var platform:String;
 
 	/**
 		Returns an object describing the memory usage of the Node process measured in bytes.
@@ -264,7 +275,7 @@ extern class Process extends EventEmitter<Process> {
 		This is important in developing APIs where you want to give the user the chance to
 		assign event handlers after an object has been constructed, but before any I/O has occurred.
 	**/
-	function nextTick(callback:Void->Void):Void;
+	function nextTick(callback:Void->Void, args:Rest<Dynamic>):Void;
 
 	/**
 		Sets or reads the process's file mode creation mask.
@@ -276,7 +287,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		Number of seconds Node has been running.
 	**/
-	function uptime():Int;
+	function uptime():Float;
 
 	/**
 		Returns the current high-resolution real time in a [seconds, nanoseconds] tuple Array.
@@ -296,14 +307,16 @@ extern class Process extends EventEmitter<Process> {
 
 		As with require.main, it will be undefined if there was no entry script.
 	**/
-	var mainModule(default,null):Module;
+	var mainModule(default, null):Module;
 
 	/**
 		Send a message to the parent process.
 
 		Only available for child processes. See `ChildProcess.send`.
 	**/
-	function send(message:Dynamic):Void;
+	@:overload(function(message:Dynamic, sendHandle:Dynamic, options:ChildProcessSendOptions, ?callback:Error->Void):Bool {})
+	@:overload(function(message:Dynamic, sendHandle:Dynamic, ?callback:Error->Void):Bool {})
+	function send(message:Dynamic, ?callback:Error->Void):Bool;
 
 	/**
 		Close the IPC channel to parent process.
@@ -311,6 +324,24 @@ extern class Process extends EventEmitter<Process> {
 		Only available for child processes. See `ChildProcess.disconnect`.
 	**/
 	function disconnect():Void;
+
+	/**
+		Disable run-time deprecation warnings.
+		See `Util.deprecate`.
+	**/
+	var noDeprecation:Bool;
+
+	/**
+		Enable logging of deprecation warnings.
+		See `Util.deprecate`.
+	**/
+	var traceDeprecation:Bool;
+
+	/**
+		Throw on deprecated API usage.
+		See `Util.deprecate`.
+	**/
+	var throwDeprecation:Bool;
 }
 
 typedef MemoryUsage = {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,29 +19,81 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.vm;
 
+import js.node.Vm.VmContext;
+
+typedef ScriptOptions = {
+	/**
+		The filename that shows up in any stack traces produced.
+	**/
+	@:optional var filename:String;
+
+	/**
+		Whether or not to print any errors to stderr, with the line of code that caused them highlighted,
+		before throwing an exception.
+
+		Will capture both syntax errors from compiling code and runtime errors thrown by executing the compiled code.
+
+		Defaults to true.
+	**/
+	@:optional var displayErrors:Bool;
+}
+
+typedef ScriptRunOptions = {
+	/**
+		Whether or not to print any errors to stderr, with the line of code that caused them highlighted,
+		before throwing an exception.
+
+		Will capture both syntax errors from compiling code and runtime errors thrown by executing the compiled code.
+
+		Defaults to true.
+	**/
+	@:optional var displayErrors:Bool;
+
+	/**
+		Number of milliseconds to execute code before terminating execution.
+		If execution is terminated, an Error will be thrown.
+	**/
+	@:optional var timeout:Int;
+}
+
 /**
-    A class for running JavaScript scripts.
-    Returned by `Vm.createScript`.
+	A class for holding precompiled scripts, and running them in specific sandboxes.
 **/
+@:jsRequire("vm", "Script")
 extern class Script {
-    /**
-        Similar to `Vm.runInThisContext` but a method of a precompiled `Script` object.
-        `runInThisContext` runs the code of script and returns the result.
-        Running code does not have access to local scope, but does have access to the global object (v8: in actual context).
-    **/
-    function runInThisContext():Dynamic;
+	/**
+		Creating a new `Script` compiles `code` but does not run it. Instead, the created `Script` object
+		represents this compiled code.
 
-    /**
-        Similar to `Vm.runInNewContext` a method of a precompiled `Script` object.
-        `runInNewContext` runs the code of script with `sandbox` as the global object and returns the result.
-        Running code does not have access to local scope.
-        `sandbox` is optional.
+		This script can be run later many times using methods below.
 
-        Note that running untrusted code is a tricky business requiring great care.
-        To prevent accidental global variable leakage, `runInNewContext` is quite useful,
-        but safely running untrusted code requires a separate process.
-    **/
-    function runInNewContext(?sandbox:{}):Dynamic;
+		The returned script is not bound to any global object. It is bound before each run, just for that run.
+	**/
+	function new(code:String, ?options:ScriptOptions);
+
+	/**
+		Similar to `Vm.runInThisContext` but a method of a precompiled `Script` object.
+		`runInThisContext` runs the code of script and returns the result.
+		Running code does not have access to local scope, but does have access to the current global object.
+	**/
+	function runInThisContext(?options:ScriptRunOptions):Dynamic;
+
+	/**
+		Similar to `Vm.runInContext` but a method of a precompiled `Script` object.
+		`runInContext` runs script's compiled code in `contextifiedSandbox` and returns the result.
+		Running code does not have access to local scope.
+	**/
+	function runInContext(contextifiedSandbox:VmContext<Dynamic>, ?options:ScriptRunOptions):Dynamic;
+
+	/**
+		Similar to `Vm.runInNewContext` but a method of a precompiled `Script` object.
+		`runInNewContext` contextifies sandbox if passed or creates a new contextified sandbox if it's omitted,
+		and then runs script's compiled code with the sandbox as the global object and returns the result.
+		Running code does not have access to local scope.
+	**/
+	@:overload(function(sandbox:{}, ?options:ScriptRunOptions):Dynamic {})
+	function runInNewContext(?sandbox:{}):Dynamic;
 }
