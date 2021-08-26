@@ -44,7 +44,8 @@ class Graphics implements kha.graphics4.Graphics {
 	var isDepthAttachment: Bool = false;
 	var instancedExtension: Dynamic;
 	var blendMinMaxExtension: Dynamic;
-	var useVertexAttributes: Int = 0;
+
+	static var useVertexAttributes: Int = 0;
 
 	// WebGL2 constants
 	// https://www.khronos.org/registry/webgl/specs/2.0.0/
