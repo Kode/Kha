@@ -1,7 +1,7 @@
 package kha.js.graphics4;
 
+import js.html.webgl.GL2;
 import kha.graphics4.StencilValue;
-import kha.arrays.ByteArray;
 import kha.arrays.Float32Array;
 import kha.arrays.Int32Array;
 import js.html.webgl.GL;
@@ -46,12 +46,6 @@ class Graphics implements kha.graphics4.Graphics {
 	var blendMinMaxExtension: Dynamic;
 
 	static var useVertexAttributes: Int = 0;
-
-	// WebGL2 constants
-	// https://www.khronos.org/registry/webgl/specs/2.0.0/
-	static inline var GL_TEXTURE_COMPARE_MODE = 0x884C;
-	static inline var GL_TEXTURE_COMPARE_FUNC = 0x884D;
-	static inline var GL_COMPARE_REF_TO_TEXTURE = 0x884E;
 
 	public function new(renderTarget: Canvas = null) {
 		this.renderTarget = renderTarget;
@@ -441,21 +435,21 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTextureCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		if (enabled) {
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL2.TEXTURE_COMPARE_MODE, GL2.COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL2.TEXTURE_COMPARE_FUNC, GL.LEQUAL);
 		}
 		else {
-			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL2.TEXTURE_COMPARE_MODE, GL.NONE);
 		}
 	}
 
 	public function setCubeMapCompareMode(texunit: kha.graphics4.TextureUnit, enabled: Bool) {
 		if (enabled) {
-			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL.LEQUAL);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL2.TEXTURE_COMPARE_MODE, GL2.COMPARE_REF_TO_TEXTURE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL2.TEXTURE_COMPARE_FUNC, GL.LEQUAL);
 		}
 		else {
-			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL.NONE);
+			SystemImpl.gl.texParameteri(GL.TEXTURE_CUBE_MAP, GL2.TEXTURE_COMPARE_MODE, GL.NONE);
 		}
 	}
 
