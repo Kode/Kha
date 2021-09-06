@@ -15,7 +15,7 @@ class ByteArrayPrivate {
 	}
 
 	@:void static function finalize(arr: ByteArrayPrivate): Void {
-		arr.self.free();
+		arr.self.subRef();
 	}
 }
 
@@ -42,6 +42,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		var offset: Int = byteOffset != null ? byteOffset : 0;
 		this = new ByteArrayPrivate(offset, byteLength != null ? byteLength : buffer.byteLength - offset);
 		this.self = buffer;
+		this.self.addRef();
 	}
 
 	public static inline function make(byteLength: Int): ByteArray {

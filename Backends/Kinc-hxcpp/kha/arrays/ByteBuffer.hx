@@ -17,7 +17,9 @@ extern class ByteBuffer {
 
 	public function alloc(elements: Int): Void;
 
-	public function free(): Void;
+	public function addRef(): Void;
+
+	public function subRef(): Void;
 
 	public function get(index: Int): FastFloat;
 
