@@ -339,11 +339,14 @@ void post_kinc_init() {
 #endif
 }
 
-void run_kinc() {
-	kinc_log(KINC_LOG_LEVEL_INFO, "Starting application");
+void kha_kinc_init_audio(void) {
 	kinc_a2_set_callback(mix);
 	kinc_a2_init();
 	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second;
+}
+
+void run_kinc() {
+	kinc_log(KINC_LOG_LEVEL_INFO, "Starting application");
 	kinc_start();
 	kinc_log(KINC_LOG_LEVEL_INFO, "Application stopped");
 #if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)

@@ -40,6 +40,7 @@ kinc_framebuffer_options_t convertFramebufferOptions(::kha::FramebufferOptions f
 
 void init_kinc(const char *name, int width, int height, kinc_window_options_t *win, kinc_framebuffer_options_t *frame);
 void post_kinc_init();
+void kha_kinc_init_audio(void);
 void run_kinc();
 const char *getGamepadId(int index);
 const char *getGamepadVendor(int index);
@@ -168,6 +169,7 @@ class SystemImpl {
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
+		untyped __cpp__("kha_kinc_init_audio()");
 		Scheduler.init();
 		loadFinished();
 		callback(Window.get(0));
