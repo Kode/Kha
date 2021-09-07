@@ -6,6 +6,22 @@ function readCookie(name) {
 	return localStorage.getItem(name);
 }
 
+function isDarkTheme() {
+	return document.querySelector("html").classList.contains("dark-theme");
+}
+
+function toggleTheme() {
+	const htmlTag = document.querySelector("html");
+	let isDark = isDarkTheme();
+	if (isDark) {
+		htmlTag.classList.remove("dark-theme");
+	} else {
+		htmlTag.classList.add("dark-theme");
+	}
+	isDark = isDarkTheme();
+	localStorage.theme = isDark ? "dark" : "light";
+}
+
 function toggleInherited(el) {
 	var toggle = $(el).closest(".toggle");
 	toggle.toggleClass("toggle-on");
