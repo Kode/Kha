@@ -313,7 +313,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setIntsPrivate(cast location, values);
 	}
 
-	@:functionCode("kinc_g4_set_ints(location->location, (int*)values->self.data, values->self.byteLength() / 4);")
+	@:functionCode("kinc_g4_set_ints(location->location, (int*)values->self.data, values->byteArrayLength / 4);")
 	function setIntsPrivate(location: ConstantLocation, values: kha.arrays.Int32Array): Void {}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
@@ -369,7 +369,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloatsPrivate(cast location, values);
 	}
 
-	@:functionCode("kinc_g4_set_floats(location->location, (float*)values->self.data, values->self.byteLength() / 4);")
+	@:functionCode("kinc_g4_set_floats(location->location, (float*)values->self.data, values->byteArrayLength / 4);")
 	function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {}
 
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {

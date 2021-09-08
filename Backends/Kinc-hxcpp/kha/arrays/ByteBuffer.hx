@@ -8,14 +8,7 @@ extern class ByteBuffer {
 	@:native("bytearray")
 	public static function create(): ByteBuffer;
 
-	public var byteLength(get, never): Int;
-
-	@:native("byteLength")
-	function get_byteLength(): Int;
-
-	public function slice(begin: Int, end: Int): ByteBuffer;
-
-	public function alloc(elements: Int): Void;
+	public function alloc(length: Int): Void;
 
 	public function addRef(): Void;
 

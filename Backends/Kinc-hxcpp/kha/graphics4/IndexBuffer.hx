@@ -22,7 +22,8 @@ class IndexBuffer {
 
 	@:functionCode("
 		data->self.data = (uint8_t*)kinc_g4_index_buffer_lock(&buffer) + start;
-		data->self.myLength = count;
+		data->byteArrayLength = count * 4;
+		data->byteArrayOffset = 0;
 		return data;
 	")
 	function lockPrivate(start: Int, count: Int): Uint32Array {

@@ -59,7 +59,8 @@ class VertexBuffer {
 
 	@:functionCode("
 		data->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
-		data->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 4;
+		data->byteArrayLength = count * kinc_g4_vertex_buffer_stride(&buffer);
+		data->byteArrayOffset = 0;
 		return data;
 	")
 	function lockPrivate(start: Int, count: Int): Float32Array {
@@ -79,7 +80,8 @@ class VertexBuffer {
 
 	@:functionCode("
 		dataInt16->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
-		dataInt16->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 2;
+		dataInt16->byteArrayLength = count * kinc_g4_vertex_buffer_stride(&buffer);
+		dataInt16->byteArrayOffset = 0;
 		return dataInt16;
 	")
 	function lockInt16Private(start: Int, count: Int): Int16Array {
