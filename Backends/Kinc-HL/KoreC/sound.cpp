@@ -4,7 +4,7 @@
 #define STB_VORBIS_HEADER_ONLY
 #include <kinc/audio1/stb_vorbis.c>
 
-extern "C" vbyte *hl_kore_sound_init_wav(vbyte* filename, vbyte* outSize, float* outLength) {
+extern "C" vbyte *hl_kore_sound_init_wav(vbyte* filename, vbyte* outSize, int* outSampleRate, float* outLength) {
 	Kore::Sound* sound = new Kore::Sound((char*)filename);
 	float* uncompressedData = new float[sound->size * 2];
 	reinterpret_cast<unsigned int*>(outSize)[0] = sound->size * 2; // Return array size to Kha
@@ -14,6 +14,7 @@ extern "C" vbyte *hl_kore_sound_init_wav(vbyte* filename, vbyte* outSize, float*
 		uncompressedData[i * 2 + 0] = (float)(left [i] / 32767.0);
 		uncompressedData[i * 2 + 1] = (float)(right[i] / 32767.0);
 	}
+	*outSampleRate = sound->format.samplesPerSecond;
 	*outLength = sound->length;
 	delete sound;
 	return (vbyte*)uncompressedData;
