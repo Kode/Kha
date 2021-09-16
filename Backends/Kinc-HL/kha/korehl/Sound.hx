@@ -11,8 +11,10 @@ class Sound extends kha.Sound {
 		uncompressedData = new kha.arrays.Float32Array();
 		var dataSize = new kha.arrays.Uint32Array(1);
 		final sampleRateRef: hl.Ref<Int> = sampleRate;
-		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), sampleRateRef, length);
+		final lengthRef: hl.Ref<Float> = length;
+		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), sampleRateRef, lengthRef);
 		sampleRate = sampleRateRef.get();
+		length = lengthRef.get();
 		uncompressedData.setData(data, dataSize[0]);
 		dataSize.free();
 	}
