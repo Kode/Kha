@@ -1,12 +1,12 @@
 package kha.audio2;
 
 /*
-#if cpp
-import sys.thread.Mutex;
-#end
-import haxe.ds.Vector;
+	#if cpp
+	import sys.thread.Mutex;
+	#end
+	import haxe.ds.Vector;
 
-class Audio1 {
+	class Audio1 {
 	private static inline var channelCount: Int = 32;
 	private static var soundChannels: Vector<AudioChannel>;
 	private static var streamChannels: Vector<StreamChannel>;
@@ -17,15 +17,15 @@ class Audio1 {
 	private static var sampleCache2: kha.arrays.Float32Array;
 	private static var lastAllocationCount: Int = 0;
 
-#if cpp
+	#if cpp
 	static var mutex: Mutex;
-#end
+	#end
 
 	@:noCompletion
 	public static function _init(): Void {
-#if cpp
+	#if cpp
 		mutex = new Mutex();
-#end
+	#end
 		soundChannels = new Vector<AudioChannel>(channelCount);
 		streamChannels = new Vector<StreamChannel>(channelCount);
 		internalSoundChannels = new Vector<AudioChannel>(channelCount);
@@ -35,7 +35,7 @@ class Audio1 {
 		lastAllocationCount = 0;
 		Audio.audioCallback = mix;
 	}
-	
+
 	private static inline function max(a: Float, b: Float): Float {
 		return a > b ? a : b;
 	}
@@ -77,18 +77,18 @@ class Audio1 {
 			sampleCache2[i] = 0;
 		}
 
-#if cpp
+	#if cpp
 		mutex.acquire();
-#end
+	#end
 		for (i in 0...channelCount) {
 			internalSoundChannels[i] = soundChannels[i];
 		}
 		for (i in 0...channelCount) {
 			internalStreamChannels[i] = streamChannels[i];
 		}
-#if cpp
+	#if cpp
 		mutex.release();
-#end
+	#end
 
 		for (channel in internalSoundChannels) {
 			if (channel == null || channel.finished) continue;
@@ -159,9 +159,9 @@ class Audio1 {
 		channel.data = sound.uncompressedData;
 		var foundChannel = false;
 
-#if cpp
+	#if cpp
 		mutex.acquire();
-#end
+	#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == null || soundChannels[i].finished) {
 				soundChannels[i] = channel;
@@ -169,17 +169,17 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+	#if cpp
 		mutex.release();
-#end
+	#end
 
 		return foundChannel ? channel : null;
 	}
 
 	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
-#if cpp
+	#if cpp
 		mutex.acquire();
-#end
+	#end
 		for (i in 0...channelCount) {
 			if (soundChannels[i] == channel) {
 				soundChannels[i] = null;
@@ -191,9 +191,9 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+	#if cpp
 		mutex.release();
-#end
+	#end
 	}
 
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
@@ -206,9 +206,9 @@ class Audio1 {
 		var channel: StreamChannel = new StreamChannel(sound.compressedData, loop);
 		var foundChannel = false;
 
-#if cpp
+	#if cpp
 		mutex.acquire();
-#end
+	#end
 		for (i in 0...channelCount) {
 			if (streamChannels[i] == null || streamChannels[i].finished) {
 				streamChannels[i] = channel;
@@ -216,15 +216,14 @@ class Audio1 {
 				break;
 			}
 		}
-#if cpp
+	#if cpp
 		mutex.release();
-#end
+	#end
 
 		return foundChannel ? channel : null;
 	}
-}
-*/
-
+	}
+ */
 @:cppFileCode('
 #include <kinc/pch.h>
 #include <kinc/audio2/audio.h>
@@ -249,12 +248,10 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	@:functionCode('AudioChannel_dec(channel->channel);')
-	@:void static function finalize(channel: KincAudioChannel): Void {
-		
-	}
+	@:void static function finalize(channel: KincAudioChannel): Void {}
 
 	@:functionCode('
-		channel = AudioChannel_create((rc_floats*)data);
+		channel = AudioChannel_create((rc_sound*)data);
 		channel->data_length = size;
 		float volume = 1.0f;
 		KINC_ATOMIC_EXCHANGE_FLOAT(&channel->volume, volume);
@@ -266,27 +263,19 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 		channel->sample_rate = sampleRate;
 		KINC_ATOMIC_EXCHANGE_32(&channel->position , 0);
 	')
-	public function allocate(data: cpp.Star<cpp.Void>, size: Int, sampleRate: Int, looping: Bool): Void {
-
-	}
+	public function allocate(data: cpp.Star<cpp.Void>, size: Int, sampleRate: Int, looping: Bool): Void {}
 
 	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->paused, false); KINC_ATOMIC_EXCHANGE_32(&channel->stopped, false); AudioChannel_playAgain(channel);')
-	public function play(): Void {
-		
-	}
+	public function play(): Void {}
 
 	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->paused, true);')
-	public function pause(): Void {
-		
-	}
+	public function pause(): Void {}
 
 	@:functionCode('KINC_ATOMIC_EXCHANGE_32(&channel->stopped, true); KINC_ATOMIC_EXCHANGE_32(&channel->position, 0);')
-	public function stop(): Void {
-		
-	}
+	public function stop(): Void {}
 
 	public var length(get, null): Float; // Seconds
-	
+
 	@:functionCode('return (double)channel->data_length / (double)channel->sample_rate / 2.0;') // 44.1 khz in stereo
 	function get_length(): Float {
 		return 0;
@@ -310,7 +299,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var volume(get, set): Float;
-	
+
 	@:functionCode('return channel->volume;')
 	function get_volume(): Float {
 		return 0;
@@ -332,7 +321,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	}
 
 	public var finished(get, null): Bool;
-	
+
 	@:functionCode('return channel->stopped;')
 	function get_finished(): Bool {
 		return false;
@@ -344,7 +333,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 	function get_playbackRate(): Float {
 		return 1;
 	}
-	
+
 	@:functionCode('float value = (float)value_; KINC_ATOMIC_EXCHANGE_FLOAT(&channel->playback_rate, value); return value_;')
 	function set_playbackRate(value_: Float): Float {
 		return 1;
@@ -359,9 +348,7 @@ class KincAudioChannel implements kha.audio1.AudioChannel {
 class Audio1 {
 	@:noCompletion
 	@:functionCode('Audio_init();')
-	public static function _init(): Void {
-
-	}
+	public static function _init(): Void {}
 
 	public static function play(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		var channel = new KincAudioChannel();
@@ -371,9 +358,7 @@ class Audio1 {
 	}
 
 	@:functionCode('Audio_play(channel->channel, loop);')
-	static function play2(channel: KincAudioChannel, loop: Bool) {
+	static function play2(channel: KincAudioChannel, loop: Bool) {}
 
-	}
-	
-	//public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel;
+	// public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel;
 }

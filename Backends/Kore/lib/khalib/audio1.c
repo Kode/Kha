@@ -62,8 +62,8 @@ static float sample(struct AudioChannel *channel, int position, int sampleRate) 
 		int maximum = channel->data_length - 1;
 		maximum = maximum % 2 == 0 ? maximum : maximum - 1;
 
-		float a = (pos1 < minimum || pos1 > maximum) ? 0 : channel->data->floats[pos1];
-		float b = (pos2 < minimum || pos2 > maximum) ? 0 : channel->data->floats[pos2];
+		float a = (pos1 < minimum || pos1 > maximum) ? 0 : (channel->data->data[pos1] / 32767.0f);
+		float b = (pos2 < minimum || pos2 > maximum) ? 0 : (channel->data->data[pos2] / 32767.0f);
 		return lerp(a, b, pos - floorf(pos));
 	}
 	else {
@@ -78,8 +78,8 @@ static float sample(struct AudioChannel *channel, int position, int sampleRate) 
 		int maximum = channel->data_length - 1;
 		maximum = maximum % 2 != 0 ? maximum : maximum - 1;
 
-		float a = (pos1 < minimum || pos1 > maximum) ? 0 : channel->data->floats[pos1];
-		float b = (pos2 < minimum || pos2 > maximum) ? 0 : channel->data->floats[pos2];
+		float a = (pos1 < minimum || pos1 > maximum) ? 0 : (channel->data->data[pos1] / 32767.0f);
+		float b = (pos2 < minimum || pos2 > maximum) ? 0 : (channel->data->data[pos2] / 32767.0f);
 		return lerp(a, b, pos - floorf(pos));
 	}
 }

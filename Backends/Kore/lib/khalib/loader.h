@@ -28,7 +28,7 @@ typedef struct {
 } kha_image_t;
 
 typedef struct {
-	struct rc_floats *samples;
+	struct rc_sound *samples;
 	uint8_t *compressed_samples;
 	size_t size;
 	size_t channels;

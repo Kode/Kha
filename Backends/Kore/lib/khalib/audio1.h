@@ -20,7 +20,7 @@ struct AudioChannel {
 #endif
 	volatile float volume;
 	volatile float playback_rate;
-	struct rc_floats *data;
+	struct rc_sound *data;
 	int data_length;
 	bool looping;
 	int sample_rate;
@@ -30,7 +30,7 @@ void Audio_init();
 bool Audio_play(struct AudioChannel *channel, bool loop);
 void AudioChannel_playAgain(struct AudioChannel *channel);
 
-static struct AudioChannel *AudioChannel_create(struct rc_floats *floats) {
+static struct AudioChannel *AudioChannel_create(struct rc_sound *floats) {
 	rc_floats_inc(floats);
 	struct AudioChannel *channel = (struct AudioChannel *)malloc(sizeof(struct AudioChannel));
 	channel->data = floats;

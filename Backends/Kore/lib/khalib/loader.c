@@ -112,8 +112,8 @@ static void run(void *param) {
 							next.data.sound.size = samples * 2;
 							next.data.sound.samples = rc_floats_create(next.data.sound.size);
 							for (int i = 0; i < samples; ++i) {
-								next.data.sound.samples->floats[i * 2 + 0] = data[i] / 32767.0f;
-								next.data.sound.samples->floats[i * 2 + 1] = data[i] / 32767.0f;
+								next.data.sound.samples->data[i * 2 + 0] = data[i];
+								next.data.sound.samples->data[i * 2 + 1] = data[i];
 							}
 						}
 						else {
@@ -121,7 +121,7 @@ static void run(void *param) {
 							next.data.sound.size = samples * 2;
 							next.data.sound.samples = rc_floats_create(next.data.sound.size);
 							for (int i = 0; i < next.data.sound.size; ++i) {
-								next.data.sound.samples->floats[i] = data[i] / 32767.0f;
+								next.data.sound.samples->data[i] = data[i];
 							}
 						}
 						next.data.sound.channels = channels;
@@ -142,8 +142,8 @@ static void run(void *param) {
 					next.data.sound.size = sound->size * 2;
 					next.data.sound.samples = rc_floats_create(next.data.sound.size);
 					for (int i = 0; i < sound->size; ++i) {
-						next.data.sound.samples->floats[i * 2 + 0] = (float)(sound->left[i] / 32767.0);
-						next.data.sound.samples->floats[i * 2 + 1] = (float)(sound->right[i] / 32767.0);
+						next.data.sound.samples->data[i * 2 + 0] = sound->left[i];
+						next.data.sound.samples->data[i * 2 + 1] = sound->right[i];
 					}
 					next.data.sound.channels = sound->format.channels;
 					next.data.sound.sample_rate = sound->format.samples_per_second;
