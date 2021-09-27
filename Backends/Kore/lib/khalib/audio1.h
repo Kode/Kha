@@ -30,7 +30,7 @@ void Audio_init();
 bool Audio_play(struct AudioChannel *channel, bool loop);
 void AudioChannel_playAgain(struct AudioChannel *channel);
 
-static struct AudioChannel *AudioChannel_create(struct rc_sound *floats) {
+static inline struct AudioChannel *AudioChannel_create(struct rc_sound *floats) {
 	rc_floats_inc(floats);
 	struct AudioChannel *channel = (struct AudioChannel *)malloc(sizeof(struct AudioChannel));
 	channel->data = floats;
@@ -38,11 +38,11 @@ static struct AudioChannel *AudioChannel_create(struct rc_sound *floats) {
 	return channel;
 }
 
-static void AudioChannel_inc(struct AudioChannel *channel) {
+static inline void AudioChannel_inc(struct AudioChannel *channel) {
 	KINC_ATOMIC_INCREMENT(&channel->reference_count);
 }
 
-static void AudioChannel_dec(struct AudioChannel *channel) {
+static inline void AudioChannel_dec(struct AudioChannel *channel) {
 	int value = KINC_ATOMIC_DECREMENT(&channel->reference_count);
 	if (value == 1) {
 		rc_floats_dec(channel->data);
