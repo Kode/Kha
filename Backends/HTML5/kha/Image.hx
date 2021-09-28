@@ -96,17 +96,19 @@ class Image implements Canvas implements Resource {
 		imageElement.src = dataUrl;
 	}
 
-	public static function fromVideo(video: kha.js.Video): Image {
+	public static function fromVideo(video: kha.Video): Image {
+		final jsvideo: kha.js.Video = cast video;
+
 		if (SystemImpl.gl == null) {
-			var img = new CanvasImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false);
-			img.video = video.element;
+			var img = new CanvasImage(jsvideo.element.videoWidth, jsvideo.element.videoHeight, TextureFormat.RGBA32, false);
+			img.video = jsvideo.element;
 			img.createTexture();
 			return img;
 		}
 		else {
-			var img = new WebGLImage(video.element.videoWidth, video.element.videoHeight, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil,
+			var img = new WebGLImage(jsvideo.element.videoWidth, jsvideo.element.videoHeight, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil,
 				1);
-			img.video = video.element;
+			img.video = jsvideo.element;
 			img.createTexture();
 			return img;
 		}

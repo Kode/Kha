@@ -305,7 +305,9 @@ class ImageShaderPainter {
 		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
-		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
+		final rtw = tex.realWidth;
+		final rth = tex.realHeight;
+		setRectTexCoords(sx / rtw, sy / rth, (sx + sw) / rtw, (sy + sh) / rth);
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
 
@@ -1185,7 +1187,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	function drawVideoInternal(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {}
 
 	override public function drawVideo(video: kha.Video, x: Float, y: Float, width: Float, height: Float): Void {
-		setPipeline(videoPipeline);
+		// setPipeline(videoPipeline);
 		drawVideoInternal(video, x, y, width, height);
 		setPipeline(null);
 	}

@@ -11,6 +11,7 @@ import kha.graphics4.Usage;
 #include <kinc/graphics4/rendertarget.h>
 #include <kinc/graphics4/texture.h>
 #include <kinc/graphics4/texturearray.h>
+#include <kinc/video.h>
 
 #include <assert.h>
 
@@ -39,9 +40,9 @@ class Image implements Canvas implements Resource {
 	var graphics2: kha.graphics2.Graphics;
 	var graphics4: kha.graphics4.Graphics;
 
-	public static function createFromVideo(video: Video): Image {
-		var image = new Image(false);
-		image.myFormat = TextureFormat.RGBA32;
+	public static function fromVideo(video: Video): Image {
+		var image = new Image(false, false);
+		image.myFormat = RGBA32;
 		image.initVideo(cast(video, kha.kore.Video));
 		return image;
 	}
@@ -154,10 +155,13 @@ class Image implements Canvas implements Resource {
 	")
 	function initFromEncodedBytes(bytes: BytesData, format: String): Void {}
 
-	function new(readable: Bool) {
+	function new(readable: Bool, ?dispose = true ) {
 		this.readable = readable;
 		nullify();
-		cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+
+		if (dispose) {
+			cpp.vm.Gc.setFinalizer(this, cpp.Function.fromStaticFunction(finalize));
+		}
 	}
 
 	@:functionCode("
@@ -281,8 +285,10 @@ class Image implements Canvas implements Resource {
 	")
 	function init3D(width: Int, height: Int, depth: Int, format: Int): Void {}
 
-	// TODO
-	// @:functionCode('texture = new Kore::Graphics4::Texture(*video->video->currentImage()); renderTarget = nullptr;')
+	@:functionCode("
+		texture = *kinc_video_current_image(&video->video);
+		imageType = KhaImageTypeTexture;
+	")
 	function initVideo(video: kha.kore.Video): Void {}
 
 	public static function createEmpty(readable: Bool, floatFormat: Bool): Image {
