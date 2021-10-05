@@ -212,7 +212,11 @@ class SystemImpl {
 			gamepadStates[i] = new GamepadStates();
 		}
 		js.Browser.window.addEventListener("gamepadconnected", (e) -> {
-			Gamepad.sendConnectEvent(e.gamepad.index);
+			var pad:js.html.Gamepad = e.gamepad;
+			Gamepad.sendConnectEvent(pad.index);
+			for (i in 0...pad.buttons.length) {
+				gamepadStates[pad.index].buttons[i] = 0;
+			}
 		});
 		js.Browser.window.addEventListener("gamepaddisconnected", (e) -> {
 			Gamepad.sendDisconnectEvent(e.gamepad.index);
