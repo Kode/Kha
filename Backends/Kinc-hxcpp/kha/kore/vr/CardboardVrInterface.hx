@@ -151,7 +151,7 @@ class CardboardVrInterfaceTest extends kha.vr.VrInterface {
 
 		var structure: VertexStructure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("texPosition", VertexData.Float2);
+		structure.add("vertexUV", VertexData.Float2);
 		structure.add("vertexColor", VertexData.Float4);
 
 		vb = new VertexBuffer(4, structure, Usage.StaticUsage);
