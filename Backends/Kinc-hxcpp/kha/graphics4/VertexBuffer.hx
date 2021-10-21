@@ -73,7 +73,7 @@ class VertexBuffer {
 		if (start == null)
 			start = 0;
 		if (count == null)
-			count = this.count();
+			count = this.count() - start;
 		lastLockCount = count;
 		return lockPrivate(start, count);
 	}
