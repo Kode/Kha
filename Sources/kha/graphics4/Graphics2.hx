@@ -843,7 +843,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	var coloredPainter: ColoredShaderPainter;
 	var textPainter: TextShaderPainter;
 
-	static var videoPipeline: PipelineState;
+	public static var videoPipeline: PipelineState;
 
 	var canvas: Canvas;
 	var g: Graphics;

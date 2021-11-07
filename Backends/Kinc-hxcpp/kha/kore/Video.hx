@@ -1,26 +1,30 @@
 package kha.kore;
 
 @:headerCode("
-//#include <kinc/video.h>
+#include <kinc/video.h>
 ")
-// @:headerClassCode("Kore::Video* video;")
+@:headerClassCode("kinc_video_t video;")
 class Video extends kha.Video {
 	public function new(filename: String) {
 		super();
 		init(filename);
 	}
 
-	// @:functionCode("video = new Kore::Video(filename.c_str());")
+	@:functionCode("kinc_video_init(&video, filename.c_str());")
 	function init(filename: String) {}
 
-	// @:functionCode("video->play();")
+	@:functionCode("kinc_video_play(&video, loop);")
 	override public function play(loop: Bool = false): Void {}
 
-	// @:functionCode("video->pause();")
+	@:functionCode("kinc_video_pause(&video);")
 	override public function pause(): Void {}
 
-	// @:functionCode("video->stop();")
+	@:functionCode("kinc_video_stop(&video);")
 	override public function stop(): Void {}
+
+	override function update(time: Float) {
+		untyped __cpp__('kinc_video_update(&video, time)');
+	}
 
 	// @:functionCode("return static_cast<int>(video->duration * 1000.0);")
 	override public function getLength(): Int { // Miliseconds
@@ -41,21 +45,18 @@ class Video extends kha.Video {
 		return 0;
 	}
 
-	// @:functionCode("return video->finished;")
 	override public function isFinished(): Bool {
-		return false;
+		return untyped __cpp__("kinc_video_finished(&video)");
 	}
 
-	// @:functionCode("return video->width();")
 	override public function width(): Int {
-		return 100;
+		return untyped __cpp__("kinc_video_width(&video)");
 	}
 
-	// @:functionCode("return video->height();")
 	override public function height(): Int {
-		return 100;
+		return untyped __cpp__("kinc_video_height(&video)");
 	}
 
-	// @:functionCode("delete video; video = nullptr;")
+	@:functionCode("kinc_video_destroy(&video);")
 	override public function unload(): Void {}
 }

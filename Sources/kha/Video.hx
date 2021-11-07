@@ -25,10 +25,16 @@ class Video implements Resource {
 
 	/**
 	 * Play / resume the media element.
-	 * 
+	 *
 	 * @param loop		If playing it looped, default = false.
 	 */
 	public function play(loop: Bool = false): Void {}
+
+	/**
+	 * Call this every frame to update the video.
+	 * This is not required on all targets but where it's not required the function just does nothing - so please call it.
+	 */
+	public function update( dt: Float ): Void {}
 
 	/**
 	 * Pause the media element.
@@ -65,7 +71,7 @@ class Video implements Resource {
 		return 0;
 	}
 
-	/**	
+	/**
 	 * Return the media volume, between 0 and 1.
 	 */
 	public function getVolume(): Float { // [0, 1]

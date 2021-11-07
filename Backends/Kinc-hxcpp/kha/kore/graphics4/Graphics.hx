@@ -240,7 +240,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null)
 			return;
-		setTextureInternal(cast unit, Image.createFromVideo(texture));
+		setTextureInternal(cast unit, Image.fromVideo(texture));
 	}
 
 	@:functionCode("kinc_g4_set_image_texture(unit->unit, &texture->texture);")
