@@ -124,7 +124,6 @@ extern "C" vbyte *hl_kore_file_contents(vbyte *name, int *size) {
 	hl_blocking(true);
 	if (!size) content[len] = 0; // final 0 for UTF8
 	file.read(content, len);
-	file.close();
 	hl_blocking(false);
 	return content;
 }
