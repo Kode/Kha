@@ -11,6 +11,11 @@ import sys.io.File;
 using StringTools;
 
 class AssetsBuilder {
+
+	#if macro
+	public static var files : Array<Dynamic>;
+	#end
+
 	public static function findResources(): String {
 		#if macro
 		var output = Compiler.getOutput();
@@ -48,8 +53,10 @@ class AssetsBuilder {
 
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
-		var content = Json.parse(File.getContent(findResources() + "files.json"));
-		var files: Iterable<Dynamic> = content.files;
+		if(files == null) {
+			var content = Json.parse(File.getContent(findResources() + "files.json"));
+			files = content.files;
+		}
 
 		var names = new Array<Expr>();
 
