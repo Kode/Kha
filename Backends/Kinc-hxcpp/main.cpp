@@ -297,27 +297,27 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_set_login_callback(login);
 	kinc_set_logout_callback(logout);
 
-	kinc_keyboard_key_down_callback = keyDown;
-	kinc_keyboard_key_up_callback = keyUp;
-	kinc_keyboard_key_press_callback = keyPress;
-	kinc_mouse_press_callback = mouseDown;
-	kinc_mouse_release_callback = mouseUp;
-	kinc_mouse_move_callback = mouseMove;
-	kinc_mouse_scroll_callback = mouseWheel;
-	kinc_mouse_leave_window_callback = mouseLeave;
-	kinc_pen_press_callback = penDown;
-	kinc_pen_release_callback = penUp;
-	kinc_pen_move_callback = penMove;
-	kinc_eraser_press_callback = penEraserDown;
-	kinc_eraser_release_callback = penEraserUp;
-	kinc_eraser_move_callback = penEraserMove;
-	kinc_gamepad_axis_callback = gamepadAxis;
-	kinc_gamepad_button_callback = gamepadButton;
-	kinc_surface_touch_start_callback = touchStart;
-	kinc_surface_touch_end_callback = touchEnd;
-	kinc_surface_move_callback = touchMove;
-	kinc_acceleration_callback = accelerometerChanged;
-	kinc_rotation_callback = gyroscopeChanged;
+	kinc_keyboard_set_key_down_callback(keyDown);
+	kinc_keyboard_set_key_up_callback(keyUp);
+	kinc_keyboard_set_key_press_callback(keyPress);
+	kinc_mouse_set_press_callback(mouseDown);
+	kinc_mouse_set_release_callback(mouseUp);
+	kinc_mouse_set_move_callback(mouseMove);
+	kinc_mouse_set_scroll_callback(mouseWheel);
+	kinc_mouse_set_leave_window_callback(mouseLeave);
+	kinc_pen_set_press_callback(penDown);
+	kinc_pen_set_release_callback(penUp);
+	kinc_pen_set_move_callback(penMove);
+	kinc_eraser_set_press_callback(penEraserDown);
+	kinc_eraser_set_release_callback(penEraserUp);
+	kinc_eraser_set_move_callback(penEraserMove);
+	kinc_gamepad_set_axis_callback(gamepadAxis);
+	kinc_gamepad_set_button_callback(gamepadButton);
+	kinc_surface_set_touch_start_callback(touchStart);
+	kinc_surface_set_touch_end_callback(touchEnd);
+	kinc_surface_set_move_callback(touchMove);
+	kinc_acceleration_set_callback(accelerometerChanged);
+	kinc_rotation_set_callback(gyroscopeChanged);
 }
 
 const char *getGamepadId(int index) {
