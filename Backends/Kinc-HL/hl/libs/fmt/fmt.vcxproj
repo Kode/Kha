@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2013|Win32">
+      <Configuration>ReleaseVS2013</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2013|x64">
+      <Configuration>ReleaseVS2013</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2015|Win32">
+      <Configuration>ReleaseVS2015</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2015|x64">
+      <Configuration>ReleaseVS2015</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2017|Win32">
+      <Configuration>ReleaseVS2017</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseVS2017|x64">
+      <Configuration>ReleaseVS2017</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\include\mikktspace\mikktspace.c" />
+    <ClCompile Include="..\..\include\png\png.c" />
+    <ClCompile Include="..\..\include\png\pngerror.c" />
+    <ClCompile Include="..\..\include\png\pngget.c" />
+    <ClCompile Include="..\..\include\png\pngmem.c" />
+    <ClCompile Include="..\..\include\png\pngpread.c" />
+    <ClCompile Include="..\..\include\png\pngread.c" />
+    <ClCompile Include="..\..\include\png\pngrio.c" />
+    <ClCompile Include="..\..\include\png\pngrtran.c" />
+    <ClCompile Include="..\..\include\png\pngrutil.c" />
+    <ClCompile Include="..\..\include\png\pngset.c" />
+    <ClCompile Include="..\..\include\png\pngtrans.c" />
+    <ClCompile Include="..\..\include\png\pngwio.c" />
+    <ClCompile Include="..\..\include\png\pngwrite.c" />
+    <ClCompile Include="..\..\include\png\pngwtran.c" />
+    <ClCompile Include="..\..\include\png\pngwutil.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jaricom.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcapimin.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcapistd.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcarith.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jccoefct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jccolor.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcdctmgr.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jchuff.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcinit.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcmainct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcmarker.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcmaster.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcomapi.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcparam.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcphuff.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcprepct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jcsample.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jctrans.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdapimin.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdapistd.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdarith.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdatadst-tj.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdatadst.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdatasrc-tj.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdatasrc.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdcoefct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdcolor.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jddctmgr.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdhuff.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdinput.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdmainct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdmarker.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdmaster.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdmerge.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdphuff.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdpostct.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdsample.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jdtrans.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jerror.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jfdctflt.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jfdctfst.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jfdctint.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jidctflt.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jidctfst.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jidctint.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jidctred.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jmemmgr.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jmemnobs.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jquant1.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jquant2.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jsimd.c" />
+    <ClCompile Include="..\..\include\turbojpeg\jutils.c" />
+    <ClCompile Include="..\..\include\turbojpeg\transupp.c" />
+    <ClCompile Include="..\..\include\turbojpeg\turbojpeg.c" />
+    <ClCompile Include="..\..\include\vorbis\bitrate.c" />
+    <ClCompile Include="..\..\include\vorbis\bitwise.c" />
+    <ClCompile Include="..\..\include\vorbis\block.c" />
+    <ClCompile Include="..\..\include\vorbis\codebook.c" />
+    <ClCompile Include="..\..\include\vorbis\envelope.c" />
+    <ClCompile Include="..\..\include\vorbis\floor0.c" />
+    <ClCompile Include="..\..\include\vorbis\floor1.c" />
+    <ClCompile Include="..\..\include\vorbis\framing.c" />
+    <ClCompile Include="..\..\include\vorbis\info.c" />
+    <ClCompile Include="..\..\include\vorbis\lookup.c" />
+    <ClCompile Include="..\..\include\vorbis\lpc.c" />
+    <ClCompile Include="..\..\include\vorbis\lsp.c" />
+    <ClCompile Include="..\..\include\vorbis\mapping0.c" />
+    <ClCompile Include="..\..\include\vorbis\mdct.c" />
+    <ClCompile Include="..\..\include\vorbis\psy.c" />
+    <ClCompile Include="..\..\include\vorbis\registry.c" />
+    <ClCompile Include="..\..\include\vorbis\res0.c" />
+    <ClCompile Include="..\..\include\vorbis\sharedbook.c" />
+    <ClCompile Include="..\..\include\vorbis\smallft.c" />
+    <ClCompile Include="..\..\include\vorbis\synthesis.c" />
+    <ClCompile Include="..\..\include\vorbis\vorbisfile.c" />
+    <ClCompile Include="..\..\include\vorbis\window.c" />
+    <ClCompile Include="..\..\include\zlib\adler32.c" />
+    <ClCompile Include="..\..\include\zlib\crc32.c" />
+    <ClCompile Include="..\..\include\zlib\deflate.c" />
+    <ClCompile Include="..\..\include\zlib\inffast.c" />
+    <ClCompile Include="..\..\include\zlib\inflate.c" />
+    <ClCompile Include="..\..\include\zlib\inftrees.c" />
+    <ClCompile Include="..\..\include\zlib\trees.c" />
+    <ClCompile Include="..\..\include\zlib\zutil.c" />
+    <ClCompile Include="dxt.c" />
+    <ClCompile Include="fmt.c" />
+    <ClCompile Include="mikkt.c" />
+    <ClCompile Include="sha1.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\mikktspace\mikktspace.h" />
+    <ClInclude Include="..\..\include\png\png.h" />
+    <ClInclude Include="..\..\include\png\pngconf.h" />
+    <ClInclude Include="..\..\include\png\pngdebug.h" />
+    <ClInclude Include="..\..\include\png\pnginfo.h" />
+    <ClInclude Include="..\..\include\png\pnglibconf.h" />
+    <ClInclude Include="..\..\include\png\pngpriv.h" />
+    <ClInclude Include="..\..\include\png\pngstruct.h" />
+    <ClInclude Include="..\..\include\vorbis\backends.h" />
+    <ClInclude Include="..\..\include\vorbis\bitrate.h" />
+    <ClInclude Include="..\..\include\vorbis\codebook.h" />
+    <ClInclude Include="..\..\include\vorbis\codec_internal.h" />
+    <ClInclude Include="..\..\include\vorbis\envelope.h" />
+    <ClInclude Include="..\..\include\vorbis\highlevel.h" />
+    <ClInclude Include="..\..\include\vorbis\lookup.h" />
+    <ClInclude Include="..\..\include\vorbis\lookup_data.h" />
+    <ClInclude Include="..\..\include\vorbis\lpc.h" />
+    <ClInclude Include="..\..\include\vorbis\lsp.h" />
+    <ClInclude Include="..\..\include\vorbis\masking.h" />
+    <ClInclude Include="..\..\include\vorbis\mdct.h" />
+    <ClInclude Include="..\..\include\vorbis\misc.h" />
+    <ClInclude Include="..\..\include\vorbis\os.h" />
+    <ClInclude Include="..\..\include\vorbis\psy.h" />
+    <ClInclude Include="..\..\include\vorbis\registry.h" />
+    <ClInclude Include="..\..\include\vorbis\scales.h" />
+    <ClInclude Include="..\..\include\vorbis\smallft.h" />
+    <ClInclude Include="..\..\include\vorbis\window.h" />
+    <ClInclude Include="..\..\include\zlib\crc32.h" />
+    <ClInclude Include="..\..\include\zlib\deflate.h" />
+    <ClInclude Include="..\..\include\zlib\inffast.h" />
+    <ClInclude Include="..\..\include\zlib\inffixed.h" />
+    <ClInclude Include="..\..\include\zlib\inflate.h" />
+    <ClInclude Include="..\..\include\zlib\inftrees.h" />
+    <ClInclude Include="..\..\include\zlib\trees.h" />
+    <ClInclude Include="..\..\include\zlib\zconf.h" />
+    <ClInclude Include="..\..\include\zlib\zlib.h" />
+    <ClInclude Include="..\..\include\minimp3\minimp3.h" />
+    <ClInclude Include="sha1.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7DDA1414-6675-45C7-8254-42057901F865}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>jpg</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>fmt</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;../../$(Configuration);../../include/turbojpeg/x86</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;../../x64/$(Configuration);../../include/turbojpeg/x64</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;../../$(Configuration);../../include/turbojpeg/x86</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;../../$(Configuration);../../include/turbojpeg/x86</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;../../$(Configuration);../../include/turbojpeg/x86</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;../../x64/$(Configuration);../../include/turbojpeg/x64</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;../../x64/$(Configuration);../../include/turbojpeg/x64</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.hdll</TargetExt>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../src;../../include/turbojpeg;../../include/zlib;../../include/png;../../include/vorbis;../../include/mikktspace;../../include/minimp3</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;../../x64/$(Configuration);../../include/turbojpeg/x64</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>../../$(Configuration)/$(TargetName).hdll</OutputFile>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>../../$(Configuration)/$(TargetName).hdll</OutputFile>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>../../$(Configuration)/$(TargetName).hdll</OutputFile>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>../../$(Configuration)/$(TargetName).hdll</OutputFile>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2015|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2017|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseVS2013|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;JPG_EXPORTS;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libhl.lib;simd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
