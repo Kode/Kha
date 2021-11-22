@@ -426,6 +426,7 @@ class Image implements Canvas implements Resource {
 		return 0;
 	}
 
+	@:keep
 	@:functionCode("
 		if (imageType == KhaImageTypeTexture) {
 			kinc_g4_texture_destroy(&texture);
