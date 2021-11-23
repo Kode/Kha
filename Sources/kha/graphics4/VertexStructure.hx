@@ -44,29 +44,29 @@ class VertexStructure {
 				return 2 * 2;
 			case Short4Norm:
 				return 2 * 4;
-			case Byte1:
+			case Byte1, UnsignedByte1:
 				return 1 * 1;
-			case Byte2:
+			case Byte2, UnsignedByte2:
 				return 1 * 2;
-			case Byte3:
+			case Byte3, UnsignedByte3:
 				return 1 * 3;
-			case Byte4:
+			case Byte4, UnsignedByte4:
 				return 1 * 4;
-			case Short1:
+			case Short1, UnsignedShort1:
 				return 2 * 1;
-			case Short2:
+			case Short2, UnsignedShort2:
 				return 2 * 2;
-			case Short3:
+			case Short3, UnsignedShort3:
 				return 2 * 3;
-			case Short4:
+			case Short4, UnsignedShort4:
 				return 2 * 4;
-			case Int1:
+			case Int1, UnsignedInt1:
 				return 4 * 1;
-			case Int2:
+			case Int2, UnsignedInt2:
 				return 4 * 2;
-			case Int3:
+			case Int3, UnsignedInt3:
 				return 4 * 3;
-			case Int4:
+			case Int4, UnsignedInt4:
 				return 4 * 4;
 		}
 		return 0;

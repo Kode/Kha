@@ -39,29 +39,29 @@ class VertexBuffer {
 					myStride += 2 * 2;
 				case Short4Norm:
 					myStride += 2 * 4;
-				case Byte1:
+				case Byte1, UnsignedByte1:
 					myStride += 1 * 1;
-				case Byte2:
+				case Byte2, UnsignedByte2:
 					myStride += 1 * 2;
-				case Byte3:
+				case Byte3, UnsignedByte3:
 					myStride += 1 * 3;
-				case Byte4:
+				case Byte4, UnsignedByte4:
 					myStride += 1 * 4;
-				case Short1:
+				case Short1, UnsignedShort1:
 					myStride += 2 * 1;
-				case Short2:
+				case Short2, UnsignedShort2:
 					myStride += 2 * 2;
-				case Short3:
+				case Short3, UnsignedShort3:
 					myStride += 2 * 3;
-				case Short4:
+				case Short4, UnsignedShort4:
 					myStride += 2 * 4;
-				case Int1:
+				case Int1, UnsignedInt1:
 					myStride += 4 * 1;
-				case Int2:
+				case Int2, UnsignedInt2:
 					myStride += 4 * 2;
-				case Int3:
+				case Int3, UnsignedInt3:
 					myStride += 4 * 3;
-				case Int4:
+				case Int4, UnsignedInt4:
 					myStride += 4 * 4;
 			}
 		}
@@ -115,6 +115,18 @@ class VertexBuffer {
 				case Byte4:
 					size = 4;
 					type = GL.BYTE;
+				case UnsignedByte1:
+					size = 1;
+					type = GL.UNSIGNED_BYTE;
+				case UnsignedByte2:
+					size = 2;
+					type = GL.UNSIGNED_BYTE;
+				case UnsignedByte3:
+					size = 3;
+					type = GL.UNSIGNED_BYTE;
+				case UnsignedByte4:
+					size = 4;
+					type = GL.UNSIGNED_BYTE;
 				case Short1:
 					size = 1;
 					type = GL.SHORT;
@@ -127,6 +139,18 @@ class VertexBuffer {
 				case Short4:
 					size = 4;
 					type = GL.SHORT;
+				case UnsignedShort1:
+					size = 1;
+					type = GL.UNSIGNED_SHORT;
+				case UnsignedShort2:
+					size = 2;
+					type = GL.UNSIGNED_SHORT;
+				case UnsignedShort3:
+					size = 3;
+					type = GL.UNSIGNED_SHORT;
+				case UnsignedShort4:
+					size = 4;
+					type = GL.UNSIGNED_SHORT;
 				case Int1:
 					size = 1;
 					type = GL.INT;
@@ -139,6 +163,18 @@ class VertexBuffer {
 				case Int4:
 					size = 4;
 					type = GL.INT;
+				case UnsignedInt1:
+					size = 1;
+					type = GL.UNSIGNED_INT;
+				case UnsignedInt2:
+					size = 2;
+					type = GL.UNSIGNED_INT;
+				case UnsignedInt3:
+					size = 3;
+					type = GL.UNSIGNED_INT;
+				case UnsignedInt4:
+					size = 4;
+					type = GL.UNSIGNED_INT;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
@@ -158,29 +194,29 @@ class VertexBuffer {
 					offset += 2 * 2;
 				case Short4Norm:
 					offset += 2 * 4;
-				case Byte1:
+				case Byte1, UnsignedByte1:
 					offset += 1 * 1;
-				case Byte2:
+				case Byte2, UnsignedByte2:
 					offset += 1 * 2;
-				case Byte3:
+				case Byte3, UnsignedByte3:
 					offset += 1 * 3;
-				case Byte4:
+				case Byte4, UnsignedByte4:
 					offset += 1 * 4;
-				case Short1:
+				case Short1, UnsignedShort1:
 					offset += 2 * 1;
-				case Short2:
+				case Short2, UnsignedShort2:
 					offset += 2 * 2;
-				case Short3:
+				case Short3, UnsignedShort3:
 					offset += 2 * 3;
-				case Short4:
+				case Short4, UnsignedShort4:
 					offset += 2 * 4;
-				case Int1:
+				case Int1, UnsignedInt1:
 					offset += 4 * 1;
-				case Int2:
+				case Int2, UnsignedInt2:
 					offset += 4 * 2;
-				case Int3:
+				case Int3, UnsignedInt3:
 					offset += 4 * 3;
-				case Int4:
+				case Int4, UnsignedInt4:
 					offset += 4 * 4;
 			}
 			++index;

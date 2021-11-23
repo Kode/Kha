@@ -221,25 +221,25 @@ class ImageShaderPainter {
 
 	inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
 		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
-		rectVertices.setInt8(baseIndex + 5 * 4 + 0, Std.int(r * 255));
-		rectVertices.setInt8(baseIndex + 5 * 4 + 1, Std.int(g * 255));
-		rectVertices.setInt8(baseIndex + 5 * 4 + 2, Std.int(b * 255));
-		rectVertices.setInt8(baseIndex + 5 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setInt8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
-		rectVertices.setInt8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
-		rectVertices.setInt8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
-		rectVertices.setInt8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setInt8(baseIndex + 17 * 4 + 0, Std.int(r * 255));
-		rectVertices.setInt8(baseIndex + 17 * 4 + 1, Std.int(g * 255));
-		rectVertices.setInt8(baseIndex + 17 * 4 + 2, Std.int(b * 255));
-		rectVertices.setInt8(baseIndex + 17 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setInt8(baseIndex + 23 * 4 + 0, Std.int(r * 255));
-		rectVertices.setInt8(baseIndex + 23 * 4 + 1, Std.int(g * 255));
-		rectVertices.setInt8(baseIndex + 23 * 4 + 2, Std.int(b * 255));
-		rectVertices.setInt8(baseIndex + 23 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 3, Std.int(a * 255));
 	}
 
 	function drawBuffer(end: Bool): Void {
@@ -1195,7 +1195,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("vertexUV", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Byte4);
+		structure.add("vertexColor", VertexData.UnsignedByte4);
 		return structure;
 	}
 
