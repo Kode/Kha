@@ -39,6 +39,30 @@ class VertexBuffer {
 					myStride += 2 * 2;
 				case Short4Norm:
 					myStride += 2 * 4;
+				case Byte1:
+					myStride += 1 * 1;
+				case Byte2:
+					myStride += 1 * 2;
+				case Byte3:
+					myStride += 1 * 3;
+				case Byte4:
+					myStride += 1 * 4;
+				case Short1:
+					myStride += 2 * 1;
+				case Short2:
+					myStride += 2 * 2;
+				case Short3:
+					myStride += 2 * 3;
+				case Short4:
+					myStride += 2 * 4;
+				case Int1:
+					myStride += 4 * 1;
+				case Int2:
+					myStride += 4 * 2;
+				case Int3:
+					myStride += 4 * 3;
+				case Int4:
+					myStride += 4 * 4;
 			}
 		}
 
@@ -79,6 +103,42 @@ class VertexBuffer {
 				case Short4Norm:
 					size = 4;
 					type = GL.SHORT;
+				case Byte1:
+					size = 1;
+					type = GL.BYTE;
+				case Byte2:
+					size = 2;
+					type = GL.BYTE;
+				case Byte3:
+					size = 3;
+					type = GL.BYTE;
+				case Byte4:
+					size = 4;
+					type = GL.BYTE;
+				case Short1:
+					size = 1;
+					type = GL.SHORT;
+				case Short2:
+					size = 2;
+					type = GL.SHORT;
+				case Short3:
+					size = 3;
+					type = GL.SHORT;
+				case Short4:
+					size = 4;
+					type = GL.SHORT;
+				case Int1:
+					size = 1;
+					type = GL.INT;
+				case Int2:
+					size = 2;
+					type = GL.INT;
+				case Int3:
+					size = 3;
+					type = GL.INT;
+				case Int4:
+					size = 4;
+					type = GL.INT;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
@@ -98,6 +158,30 @@ class VertexBuffer {
 					offset += 2 * 2;
 				case Short4Norm:
 					offset += 2 * 4;
+				case Byte1:
+					offset += 1 * 1;
+				case Byte2:
+					offset += 1 * 2;
+				case Byte3:
+					offset += 1 * 3;
+				case Byte4:
+					offset += 1 * 4;
+				case Short1:
+					offset += 2 * 1;
+				case Short2:
+					offset += 2 * 2;
+				case Short3:
+					offset += 2 * 3;
+				case Short4:
+					offset += 2 * 4;
+				case Int1:
+					offset += 4 * 1;
+				case Int2:
+					offset += 4 * 2;
+				case Int3:
+					offset += 4 * 3;
+				case Int4:
+					offset += 4 * 4;
 			}
 			++index;
 		}

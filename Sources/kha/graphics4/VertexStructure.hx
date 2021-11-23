@@ -44,6 +44,30 @@ class VertexStructure {
 				return 2 * 2;
 			case Short4Norm:
 				return 2 * 4;
+			case Byte1:
+				return 1 * 1;
+			case Byte2:
+				return 1 * 2;
+			case Byte3:
+				return 1 * 3;
+			case Byte4:
+				return 1 * 4;
+			case Short1:
+				return 2 * 1;
+			case Short2:
+				return 2 * 2;
+			case Short3:
+				return 2 * 3;
+			case Short4:
+				return 2 * 4;
+			case Int1:
+				return 4 * 1;
+			case Int2:
+				return 4 * 2;
+			case Int3:
+				return 4 * 3;
+			case Int4:
+				return 4 * 4;
 		}
 		return 0;
 	}
