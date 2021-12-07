@@ -25,6 +25,7 @@ if (platform === Platform.Windows || platform === Platform.WindowsApp) {
 }
 if (platform === Platform.Windows) {
 	project.addLib('ws2_32');
+	project.addLib('Crypt32'); // SSL
 }
 
 resolve(project);
