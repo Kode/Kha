@@ -15,10 +15,14 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Get LunarG key
+      run: wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+    - name: Get LunarG apt sources
+      run: sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-bionic.list http://packages.lunarg.com/vulkan/lunarg-vulkan-bionic.list
     - name: Apt Update
-      run: sudo apt-get update
+      run: sudo apt update
     - name: Apt Install
-      run: sudo apt-get install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev libvulkan-dev --yes --quiet
+      run: sudo apt install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev vulkan-sdk --yes --quiet
     - name: Get Submodules
       run: git submodule update --init --recursive
     - name: Get Node.js
