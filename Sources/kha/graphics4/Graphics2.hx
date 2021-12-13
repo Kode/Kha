@@ -1193,9 +1193,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createImageVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexUV", VertexData.Float2);
-		structure.add("vertexColor", VertexData.UnsignedByte4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexUV", VertexData.Float32_2X);
+		structure.add("vertexColor", VertexData.UInt8_4X);
 		return structure;
 	}
 
@@ -1213,8 +1213,8 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createColoredVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexColor", VertexData.Float32_4X);
 		return structure;
 	}
 
@@ -1232,9 +1232,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createTextVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexUV", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexUV", VertexData.Float32_2X);
+		structure.add("vertexColor", VertexData.Float32_4X);
 		return structure;
 	}
 

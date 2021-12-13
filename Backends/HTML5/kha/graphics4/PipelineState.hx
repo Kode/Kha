@@ -34,7 +34,7 @@ class PipelineState extends PipelineStateBase {
 		for (structure in inputLayout) {
 			for (element in structure.elements) {
 				SystemImpl.gl.bindAttribLocation(program, index, element.name);
-				if (element.data == VertexData.Float4x4) {
+				if (element.data == VertexData.Float32_4X4) {
 					index += 4;
 				}
 				else {

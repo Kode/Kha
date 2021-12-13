@@ -28,48 +28,39 @@ class VertexStructure {
 		return byteSize;
 	}
 
-	function dataByteSize(data: VertexData): Int {
+	public static function dataByteSize(data: VertexData): Int {
 		switch (data) {
-			case Float1:
-				return 4 * 1;
-			case Float2:
-				return 4 * 2;
-			case Float3:
-				return 4 * 3;
-			case Float4:
-				return 4 * 4;
-			case Float4x4:
-				return 4 * 4 * 4;
-			case Short2Norm:
-				return 2 * 2;
-			case Short4Norm:
-				return 2 * 4;
-			case Byte1, UnsignedByte1:
-				return 1 * 1;
-			case Byte2, UnsignedByte2:
-				return 1 * 2;
-			case Byte3, UnsignedByte3:
-				return 1 * 3;
-			case Byte4, UnsignedByte4:
+			case Float32_1X:
 				return 1 * 4;
-			case Short1, UnsignedShort1:
-				return 2 * 1;
-			case Short2, UnsignedShort2:
-				return 2 * 2;
-			case Short3, UnsignedShort3:
-				return 2 * 3;
-			case Short4, UnsignedShort4:
+			case Float32_2X:
 				return 2 * 4;
-			case Int1, UnsignedInt1:
+			case Float32_3X:
+				return 3 * 4;
+			case Float32_4X:
+				return 4 * 4;
+			case Float32_4X4:
+				return 4 * 4 * 4;
+			case Int8_1X, UInt8_1X, Int8_1X_Normalized, UInt8_1X_Normalized:
+				return 1 * 1;
+			case Int8_2X, UInt8_2X, Int8_2X_Normalized, UInt8_2X_Normalized:
+				return 2 * 1;
+			case Int8_4X, UInt8_4X, Int8_4X_Normalized, UInt8_4X_Normalized:
 				return 4 * 1;
-			case Int2, UnsignedInt2:
+			case Int16_1X, UInt16_1X, Int16_1X_Normalized, UInt16_1X_Normalized:
+				return 1 * 2;
+			case Int16_2X, UInt16_2X, Int16_2X_Normalized, UInt16_2X_Normalized:
+				return 2 * 2;
+			case Int16_4X, UInt16_4X, Int16_4X_Normalized, UInt16_4X_Normalized:
 				return 4 * 2;
-			case Int3, UnsignedInt3:
-				return 4 * 3;
-			case Int4, UnsignedInt4:
+			case Int32_1X, UInt32_1X:
+				return 1 * 4;
+			case Int32_2X, UInt32_2X:
+				return 2 * 4;
+			case Int32_3X, UInt32_3X:
+				return 3 * 4;
+			case Int32_4X,UInt32_4X:
 				return 4 * 4;
 		}
-		return 0;
 	}
 
 	@:keep
