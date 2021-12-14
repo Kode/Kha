@@ -8,6 +8,7 @@ import kha.graphics4.VertexStructure;
 
 @:headerCode("
 #include <kinc/graphics4/vertexbuffer.h>
+#include <khalib/g4.h>
 ")
 @:headerClassCode("kinc_g4_vertex_buffer_t buffer;")
 class VertexBuffer {
@@ -27,30 +28,7 @@ class VertexBuffer {
 		kinc_g4_vertex_structure_t structure2;
 		kinc_g4_vertex_structure_init(&structure2);
 		for (int i = 0; i < structure->size(); ++i) {
-			kinc_g4_vertex_data_t data;
-			switch (structure->get(i)->data) {
-			case 0:
-				data = KINC_G4_VERTEX_DATA_FLOAT1;
-				break;
-			case 1:
-				data = KINC_G4_VERTEX_DATA_FLOAT2;
-				break;
-			case 2:
-				data = KINC_G4_VERTEX_DATA_FLOAT3;
-				break;
-			case 3:
-				data = KINC_G4_VERTEX_DATA_FLOAT4;
-				break;
-			case 4:
-				data = KINC_G4_VERTEX_DATA_FLOAT4X4;
-				break;
-			case 5:
-				data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
-				break;
-			case 6:
-				data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
-				break;
-			}
+			kinc_g4_vertex_data_t data = kha_convert_vertex_data(structure->get(i)->data);
 			kinc_g4_vertex_structure_add(&structure2, structure->get(i)->name, data);
 		}
 		kinc_g4_vertex_buffer_init(&buffer, vertexCount, &structure2, (kinc_g4_usage_t)usage, instanceDataStepRate);
@@ -125,6 +103,6 @@ class VertexBuffer {
 	@:noCompletion
 	@:keep
 	public static function _unused2(): VertexData {
-		return VertexData.Float1;
+		return VertexData.Float32_1X;
 	}
 }

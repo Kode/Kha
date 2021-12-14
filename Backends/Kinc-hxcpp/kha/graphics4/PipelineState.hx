@@ -10,6 +10,7 @@ import kha.graphics4.VertexStructure;
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/pipeline.h>
 #include <kinc/graphics4/vertexstructure.h>
+#include <khalib/g4.h>
 ")
 @:cppFileCode("
 static kinc_g4_compare_mode_t convertCompareMode(int mode) {
@@ -101,30 +102,7 @@ class PipelineState extends PipelineStateBase {
 			kinc_g4_vertex_structure_init(structures2[i1]);
 			structures2[i1]->instanced = (*structures[i1])->instanced;
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
-				kinc_g4_vertex_data_t data;
-				switch ((*structures[i1])->get(i2)->data) {
-				case 0:
-					data = KINC_G4_VERTEX_DATA_FLOAT1;
-					break;
-				case 1:
-					data = KINC_G4_VERTEX_DATA_FLOAT2;
-					break;
-				case 2:
-					data = KINC_G4_VERTEX_DATA_FLOAT3;
-					break;
-				case 3:
-					data = KINC_G4_VERTEX_DATA_FLOAT4;
-					break;
-				case 4:
-					data = KINC_G4_VERTEX_DATA_FLOAT4X4;
-					break;
-				case 5:
-					data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
-					break;
-				case 6:
-					data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
-					break;
-				}
+				kinc_g4_vertex_data_t data = kha_convert_vertex_data((*structures[i1])->get(i2)->data);
 				pipeline.input_layout[i1] = structures2[i1];
 				kinc_g4_vertex_structure_add(pipeline.input_layout[i1], (*structures[i1])->get(i2)->name, data);
 			}
@@ -280,7 +258,7 @@ class PipelineState extends PipelineStateBase {
 
 	@:noCompletion
 	public static function _unused2(): VertexData {
-		return VertexData.Float1;
+		return VertexData.Float32_1X;
 	}
 
 	@:noCompletion
