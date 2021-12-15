@@ -1195,7 +1195,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		var structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float32_3X);
 		structure.add("vertexUV", VertexData.Float32_2X);
-		structure.add("vertexColor", VertexData.UInt8_4X);
+		structure.add("vertexColor", VertexData.UInt8_4X_Normalized);
 		return structure;
 	}
 
