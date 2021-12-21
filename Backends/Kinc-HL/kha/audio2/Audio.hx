@@ -10,7 +10,7 @@ class Audio {
 
 	public static function _init() {
 		var bufferSize = 1024 * 2;
-		buffer = new Buffer(bufferSize * 4, 2, 44100);
+		buffer = new Buffer(bufferSize * 4, 2, samplesPerSecond);
 	}
 
 	public static function _callCallback(samples: Int): Void {
