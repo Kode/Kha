@@ -98,9 +98,9 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height, int samplesPer
 extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
 	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK*)(&callCallback->fun));
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE*)(&readSample->fun));
-	*outSamplesPerSecond = Kore::Audio2::samplesPerSecond;
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
+	*outSamplesPerSecond = Kore::Audio2::samplesPerSecond;
 }
 
 extern "C" void hl_run_kore() {
