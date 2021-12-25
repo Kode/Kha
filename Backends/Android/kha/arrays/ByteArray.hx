@@ -41,7 +41,7 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public inline function data(count: Int): java.nio.ByteBuffer {
-		return java.nio.ByteBuffer.wrap(cast this.self, 0, count);
+		return cast this.self;
 	}
 
 	public inline function getInt8(byteOffset: Int): Int {
