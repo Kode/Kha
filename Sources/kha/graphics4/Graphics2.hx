@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import kha.arrays.ByteArray;
 import kha.arrays.Float32Array;
 import kha.Canvas;
 import kha.Color;
@@ -117,11 +118,11 @@ class ImageShaderPainter {
 	static var standardImagePipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1500;
-	static inline var vertexSize: Int = 9;
+	static inline var vertexSize: Int = 6;
 	static var bufferStart: Int;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
-	static var rectVertices: Float32Array;
+	static var rectVertices: ByteArray;
 	static var indexBuffer: IndexBuffer;
 	static var lastTexture: Image;
 
@@ -185,60 +186,60 @@ class ImageShaderPainter {
 
 	inline function setRectVertices(bottomleftx: FastFloat, bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat, toprightx: FastFloat,
 			toprighty: FastFloat, bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
-		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
-		rectVertices.set(baseIndex + 0, bottomleftx);
-		rectVertices.set(baseIndex + 1, bottomlefty);
-		rectVertices.set(baseIndex + 2, -5.0);
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
+		rectVertices.setFloat32(baseIndex + 0 * 4, bottomleftx);
+		rectVertices.setFloat32(baseIndex + 1 * 4, bottomlefty);
+		rectVertices.setFloat32(baseIndex + 2 * 4, -5.0);
 
-		rectVertices.set(baseIndex + 9, topleftx);
-		rectVertices.set(baseIndex + 10, toplefty);
-		rectVertices.set(baseIndex + 11, -5.0);
+		rectVertices.setFloat32(baseIndex + 6 * 4, topleftx);
+		rectVertices.setFloat32(baseIndex + 7 * 4, toplefty);
+		rectVertices.setFloat32(baseIndex + 8 * 4, -5.0);
 
-		rectVertices.set(baseIndex + 18, toprightx);
-		rectVertices.set(baseIndex + 19, toprighty);
-		rectVertices.set(baseIndex + 20, -5.0);
+		rectVertices.setFloat32(baseIndex + 12 * 4, toprightx);
+		rectVertices.setFloat32(baseIndex + 13 * 4, toprighty);
+		rectVertices.setFloat32(baseIndex + 14 * 4, -5.0);
 
-		rectVertices.set(baseIndex + 27, bottomrightx);
-		rectVertices.set(baseIndex + 28, bottomrighty);
-		rectVertices.set(baseIndex + 29, -5.0);
+		rectVertices.setFloat32(baseIndex + 18 * 4, bottomrightx);
+		rectVertices.setFloat32(baseIndex + 19 * 4, bottomrighty);
+		rectVertices.setFloat32(baseIndex + 20 * 4, -5.0);
 	}
 
 	inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
-		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
-		rectVertices.set(baseIndex + 3, left);
-		rectVertices.set(baseIndex + 4, bottom);
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
+		rectVertices.setFloat32(baseIndex + 3 * 4, left);
+		rectVertices.setFloat32(baseIndex + 4 * 4, bottom);
 
-		rectVertices.set(baseIndex + 12, left);
-		rectVertices.set(baseIndex + 13, top);
+		rectVertices.setFloat32(baseIndex + 9 * 4, left);
+		rectVertices.setFloat32(baseIndex + 10 * 4, top);
 
-		rectVertices.set(baseIndex + 21, right);
-		rectVertices.set(baseIndex + 22, top);
+		rectVertices.setFloat32(baseIndex + 15 * 4, right);
+		rectVertices.setFloat32(baseIndex + 16 * 4, top);
 
-		rectVertices.set(baseIndex + 30, right);
-		rectVertices.set(baseIndex + 31, bottom);
+		rectVertices.setFloat32(baseIndex + 21 * 4, right);
+		rectVertices.setFloat32(baseIndex + 22 * 4, bottom);
 	}
 
 	inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
-		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4;
-		rectVertices.set(baseIndex + 5, r);
-		rectVertices.set(baseIndex + 6, g);
-		rectVertices.set(baseIndex + 7, b);
-		rectVertices.set(baseIndex + 8, a);
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
+		rectVertices.setUint8(baseIndex + 5 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 5 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 14, r);
-		rectVertices.set(baseIndex + 15, g);
-		rectVertices.set(baseIndex + 16, b);
-		rectVertices.set(baseIndex + 17, a);
+		rectVertices.setUint8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 23, r);
-		rectVertices.set(baseIndex + 24, g);
-		rectVertices.set(baseIndex + 25, b);
-		rectVertices.set(baseIndex + 26, a);
+		rectVertices.setUint8(baseIndex + 17 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 17 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 32, r);
-		rectVertices.set(baseIndex + 33, g);
-		rectVertices.set(baseIndex + 34, b);
-		rectVertices.set(baseIndex + 35, a);
+		rectVertices.setUint8(baseIndex + 23 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 23 * 4 + 3, Std.int(a * 255));
 	}
 
 	function drawBuffer(end: Bool): Void {
@@ -1192,9 +1193,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createImageVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexUV", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexUV", VertexData.Float32_2X);
+		structure.add("vertexColor", VertexData.UInt8_4X_Normalized);
 		return structure;
 	}
 
@@ -1212,8 +1213,8 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createColoredVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexColor", VertexData.Float32_4X);
 		return structure;
 	}
 
@@ -1231,9 +1232,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public static function createTextVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("vertexUV", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexUV", VertexData.Float32_2X);
+		structure.add("vertexColor", VertexData.Float32_4X);
 		return structure;
 	}
 

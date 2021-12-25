@@ -85,35 +85,35 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public inline function setInt8(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((int8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((int8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setUint8(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((uint8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((uint8_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setInt16(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((int16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((int16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setUint16(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((uint16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((uint16_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setInt32(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((int32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((int32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setUint32(byteOffset: Int, value: Int): Void {
-		return untyped __cpp__("*((uint32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((uint32_t *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setFloat32(byteOffset: Int, value: FastFloat): Void {
-		return untyped __cpp__("*((float *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((float *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function setFloat64(byteOffset: Int, value: Float): Void {
-		return untyped __cpp__("*((double *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
+		untyped __cpp__("*((double *)&{0}.data[{1} + {2}]) = {3}", this.self, this.byteArrayOffset, byteOffset, value);
 	}
 
 	public inline function getInt16LE(byteOffset: Int): Int {

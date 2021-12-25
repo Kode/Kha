@@ -22,24 +22,8 @@ class VertexBuffer {
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, canRead: Bool = false) {
 		this.usage = usage;
 		mySize = vertexCount;
-		myStride = 0;
 		for (element in structure.elements) {
-			switch (element.data) {
-				case VertexData.Float1:
-					myStride += 4 * 1;
-				case VertexData.Float2:
-					myStride += 4 * 2;
-				case VertexData.Float3:
-					myStride += 4 * 3;
-				case VertexData.Float4:
-					myStride += 4 * 4;
-				case VertexData.Float4x4:
-					myStride += 4 * 4 * 4;
-				case VertexData.Short2Norm:
-					myStride += 2 * 2;
-				case VertexData.Short4Norm:
-					myStride += 2 * 4;
-			}
+			myStride += VertexStructure.dataByteSize(element.data);
 		}
 
 		buffer = createBuffer();
@@ -55,39 +39,40 @@ class VertexBuffer {
 		for (element in structure.elements) {
 			var size;
 			switch (element.data) {
-				case VertexData.Float1:
+				case Float32_1X:
 					size = 1;
-				case VertexData.Float2:
+				case Float32_2X:
 					size = 2;
-				case VertexData.Float3:
+				case Float32_3X:
 					size = 3;
-				case VertexData.Float4:
+				case Float32_4X:
 					size = 4;
-				case VertexData.Float4x4:
+				case Float32_4X4:
 					size = 4 * 4;
-				case VertexData.Short2Norm:
+				case Int8_1X, UInt8_1X, Int8_1X_Normalized, UInt8_1X_Normalized:
+					size = 1;
+				case Int8_2X, UInt8_2X, Int8_2X_Normalized, UInt8_2X_Normalized:
 					size = 2;
-				case VertexData.Short4Norm:
+				case Int8_4X, UInt8_4X, Int8_4X_Normalized, UInt8_4X_Normalized:
+					size = 4;
+				case Int16_1X, UInt16_1X, Int16_1X_Normalized, UInt16_1X_Normalized:
+					size = 1;
+				case Int16_2X, UInt16_2X, Int16_2X_Normalized, UInt16_2X_Normalized:
+					size = 2;
+				case Int16_4X, UInt16_4X, Int16_4X_Normalized, UInt16_4X_Normalized:
+					size = 4;
+				case Int32_1X, UInt32_1X:
+					size = 1;
+				case Int32_2X, UInt32_2X:
+					size = 2;
+				case Int32_3X, UInt32_3X:
+					size = 3;
+				case Int32_4X,UInt32_4X:
 					size = 4;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
-			switch (element.data) {
-				case VertexData.Float1:
-					offset += 4 * 1;
-				case VertexData.Float2:
-					offset += 4 * 2;
-				case VertexData.Float3:
-					offset += 4 * 3;
-				case VertexData.Float4:
-					offset += 4 * 4;
-				case VertexData.Float4x4:
-					offset += 4 * 4 * 4;
-				case VertexData.Short2Norm:
-					offset += 2 * 2;
-				case VertexData.Short4Norm:
-					offset += 2 * 4;
-			}
+			offset += VertexStructure.dataByteSize(element.data);
 			++index;
 		}
 	}
