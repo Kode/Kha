@@ -38,4 +38,13 @@ package kha.graphics4;
 	var UInt32_3X = 34;
 	var Int32_4X = 35;
 	var UInt32_4X = 36;
+
+	// deprecated
+	var Float1 = Float32_1X;
+	var Float2 = Float32_2X;
+	var Float3 = Float32_3X;
+	var Float4 = Float32_4X;
+	var Float4x4 = Float32_4X4;
+	var Short2Norm = Int16_2X_Normalized;
+	var Short4Norm = Int16_4X_Normalized;
 }
