@@ -6,7 +6,7 @@ class ByteArray {
 	public var buffer(get, never): ByteBuffer;
 
 	inline function get_buffer(): ByteBuffer {
-		return cast this.buffer;
+		return null;
 	}
 
 	public function new(buffer: ByteBuffer, ?byteOffset: Int, ?byteLength: Int) {
@@ -15,6 +15,18 @@ class ByteArray {
 
 	static public function make(byteLength: Int): ByteArray {
 		return null;
+	}
+
+	public var byteLength(get, never): Int;
+
+	inline function get_byteLength(): Int {
+		return 0;
+	}
+
+	public var byteOffset(get, never): Int;
+
+	inline function get_byteOffset(): Int {
+		return 0;
 	}
 
 	public inline function getInt8(byteOffset: Int): Int {
