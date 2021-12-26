@@ -424,90 +424,91 @@ class ColoredShaderPainter {
 
 	public function setRectVertices(bottomleftx: Float, bottomlefty: Float, topleftx: Float, toplefty: Float, toprightx: Float, toprighty: Float,
 			bottomrightx: Float, bottomrighty: Float): Void {
-		var baseIndex: Int = bufferIndex * 7 * 4;
+		var baseIndex: Int = bufferIndex * 4 * 4;
 		rectVertices.set(baseIndex + 0, bottomleftx);
 		rectVertices.set(baseIndex + 1, bottomlefty);
 		rectVertices.set(baseIndex + 2, -5.0);
 
-		rectVertices.set(baseIndex + 7, topleftx);
-		rectVertices.set(baseIndex + 8, toplefty);
-		rectVertices.set(baseIndex + 9, -5.0);
+		rectVertices.set(baseIndex + 4, topleftx);
+		rectVertices.set(baseIndex + 5, toplefty);
+		rectVertices.set(baseIndex + 6, -5.0);
 
-		rectVertices.set(baseIndex + 14, toprightx);
-		rectVertices.set(baseIndex + 15, toprighty);
-		rectVertices.set(baseIndex + 16, -5.0);
+		rectVertices.set(baseIndex + 8, toprightx);
+		rectVertices.set(baseIndex + 9, toprighty);
+		rectVertices.set(baseIndex + 10, -5.0);
 
-		rectVertices.set(baseIndex + 21, bottomrightx);
-		rectVertices.set(baseIndex + 22, bottomrighty);
-		rectVertices.set(baseIndex + 23, -5.0);
+		rectVertices.set(baseIndex + 12, bottomrightx);
+		rectVertices.set(baseIndex + 13, bottomrighty);
+		rectVertices.set(baseIndex + 14, -5.0);
 	}
 
 	public function setRectColors(opacity: FastFloat, color: Color): Void {
-		var baseIndex: Int = bufferIndex * 7 * 4;
+		var baseIndex: Int = bufferIndex * 4 * 4 * 4;
 
 		var a: FastFloat = opacity * color.A;
 		var r: FastFloat = a * color.R;
 		var g: FastFloat = a * color.G;
 		var b: FastFloat = a * color.B;
 
-		rectVertices.set(baseIndex + 3, r);
-		rectVertices.set(baseIndex + 4, g);
-		rectVertices.set(baseIndex + 5, b);
-		rectVertices.set(baseIndex + 6, a);
+		rectVertices.setUint8(baseIndex + 3 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 3 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 3 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 3 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 10, r);
-		rectVertices.set(baseIndex + 11, g);
-		rectVertices.set(baseIndex + 12, b);
-		rectVertices.set(baseIndex + 13, a);
+		rectVertices.setUint8(baseIndex + 7 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 7 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 7 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 7 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 17, r);
-		rectVertices.set(baseIndex + 18, g);
-		rectVertices.set(baseIndex + 19, b);
-		rectVertices.set(baseIndex + 20, a);
+		rectVertices.setUint8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
 
-		rectVertices.set(baseIndex + 24, r);
-		rectVertices.set(baseIndex + 25, g);
-		rectVertices.set(baseIndex + 26, b);
-		rectVertices.set(baseIndex + 27, a);
+		rectVertices.setUint8(baseIndex + 15 * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + 15 * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + 15 * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + 15 * 4 + 3, Std.int(a * 255));
 	}
 
 	function setTriVertices(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Void {
-		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+		var baseIndex: Int = triangleBufferIndex * 4 * 3;
+
 		triangleVertices.set(baseIndex + 0, x1);
 		triangleVertices.set(baseIndex + 1, y1);
 		triangleVertices.set(baseIndex + 2, -5.0);
 
-		triangleVertices.set(baseIndex + 7, x2);
-		triangleVertices.set(baseIndex + 8, y2);
-		triangleVertices.set(baseIndex + 9, -5.0);
+		triangleVertices.set(baseIndex + 4, x2);
+		triangleVertices.set(baseIndex + 5, y2);
+		triangleVertices.set(baseIndex + 6, -5.0);
 
-		triangleVertices.set(baseIndex + 14, x3);
-		triangleVertices.set(baseIndex + 15, y3);
-		triangleVertices.set(baseIndex + 16, -5.0);
+		triangleVertices.set(baseIndex + 8, x3);
+		triangleVertices.set(baseIndex + 9, y3);
+		triangleVertices.set(baseIndex + 10, -5.0);
 	}
 
 	function setTriColors(opacity: FastFloat, color: Color): Void {
-		var baseIndex: Int = triangleBufferIndex * 7 * 3;
+		var baseIndex: Int = triangleBufferIndex * 4 * 4 * 3;
 
 		var a: FastFloat = opacity * color.A;
 		var r: FastFloat = a * color.R;
 		var g: FastFloat = a * color.G;
 		var b: FastFloat = a * color.B;
 
-		triangleVertices.set(baseIndex + 3, r);
-		triangleVertices.set(baseIndex + 4, g);
-		triangleVertices.set(baseIndex + 5, b);
-		triangleVertices.set(baseIndex + 6, a);
+		triangleVertices.setUint8(baseIndex + 3 * 4 + 0, Std.int(r * 255));
+		triangleVertices.setUint8(baseIndex + 3 * 4 + 1, Std.int(g * 255));
+		triangleVertices.setUint8(baseIndex + 3 * 4 + 2, Std.int(b * 255));
+		triangleVertices.setUint8(baseIndex + 3 * 4 + 3, Std.int(a * 255));
 
-		triangleVertices.set(baseIndex + 10, r);
-		triangleVertices.set(baseIndex + 11, g);
-		triangleVertices.set(baseIndex + 12, b);
-		triangleVertices.set(baseIndex + 13, a);
+		triangleVertices.setUint8(baseIndex + 7 * 4 + 0, Std.int(r * 255));
+		triangleVertices.setUint8(baseIndex + 7 * 4 + 1, Std.int(g * 255));
+		triangleVertices.setUint8(baseIndex + 7 * 4 + 2, Std.int(b * 255));
+		triangleVertices.setUint8(baseIndex + 7 * 4 + 3, Std.int(a * 255));
 
-		triangleVertices.set(baseIndex + 17, r);
-		triangleVertices.set(baseIndex + 18, g);
-		triangleVertices.set(baseIndex + 19, b);
-		triangleVertices.set(baseIndex + 20, a);
+		triangleVertices.setUint8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
+		triangleVertices.setUint8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
+		triangleVertices.setUint8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
+		triangleVertices.setUint8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
 	}
 
 	function drawBuffer(trisDone: Bool): Void {
@@ -1214,7 +1215,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public static function createColoredVertexStructure(): VertexStructure {
 		var structure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float32_3X);
-		structure.add("vertexColor", VertexData.Float32_4X);
+		structure.add("vertexColor", VertexData.UInt8_4X_Normalized);
 		return structure;
 	}
 
