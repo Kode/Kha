@@ -12,24 +12,8 @@ class VertexBuffer {
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		var structure2 = kore_create_vertexstructure(structure.instanced);
 		for (i in 0...structure.size()) {
-			var data: Int = 0;
-			switch (structure.get(i).data) {
-				case VertexData.Float1:
-					data = 1;
-				case VertexData.Float2:
-					data = 2;
-				case VertexData.Float3:
-					data = 3;
-				case VertexData.Float4:
-					data = 4;
-				case VertexData.Float4x4:
-					data = 5;
-				case VertexData.Short2Norm:
-					data = 6;
-				case VertexData.Short4Norm:
-					data = 7;
-			}
-			kore_vertexstructure_add(structure2, StringHelper.convert(structure.get(i).name), data);
+			var vertexElement = structure.get(i);
+			kore_vertexstructure_add(structure2, StringHelper.convert(vertexElement.name), vertexElement.data);
 		}
 		_buffer = kore_create_vertexbuffer(vertexCount, structure2, usage, instanceDataStepRate);
 	}
