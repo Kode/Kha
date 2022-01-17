@@ -575,6 +575,7 @@ class SystemImpl {
 			}, 1000);
 		}, 500);
 
+		Scheduler.start();
 		requestAnimationFrame(animate);
 		callback(SystemImpl.window);
 	}
