@@ -41,7 +41,7 @@ class PipelineState extends PipelineStateBase {
 			kore_structures.push(kore_structure);
 			for (j in 0...structures[i].size()) {
 				var vertexElement = structures[i].get(j);
-				VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(vertexElement.name), vertexElement.data);
+				VertexBuffer.kore_vertexstructure_add(kore_structure, StringHelper.convert(vertexElement.name), VertexBuffer.convertVertexDataToKinc(vertexElement.data));
 			}
 		}
 
