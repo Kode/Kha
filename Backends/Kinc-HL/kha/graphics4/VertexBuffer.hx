@@ -1,5 +1,6 @@
 package kha.graphics4;
 
+import kha.arrays.ByteArray;
 import kha.arrays.Float32Array;
 import kha.arrays.Int16Array;
 import kha.graphics4.VertexData;
@@ -23,15 +24,11 @@ class VertexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		var f32array = new Float32Array();
-		f32array.setData(kore_vertexbuffer_lock(_buffer), this.count() * Std.int(stride() / 4));
-		return f32array;
+		return cast new ByteArray(kore_vertexbuffer_lock(_buffer), 0, this.count() * stride());
 	}
 
 	public function lockInt16(?start: Int, ?count: Int): Int16Array {
-		var i16array = new Int16Array();
-		i16array.setData(kore_vertexbuffer_lock(_buffer), this.count() * Std.int(stride() / 2));
-		return i16array;
+		return cast new ByteArray(kore_vertexbuffer_lock(_buffer), 0, this.count() * stride());
 	}
 
 	public function unlock(?count: Int): Void {
