@@ -14,22 +14,7 @@ class VertexBuffer {
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
-			switch (element.data) {
-				case Float1:
-					myStride += 4 * 1;
-				case Float2:
-					myStride += 4 * 2;
-				case Float3:
-					myStride += 4 * 3;
-				case Float4:
-					myStride += 4 * 4;
-				case Float4x4:
-					myStride += 4 * 4 * 4;
-				case Short2Norm:
-					myStride += 2 * 2;
-				case Short4Norm:
-					myStride += 2 * 4;
-			}
+			myStride += VertexData.getStride(element.data);
 		}
 
 		data = new Float32Array(Std.int(vertexCount * myStride / 4));

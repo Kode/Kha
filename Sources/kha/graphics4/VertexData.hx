@@ -47,4 +47,49 @@ package kha.graphics4;
 	var Float4x4 = Float32_4X4;
 	var Short2Norm = Int16_2X_Normalized;
 	var Short4Norm = Int16_4X_Normalized;
+
+	/**
+		Return the element size of the given vertex data type in bytes.
+	**/
+	public static inline function getStride(vertexData: VertexData): Int {
+		return switch (vertexData) {
+			case Float32_1X: 4 * 1;
+			case Float32_2X: 4 * 2;
+			case Float32_3X: 4 * 3;
+			case Float32_4X: 4 * 4;
+			case Float32_4X4: 4 * 4 * 4;
+			case Int8_1X: 1;
+			case UInt8_1X: 1;
+			case Int8_1X_Normalized: 1;
+			case UInt8_1X_Normalized: 1;
+			case Int8_2X: 1 * 2;
+			case UInt8_2X: 1 * 2;
+			case Int8_2X_Normalized: 1 * 2;
+			case UInt8_2X_Normalized: 1 * 2;
+			case Int8_4X: 1 * 4;
+			case UInt8_4X: 1 * 4;
+			case Int8_4X_Normalized: 1 * 4;
+			case UInt8_4X_Normalized: 1 * 4;
+			case Int16_1X: 2 * 1;
+			case UInt16_1X: 2 * 1;
+			case Int16_1X_Normalized: 2 * 1;
+			case UInt16_1X_Normalized: 2 * 1;
+			case Int16_2X: 2 * 2;
+			case UInt16_2X: 2 * 2;
+			case Int16_2X_Normalized: 2 * 2;
+			case UInt16_2X_Normalized: 2 * 2;
+			case Int16_4X: 2 * 4;
+			case UInt16_4X: 2 * 4;
+			case Int16_4X_Normalized: 2 * 4;
+			case UInt16_4X_Normalized: 2 * 4;
+			case Int32_1X: 4 * 1;
+			case UInt32_1X: 4 * 1;
+			case Int32_2X: 4 * 2;
+			case UInt32_2X: 4 * 2;
+			case Int32_3X: 4 * 3;
+			case UInt32_3X: 4 * 3;
+			case Int32_4X: 4 * 4;
+			case UInt32_4X: 4 * 4;
+		}
+	}
 }
