@@ -504,7 +504,8 @@ class SystemImpl {
 		var lastTimestamp = 0.0;
 		final possibleRefreshRates = [30, 60, 75, 90, 120, 144, 240, 340, 360];
 		final refreshRatesCounts = [
-			for (_ in 0...possibleRefreshRates.length) 0
+			for (_ in 0...possibleRefreshRates.length)
+				0
 		];
 
 		function animate(timestamp) {
@@ -546,18 +547,22 @@ class SystemImpl {
 					SystemImpl.gl.colorMask(true, true, true, true);
 				}
 			}
-			if (!isRefreshRateDetectionActive) return;
+			if (!isRefreshRateDetectionActive)
+				return;
 			if (lastTimestamp == 0) {
 				lastTimestamp = timestamp;
 				return;
 			}
 			final fps = Math.floor(1000 / (timestamp - lastTimestamp));
-			if (estimatedRefreshRate < fps) estimatedRefreshRate = fps;
+			if (estimatedRefreshRate < fps)
+				estimatedRefreshRate = fps;
 			lastTimestamp = timestamp;
 			for (i => rate in possibleRefreshRates) {
-				if (fps > rate - 3 && fps < rate + 3) refreshRatesCounts[i]++;
+				if (fps > rate - 3 && fps < rate + 3)
+					refreshRatesCounts[i]++;
 			}
 		}
+
 		Browser.window.setTimeout(() -> {
 			isRefreshRateDetectionActive = true;
 			Browser.window.setTimeout(() -> {
@@ -732,12 +737,7 @@ class SystemImpl {
 		if (event.which == 1) { // left button
 			mouse.sendDownEvent(0, 0, mouseX, mouseY);
 
-			if (khanvas.setCapture != null) {
-				khanvas.setCapture();
-			}
-			else {
-				khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
-			}
+			khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
 			khanvas.ownerDocument.addEventListener("mouseup", mouseLeftUp);
 		}
 		else if (event.which == 2) { // middle button
@@ -767,12 +767,7 @@ class SystemImpl {
 
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener("mouseup", mouseLeftUp);
-		if (khanvas.releaseCapture != null) {
-			khanvas.ownerDocument.releaseCapture();
-		}
-		else {
-			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
-		}
+		khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
 
 		mouse.sendUpEvent(0, 0, mouseX, mouseY);
 
