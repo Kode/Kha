@@ -18,9 +18,7 @@ class IndexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): kha.arrays.Uint32Array {
-		var u32array = new kha.arrays.Uint32Array();
-		u32array.setData(kore_indexbuffer_lock(_buffer), myCount);
-		return u32array;
+		return cast new kha.arrays.ByteArray(kore_indexbuffer_lock(_buffer), 0, myCount * 4);
 	}
 
 	public function unlock(?count: Int): Void {
