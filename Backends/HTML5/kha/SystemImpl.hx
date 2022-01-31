@@ -25,6 +25,8 @@ import kha.js.MobileWebAudio;
 import kha.js.vr.VrInterface;
 import kha.System;
 
+using StringTools;
+
 class GamepadStates {
 	public var axes: Array<Float>;
 	public var buttons: Array<Float>;
@@ -520,15 +522,9 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-				// clientWidth/Height is in downscaled "css pixels" when a <meta viewport="" /> is set in the html file
-				var displayWidth = Std.int(canvas.clientWidth);
-				var displayHeight = Std.int(canvas.clientHeight);
-
-				// Check if the canvas rendering buffer is not the same size.
-				if (canvas.width != displayWidth || canvas.height != displayHeight) {
-					// Make the canvas rendering buffer the same size
-					canvas.width = displayWidth;
-					canvas.height = displayHeight;
+				if (!canvas.style.width.endsWith("%")) {
+					canvas.style.width = Std.int(canvas.width / Browser.window.devicePixelRatio) + "px";
+					canvas.style.height = Std.int(canvas.height / Browser.window.devicePixelRatio) + "px";
 				}
 
 				System.render([frame]);

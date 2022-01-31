@@ -31,7 +31,7 @@ class Window {
 				}
 			}
 			if (isResize) {
-				this.resize(canvas.clientWidth, canvas.clientHeight);
+				this.resize(canvas.width, canvas.height);
 			}
 		});
 		observer.observe(canvas, {attributes: true});
