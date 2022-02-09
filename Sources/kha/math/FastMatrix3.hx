@@ -4,12 +4,24 @@ class FastMatrix3 {
 	static inline var width: Int = 3;
 	static inline var height: Int = 3;
 
+	/** Horizontal scaling. A value of 1 results in no scaling. */
 	public var _00: FastFloat;
+
+	/** Horizontal skewing. */
 	public var _10: FastFloat;
+
+	/** Horizontal translation (moving). */
 	public var _20: FastFloat;
+
+	/** Vertical skewing. */
 	public var _01: FastFloat;
+
+	/** Vertical scaling. A value of 1 results in no scaling. */
 	public var _11: FastFloat;
+
+	/** Vertical translation (moving). */
 	public var _21: FastFloat;
+
 	public var _02: FastFloat;
 	public var _12: FastFloat;
 	public var _22: FastFloat;

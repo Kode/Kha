@@ -4,15 +4,27 @@ class Matrix3 {
 	static inline var width: Int = 3;
 	static inline var height: Int = 3;
 
-	public var _00: Float;
-	public var _10: Float;
-	public var _20: Float;
-	public var _01: Float;
-	public var _11: Float;
-	public var _21: Float;
-	public var _02: Float;
-	public var _12: Float;
-	public var _22: Float;
+	/** Horizontal scaling. A value of 1 results in no scaling. */
+	public var _00: FastFloat;
+
+	/** Horizontal skewing. */
+	public var _10: FastFloat;
+
+	/** Horizontal translation (moving). */
+	public var _20: FastFloat;
+
+	/** Vertical skewing. */
+	public var _01: FastFloat;
+
+	/** Vertical scaling. A value of 1 results in no scaling. */
+	public var _11: FastFloat;
+
+	/** Vertical translation (moving). */
+	public var _21: FastFloat;
+
+	public var _02: FastFloat;
+	public var _12: FastFloat;
+	public var _22: FastFloat;
 
 	public inline function new(_00: Float, _10: Float, _20: Float, _01: Float, _11: Float, _21: Float, _02: Float, _12: Float, _22: Float) {
 		this._00 = _00;
