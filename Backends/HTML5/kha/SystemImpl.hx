@@ -214,7 +214,7 @@ class SystemImpl {
 			gamepadStates[i] = new GamepadStates();
 		}
 		js.Browser.window.addEventListener("gamepadconnected", (e) -> {
-			var pad:js.html.Gamepad = e.gamepad;
+			var pad: js.html.Gamepad = e.gamepad;
 			Gamepad.sendConnectEvent(pad.index);
 			for (i in 0...pad.buttons.length) {
 				gamepadStates[pad.index].buttons[i] = 0;
@@ -502,10 +502,17 @@ class SystemImpl {
 		if (requestAnimationFrame == null)
 			requestAnimationFrame = window.msRequestAnimationFrame;
 
+		var isRefreshRateDetectionActive = false;
+		var lastTimestamp = 0.0;
+		final possibleRefreshRates = [30, 60, 75, 90, 120, 144, 240, 340, 360];
+		final refreshRatesCounts = [
+			for (_ in 0...possibleRefreshRates.length)
+				0
+		];
+
 		function animate(timestamp) {
-			var window: Dynamic = Browser.window;
 			if (requestAnimationFrame == null)
-				window.setTimeout(animate, 1000.0 / 60.0);
+				Browser.window.setTimeout(animate, 1000.0 / 60.0);
 			else
 				requestAnimationFrame(animate);
 
@@ -536,104 +543,42 @@ class SystemImpl {
 					SystemImpl.gl.colorMask(true, true, true, true);
 				}
 			}
+			if (!isRefreshRateDetectionActive)
+				return;
+			if (lastTimestamp == 0) {
+				lastTimestamp = timestamp;
+				return;
+			}
+			final fps = Math.floor(1000 / (timestamp - lastTimestamp));
+			if (estimatedRefreshRate < fps)
+				estimatedRefreshRate = fps;
+			lastTimestamp = timestamp;
+			for (i => rate in possibleRefreshRates) {
+				if (fps > rate - 3 && fps < rate + 3)
+					refreshRatesCounts[i]++;
+			}
 		}
 
-		var initialTimestamp: Int = 0;
-		var prevTimestamp: Int = 0;
-		var currentSamples: Int = 0;
-		var timeDiffs: Array<Int> = [];
-
-		var SAMPLE_COUNT: Int = 90;
-		var MEAN_TRUNCATION_CUTOFF: Float = 1 / 3;
-
-		function roundToKnownRefreshRate(hz: Int): Int {
-			var hz30 = {low: 27, high: 33, target: 30};
-			var hz60 = {low: 57, high: 63, target: 60};
-			var hz75 = {low: 72, high: 78, target: 75};
-			var hz90 = {low: 87, high: 93, target: 90};
-			var hz120 = {low: 117, high: 123, target: 120};
-			var hz144 = {low: 141, high: 147, target: 144};
-			var hz240 = {low: 237, high: 243, target: 240};
-			var hz340 = {low: 337, high: 343, target: 340};
-			var hz360 = {low: 357, high: 363, target: 360};
-
-			var rates = [hz30, hz60, hz75, hz90, hz120, hz144, hz240, hz340, hz360];
-
-			var nearestHz = hz;
-			for (rate in rates) {
-				if (hz >= rate.low && hz <= rate.high) {
-					nearestHz = rate.target;
-				}
-			}
-
-			return nearestHz;
-		}
-
-		// HTML5 has no real way to query the actual monitor refresh rate
-		// The only thing that can be done is attempt to measure the interval between requestAnimationFrame calls
-		// Without requestAnimationFrame we're out of luck
-		// We try and make a best guess while nothing intensive is happening
-		function detectRefreshRate(timestamp) {
-			var window: Dynamic = Browser.window;
-
-			if (initialTimestamp == 0) {
-				initialTimestamp = timestamp;
-			}
-			var timeDifferential = (timestamp - prevTimestamp) - initialTimestamp;
-			prevTimestamp = timestamp - initialTimestamp;
-
-			if (timeDifferential != 0) {
-				timeDiffs.push(timeDifferential);
-			}
-
-			if (currentSamples < SAMPLE_COUNT) {
-				currentSamples++;
-
-				if (requestAnimationFrame == null)
-					window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
-				else
-					requestAnimationFrame(detectRefreshRate);
-			}
-			else {
-				// Remove extreme frametime values before averaging
-				{
-					haxe.ds.ArraySort.sort(timeDiffs, (a, b) -> {
-						a - b;
-					});
-
-					var truncatedTimeDiffs: Array<Int> = [];
-					var cutoff = Math.round(timeDiffs.length * MEAN_TRUNCATION_CUTOFF);
-					for (i in cutoff...timeDiffs.length - cutoff) {
-						truncatedTimeDiffs.push(timeDiffs[i]);
+		Browser.window.setTimeout(() -> {
+			isRefreshRateDetectionActive = true;
+			Browser.window.setTimeout(() -> {
+				isRefreshRateDetectionActive = false;
+				// Use 60 hz if window was out of focus and throttled to 1 fps
+				var index = possibleRefreshRates.indexOf(60);
+				var max = 0;
+				for (i => count in refreshRatesCounts) {
+					if (count > max) {
+						max = count;
+						index = i;
 					}
-
-					var total = 0;
-					for (time in truncatedTimeDiffs) {
-						total += time;
-					}
-
-					var avg = total / truncatedTimeDiffs.length;
-					// We may have an accurate frequency, but it might be possible to be off the actual refresh rate by a few hz
-					// Manually round to common refresh rates as well, just for security's sake
-					estimatedRefreshRate = roundToKnownRefreshRate(Math.round(1000 / avg));
 				}
+				estimatedRefreshRate = possibleRefreshRates[index];
+			}, 1000);
+		}, 500);
 
-				Scheduler.start();
-
-				if (requestAnimationFrame == null)
-					window.setTimeout(animate, 1000.0 / 60.0);
-				else
-					requestAnimationFrame(animate);
-
-				callback(SystemImpl.window);
-			}
-		}
-
-		// Run through refresh rate detection first and then start animating
-		if (requestAnimationFrame == null)
-			window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
-		else
-			requestAnimationFrame(detectRefreshRate);
+		Scheduler.start();
+		requestAnimationFrame(animate);
+		callback(SystemImpl.window);
 	}
 
 	public static function lockMouse(): Void {
@@ -788,12 +733,7 @@ class SystemImpl {
 		if (event.which == 1) { // left button
 			mouse.sendDownEvent(0, 0, mouseX, mouseY);
 
-			if (khanvas.setCapture != null) {
-				khanvas.setCapture();
-			}
-			else {
-				khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
-			}
+			khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
 			khanvas.ownerDocument.addEventListener("mouseup", mouseLeftUp);
 		}
 		else if (event.which == 2) { // middle button
@@ -823,12 +763,7 @@ class SystemImpl {
 
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener("mouseup", mouseLeftUp);
-		if (khanvas.releaseCapture != null) {
-			khanvas.ownerDocument.releaseCapture();
-		}
-		else {
-			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
-		}
+		khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
 
 		mouse.sendUpEvent(0, 0, mouseX, mouseY);
 

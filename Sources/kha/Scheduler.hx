@@ -50,7 +50,16 @@ class Scheduler {
 	static var stopped: Bool;
 	static var vsync: Bool;
 
+	// Html5 target can update display frequency after some delay
+	#if kha_html5
+	static var onedifhz(get, never): Float;
+
+	static inline function get_onedifhz(): Float {
+		return 1.0 / Display.primary.frequency;
+	}
+	#else
 	static var onedifhz: Float;
+	#end
 
 	static var currentFrameTaskId: Int;
 	static var currentTimeTaskId: Int;
@@ -88,10 +97,12 @@ class Scheduler {
 
 	public static function start(restartTimers: Bool = false): Void {
 		vsync = Window.get(0).vSynced;
+		#if !kha_html5
 		var hz = Display.primary.frequency;
 		if (hz >= 57 && hz <= 63)
 			hz = 60;
 		onedifhz = 1.0 / hz;
+		#end
 
 		stopped = false;
 		resetTime();
