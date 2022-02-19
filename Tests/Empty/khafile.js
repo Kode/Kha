@@ -1,6 +1,8 @@
 let project = new Project('Empty');
 
-project.addParameter('-dce full');
+if (platform !== 'empty') {
+	project.addParameter('-dce full');
+}
 
 project.addSources('Sources');
 

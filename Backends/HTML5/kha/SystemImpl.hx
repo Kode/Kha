@@ -490,6 +490,9 @@ class SystemImpl {
 		});
 	}
 
+	static var lastCanvasClientWidth: Int = -1;
+	static var lastCanvasClientHeight: Int = -1;
+
 	static function initAnimate(callback: Window->Void) {
 		var canvas: CanvasElement = getCanvasElement();
 
@@ -529,9 +532,12 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-				if (!canvas.style.width.endsWith("%")) {
-					canvas.style.width = Std.int(canvas.width / Browser.window.devicePixelRatio) + "px";
-					canvas.style.height = Std.int(canvas.height / Browser.window.devicePixelRatio) + "px";
+				if (lastCanvasClientWidth != canvas.clientWidth || lastCanvasClientHeight != canvas.clientHeight) {
+					var scale = Browser.window.devicePixelRatio;
+					canvas.width = Std.int(canvas.clientWidth * scale);
+					canvas.height = Std.int(canvas.clientHeight * scale);
+					lastCanvasClientWidth = canvas.clientWidth;
+					lastCanvasClientHeight = canvas.clientHeight;
 				}
 
 				System.render([frame]);
