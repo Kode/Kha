@@ -532,6 +532,7 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
+				#if !kha_disable_resize
 				if (lastCanvasClientWidth != canvas.clientWidth || lastCanvasClientHeight != canvas.clientHeight) {
 					// canvas.width is the actual backbuffer-size.
 					// canvas.clientWidth (which is read-only and equivalent to
@@ -552,6 +553,7 @@ class SystemImpl {
 					lastCanvasClientWidth = canvas.clientWidth;
 					lastCanvasClientHeight = canvas.clientHeight;
 				}
+				#end
 
 				System.render([frame]);
 				if (SystemImpl.gl != null) {
