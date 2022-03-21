@@ -532,7 +532,7 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-				#if !kha_disable_resize
+				#if !kha_html5_disable_automatic_size_adjust
 				if (lastCanvasClientWidth != canvas.clientWidth || lastCanvasClientHeight != canvas.clientHeight) {
 					// canvas.width is the actual backbuffer-size.
 					// canvas.clientWidth (which is read-only and equivalent to
