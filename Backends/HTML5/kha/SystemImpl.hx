@@ -4,6 +4,7 @@ import js.Syntax;
 import js.html.webgl.GL;
 import js.html.WheelEvent;
 import js.Browser;
+import js.html.WebSocket;
 import js.html.CanvasElement;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
@@ -87,6 +88,18 @@ class SystemImpl {
 		mobileAudioPlaying = !mobile && !chrome && !firefox;
 
 		initSecondStep(callback);
+		#end
+
+		#if kha_live_reload
+		function openWebSocket():Void {
+			var host = Browser.location.hostname;
+			if (host == "") host = "localhost";
+			var port = Std.parseInt(Browser.location.port);
+			if (port == null) port = 80;
+			final ws = new WebSocket('ws://$host:${port + 1}');
+			ws.onmessage = () -> Browser.location.reload();
+		}
+		openWebSocket();
 		#end
 	}
 
