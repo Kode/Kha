@@ -199,7 +199,6 @@ class SystemImpl {
 
 	static inline var maxGamepads: Int = 4;
 	static var frame: Framebuffer;
-	static var pressedKeys: Array<Bool>;
 	static var keyboard: Keyboard = null;
 	static var mouse: kha.input.Mouse;
 	static var surface: Surface;
@@ -244,14 +243,6 @@ class SystemImpl {
 					gamepads[pad.index].connected = true;
 				}
 			}
-		}
-
-		if (ie) {
-			pressedKeys = new Array<Bool>();
-			for (i in 0...256)
-				pressedKeys.push(false);
-			for (i in 0...256)
-				pressedKeys.push(null);
 		}
 
 		function onCopy(e: ClipboardEvent): Void {
@@ -1145,14 +1136,7 @@ class SystemImpl {
 		event.stopPropagation();
 
 		// prevent key repeat
-		if (ie) {
-			if (pressedKeys[event.keyCode]) {
-				event.preventDefault();
-				return;
-			}
-			pressedKeys[event.keyCode] = true;
-		}
-		else if (event.repeat) {
+		if (event.repeat) {
 			event.preventDefault();
 			return;
 		}
@@ -1201,9 +1185,6 @@ class SystemImpl {
 
 		event.preventDefault();
 		event.stopPropagation();
-
-		if (ie)
-			pressedKeys[event.keyCode] = false;
 
 		var keyCode = fixedKeyCode(event);
 		keyboard.sendUpEvent(keyCode);
