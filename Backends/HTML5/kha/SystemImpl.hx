@@ -91,11 +91,13 @@ class SystemImpl {
 		#end
 
 		#if kha_live_reload
-		function openWebSocket():Void {
+		function openWebSocket(): Void {
 			var host = Browser.location.hostname;
-			if (host == "") host = "localhost";
+			if (host == "")
+				host = "localhost";
 			var port = Std.parseInt(Browser.location.port);
-			if (port == null) port = 80;
+			if (port == null)
+				port = 80;
 			final ws = new WebSocket('ws://$host:${port + 1}');
 			ws.onmessage = () -> Browser.location.reload();
 		}
@@ -1123,16 +1125,7 @@ class SystemImpl {
 		insideInputEvent = true;
 		unlockSound();
 
-		switch (Keyboard.keyBehavior) {
-			case Default:
-				defaultKeyBlock(event);
-			case Full:
-				event.preventDefault();
-			case Custom(func):
-				if (func(cast event.keyCode))
-					event.preventDefault();
-			case None:
-		}
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
 
 		// prevent key repeat
@@ -1153,6 +1146,19 @@ class SystemImpl {
 			case 189: HyphenMinus;
 			default:
 				cast event.keyCode;
+		}
+	}
+
+	static function preventDefaultKeyBehavior(event: KeyboardEvent): Void {
+		switch (Keyboard.keyBehavior) {
+			case Default:
+				defaultKeyBlock(event);
+			case Full:
+				event.preventDefault();
+			case Custom(func):
+				if (func(cast event.keyCode))
+					event.preventDefault();
+			case None:
 		}
 	}
 
@@ -1183,7 +1189,7 @@ class SystemImpl {
 		insideInputEvent = true;
 		unlockSound();
 
-		event.preventDefault();
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
 
 		var keyCode = fixedKeyCode(event);
@@ -1198,7 +1204,7 @@ class SystemImpl {
 
 		if (event.which == 0)
 			return; // for Firefox and Safari
-		event.preventDefault();
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 
