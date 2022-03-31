@@ -151,6 +151,8 @@ class Graphics {
 
 	public function popTransformation(): FastMatrix3 {
 		transformationIndex--;
+		if (transformationIndex == -1)
+			throw "There is no transformation matrix to remove, check your push/popTransformation code";
 		setTransformation(get_transformation());
 		return transformations[transformationIndex + 1];
 	}
