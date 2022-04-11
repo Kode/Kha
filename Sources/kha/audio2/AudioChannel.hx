@@ -63,15 +63,19 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		return value;
 	}
 #else
-	var myVolume: Float = 1;
-	var myPosition: Int = 0;
-	var paused: Bool = false;
-	var stopped: Bool = false;
-	var looping: Bool = false;
+	var myVolume: Float;
+	var myPosition: Int;
+	var paused: Bool;
+	var stopped: Bool;
+	var looping: Bool;
 #end
 
 	public function new(looping: Bool) {
 		this.looping = looping;
+		stopped = false;
+		paused = false;
+		myPosition = 0;
+		myVolume = 1;
 	}
 
 	public function nextSamples(requestedSamples: Float32Array, requestedLength: Int, sampleRate: Int): Void {
