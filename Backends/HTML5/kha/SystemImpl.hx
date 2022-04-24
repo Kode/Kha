@@ -468,10 +468,10 @@ class SystemImpl {
 		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
 		canvas.onmouseleave = mouseLeave;
 
-		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
+		// IE11 does not have canvas.onwheel
+		canvas.addEventListener("wheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
