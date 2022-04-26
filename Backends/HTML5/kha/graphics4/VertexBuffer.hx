@@ -1,8 +1,8 @@
 package kha.graphics4;
 
-import kha.arrays.Float32Array;
 import js.html.webgl.GL;
 import kha.arrays.ByteArray;
+import kha.arrays.Float32Array;
 import kha.graphics4.Usage;
 import kha.graphics4.VertexStructure;
 
@@ -146,7 +146,12 @@ class VertexBuffer {
 		if (count != null)
 			lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		if (count == mySize) {
+			SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data, GL.DYNAMIC_DRAW);
+		}
+		else {
+			SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		}
 	}
 
 	public function stride(): Int {
