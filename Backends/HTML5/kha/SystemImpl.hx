@@ -562,7 +562,7 @@ class SystemImpl {
 				#end
 
 				System.render([frame]);
-				if (SystemImpl.gl != null) {
+				if (ie && SystemImpl.gl != null) {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
 					SystemImpl.gl.colorMask(false, false, false, true);
