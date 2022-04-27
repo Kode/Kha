@@ -288,7 +288,7 @@ class ImageShaderPainter {
 	public inline function drawImage(img: kha.Image, bottomleftx: FastFloat, bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat,
 			toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat, bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferStart + bufferIndex >= bufferSize || (lastTexture != null && tex != lastTexture))
+		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
@@ -303,7 +303,7 @@ class ImageShaderPainter {
 			bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat, toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat,
 			bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferStart + bufferIndex >= bufferSize || (lastTexture != null && tex != lastTexture))
+		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
