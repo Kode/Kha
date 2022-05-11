@@ -19,4 +19,4 @@ elif [[ "$OSTYPE" == "FreeBSD"* ]]; then
 fi
 
 git -C `dirname "$0"` submodule update --init Kinc
-source `dirname "$0"`/get_dlc
+bash `dirname "$0"`/get_dlc
