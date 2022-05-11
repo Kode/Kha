@@ -6,27 +6,37 @@
 	path = Backends/Kinc-hxcpp/khacpp
 	url = https://github.com/Kode/khacpp.git
 	branch = main
-[submodule "Tools/haxe"]
-	path = Tools/haxe
-	url = https://github.com/Kode/haxe_bin.git
-	branch = main
-	shallow = true
-[submodule "Tools/oggenc"]
-	path = Tools/oggenc
-	url = https://github.com/Kode/oggenc_bin.git
-	branch = main
-	shallow = true
-[submodule "Tools/kravur"]
-	path = Tools/kravur
-	url = https://github.com/Kode/kravur_bin.git
-	branch = main
-	shallow = true
-[submodule "Tools/lame"]
-	path = Tools/lame
-	url = https://github.com/Kode/lame_bin.git
-	branch = main
-	shallow = true
 [submodule "Kinc"]
 	path = Kinc
 	url = https://github.com/Kode/Kinc.git
 	branch = main
+[submodule "Tools/freebsd_x64"]
+	path = Tools/freebsd_x64
+	url = https://github.com/Kode/KhaTools_freebsd_x64.git
+	branch = main
+	shallow = true
+[submodule "Tools/linux_x64"]
+	path = Tools/linux_x64
+	url = https://github.com/Kode/KhaTools_linux_x64.git
+	branch = main
+	shallow = true
+[submodule "Tools/linux_arm"]
+	path = Tools/linux_arm
+	url = https://github.com/Kode/KhaTools_linux_arm.git
+	branch = main
+	shallow = true
+[submodule "Tools/linux_arm64"]
+	path = Tools/linux_arm64
+	url = https://github.com/Kode/KhaTools_linux_arm64.git
+	branch = main
+	shallow = true
+[submodule "Tools/macos"]
+	path = Tools/macos
+	url = https://github.com/Kode/KhaTools_macos.git
+	branch = main
+	shallow = true
+[submodule "Tools/windows_x64"]
+	path = Tools/windows_x64
+	url = https://github.com/Kode/KhaTools_windows_x64.git
+	branch = main
+	shallow = true
