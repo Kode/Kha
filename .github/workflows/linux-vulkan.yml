@@ -23,8 +23,8 @@ jobs:
       run: sudo apt update
     - name: Apt Install
       run: sudo apt install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev vulkan-sdk libwayland-dev wayland-protocols libxkbcommon-dev --yes --quiet
-    - name: Get Submodules
-      run: git submodule update --init --recursive
+    - name: Get DLC
+      run: ./get_dlc
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
     - name: Setup Node.js

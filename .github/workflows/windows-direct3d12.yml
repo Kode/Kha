@@ -15,8 +15,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Get Submodules
-      run: git submodule update --init --recursive
+    - name: Get DLC
+      run: .\get_dlc.bat
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
     - name: Compile
