@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+git -C `dirname "$0"` submodule update --init --remote Tools/khamake
+git -C `dirname "$0"` submodule update --init --remote Backends/Kinc-hxcpp/khacpp
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	MACHINE_TYPE=`uname -m`
+	if [[ "$MACHINE_TYPE" == "armv"* ]]; then
+		git -C `dirname "$0"` submodule update --init --remote Tools/linux_arm
+	elif [[ "$MACHINE_TYPE" == "aarch64"* ]]; then
+		git -C `dirname "$0"` submodule update --init --remote Tools/linux_arm64
+	else
+		git -C `dirname "$0"` submodule update --init --remote Tools/linux_x64
+	fi
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	git -C `dirname "$0"` submodule update --init --remote Tools/macos
+elif [[ "$OSTYPE" == "FreeBSD"* ]]; then
+	git -C `dirname "$0"` submodule update --init --remote Tools/freebsd_x64
+fi
+
+git -C `dirname "$0"` submodule update --init --remote Kinc
+source Kinc/get_dlc_dangerously
