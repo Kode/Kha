@@ -445,7 +445,7 @@ class WebGLImage extends Image {
 				case L8:
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.LUMINANCE, width, height, 0, GL.LUMINANCE, GL.UNSIGNED_BYTE, bytesToArray(bytes));
 
-					if (SystemImpl.gl.getError() == 1282) { // no LUMINANCE support in IE11
+					if (SystemImpl.ie && SystemImpl.gl.getError() == 1282) { // no LUMINANCE support in IE11
 						var rgbaBytes = Bytes.alloc(width * height * 4);
 						for (y in 0...height)
 							for (x in 0...width) {
