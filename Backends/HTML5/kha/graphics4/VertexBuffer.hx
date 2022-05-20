@@ -146,7 +146,12 @@ class VertexBuffer {
 		if (count != null)
 			lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		if (SystemImpl.safari) {
+			SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(0 * stride(), lockEnd * stride()), GL.DYNAMIC_DRAW);
+		}
+		else {
+			SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		}
 	}
 
 	public function stride(): Int {

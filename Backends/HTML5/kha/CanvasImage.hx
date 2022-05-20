@@ -195,7 +195,7 @@ class CanvasImage extends Image {
 			SystemImpl.gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 			SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.LUMINANCE, width, height, 0, GL.LUMINANCE, GL.UNSIGNED_BYTE, new Uint8Array(bytes.getData()));
 
-			if (SystemImpl.gl.getError() == 1282) {
+			if (SystemImpl.ie && SystemImpl.gl.getError() == 1282) { // no LUMINANCE support in IE11
 				var rgbaBytes = Bytes.alloc(width * height * 4);
 				for (y in 0...height)
 					for (x in 0...width) {

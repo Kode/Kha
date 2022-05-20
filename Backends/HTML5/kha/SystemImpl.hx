@@ -55,7 +55,8 @@ class SystemImpl {
 	public static var mobileAudioPlaying: Bool = false;
 	static var chrome: Bool = false;
 	static var firefox: Bool = false;
-	static var ie: Bool = false;
+	public static var safari: Bool = false;
+	public static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	static var window: Window;
 	public static var estimatedRefreshRate: Int = 60;
@@ -83,6 +84,7 @@ class SystemImpl {
 		ios = isIOS();
 		chrome = isChrome();
 		firefox = isFirefox();
+		safari = isSafari();
 		ie = isIE();
 
 		mobileAudioPlaying = !mobile && !chrome && !firefox;
@@ -128,7 +130,7 @@ class SystemImpl {
 
 	static function isMobile(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Android") >= 0 || agent.indexOf("webOS") >= 0 || agent.indexOf("BlackBerry") >= 0 || agent.indexOf("Windows Phone") >= 0) {
+		if (agent.contains("Android") || agent.contains("webOS") || agent.contains("BlackBerry") || agent.contains("Windows Phone")) {
 			return true;
 		}
 		if (isIOS())
@@ -138,7 +140,7 @@ class SystemImpl {
 
 	static function isIOS(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("iPhone") >= 0 || agent.indexOf("iPad") >= 0 || agent.indexOf("iPod") >= 0) {
+		if (agent.contains("iPhone") || agent.contains("iPad") || agent.contains("iPod")) {
 			return true;
 		}
 		return false;
@@ -146,7 +148,7 @@ class SystemImpl {
 
 	static function isChrome(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Chrome") >= 0) {
+		if (agent.contains("Chrome")) {
 			return true;
 		}
 		return false;
@@ -154,7 +156,16 @@ class SystemImpl {
 
 	static function isFirefox(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Firefox") >= 0) {
+		if (agent.contains("Firefox")) {
+			return true;
+		}
+		return false;
+	}
+
+	static function isSafari(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		// Chrome has both in UA
+		if (agent.contains("Safari") && !agent.contains("Chrome")) {
 			return true;
 		}
 		return false;
@@ -162,7 +173,7 @@ class SystemImpl {
 
 	static function isIE(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("MSIE ") >= 0 || agent.indexOf("Trident/") >= 0) {
+		if (agent.contains("MSIE ") || agent.contains("Trident/")) {
 			return true;
 		}
 		return false;
