@@ -2,7 +2,7 @@ package kha.audio2;
 
 import haxe.io.Bytes;
 
-@:headerCode("#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
+@:headerCode("#define STB_VORBIS_HEADER_ONLY\n#include <kinc/libs/stb_vorbis.c>")
 @:headerClassCode("stb_vorbis* vorbis;")
 class StreamChannel implements kha.audio1.AudioChannel {
 	var atend: Bool = false;
@@ -20,7 +20,7 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	function initVorbis(data: Bytes): Void {}
 
 	@:functionCode("
-		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, samples->self.data, length);
+		int read = stb_vorbis_get_samples_float_interleaved(vorbis, 2, (float*)samples->self.data, length);
 		if (read < length / 2) {
 			if (loop) {
 				stb_vorbis_seek_start(vorbis);

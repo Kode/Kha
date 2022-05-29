@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,26 +19,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
-import js.node.net.Socket;
+import haxe.extern.EitherType;
 import js.node.net.Server;
+import js.node.net.Socket;
 
-private typedef CommonOptions = {
-	/**
-		If true, then the socket won't automatically send a FIN packet
-		when the other end of the socket sends a FIN packet.
+typedef NetCreateServerOptions = {
+	> SocketOptionsBase,
 
-		The socket becomes non-readable, but still writable. You should call the `end` method explicitly.
-		See `end` event for more information.
-
-		Default: false
-	**/
-	@:optional var allowHalfOpen:Bool;
-}
-
-typedef SocketOptions = {
-	>CommonOptions,
 	/**
 		If true, then the socket associated with each incoming connection will be paused,
 		and no data will be read from its handle.
@@ -51,51 +41,26 @@ typedef SocketOptions = {
 	@:optional var pauseOnConnect:Bool;
 }
 
-typedef TCPConnectOptions = {
-	>CommonOptions,
-
-	/**
-		Port the client should connect to
-	**/
-	var port:Int;
-
-	/**
-		Host the client should connect to.
-		Defaults to 'localhost'.
-	**/
-	@:optional var host:String;
-
-	/**
-		Local interface to bind to for network connections.
-	**/
-	@:optional var localAddress:String;
-
-	/**
-		Local port to bind to for network connections.
-	**/
-	@:optional var localPort:Int;
-
-	/**
-		Version of IP stack. Defaults to 4.
-
-		TODO: enum this?
-	**/
-	@:optional var family:Int;
+/**
+	Options for the `Net.connect` method (TCP version).
+**/
+typedef NetConnectOptionsTcp = {
+	> SocketOptions,
+	> SocketConnectOptionsTcp,
 }
 
-typedef UnixConnectOptions = {
-	>CommonOptions,
-
-	/**
-		Path the client should connect to
-	**/
-	var path:String;
+/**
+	Options for the `Net.connect` method (Local domain socket version).
+**/
+typedef NetConnectOptionsUnix = {
+	> SocketOptions,
+	> SocketConnectOptionsUnix,
 }
 
 /**
 	Enumeration of possible values for `Net.isIP` return.
 **/
-@:enum abstract IsIPResult(Int) to Int {
+@:enum abstract NetIsIPResult(Int) to Int {
 	var Invalid = 0;
 	var IPv4 = 4;
 	var IPv6 = 6;
@@ -112,14 +77,15 @@ extern class Net {
 
 		The `connectionListener` argument is automatically set as a listener for the 'connection' event.
 	**/
-	@:overload(function(options:SocketOptions, ?connectionListener:Socket->Void):Server {})
+	@:overload(function(options:NetCreateServerOptions, ?connectionListener:Socket->Void):Server {})
 	static function createServer(?connectionListener:Socket->Void):Server;
 
 	/**
-		A factory method, which returns a new `Socket` and connects to the supplied address and port.
+		A factory function, which returns a new `Socket` and automatically connects with the supplied `options`.
 
-		When the socket is established, the 'connect' event will be emitted.
-		The `connectListener` parameter will be added as an listener for the 'connect' event.
+		The `options` are passed to both the `Socket` constructor and the `socket.connect` method.
+
+		The `connectListener` parameter will be added as a listener for the `connect` event once.
 
 		If `port` is provided, creates a TCP connection to `port` on `host`.
 		If `host` is omitted, 'localhost' will be assumed.
@@ -129,9 +95,9 @@ extern class Net {
 		Otherwise `options` argument should be provided.
 	**/
 	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
-	@:overload(function(port:Int, ?connectListener :Void->Void):Socket {})
+	@:overload(function(port:Int, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, host:String, ?connectListener:Void->Void):Socket {})
-	static function connect(options:haxe.extern.EitherType<TCPConnectOptions,UnixConnectOptions>, ?connectListener:Void->Void):Socket;
+	static function connect(options:EitherType<NetConnectOptionsTcp, NetConnectOptionsUnix>, ?connectListener:Void->Void):Socket;
 
 	/**
 		Same as `connect`.
@@ -139,13 +105,13 @@ extern class Net {
 	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, host:String, ?connectListener:Void->Void):Socket {})
-	static function createConnection(options:haxe.extern.EitherType<TCPConnectOptions,UnixConnectOptions>, ?connectListener:Void->Void):Socket;
+	static function createConnection(options:EitherType<NetConnectOptionsTcp, NetConnectOptionsUnix>, ?connectListener:Void->Void):Socket;
 
 	/**
 		Tests if input is an IP address.
 		Returns 0 for invalid strings, returns 4 for IP version 4 addresses, and returns 6 for IP version 6 addresses.
 	**/
-	static function isIP(input:String):IsIPResult;
+	static function isIP(input:String):NetIsIPResult;
 
 	/**
 		Returns true if input is a version 4 IP address, otherwise returns false.

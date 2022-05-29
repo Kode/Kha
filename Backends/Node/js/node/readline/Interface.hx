@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,123 +19,152 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.readline;
 
-import haxe.extern.EitherType;
+import js.node.Buffer;
 import js.node.events.EventEmitter;
 
 /**
 	Enumeration of events emitted by the `Interface` objects.
 **/
-@:enum abstract InterfaceEvent(String) to String {
+@:enum abstract InterfaceEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted whenever the input stream receives a \n, usually received when the user hits enter, or return.
-		This is a good hook to listen for user input.
-	**/
-	var Line = "line";
+		The `'close'` event is emitted when one of the following occur:
 
-	/**
-		Emitted whenever the input stream is paused.
-		Also emitted whenever the input stream is not paused and receives the SIGCONT event. (See events SIGTSTP and SIGCONT)
+		@see https://nodejs.org/api/readline.html#readline_event_close
 	**/
-	var Pause = "pause";
+	var Close:InterfaceEvent<Void->Void> = "close";
 
 	/**
-		Emitted whenever the input stream is resumed.
+		The `'line'` event is emitted whenever the `input` stream receives an end-of-line input (`\n`, `\r`, or `\r\n`).
+
+		@see https://nodejs.org/api/readline.html#readline_event_line
 	**/
-	var Resume = "resume";
+	var Line:InterfaceEvent<String->Void> = "line";
 
 	/**
-		Emitted when close() is called.
+		The `'pause'` event is emitted when one of the following occur:
 
-		Also emitted when the input stream receives its "end" event.
-		The `Interface` instance should be considered "finished" once this is emitted.
-		For example, when the input stream receives ^D, respectively known as EOT.
-
-		This event is also called if there is no SIGINT event listener present when the input stream receives a ^C,
-		respectively known as SIGINT.
+		@see https://nodejs.org/api/readline.html#readline_event_pause
 	**/
-	var Close = "close";
+	var Pause:InterfaceEvent<Void->Void> = "pause";
 
 	/**
-		Emitted whenever the input stream receives a ^C, respectively known as SIGINT.
-		If there is no SIGINT event listener present when the input stream receives a SIGINT, pause will be triggered.
+		The `'resume'` event is emitted whenever the `input` stream is resumed.
+
+		@see https://nodejs.org/api/readline.html#readline_event_resume
 	**/
-	var SIGINT = "SIGINT";
+	var Resume:InterfaceEvent<Void->Void> = "resume";
 
 	/**
-		This does not work on Windows.
+		The `'SIGCONT'` event is emitted when a Node.js process previously moved into the background using `<ctrl>-Z`
+		(i.e. `SIGTSTP`) is then brought back to the foreground using `fg(1p)`.
 
-		Emitted whenever the input stream receives a ^Z, respectively known as SIGTSTP.
-		If there is no SIGTSTP event listener present when the input stream receives a SIGTSTP,
-		the program will be sent to the background.
-
-		When the program is resumed with fg, the pause and SIGCONT events will be emitted.
-		You can use either to resume the stream.
-
-		The pause and SIGCONT events will not be triggered if the stream was paused
-		before the program was sent to the background.
+		@see https://nodejs.org/api/readline.html#readline_event_sigcont
 	**/
-	var SIGTSTP = "SIGTSTP";
+	var SIGCONT:InterfaceEvent<Void->Void> = "SIGCONT";
 
 	/**
-		This does not work on Windows.
+		The `'SIGINT'` event is emitted whenever the `input` stream receives a `<ctrl>-C` input, known typically as
+		`SIGINT`.
 
-		Emitted whenever the input stream is sent to the background with ^Z, respectively known as SIGTSTP,
-		and then continued with fg(1). This event only emits if the stream was not paused before sending
-		the program to the background.
+		@see https://nodejs.org/api/readline.html#readline_event_sigint
 	**/
-	var SIGCONT = "SIGCONT";
+	var SIGINT:InterfaceEvent<Void->Void> = "SIGINT";
+
+	/**
+		The `'SIGTSTP'` event is emitted when the `input` stream receives a `<ctrl>-Z` input, typically known as
+		`SIGTSTP`.
+
+		@see https://nodejs.org/api/readline.html#readline_event_sigtstp
+	**/
+	var SIGTSTP:InterfaceEvent<Void->Void> = "SIGTSTP";
 }
 
 /**
-	The class that represents a readline interface with an input and output stream.
+	Instances of the `readline.Interface` class are constructed using the `readline.createInterface()` method.
+
+	@see https://nodejs.org/api/readline.html#readline_class_interface
 **/
 extern class Interface extends EventEmitter<Interface> {
 	/**
-		Sets the prompt, for example when you run node on the command line, you see > , which is node's prompt.
-	**/
-	function setPrompt(prompt:String, length:Int):Void;
+		The `rl.close()` method closes the `readline.Interface` instance and relinquishes control over the `input` and
+		`output` streams.
 
-	/**
-		Readies readline for input from the user, putting the current `setPrompt` options on a new line,
-		giving the user a new spot to write.
-
-		Set `preserveCursor` to true to prevent the cursor placement being reset to 0.
-
-		This will also resume the input stream used with `createInterface` if it has been paused.
-	**/
-	function prompt(?preserveCursor:Bool):Void;
-
-	/**
-		Prepends the prompt with `query` and invokes `callback` with the user's response.
-		Displays the query to the user, and then invokes `callback` with the user's response after it has been typed.
-
-		This will also resume the input stream used with `createInterface` if it has been paused.
-	**/
-	function question(query:String, callback:String->Void):Void;
-
-	/**
-		Pauses the readline input stream, allowing it to be resumed later if needed.
-	**/
-	function pause():Void;
-
-	/**
-		Resumes the readline input stream.
-	**/
-	function resume():Void;
-
-	/**
-		Closes the `Interface` instance, relinquishing control on the input and output streams.
-		The "close" event will also be emitted.
+		@see https://nodejs.org/api/readline.html#readline_rl_close
 	**/
 	function close():Void;
 
 	/**
-		Writes `data` to output stream.
-		`key` is an object literal to represent a key sequence; available if the terminal is a TTY.
+		The `rl.pause()` method pauses the `input` stream, allowing it to be resumed later if necessary.
 
-		This will also resume the input stream if it has been paused.
+		@see https://nodejs.org/api/readline.html#readline_rl_pause
 	**/
-	function write(data:EitherType<Buffer,String>, ?key:{}):Void;
+	function pause():Void;
+
+	/**
+		The `rl.prompt()` method writes the `readline.Interface` instances configured `prompt` to a new line in `output`
+		in order to provide a user with a new location at which to provide input.
+
+		@see https://nodejs.org/api/readline.html#readline_rl_prompt_preservecursor
+	**/
+	function prompt(?preserveCursor:Bool):Void;
+
+	/**
+		The `rl.question()` method displays the `query` by writing it to the `output`, waits for user `input` to be
+		provided on input, then invokes the `callback` function passing the provided input as the first argument.
+
+		@see https://nodejs.org/api/readline.html#readline_rl_question_query_callback
+	**/
+	function question(query:String, callback:String->Void):Void;
+
+	/**
+		The `rl.resume()` method resumes the `input` stream if it has been paused.
+
+		@see https://nodejs.org/api/readline.html#readline_rl_resume
+	**/
+	function resume():Void;
+
+	/**
+		The `rl.setPrompt()` method sets the prompt that will be written to `output` whenever `rl.prompt()` is called.
+
+		@see https://nodejs.org/api/readline.html#readline_rl_setprompt_prompt
+	**/
+	function setPrompt(prompt:String):Void;
+
+	/**
+		The `rl.write()` method write either `data` or a key sequence identified by `key` to the `output`.
+
+		@see https://nodejs.org/api/readline.html#readline_rl_write_data_key
+	**/
+	@:overload(function(data:Buffer, ?key:InterfaceWriteKey):Void {})
+	function write(data:String, ?key:InterfaceWriteKey):Void;
+}
+
+/**
+	Key sequence passed as the `key` argument to `Interface.write`.
+
+	@see https://nodejs.org/api/readline.html#readline_rl_write_data_key
+**/
+typedef InterfaceWriteKey = {
+	/**
+		`true` to indicate the <ctrl> key.
+	**/
+	@:optional var ctrl:Bool;
+
+	/**
+		`true` to indicate the <Meta> key.
+	 */
+	@:optional var meta:Bool;
+
+	/**
+		`true` to indicate the <Shift> key.
+	**/
+	@:optional var shift:Bool;
+
+	/**
+		The name of the a key.
+	**/
+	var name:String;
 }

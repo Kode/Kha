@@ -1,10 +1,27 @@
-#include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Video.h>
 #include <hl.h>
 
+static Kore::Graphics4::Image::Format convertImageFormat(int format) {
+	switch (format) {
+		default:
+		case 0:
+			return Kore::Graphics4::Image::Format::RGBA32;
+		case 1:
+			return Kore::Graphics4::Image::Format::Grey8;
+		case 2:
+			return Kore::Graphics4::Image::Format::RGBA128;
+		case 4:
+			return Kore::Graphics4::Image::Format::RGBA64;
+		case 5:
+			return Kore::Graphics4::Image::Format::A32;
+		case 6:
+			return Kore::Graphics4::Image::Format::A16;
+	}
+}
+
 extern "C" vbyte *hl_kore_texture_create(int width, int height, int format, bool readable) {
-	return (vbyte*)new Kore::Graphics4::Texture(width, height, (Kore::Graphics4::Image::Format)format, readable);
+	return (vbyte*)new Kore::Graphics4::Texture(width, height, convertImageFormat(format), readable);
 }
 
 extern "C" vbyte *hl_kore_texture_create_from_file(vbyte *filename, bool readable) {

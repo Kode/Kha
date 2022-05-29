@@ -112,12 +112,12 @@ class OpenGLPainter extends kha.Painter {
 
 		var vertexShader = getShader(GLES20.GL_VERTEX_SHADER,
 			"attribute vec3 vertexPosition;"
-			+ "attribute vec2 texPosition;"
+			+ "attribute vec2 vertexUV;"
 			+ "uniform mat4 projectionMatrix;"
 			+ "varying vec2 texCoord;"
 			+ "void main() {"
 			+ "gl_Position = projectionMatrix * vec4(vertexPosition, 1.0);"
-			+ "texCoord = texPosition;"
+			+ "texCoord = vertexUV;"
 			+ "}");
 
 		shaderProgram = GLES20.glCreateProgram();
@@ -125,7 +125,7 @@ class OpenGLPainter extends kha.Painter {
 		GLES20.glAttachShader(shaderProgram, fragmentShader);
 
 		GLES20.glBindAttribLocation(shaderProgram, 0, "vertexPosition");
-		GLES20.glBindAttribLocation(shaderProgram, 1, "texPosition");
+		GLES20.glBindAttribLocation(shaderProgram, 1, "vertexUV");
 
 		GLES20.glLinkProgram(shaderProgram);
 
@@ -136,7 +136,7 @@ class OpenGLPainter extends kha.Painter {
 		vertexPositionAttribute = GLES20.glGetAttribLocation(shaderProgram, "vertexPosition");
 		GLES20.glEnableVertexAttribArray(vertexPositionAttribute);
 
-		texCoordAttribute = GLES20.glGetAttribLocation(shaderProgram, "texPosition");
+		texCoordAttribute = GLES20.glGetAttribLocation(shaderProgram, "vertexUV");
 		GLES20.glEnableVertexAttribArray(texCoordAttribute);
 
 		textureUniform = GLES20.glGetUniformLocation(shaderProgram, "tex");

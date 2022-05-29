@@ -3,7 +3,6 @@ package kha.graphics4;
 import kha.arrays.Uint32Array;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/indexbuffer.h>
 ")
 @:headerClassCode("kinc_g4_index_buffer_t buffer;")
@@ -13,8 +12,8 @@ class IndexBuffer {
 
 	public function new(indexCount: Int, usage: Usage, canRead: Bool = false) {
 		myCount = indexCount;
-		data = new Uint32Array();
-		untyped __cpp__("kinc_g4_index_buffer_init(&buffer, indexCount, KINC_G4_INDEX_BUFFER_FORMAT_32BIT);");
+		data = new Uint32Array(0);
+		untyped __cpp__("kinc_g4_index_buffer_init(&buffer, indexCount, KINC_G4_INDEX_BUFFER_FORMAT_32BIT, (kinc_g4_usage_t)usage);");
 	}
 
 	public function delete(): Void {
@@ -22,8 +21,9 @@ class IndexBuffer {
 	}
 
 	@:functionCode("
-		data->self.data = (unsigned int*)kinc_g4_index_buffer_lock(&buffer) + start;
-		data->self.myLength = count;
+		data->self.data = (uint8_t*)kinc_g4_index_buffer_lock(&buffer) + start;
+		data->byteArrayLength = count * 4;
+		data->byteArrayOffset = 0;
 		return data;
 	")
 	function lockPrivate(start: Int, count: Int): Uint32Array {

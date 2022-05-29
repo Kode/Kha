@@ -28,7 +28,6 @@ import kha.vr.VrInterfaceEmulated;
 #end
 #end
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/system.h>
 #include <kinc/input/gamepad.h>
 #include <kinc/input/mouse.h>
@@ -41,6 +40,7 @@ kinc_framebuffer_options_t convertFramebufferOptions(::kha::FramebufferOptions f
 
 void init_kinc(const char *name, int width, int height, kinc_window_options_t *win, kinc_framebuffer_options_t *frame);
 void post_kinc_init();
+void kha_kinc_init_audio(void);
 void run_kinc();
 const char *getGamepadId(int index);
 const char *getGamepadVendor(int index);
@@ -169,6 +169,7 @@ class SystemImpl {
 		surface = new Surface();
 		kha.audio2.Audio._init();
 		kha.audio1.Audio._init();
+		untyped __cpp__("kha_kinc_init_audio()");
 		Scheduler.init();
 		loadFinished();
 		callback(Window.get(0));
@@ -223,7 +224,7 @@ class SystemImpl {
 
 	public static function unlockMouse(windowId: Int = 0): Void {
 		if (isMouseLocked()) {
-			untyped __cpp__("kinc_mouse_unlock(windowId);");
+			untyped __cpp__("kinc_mouse_unlock();");
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -231,11 +232,11 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(windowId: Int = 0): Bool {
-		return untyped __cpp__("kinc_mouse_can_lock(windowId)");
+		return untyped __cpp__("kinc_mouse_can_lock()");
 	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
-		return untyped __cpp__("kinc_mouse_is_locked(windowId)");
+		return untyped __cpp__("kinc_mouse_is_locked()");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
@@ -360,6 +361,18 @@ class SystemImpl {
 
 	public static function penMove(windowId: Int, x: Int, y: Int, pressure: Float): Void {
 		pen.sendMoveEvent(windowId, x, y, pressure);
+	}
+
+	public static function penEraserDown(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserDownEvent(windowId, x, y, pressure);
+	}
+
+	public static function penEraserUp(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserUpEvent(windowId, x, y, pressure);
+	}
+
+	public static function penEraserMove(windowId: Int, x: Int, y: Int, pressure: Float): Void {
+		pen.sendEraserMoveEvent(windowId, x, y, pressure);
 	}
 
 	public static function gamepadAxis(gamepad: Int, axis: Int, value: Float): Void {

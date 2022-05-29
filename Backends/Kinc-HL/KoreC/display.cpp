@@ -1,9 +1,8 @@
-#include <Kore/pch.h>
 #include <Kore/Display.h>
 #include <Kore/System.h>
 
-extern "C" int hl_kore_display_init() {
-	return Kore::Display::init();
+extern "C" void hl_kore_display_init() {
+	Kore::Display::init();
 }
 
 extern "C" int hl_kore_display_count() {

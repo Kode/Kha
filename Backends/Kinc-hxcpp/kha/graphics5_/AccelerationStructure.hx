@@ -3,7 +3,6 @@ package kha.graphics5;
 #if kha_dxr
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/RayTrace.h>
 ')
 

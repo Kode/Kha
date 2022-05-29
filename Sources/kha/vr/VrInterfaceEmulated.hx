@@ -250,9 +250,9 @@ class VrInterfaceEmulated extends kha.vr.VrInterface {
 		orientation = new Quaternion();
 		updateOrientation();
 
-		structure.add("vertexPosition", VertexData.Float3);
-		structure.add("texPosition", VertexData.Float2);
-		structure.add("vertexColor", VertexData.Float4);
+		structure.add("vertexPosition", VertexData.Float32_3X);
+		structure.add("vertexUV", VertexData.Float32_2X);
+		structure.add("vertexColor", VertexData.Float32_4X);
 
 		vb = new VertexBuffer(4, structure, Usage.StaticUsage);
 		var verts = vb.lock();

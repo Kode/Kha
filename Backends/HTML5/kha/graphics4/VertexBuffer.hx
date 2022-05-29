@@ -24,22 +24,7 @@ class VertexBuffer {
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
-			switch (element.data) {
-				case Float1:
-					myStride += 4 * 1;
-				case Float2:
-					myStride += 4 * 2;
-				case Float3:
-					myStride += 4 * 3;
-				case Float4:
-					myStride += 4 * 4;
-				case Float4x4:
-					myStride += 4 * 4 * 4;
-				case Short2Norm:
-					myStride += 2 * 2;
-				case Short4Norm:
-					myStride += 2 * 4;
-			}
+			myStride += VertexStructure.dataByteSize(element.data);
 		}
 
 		buffer = SystemImpl.gl.createBuffer();
@@ -58,47 +43,86 @@ class VertexBuffer {
 			var size;
 			var type;
 			switch (element.data) {
-				case Float1:
+				case Float32_1X:
 					size = 1;
 					type = GL.FLOAT;
-				case Float2:
+				case Float32_2X:
 					size = 2;
 					type = GL.FLOAT;
-				case Float3:
+				case Float32_3X:
 					size = 3;
 					type = GL.FLOAT;
-				case Float4:
+				case Float32_4X:
 					size = 4;
 					type = GL.FLOAT;
-				case Float4x4:
+				case Float32_4X4:
 					size = 4 * 4;
 					type = GL.FLOAT;
-				case Short2Norm:
+				case Int8_1X, Int8_1X_Normalized:
+					size = 1;
+					type = GL.BYTE;
+				case Int8_2X, Int8_2X_Normalized:
+					size = 2;
+					type = GL.BYTE;
+				case Int8_4X, Int8_4X_Normalized:
+					size = 4;
+					type = GL.BYTE;
+				case UInt8_1X, UInt8_1X_Normalized:
+					size = 1;
+					type = GL.UNSIGNED_BYTE;
+				case UInt8_2X, UInt8_2X_Normalized:
+					size = 2;
+					type = GL.UNSIGNED_BYTE;
+				case UInt8_4X, UInt8_4X_Normalized:
+					size = 4;
+					type = GL.UNSIGNED_BYTE;
+				case Int16_1X, Int16_1X_Normalized:
+					size = 1;
+					type = GL.SHORT;
+				case Int16_2X, Int16_2X_Normalized:
 					size = 2;
 					type = GL.SHORT;
-				case Short4Norm:
+				case Int16_4X, Int16_4X_Normalized:
 					size = 4;
 					type = GL.SHORT;
+				case UInt16_1X, UInt16_1X_Normalized:
+					size = 1;
+					type = GL.UNSIGNED_SHORT;
+				case UInt16_2X, UInt16_2X_Normalized:
+					size = 2;
+					type = GL.UNSIGNED_SHORT;
+				case UInt16_4X, UInt16_4X_Normalized:
+					size = 4;
+					type = GL.UNSIGNED_SHORT;
+				case Int32_1X:
+					size = 1;
+					type = GL.INT;
+				case Int32_2X:
+					size = 2;
+					type = GL.INT;
+				case Int32_3X:
+					size = 3;
+					type = GL.INT;
+				case Int32_4X:
+					size = 4;
+					type = GL.INT;
+				case UInt32_1X:
+					size = 1;
+					type = GL.UNSIGNED_INT;
+				case UInt32_2X:
+					size = 2;
+					type = GL.UNSIGNED_INT;
+				case UInt32_3X:
+					size = 3;
+					type = GL.UNSIGNED_INT;
+				case UInt32_4X:
+					size = 4;
+					type = GL.UNSIGNED_INT;
 			}
 			sizes[index] = size;
 			offsets[index] = offset;
 			types[index] = type;
-			switch (element.data) {
-				case Float1:
-					offset += 4 * 1;
-				case Float2:
-					offset += 4 * 2;
-				case Float3:
-					offset += 4 * 3;
-				case Float4:
-					offset += 4 * 4;
-				case Float4x4:
-					offset += 4 * 4 * 4;
-				case Short2Norm:
-					offset += 2 * 2;
-				case Short4Norm:
-					offset += 2 * 4;
-			}
+			offset += VertexStructure.dataByteSize(element.data);
 			++index;
 		}
 
@@ -122,7 +146,12 @@ class VertexBuffer {
 		if (count != null)
 			lockEnd = lockStart + count;
 		SystemImpl.gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		if (SystemImpl.safari) {
+			SystemImpl.gl.bufferData(GL.ARRAY_BUFFER, _data.subarray(0 * stride(), lockEnd * stride()), GL.DYNAMIC_DRAW);
+		}
+		else {
+			SystemImpl.gl.bufferSubData(GL.ARRAY_BUFFER, lockStart * stride(), _data.subarray(lockStart * stride(), lockEnd * stride()));
+		}
 	}
 
 	public function stride(): Int {

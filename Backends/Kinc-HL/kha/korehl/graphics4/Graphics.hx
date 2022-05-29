@@ -141,7 +141,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null)
 			return;
-		kore_graphics_set_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, Image.createFromVideo(texture)._texture);
+		kore_graphics_set_texture(cast(unit, kha.korehl.graphics4.TextureUnit)._unit, Image.fromVideo(texture)._texture);
 	}
 
 	public function setImageTexture(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {

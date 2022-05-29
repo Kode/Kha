@@ -20,7 +20,7 @@ class Image implements Canvas implements Resource {
 	var graphics2: kha.graphics2.Graphics;
 	var graphics4: kha.graphics4.Graphics;
 
-	public static function createFromVideo(video: Video): Image {
+	public static function fromVideo(video: Video): Image {
 		var image = new Image(false);
 		image.myFormat = TextureFormat.RGBA32;
 		image.initVideo(cast(video, kha.korehl.Video));
@@ -150,7 +150,7 @@ class Image implements Canvas implements Resource {
 			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil),
 				contextId);
 		else
-			image.init(width, height, format == TextureFormat.RGBA32 ? 0 : 1);
+			image.init(width, height, format);
 		return image;
 	}
 

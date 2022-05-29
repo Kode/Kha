@@ -1,0 +1,23 @@
+name: Windows (HL, Direct3D 11)
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get DLC
+      run: .\get_dlc.bat
+    - name: Get Node.js
+      run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
+    - name: Compile
+      run: .\nodejs_bin\node.exe make.js windows-hl -v vs2022 -g direct3d11 --kha . --from Tests/Empty --compile

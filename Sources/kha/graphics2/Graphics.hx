@@ -23,15 +23,25 @@ class Graphics {
 		drawSubImage(img, x, y, 0, 0, img.width, img.height);
 	}
 
+	/**
+	 * `sx, sy, sw, sh` arguments is the sub-rectangle of the source `img` image
+	 */
 	public function drawSubImage(img: Image, x: FastFloat, y: FastFloat, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat): Void {
 		drawScaledSubImage(img, sx, sy, sw, sh, x, y, sw, sh);
 	}
 
+	/**
+	 * `dx, dy, dw, dh` arguments is the rectangle to draw into the destination context
+	 */
 	public function drawScaledImage(img: Image, dx: FastFloat, dy: FastFloat, dw: FastFloat, dh: FastFloat): Void {
 		drawScaledSubImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
 	}
 
-	public function drawScaledSubImage(image: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat,
+	/**
+	 * `sx, sy, sw, sh` arguments is the sub-rectangle of the source `img` image
+	 * `dx, dy, dw, dh` arguments is the rectangle to draw into the destination context
+	 */
+	public function drawScaledSubImage(img: Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat, dw: FastFloat,
 		dh: FastFloat): Void {}
 
 	public function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {}
@@ -141,12 +151,19 @@ class Graphics {
 
 	public function popTransformation(): FastMatrix3 {
 		transformationIndex--;
+		if (transformationIndex == -1)
+			throw "There is no transformation matrix to remove, check your push/popTransformation code";
 		setTransformation(get_transformation());
 		return transformations[transformationIndex + 1];
 	}
 
 	public function scale(x: FastFloat, y: FastFloat): Void {
 		transformation.setFrom(kha.math.FastMatrix3.scale(x, y).multmat(transformation));
+	}
+
+	public function pushScale(x: FastFloat, y: FastFloat): Void {
+		final mat = FastMatrix3.scale(x, y).multmat(transformation);
+		pushTransformation(mat);
 	}
 
 	inline function translation(tx: FastFloat, ty: FastFloat): FastMatrix3 {

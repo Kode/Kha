@@ -233,6 +233,7 @@ class GlslOut {
 			case OpIncrement: "++";
 			case OpDecrement: "--";
 			case OpNegBits: "~";
+			case OpSpread: "?";
 			});
 			addValue(e1, tabs);
 		case TVarDecl(v, init):

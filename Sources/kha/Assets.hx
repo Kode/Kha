@@ -132,8 +132,9 @@ class Assets {
 								done(size);
 							});
 						}
-						else
+						else {
 							done(size);
+						}
 					}, function(err: AssetError) {
 						onError(err, size);
 					});
@@ -177,6 +178,10 @@ class Assets {
 	 */
 	public static function loadImage(name: String, done: Image->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(images, name + "Description");
+		if (description == null) {
+			reporter(failed, pos)({url: name, error: "Name not found"});
+			return;
+		}
 		LoaderImpl.loadImageFromDescription(description, function(image: Image) {
 			Reflect.setField(images, name, image);
 			done(image);
@@ -203,6 +208,10 @@ class Assets {
 
 	public static function loadBlob(name: String, done: Blob->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(blobs, name + "Description");
+		if (description == null) {
+			reporter(failed, pos)({url: name, error: "Name not found"});
+			return;
+		}
 		LoaderImpl.loadBlobFromDescription(description, function(blob: Blob) {
 			Reflect.setField(blobs, name, blob);
 			done(blob);
@@ -216,6 +225,10 @@ class Assets {
 
 	public static function loadSound(name: String, done: Sound->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(sounds, name + "Description");
+		if (description == null) {
+			reporter(failed, pos)({url: name, error: "Name not found"});
+			return;
+		}
 		return LoaderImpl.loadSoundFromDescription(description, function(sound: Sound) {
 			Reflect.setField(sounds, name, sound);
 			done(sound);
@@ -235,6 +248,10 @@ class Assets {
 
 	public static function loadFont(name: String, done: Font->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(fonts, name + "Description");
+		if (description == null) {
+			reporter(failed, pos)({url: name, error: "Name not found"});
+			return;
+		}
 		return LoaderImpl.loadFontFromDescription(description, function(font: Font) {
 			Reflect.setField(fonts, name, font);
 			done(font);
@@ -254,6 +271,10 @@ class Assets {
 
 	public static function loadVideo(name: String, done: Video->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(videos, name + "Description");
+		if (description == null) {
+			reporter(failed, pos)({url: name, error: "Name not found"});
+			return;
+		}
 		return LoaderImpl.loadVideoFromDescription(description, function(video: Video) {
 			Reflect.setField(videos, name, video);
 			done(video);
@@ -271,6 +292,7 @@ class Assets {
 		return LoaderImpl.getVideoFormats();
 	}
 
-	public static function reporter(custom: AssetError->Void, ?pos: haxe.PosInfos)
+	public static function reporter(custom: AssetError->Void, ?pos: haxe.PosInfos) {
 		return custom != null ? custom : haxe.Log.trace.bind(_, pos);
+	}
 }

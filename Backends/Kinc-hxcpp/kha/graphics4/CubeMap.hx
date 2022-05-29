@@ -3,7 +3,6 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/rendertarget.h>
 ")
 @:headerClassCode("kinc_g4_render_target_t renderTarget;")

@@ -8,7 +8,6 @@ import kha.vr.SensorState;
 import kha.vr.TimeWarpParms;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Vr/VrInterface.h>
 ')
 /**

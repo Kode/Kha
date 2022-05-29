@@ -26,7 +26,7 @@ extern class ByteArray {
 	 * @param byteOffset offset of the first byte of the array into the byte buffer, defaults to 0
 	 * @param byteLength amount of bytes to map, defaults to entire buffer 
 	 */
-	function new(buffer: ByteArray, ?byteOffset: Int, ?byteLength: Int): Void;
+	function new(buffer: ByteBuffer, ?byteOffset: Int, ?byteLength: Int): Void;
 
 	/**
 	 * Creates a new array from scratch.

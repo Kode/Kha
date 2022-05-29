@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,10 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
-import haxe.Constraints.Function;
-import js.node.events.EventEmitter.IEventEmitter;
 import js.node.domain.Domain as DomainObject;
 
 /**
@@ -32,6 +31,7 @@ import js.node.domain.Domain as DomainObject;
 	then the domain object will be notified, rather than losing the context of the error in the process.on('uncaughtException') handler,
 	or causing the program to exit immediately with an error code.
 **/
+@:deprecated
 @:jsRequire("domain")
 extern class Domain {
 	/**

@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/Log.h>
 #include <Kore/System.h>
 #include <Kore/Graphics4/Graphics.h>
@@ -99,9 +98,9 @@ extern "C" void hl_init_kore(vbyte *title, int width, int height, int samplesPer
 extern "C" void hl_kore_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
 	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK*)(&callCallback->fun));
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE*)(&readSample->fun));
-	*outSamplesPerSecond = Kore::Audio2::samplesPerSecond;
 	Kore::Audio2::audioCallback = mix;
 	Kore::Audio2::init();
+	*outSamplesPerSecond = Kore::Audio2::samplesPerSecond;
 }
 
 extern "C" void hl_run_kore() {
@@ -125,7 +124,6 @@ extern "C" vbyte *hl_kore_file_contents(vbyte *name, int *size) {
 	hl_blocking(true);
 	if (!size) content[len] = 0; // final 0 for UTF8
 	file.read(content, len);
-	file.close();
 	hl_blocking(false);
 	return content;
 }

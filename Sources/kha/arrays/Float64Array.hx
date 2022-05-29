@@ -4,7 +4,7 @@ package kha.arrays;
 abstract Float64Array(ByteArray) from ByteArray to ByteArray {
 	public var length(get, never): Int;
 
-	function get_length(): Int {
+	inline function get_length(): Int {
 		return this.byteLength >> 3;
 	}
 
@@ -13,17 +13,17 @@ abstract Float64Array(ByteArray) from ByteArray to ByteArray {
 	}
 
 	@:arrayAccess
-	public function get(k: Int): Float {
+	public inline function get(k: Int): Float {
 		return this.getFloat64(k * 8);
 	}
 
 	@:arrayAccess
-	public function set(k: Int, v: Float): Float {
+	public inline function set(k: Int, v: Float): Float {
 		this.setFloat64(k * 8, v);
 		return v;
 	}
 
-	public function subarray(start: Int, ?end: Int): Float64Array {
+	public inline function subarray(start: Int, ?end: Int): Float64Array {
 		return this.subarray(start * 8, end != null ? end * 8 : end);
 	}
 }

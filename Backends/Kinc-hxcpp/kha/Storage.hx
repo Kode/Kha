@@ -5,7 +5,6 @@ import haxe.io.Bytes;
 using StringTools;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/io/filereader.h>
 #include <kinc/io/filewriter.h>
 ")

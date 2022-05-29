@@ -7,10 +7,10 @@ import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/pipeline.h>
 #include <kinc/graphics4/vertexstructure.h>
+#include <khalib/g4.h>
 ")
 @:cppFileCode("
 static kinc_g4_compare_mode_t convertCompareMode(int mode) {
@@ -102,30 +102,7 @@ class PipelineState extends PipelineStateBase {
 			kinc_g4_vertex_structure_init(structures2[i1]);
 			structures2[i1]->instanced = (*structures[i1])->instanced;
 			for (int i2 = 0; i2 < (*structures[i1])->size(); ++i2) {
-				kinc_g4_vertex_data_t data;
-				switch ((*structures[i1])->get(i2)->data) {
-				case 0:
-					data = KINC_G4_VERTEX_DATA_FLOAT1;
-					break;
-				case 1:
-					data = KINC_G4_VERTEX_DATA_FLOAT2;
-					break;
-				case 2:
-					data = KINC_G4_VERTEX_DATA_FLOAT3;
-					break;
-				case 3:
-					data = KINC_G4_VERTEX_DATA_FLOAT4;
-					break;
-				case 4:
-					data = KINC_G4_VERTEX_DATA_FLOAT4X4;
-					break;
-				case 5:
-					data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
-					break;
-				case 6:
-					data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
-					break;
-				}
+				kinc_g4_vertex_data_t data = kha_convert_vertex_data((*structures[i1])->get(i2)->data);
 				pipeline.input_layout[i1] = structures2[i1];
 				kinc_g4_vertex_structure_add(pipeline.input_layout[i1], (*structures[i1])->get(i2)->name, data);
 			}
@@ -166,9 +143,9 @@ class PipelineState extends PipelineStateBase {
 			default: 0;
 		}
 		setStates(cullMode, depthMode, stencilFrontMode, stencilFrontBothPass, stencilFrontDepthFail, stencilFrontFail, stencilBackMode, stencilBackBothPass,
-			stencilBackDepthFail, stencilBackFail, depthWrite, stencilReferenceValue, getBlendFunc(blendSource), getBlendFunc(blendDestination),
-			getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination), getDepthBufferBits(depthStencilAttachment),
-			getStencilBufferBits(depthStencilAttachment));
+			stencilBackDepthFail, stencilBackFail, depthWrite, stencilReferenceValue,
+			getBlendFactor(blendSource), getBlendFactor(blendDestination), getBlendOperation(blendOperation), getBlendFactor(alphaBlendSource), getBlendFactor(alphaBlendDestination), getBlendOperation(alphaBlendOperation),
+			getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment));
 		linkWithStructures2(inputLayout.length > 0 ? inputLayout[0] : null, inputLayout.length > 1 ? inputLayout[1] : null,
 			inputLayout.length > 2 ? inputLayout[2] : null, inputLayout.length > 3 ? inputLayout[3] : null, inputLayout.length);
 	}
@@ -191,7 +168,7 @@ class PipelineState extends PipelineStateBase {
 	@:functionCode("unit->unit = kinc_g4_pipeline_get_texture_unit(&pipeline, name.c_str());")
 	function initTextureUnit(unit: kha.kore.graphics4.TextureUnit, name: String): Void {}
 
-	static function getBlendFunc(factor: BlendingFactor): Int {
+	static function getBlendFactor(factor: BlendingFactor): Int {
 		switch (factor) {
 			case BlendOne, Undefined:
 				return 0;
@@ -213,6 +190,23 @@ class PipelineState extends PipelineStateBase {
 				return 8;
 			case InverseDestinationColor:
 				return 9;
+			default:
+				return 0;
+		}
+	}
+
+	static function getBlendOperation(factor: BlendingOperation): Int {
+		switch (factor) {
+			case Add:
+				return 0;
+			case Subtract:
+				return 1;
+			case ReverseSubtract:
+				return 2;
+			case Min:
+				return 3;
+			case Max:
+				return 4;
 			default:
 				return 0;
 		}
@@ -246,10 +240,12 @@ class PipelineState extends PipelineStateBase {
 		pipeline.stencil_read_mask = stencilReadMask;
 		pipeline.stencil_write_mask = stencilWriteMask;
 
-		pipeline.blend_source = (kinc_g4_blending_operation_t)blendSource;
-		pipeline.blend_destination = (kinc_g4_blending_operation_t)blendDestination;
-		pipeline.alpha_blend_source = (kinc_g4_blending_operation_t)alphaBlendSource;
-		pipeline.alpha_blend_destination = (kinc_g4_blending_operation_t)alphaBlendDestination;
+		pipeline.blend_source = (kinc_g4_blending_factor_t)blendSource;
+		pipeline.blend_destination = (kinc_g4_blending_factor_t)blendDestination;
+		pipeline.blend_operation = (kinc_g4_blending_operation_t)blendOperation;
+		pipeline.alpha_blend_source = (kinc_g4_blending_factor_t)alphaBlendSource;
+		pipeline.alpha_blend_destination = (kinc_g4_blending_factor_t)alphaBlendDestination;
+		pipeline.alpha_blend_operation = (kinc_g4_blending_operation_t)alphaBlendOperation;
 
 		for (int i = 0; i < 8; ++i) {
 			pipeline.color_write_mask_red[i] = colorWriteMasksRed[i];
@@ -269,8 +265,8 @@ class PipelineState extends PipelineStateBase {
 		pipeline.conservative_rasterization = conservativeRasterization;
 	")
 	function setStates(cullMode: Int, depthMode: Int, stencilFrontMode: Int, stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int,
-		stencilBackMode: Int, stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, depthWrite: Bool, stencilReferenceValue: Int,
-		blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int, depthAttachmentBits: Int,
+		stencilBackMode: Int, stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, depthWrite: Bool,
+		stencilReferenceValue: Int, blendSource: Int, blendDestination: Int, blendOperation: Int, alphaBlendSource: Int, alphaBlendDestination: Int, alphaBlendOperation: Int, depthAttachmentBits: Int,
 		stencilAttachmentBits: Int): Void {}
 
 	@:functionCode("kinc_g4_set_pipeline(&pipeline);")
@@ -287,7 +283,7 @@ class PipelineState extends PipelineStateBase {
 
 	@:noCompletion
 	public static function _unused2(): VertexData {
-		return VertexData.Float1;
+		return VertexData.Float32_1X;
 	}
 
 	@:noCompletion

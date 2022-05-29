@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/System.h>
 #include <Kore/Log.h>
 #include <Kore/Input/Keyboard.h>
@@ -45,16 +44,16 @@ extern "C" void hl_kore_mouse_lock(int windowId) {
 	Kore::Mouse::the()->lock(windowId);
 }
 
-extern "C" void hl_kore_mouse_unlock(int windowId) {
-	Kore::Mouse::the()->unlock(windowId);
+extern "C" void hl_kore_mouse_unlock() {
+	Kore::Mouse::the()->unlock();
 }
 
-extern "C" bool hl_kore_can_lock_mouse(int windowId) {
-	return Kore::Mouse::the()->canLock(windowId);
+extern "C" bool hl_kore_can_lock_mouse() {
+	return Kore::Mouse::the()->canLock();
 }
 
-extern "C" bool hl_kore_is_mouse_locked(int windowId) {
-	return Kore::Mouse::the()->isLocked(windowId);
+extern "C" bool hl_kore_is_mouse_locked() {
+	return Kore::Mouse::the()->isLocked();
 }
 
 extern "C" void hl_kore_show_mouse(bool show) {

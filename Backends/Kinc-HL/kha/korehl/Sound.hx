@@ -8,11 +8,14 @@ using StringTools;
 @:keep
 class Sound extends kha.Sound {
 	function initWav(filename: String) {
-		uncompressedData = new kha.arrays.Float32Array();
 		var dataSize = new kha.arrays.Uint32Array(1);
-		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), length);
-		uncompressedData.setData(data, dataSize[0]);
-		dataSize.free();
+		final sampleRateRef: hl.Ref<Int> = sampleRate;
+		final lengthRef: hl.Ref<Float> = length;
+		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), sampleRateRef, lengthRef);
+		sampleRate = sampleRateRef.get();
+		length = lengthRef.get();
+		uncompressedData = cast new kha.arrays.ByteArray(data, 0, dataSize[0] * 4);
+		(cast dataSize: kha.arrays.ByteArray).free();
 	}
 
 	function initOgg(filename: String) {
@@ -32,7 +35,7 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outLength: hl.Ref<Float>): Pointer {
+	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
 		return null;
 	}
 }

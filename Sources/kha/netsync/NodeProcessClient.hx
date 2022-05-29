@@ -18,7 +18,7 @@ class NodeProcessClient implements Client {
 	public function send(bytes: Bytes, mandatory: Bool): Void {
 		#if js
 		var data = bytes.getData();
-		var buffer = untyped __js__("new Buffer(data)");
+		var buffer = js.Syntax.code("new Buffer(data)");
 		Node.process.send({data: buffer.toString(), id: myId});
 		#end
 	}

@@ -66,7 +66,7 @@ class FastVector2 {
 	}
 
 	@:extern public inline function angle(v: FastVector2): FastFloat {
-		return Math.atan2(y, x) - Math.atan2(v.y, v.x);
+		return Math.atan2(x * v.y - y * v.x, x * v.x + y * v.y);
 	}
 
 	public function toString() {

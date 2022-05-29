@@ -5,9 +5,9 @@ import haxe.io.Bytes;
 import haxe.io.BytesData;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/input/keyboard.h>
 #include <kinc/system.h>
+#include <kinc/video.h>
 #include <khalib/loader.h>
 ")
 class BlobCallback {
@@ -143,7 +143,7 @@ class LoaderImpl {
 	}
 
 	@:keep static function createFloat32Array() {
-		return new Float32Array();
+		return new Float32Array(0);
 	}
 
 	@:keep static function createEmptyImage(readable: Bool, floatFormat: Bool) {
@@ -184,6 +184,9 @@ class LoaderImpl {
 						if (file.data.image.readable) {
 							image->imageData = (uint8_t*)kincImage.data;
 						}
+						else {
+							free(file.data.image.image.data);
+						}
 						kinc_image_destroy(&kincImage);
 						image->imageType = KhaImageTypeTexture;
 						image->originalWidth = file.data.image.image.width;
@@ -196,9 +199,10 @@ class LoaderImpl {
 						soundErrored(file.index, file.name);
 					}
 					else if (file.data.sound.samples != NULL) {
-						::kha::arrays::Float32ArrayPrivate buffer = createFloat32Array();
-						buffer->self.data = file.data.sound.samples;
-						buffer->self.myLength = file.data.sound.size;
+						::kha::arrays::ByteArrayPrivate buffer = createFloat32Array();
+						buffer->self.data = (uint8_t*)file.data.sound.samples;
+						buffer->byteArrayLength = file.data.sound.size * 4;
+						buffer->byteArrayOffset = 0;
 						soundLoadedUncompressed(file.index, buffer, file.data.sound.channels, file.data.sound.sample_rate, file.data.sound.length);
 					}
 					else {

@@ -1,7 +1,6 @@
 package kha.kore.graphics4;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/textureunit.h>
 ")
 @:headerClassCode("kinc_g4_texture_unit_t unit;")

@@ -1,14 +1,6 @@
 package kha;
 
-import kha.graphics2.Graphics;
-#if !cs
-#if !java
-import kha.graphics4.Graphics2;
-#end
-#end
 import kha.math.FastMatrix3;
-import kha.math.Matrix3;
-import kha.math.Matrix4;
 
 class TargetRectangle {
 	public var x: Float;
@@ -18,7 +10,7 @@ class TargetRectangle {
 	public var scaleFactor: Float;
 	public var rotation: ScreenRotation;
 
-	public function new(x: Float, y: Float, w: Float, h: Float, s: Float, r: ScreenRotation) {
+	public inline function new(x: Float, y: Float, w: Float, h: Float, s: Float, r: ScreenRotation) {
 		this.x = x;
 		this.y = y;
 		this.width = w;

@@ -1,7 +1,6 @@
 package kha.kore;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/input/keyboard.h>
 ")
 @:allow(kha.SystemImpl)

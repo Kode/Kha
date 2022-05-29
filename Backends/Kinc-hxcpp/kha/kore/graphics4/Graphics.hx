@@ -34,7 +34,6 @@ import kha.math.Vector4;
 import kha.Video;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/display.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/rendertarget.h>
@@ -241,7 +240,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null)
 			return;
-		setTextureInternal(cast unit, Image.createFromVideo(texture));
+		setTextureInternal(cast unit, Image.fromVideo(texture));
 	}
 
 	@:functionCode("kinc_g4_set_image_texture(unit->unit, &texture->texture);")
@@ -314,7 +313,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setIntsPrivate(cast location, values);
 	}
 
-	@:functionCode("kinc_g4_set_ints(location->location, values->self.data, values->self.length());")
+	@:functionCode("kinc_g4_set_ints(location->location, (int*)values->self.data, values->byteArrayLength / 4);")
 	function setIntsPrivate(location: ConstantLocation, values: kha.arrays.Int32Array): Void {}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
@@ -370,7 +369,7 @@ class Graphics implements kha.graphics4.Graphics {
 		setFloatsPrivate(cast location, values);
 	}
 
-	@:functionCode("kinc_g4_set_floats(location->location, values->self.data, values->self.length());")
+	@:functionCode("kinc_g4_set_floats(location->location, (float*)values->self.data, values->byteArrayLength / 4);")
 	function setFloatsPrivate(location: ConstantLocation, values: Float32Array): Void {}
 
 	public function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
@@ -379,10 +378,10 @@ class Graphics implements kha.graphics4.Graphics {
 
 	@:functionCode("
 		kinc_matrix4x4_t value;
-		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 0, 1, matrix->_10); kinc_matrix4x4_set(&value, 0, 2, matrix->_20); kinc_matrix4x4_set(&value, 0, 3, matrix->_30);
-		kinc_matrix4x4_set(&value, 1, 0, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 1, 2, matrix->_21); kinc_matrix4x4_set(&value, 1, 3, matrix->_31);
-		kinc_matrix4x4_set(&value, 2, 0, matrix->_02); kinc_matrix4x4_set(&value, 2, 1, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 2, 3, matrix->_32);
-		kinc_matrix4x4_set(&value, 3, 0, matrix->_03); kinc_matrix4x4_set(&value, 3, 1, matrix->_13); kinc_matrix4x4_set(&value, 3, 2, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
+		kinc_matrix4x4_set(&value, 0, 0, matrix->_00); kinc_matrix4x4_set(&value, 1, 0, matrix->_10); kinc_matrix4x4_set(&value, 2, 0, matrix->_20); kinc_matrix4x4_set(&value, 3, 0, matrix->_30);
+		kinc_matrix4x4_set(&value, 0, 1, matrix->_01); kinc_matrix4x4_set(&value, 1, 1, matrix->_11); kinc_matrix4x4_set(&value, 2, 1, matrix->_21); kinc_matrix4x4_set(&value, 3, 1, matrix->_31);
+		kinc_matrix4x4_set(&value, 0, 2, matrix->_02); kinc_matrix4x4_set(&value, 1, 2, matrix->_12); kinc_matrix4x4_set(&value, 2, 2, matrix->_22); kinc_matrix4x4_set(&value, 3, 2, matrix->_32);
+		kinc_matrix4x4_set(&value, 0, 3, matrix->_03); kinc_matrix4x4_set(&value, 1, 3, matrix->_13); kinc_matrix4x4_set(&value, 2, 3, matrix->_23); kinc_matrix4x4_set(&value, 3, 3, matrix->_33);
 		kinc_g4_set_matrix4(location->location, &value);
 	")
 	function setMatrixPrivate(location: ConstantLocation, matrix: FastMatrix4): Void {}
@@ -393,9 +392,9 @@ class Graphics implements kha.graphics4.Graphics {
 
 	@:functionCode("
 		kinc_matrix3x3_t value;
-		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 0, 1, matrix->_10); kinc_matrix3x3_set(&value, 0, 2, matrix->_20);
-		kinc_matrix3x3_set(&value, 1, 0, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 1, 2, matrix->_21);
-		kinc_matrix3x3_set(&value, 2, 0, matrix->_02); kinc_matrix3x3_set(&value, 2, 1, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
+		kinc_matrix3x3_set(&value, 0, 0, matrix->_00); kinc_matrix3x3_set(&value, 1, 0, matrix->_10); kinc_matrix3x3_set(&value, 2, 0, matrix->_20);
+		kinc_matrix3x3_set(&value, 0, 1, matrix->_01); kinc_matrix3x3_set(&value, 1, 1, matrix->_11); kinc_matrix3x3_set(&value, 2, 1, matrix->_21);
+		kinc_matrix3x3_set(&value, 0, 2, matrix->_02); kinc_matrix3x3_set(&value, 1, 2, matrix->_12); kinc_matrix3x3_set(&value, 2, 2, matrix->_22);
 		kinc_g4_set_matrix3(location->location, &value);
 	")
 	function setMatrix3Private(location: ConstantLocation, matrix: FastMatrix3): Void {}

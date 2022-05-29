@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,72 +19,178 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
 /**
-	This module contains utilities for handling and transforming file paths.
-	Almost all these methods perform only string transformations.
-	The file system is not consulted to check whether paths are valid.
+	The `path` module provides utilities for working with file and directory paths.
+
+	@see https://nodejs.org/api/path.html#path_path
 **/
 @:jsRequire("path")
 extern class Path {
 	/**
-		Normalize a string path, taking care of '..' and '.' parts.
+		The `path.basename()` methods returns the last portion of a `path`, similar to the Unix `basename` command. Trailing directory separators are ignored, see path.sep.
 
-		When multiple slashes are found, they're replaced by a single one;
-		when the path contains a trailing slash, it is preserved.
-		On Windows backslashes are used.
+		@see https://nodejs.org/api/path.html#path_path_basename_path_ext
 	**/
-	static function normalize(p:String):String;
+	static function basename(path:String, ?ext:String):String;
 
 	/**
-		Join all arguments together and normalize the resulting path.
+		Platform-specific path delimiter:
+
+		`;` for Windows
+		`:` for POSIX
+		@see https://nodejs.org/api/path.html#path_path_delimiter
+	**/
+	static var delimiter(default, null):String;
+
+	/**
+		The `path.dirname()` method returns the directory name of a `path`, similar to the Unix `dirname` command. Trailing directory separators are ignored, see path.sep.
+
+		@see https://nodejs.org/api/path.html#path_path_dirname_path
+	**/
+	static function dirname(path:String):String;
+
+	/**
+		The `path.extname()` method returns the extension of the `path`, from the last occurrence of the `.` (period) character to end of string in the last portion of the `path`.
+		If there is no `.` in the last portion of the `path`, or if there are no `.` characters other than the first character of the basename of `path` (see `path.basename()`) ,
+		an empty string is returned.
+
+		@see https://nodejs.org/api/path.html#path_path_extname_path
+	**/
+	static function extname(path:String):String;
+
+	/**
+		The path.format() method returns a path string from an object. This is the opposite of path.parse().
+
+		@see https://nodejs.org/api/path.html#path_path_format_pathobject
+	**/
+	static function format(pathObject:PathObject):String;
+
+	/**
+		The `path.isAbsolute()` method determines if `path` is an absolute path.
+
+		@see https://nodejs.org/api/path.html#path_path_isabsolute_path
+	**/
+	static function isAbsolute(path:String):Bool;
+
+	/**
+		The `path.join()` method joins all given `path` segments together using the platform-specific separator as a delimiter, then normalizes the resulting path.
+
+		@see https://nodejs.org/api/path.html#path_path_join_paths
 	**/
 	static function join(paths:haxe.extern.Rest<String>):String;
 
-
 	/**
-		Resolves to to an absolute path.
+		The `path.normalize()` method normalizes the given `path`, resolving `'..'` and `'.'` segments.
 
-		If `to` isn't already absolute `from` arguments are prepended in right to left order,
-		until an absolute path is found. If after using all from paths still no absolute
-		path is found, the current working directory is used as well. The resulting path is
-		normalized, and trailing slashes are removed unless the path gets resolved to the
-		root directory.
+		@see https://nodejs.org/api/path.html#path_path_normalize_path
 	**/
-	@:overload(function(args:haxe.extern.Rest<String>):String {})
-	@:overload(function(from:String, to:String):String {})
-	static function resolve(to:String):String;
+	static function normalize(path:String):String;
 
 	/**
-		Solve the relative path from from to to.
+		The `path.parse()` method returns an object whose properties represent significant elements of the `path`. Trailing directory separators are ignored, see path.sep.
+
+		@see https://nodejs.org/api/path.html#path_path_parse_path
+	**/
+	static function parse(path:String):PathObject;
+
+	/**
+		The `path.posix` property provides access to POSIX specific implementations of the `path` methods.
+
+		@see https://nodejs.org/api/path.html#path_path_posix
+	**/
+	static var posix(default, null):PathModule;
+
+	/**
+		The `path.relative()` method returns the relative path from `from` to `to` based on the current working directory.
+		If `from` and `to` each resolve to the same path (after calling path.resolve() on each), a zero-length string is returned.
+
+		@see https://nodejs.org/api/path.html#path_path_relative_from_to
 	**/
 	static function relative(from:String, to:String):String;
 
 	/**
-		Return the directory name of a path. Similar to the Unix dirname command.
+		The `path.resolve()` method resolves a sequence of paths or path segments into an absolute path.
+
+		@see https://nodejs.org/api/path.html#path_path_resolve_paths
 	**/
-	static function dirname(p:String):String;
+	static function resolve(paths:haxe.extern.Rest<String>):String;
 
 	/**
-		Return the last portion of a path. Similar to the Unix basename command.
+		Provides the platform-specific path segment separator:
+
+		`\` on Windows
+		`/` on POSIX
+
+		@see https://nodejs.org/api/path.html#path_path_sep
 	**/
-	static function basename(p:String, ?ext:String):String;
+	static var sep(default, null):String;
 
 	/**
-		Return the extension of the path, from the last '.' to end of string in the last portion of the path.
-		If there is no '.' in the last portion of the path or the first character of it is '.',
-		then it returns an empty string.
+		On Windows systems only, returns an equivalent namespace-prefixed path for the given `path`. If `path` is not a string, `path` will be returned without modifications.
+
+		@see https://nodejs.org/api/path.html#path_path_tonamespacedpath_path
 	**/
-	static function extname(p:String):String;
+	static function toNamespacedPath(path:String):String;
 
 	/**
-		The platform-specific file separator. '\\' or '/'.
+		The path.win32 property provides access to Windows-specific implementations of the path methods.
+
+		@see https://nodejs.org/api/path.html#path_path_win32
 	**/
-	static var sep(default,null):String;
+	static var win32(default, null):PathModule;
+}
+
+/**
+	Path object returned from `Path.parse` and taken by `Path.format`.
+
+	@see https://nodejs.org/api/path.html#path_path_format_pathobject
+**/
+typedef PathObject = {
+	/**
+		E.g. "C:\path\dir" for "C:\path\dir\index.html"
+	**/
+	var dir:String;
 
 	/**
-		The platform-specific path delimiter, ; or ':'.
+		E.g. "C:\" for "C:\path\dir\index.html"
 	**/
-	static var delimiter(default,null):String;
+	var root:String;
+
+	/**
+		E.g. "index.html" for "C:\path\dir\index.html"
+	**/
+	var base:String;
+
+	/**
+		E.g. "index" for "C:\path\dir\index.html"
+	**/
+	var name:String;
+
+	/**
+		E.g. ".html" for "C:\path\dir\index.html"
+	**/
+	var ext:String;
+}
+
+// IMPORTANT: this structure should contain a set of fields
+// matching statics of the `Path` class and is used as a type
+// for `posix` and `win32` fields of `Path` class.
+// We should probably generate this from a macro, but let's keep
+// things simple for now.
+private typedef PathModule = {
+	function normalize(path:String):String;
+	function join(paths:haxe.extern.Rest<String>):String;
+	function resolve(paths:haxe.extern.Rest<String>):String;
+	function isAbsolute(path:String):Bool;
+	function relative(from:String, to:String):String;
+	function dirname(path:String):String;
+	function basename(path:String, ?ext:String):String;
+	function extname(path:String):String;
+	var sep(default, null):String;
+	var delimiter(default, null):String;
+	function parse(pathString:String):PathObject;
+	function format(pathObject:PathObject):String;
 }

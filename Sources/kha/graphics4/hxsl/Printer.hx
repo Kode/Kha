@@ -194,6 +194,7 @@ class Printer {
 			case OpNegBits:"~";
 			case OpIncrement:"++";
 			case OpDecrement:"--";
+			case OpSpread:"=";
 			});
 			addExpr(e, tabs);
 		case TBinop(op, e1, e2):

@@ -11,6 +11,11 @@ import sys.io.File;
 using StringTools;
 
 class AssetsBuilder {
+
+	#if macro
+	public static var files : Array<Dynamic>;
+	#end
+
 	public static function findResources(): String {
 		#if macro
 		var output = Compiler.getOutput();
@@ -48,8 +53,10 @@ class AssetsBuilder {
 
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
-		var content = Json.parse(File.getContent(findResources() + "files.json"));
-		var files: Iterable<Dynamic> = content.files;
+		if(files == null) {
+			var content = Json.parse(File.getContent(findResources() + "files.json"));
+			files = content.files;
+		}
 
 		var names = new Array<Expr>();
 
@@ -133,23 +140,23 @@ class AssetsBuilder {
 				switch (type) {
 					case "image":
 						loadExpressions = macro {
-							Assets.loadImage($v{name}, function(image: Image) done($v{filesize}), failure);
+							Assets.loadImage($v{name}, function(image: Image) done(), failure);
 						};
 					case "sound":
 						loadExpressions = macro {
-							Assets.loadSound($v{name}, function(sound: Sound) done($v{filesize}), failure);
+							Assets.loadSound($v{name}, function(sound: Sound) done(), failure);
 						};
 					case "blob":
 						loadExpressions = macro {
-							Assets.loadBlob($v{name}, function(blob: Blob) done($v{filesize}), failure);
+							Assets.loadBlob($v{name}, function(blob: Blob) done(), failure);
 						};
 					case "font":
 						loadExpressions = macro {
-							Assets.loadFont($v{name}, function(font: Font) done($v{filesize}), failure);
+							Assets.loadFont($v{name}, function(font: Font) done(), failure);
 						};
 					case "video":
 						loadExpressions = macro {
-							Assets.loadVideo($v{name}, function(video: Video) done($v{filesize}), failure);
+							Assets.loadVideo($v{name}, function(video: Video) done(), failure);
 						};
 				}
 
@@ -164,7 +171,7 @@ class AssetsBuilder {
 						args: [
 							{
 								value: null,
-								type: Context.toComplexType(Context.getType("kha.internal.IntCallback")),
+								type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
 								opt: null,
 								name: "done"
 							},

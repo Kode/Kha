@@ -31,7 +31,7 @@ class VertexBuffer {
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		lockStart = start != null ? start : 0;
 		lockEnd = count != null ? start + count : mySize;
-		_data = Krom.lockVertexBuffer(buffer, lockStart, lockEnd);
+		_data = new kha.arrays.ByteArray(Krom.lockVertexBuffer(buffer, lockStart, lockEnd));
 		return _data;
 	}
 

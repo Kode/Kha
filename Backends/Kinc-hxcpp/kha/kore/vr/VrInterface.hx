@@ -5,7 +5,6 @@ import kha.vr.TimeWarpParms;
 
 #if ANDROID
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Vr/VrInterface.h>
 ')
 #end

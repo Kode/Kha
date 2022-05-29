@@ -1,7 +1,6 @@
 package kha.network;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/network/http.h>
 ")
 @:headerClassCode("

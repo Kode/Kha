@@ -7,8 +7,8 @@ import kha.graphics4.VertexElement;
 import kha.graphics4.VertexStructure;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/graphics4/vertexbuffer.h>
+#include <khalib/g4.h>
 ")
 @:headerClassCode("kinc_g4_vertex_buffer_t buffer;")
 class VertexBuffer {
@@ -17,7 +17,7 @@ class VertexBuffer {
 
 	public function new(vertexCount: Int, structure: VertexStructure, usage: Usage, instanceDataStepRate: Int = 0, canRead: Bool = false) {
 		init(vertexCount, structure, usage, instanceDataStepRate);
-		data = new Float32Array();
+		data = new Float32Array(0);
 	}
 
 	public function delete(): Void {
@@ -28,30 +28,7 @@ class VertexBuffer {
 		kinc_g4_vertex_structure_t structure2;
 		kinc_g4_vertex_structure_init(&structure2);
 		for (int i = 0; i < structure->size(); ++i) {
-			kinc_g4_vertex_data_t data;
-			switch (structure->get(i)->data) {
-			case 0:
-				data = KINC_G4_VERTEX_DATA_FLOAT1;
-				break;
-			case 1:
-				data = KINC_G4_VERTEX_DATA_FLOAT2;
-				break;
-			case 2:
-				data = KINC_G4_VERTEX_DATA_FLOAT3;
-				break;
-			case 3:
-				data = KINC_G4_VERTEX_DATA_FLOAT4;
-				break;
-			case 4:
-				data = KINC_G4_VERTEX_DATA_FLOAT4X4;
-				break;
-			case 5:
-				data = KINC_G4_VERTEX_DATA_SHORT2_NORM;
-				break;
-			case 6:
-				data = KINC_G4_VERTEX_DATA_SHORT4_NORM;
-				break;
-			}
+			kinc_g4_vertex_data_t data = kha_convert_vertex_data(structure->get(i)->data);
 			kinc_g4_vertex_structure_add(&structure2, structure->get(i)->name, data);
 		}
 		kinc_g4_vertex_buffer_init(&buffer, vertexCount, &structure2, (kinc_g4_usage_t)usage, instanceDataStepRate);
@@ -59,8 +36,9 @@ class VertexBuffer {
 	function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode("
-		data->self.data = kinc_g4_vertex_buffer_lock(&buffer, start, count);
-		data->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 4;
+		data->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		data->byteArrayLength = count * kinc_g4_vertex_buffer_stride(&buffer);
+		data->byteArrayOffset = 0;
 		return data;
 	")
 	function lockPrivate(start: Int, count: Int): Float32Array {
@@ -73,14 +51,15 @@ class VertexBuffer {
 		if (start == null)
 			start = 0;
 		if (count == null)
-			count = this.count();
+			count = this.count() - start;
 		lastLockCount = count;
 		return lockPrivate(start, count);
 	}
 
 	@:functionCode("
-		dataInt16->self.data = (short*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
-		dataInt16->self.myLength = count * kinc_g4_vertex_buffer_stride(&buffer) / 2;
+		dataInt16->self.data = (uint8_t*)kinc_g4_vertex_buffer_lock(&buffer, start, count);
+		dataInt16->byteArrayLength = count * kinc_g4_vertex_buffer_stride(&buffer);
+		dataInt16->byteArrayOffset = 0;
 		return dataInt16;
 	")
 	function lockInt16Private(start: Int, count: Int): Int16Array {
@@ -94,7 +73,7 @@ class VertexBuffer {
 			count = this.count();
 		lastLockCount = count;
 		if (dataInt16 == null)
-			dataInt16 = new Int16Array();
+			dataInt16 = new Int16Array(0);
 		return lockInt16Private(start, count);
 	}
 
@@ -124,6 +103,6 @@ class VertexBuffer {
 	@:noCompletion
 	@:keep
 	public static function _unused2(): VertexData {
-		return VertexData.Float1;
+		return VertexData.Float32_1X;
 	}
 }

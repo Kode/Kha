@@ -4,6 +4,7 @@ import js.Syntax;
 import js.html.webgl.GL;
 import js.html.WheelEvent;
 import js.Browser;
+import js.html.WebSocket;
 import js.html.CanvasElement;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
@@ -24,6 +25,8 @@ import kha.js.CanvasGraphics;
 import kha.js.MobileWebAudio;
 import kha.js.vr.VrInterface;
 import kha.System;
+
+using StringTools;
 
 class GamepadStates {
 	public var axes: Array<Float>;
@@ -52,7 +55,8 @@ class SystemImpl {
 	public static var mobileAudioPlaying: Bool = false;
 	static var chrome: Bool = false;
 	static var firefox: Bool = false;
-	static var ie: Bool = false;
+	public static var safari: Bool = false;
+	public static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	static var window: Window;
 	public static var estimatedRefreshRate: Int = 60;
@@ -80,11 +84,26 @@ class SystemImpl {
 		ios = isIOS();
 		chrome = isChrome();
 		firefox = isFirefox();
+		safari = isSafari();
 		ie = isIE();
 
 		mobileAudioPlaying = !mobile && !chrome && !firefox;
 
 		initSecondStep(callback);
+		#end
+
+		#if kha_live_reload
+		function openWebSocket(): Void {
+			var host = Browser.location.hostname;
+			if (host == "")
+				host = "localhost";
+			var port = Std.parseInt(Browser.location.port);
+			if (port == null)
+				port = 80;
+			final ws = new WebSocket('ws://$host:${port + 1}');
+			ws.onmessage = () -> Browser.location.reload();
+		}
+		openWebSocket();
 		#end
 	}
 
@@ -111,7 +130,7 @@ class SystemImpl {
 
 	static function isMobile(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Android") >= 0 || agent.indexOf("webOS") >= 0 || agent.indexOf("BlackBerry") >= 0 || agent.indexOf("Windows Phone") >= 0) {
+		if (agent.contains("Android") || agent.contains("webOS") || agent.contains("BlackBerry") || agent.contains("Windows Phone")) {
 			return true;
 		}
 		if (isIOS())
@@ -121,7 +140,7 @@ class SystemImpl {
 
 	static function isIOS(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("iPhone") >= 0 || agent.indexOf("iPad") >= 0 || agent.indexOf("iPod") >= 0) {
+		if (agent.contains("iPhone") || agent.contains("iPad") || agent.contains("iPod")) {
 			return true;
 		}
 		return false;
@@ -129,7 +148,7 @@ class SystemImpl {
 
 	static function isChrome(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Chrome") >= 0) {
+		if (agent.contains("Chrome")) {
 			return true;
 		}
 		return false;
@@ -137,7 +156,16 @@ class SystemImpl {
 
 	static function isFirefox(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("Firefox") >= 0) {
+		if (agent.contains("Firefox")) {
+			return true;
+		}
+		return false;
+	}
+
+	static function isSafari(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		// Chrome has both in UA
+		if (agent.contains("Safari") && !agent.contains("Chrome")) {
 			return true;
 		}
 		return false;
@@ -145,7 +173,7 @@ class SystemImpl {
 
 	static function isIE(): Bool {
 		var agent = js.Browser.navigator.userAgent;
-		if (agent.indexOf("MSIE ") >= 0 || agent.indexOf("Trident/") >= 0) {
+		if (agent.contains("MSIE ") || agent.contains("Trident/")) {
 			return true;
 		}
 		return false;
@@ -184,7 +212,6 @@ class SystemImpl {
 
 	static inline var maxGamepads: Int = 4;
 	static var frame: Framebuffer;
-	static var pressedKeys: Array<Bool>;
 	static var keyboard: Keyboard = null;
 	static var mouse: kha.input.Mouse;
 	static var surface: Surface;
@@ -212,7 +239,11 @@ class SystemImpl {
 			gamepadStates[i] = new GamepadStates();
 		}
 		js.Browser.window.addEventListener("gamepadconnected", (e) -> {
-			Gamepad.sendConnectEvent(e.gamepad.index);
+			var pad: js.html.Gamepad = e.gamepad;
+			Gamepad.sendConnectEvent(pad.index);
+			for (i in 0...pad.buttons.length) {
+				gamepadStates[pad.index].buttons[i] = 0;
+			}
 		});
 		js.Browser.window.addEventListener("gamepaddisconnected", (e) -> {
 			Gamepad.sendDisconnectEvent(e.gamepad.index);
@@ -225,14 +256,6 @@ class SystemImpl {
 					gamepads[pad.index].connected = true;
 				}
 			}
-		}
-
-		if (ie) {
-			pressedKeys = new Array<Bool>();
-			for (i in 0...256)
-				pressedKeys.push(false);
-			for (i in 0...256)
-				pressedKeys.push(null);
 		}
 
 		function onCopy(e: ClipboardEvent): Void {
@@ -456,10 +479,10 @@ class SystemImpl {
 		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
-		untyped (canvas.onmousewheel = canvas.onwheel = mouseWheel);
 		canvas.onmouseleave = mouseLeave;
 
-		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
+		// IE11 does not have canvas.onwheel
+		canvas.addEventListener("wheel", mouseWheel, false);
 		canvas.addEventListener("touchstart", touchDown, false);
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
@@ -484,6 +507,9 @@ class SystemImpl {
 		});
 	}
 
+	static var lastCanvasClientWidth: Int = -1;
+	static var lastCanvasClientHeight: Int = -1;
+
 	static function initAnimate(callback: Window->Void) {
 		var canvas: CanvasElement = getCanvasElement();
 
@@ -496,10 +522,17 @@ class SystemImpl {
 		if (requestAnimationFrame == null)
 			requestAnimationFrame = window.msRequestAnimationFrame;
 
+		var isRefreshRateDetectionActive = false;
+		var lastTimestamp = 0.0;
+		final possibleRefreshRates = [30, 60, 75, 90, 120, 144, 240, 340, 360];
+		final refreshRatesCounts = [
+			for (_ in 0...possibleRefreshRates.length)
+				0
+		];
+
 		function animate(timestamp) {
-			var window: Dynamic = Browser.window;
 			if (requestAnimationFrame == null)
-				window.setTimeout(animate, 1000.0 / 60.0);
+				Browser.window.setTimeout(animate, 1000.0 / 60.0);
 			else
 				requestAnimationFrame(animate);
 
@@ -516,19 +549,31 @@ class SystemImpl {
 			Scheduler.executeFrame();
 
 			if (canvas.getContext != null) {
-				// clientWidth/Height is in downscaled "css pixels" when a <meta viewport="" /> is set in the html file
-				var displayWidth = canvas.clientWidth * Std.int(js.Browser.window.devicePixelRatio);
-				var displayHeight = canvas.clientHeight * Std.int(js.Browser.window.devicePixelRatio);
+				#if !kha_html5_disable_automatic_size_adjust
+				if (lastCanvasClientWidth != canvas.clientWidth || lastCanvasClientHeight != canvas.clientHeight) {
+					// canvas.width is the actual backbuffer-size.
+					// canvas.clientWidth (which is read-only and equivalent to
+					// canvas.style.width in pixels) is the output-size
+					// and by default gets scaled by devicePixelRatio.
+					// We revert that scale so backbuffer and output-size
+					// are the same.
 
-				// Check if the canvas rendering buffer is not the same size.
-				if (canvas.width != displayWidth || canvas.height != displayHeight) {
-					// Make the canvas rendering buffer the same size
-					canvas.width = displayWidth;
-					canvas.height = displayHeight;
+					var scale = Browser.window.devicePixelRatio;
+					var clientWidth = canvas.clientWidth;
+					var clientHeight = canvas.clientHeight;
+					canvas.width = clientWidth;
+					canvas.height = clientHeight;
+					if (scale != 1) {
+						canvas.style.width = Std.int(clientWidth / scale) + "px";
+						canvas.style.height = Std.int(clientHeight / scale) + "px";
+					}
+					lastCanvasClientWidth = canvas.clientWidth;
+					lastCanvasClientHeight = canvas.clientHeight;
 				}
+				#end
 
 				System.render([frame]);
-				if (SystemImpl.gl != null) {
+				if (ie && SystemImpl.gl != null) {
 					// Clear alpha for IE11
 					SystemImpl.gl.clearColor(1, 1, 1, 1);
 					SystemImpl.gl.colorMask(false, false, false, true);
@@ -536,104 +581,42 @@ class SystemImpl {
 					SystemImpl.gl.colorMask(true, true, true, true);
 				}
 			}
+			if (!isRefreshRateDetectionActive)
+				return;
+			if (lastTimestamp == 0) {
+				lastTimestamp = timestamp;
+				return;
+			}
+			final fps = Math.floor(1000 / (timestamp - lastTimestamp));
+			if (estimatedRefreshRate < fps)
+				estimatedRefreshRate = fps;
+			lastTimestamp = timestamp;
+			for (i => rate in possibleRefreshRates) {
+				if (fps > rate - 3 && fps < rate + 3)
+					refreshRatesCounts[i]++;
+			}
 		}
 
-		var initialTimestamp: Int = 0;
-		var prevTimestamp: Int = 0;
-		var currentSamples: Int = 0;
-		var timeDiffs: Array<Int> = [];
-
-		var SAMPLE_COUNT: Int = 90;
-		var MEAN_TRUNCATION_CUTOFF: Float = 1 / 3;
-
-		function roundToKnownRefreshRate(hz: Int): Int {
-			var hz30 = {low: 27, high: 33, target: 30};
-			var hz60 = {low: 57, high: 63, target: 60};
-			var hz75 = {low: 72, high: 78, target: 75};
-			var hz90 = {low: 87, high: 93, target: 90};
-			var hz120 = {low: 117, high: 123, target: 120};
-			var hz144 = {low: 141, high: 147, target: 144};
-			var hz240 = {low: 237, high: 243, target: 240};
-			var hz340 = {low: 337, high: 343, target: 340};
-			var hz360 = {low: 357, high: 363, target: 360};
-
-			var rates = [hz30, hz60, hz75, hz90, hz120, hz144, hz240, hz340, hz360];
-
-			var nearestHz = hz;
-			for (rate in rates) {
-				if (hz >= rate.low && hz <= rate.high) {
-					nearestHz = rate.target;
-				}
-			}
-
-			return nearestHz;
-		}
-
-		// HTML5 has no real way to query the actual monitor refresh rate
-		// The only thing that can be done is attempt to measure the interval between requestAnimationFrame calls
-		// Without requestAnimationFrame we're out of luck
-		// We try and make a best guess while nothing intensive is happening
-		function detectRefreshRate(timestamp) {
-			var window: Dynamic = Browser.window;
-
-			if (initialTimestamp == 0) {
-				initialTimestamp = timestamp;
-			}
-			var timeDifferential = (timestamp - prevTimestamp) - initialTimestamp;
-			prevTimestamp = timestamp - initialTimestamp;
-
-			if (timeDifferential != 0) {
-				timeDiffs.push(timeDifferential);
-			}
-
-			if (currentSamples < SAMPLE_COUNT) {
-				currentSamples++;
-
-				if (requestAnimationFrame == null)
-					window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
-				else
-					requestAnimationFrame(detectRefreshRate);
-			}
-			else {
-				// Remove extreme frametime values before averaging
-				{
-					haxe.ds.ArraySort.sort(timeDiffs, (a, b) -> {
-						a - b;
-					});
-
-					var truncatedTimeDiffs: Array<Int> = [];
-					var cutoff = Math.round(timeDiffs.length * MEAN_TRUNCATION_CUTOFF);
-					for (i in cutoff...timeDiffs.length - cutoff) {
-						truncatedTimeDiffs.push(timeDiffs[i]);
+		Browser.window.setTimeout(() -> {
+			isRefreshRateDetectionActive = true;
+			Browser.window.setTimeout(() -> {
+				isRefreshRateDetectionActive = false;
+				// Use 60 hz if window was out of focus and throttled to 1 fps
+				var index = possibleRefreshRates.indexOf(60);
+				var max = 0;
+				for (i => count in refreshRatesCounts) {
+					if (count > max) {
+						max = count;
+						index = i;
 					}
-
-					var total = 0;
-					for (time in truncatedTimeDiffs) {
-						total += time;
-					}
-
-					var avg = total / truncatedTimeDiffs.length;
-					// We may have an accurate frequency, but it might be possible to be off the actual refresh rate by a few hz
-					// Manually round to common refresh rates as well, just for security's sake
-					estimatedRefreshRate = roundToKnownRefreshRate(Math.round(1000 / avg));
 				}
+				estimatedRefreshRate = possibleRefreshRates[index];
+			}, 1000);
+		}, 500);
 
-				Scheduler.start();
-
-				if (requestAnimationFrame == null)
-					window.setTimeout(animate, 1000.0 / 60.0);
-				else
-					requestAnimationFrame(animate);
-
-				callback(SystemImpl.window);
-			}
-		}
-
-		// Run through refresh rate detection first and then start animating
-		if (requestAnimationFrame == null)
-			window.setTimeout(detectRefreshRate, 1000.0 / 60.0);
-		else
-			requestAnimationFrame(detectRefreshRate);
+		Scheduler.start();
+		requestAnimationFrame(animate);
+		callback(SystemImpl.window);
 	}
 
 	public static function lockMouse(): Void {
@@ -788,12 +771,7 @@ class SystemImpl {
 		if (event.which == 1) { // left button
 			mouse.sendDownEvent(0, 0, mouseX, mouseY);
 
-			if (khanvas.setCapture != null) {
-				khanvas.setCapture();
-			}
-			else {
-				khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
-			}
+			khanvas.ownerDocument.addEventListener("mousemove", documentMouseMove, true);
 			khanvas.ownerDocument.addEventListener("mouseup", mouseLeftUp);
 		}
 		else if (event.which == 2) { // middle button
@@ -823,12 +801,7 @@ class SystemImpl {
 
 		insideInputEvent = true;
 		khanvas.ownerDocument.removeEventListener("mouseup", mouseLeftUp);
-		if (khanvas.releaseCapture != null) {
-			khanvas.ownerDocument.releaseCapture();
-		}
-		else {
-			khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
-		}
+		khanvas.ownerDocument.removeEventListener("mousemove", documentMouseMove, true);
 
 		mouse.sendUpEvent(0, 0, mouseX, mouseY);
 
@@ -1163,27 +1136,11 @@ class SystemImpl {
 		insideInputEvent = true;
 		unlockSound();
 
-		switch (Keyboard.keyBehavior) {
-			case Default:
-				defaultKeyBlock(event);
-			case Full:
-				event.preventDefault();
-			case Custom(func):
-				if (func(cast event.keyCode))
-					event.preventDefault();
-			case None:
-		}
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
 
 		// prevent key repeat
-		if (ie) {
-			if (pressedKeys[event.keyCode]) {
-				event.preventDefault();
-				return;
-			}
-			pressedKeys[event.keyCode] = true;
-		}
-		else if (event.repeat) {
+		if (event.repeat) {
 			event.preventDefault();
 			return;
 		}
@@ -1200,6 +1157,19 @@ class SystemImpl {
 			case 189: HyphenMinus;
 			default:
 				cast event.keyCode;
+		}
+	}
+
+	static function preventDefaultKeyBehavior(event: KeyboardEvent): Void {
+		switch (Keyboard.keyBehavior) {
+			case Default:
+				defaultKeyBlock(event);
+			case Full:
+				event.preventDefault();
+			case Custom(func):
+				if (func(cast event.keyCode))
+					event.preventDefault();
+			case None:
 		}
 	}
 
@@ -1230,11 +1200,8 @@ class SystemImpl {
 		insideInputEvent = true;
 		unlockSound();
 
-		event.preventDefault();
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
-
-		if (ie)
-			pressedKeys[event.keyCode] = false;
 
 		var keyCode = fixedKeyCode(event);
 		keyboard.sendUpEvent(keyCode);
@@ -1248,7 +1215,7 @@ class SystemImpl {
 
 		if (event.which == 0)
 			return; // for Firefox and Safari
-		event.preventDefault();
+		preventDefaultKeyBehavior(event);
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 

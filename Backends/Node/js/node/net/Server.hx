@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,11 +19,17 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.net;
 
-import js.lib.Error;
+import haxe.extern.EitherType;
 import js.node.events.EventEmitter;
-import js.node.net.Socket.NetworkAdress;
+import js.node.net.Socket.SocketAdress;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events emitted by the `Server` objects
@@ -32,64 +38,98 @@ import js.node.net.Socket.NetworkAdress;
 	/**
 		Emitted when the server has been bound after calling `Server.listen`.
 	**/
-	var Listening : ServerEvent<Void->Void> = "listening";
+	var Listening:ServerEvent<Void->Void> = "listening";
 
 	/**
 		Emitted when a new connection is made.
 	**/
-	var Connection : ServerEvent<Socket->Void> = "connection";
+	var Connection:ServerEvent<Socket->Void> = "connection";
 
 	/**
 		Emitted when the server closes.
 		Note that if connections exist, this event is not emitted until all connections are ended.
 	**/
-	var Close : ServerEvent<Void->Void> = "close";
+	var Close:ServerEvent<Void->Void> = "close";
 
 	/**
 		Emitted when an error occurs.
 		The 'close' event will be called directly following this event. See example in discussion of server.listen.
 	**/
-	var Error : ServerEvent<Error->Void> = "error";
+	var Error:ServerEvent<Error->Void> = "error";
+}
+
+private typedef ServerListenOptionsBase = {
+	@:optional var exclusive:Bool;
 }
 
 /**
-	This class is used to create a TCP or UNIX server.
+	Options for the `Server.listen` method (TCP version).
 **/
+typedef ServerListenOptionsTcp = {
+	> ServerListenOptionsBase,
+	@:optional var port:Int;
+	@:optional var host:String;
+	@:optional var backlog:Int;
+}
+
+/**
+	Options for the `Server.listen` method (UNIX version).
+**/
+typedef ServerListenOptionsUnix = {
+	> ServerListenOptionsBase,
+	@:optional var path:String;
+}
+
+/**
+	This class is used to create a TCP or local server.
+**/
+@:jsRequire("net", "Server")
 extern class Server extends EventEmitter<Server> {
 	/**
-		Begin accepting connections on the specified `port` and `host`.
-		If the `host` is omitted, the server will accept connections directed to any IPv4 address (INADDR_ANY).
+		Begin accepting connections on the specified `port` and `hostname`.
+
+		If the `hostname` is omitted, the server will accept connections on any IPv6 address (::) when IPv6 is available,
+		or any IPv4 address (0.0.0.0) otherwise.
 		A `port` value of zero will assign a random port.
 
 		`backlog` is the maximum length of the queue of pending connections. The actual length will be determined
 		by your OS through sysctl settings such as tcp_max_syn_backlog and somaxconn on linux.
 		The default value of this parameter is 511 (not 512).
 
+		When `path` is provided, start a local socket server listening for connections on the given path.
+
+		When `handle` is provided, it should be either a server or socket (anything with an underlying `_handle` member),
+		or a {fd: <n>} object. This will cause the server to accept connections on the specified handle,
+		but it is presumed that the file descriptor or handle has already been bound to a port or domain socket.
+		Listening on a file descriptor is not supported on Windows.
+
 		This function is asynchronous. When the server has been bound, 'listening' event will be emitted.
 		The last parameter `callback` will be added as an listener for the 'listening' event.
 	**/
 	@:overload(function(path:String, ?callback:Void->Void):Void {})
-	@:overload(function(handle:haxe.extern.EitherType<Dynamic,{fd:Int}>, ?callback:Void->Void):Void {}) // TODO: according to docs, Dynamic should be either a server or socket, but i'm not sure if it's EitherType<Socket,Server>. Also, document that
+	@:overload(function(handle:EitherType<Dynamic, {fd:Int}>, ?callback:Void->Void):Void {})
 	@:overload(function(port:Int, ?callback:Void->Void):Void {})
 	@:overload(function(port:Int, backlog:Int, ?callback:Void->Void):Void {})
-	@:overload(function(port:Int, host:String, ?callback:Void->Void):Void {})
-	function listen(port:Int, host:String, backlog:Int, ?callback:Void->Void):Void;
-
+	@:overload(function(port:Int, hostname:String, ?callback:Void->Void):Void {})
+	@:overload(function(port:Int, hostname:String, backlog:Int, ?callback:Void->Void):Void {})
+	function listen(options:EitherType<ServerListenOptionsTcp, ServerListenOptionsUnix>, ?callback:Void->Void):Void;
 
 	/**
 		Stops the server from accepting new connections and keeps existing connections.
 		This function is asynchronous, the server is finally closed when all connections are ended
 		and the server emits a 'close' event.
 
-		Optionally, you can pass a `callback` to listen for the 'close' event.
+		The optional callback will be called once the 'close' event occurs. Unlike that event,
+		it will be called with an Error as its only argument if the server was not open when it was closed.
 	**/
+	@:overload(function(callback:Error->Void):Void {})
 	function close(?callback:Void->Void):Void;
 
 	/**
 		Returns the bound address, the address family name and port of the server as reported by the operating system.
 		Useful to find which port was assigned when giving getting an OS-assigned address.
 	**/
-	function address():NetworkAdress;
+	function address():SocketAdress;
 
 	/**
 		Calling `unref` on a server will allow the program to exit if this is the only active server in the event system.
@@ -106,10 +146,15 @@ extern class Server extends EventEmitter<Server> {
 	function ref():Void;
 
 	/**
+		A boolean indicating whether or not the server is listening for connections.
+	**/
+	var listening(default, null):Bool;
+
+	/**
 		Set this property to reject connections when the server's connection count gets high.
 		It is not recommended to use this option once a socket has been sent to a child with child_process.fork().
 	**/
-	var maxConnections : Int;
+	var maxConnections:Int;
 
 	/**
 		The number of concurrent connections on the server.
@@ -118,7 +163,7 @@ extern class Server extends EventEmitter<Server> {
 		To poll forks and get current number of active connections use asynchronous `getConnections` instead.
 	**/
 	@:deprecated("please use `getConnections` instead")
-	var connections(default,null):Null<Int>;
+	var connections(default, null):Null<Int>;
 
 	/**
 		Asynchronously get the number of concurrent connections on the server.

@@ -7,7 +7,7 @@ import kha.audio2.ogg.vorbis.Reader;
 /**
  * Contains compressed or uncompressed audio data.
  */
-@:cppFileCode("\n#include <kinc/pch.h>\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/audio1/stb_vorbis.c>")
+@:cppFileCode("\n#define STB_VORBIS_HEADER_ONLY\n#include <kinc/libs/stb_vorbis.c>")
 class Sound implements Resource {
 	public var compressedData: Bytes;
 	public var uncompressedData: kha.arrays.Float32Array;
@@ -29,21 +29,21 @@ class Sound implements Resource {
 		var samplesPerSecond: Int = 0;
 
 		untyped __cpp__("int16_t *data = nullptr");
-		untyped __cpp__("samples = stb_vorbis_decode_memory((Kore::u8*)compressedData->b->GetBase(), compressedData->length, &channels, &samplesPerSecond, &data)");
+		untyped __cpp__("samples = stb_vorbis_decode_memory((uint8_t*)compressedData->b->GetBase(), compressedData->length, &channels, &samplesPerSecond, &data)");
 
 		if (channels == 1) {
 			length = samples / samplesPerSecond;
 			uncompressedData = new kha.arrays.Float32Array(samples * 2);
 			for (i in 0...samples) {
-				untyped __cpp__("this->uncompressedData->self.set({0} * 2 + 0, data[{0}] / 32767.0f)", i);
-				untyped __cpp__("this->uncompressedData->self.set({0} * 2 + 1, data[{0}] / 32767.0f)", i);
+				untyped __cpp__("*((float*)&this->uncompressedData->self.data[({0} * 2) * 4]) = data[{0}] / 32767.0f", i);
+				untyped __cpp__("*((float*)&this->uncompressedData->self.data[({0} * 2 + 1) * 4]) = data[{0}] / 32767.0f", i);
 			}
 		}
 		else {
 			length = samples / samplesPerSecond;
 			uncompressedData = new kha.arrays.Float32Array(samples * 2);
 			for (i in 0...samples * 2) {
-				untyped __cpp__("this->uncompressedData->self.set({0}, data[{0}] / 32767.0f)", i);
+				untyped __cpp__("*((float*)&this->uncompressedData->self.data[({0} * 2) * 4]) = data[{0}] / 32767.0f", i);
 			}
 		}
 		this.channels = channels;

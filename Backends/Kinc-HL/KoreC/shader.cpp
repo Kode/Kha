@@ -1,4 +1,3 @@
-#include <Kore/pch.h>
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Graphics4/PipelineState.h>
 #include <hl.h>
@@ -68,104 +67,103 @@ Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
 }
 
 extern "C" vbyte *hl_kore_create_vertexshader(vbyte *data, int length) {
-	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::VertexShader);
+	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::VertexShader);
 }
 
 extern "C" vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
-	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::FragmentShader);
+	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::FragmentShader);
 }
 
 extern "C" vbyte *hl_kore_create_geometryshader(vbyte *data, int length) {
-	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::GeometryShader);
+	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::GeometryShader);
 }
 
 extern "C" vbyte *hl_kore_create_tesscontrolshader(vbyte *data, int length) {
-	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationControlShader);
+	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationControlShader);
 }
 
 extern "C" vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
-	return (vbyte*)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
+	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
 }
 
 extern "C" vbyte *hl_kore_vertexshader_from_source(vbyte *source) {
-	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::VertexShader);
+	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::VertexShader);
 }
 
 extern "C" vbyte *hl_kore_fragmentshader_from_source(vbyte *source) {
-	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::FragmentShader);
+	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::FragmentShader);
 }
 
 extern "C" vbyte *hl_kore_geometryshader_from_source(vbyte *source) {
-	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::GeometryShader);
+	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::GeometryShader);
 }
 
 extern "C" vbyte *hl_kore_tesscontrolshader_from_source(vbyte *source) {
-	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationControlShader);
+	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::TessellationControlShader);
 }
 
 extern "C" vbyte *hl_kore_tessevalshader_from_source(vbyte *source) {
-	return (vbyte*)new Kore::Graphics4::Shader((char*)source, Kore::Graphics4::TessellationEvaluationShader);
+	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::TessellationEvaluationShader);
 }
 
 extern "C" vbyte *hl_kore_create_pipeline() {
-	return (vbyte*)new Kore::Graphics4::PipelineState();
+	return (vbyte *)new Kore::Graphics4::PipelineState();
 }
 
 extern "C" void hl_kore_delete_pipeline(vbyte *pipeline) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
 	delete pipe;
 }
 
 extern "C" void hl_kore_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
 	pipe->vertexShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
 	pipe->fragmentShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
 	pipe->geometryShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
 	pipe->tessellationControlShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	Kore::Graphics4::Shader* sh = (Kore::Graphics4::Shader*)shader;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
 	pipe->tessellationEvaluationShader = sh;
 }
 
 extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	pipe->inputLayout[0] = (Kore::Graphics4::VertexStructure*)structure0;
-	pipe->inputLayout[1] = (Kore::Graphics4::VertexStructure*)structure1;
-	pipe->inputLayout[2] = (Kore::Graphics4::VertexStructure*)structure2;
-	pipe->inputLayout[3] = (Kore::Graphics4::VertexStructure*)structure3;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	pipe->inputLayout[0] = (Kore::Graphics4::VertexStructure *)structure0;
+	pipe->inputLayout[1] = (Kore::Graphics4::VertexStructure *)structure1;
+	pipe->inputLayout[2] = (Kore::Graphics4::VertexStructure *)structure2;
+	pipe->inputLayout[3] = (Kore::Graphics4::VertexStructure *)structure3;
 	pipe->inputLayout[4] = nullptr;
 	pipe->compile();
 }
 
-extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
-	int cullMode, int depthMode, int stencilMode, int stencilBothPass, int stencilDepthFail, int stencilFail,
-	int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination,
-	bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask,
-	bool colorWriteMaskRed, bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha,
-	int colorAttachmentCount, int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3, int colorAttachment4, int colorAttachment5, int colorAttachment6, int colorAttachment7,
-	int depthAttachmentBits, int stencilAttachmentBits,
-	bool conservativeRasterization) {
+extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilMode, int stencilBothPass, int stencilDepthFail,
+                                            int stencilFail, int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination,
+                                            bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask, bool colorWriteMaskRed,
+                                            bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha, int colorAttachmentCount,
+                                            int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3, int colorAttachment4,
+                                            int colorAttachment5, int colorAttachment6, int colorAttachment7, int depthAttachmentBits,
+                                            int stencilAttachmentBits, bool conservativeRasterization) {
 
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
 
 	switch (cullMode) {
 	case 0:
@@ -215,10 +213,10 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 	pipe->stencilReadMask = stencilReadMask;
 	pipe->stencilWriteMask = stencilWriteMask;
 
-	pipe->blendSource = (Kore::Graphics4::BlendingOperation)blendSource;
-	pipe->blendDestination = (Kore::Graphics4::BlendingOperation)blendDestination;
-	pipe->alphaBlendSource = (Kore::Graphics4::BlendingOperation)alphaBlendSource;
-	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingOperation)alphaBlendDestination;
+	pipe->blendSource = (Kore::Graphics4::BlendingFactor)blendSource;
+	pipe->blendDestination = (Kore::Graphics4::BlendingFactor)blendDestination;
+	pipe->alphaBlendSource = (Kore::Graphics4::BlendingFactor)alphaBlendSource;
+	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingFactor)alphaBlendDestination;
 
 	pipe->colorWriteMaskRed[0] = colorWriteMaskRed;
 	pipe->colorWriteMaskGreen[0] = colorWriteMaskGreen;
@@ -242,16 +240,16 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline,
 }
 
 extern "C" void hl_kore_pipeline_set(vbyte *pipeline) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
 	Kore::Graphics4::setPipeline(pipe);
 }
 
 extern "C" vbyte *hl_kore_pipeline_get_constantlocation(vbyte *pipeline, vbyte *name) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	return (vbyte*)new Kore::Graphics4::ConstantLocation(pipe->getConstantLocation((char*)name));
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	return (vbyte *)new Kore::Graphics4::ConstantLocation(pipe->getConstantLocation((char *)name));
 }
 
 extern "C" vbyte *hl_kore_pipeline_get_textureunit(vbyte *pipeline, vbyte *name) {
-	Kore::Graphics4::PipelineState* pipe = (Kore::Graphics4::PipelineState*)pipeline;
-	return (vbyte*)new Kore::Graphics4::TextureUnit(pipe->getTextureUnit((char*)name));
+	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	return (vbyte *)new Kore::Graphics4::TextureUnit(pipe->getTextureUnit((char *)name));
 }

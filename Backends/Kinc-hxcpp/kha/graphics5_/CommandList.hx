@@ -1,7 +1,6 @@
 package kha.graphics5;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/CommandList.h>
 ')
 

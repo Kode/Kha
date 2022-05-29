@@ -37,9 +37,11 @@ class SystemImpl {
 		var g4 = new kha.korehl.graphics4.Graphics();
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
-		kha.audio2.Audio._init();
+		final samplesRef: hl.Ref<Int> = kha.audio2.Audio.samplesPerSecond;
+		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample, samplesRef);
+		kha.audio2.Audio.samplesPerSecond = samplesRef.get();
 		kha.audio1.Audio._init();
-		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample, kha.audio2.Audio.samplesPerSecond);
+		kha.audio2.Audio._init();
 		keyboard = new kha.input.Keyboard();
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
@@ -385,7 +387,7 @@ class SystemImpl {
 	public static function getGamepadVendor(index: Int): String {
 		return "";
 	}
-	
+
 	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float) {}
 
 	public static function safeZone(): Float {

@@ -3,7 +3,6 @@ package kha.netsync;
 import haxe.io.Bytes;
 
 @:headerCode("
-#include <kinc/pch.h>
 #include <kinc/network/socket.h>
 ")
 @:headerClassCode("kinc_socket_t socket;")

@@ -3,10 +3,10 @@ name: Linux (OpenGL)
 on:
   push:
     branches:
-    - master
+    - main
   pull_request:
     branches:
-    - master
+    - main
 
 jobs:
   build:
@@ -18,9 +18,9 @@ jobs:
     - name: Apt Update
       run: sudo apt-get update
     - name: Apt Install
-      run: sudo apt-get install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev --yes --quiet
-    - name: Get Submodules
-      run: git submodule update --init --recursive
+      run: sudo apt-get install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev libwayland-dev wayland-protocols libxkbcommon-dev --yes --quiet
+    - name: Get DLC
+      run: ./get_dlc
     - name: Get Node.js
       run: git clone https://github.com/Kode/nodejs_bin.git --depth 1
     - name: Setup Node.js

@@ -3,7 +3,6 @@ package kha.graphics5;
 import kha.arrays.Uint32Array;
 
 @:headerCode('
-#include <Kore/pch.h>
 #include <Kore/Graphics5/Graphics.h>
 ')
 

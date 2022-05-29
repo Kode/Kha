@@ -76,26 +76,51 @@ class Worker {
 
 #if kha_kore
 import sys.thread.Thread;
+import sys.thread.Tls;
 import kha.Scheduler;
+
+private class Message {
+	public final threadId: Int;
+	public final message: Dynamic;
+
+	public function new(message: Dynamic) {
+		this.threadId = @:privateAccess Worker.threadId.value;
+		this.message = message;
+	}
+}
 
 class Worker {
 	public static var _mainThread: Thread;
 
-	var thread: Thread;
+	static var notifyFuncs: Array<Dynamic->Void> = [];
+	static var taskId: Int = -1;
+	static var nextThreadId: Int = 0;
+	static var threadId = new Tls<Int>();
 
-	function new(thread: Thread) {
+	var thread: Thread;
+	var id: Int;
+
+	function new(thread: Thread, id: Int) {
 		this.thread = thread;
+		this.id = id;
 	}
 
 	public static function create(clazz: Class<Dynamic>): Worker {
-		return new Worker(Thread.create(Reflect.field(clazz, "main")));
+		var id = nextThreadId++;
+		return new Worker(Thread.create(function() {
+			threadId.value = id;
+			Reflect.field(clazz, "main")();
+		}), id);
 	}
 
 	public function notify(func: Dynamic->Void): Void {
-		Scheduler.addFrameTask(function() {
-			var message = Thread.readMessage(false);
+		notifyFuncs[id] = func;
+		if (taskId != -1) return;
+		taskId = Scheduler.addFrameTask(function() {
+			var message:Message = Thread.readMessage(false);
 			if (message != null) {
-				func(message);
+				var func = notifyFuncs[message.threadId];
+				func(message.message);
 			}
 		}, 0);
 	}
@@ -114,7 +139,7 @@ class Worker {
 	}
 
 	public static function postFromWorker(message: Dynamic): Void {
-		_mainThread.sendMessage(message);
+		_mainThread.sendMessage(new Message(message));
 	}
 }
 #end

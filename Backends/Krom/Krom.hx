@@ -69,7 +69,7 @@ extern class Krom {
 	static function setIndexBuffer(buffer: Dynamic): Void;
 	static function createVertexBuffer(count: Int, structure: Array<kha.graphics4.VertexElement>, usage: Int, instanceDataStepRate: Int): Dynamic;
 	static function deleteVertexBuffer(buffer: Dynamic): Dynamic;
-	static function lockVertexBuffer(buffer: Dynamic, start: Int, count: Int): kha.arrays.Float32Array;
+	static function lockVertexBuffer(buffer: Dynamic, start: Int, count: Int): js.lib.ArrayBuffer;
 	static function unlockVertexBuffer(buffer: Dynamic, count: Int): Void;
 	static function setVertexBuffer(buffer: Dynamic): Void;
 	static function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void;
@@ -105,6 +105,7 @@ extern class Krom {
 	static function unlockMouse(): Void;
 	static function canLockMouse(): Bool;
 	static function isMouseLocked(): Bool;
+	static function setMousePosition(windowId: Int, x: Int, y: Int): Void;
 	static function showMouse(show: Bool): Void;
 	static function setAudioCallback(callback: Int->Void): Void;
 	static function getTime(): Float;

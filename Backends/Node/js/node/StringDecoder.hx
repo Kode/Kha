@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,26 +19,48 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node;
 
+#if haxe4
+import js.lib.ArrayBufferView;
+#else
+import js.html.ArrayBufferView;
+#end
+
 /**
-	StringDecoder decodes a buffer to a string.
-	It is a simple interface to buffer.toString() but provides additional support for utf8.
+	The `string_decoder` module provides an API for decoding `Buffer` objects into strings in a manner that preserves
+	encoded multi-byte UTF-8 and UTF-16 characters.
+
+	@see https://nodejs.org/api/string_decoder.html#string_decoder_string_decoder
 **/
 @:jsRequire("string_decoder", "StringDecoder")
 extern class StringDecoder {
 	/**
-		`encoding` defaults to `utf8`
+		Creates a new `StringDecoder` instance.
+
+		@see https://nodejs.org/api/string_decoder.html#string_decoder_new_stringdecoder_encoding
 	**/
 	function new(?encoding:String);
 
 	/**
-		Returns a decoded string.
+		Returns any remaining input stored in the internal buffer as a string.
+		Bytes representing incomplete UTF-8 and UTF-16 characters will be replaced
+		with substitution characters appropriate for the character encoding.
+
+		@see https://nodejs.org/api/string_decoder.html#string_decoder_stringdecoder_end_buffer
 	**/
-	function write(buffer:Buffer):String;
+	@:overload(function(buffer:Buffer):String {})
+	@:overload(function(buffer:ArrayBufferView):String {})
+	function end():String;
 
 	/**
-		Returns any trailing bytes that were left in the buffer.
+		Returns a decoded string, ensuring that any incomplete multibyte characters at the end of the `Buffer`, or
+		`TypedArray`, or `DataViewor` are omitted from the returned string and stored in an internal buffer for the next
+		call to `stringDecoder.write()` or `stringDecoder.end()`.
+
+		@see https://nodejs.org/api/string_decoder.html#string_decoder_stringdecoder_write_buffer
 	**/
-	function end():String;
+	@:overload(function(buffer:ArrayBufferView):String {})
+	function write(buffer:Buffer):String;
 }

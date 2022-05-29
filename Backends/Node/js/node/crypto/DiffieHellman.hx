@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.crypto;
 
 import js.node.Buffer;
@@ -39,7 +40,7 @@ extern interface IDiffieHellman {
 	@:overload(function():Buffer {})
 	function getPrime(encoding:String):String;
 
-	@:overload(function():Buffer{})
+	@:overload(function():Buffer {})
 	function getGenerator(encoding:String):String;
 
 	@:overload(function():Buffer {})
@@ -54,7 +55,6 @@ extern interface IDiffieHellman {
 	Returned by `Crypto.createDiffieHellman`.
 **/
 extern class DiffieHellman implements IDiffieHellman {
-
 	/**
 		Generates private and public Diffie-Hellman key values, and returns the public key in the specified `encoding`.
 		This key should be transferred to the other party. `encoding` can be 'binary', 'hex', or 'base64'.
@@ -77,7 +77,6 @@ extern class DiffieHellman implements IDiffieHellman {
 	@:overload(function(other_public_key:String, input_encoding:String):Buffer {})
 	function computeSecret(other_public_key:String, input_encoding:String, output_encoding:String):String;
 
-
 	/**
 		Returns the Diffie-Hellman prime in the specified encoding, which can be 'binary', 'hex', or 'base64'.
 		If no encoding is provided, then a buffer is returned.
@@ -89,7 +88,7 @@ extern class DiffieHellman implements IDiffieHellman {
 		Returns the Diffie-Hellman generator in the specified encoding, which can be 'binary', 'hex', or 'base64'.
 		If no encoding is provided, then a buffer is returned.
 	**/
-	@:overload(function():Buffer{})
+	@:overload(function():Buffer {})
 	function getGenerator(encoding:String):String;
 
 	/**
@@ -118,5 +117,5 @@ extern class DiffieHellman implements IDiffieHellman {
 		If no `encoding` is provided, then a `Buffer` is expected.
 	**/
 	@:overload(function(private_key:Buffer):Void {})
-	function setPrivateKey(private_key:String,encoding:String):Void;
+	function setPrivateKey(private_key:String, encoding:String):Void;
 }

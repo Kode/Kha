@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2015 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
 package js.node.tty;
 
 /**
@@ -32,7 +33,7 @@ extern class ReadStream extends js.node.net.Socket {
 		A boolean that is initialized to false.
 		It represents the current "raw" state of the tty.ReadStream instance.
 	**/
-	var isRaw(default,null):Bool;
+	var isRaw(default, null):Bool;
 
 	/**
 		`mode` should be true or false.
