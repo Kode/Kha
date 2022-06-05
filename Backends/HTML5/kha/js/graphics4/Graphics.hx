@@ -487,10 +487,19 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
-		setStencilParameters(true, pipe.stencilFrontMode, pipe.stencilFrontBothPass, pipe.stencilFrontDepthFail, pipe.stencilFrontFail,
-			pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
-		setStencilParameters(false, pipe.stencilBackMode, pipe.stencilBackBothPass, pipe.stencilBackDepthFail, pipe.stencilBackFail,
-			pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
+		if (pipe.stencilFrontMode == Always && pipe.stencilBackMode == Always
+			&& pipe.stencilFrontBothPass == Keep && pipe.stencilBackBothPass == Keep
+			&& pipe.stencilFrontDepthFail == Keep && pipe.stencilBackDepthFail == Keep
+			&& pipe.stencilFrontFail == Keep && pipe.stencilBackFail == Keep) {
+			SystemImpl.gl.disable(GL.STENCIL_TEST);
+		}
+		else {
+			SystemImpl.gl.enable(GL.STENCIL_TEST);
+			setStencilParameters(true, pipe.stencilFrontMode, pipe.stencilFrontBothPass, pipe.stencilFrontDepthFail, pipe.stencilFrontFail,
+				pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
+			setStencilParameters(false, pipe.stencilBackMode, pipe.stencilBackBothPass, pipe.stencilBackDepthFail, pipe.stencilBackFail,
+				pipe.stencilReferenceValue, pipe.stencilReadMask, pipe.stencilWriteMask);
+		}
 		setBlendingMode(pipe.blendSource, pipe.blendDestination, pipe.blendOperation, pipe.alphaBlendSource, pipe.alphaBlendDestination,
 			pipe.alphaBlendOperation);
 		currentPipeline = pipe;
@@ -675,21 +684,15 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setStencilParameters(front: Bool, compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
 			referenceValue: StencilValue, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep && depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
-			SystemImpl.gl.disable(GL.STENCIL_TEST);
-		}
-		else {
-			SystemImpl.gl.enable(GL.STENCIL_TEST);
-			var stencilFunc = convertCompareMode(compareMode);
-			SystemImpl.gl.stencilMaskSeparate(front ? GL.FRONT : GL.BACK, writeMask);
-			SystemImpl.gl.stencilOpSeparate(front ? GL.FRONT : GL.BACK, convertStencilAction(stencilFail), convertStencilAction(depthFail),
-				convertStencilAction(bothPass));
-			switch (referenceValue) {
-				case Static(value):
-					SystemImpl.gl.stencilFuncSeparate(front ? GL.FRONT : GL.BACK, stencilFunc, value, readMask);
-				case Dynamic:
-					SystemImpl.gl.stencilFuncSeparate(front ? GL.FRONT : GL.BACK, stencilFunc, 0, readMask);
-			}
+		var stencilFunc = convertCompareMode(compareMode);
+		SystemImpl.gl.stencilMaskSeparate(front ? GL.FRONT : GL.BACK, writeMask);
+		SystemImpl.gl.stencilOpSeparate(front ? GL.FRONT : GL.BACK, convertStencilAction(stencilFail), convertStencilAction(depthFail),
+			convertStencilAction(bothPass));
+		switch (referenceValue) {
+			case Static(value):
+				SystemImpl.gl.stencilFuncSeparate(front ? GL.FRONT : GL.BACK, stencilFunc, value, readMask);
+			case Dynamic:
+				SystemImpl.gl.stencilFuncSeparate(front ? GL.FRONT : GL.BACK, stencilFunc, 0, readMask);
 		}
 	}
 
