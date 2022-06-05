@@ -288,8 +288,19 @@ class Graphics implements kha.graphics4.Graphics {
 				stencilReferenceValue = value;
 			default:
 		}
-		setStencilParameters(pipeline.stencilMode, pipeline.stencilBothPass, pipeline.stencilDepthFail, pipeline.stencilFail, stencilReferenceValue,
-			pipeline.stencilReadMask, pipeline.stencilWriteMask);
+
+		if (pipeline.stencilFrontMode == Always && pipeline.stencilFrontBothPass == Keep && pipeline.stencilFrontDepthFail == Keep && pipeline.stencilFrontFail == Keep
+			&& pipeline.stencilBackMode == Always && pipeline.stencilBackBothPass == Keep && pipeline.stencilBackDepthFail == Keep && pipeline.stencilBackFail == Keep) {
+			GLES20.glDisable(GLES20.GL_STENCIL_TEST);
+		}
+		else {
+			GLES20.glEnable(GLES20.GL_STENCIL_TEST);
+			setStencilParameters(GLES20.GL_FRONT, pipeline.stencilFrontMode, pipeline.stencilFrontBothPass, pipeline.stencilFrontDepthFail, pipeline.stencilFrontFail, stencilReferenceValue,
+				pipeline.stencilReadMask, pipeline.stencilWriteMask);
+			setStencilParameters(GLES20.GL_BACK, pipeline.stencilBackMode, pipeline.stencilBackBothPass, pipeline.stencilBackDepthFail, pipeline.stencilBackFail, stencilReferenceValue,
+				pipeline.stencilReadMask, pipeline.stencilWriteMask);
+		}
+
 		setBlendingMode(pipeline.blendSource, pipeline.blendDestination);
 		pipeline.set();
 	}
@@ -409,29 +420,22 @@ class Graphics implements kha.graphics4.Graphics {
 		return false;
 	}
 
-	public function setStencilParameters(compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
+	public function setStencilParameters(frontBack: Int, compareMode: CompareMode, bothPass: StencilAction, depthFail: StencilAction, stencilFail: StencilAction,
 			referenceValue: Int, readMask: Int = 0xff, writeMask: Int = 0xff): Void {
-		if (compareMode == CompareMode.Always && bothPass == StencilAction.Keep && depthFail == StencilAction.Keep && stencilFail == StencilAction.Keep) {
-			GLES20.glDisable(GLES20.GL_STENCIL_TEST);
+		var stencilFunc = switch (compareMode) {
+			case CompareMode.Always: GLES20.GL_ALWAYS;
+			case CompareMode.Equal: GLES20.GL_EQUAL;
+			case CompareMode.Greater: GLES20.GL_GREATER;
+			case CompareMode.GreaterEqual: GLES20.GL_GEQUAL;
+			case CompareMode.Less: GLES20.GL_LESS;
+			case CompareMode.LessEqual: GLES20.GL_LEQUAL;
+			case CompareMode.Never: GLES20.GL_NEVER;
+			case CompareMode.NotEqual: GLES20.GL_NOTEQUAL;
 		}
-		else {
-			GLES20.glEnable(GLES20.GL_STENCIL_TEST);
 
-			var stencilFunc = switch (compareMode) {
-				case CompareMode.Always: GLES20.GL_ALWAYS;
-				case CompareMode.Equal: GLES20.GL_EQUAL;
-				case CompareMode.Greater: GLES20.GL_GREATER;
-				case CompareMode.GreaterEqual: GLES20.GL_GEQUAL;
-				case CompareMode.Less: GLES20.GL_LESS;
-				case CompareMode.LessEqual: GLES20.GL_LEQUAL;
-				case CompareMode.Never: GLES20.GL_NEVER;
-				case CompareMode.NotEqual: GLES20.GL_NOTEQUAL;
-			}
-
-			GLES20.glStencilMask(writeMask);
-			GLES20.glStencilOp(convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
-			GLES20.glStencilFunc(stencilFunc, referenceValue, readMask);
-		}
+		GLES20.glStencilMaskSeparate(frontBack, writeMask);
+		GLES20.glStencilOpSeparate(frontBack, convertStencilAction(stencilFail), convertStencilAction(depthFail), convertStencilAction(bothPass));
+		GLES20.glStencilFuncSeparate(frontBack, stencilFunc, referenceValue, readMask);
 	}
 
 	inline function convertStencilAction(action: StencilAction) {

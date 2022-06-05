@@ -157,8 +157,11 @@ extern class GLES20 {
 	public static function glCullFace(mode: Int): Void;
 
 	public static function glStencilFunc(func: Int, ref: Int, mask: Int): Void;
+	public static function glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int): Void; 
 	public static function glStencilOp(fail: Int, zfail: Int, zpass: Int): Void;
+	public static function glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int): Void;
 	public static function glStencilMask(mask: Int): Void;
+	public static function glStencilMaskSeparate(face: Int, mask: Int): Void;
 	public static function glClearStencil(s: Int): Void;
 
 	public static function glGenRenderbuffers(n: Int, buffers: NativeArray<Int>, offset: Int): Void;
