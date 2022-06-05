@@ -78,7 +78,8 @@ class PipelineState extends PipelineStateBase {
 				stencilReferenceValue = value;
 			default:
 		}
-		kore_pipeline_set_states(_pipeline, cullMode, depthMode, stencilMode, stencilBothPass, stencilDepthFail, stencilFail, getBlendFunc(blendSource),
+		kore_pipeline_set_states(_pipeline, cullMode, depthMode, stencilFrontMode, stencilFrontBothPass, stencilFrontDepthFail, stencilFrontFail,
+		stencilBackMode, stencilBackBothPass, stencilBackDepthFail, stencilBackFail, getBlendFunc(blendSource),
 			getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination), depthWrite, stencilReferenceValue,
 			stencilReadMask, stencilWriteMask, colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha, colorAttachmentCount,
 			colorAttachments[0], colorAttachments[1], colorAttachments[2], colorAttachments[3], colorAttachments[4], colorAttachments[5], colorAttachments[6],
@@ -153,8 +154,9 @@ class PipelineState extends PipelineStateBase {
 		return null;
 	}
 
-	@:hlNative("std", "kore_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int, stencilMode: Int,
-		stencilBothPass: Int, stencilDepthFail: Int, stencilFail: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int,
+	@:hlNative("std", "kore_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int, stencilFrontMode: Int,
+		stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int, stencilBackMode: Int,
+		stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int,
 		alphaBlendDestination: Int, depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int, colorWriteMaskRed: Bool,
 		colorWriteMaskGreen: Bool, colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool, colorAttachmentCount: Int, colorAttachment0: TextureFormat,
 		colorAttachment1: TextureFormat, colorAttachment2: TextureFormat, colorAttachment3: TextureFormat, colorAttachment4: TextureFormat,

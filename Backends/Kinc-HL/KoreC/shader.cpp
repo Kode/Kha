@@ -155,12 +155,13 @@ extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vby
 	pipe->compile();
 }
 
-extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilMode, int stencilBothPass, int stencilDepthFail,
-                                            int stencilFail, int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination,
-                                            bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask, bool colorWriteMaskRed,
-                                            bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha, int colorAttachmentCount,
-                                            int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3, int colorAttachment4,
-                                            int colorAttachment5, int colorAttachment6, int colorAttachment7, int depthAttachmentBits,
+extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilFrontMode, int stencilFrontBothPass,
+                                            int stencilFrontDepthFail, int stencilFrontFail, int stencilBackMode, int stencilBackBothPass,
+                                            int stencilBackDepthFail, int stencilBackFail, int blendSource, int blendDestination, int alphaBlendSource,
+                                            int alphaBlendDestination, bool depthWrite, int stencilReferenceValue, int stencilReadMask, int stencilWriteMask,
+                                            bool colorWriteMaskRed, bool colorWriteMaskGreen, bool colorWriteMaskBlue, bool colorWriteMaskAlpha,
+                                            int colorAttachmentCount, int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3,
+                                            int colorAttachment4, int colorAttachment5, int colorAttachment6, int colorAttachment7, int depthAttachmentBits,
                                             int stencilAttachmentBits, bool conservativeRasterization) {
 
 	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
@@ -205,10 +206,16 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int d
 	}
 	pipe->depthWrite = depthWrite;
 
-	pipe->stencilMode = convertCompareMode(stencilMode);
-	pipe->stencilBothPass = convertStencilAction(stencilBothPass);
-	pipe->stencilDepthFail = convertStencilAction(stencilDepthFail);
-	pipe->stencilFail = convertStencilAction(stencilFail);
+	pipe->stencilFrontMode = convertCompareMode(stencilFrontMode);
+	pipe->stencilFrontBothPass = convertStencilAction(stencilFrontBothPass);
+	pipe->stencilFrontDepthFail = convertStencilAction(stencilFrontDepthFail);
+	pipe->stencilFrontFail = convertStencilAction(stencilFrontFail);
+
+	pipe->stencilBackMode = convertCompareMode(stencilBackMode);
+	pipe->stencilBackBothPass = convertStencilAction(stencilBackBothPass);
+	pipe->stencilBackDepthFail = convertStencilAction(stencilBackDepthFail);
+	pipe->stencilBackFail = convertStencilAction(stencilBackFail);
+
 	pipe->stencilReferenceValue = stencilReferenceValue;
 	pipe->stencilReadMask = stencilReadMask;
 	pipe->stencilWriteMask = stencilWriteMask;
