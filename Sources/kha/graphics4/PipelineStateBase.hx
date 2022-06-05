@@ -14,10 +14,16 @@ class PipelineStateBase {
 		depthWrite = false;
 		depthMode = CompareMode.Always;
 
-		stencilMode = CompareMode.Always;
-		stencilBothPass = StencilAction.Keep;
-		stencilDepthFail = StencilAction.Keep;
-		stencilFail = StencilAction.Keep;
+		stencilFrontMode = CompareMode.Always;
+		stencilFrontBothPass = StencilAction.Keep;
+		stencilFrontDepthFail = StencilAction.Keep;
+		stencilFrontFail = StencilAction.Keep;
+
+		stencilBackMode = CompareMode.Always;
+		stencilBackBothPass = StencilAction.Keep;
+		stencilBackDepthFail = StencilAction.Keep;
+		stencilBackFail = StencilAction.Keep;
+
 		stencilReferenceValue = Static(0);
 		stencilReadMask = 0xff;
 		stencilWriteMask = 0xff;
@@ -64,10 +70,16 @@ class PipelineStateBase {
 	public var depthWrite: Bool;
 	public var depthMode: CompareMode;
 
-	public var stencilMode: CompareMode;
-	public var stencilBothPass: StencilAction;
-	public var stencilDepthFail: StencilAction;
-	public var stencilFail: StencilAction;
+	public var stencilFrontMode: CompareMode;
+	public var stencilFrontBothPass: StencilAction;
+	public var stencilFrontDepthFail: StencilAction;
+	public var stencilFrontFail: StencilAction;
+
+	public var stencilBackMode: CompareMode;
+	public var stencilBackBothPass: StencilAction;
+	public var stencilBackDepthFail: StencilAction;
+	public var stencilBackFail: StencilAction;
+
 	public var stencilReferenceValue: StencilValue;
 	public var stencilReadMask: Int;
 	public var stencilWriteMask: Int;

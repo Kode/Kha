@@ -9,7 +9,7 @@
 [submodule "Kinc"]
 	path = Kinc
 	url = https://github.com/Kode/Kinc.git
-	branch = main
+	branch = twosidedstencil
 [submodule "Tools/freebsd_x64"]
 	path = Tools/freebsd_x64
 	url = https://github.com/Kode/KhaTools_freebsd_x64.git
