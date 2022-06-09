@@ -87,7 +87,7 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
-		return untyped __js__("Date.now()") / 1000;
+		return js.Syntax.code("Date.now()") / 1000;
 	}
 
 	public static function getVsync(): Bool {

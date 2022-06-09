@@ -26,22 +26,7 @@ class VertexBuffer {
 		mySize = vertexCount;
 		myStride = 0;
 		for (element in structure.elements) {
-			switch (element.data) {
-				case Float1:
-					myStride += 4 * 1;
-				case Float2:
-					myStride += 4 * 2;
-				case Float3:
-					myStride += 4 * 3;
-				case Float4:
-					myStride += 4 * 4;
-				case Float4x4:
-					myStride += 4 * 4 * 4;
-				case Short2Norm:
-					myStride += 2 * 2;
-				case Short4Norm:
-					myStride += 4 * 2;
-			}
+			myStride += VertexStructure.dataByteSize(element.data);
 		}
 
 		_data = new Float32Array(Std.int(vertexCount * myStride / 4));
@@ -55,40 +40,10 @@ class VertexBuffer {
 		var index = 0;
 		for (element in structure.elements) {
 			var size = 0;
-			switch (element.data) {
-				case Float1:
-					size = 1;
-				case Float2:
-					size = 2;
-				case Float3:
-					size = 3;
-				case Float4:
-					size = 4;
-				case Float4x4:
-					size = 4 * 4;
-				case Short2Norm:
-					myStride += 2 * 2;
-				case Short4Norm:
-					myStride += 4 * 2;
-			}
+			size += Std.int(VertexStructure.dataByteSize(element.data) / 4);
 			sizes[index] = size;
 			offsets[index] = offset;
-			switch (element.data) {
-				case Float1:
-					offset += 4 * 1;
-				case Float2:
-					offset += 4 * 2;
-				case Float3:
-					offset += 4 * 3;
-				case Float4:
-					offset += 4 * 4;
-				case Float4x4:
-					offset += 4 * 4 * 4;
-				case Short2Norm:
-					myStride += 2 * 2;
-				case Short4Norm:
-					myStride += 4 * 2;
-			}
+			offset += VertexStructure.dataByteSize(element.data);
 			++index;
 		}
 
@@ -125,7 +80,7 @@ class VertexBuffer {
 		Worker.postMessage({
 			command: 'updateVertexBuffer',
 			id: _id,
-			data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).data(),
+			data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).buffer,
 			start: lockStart,
 			count: lockCount
 		});

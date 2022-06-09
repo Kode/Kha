@@ -3,7 +3,7 @@ package kha;
 class Worker {
 	public static function postMessage(m: Dynamic): Void {
 		try {
-			untyped __js__("self.postMessage(m)");
+			js.Syntax.code("self.postMessage(m)");
 		}
 		catch (e:Dynamic) {
 			trace(e);
@@ -11,6 +11,6 @@ class Worker {
 	}
 
 	public static function handleMessages(messageHandler: Dynamic->Void) {
-		untyped __js__("self.onmessage = messageHandler");
+		untyped js.Syntax.code("self.onmessage = messageHandler");
 	}
 }

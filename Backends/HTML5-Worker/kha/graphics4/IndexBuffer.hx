@@ -40,7 +40,7 @@ class IndexBuffer {
 	public function unlock(?count: Int): Void {
 		if (count != null)
 			lockEnd = lockStart + count;
-		Worker.postMessage({command: 'updateIndexBuffer', id: _id, data: _data.subarray(lockStart, lockEnd).data()});
+		Worker.postMessage({command: 'updateIndexBuffer', id: _id, data: _data.subarray(lockStart, lockEnd).buffer});
 	}
 
 	public function set(): Void {}

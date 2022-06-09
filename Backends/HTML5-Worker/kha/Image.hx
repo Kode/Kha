@@ -169,6 +169,25 @@ class Image implements Canvas implements Resource {
 		return rh;
 	}
 
+	static function formatByteSize(format: TextureFormat): Int {
+		return switch (format) {
+			case RGBA32: 4;
+			case L8: 1;
+			case RGBA128: 16;
+			case DEPTH16: 2;
+			case RGBA64: 8;
+			case A32: 4;
+			case A16: 2;
+			default: 4;
+		}
+	}
+
+	public var stride(get, never): Int;
+
+	function get_stride(): Int {
+		return formatByteSize(myFormat) * width;
+	}
+
 	var graphics1: kha.graphics1.Graphics;
 	var graphics2: kha.graphics2.Graphics;
 	var graphics4: kha.graphics4.Graphics;
