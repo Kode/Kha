@@ -71,7 +71,7 @@ class VertexBuffer {
 	public function lock(?start: Int, ?count: Int): Float32Array {
 		lockStart = start != null ? start : 0;
 		lockCount = count != null ? count : mySize;
-		return _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride());
+		return _data.subarray(Std.int(lockStart * stride() / 4), Std.int((lockStart + lockCount) * stride() / 4));
 	}
 
 	public function unlock(?count: Int): Void {
@@ -80,7 +80,7 @@ class VertexBuffer {
 		Worker.postMessage({
 			command: 'updateVertexBuffer',
 			id: _id,
-			data: _data.subarray(lockStart * stride(), (lockStart + lockCount) * stride()).buffer,
+			data: _data.subarray(Std.int(lockStart * stride() / 4), Std.int((lockStart + lockCount) * stride() / 4)).buffer,
 			start: lockStart,
 			count: lockCount
 		});
