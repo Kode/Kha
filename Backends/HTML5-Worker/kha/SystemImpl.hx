@@ -59,6 +59,7 @@ class SystemImpl {
 		for (i in 0...maxGamepads) {
 			gamepads[i] = new Gamepad(i);
 		}
+		var window = new Window();
 
 		var g4 = new kha.html5worker.Graphics();
 		frame = new Framebuffer(0, null, null, g4);
@@ -67,7 +68,7 @@ class SystemImpl {
 		Scheduler.init();
 		Scheduler.start();
 
-		callback(new Window());
+		callback(window);
 	}
 
 	public static function windowWidth(windowId: Int = 0): Int {
