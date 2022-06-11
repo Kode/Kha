@@ -63,7 +63,9 @@ class SystemImpl {
 
 	static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error("Error: " + message);
-		Browser.console.error("Stack:\n" + error.stack);
+		if (error != null && error.stack != null) {
+			Browser.console.error("Stack:\n" + error.stack);
+		}
 		return true;
 	}
 
