@@ -49,6 +49,14 @@ class PipelineState extends PipelineStateBase {
 			});
 		}
 
+		var stencilValue = -1;
+		switch (stencilReferenceValue) {
+			case Static(value):
+				stencilValue = value;
+			case Dynamic:
+				stencilValue = -1;
+		}
+
 		var state = {
 			cullMode: cullMode,
 			depthWrite: depthWrite,
@@ -61,7 +69,7 @@ class PipelineState extends PipelineStateBase {
 			stencilBackBothPass: stencilBackBothPass,
 			stencilBackDepthFail: stencilBackDepthFail,
 			stencilBackFail: stencilBackFail,
-			stencilReferenceValue: stencilReferenceValue,
+			stencilReferenceValue: stencilValue,
 			stencilReadMask: stencilReadMask,
 			stencilWriteMask: stencilWriteMask,
 			blendSource: blendSource,
