@@ -24,9 +24,6 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Kha apps can also be compiled to C# or Java libraries
 * Flexible and robust backend system. Adding your own takes little effort and is straight forward.
 * One API for all platforms!
-* Support for VR technology (W.I.P).
-* Networking multiplayer support (W.I.P).
-* Dedicated IDE : Kode Studio.
 
 ### Supported platforms
 
