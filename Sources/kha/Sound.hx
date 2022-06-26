@@ -41,9 +41,9 @@ class Sound implements Resource {
 		}
 		else {
 			length = samples / samplesPerSecond;
-			uncompressedData = new kha.arrays.Float32Array(samples * 2);
-			for (i in 0...samples * 2) {
-				untyped __cpp__("*((float*)&this->uncompressedData->self.data[({0} * 2) * 4]) = data[{0}] / 32767.0f", i);
+			uncompressedData = new kha.arrays.Float32Array(samples);
+			for (i in 0...samples) {
+				untyped __cpp__("*((float*)&this->uncompressedData->self.data[{0} * 4]) = data[{0}] / 32767.0f", i);
 			}
 		}
 		this.channels = channels;
