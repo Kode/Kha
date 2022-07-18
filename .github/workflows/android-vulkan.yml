@@ -1,4 +1,4 @@
-name: Android-Native (OpenGL)
+name: Android (Vulkan)
 
 on:
   push:
@@ -22,4 +22,4 @@ jobs:
     - name: Setup Node.js
       run: nodejs_bin/copysysbin.sh
     - name: Compile
-      run: nodejs_bin/node make.js android-native -g opengl --kha . --from Tests/Empty --arch arm7 --compile
+      run: nodejs_bin/node make.js android -g vulkan --kha . --from Tests/Empty --arch arm7 --compile
