@@ -1,158 +1,184 @@
-#include <Kore/Graphics4/Graphics.h>
-#include <Kore/Graphics4/PipelineState.h>
+#include <kinc/graphics4/graphics.h>
+#include <kinc/graphics4/pipeline.h>
+#include <kinc/graphics4/shader.h>
+#include <kinc/graphics4/vertexstructure.h>
+
 #include <hl.h>
 
-Kore::Graphics4::ZCompareMode convertCompareMode(int mode) {
+static kinc_g4_compare_mode_t convertCompareMode(int mode) {
 	switch (mode) {
 	case 0:
-		return Kore::Graphics4::ZCompareAlways;
+		return KINC_G4_COMPARE_ALWAYS;
 	case 1:
-		return Kore::Graphics4::ZCompareNever;
+		return KINC_G4_COMPARE_NEVER;
 	case 2:
-		return Kore::Graphics4::ZCompareEqual;
+		return KINC_G4_COMPARE_EQUAL;
 	case 3:
-		return Kore::Graphics4::ZCompareNotEqual;
+		return KINC_G4_COMPARE_NOT_EQUAL;
 	case 4:
-		return Kore::Graphics4::ZCompareLess;
+		return KINC_G4_COMPARE_LESS;
 	case 5:
-		return Kore::Graphics4::ZCompareLessEqual;
+		return KINC_G4_COMPARE_LESS_EQUAL;
 	case 6:
-		return Kore::Graphics4::ZCompareGreater;
+		return KINC_G4_COMPARE_GREATER;
 	case 7:
 	default:
-		return Kore::Graphics4::ZCompareGreaterEqual;
+		return KINC_G4_COMPARE_GREATER_EQUAL;
 	}
 }
 
-Kore::Graphics4::StencilAction convertStencilAction(int action) {
+static kinc_g4_stencil_action_t convertStencilAction(int action) {
 	switch (action) {
 	case 0:
-		return Kore::Graphics4::Keep;
+		return KINC_G4_STENCIL_KEEP;
 	case 1:
-		return Kore::Graphics4::Zero;
+		return KINC_G4_STENCIL_ZERO;
 	case 2:
-		return Kore::Graphics4::Replace;
+		return KINC_G4_STENCIL_REPLACE;
 	case 3:
-		return Kore::Graphics4::Increment;
+		return KINC_G4_STENCIL_INCREMENT;
 	case 4:
-		return Kore::Graphics4::IncrementWrap;
+		return KINC_G4_STENCIL_INCREMENT_WRAP;
 	case 5:
-		return Kore::Graphics4::Decrement;
+		return KINC_G4_STENCIL_DECREMENT;
 	case 6:
-		return Kore::Graphics4::DecrementWrap;
+		return KINC_G4_STENCIL_DECREMENT_WRAP;
 	case 7:
 	default:
-		return Kore::Graphics4::Invert;
+		return KINC_G4_STENCIL_INVERT;
 	}
 }
 
-Kore::Graphics4::RenderTargetFormat convertColorAttachment(int format) {
+static kinc_g4_render_target_format_t convertColorAttachment(int format) {
 	switch (format) {
 	case 0:
-		return Kore::Graphics4::Target32Bit;
+		return KINC_G4_RENDER_TARGET_FORMAT_32BIT;
 	case 1:
-		return Kore::Graphics4::Target8BitRed;
+		return KINC_G4_RENDER_TARGET_FORMAT_8BIT_RED;
 	case 2:
-		return Kore::Graphics4::Target128BitFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_128BIT_FLOAT;
 	case 3:
-		return Kore::Graphics4::Target16BitDepth;
+		return KINC_G4_RENDER_TARGET_FORMAT_16BIT_DEPTH;
 	case 4:
-		return Kore::Graphics4::Target64BitFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_64BIT_FLOAT;
 	case 5:
-		return Kore::Graphics4::Target32BitRedFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_32BIT_RED_FLOAT;
 	case 6:
 	default:
-		return Kore::Graphics4::Target16BitRedFloat;
+		return KINC_G4_RENDER_TARGET_FORMAT_16BIT_RED_FLOAT;
 	}
 }
 
 extern "C" vbyte *hl_kore_create_vertexshader(vbyte *data, int length) {
-	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::VertexShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_VERTEX);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
-	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::FragmentShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_FRAGMENT);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_create_geometryshader(vbyte *data, int length) {
-	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::GeometryShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_GEOMETRY);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_create_tesscontrolshader(vbyte *data, int length) {
-	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationControlShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_TESSELLATION_CONTROL);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
-	return (vbyte *)new Kore::Graphics4::Shader(data, length, Kore::Graphics4::TessellationEvaluationShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_TESSELLATION_EVALUATION);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_vertexshader_from_source(vbyte *source) {
-	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::VertexShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_VERTEX);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_fragmentshader_from_source(vbyte *source) {
-	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::FragmentShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_FRAGMENT);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_geometryshader_from_source(vbyte *source) {
-	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::GeometryShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_GEOMETRY);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_tesscontrolshader_from_source(vbyte *source) {
-	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::TessellationControlShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_TESSELLATION_CONTROL);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_tessevalshader_from_source(vbyte *source) {
-	return (vbyte *)new Kore::Graphics4::Shader((char *)source, Kore::Graphics4::TessellationEvaluationShader);
+	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
+	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_TESSELLATION_EVALUATION);
+	return (vbyte *)shader;
 }
 
 extern "C" vbyte *hl_kore_create_pipeline() {
-	return (vbyte *)new Kore::Graphics4::PipelineState();
+	kinc_g4_pipeline_t *pipeline = (kinc_g4_pipeline_t *)malloc(sizeof(kinc_g4_pipeline_t));
+	kinc_g4_pipeline_init(pipeline);
+	return (vbyte *)pipeline;
 }
 
 extern "C" void hl_kore_delete_pipeline(vbyte *pipeline) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	delete pipe;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_pipeline_destroy(pipe);
+	free(pipe);
 }
 
 extern "C" void hl_kore_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
-	pipe->vertexShader = sh;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
+	pipe->vertex_shader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
-	pipe->fragmentShader = sh;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
+	pipe->fragment_shader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
-	pipe->geometryShader = sh;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
+	pipe->geometry_shader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
-	pipe->tessellationControlShader = sh;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
+	pipe->tessellation_control_shader = sh;
 }
 
 extern "C" void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::Shader *sh = (Kore::Graphics4::Shader *)shader;
-	pipe->tessellationEvaluationShader = sh;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
+	pipe->tessellation_evaluation_shader = sh;
 }
 
 extern "C" void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	pipe->inputLayout[0] = (Kore::Graphics4::VertexStructure *)structure0;
-	pipe->inputLayout[1] = (Kore::Graphics4::VertexStructure *)structure1;
-	pipe->inputLayout[2] = (Kore::Graphics4::VertexStructure *)structure2;
-	pipe->inputLayout[3] = (Kore::Graphics4::VertexStructure *)structure3;
-	pipe->inputLayout[4] = nullptr;
-	pipe->compile();
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	pipe->input_layout[0] = (kinc_g4_vertex_structure_t *)structure0;
+	pipe->input_layout[1] = (kinc_g4_vertex_structure_t *)structure1;
+	pipe->input_layout[2] = (kinc_g4_vertex_structure_t *)structure2;
+	pipe->input_layout[3] = (kinc_g4_vertex_structure_t *)structure3;
+	pipe->input_layout[4] = NULL;
+	kinc_g4_pipeline_compile(pipe);
 }
 
 extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilFrontMode, int stencilFrontBothPass,
@@ -163,100 +189,78 @@ extern "C" void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int d
                                             int colorAttachmentCount, int colorAttachment0, int colorAttachment1, int colorAttachment2, int colorAttachment3,
                                             int colorAttachment4, int colorAttachment5, int colorAttachment6, int colorAttachment7, int depthAttachmentBits,
                                             int stencilAttachmentBits, bool conservativeRasterization) {
-
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 
 	switch (cullMode) {
 	case 0:
-		pipe->cullMode = Kore::Graphics4::Clockwise;
+		pipe->cull_mode = KINC_G4_CULL_CLOCKWISE;
 		break;
 	case 1:
-		pipe->cullMode = Kore::Graphics4::CounterClockwise;
+		pipe->cull_mode = KINC_G4_CULL_COUNTER_CLOCKWISE;
 		break;
 	case 2:
-		pipe->cullMode = Kore::Graphics4::NoCulling;
+		pipe->cull_mode = KINC_G4_CULL_NOTHING;
 		break;
 	}
 
-	switch (depthMode) {
-	case 0:
-		pipe->depthMode = Kore::Graphics4::ZCompareAlways;
-		break;
-	case 1:
-		pipe->depthMode = Kore::Graphics4::ZCompareNever;
-		break;
-	case 2:
-		pipe->depthMode = Kore::Graphics4::ZCompareEqual;
-		break;
-	case 3:
-		pipe->depthMode = Kore::Graphics4::ZCompareNotEqual;
-		break;
-	case 4:
-		pipe->depthMode = Kore::Graphics4::ZCompareLess;
-		break;
-	case 5:
-		pipe->depthMode = Kore::Graphics4::ZCompareLessEqual;
-		break;
-	case 6:
-		pipe->depthMode = Kore::Graphics4::ZCompareGreater;
-		break;
-	case 7:
-		pipe->depthMode = Kore::Graphics4::ZCompareGreaterEqual;
-		break;
-	}
-	pipe->depthWrite = depthWrite;
+	pipe->depth_mode = convertCompareMode(depthMode);
+	pipe->depth_write = depthWrite;
 
-	pipe->stencilFrontMode = convertCompareMode(stencilFrontMode);
-	pipe->stencilFrontBothPass = convertStencilAction(stencilFrontBothPass);
-	pipe->stencilFrontDepthFail = convertStencilAction(stencilFrontDepthFail);
-	pipe->stencilFrontFail = convertStencilAction(stencilFrontFail);
+	pipe->stencil_front_mode = convertCompareMode(stencilFrontMode);
+	pipe->stencil_front_both_pass = convertStencilAction(stencilFrontBothPass);
+	pipe->stencil_front_depth_fail = convertStencilAction(stencilFrontDepthFail);
+	pipe->stencil_front_fail = convertStencilAction(stencilFrontFail);
 
-	pipe->stencilBackMode = convertCompareMode(stencilBackMode);
-	pipe->stencilBackBothPass = convertStencilAction(stencilBackBothPass);
-	pipe->stencilBackDepthFail = convertStencilAction(stencilBackDepthFail);
-	pipe->stencilBackFail = convertStencilAction(stencilBackFail);
+	pipe->stencil_back_mode = convertCompareMode(stencilBackMode);
+	pipe->stencil_back_both_pass = convertStencilAction(stencilBackBothPass);
+	pipe->stencil_back_depth_fail = convertStencilAction(stencilBackDepthFail);
+	pipe->stencil_back_fail = convertStencilAction(stencilBackFail);
 
-	pipe->stencilReferenceValue = stencilReferenceValue;
-	pipe->stencilReadMask = stencilReadMask;
-	pipe->stencilWriteMask = stencilWriteMask;
+	pipe->stencil_reference_value = stencilReferenceValue;
+	pipe->stencil_read_mask = stencilReadMask;
+	pipe->stencil_write_mask = stencilWriteMask;
 
-	pipe->blendSource = (Kore::Graphics4::BlendingFactor)blendSource;
-	pipe->blendDestination = (Kore::Graphics4::BlendingFactor)blendDestination;
-	pipe->alphaBlendSource = (Kore::Graphics4::BlendingFactor)alphaBlendSource;
-	pipe->alphaBlendDestination = (Kore::Graphics4::BlendingFactor)alphaBlendDestination;
+	pipe->blend_source = (kinc_g4_blending_factor_t)blendSource;
+	pipe->blend_destination = (kinc_g4_blending_factor_t)blendDestination;
+	pipe->alpha_blend_source = (kinc_g4_blending_factor_t)alphaBlendSource;
+	pipe->alpha_blend_destination = (kinc_g4_blending_factor_t)alphaBlendDestination;
 
-	pipe->colorWriteMaskRed[0] = colorWriteMaskRed;
-	pipe->colorWriteMaskGreen[0] = colorWriteMaskGreen;
-	pipe->colorWriteMaskBlue[0] = colorWriteMaskBlue;
-	pipe->colorWriteMaskAlpha[0] = colorWriteMaskAlpha;
+	pipe->color_write_mask_red[0] = colorWriteMaskRed;
+	pipe->color_write_mask_green[0] = colorWriteMaskGreen;
+	pipe->color_write_mask_blue[0] = colorWriteMaskBlue;
+	pipe->color_write_mask_alpha[0] = colorWriteMaskAlpha;
 
-	pipe->colorAttachmentCount = colorAttachmentCount;
-	pipe->colorAttachment[0] = convertColorAttachment(colorAttachment0);
-	pipe->colorAttachment[1] = convertColorAttachment(colorAttachment1);
-	pipe->colorAttachment[2] = convertColorAttachment(colorAttachment2);
-	pipe->colorAttachment[3] = convertColorAttachment(colorAttachment3);
-	pipe->colorAttachment[4] = convertColorAttachment(colorAttachment4);
-	pipe->colorAttachment[5] = convertColorAttachment(colorAttachment5);
-	pipe->colorAttachment[6] = convertColorAttachment(colorAttachment6);
-	pipe->colorAttachment[7] = convertColorAttachment(colorAttachment7);
+	pipe->color_attachment_count = colorAttachmentCount;
+	pipe->color_attachment[0] = convertColorAttachment(colorAttachment0);
+	pipe->color_attachment[1] = convertColorAttachment(colorAttachment1);
+	pipe->color_attachment[2] = convertColorAttachment(colorAttachment2);
+	pipe->color_attachment[3] = convertColorAttachment(colorAttachment3);
+	pipe->color_attachment[4] = convertColorAttachment(colorAttachment4);
+	pipe->color_attachment[5] = convertColorAttachment(colorAttachment5);
+	pipe->color_attachment[6] = convertColorAttachment(colorAttachment6);
+	pipe->color_attachment[7] = convertColorAttachment(colorAttachment7);
 
-	pipe->depthAttachmentBits = depthAttachmentBits;
-	pipe->stencilAttachmentBits = stencilAttachmentBits;
+	pipe->depth_attachment_bits = depthAttachmentBits;
+	pipe->stencil_attachment_bits = stencilAttachmentBits;
 
-	pipe->conservativeRasterization = conservativeRasterization;
+	pipe->conservative_rasterization = conservativeRasterization;
 }
 
 extern "C" void hl_kore_pipeline_set(vbyte *pipeline) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	Kore::Graphics4::setPipeline(pipe);
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_set_pipeline(pipe);
 }
 
 extern "C" vbyte *hl_kore_pipeline_get_constantlocation(vbyte *pipeline, vbyte *name) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	return (vbyte *)new Kore::Graphics4::ConstantLocation(pipe->getConstantLocation((char *)name));
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_constant_location_t *location = (kinc_g4_constant_location_t *)malloc(sizeof(kinc_g4_constant_location_t));
+	*location = kinc_g4_pipeline_get_constant_location(pipe, (char *)name);
+	return (vbyte *)location;
 }
 
 extern "C" vbyte *hl_kore_pipeline_get_textureunit(vbyte *pipeline, vbyte *name) {
-	Kore::Graphics4::PipelineState *pipe = (Kore::Graphics4::PipelineState *)pipeline;
-	return (vbyte *)new Kore::Graphics4::TextureUnit(pipe->getTextureUnit((char *)name));
+	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
+	kinc_g4_texture_unit_t *unit = (kinc_g4_texture_unit_t *)malloc(sizeof(kinc_g4_texture_unit_t));
+	*unit = kinc_g4_pipeline_get_texture_unit(pipe, (char *)name);
+	return (vbyte *)unit;
 }
