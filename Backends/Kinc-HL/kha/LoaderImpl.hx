@@ -44,11 +44,11 @@ class LoaderImpl {
 		return [StringHelper.fromBytes(kore_video_format())];
 	}
 
-	@:hlNative("std", "kore_file_contents") static function kore_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer {
+	@:hlNative("std", "kinc_file_contents") static function kore_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_video_format") static function kore_video_format(): Pointer {
+	@:hlNative("std", "kinc_video_format") static function kore_video_format(): Pointer {
 		return null;
 	}
 }

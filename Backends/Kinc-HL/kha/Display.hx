@@ -94,35 +94,35 @@ class Display {
 		return [];
 	}
 
-	@:hlNative("std", "kore_display_init") static function kore_display_init(): Int {
+	@:hlNative("std", "kinc_display_init") static function kore_display_init(): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_count") static function kore_display_count(): Int {
+	@:hlNative("std", "kinc_display_count") static function kore_display_count(): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_width") static function kore_display_width(index: Int): Int {
+	@:hlNative("std", "kinc_display_width") static function kore_display_width(index: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_height") static function kore_display_height(index: Int): Int {
+	@:hlNative("std", "kinc_display_height") static function kore_display_height(index: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_x") static function kore_display_x(index: Int): Int {
+	@:hlNative("std", "kinc_display_x") static function kore_display_x(index: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_y") static function kore_display_y(index: Int): Int {
+	@:hlNative("std", "kinc_display_y") static function kore_display_y(index: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_display_is_primary") static function kore_display_is_primary(index: Int): Bool {
+	@:hlNative("std", "kinc_display_is_primary") static function kore_display_is_primary(index: Int): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_display_ppi") static function kore_display_ppi(): Int {
+	@:hlNative("std", "kinc_display_ppi") static function kore_display_ppi(): Int {
 		return 0;
 	}
 }

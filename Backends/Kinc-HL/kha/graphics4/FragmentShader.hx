@@ -21,11 +21,11 @@ class FragmentShader {
 
 	public function delete(): Void {}
 
-	@:hlNative("std", "kore_create_fragmentshader") static function kore_create_fragmentshader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_create_fragmentshader") static function kore_create_fragmentshader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_fragmentshader_from_source") static function kore_fragmentshader_from_source(source: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_fragmentshader_from_source") static function kore_fragmentshader_from_source(source: hl.Bytes): Pointer {
 		return null;
 	}
 }

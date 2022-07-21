@@ -29,15 +29,15 @@ class IndexBuffer {
 		return myCount;
 	}
 
-	@:hlNative("std", "kore_create_indexbuffer") static function kore_create_indexbuffer(count: Int): Pointer {
+	@:hlNative("std", "kinc_create_indexbuffer") static function kore_create_indexbuffer(count: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_delete_indexbuffer") static function kore_delete_indexbuffer(buffer: Pointer): Void {}
+	@:hlNative("std", "kinc_delete_indexbuffer") static function kore_delete_indexbuffer(buffer: Pointer): Void {}
 
-	@:hlNative("std", "kore_indexbuffer_lock") static function kore_indexbuffer_lock(buffer: Pointer): hl.Bytes {
+	@:hlNative("std", "kinc_indexbuffer_lock") static function kore_indexbuffer_lock(buffer: Pointer): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kore_indexbuffer_unlock") static function kore_indexbuffer_unlock(buffer: Pointer): Void {}
+	@:hlNative("std", "kinc_indexbuffer_unlock") static function kore_indexbuffer_unlock(buffer: Pointer): Void {}
 }

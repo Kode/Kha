@@ -21,11 +21,11 @@ class GeometryShader {
 
 	public function delete(): Void {}
 
-	@:hlNative("std", "kore_create_geometryshader") static function kore_create_geometryshader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_create_geometryshader") static function kore_create_geometryshader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_geometryshader_from_source") static function kore_geometryshader_from_source(source: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_geometryshader_from_source") static function kore_geometryshader_from_source(source: hl.Bytes): Pointer {
 		return null;
 	}
 }

@@ -353,106 +353,106 @@ class Image implements Canvas implements Resource {
 		kore_texture_clear(_texture, x, y, z, width, height, depth, color);
 	}
 
-	@:hlNative("std", "kore_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer {
+	@:hlNative("std", "kinc_texture_create") static function kore_texture_create(width: Int, height: Int, format: Int, readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer {
+	@:hlNative("std", "kinc_texture_create_from_file") static function kore_texture_create_from_file(filename: hl.Bytes, readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_texture_create3d") static function kore_texture_create3d(width: Int, height: Int, depth: Int, format: Int,
+	@:hlNative("std", "kinc_texture_create3d") static function kore_texture_create3d(width: Int, height: Int, depth: Int, format: Int,
 			readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_video_get_current_image") static function kore_video_get_current_image(video: Pointer): Pointer {
+	@:hlNative("std", "kinc_video_get_current_image") static function kore_video_get_current_image(video: Pointer): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_texture_from_bytes") static function kore_texture_from_bytes(bytes: Pointer, width: Int, height: Int, format: Int,
+	@:hlNative("std", "kinc_texture_from_bytes") static function kore_texture_from_bytes(bytes: Pointer, width: Int, height: Int, format: Int,
 			readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_texture_from_bytes3d") static function kore_texture_from_bytes3d(bytes: Pointer, width: Int, height: Int, depth: Int, format: Int,
+	@:hlNative("std", "kinc_texture_from_bytes3d") static function kore_texture_from_bytes3d(bytes: Pointer, width: Int, height: Int, depth: Int, format: Int,
 			readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_texture_from_encoded_bytes") static function kore_texture_from_encoded_bytes(bytes: Pointer, length: Int, format: hl.Bytes,
+	@:hlNative("std", "kinc_texture_from_encoded_bytes") static function kore_texture_from_encoded_bytes(bytes: Pointer, length: Int, format: hl.Bytes,
 			readable: Bool): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool {
+	@:hlNative("std", "kinc_non_pow2_textures_supported") static function kore_non_pow2_textures_supported(): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool {
+	@:hlNative("std", "kinc_graphics_render_targets_inverted_y") static function kore_graphics_render_targets_inverted_y(): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int {
+	@:hlNative("std", "kinc_texture_get_width") static function kore_texture_get_width(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int {
+	@:hlNative("std", "kinc_texture_get_height") static function kore_texture_get_height(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_get_real_width") static function kore_texture_get_real_width(texture: Pointer): Int {
+	@:hlNative("std", "kinc_texture_get_real_width") static function kore_texture_get_real_width(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_get_real_height") static function kore_texture_get_real_height(texture: Pointer): Int {
+	@:hlNative("std", "kinc_texture_get_real_height") static function kore_texture_get_real_height(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_at") static function kore_texture_at(texture: Pointer, x: Int, y: Int): Int {
+	@:hlNative("std", "kinc_texture_at") static function kore_texture_at(texture: Pointer, x: Int, y: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_unload") static function kore_texture_unload(texture: Pointer): Void {}
+	@:hlNative("std", "kinc_texture_unload") static function kore_texture_unload(texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_render_target_unload") static function kore_render_target_unload(renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_render_target_unload") static function kore_render_target_unload(renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_render_target_create") static function kore_render_target_create(width: Int, height: Int, depthBufferBits: Int, format: Int,
+	@:hlNative("std", "kinc_render_target_create") static function kore_render_target_create(width: Int, height: Int, depthBufferBits: Int, format: Int,
 			stencilBufferBits: Int, contextId: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_render_target_get_width") static function kore_render_target_get_width(renderTarget: Pointer): Int {
+	@:hlNative("std", "kinc_render_target_get_width") static function kore_render_target_get_width(renderTarget: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int {
+	@:hlNative("std", "kinc_render_target_get_height") static function kore_render_target_get_height(renderTarget: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int {
+	@:hlNative("std", "kinc_render_target_get_real_width") static function kore_render_target_get_real_width(renderTarget: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int {
+	@:hlNative("std", "kinc_render_target_get_real_height") static function kore_render_target_get_real_height(renderTarget: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_unlock") static function kore_texture_unlock(texture: Pointer, bytes: Pointer): Void {}
+	@:hlNative("std", "kinc_texture_unlock") static function kore_texture_unlock(texture: Pointer, bytes: Pointer): Void {}
 
-	@:hlNative("std", "kore_render_target_get_pixels") static function kore_render_target_get_pixels(renderTarget: Pointer, pixels: Pointer): Void {}
+	@:hlNative("std", "kinc_render_target_get_pixels") static function kore_render_target_get_pixels(renderTarget: Pointer, pixels: Pointer): Void {}
 
-	@:hlNative("std", "kore_generate_mipmaps_texture") static function kore_generate_mipmaps_texture(texture: Pointer, levels: Int): Void {}
+	@:hlNative("std", "kinc_generate_mipmaps_texture") static function kore_generate_mipmaps_texture(texture: Pointer, levels: Int): Void {}
 
-	@:hlNative("std", "kore_generate_mipmaps_target") static function kore_generate_mipmaps_target(renderTarget: Pointer, levels: Int): Void {}
+	@:hlNative("std", "kinc_generate_mipmaps_target") static function kore_generate_mipmaps_target(renderTarget: Pointer, levels: Int): Void {}
 
-	@:hlNative("std", "kore_set_mipmap_texture") static function kore_set_mipmap_texture(texture: Pointer, mipmap: Pointer, level: Int): Void {}
+	@:hlNative("std", "kinc_set_mipmap_texture") static function kore_set_mipmap_texture(texture: Pointer, mipmap: Pointer, level: Int): Void {}
 
-	@:hlNative("std", "kore_render_target_set_depth_stencil_from") static function kore_render_target_set_depth_stencil_from(renderTarget: Pointer,
+	@:hlNative("std", "kinc_render_target_set_depth_stencil_from") static function kore_render_target_set_depth_stencil_from(renderTarget: Pointer,
 			from: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_texture_clear") static function kore_texture_clear(texture: Pointer, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int,
+	@:hlNative("std", "kinc_texture_clear") static function kore_texture_clear(texture: Pointer, x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int,
 		color: Color): Void {}
 }

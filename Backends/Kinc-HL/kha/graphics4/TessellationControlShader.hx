@@ -22,11 +22,11 @@ class TessellationControlShader {
 
 	public function delete(): Void {}
 
-	@:hlNative("std", "kore_create_tesscontrolshader") static function kore_create_tesscontrolshader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_create_tesscontrolshader") static function kore_create_tesscontrolshader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_tesscontrolshader_from_source") static function kore_tesscontrolshader_from_source(source: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_tesscontrolshader_from_source") static function kore_tesscontrolshader_from_source(source: hl.Bytes): Pointer {
 		return null;
 	}
 }

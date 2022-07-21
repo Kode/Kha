@@ -35,7 +35,7 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kore_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
+	@:hlNative("std", "kinc_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
 		return null;
 	}
 }

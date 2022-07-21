@@ -21,17 +21,17 @@ class Shader {
 		return new TextureUnit(kore_compute_get_textureunit(_shader, StringHelper.convert(name)));
 	}
 
-	@:hlNative("std", "kore_compute_create_shader") static function kore_compute_create_shader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_compute_create_shader") static function kore_compute_create_shader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_compute_delete_shader") static function kore_compute_delete_shader(shader: Pointer): Void {}
+	@:hlNative("std", "kinc_compute_delete_shader") static function kore_compute_delete_shader(shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_get_constantlocation") static function kore_compute_get_constantlocation(shader: Pointer, name: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_compute_get_constantlocation") static function kore_compute_get_constantlocation(shader: Pointer, name: hl.Bytes): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_compute_get_textureunit") static function kore_compute_get_textureunit(shader: Pointer, name: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_compute_get_textureunit") static function kore_compute_get_textureunit(shader: Pointer, name: hl.Bytes): Pointer {
 		return null;
 	}
 }

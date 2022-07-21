@@ -127,34 +127,34 @@ class PipelineState extends PipelineStateBase {
 		kore_pipeline_set(_pipeline);
 	}
 
-	@:hlNative("std", "kore_create_pipeline") static function kore_create_pipeline(): Pointer {
+	@:hlNative("std", "kinc_create_pipeline") static function kore_create_pipeline(): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_delete_pipeline") static function kore_delete_pipeline(pipeline: Pointer): Void {}
+	@:hlNative("std", "kinc_delete_pipeline") static function kore_delete_pipeline(pipeline: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set_fragment_shader") static function kore_pipeline_set_fragment_shader(pipeline: Pointer, shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set_vertex_shader") static function kore_pipeline_set_vertex_shader(pipeline: Pointer, shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_set_geometry_shader") static function kore_pipeline_set_geometry_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set_geometry_shader") static function kore_pipeline_set_geometry_shader(pipeline: Pointer, shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_set_tesscontrol_shader") static function kore_pipeline_set_tesscontrol_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set_tesscontrol_shader") static function kore_pipeline_set_tesscontrol_shader(pipeline: Pointer, shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_set_tesseval_shader") static function kore_pipeline_set_tesseval_shader(pipeline: Pointer, shader: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set_tesseval_shader") static function kore_pipeline_set_tesseval_shader(pipeline: Pointer, shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure0: Pointer, structure1: Pointer,
+	@:hlNative("std", "kinc_pipeline_compile") static function kore_pipeline_compile(pipeline: Pointer, structure0: Pointer, structure1: Pointer,
 		structure2: Pointer, structure3: Pointer): Void {}
 
-	@:hlNative("std", "kore_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_pipeline_get_constantlocation") static function kore_pipeline_get_constantlocation(pipeline: Pointer, name: hl.Bytes): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_pipeline_get_textureunit") static function kore_pipeline_get_textureunit(pipeline: Pointer, name: hl.Bytes): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int, stencilFrontMode: Int,
+	@:hlNative("std", "kinc_pipeline_set_states") static function kore_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int, stencilFrontMode: Int,
 		stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int, stencilBackMode: Int,
 		stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int,
 		alphaBlendDestination: Int, depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int, colorWriteMaskRed: Bool,
@@ -163,5 +163,5 @@ class PipelineState extends PipelineStateBase {
 		colorAttachment5: TextureFormat, colorAttachment6: TextureFormat, colorAttachment7: TextureFormat, depthAttachmentBits: Int,
 		stencilAttachmentBits: Int, conservativeRasterization: Bool): Void {}
 
-	@:hlNative("std", "kore_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void {}
+	@:hlNative("std", "kinc_pipeline_set") static function kore_pipeline_set(pipeline: Pointer): Void {}
 }

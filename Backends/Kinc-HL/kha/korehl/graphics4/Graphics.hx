@@ -275,105 +275,105 @@ class Graphics implements kha.graphics4.Graphics {
 		kore_graphics_flush();
 	}
 
-	@:hlNative("std", "kore_graphics_clear") static function kore_graphics_clear(flags: Int, color: Int, z: FastFloat, stencil: Int): Void {}
+	@:hlNative("std", "kinc_graphics_clear") static function kore_graphics_clear(flags: Int, color: Int, z: FastFloat, stencil: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_vsynced") static function kore_graphics_vsynced(): Bool {
+	@:hlNative("std", "kinc_graphics_vsynced") static function kore_graphics_vsynced(): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_graphics_refreshrate") static function kore_graphics_refreshrate(): Int {
+	@:hlNative("std", "kinc_graphics_refreshrate") static function kore_graphics_refreshrate(): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_graphics_viewport") static function kore_graphics_viewport(x: Int, y: Int, width: Int, height: Int): Void {}
+	@:hlNative("std", "kinc_graphics_viewport") static function kore_graphics_viewport(x: Int, y: Int, width: Int, height: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_vertexbuffer") static function kore_graphics_set_vertexbuffer(buffer: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_vertexbuffer") static function kore_graphics_set_vertexbuffer(buffer: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_vertexbuffers") static function kore_graphics_set_vertexbuffers(b0: Pointer, b1: Pointer, b2: Pointer, b3: Pointer,
+	@:hlNative("std", "kinc_graphics_set_vertexbuffers") static function kore_graphics_set_vertexbuffers(b0: Pointer, b1: Pointer, b2: Pointer, b3: Pointer,
 		count: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_indexbuffer") static function kore_graphics_set_indexbuffer(buffer: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_scissor") static function kore_graphics_scissor(x: Int, y: Int, width: Int, height: Int): Void {}
+	@:hlNative("std", "kinc_graphics_scissor") static function kore_graphics_scissor(x: Int, y: Int, width: Int, height: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_disable_scissor") static function kore_graphics_disable_scissor(): Void {}
+	@:hlNative("std", "kinc_graphics_disable_scissor") static function kore_graphics_disable_scissor(): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture_parameters") static function kore_graphics_set_texture_parameters(unit: Pointer, uAddressing: Int,
+	@:hlNative("std", "kinc_graphics_set_texture_parameters") static function kore_graphics_set_texture_parameters(unit: Pointer, uAddressing: Int,
 		vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture3d_parameters") static function kore_graphics_set_texture3d_parameters(unit: Pointer, uAddressing: Int,
+	@:hlNative("std", "kinc_graphics_set_texture3d_parameters") static function kore_graphics_set_texture3d_parameters(unit: Pointer, uAddressing: Int,
 		vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture_compare_mode") static function kore_graphics_set_texture_compare_mode(unit: Pointer, enabled: Bool): Void {}
+	@:hlNative("std", "kinc_graphics_set_texture_compare_mode") static function kore_graphics_set_texture_compare_mode(unit: Pointer, enabled: Bool): Void {}
 
-	@:hlNative("std", "kore_graphics_set_cube_map_compare_mode") static function kore_graphics_set_cube_map_compare_mode(unit: Pointer, enabled: Bool): Void {}
+	@:hlNative("std", "kinc_graphics_set_cube_map_compare_mode") static function kore_graphics_set_cube_map_compare_mode(unit: Pointer, enabled: Bool): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture") static function kore_graphics_set_texture(unit: Pointer, texture: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_texture") static function kore_graphics_set_texture(unit: Pointer, texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture_depth") static function kore_graphics_set_texture_depth(unit: Pointer, renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_texture_depth") static function kore_graphics_set_texture_depth(unit: Pointer, renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_texture_array") static function kore_graphics_set_texture_array(unit: Pointer, textureArray: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_texture_array") static function kore_graphics_set_texture_array(unit: Pointer, textureArray: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_render_target") static function kore_graphics_set_render_target(unit: Pointer, renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_render_target") static function kore_graphics_set_render_target(unit: Pointer, renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_cubemap_texture") static function kore_graphics_set_cubemap_texture(unit: Pointer, texture: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_cubemap_texture") static function kore_graphics_set_cubemap_texture(unit: Pointer, texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_cubemap_target") static function kore_graphics_set_cubemap_target(unit: Pointer, renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_cubemap_target") static function kore_graphics_set_cubemap_target(unit: Pointer, renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_cubemap_depth") static function kore_graphics_set_cubemap_depth(unit: Pointer, renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_cubemap_depth") static function kore_graphics_set_cubemap_depth(unit: Pointer, renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_image_texture") static function kore_graphics_set_image_texture(unit: Pointer, texture: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_set_image_texture") static function kore_graphics_set_image_texture(unit: Pointer, texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void {}
+	@:hlNative("std", "kinc_graphics_set_bool") static function kore_graphics_set_bool(location: Pointer, value: Bool): Void {}
 
-	@:hlNative("std", "kore_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void {}
+	@:hlNative("std", "kinc_graphics_set_int") static function kore_graphics_set_int(location: Pointer, value: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_int2") static function kore_graphics_set_int2(location: Pointer, value1: Int, value2: Int): Void {}
+	@:hlNative("std", "kinc_graphics_set_int2") static function kore_graphics_set_int2(location: Pointer, value1: Int, value2: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_int3") static function kore_graphics_set_int3(location: Pointer, value1: Int, value2: Int, value3: Int): Void {}
+	@:hlNative("std", "kinc_graphics_set_int3") static function kore_graphics_set_int3(location: Pointer, value1: Int, value2: Int, value3: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_int4") static function kore_graphics_set_int4(location: Pointer, value1: Int, value2: Int, value3: Int,
+	@:hlNative("std", "kinc_graphics_set_int4") static function kore_graphics_set_int4(location: Pointer, value1: Int, value2: Int, value3: Int,
 		value4: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_ints") static function kore_graphics_set_ints(location: Pointer, values: Pointer, count: Int): Void {}
+	@:hlNative("std", "kinc_graphics_set_ints") static function kore_graphics_set_ints(location: Pointer, values: Pointer, count: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: FastFloat): Void {}
+	@:hlNative("std", "kinc_graphics_set_float") static function kore_graphics_set_float(location: Pointer, value: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_set_float2") static function kore_graphics_set_float2(location: Pointer, value1: FastFloat, value2: FastFloat): Void {}
+	@:hlNative("std", "kinc_graphics_set_float2") static function kore_graphics_set_float2(location: Pointer, value1: FastFloat, value2: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_set_float3") static function kore_graphics_set_float3(location: Pointer, value1: FastFloat, value2: FastFloat,
+	@:hlNative("std", "kinc_graphics_set_float3") static function kore_graphics_set_float3(location: Pointer, value1: FastFloat, value2: FastFloat,
 		value3: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_set_float4") static function kore_graphics_set_float4(location: Pointer, value1: FastFloat, value2: FastFloat,
+	@:hlNative("std", "kinc_graphics_set_float4") static function kore_graphics_set_float4(location: Pointer, value1: FastFloat, value2: FastFloat,
 		value3: FastFloat, value4: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_set_floats") static function kore_graphics_set_floats(location: Pointer, values: Pointer, count: Int): Void {}
+	@:hlNative("std", "kinc_graphics_set_floats") static function kore_graphics_set_floats(location: Pointer, values: Pointer, count: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_set_matrix") static function kore_graphics_set_matrix(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
+	@:hlNative("std", "kinc_graphics_set_matrix") static function kore_graphics_set_matrix(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
 		_30: FastFloat, _01: FastFloat, _11: FastFloat, _21: FastFloat, _31: FastFloat, _02: FastFloat, _12: FastFloat, _22: FastFloat, _32: FastFloat,
 		_03: FastFloat, _13: FastFloat, _23: FastFloat, _33: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_set_matrix3") static function kore_graphics_set_matrix3(location: Pointer, _00: FastFloat, _10: FastFloat,
+	@:hlNative("std", "kinc_graphics_set_matrix3") static function kore_graphics_set_matrix3(location: Pointer, _00: FastFloat, _10: FastFloat,
 		_20: FastFloat, _01: FastFloat, _11: FastFloat, _21: FastFloat, _02: FastFloat, _12: FastFloat, _22: FastFloat): Void {}
 
-	@:hlNative("std", "kore_graphics_draw_all_indexed_vertices") static function kore_graphics_draw_all_indexed_vertices(): Void {}
+	@:hlNative("std", "kinc_graphics_draw_all_indexed_vertices") static function kore_graphics_draw_all_indexed_vertices(): Void {}
 
-	@:hlNative("std", "kore_graphics_draw_indexed_vertices") static function kore_graphics_draw_indexed_vertices(start: Int, count: Int): Void {}
+	@:hlNative("std", "kinc_graphics_draw_indexed_vertices") static function kore_graphics_draw_indexed_vertices(start: Int, count: Int): Void {}
 
 	@:hlNative("std",
-		"kore_graphics_draw_all_indexed_vertices_instanced") static function kore_graphics_draw_all_indexed_vertices_instanced(instanceCount: Int): Void {}
+		"kinc_graphics_draw_all_indexed_vertices_instanced") static function kore_graphics_draw_all_indexed_vertices_instanced(instanceCount: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_draw_indexed_vertices_instanced") static function kore_graphics_draw_indexed_vertices_instanced(instanceCount: Int,
+	@:hlNative("std", "kinc_graphics_draw_indexed_vertices_instanced") static function kore_graphics_draw_indexed_vertices_instanced(instanceCount: Int,
 		start: Int, count: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_restore_render_target") static function kore_graphics_restore_render_target(): Void {}
+	@:hlNative("std", "kinc_graphics_restore_render_target") static function kore_graphics_restore_render_target(): Void {}
 
-	@:hlNative("std", "kore_graphics_render_to_texture") static function kore_graphics_render_to_texture(renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_graphics_render_to_texture") static function kore_graphics_render_to_texture(renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_graphics_render_to_textures") static function kore_graphics_render_to_textures(rt0: Pointer, rt1: Pointer, rt2: Pointer,
+	@:hlNative("std", "kinc_graphics_render_to_textures") static function kore_graphics_render_to_textures(rt0: Pointer, rt1: Pointer, rt2: Pointer,
 		rt3: Pointer, rt4: Pointer, rt5: Pointer, rt6: Pointer, rt7: Pointer, count: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_render_to_face") static function kore_graphics_render_to_face(renderTarget: Pointer, face: Int): Void {}
+	@:hlNative("std", "kinc_graphics_render_to_face") static function kore_graphics_render_to_face(renderTarget: Pointer, face: Int): Void {}
 
-	@:hlNative("std", "kore_graphics_flush") static function kore_graphics_flush(): Void {}
+	@:hlNative("std", "kinc_graphics_flush") static function kore_graphics_flush(): Void {}
 }

@@ -116,56 +116,56 @@ class Compute {
 		kore_compute_compute(x, y, z);
 	}
 
-	@:hlNative("std", "kore_compute_set_bool") static function kore_compute_set_bool(location: Pointer, value: Bool): Void {}
+	@:hlNative("std", "kinc_compute_set_bool") static function kore_compute_set_bool(location: Pointer, value: Bool): Void {}
 
-	@:hlNative("std", "kore_compute_set_int") static function kore_compute_set_int(location: Pointer, value: Int): Void {}
+	@:hlNative("std", "kinc_compute_set_int") static function kore_compute_set_int(location: Pointer, value: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_float") static function kore_compute_set_float(location: Pointer, value: FastFloat): Void {}
+	@:hlNative("std", "kinc_compute_set_float") static function kore_compute_set_float(location: Pointer, value: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_float2") static function kore_compute_set_float2(location: Pointer, value1: FastFloat, value2: FastFloat): Void {}
+	@:hlNative("std", "kinc_compute_set_float2") static function kore_compute_set_float2(location: Pointer, value1: FastFloat, value2: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_float3") static function kore_compute_set_float3(location: Pointer, value1: FastFloat, value2: FastFloat,
+	@:hlNative("std", "kinc_compute_set_float3") static function kore_compute_set_float3(location: Pointer, value1: FastFloat, value2: FastFloat,
 		value3: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_float4") static function kore_compute_set_float4(location: Pointer, value1: FastFloat, value2: FastFloat,
+	@:hlNative("std", "kinc_compute_set_float4") static function kore_compute_set_float4(location: Pointer, value1: FastFloat, value2: FastFloat,
 		value3: FastFloat, value4: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_floats") static function kore_compute_set_floats(location: Pointer, values: Pointer, count: Int): Void {}
+	@:hlNative("std", "kinc_compute_set_floats") static function kore_compute_set_floats(location: Pointer, values: Pointer, count: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_matrix") static function kore_compute_set_matrix(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
+	@:hlNative("std", "kinc_compute_set_matrix") static function kore_compute_set_matrix(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
 		_30: FastFloat, _01: FastFloat, _11: FastFloat, _21: FastFloat, _31: FastFloat, _02: FastFloat, _12: FastFloat, _22: FastFloat, _32: FastFloat,
 		_03: FastFloat, _13: FastFloat, _23: FastFloat, _33: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_matrix3") static function kore_compute_set_matrix3(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
+	@:hlNative("std", "kinc_compute_set_matrix3") static function kore_compute_set_matrix3(location: Pointer, _00: FastFloat, _10: FastFloat, _20: FastFloat,
 		_01: FastFloat, _11: FastFloat, _21: FastFloat, _02: FastFloat, _12: FastFloat, _22: FastFloat): Void {}
 
-	@:hlNative("std", "kore_compute_set_texture") static function kore_compute_set_texture(unit: Pointer, texture: Pointer, access: Int): Void {}
+	@:hlNative("std", "kinc_compute_set_texture") static function kore_compute_set_texture(unit: Pointer, texture: Pointer, access: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_target") static function kore_compute_set_target(unit: Pointer, renderTarget: Pointer, access: Int): Void {}
+	@:hlNative("std", "kinc_compute_set_target") static function kore_compute_set_target(unit: Pointer, renderTarget: Pointer, access: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_texture") static function kore_compute_set_sampled_texture(unit: Pointer, texture: Pointer): Void {}
+	@:hlNative("std", "kinc_compute_set_sampled_texture") static function kore_compute_set_sampled_texture(unit: Pointer, texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_target") static function kore_compute_set_sampled_target(unit: Pointer, renderTarget: Pointer): Void {}
+	@:hlNative("std", "kinc_compute_set_sampled_target") static function kore_compute_set_sampled_target(unit: Pointer, renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_depth_target") static function kore_compute_set_sampled_depth_target(unit: Pointer,
+	@:hlNative("std", "kinc_compute_set_sampled_depth_target") static function kore_compute_set_sampled_depth_target(unit: Pointer,
 		renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_cubemap_texture") static function kore_compute_set_sampled_cubemap_texture(unit: Pointer,
+	@:hlNative("std", "kinc_compute_set_sampled_cubemap_texture") static function kore_compute_set_sampled_cubemap_texture(unit: Pointer,
 		texture: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_cubemap_target") static function kore_compute_set_sampled_cubemap_target(unit: Pointer,
+	@:hlNative("std", "kinc_compute_set_sampled_cubemap_target") static function kore_compute_set_sampled_cubemap_target(unit: Pointer,
 		renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_sampled_cubemap_depth_target") static function kore_compute_set_sampled_cubemap_depth_target(unit: Pointer,
+	@:hlNative("std", "kinc_compute_set_sampled_cubemap_depth_target") static function kore_compute_set_sampled_cubemap_depth_target(unit: Pointer,
 		renderTarget: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_set_texture_parameters") static function kore_compute_set_texture_parameters(unit: Pointer, uAddressing: Int,
+	@:hlNative("std", "kinc_compute_set_texture_parameters") static function kore_compute_set_texture_parameters(unit: Pointer, uAddressing: Int,
 		vAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_texture3d_parameters") static function kore_compute_set_texture3d_parameters(unit: Pointer, uAddressing: Int,
+	@:hlNative("std", "kinc_compute_set_texture3d_parameters") static function kore_compute_set_texture3d_parameters(unit: Pointer, uAddressing: Int,
 		vAddressing: Int, wAddressing: Int, minificationFilter: Int, magnificationFilter: Int, mipmapFilter: Int): Void {}
 
-	@:hlNative("std", "kore_compute_set_shader") static function kore_compute_set_shader(shader: Pointer): Void {}
+	@:hlNative("std", "kinc_compute_set_shader") static function kore_compute_set_shader(shader: Pointer): Void {}
 
-	@:hlNative("std", "kore_compute_compute") static function kore_compute_compute(x: Int, y: Int, z: Int): Void {}
+	@:hlNative("std", "kinc_compute_compute") static function kore_compute_compute(x: Int, y: Int, z: Int): Void {}
 }

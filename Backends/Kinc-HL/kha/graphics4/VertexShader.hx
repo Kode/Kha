@@ -21,11 +21,11 @@ class VertexShader {
 
 	public function delete(): Void {}
 
-	@:hlNative("std", "kore_create_vertexshader") static function kore_create_vertexshader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_create_vertexshader") static function kore_create_vertexshader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_vertexshader_from_source") static function kore_vertexshader_from_source(source: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_vertexshader_from_source") static function kore_vertexshader_from_source(source: hl.Bytes): Pointer {
 		return null;
 	}
 }

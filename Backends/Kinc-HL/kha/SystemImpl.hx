@@ -387,90 +387,90 @@ class SystemImpl {
 
 	@:hlNative("std", "run_kore") static function run_kore(): Void {}
 
-	@:hlNative("std", "kore_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat,
+	@:hlNative("std", "kinc_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat,
 		outSamplesPerSecond: hl.Ref<Int>): Void {}
 
-	@:hlNative("std", "kore_log") static function kore_log(v: hl.Bytes): Void {}
+	@:hlNative("std", "kinc_log") static function kore_log(v: hl.Bytes): Void {}
 
-	@:hlNative("std", "kore_get_time") static function kore_get_time(): Float {
+	@:hlNative("std", "kinc_get_time") static function kore_get_time(): Float {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_get_window_width") static function kore_get_window_width(window: Int): Int {
+	@:hlNative("std", "kinc_get_window_width") static function kore_get_window_width(window: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_get_window_height") static function kore_get_window_height(window: Int): Int {
+	@:hlNative("std", "kinc_get_window_height") static function kore_get_window_height(window: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_get_system_id") static function kore_get_system_id(): hl.Bytes {
+	@:hlNative("std", "kinc_get_system_id") static function kore_get_system_id(): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kore_vibrate") static function kore_vibrate(ms: Int): Void {}
+	@:hlNative("std", "kinc_vibrate") static function kore_vibrate(ms: Int): Void {}
 
-	@:hlNative("std", "kore_get_language") static function kore_get_language(): hl.Bytes {
+	@:hlNative("std", "kinc_get_language") static function kore_get_language(): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kore_request_shutdown") static function kore_request_shutdown(): Void {}
+	@:hlNative("std", "kinc_request_shutdown") static function kore_request_shutdown(): Void {}
 
-	@:hlNative("std", "kore_mouse_lock") static function kore_mouse_lock(windowId: Int): Void {}
+	@:hlNative("std", "kinc_mouse_lock") static function kore_mouse_lock(windowId: Int): Void {}
 
-	@:hlNative("std", "kore_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void {}
+	@:hlNative("std", "kinc_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void {}
 
-	@:hlNative("std", "kore_can_lock_mouse") static function kore_can_lock_mouse(windowId: Int): Bool {
+	@:hlNative("std", "kinc_can_lock_mouse") static function kore_can_lock_mouse(windowId: Int): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_is_mouse_locked") static function kore_is_mouse_locked(windowId: Int): Bool {
+	@:hlNative("std", "kinc_is_mouse_locked") static function kore_is_mouse_locked(windowId: Int): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_show_mouse") static function kore_show_mouse(show: Bool): Void {}
+	@:hlNative("std", "kinc_show_mouse") static function kore_show_mouse(show: Bool): Void {}
 
-	@:hlNative("std", "kore_system_is_fullscreen") static function kore_system_is_fullscreen(): Bool {
+	@:hlNative("std", "kinc_system_is_fullscreen") static function kore_system_is_fullscreen(): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_system_request_fullscreen") static function kore_system_request_fullscreen(): Void {}
+	@:hlNative("std", "kinc_system_request_fullscreen") static function kore_system_request_fullscreen(): Void {}
 
-	@:hlNative("std", "kore_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void {}
+	@:hlNative("std", "kinc_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void {}
 
-	@:hlNative("std", "kore_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void,
+	@:hlNative("std", "kinc_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void,
 		keyPress: Int->Void): Void {}
 
-	@:hlNative("std", "kore_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void,
+	@:hlNative("std", "kinc_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void,
 		mouseMove: Int->Int->Int->Int->Int->Void, mouseWheel: Int->Int->Void): Void {}
 
-	@:hlNative("std", "kore_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
+	@:hlNative("std", "kinc_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
 		penMove: Int->Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kore_register_gamepad") static function kore_register_gamepad(gamepadAxis: Int->Int->Float->Void,
+	@:hlNative("std", "kinc_register_gamepad") static function kore_register_gamepad(gamepadAxis: Int->Int->Float->Void,
 		gamepadButton: Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kore_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
+	@:hlNative("std", "kinc_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
 		touchMove: Int->Int->Int->Void): Void {}
 
-	@:hlNative("std", "kore_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void,
+	@:hlNative("std", "kinc_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void,
 		gyroscopeChanged: Float->Float->Float->Void): Void {}
 
-	@:hlNative("std", "kore_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void,
+	@:hlNative("std", "kinc_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void,
 		background: Void->Void, shutdown: Void->Void): Void {}
 
-	@:hlNative("std", "kore_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void {}
+	@:hlNative("std", "kinc_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void {}
 
-	@:hlNative("std", "kore_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->hl.Bytes, cut: Void->hl.Bytes,
+	@:hlNative("std", "kinc_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->hl.Bytes, cut: Void->hl.Bytes,
 		paste: hl.Bytes->Void): Void {}
 
-	@:hlNative("std", "kore_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void {}
+	@:hlNative("std", "kinc_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void {}
 
-	@:hlNative("std", "kore_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void {}
+	@:hlNative("std", "kinc_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void {}
 
-	@:hlNative("std", "kore_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void {}
+	@:hlNative("std", "kinc_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void {}
 
-	@:hlNative("std", "kore_get_gamepad_id") static function kore_get_gamepad_id(index: Int): hl.Bytes {
+	@:hlNative("std", "kinc_get_gamepad_id") static function kore_get_gamepad_id(index: Int): hl.Bytes {
 		return null;
 	}
 }

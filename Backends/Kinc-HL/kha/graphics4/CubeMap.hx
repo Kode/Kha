@@ -121,24 +121,24 @@ class CubeMap implements Canvas implements Resource {
 		return graphics4;
 	}
 
-	@:hlNative("std", "kore_cubemap_create") static function kore_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int,
+	@:hlNative("std", "kinc_cubemap_create") static function kore_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int,
 			contextId: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_cubemap_texture_get_width") static function kore_cubemap_texture_get_width(texture: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_texture_get_width") static function kore_cubemap_texture_get_width(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_cubemap_texture_get_height") static function kore_cubemap_texture_get_height(texture: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_texture_get_height") static function kore_cubemap_texture_get_height(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_cubemap_target_get_width") static function kore_cubemap_target_get_width(target: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_target_get_width") static function kore_cubemap_target_get_width(target: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_cubemap_target_get_height") static function kore_cubemap_target_get_height(target: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_target_get_height") static function kore_cubemap_target_get_height(target: Pointer): Int {
 		return 0;
 	}
 }

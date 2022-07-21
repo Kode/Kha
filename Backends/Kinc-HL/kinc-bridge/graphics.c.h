@@ -7,52 +7,52 @@
 
 #include <assert.h>
 
-void hl_kore_graphics_clear(int flags, int color, float z, int stencil) {
+void hl_kinc_graphics_clear(int flags, int color, float z, int stencil) {
 	kinc_g4_clear(flags, color, z, stencil);
 }
 
-bool hl_kore_graphics_vsynced(void) {
+bool hl_kinc_graphics_vsynced(void) {
 	return true; // Kore::Graphics4::vsynced();
 }
 
-int hl_kore_graphics_refreshrate(void) {
+int hl_kinc_graphics_refreshrate(void) {
 	return 60; // Kore::Graphics4::refreshRate();
 }
 
-void hl_kore_graphics_viewport(int x, int y, int width, int height) {
+void hl_kinc_graphics_viewport(int x, int y, int width, int height) {
 	kinc_g4_viewport(x, y, width, height);
 }
 
-void hl_kore_graphics_set_vertexbuffer(vbyte *buffer) {
+void hl_kinc_graphics_set_vertexbuffer(vbyte *buffer) {
 	kinc_g4_vertex_buffer_t *buf = (kinc_g4_vertex_buffer_t *)buffer;
 	kinc_g4_set_vertex_buffer(buf);
 }
 
-void hl_kore_graphics_set_vertexbuffers(vbyte *b0, vbyte *b1, vbyte *b2, vbyte *b3, int count) {
+void hl_kinc_graphics_set_vertexbuffers(vbyte *b0, vbyte *b1, vbyte *b2, vbyte *b3, int count) {
 	assert(count <= 4);
 	kinc_g4_vertex_buffer_t *vertexBuffers[4] = {(kinc_g4_vertex_buffer_t *)b0, (kinc_g4_vertex_buffer_t *)b1, (kinc_g4_vertex_buffer_t *)b2,
 	                                             (kinc_g4_vertex_buffer_t *)b3};
 	kinc_g4_set_vertex_buffers(vertexBuffers, count);
 }
 
-void hl_kore_graphics_set_indexbuffer(vbyte *buffer) {
+void hl_kinc_graphics_set_indexbuffer(vbyte *buffer) {
 	kinc_g4_index_buffer_t *buf = (kinc_g4_index_buffer_t *)buffer;
 	kinc_g4_set_index_buffer(buf);
 }
 
-void hl_kore_graphics_scissor(int x, int y, int width, int height) {
+void hl_kinc_graphics_scissor(int x, int y, int width, int height) {
 	kinc_g4_scissor(x, y, width, height);
 }
 
-void hl_kore_graphics_disable_scissor(void) {
+void hl_kinc_graphics_disable_scissor(void) {
 	kinc_g4_disable_scissor();
 }
 
-bool hl_kore_graphics_render_targets_inverted_y(void) {
+bool hl_kinc_graphics_render_targets_inverted_y(void) {
 	return kinc_g4_render_targets_inverted_y();
 }
 
-void hl_kore_graphics_set_texture_parameters(vbyte *unit, int uAddressing, int vAddressing, int minificationFilter, int magnificationFilter, int mipmapFilter) {
+void hl_kinc_graphics_set_texture_parameters(vbyte *unit, int uAddressing, int vAddressing, int minificationFilter, int magnificationFilter, int mipmapFilter) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_set_texture_addressing(*u, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uAddressing);
 	kinc_g4_set_texture_addressing(*u, KINC_G4_TEXTURE_DIRECTION_V, (kinc_g4_texture_addressing_t)vAddressing);
@@ -61,7 +61,7 @@ void hl_kore_graphics_set_texture_parameters(vbyte *unit, int uAddressing, int v
 	kinc_g4_set_texture_mipmap_filter(*u, (kinc_g4_mipmap_filter_t)mipmapFilter);
 }
 
-void hl_kore_graphics_set_texture3d_parameters(vbyte *unit, int uAddressing, int vAddressing, int wAddressing, int minificationFilter, int magnificationFilter,
+void hl_kinc_graphics_set_texture3d_parameters(vbyte *unit, int uAddressing, int vAddressing, int wAddressing, int minificationFilter, int magnificationFilter,
                                                int mipmapFilter) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_set_texture3d_addressing(*u, KINC_G4_TEXTURE_DIRECTION_U, (kinc_g4_texture_addressing_t)uAddressing);
@@ -72,120 +72,120 @@ void hl_kore_graphics_set_texture3d_parameters(vbyte *unit, int uAddressing, int
 	kinc_g4_set_texture3d_mipmap_filter(*u, (kinc_g4_mipmap_filter_t)mipmapFilter);
 }
 
-void hl_kore_graphics_set_texture_compare_mode(vbyte *unit, bool enabled) {
+void hl_kinc_graphics_set_texture_compare_mode(vbyte *unit, bool enabled) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_set_texture_compare_mode(*u, enabled);
 }
 
-void hl_kore_graphics_set_cube_map_compare_mode(vbyte *unit, bool enabled) {
+void hl_kinc_graphics_set_cube_map_compare_mode(vbyte *unit, bool enabled) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_set_cubemap_compare_mode(*u, enabled);
 }
 
-void hl_kore_graphics_set_texture(vbyte *unit, vbyte *texture) {
+void hl_kinc_graphics_set_texture(vbyte *unit, vbyte *texture) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	kinc_g4_set_texture(*u, tex);
 }
 
-void hl_kore_graphics_set_texture_depth(vbyte *unit, vbyte *renderTarget) {
+void hl_kinc_graphics_set_texture_depth(vbyte *unit, vbyte *renderTarget) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_use_depth_as_texture(rt, *u);
 }
 
-void hl_kore_graphics_set_texture_array(vbyte *unit, vbyte *textureArray) {
+void hl_kinc_graphics_set_texture_array(vbyte *unit, vbyte *textureArray) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_texture_array_t *texArray = (kinc_g4_texture_array_t *)textureArray;
 	kinc_g4_set_texture_array(*u, texArray);
 }
 
-void hl_kore_graphics_set_render_target(vbyte *unit, vbyte *renderTarget) {
+void hl_kinc_graphics_set_render_target(vbyte *unit, vbyte *renderTarget) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_use_color_as_texture(rt, *u);
 }
 
-void hl_kore_graphics_set_cubemap_texture(vbyte *unit, vbyte *renderTarget) {
+void hl_kinc_graphics_set_cubemap_texture(vbyte *unit, vbyte *renderTarget) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_use_color_as_texture(rt, *u);
 }
 
-void hl_kore_graphics_set_cubemap_depth(vbyte *unit, vbyte *renderTarget) {
+void hl_kinc_graphics_set_cubemap_depth(vbyte *unit, vbyte *renderTarget) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_use_depth_as_texture(rt, *u);
 }
 
-void hl_kore_graphics_set_image_texture(vbyte *unit, vbyte *texture) {
+void hl_kinc_graphics_set_image_texture(vbyte *unit, vbyte *texture) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	kinc_g4_set_image_texture(*u, tex);
 }
 
-void hl_kore_graphics_set_cubemap_target(vbyte *unit, vbyte *renderTarget) {
+void hl_kinc_graphics_set_cubemap_target(vbyte *unit, vbyte *renderTarget) {
 	kinc_g4_texture_unit_t *u = (kinc_g4_texture_unit_t *)unit;
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_use_color_as_texture(rt, *u);
 }
 
-void hl_kore_graphics_set_bool(vbyte *location, bool value) {
+void hl_kinc_graphics_set_bool(vbyte *location, bool value) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_bool(*loc, value);
 }
 
-void hl_kore_graphics_set_int(vbyte *location, int value) {
+void hl_kinc_graphics_set_int(vbyte *location, int value) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_int(*loc, value);
 }
 
-void hl_kore_graphics_set_int2(vbyte *location, int value1, int value2) {
+void hl_kinc_graphics_set_int2(vbyte *location, int value1, int value2) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_int2(*loc, value1, value2);
 }
 
-void hl_kore_graphics_set_int3(vbyte *location, int value1, int value2, int value3) {
+void hl_kinc_graphics_set_int3(vbyte *location, int value1, int value2, int value3) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_int3(*loc, value1, value2, value3);
 }
 
-void hl_kore_graphics_set_int4(vbyte *location, int value1, int value2, int value3, int value4) {
+void hl_kinc_graphics_set_int4(vbyte *location, int value1, int value2, int value3, int value4) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_int4(*loc, value1, value2, value3, value4);
 }
 
-void hl_kore_graphics_set_ints(vbyte *location, vbyte *values, int count) {
+void hl_kinc_graphics_set_ints(vbyte *location, vbyte *values, int count) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_ints(*loc, (int *)values, count);
 }
 
-void hl_kore_graphics_set_float(vbyte *location, float value) {
+void hl_kinc_graphics_set_float(vbyte *location, float value) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_float(*loc, value);
 }
 
-void hl_kore_graphics_set_float2(vbyte *location, float value1, float value2) {
+void hl_kinc_graphics_set_float2(vbyte *location, float value1, float value2) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_float2(*loc, value1, value2);
 }
 
-void hl_kore_graphics_set_float3(vbyte *location, float value1, float value2, float value3) {
+void hl_kinc_graphics_set_float3(vbyte *location, float value1, float value2, float value3) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_float3(*loc, value1, value2, value3);
 }
 
-void hl_kore_graphics_set_float4(vbyte *location, float value1, float value2, float value3, float value4) {
+void hl_kinc_graphics_set_float4(vbyte *location, float value1, float value2, float value3, float value4) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_float4(*loc, value1, value2, value3, value4);
 }
 
-void hl_kore_graphics_set_floats(vbyte *location, vbyte *values, int count) {
+void hl_kinc_graphics_set_floats(vbyte *location, vbyte *values, int count) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_g4_set_floats(*loc, (float *)values, count);
 }
 
-void hl_kore_graphics_set_matrix(vbyte *location, float _00, float _10, float _20, float _30, float _01, float _11, float _21, float _31, float _02, float _12,
+void hl_kinc_graphics_set_matrix(vbyte *location, float _00, float _10, float _20, float _30, float _01, float _11, float _21, float _31, float _02, float _12,
                                  float _22, float _32, float _03, float _13, float _23, float _33) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_matrix4x4_t value;
@@ -208,7 +208,7 @@ void hl_kore_graphics_set_matrix(vbyte *location, float _00, float _10, float _2
 	kinc_g4_set_matrix4(*loc, &value);
 }
 
-void hl_kore_graphics_set_matrix3(vbyte *location, float _00, float _10, float _20, float _01, float _11, float _21, float _02, float _12, float _22) {
+void hl_kinc_graphics_set_matrix3(vbyte *location, float _00, float _10, float _20, float _01, float _11, float _21, float _02, float _12, float _22) {
 	kinc_g4_constant_location_t *loc = (kinc_g4_constant_location_t *)location;
 	kinc_matrix3x3_t value;
 	kinc_matrix3x3_set(&value, 0, 0, _00);
@@ -223,32 +223,32 @@ void hl_kore_graphics_set_matrix3(vbyte *location, float _00, float _10, float _
 	kinc_g4_set_matrix3(*loc, &value);
 }
 
-void hl_kore_graphics_draw_all_indexed_vertices(void) {
+void hl_kinc_graphics_draw_all_indexed_vertices(void) {
 	kinc_g4_draw_indexed_vertices();
 }
 
-void hl_kore_graphics_draw_indexed_vertices(int start, int count) {
+void hl_kinc_graphics_draw_indexed_vertices(int start, int count) {
 	kinc_g4_draw_indexed_vertices_from_to(start, count);
 }
 
-void hl_kore_graphics_draw_all_indexed_vertices_instanced(int instanceCount) {
+void hl_kinc_graphics_draw_all_indexed_vertices_instanced(int instanceCount) {
 	kinc_g4_draw_indexed_vertices_instanced(instanceCount);
 }
 
-void hl_kore_graphics_draw_indexed_vertices_instanced(int instanceCount, int start, int count) {
+void hl_kinc_graphics_draw_indexed_vertices_instanced(int instanceCount, int start, int count) {
 	kinc_g4_draw_indexed_vertices_instanced_from_to(instanceCount, start, count);
 }
 
-void hl_kore_graphics_restore_render_target(void) {
+void hl_kinc_graphics_restore_render_target(void) {
 	kinc_g4_restore_render_target();
 }
 
-void hl_kore_graphics_render_to_texture(vbyte *renderTarget) {
+void hl_kinc_graphics_render_to_texture(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_set_render_targets(&rt, 1);
 }
 
-void hl_kore_graphics_render_to_textures(vbyte *rt0, vbyte *rt1, vbyte *rt2, vbyte *rt3, vbyte *rt4, vbyte *rt5, vbyte *rt6, vbyte *rt7, int count) {
+void hl_kinc_graphics_render_to_textures(vbyte *rt0, vbyte *rt1, vbyte *rt2, vbyte *rt3, vbyte *rt4, vbyte *rt5, vbyte *rt6, vbyte *rt7, int count) {
 	assert(count <= 8);
 	kinc_g4_render_target_t *t0 = (kinc_g4_render_target_t *)rt0;
 	kinc_g4_render_target_t *t1 = (kinc_g4_render_target_t *)rt1;
@@ -262,11 +262,11 @@ void hl_kore_graphics_render_to_textures(vbyte *rt0, vbyte *rt1, vbyte *rt2, vby
 	kinc_g4_set_render_targets(targets, count);
 }
 
-void hl_kore_graphics_render_to_face(vbyte *renderTarget, int face) {
+void hl_kinc_graphics_render_to_face(vbyte *renderTarget, int face) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_set_render_target_face(rt, face);
 }
 
-void hl_kore_graphics_flush(void) {
+void hl_kinc_graphics_flush(void) {
 	kinc_g4_flush();
 }

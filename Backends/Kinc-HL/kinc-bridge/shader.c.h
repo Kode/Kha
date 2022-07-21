@@ -69,109 +69,109 @@ static kinc_g4_render_target_format_t convertColorAttachment(int format) {
 	}
 }
 
-vbyte *hl_kore_create_vertexshader(vbyte *data, int length) {
+vbyte *hl_kinc_create_vertexshader(vbyte *data, int length) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_VERTEX);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_create_fragmentshader(vbyte *data, int length) {
+vbyte *hl_kinc_create_fragmentshader(vbyte *data, int length) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_FRAGMENT);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_create_geometryshader(vbyte *data, int length) {
+vbyte *hl_kinc_create_geometryshader(vbyte *data, int length) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_GEOMETRY);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_create_tesscontrolshader(vbyte *data, int length) {
+vbyte *hl_kinc_create_tesscontrolshader(vbyte *data, int length) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_TESSELLATION_CONTROL);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_create_tessevalshader(vbyte *data, int length) {
+vbyte *hl_kinc_create_tessevalshader(vbyte *data, int length) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init(shader, data, length, KINC_G4_SHADER_TYPE_TESSELLATION_EVALUATION);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_vertexshader_from_source(vbyte *source) {
+vbyte *hl_kinc_vertexshader_from_source(vbyte *source) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_VERTEX);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_fragmentshader_from_source(vbyte *source) {
+vbyte *hl_kinc_fragmentshader_from_source(vbyte *source) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_FRAGMENT);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_geometryshader_from_source(vbyte *source) {
+vbyte *hl_kinc_geometryshader_from_source(vbyte *source) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_GEOMETRY);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_tesscontrolshader_from_source(vbyte *source) {
+vbyte *hl_kinc_tesscontrolshader_from_source(vbyte *source) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_TESSELLATION_CONTROL);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_tessevalshader_from_source(vbyte *source) {
+vbyte *hl_kinc_tessevalshader_from_source(vbyte *source) {
 	kinc_g4_shader_t *shader = (kinc_g4_shader_t *)malloc(sizeof(kinc_g4_shader_t));
 	kinc_g4_shader_init_from_source(shader, (char *)source, KINC_G4_SHADER_TYPE_TESSELLATION_EVALUATION);
 	return (vbyte *)shader;
 }
 
-vbyte *hl_kore_create_pipeline() {
+vbyte *hl_kinc_create_pipeline() {
 	kinc_g4_pipeline_t *pipeline = (kinc_g4_pipeline_t *)malloc(sizeof(kinc_g4_pipeline_t));
 	kinc_g4_pipeline_init(pipeline);
 	return (vbyte *)pipeline;
 }
 
-void hl_kore_delete_pipeline(vbyte *pipeline) {
+void hl_kinc_delete_pipeline(vbyte *pipeline) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_pipeline_destroy(pipe);
 	free(pipe);
 }
 
-void hl_kore_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
+void hl_kinc_pipeline_set_vertex_shader(vbyte *pipeline, vbyte *shader) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
 	pipe->vertex_shader = sh;
 }
 
-void hl_kore_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *shader) {
+void hl_kinc_pipeline_set_fragment_shader(vbyte *pipeline, vbyte *shader) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
 	pipe->fragment_shader = sh;
 }
 
-void hl_kore_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
+void hl_kinc_pipeline_set_geometry_shader(vbyte *pipeline, vbyte *shader) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
 	pipe->geometry_shader = sh;
 }
 
-void hl_kore_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
+void hl_kinc_pipeline_set_tesscontrol_shader(vbyte *pipeline, vbyte *shader) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
 	pipe->tessellation_control_shader = sh;
 }
 
-void hl_kore_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
+void hl_kinc_pipeline_set_tesseval_shader(vbyte *pipeline, vbyte *shader) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_shader_t *sh = (kinc_g4_shader_t *)shader;
 	pipe->tessellation_evaluation_shader = sh;
 }
 
-void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
+void hl_kinc_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structure1, vbyte *structure2, vbyte *structure3) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	pipe->input_layout[0] = (kinc_g4_vertex_structure_t *)structure0;
 	pipe->input_layout[1] = (kinc_g4_vertex_structure_t *)structure1;
@@ -181,7 +181,7 @@ void hl_kore_pipeline_compile(vbyte *pipeline, vbyte *structure0, vbyte *structu
 	kinc_g4_pipeline_compile(pipe);
 }
 
-void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilFrontMode, int stencilFrontBothPass, int stencilFrontDepthFail,
+void hl_kinc_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, int stencilFrontMode, int stencilFrontBothPass, int stencilFrontDepthFail,
                                  int stencilFrontFail, int stencilBackMode, int stencilBackBothPass, int stencilBackDepthFail, int stencilBackFail,
                                  int blendSource, int blendDestination, int alphaBlendSource, int alphaBlendDestination, bool depthWrite,
                                  int stencilReferenceValue, int stencilReadMask, int stencilWriteMask, bool colorWriteMaskRed, bool colorWriteMaskGreen,
@@ -245,19 +245,19 @@ void hl_kore_pipeline_set_states(vbyte *pipeline, int cullMode, int depthMode, i
 	pipe->conservative_rasterization = conservativeRasterization;
 }
 
-void hl_kore_pipeline_set(vbyte *pipeline) {
+void hl_kinc_pipeline_set(vbyte *pipeline) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_set_pipeline(pipe);
 }
 
-vbyte *hl_kore_pipeline_get_constantlocation(vbyte *pipeline, vbyte *name) {
+vbyte *hl_kinc_pipeline_get_constantlocation(vbyte *pipeline, vbyte *name) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_constant_location_t *location = (kinc_g4_constant_location_t *)malloc(sizeof(kinc_g4_constant_location_t));
 	*location = kinc_g4_pipeline_get_constant_location(pipe, (char *)name);
 	return (vbyte *)location;
 }
 
-vbyte *hl_kore_pipeline_get_textureunit(vbyte *pipeline, vbyte *name) {
+vbyte *hl_kinc_pipeline_get_textureunit(vbyte *pipeline, vbyte *name) {
 	kinc_g4_pipeline_t *pipe = (kinc_g4_pipeline_t *)pipeline;
 	kinc_g4_texture_unit_t *unit = (kinc_g4_texture_unit_t *)malloc(sizeof(kinc_g4_texture_unit_t));
 	*unit = kinc_g4_pipeline_get_texture_unit(pipe, (char *)name);

@@ -52,7 +52,7 @@ static int sizeOf(kinc_image_format_t format) {
 	return 0;
 }
 
-vbyte *hl_kore_texture_create(int width, int height, int format, bool readable) {
+vbyte *hl_kinc_texture_create(int width, int height, int format, bool readable) {
 	tex_and_data_t *texture = (tex_and_data_t *)malloc(sizeof(tex_and_data_t));
 	kinc_image_format_t f = convertImageFormat(format);
 	kinc_g4_texture_init(&texture->texture, width, height, f);
@@ -67,7 +67,7 @@ vbyte *hl_kore_texture_create(int width, int height, int format, bool readable) 
 	return (vbyte *)texture;
 }
 
-vbyte *hl_kore_texture_create_from_file(vbyte *filename, bool readable) {
+vbyte *hl_kinc_texture_create_from_file(vbyte *filename, bool readable) {
 	size_t size = kinc_image_size_from_file((char *)filename);
 	if (size > 0) {
 		tex_and_data_t *texture = (tex_and_data_t *)malloc(sizeof(tex_and_data_t));
@@ -92,7 +92,7 @@ vbyte *hl_kore_texture_create_from_file(vbyte *filename, bool readable) {
 	return NULL;
 }
 
-vbyte *hl_kore_texture_create3d(int width, int height, int depth, int format, bool readable) {
+vbyte *hl_kinc_texture_create3d(int width, int height, int depth, int format, bool readable) {
 	tex_and_data_t *texture = (tex_and_data_t *)malloc(sizeof(tex_and_data_t));
 	kinc_image_format_t f = convertImageFormat(format);
 	kinc_g4_texture_init(&texture->texture, width, height, f);
@@ -107,12 +107,12 @@ vbyte *hl_kore_texture_create3d(int width, int height, int depth, int format, bo
 	return (vbyte *)texture;
 }
 
-vbyte *hl_kore_video_get_current_image(vbyte *video) {
+vbyte *hl_kinc_video_get_current_image(vbyte *video) {
 	kinc_video_t *v = (kinc_video_t *)video;
 	return (vbyte *)kinc_video_current_image(v);
 }
 
-vbyte *hl_kore_texture_from_bytes(vbyte *bytes, int width, int height, int format, bool readable) {
+vbyte *hl_kinc_texture_from_bytes(vbyte *bytes, int width, int height, int format, bool readable) {
 	kinc_image_format_t f = convertImageFormat(format);
 
 	kinc_image_t image;
@@ -137,7 +137,7 @@ vbyte *hl_kore_texture_from_bytes(vbyte *bytes, int width, int height, int forma
 	return (vbyte *)texture;
 }
 
-vbyte *hl_kore_texture_from_bytes3d(vbyte *bytes, int width, int height, int depth, int format, bool readable) {
+vbyte *hl_kinc_texture_from_bytes3d(vbyte *bytes, int width, int height, int depth, int format, bool readable) {
 	kinc_image_format_t f = convertImageFormat(format);
 
 	kinc_image_t image;
@@ -162,7 +162,7 @@ vbyte *hl_kore_texture_from_bytes3d(vbyte *bytes, int width, int height, int dep
 	return (vbyte *)texture;
 }
 
-vbyte *hl_kore_texture_from_encoded_bytes(vbyte *bytes, int length, vbyte *format, bool readable) {
+vbyte *hl_kinc_texture_from_encoded_bytes(vbyte *bytes, int length, vbyte *format, bool readable) {
 	tex_and_data_t *texture = (tex_and_data_t *)malloc(sizeof(tex_and_data_t));
 
 	size_t size = kinc_image_size_from_encoded_bytes(bytes, length, (char *)format);
@@ -185,37 +185,37 @@ vbyte *hl_kore_texture_from_encoded_bytes(vbyte *bytes, int length, vbyte *forma
 	return (vbyte *)texture;
 }
 
-bool hl_kore_non_pow2_textures_supported(void) {
+bool hl_kinc_non_pow2_textures_supported(void) {
 	return kinc_g4_non_pow2_textures_supported();
 }
 
-int hl_kore_texture_get_width(vbyte *texture) {
+int hl_kinc_texture_get_width(vbyte *texture) {
 	tex_and_data_t *tex = (tex_and_data_t *)texture;
 	return tex->width;
 }
 
-int hl_kore_texture_get_height(vbyte *texture) {
+int hl_kinc_texture_get_height(vbyte *texture) {
 	tex_and_data_t *tex = (tex_and_data_t *)texture;
 	return tex->height;
 }
 
-int hl_kore_texture_get_real_width(vbyte *texture) {
+int hl_kinc_texture_get_real_width(vbyte *texture) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	return tex->tex_width;
 }
 
-int hl_kore_texture_get_real_height(vbyte *texture) {
+int hl_kinc_texture_get_real_height(vbyte *texture) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	return tex->tex_height;
 }
 
-int hl_kore_texture_at(vbyte *texture, int x, int y) {
+int hl_kinc_texture_at(vbyte *texture, int x, int y) {
 	tex_and_data_t *tex = (tex_and_data_t *)texture;
 	assert(tex->data != NULL);
 	return *(int *)&((uint8_t *)tex->data)[tex->width * sizeOf(tex->texture.format) * y + x * sizeOf(tex->texture.format)];
 }
 
-void hl_kore_texture_unload(vbyte *texture) {
+void hl_kinc_texture_unload(vbyte *texture) {
 	tex_and_data_t *tex = (tex_and_data_t *)texture;
 	if (tex->data != NULL) {
 		free(tex->data);
@@ -225,39 +225,39 @@ void hl_kore_texture_unload(vbyte *texture) {
 	free(tex);
 }
 
-void hl_kore_render_target_unload(vbyte *renderTarget) {
+void hl_kinc_render_target_unload(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_destroy(rt);
 	free(rt);
 }
 
-vbyte *hl_kore_render_target_create(int width, int height, int depthBufferBits, int format, int stencilBufferBits, int contextId) {
+vbyte *hl_kinc_render_target_create(int width, int height, int depthBufferBits, int format, int stencilBufferBits, int contextId) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)malloc(sizeof(kinc_g4_render_target_t));
 	kinc_g4_render_target_init(rt, width, height, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);
 	return (vbyte *)rt;
 }
 
-int hl_kore_render_target_get_width(vbyte *renderTarget) {
+int hl_kinc_render_target_get_width(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	return rt->width;
 }
 
-int hl_kore_render_target_get_height(vbyte *renderTarget) {
+int hl_kinc_render_target_get_height(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	return rt->height;
 }
 
-int hl_kore_render_target_get_real_width(vbyte *renderTarget) {
+int hl_kinc_render_target_get_real_width(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	return rt->texWidth;
 }
 
-int hl_kore_render_target_get_real_height(vbyte *renderTarget) {
+int hl_kinc_render_target_get_real_height(vbyte *renderTarget) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	return rt->texHeight;
 }
 
-void hl_kore_texture_unlock(vbyte *texture, vbyte *bytes) {
+void hl_kinc_texture_unlock(vbyte *texture, vbyte *bytes) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	uint8_t *b = (uint8_t *)bytes;
 	uint8_t *btex = kinc_g4_texture_lock(tex);
@@ -285,22 +285,22 @@ void hl_kore_texture_unlock(vbyte *texture, vbyte *bytes) {
 	kinc_g4_texture_unlock(tex);
 }
 
-void hl_kore_render_target_get_pixels(vbyte *renderTarget, vbyte *pixels) {
+void hl_kinc_render_target_get_pixels(vbyte *renderTarget, vbyte *pixels) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_get_pixels(rt, pixels);
 }
 
-void hl_kore_generate_mipmaps_texture(vbyte *texture, int levels) {
+void hl_kinc_generate_mipmaps_texture(vbyte *texture, int levels) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	kinc_g4_texture_generate_mipmaps(tex, levels);
 }
 
-void hl_kore_generate_mipmaps_target(vbyte *renderTarget, int levels) {
+void hl_kinc_generate_mipmaps_target(vbyte *renderTarget, int levels) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_generate_mipmaps(rt, levels);
 }
 
-void hl_kore_set_mipmap_texture(vbyte *texture, vbyte *mipmap, int level) {
+void hl_kinc_set_mipmap_texture(vbyte *texture, vbyte *mipmap, int level) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	tex_and_data_t *miptex = (tex_and_data_t *)mipmap;
 	assert(miptex->data != NULL);
@@ -310,13 +310,13 @@ void hl_kore_set_mipmap_texture(vbyte *texture, vbyte *mipmap, int level) {
 	kinc_image_destroy(&mipimage);
 }
 
-void hl_kore_render_target_set_depth_stencil_from(vbyte *renderTarget, vbyte *from) {
+void hl_kinc_render_target_set_depth_stencil_from(vbyte *renderTarget, vbyte *from) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)renderTarget;
 	kinc_g4_render_target_t *rt2 = (kinc_g4_render_target_t *)from;
 	kinc_g4_render_target_set_depth_stencil_from(rt, rt2);
 }
 
-void hl_kore_texture_clear(vbyte *texture, int x, int y, int z, int width, int height, int depth, int color) {
+void hl_kinc_texture_clear(vbyte *texture, int x, int y, int z, int width, int height, int depth, int color) {
 	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
 	kinc_g4_texture_clear(tex, x, y, z, width, height, depth, color);
 }

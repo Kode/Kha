@@ -57,39 +57,39 @@ class Video extends kha.Video {
 		kore_video_unload(_video);
 	}
 
-	@:hlNative("std", "kore_video_create") static function kore_video_create(filename: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_video_create") static function kore_video_create(filename: hl.Bytes): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_video_play") static function kore_video_play(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_play") static function kore_video_play(video: Pointer): Void {}
 
-	@:hlNative("std", "kore_video_pause") static function kore_video_pause(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_pause") static function kore_video_pause(video: Pointer): Void {}
 
-	@:hlNative("std", "kore_video_stop") static function kore_video_stop(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_stop") static function kore_video_stop(video: Pointer): Void {}
 
-	@:hlNative("std", "kore_video_get_duration") static function kore_video_get_duration(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_get_duration") static function kore_video_get_duration(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_video_get_position") static function kore_video_get_position(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_get_position") static function kore_video_get_position(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_video_set_position") static function kore_video_set_position(video: Pointer, value: Int): Int {
+	@:hlNative("std", "kinc_video_set_position") static function kore_video_set_position(video: Pointer, value: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_video_is_finished") static function kore_video_is_finished(video: Pointer): Bool {
+	@:hlNative("std", "kinc_video_is_finished") static function kore_video_is_finished(video: Pointer): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_video_width") static function kore_video_width(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_width") static function kore_video_width(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_video_height") static function kore_video_height(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_height") static function kore_video_height(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_video_unload") static function kore_video_unload(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_unload") static function kore_video_unload(video: Pointer): Void {}
 }

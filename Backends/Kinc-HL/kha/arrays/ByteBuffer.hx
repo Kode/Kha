@@ -13,9 +13,9 @@ abstract ByteBuffer(Pointer) from Pointer to Pointer {
 		kore_bytebuffer_free(this);
 	}
 
-	@:hlNative("std", "kore_bytebuffer_alloc") static function kore_bytebuffer_alloc(elements: Int): Pointer {
+	@:hlNative("std", "kinc_bytebuffer_alloc") static function kore_bytebuffer_alloc(elements: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_bytebuffer_free") static function kore_bytebuffer_free(bytearray: Pointer) {}
+	@:hlNative("std", "kinc_bytebuffer_free") static function kore_bytebuffer_free(bytearray: Pointer) {}
 }

@@ -87,7 +87,7 @@ void splitMono16(int16_t *data, int size, int16_t *left, int16_t *right) {
 	}
 }
 
-vbyte *hl_kore_sound_init_wav(vbyte *filename, vbyte *outSize, int *outSampleRate, double *outLength) {
+vbyte *hl_kinc_sound_init_wav(vbyte *filename, vbyte *outSize, int *outSampleRate, double *outLength) {
 	struct WaveData wave = {0};
 	{
 		kinc_file_reader_t reader;
@@ -166,11 +166,11 @@ vbyte *hl_kore_sound_init_wav(vbyte *filename, vbyte *outSize, int *outSampleRat
 	return (vbyte *)uncompressedData;
 }
 
-vbyte *hl_kore_sound_init_vorbis(vbyte *data, int length) {
+vbyte *hl_kinc_sound_init_vorbis(vbyte *data, int length) {
 	return (vbyte *)stb_vorbis_open_memory(data, length, NULL, NULL);
 }
 
-bool hl_kore_sound_next_vorbis_samples(vbyte *vorbis, vbyte *samples, int length, bool loop, bool atend) {
+bool hl_kinc_sound_next_vorbis_samples(vbyte *vorbis, vbyte *samples, int length, bool loop, bool atend) {
 	int read = stb_vorbis_get_samples_float_interleaved((stb_vorbis *)vorbis, 2, (float *)samples, length);
 	if (read < length / 2) {
 		if (loop) {
@@ -186,12 +186,12 @@ bool hl_kore_sound_next_vorbis_samples(vbyte *vorbis, vbyte *samples, int length
 	return atend;
 }
 
-float hl_kore_sound_vorbis_get_length(vbyte *vorbis) {
+float hl_kinc_sound_vorbis_get_length(vbyte *vorbis) {
 	if (vorbis == NULL) return 0;
 	return stb_vorbis_stream_length_in_seconds((stb_vorbis *)vorbis);
 }
 
-float hl_kore_sound_vorbis_get_position(vbyte *vorbis) {
+float hl_kinc_sound_vorbis_get_position(vbyte *vorbis) {
 	if (vorbis == NULL) return 0;
 	return stb_vorbis_get_sample_offset((stb_vorbis *)vorbis) / (float)stb_vorbis_stream_length_in_samples((stb_vorbis *)vorbis);
 }

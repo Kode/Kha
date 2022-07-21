@@ -71,20 +71,20 @@ class StreamChannel implements kha.audio1.AudioChannel {
 		return atend;
 	}
 
-	@:hlNative("std", "kore_sound_init_vorbis") static function kore_sound_init_vorbis(data: Pointer, length: Int): Pointer {
+	@:hlNative("std", "kinc_sound_init_vorbis") static function kore_sound_init_vorbis(data: Pointer, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kore_sound_next_vorbis_samples") static function kore_sound_next_vorbis_samples(vorbis: Pointer, samples: Pointer, length: Int,
+	@:hlNative("std", "kinc_sound_next_vorbis_samples") static function kore_sound_next_vorbis_samples(vorbis: Pointer, samples: Pointer, length: Int,
 			loop: Bool, atend: Bool): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kore_sound_vorbis_get_length") static function kore_sound_vorbis_get_length(vorbis: Pointer): Int {
+	@:hlNative("std", "kinc_sound_vorbis_get_length") static function kore_sound_vorbis_get_length(vorbis: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kore_sound_vorbis_get_position") static function kore_sound_vorbis_get_position(vorbis: Pointer): Int {
+	@:hlNative("std", "kinc_sound_vorbis_get_position") static function kore_sound_vorbis_get_position(vorbis: Pointer): Int {
 		return 0;
 	}
 }
