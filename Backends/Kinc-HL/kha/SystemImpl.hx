@@ -15,10 +15,7 @@ class SystemImpl {
 	static var keyboard: Keyboard;
 	static var mouse: kha.input.Mouse;
 	static var pen: kha.input.Pen;
-	static var gamepad1: Gamepad;
-	static var gamepad2: Gamepad;
-	static var gamepad3: Gamepad;
-	static var gamepad4: Gamepad;
+	static var gamepads: Array<Gamepad>;
 	static var surface: Surface;
 	static var mouseLockListeners: Array<Void->Void>;
 
@@ -45,19 +42,16 @@ class SystemImpl {
 		keyboard = new kha.input.Keyboard();
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
-		gamepad1 = new kha.input.Gamepad(0);
-		gamepad2 = new kha.input.Gamepad(1);
-		gamepad3 = new kha.input.Gamepad(2);
-		gamepad4 = new kha.input.Gamepad(3);
+		gamepads = new Array<Gamepad>();
+		for (i in 0...4) {
+			gamepads.push(new kha.input.Gamepad(i));
+		}
 		surface = new kha.input.Surface();
 		mouseLockListeners = new Array();
 		kore_register_keyboard(keyDown, keyUp, keyPress);
 		kore_register_mouse(mouseDown, mouseUp, mouseMove, mouseWheel);
 		kore_register_pen(penDown, penUp, penMove);
-		kore_register_gamepad(0, gamepad1Axis, gamepad1Button);
-		kore_register_gamepad(1, gamepad2Axis, gamepad2Button);
-		kore_register_gamepad(2, gamepad3Axis, gamepad3Button);
-		kore_register_gamepad(3, gamepad4Axis, gamepad4Button);
+		kore_register_gamepad(gamepadAxis, gamepadButton);
 		kore_register_surface(touchStart, touchEnd, touchMove);
 		kore_register_sensor(kha.input.Sensor._accelerometerChanged, kha.input.Sensor._gyroscopeChanged);
 		kore_register_callbacks(foreground, resume, pause, background, shutdown);
@@ -221,36 +215,12 @@ class SystemImpl {
 		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
-	public static function gamepad1Axis(axis: Int, value: Float): Void {
-		gamepad1.sendAxisEvent(axis, value);
+	public static function gamepadAxis(gamepad: Int, axis: Int, value: Float): Void {
+		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
 
-	public static function gamepad1Button(button: Int, value: Float): Void {
-		gamepad1.sendButtonEvent(button, value);
-	}
-
-	public static function gamepad2Axis(axis: Int, value: Float): Void {
-		gamepad2.sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad2Button(button: Int, value: Float): Void {
-		gamepad2.sendButtonEvent(button, value);
-	}
-
-	public static function gamepad3Axis(axis: Int, value: Float): Void {
-		gamepad3.sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad3Button(button: Int, value: Float): Void {
-		gamepad3.sendButtonEvent(button, value);
-	}
-
-	public static function gamepad4Axis(axis: Int, value: Float): Void {
-		gamepad4.sendAxisEvent(axis, value);
-	}
-
-	public static function gamepad4Button(button: Int, value: Float): Void {
-		gamepad4.sendButtonEvent(button, value);
+	public static function gamepadButton(gamepad: Int, button: Int, value: Float): Void {
+		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
 	public static function touchStart(index: Int, x: Int, y: Int): Void {
@@ -477,8 +447,8 @@ class SystemImpl {
 	@:hlNative("std", "kore_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
 		penMove: Int->Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kore_register_gamepad") static function kore_register_gamepad(index: Int, gamepadAxis: Int->Float->Void,
-		gamepadButton: Int->Float->Void): Void {}
+	@:hlNative("std", "kore_register_gamepad") static function kore_register_gamepad(gamepadAxis: Int->Int->Float->Void,
+		gamepadButton: Int->Int->Float->Void): Void {}
 
 	@:hlNative("std", "kore_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
 		touchMove: Int->Int->Int->Void): Void {}

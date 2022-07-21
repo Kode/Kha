@@ -91,7 +91,8 @@ vbyte *hl_kore_sound_init_wav(vbyte *filename, vbyte *outSize, int *outSampleRat
 	struct WaveData wave = {0};
 	{
 		kinc_file_reader_t reader;
-		kinc_file_reader_open(&reader, (char *)filename, KINC_FILE_TYPE_ASSET);
+		bool opened = kinc_file_reader_open(&reader, (char *)filename, KINC_FILE_TYPE_ASSET);
+		kinc_affirm(opened);
 		uint8_t *filedata = (uint8_t *)malloc(kinc_file_reader_size(&reader));
 		kinc_file_reader_read(&reader, filedata, kinc_file_reader_size(&reader));
 		kinc_file_reader_close(&reader);
