@@ -1,6 +1,6 @@
 let project = new Project('Kha', __dirname);
 
-project.addFiles('KoreC/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/gc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
+project.addFiles('kinc-bridge/**', 'hl/include/**', 'hl/src/std/**', 'hl/src/gc.c', 'hl/src/hl.h', 'hl/src/hlc.h', 'hl/src/hlmodule.h', 'hl/src/opcodes.h');
 project.addExcludes('hl/src/std/unicase.c');
 project.addExcludes('hl/src/std/debug.c');
 project.addIncludeDirs('hl/src', 'hl/include/pcre', 'hl/include/mbedtls/include', 'hl/include/zlib');
@@ -16,8 +16,6 @@ project.addDefine('KORE');
 project.addDefine('KOREC');
 project.addDefine('ROTATE90');
 project.addDefine('LIBHL_STATIC');
-project.cpp = true;
-project.cpp11 = true;
 project.c11 = true;
 
 if (platform === Platform.Windows || platform === Platform.WindowsApp) {
