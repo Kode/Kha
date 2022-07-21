@@ -11,7 +11,7 @@ class Sound extends kha.Sound {
 		var dataSize = new kha.arrays.Uint32Array(1);
 		final sampleRateRef: hl.Ref<Int> = sampleRate;
 		final lengthRef: hl.Ref<Float> = length;
-		var data = kore_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), sampleRateRef, lengthRef);
+		var data = kinc_sound_init_wav(StringHelper.convert(filename), dataSize.getData(), sampleRateRef, lengthRef);
 		sampleRate = sampleRateRef.get();
 		length = lengthRef.get();
 		uncompressedData = cast new kha.arrays.ByteArray(data, 0, dataSize[0] * 4);
@@ -35,7 +35,7 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kinc_sound_init_wav") static function kore_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
+	@:hlNative("std", "kinc_sound_init_wav") static function kinc_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
 		return null;
 	}
 }

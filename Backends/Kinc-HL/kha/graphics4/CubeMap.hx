@@ -25,7 +25,7 @@ class CubeMap implements Canvas implements Resource {
 	}
 
 	function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-		_renderTarget = kore_cubemap_create(cubeMapSize, depthBufferBits, format, stencilBufferBits, contextId);
+		_renderTarget = kinc_cubemap_create(cubeMapSize, depthBufferBits, format, stencilBufferBits, contextId);
 		_texture = null;
 	}
 
@@ -93,11 +93,11 @@ class CubeMap implements Canvas implements Resource {
 	public var height(get, never): Int;
 
 	function get_width(): Int {
-		return _texture != null ? kore_cubemap_texture_get_width(_texture) : kore_cubemap_target_get_width(_renderTarget);
+		return _texture != null ? kinc_cubemap_texture_get_width(_texture) : kinc_cubemap_target_get_width(_renderTarget);
 	}
 
 	function get_height(): Int {
-		return _texture != null ? kore_cubemap_texture_get_height(_texture) : kore_cubemap_target_get_height(_renderTarget);
+		return _texture != null ? kinc_cubemap_texture_get_height(_texture) : kinc_cubemap_target_get_height(_renderTarget);
 	}
 
 	public var g1(get, never): kha.graphics1.Graphics;
@@ -121,24 +121,24 @@ class CubeMap implements Canvas implements Resource {
 		return graphics4;
 	}
 
-	@:hlNative("std", "kinc_cubemap_create") static function kore_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int,
+	@:hlNative("std", "kinc_cubemap_create") static function kinc_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int,
 			contextId: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_cubemap_texture_get_width") static function kore_cubemap_texture_get_width(texture: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_texture_get_width") static function kinc_cubemap_texture_get_width(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_cubemap_texture_get_height") static function kore_cubemap_texture_get_height(texture: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_texture_get_height") static function kinc_cubemap_texture_get_height(texture: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_cubemap_target_get_width") static function kore_cubemap_target_get_width(target: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_target_get_width") static function kinc_cubemap_target_get_width(target: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_cubemap_target_get_height") static function kore_cubemap_target_get_height(target: Pointer): Int {
+	@:hlNative("std", "kinc_cubemap_target_get_height") static function kinc_cubemap_target_get_height(target: Pointer): Int {
 		return 0;
 	}
 }

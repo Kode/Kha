@@ -22,7 +22,7 @@ class SystemImpl {
 	public static function init(options: SystemOptions, callback: Window->Void): Void {
 		haxe.Log.trace = function(v: Dynamic, ?infos: haxe.PosInfos) {
 			var message = infos != null ? infos.className + ":" + infos.lineNumber + ": " + v : Std.string(v);
-			kore_log(StringHelper.convert(message));
+			kinc_log(StringHelper.convert(message));
 		};
 		init_kore(StringHelper.convert(options.title), options.width, options.height, options.framebuffer.samplesPerPixel, options.framebuffer.verticalSync,
 			cast options.window.mode, options.window.windowFeatures);
@@ -35,7 +35,7 @@ class SystemImpl {
 		framebuffer = new Framebuffer(0, null, null, g4);
 		framebuffer.init(new kha.graphics2.Graphics1(framebuffer), new kha.korehl.graphics4.Graphics2(framebuffer), g4);
 		final samplesRef: hl.Ref<Int> = kha.audio2.Audio.samplesPerSecond;
-		kore_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample, samplesRef);
+		kinc_init_audio(kha.audio2.Audio._callCallback, kha.audio2.Audio._readSample, samplesRef);
 		kha.audio2.Audio.samplesPerSecond = samplesRef.get();
 		kha.audio1.Audio._init();
 		kha.audio2.Audio._init();
@@ -48,15 +48,15 @@ class SystemImpl {
 		}
 		surface = new kha.input.Surface();
 		mouseLockListeners = new Array();
-		kore_register_keyboard(keyDown, keyUp, keyPress);
-		kore_register_mouse(mouseDown, mouseUp, mouseMove, mouseWheel);
-		kore_register_pen(penDown, penUp, penMove);
-		kore_register_gamepad(gamepadAxis, gamepadButton);
-		kore_register_surface(touchStart, touchEnd, touchMove);
-		kore_register_sensor(kha.input.Sensor._accelerometerChanged, kha.input.Sensor._gyroscopeChanged);
-		kore_register_callbacks(foreground, resume, pause, background, shutdown);
-		kore_register_dropfiles(dropFiles);
-		kore_register_copycutpaste(copy, cut, paste);
+		kinc_register_keyboard(keyDown, keyUp, keyPress);
+		kinc_register_mouse(mouseDown, mouseUp, mouseMove, mouseWheel);
+		kinc_register_pen(penDown, penUp, penMove);
+		kinc_register_gamepad(gamepadAxis, gamepadButton);
+		kinc_register_surface(touchStart, touchEnd, touchMove);
+		kinc_register_sensor(kha.input.Sensor._accelerometerChanged, kha.input.Sensor._gyroscopeChanged);
+		kinc_register_callbacks(foreground, resume, pause, background, shutdown);
+		kinc_register_dropfiles(dropFiles);
+		kinc_register_copycutpaste(copy, cut, paste);
 
 		Scheduler.start();
 		callback(Window.get(0));
@@ -73,15 +73,15 @@ class SystemImpl {
 	}
 
 	public static function getTime(): Float {
-		return kore_get_time();
+		return kinc_get_time();
 	}
 
 	public static function windowWidth(windowId: Int): Int {
-		return kore_get_window_width(windowId);
+		return kinc_get_window_width(windowId);
 	}
 
 	public static function windowHeight(windowId: Int): Int {
-		return kore_get_window_height(windowId);
+		return kinc_get_window_height(windowId);
 	}
 
 	public static function getScreenRotation(): ScreenRotation {
@@ -89,21 +89,21 @@ class SystemImpl {
 	}
 
 	public static function getSystemId(): String {
-		final b: hl.Bytes = kore_get_system_id();
+		final b: hl.Bytes = kinc_get_system_id();
 		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function vibrate(ms: Int): Void {
-		kore_vibrate(ms);
+		kinc_vibrate(ms);
 	}
 
 	public static function getLanguage(): String {
-		final b: hl.Bytes = kore_get_language();
+		final b: hl.Bytes = kinc_get_language();
 		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function requestShutdown(): Bool {
-		kore_request_shutdown();
+		kinc_request_shutdown();
 		return true;
 	}
 
@@ -127,7 +127,7 @@ class SystemImpl {
 
 	public static function lockMouse(windowId: Int = 0): Void {
 		if (!isMouseLocked()) {
-			kore_mouse_lock(windowId);
+			kinc_mouse_lock(windowId);
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -136,7 +136,7 @@ class SystemImpl {
 
 	public static function unlockMouse(windowId: Int = 0): Void {
 		if (isMouseLocked()) {
-			kore_mouse_unlock(windowId);
+			kinc_mouse_unlock(windowId);
 			for (listener in mouseLockListeners) {
 				listener();
 			}
@@ -144,11 +144,11 @@ class SystemImpl {
 	}
 
 	public static function canLockMouse(windowId: Int = 0): Bool {
-		return kore_can_lock_mouse(windowId);
+		return kinc_can_lock_mouse(windowId);
 	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
-		return kore_is_mouse_locked(windowId);
+		return kinc_is_mouse_locked(windowId);
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {
@@ -164,11 +164,11 @@ class SystemImpl {
 	}
 
 	public static function hideSystemCursor(): Void {
-		kore_show_mouse(false);
+		kinc_show_mouse(false);
 	}
 
 	public static function showSystemCursor(): Void {
-		kore_show_mouse(true);
+		kinc_show_mouse(true);
 	}
 
 	public static function keyDown(code: KeyCode): Void {
@@ -299,14 +299,14 @@ class SystemImpl {
 	}
 
 	public static function isFullscreen(): Bool {
-		return kore_system_is_fullscreen();
+		return kinc_system_is_fullscreen();
 	}
 
 	public static function requestFullscreen(): Void {
 		if (!isFullscreen()) {
-			previousWidth = kore_get_window_width(0);
-			previousHeight = kore_get_window_height(0);
-			kore_system_request_fullscreen();
+			previousWidth = kinc_get_window_width(0);
+			previousHeight = kinc_get_window_height(0);
+			kinc_system_request_fullscreen();
 			for (listener in fullscreenListeners) {
 				listener();
 			}
@@ -316,10 +316,10 @@ class SystemImpl {
 	public static function exitFullscreen(): Void {
 		if (isFullscreen()) {
 			if (previousWidth == 0 || previousHeight == 0) {
-				previousWidth = kore_get_window_width(0);
-				previousHeight = kore_get_window_height(0);
+				previousWidth = kinc_get_window_width(0);
+				previousHeight = kinc_get_window_height(0);
 			}
-			kore_system_exit_fullscreen(previousWidth, previousHeight);
+			kinc_system_exit_fullscreen(previousWidth, previousHeight);
 			for (listener in fullscreenListeners) {
 				listener();
 			}
@@ -339,19 +339,19 @@ class SystemImpl {
 	}
 
 	public static function changeResolution(width: Int, height: Int): Void {
-		kore_system_change_resolution(width, height);
+		kinc_system_change_resolution(width, height);
 	}
 
 	public static function setKeepScreenOn(on: Bool): Void {
-		kore_system_set_keepscreenon(on);
+		kinc_system_set_keepscreenon(on);
 	}
 
 	public static function loadUrl(url: String): Void {
-		kore_system_load_url(StringHelper.convert(url));
+		kinc_system_load_url(StringHelper.convert(url));
 	}
 
 	public static function getGamepadId(index: Int): String {
-		return ""; // kore_get_gamepad_id(index);
+		return ""; // kinc_get_gamepad_id(index);
 	}
 
 	public static function getGamepadVendor(index: Int): String {
@@ -387,90 +387,90 @@ class SystemImpl {
 
 	@:hlNative("std", "run_kore") static function run_kore(): Void {}
 
-	@:hlNative("std", "kinc_init_audio") static function kore_init_audio(callCallback: Int->Void, readSample: Void->FastFloat,
+	@:hlNative("std", "kinc_init_audio") static function kinc_init_audio(callCallback: Int->Void, readSample: Void->FastFloat,
 		outSamplesPerSecond: hl.Ref<Int>): Void {}
 
-	@:hlNative("std", "kinc_log") static function kore_log(v: hl.Bytes): Void {}
+	@:hlNative("std", "kinc_log") static function kinc_log(v: hl.Bytes): Void {}
 
-	@:hlNative("std", "kinc_get_time") static function kore_get_time(): Float {
+	@:hlNative("std", "kinc_get_time") static function kinc_get_time(): Float {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_get_window_width") static function kore_get_window_width(window: Int): Int {
+	@:hlNative("std", "kinc_get_window_width") static function kinc_get_window_width(window: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_get_window_height") static function kore_get_window_height(window: Int): Int {
+	@:hlNative("std", "kinc_get_window_height") static function kinc_get_window_height(window: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_get_system_id") static function kore_get_system_id(): hl.Bytes {
+	@:hlNative("std", "kinc_get_system_id") static function kinc_get_system_id(): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_vibrate") static function kore_vibrate(ms: Int): Void {}
+	@:hlNative("std", "kinc_vibrate") static function kinc_vibrate(ms: Int): Void {}
 
-	@:hlNative("std", "kinc_get_language") static function kore_get_language(): hl.Bytes {
+	@:hlNative("std", "kinc_get_language") static function kinc_get_language(): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_request_shutdown") static function kore_request_shutdown(): Void {}
+	@:hlNative("std", "kinc_request_shutdown") static function kinc_request_shutdown(): Void {}
 
-	@:hlNative("std", "kinc_mouse_lock") static function kore_mouse_lock(windowId: Int): Void {}
+	@:hlNative("std", "kinc_mouse_lock") static function kinc_mouse_lock(windowId: Int): Void {}
 
-	@:hlNative("std", "kinc_mouse_unlock") static function kore_mouse_unlock(windowId: Int): Void {}
+	@:hlNative("std", "kinc_mouse_unlock") static function kinc_mouse_unlock(windowId: Int): Void {}
 
-	@:hlNative("std", "kinc_can_lock_mouse") static function kore_can_lock_mouse(windowId: Int): Bool {
+	@:hlNative("std", "kinc_can_lock_mouse") static function kinc_can_lock_mouse(windowId: Int): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kinc_is_mouse_locked") static function kore_is_mouse_locked(windowId: Int): Bool {
+	@:hlNative("std", "kinc_is_mouse_locked") static function kinc_is_mouse_locked(windowId: Int): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kinc_show_mouse") static function kore_show_mouse(show: Bool): Void {}
+	@:hlNative("std", "kinc_show_mouse") static function kinc_show_mouse(show: Bool): Void {}
 
-	@:hlNative("std", "kinc_system_is_fullscreen") static function kore_system_is_fullscreen(): Bool {
+	@:hlNative("std", "kinc_system_is_fullscreen") static function kinc_system_is_fullscreen(): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kinc_system_request_fullscreen") static function kore_system_request_fullscreen(): Void {}
+	@:hlNative("std", "kinc_system_request_fullscreen") static function kinc_system_request_fullscreen(): Void {}
 
-	@:hlNative("std", "kinc_system_exit_fullscreen") static function kore_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void {}
+	@:hlNative("std", "kinc_system_exit_fullscreen") static function kinc_system_exit_fullscreen(previousWidth: Int, previousHeight: Int): Void {}
 
-	@:hlNative("std", "kinc_register_keyboard") static function kore_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void,
+	@:hlNative("std", "kinc_register_keyboard") static function kinc_register_keyboard(keyDown: KeyCode->Void, keyUp: KeyCode->Void,
 		keyPress: Int->Void): Void {}
 
-	@:hlNative("std", "kinc_register_mouse") static function kore_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void,
+	@:hlNative("std", "kinc_register_mouse") static function kinc_register_mouse(mouseDown: Int->Int->Int->Int->Void, mouseUp: Int->Int->Int->Int->Void,
 		mouseMove: Int->Int->Int->Int->Int->Void, mouseWheel: Int->Int->Void): Void {}
 
-	@:hlNative("std", "kinc_register_pen") static function kore_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
+	@:hlNative("std", "kinc_register_pen") static function kinc_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
 		penMove: Int->Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kinc_register_gamepad") static function kore_register_gamepad(gamepadAxis: Int->Int->Float->Void,
+	@:hlNative("std", "kinc_register_gamepad") static function kinc_register_gamepad(gamepadAxis: Int->Int->Float->Void,
 		gamepadButton: Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kinc_register_surface") static function kore_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
+	@:hlNative("std", "kinc_register_surface") static function kinc_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
 		touchMove: Int->Int->Int->Void): Void {}
 
-	@:hlNative("std", "kinc_register_sensor") static function kore_register_sensor(accelerometerChanged: Float->Float->Float->Void,
+	@:hlNative("std", "kinc_register_sensor") static function kinc_register_sensor(accelerometerChanged: Float->Float->Float->Void,
 		gyroscopeChanged: Float->Float->Float->Void): Void {}
 
-	@:hlNative("std", "kinc_register_callbacks") static function kore_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void,
+	@:hlNative("std", "kinc_register_callbacks") static function kinc_register_callbacks(foreground: Void->Void, resume: Void->Void, pause: Void->Void,
 		background: Void->Void, shutdown: Void->Void): Void {}
 
-	@:hlNative("std", "kinc_register_dropfiles") static function kore_register_dropfiles(dropFiles: String->Void): Void {}
+	@:hlNative("std", "kinc_register_dropfiles") static function kinc_register_dropfiles(dropFiles: String->Void): Void {}
 
-	@:hlNative("std", "kinc_register_copycutpaste") static function kore_register_copycutpaste(copy: Void->hl.Bytes, cut: Void->hl.Bytes,
+	@:hlNative("std", "kinc_register_copycutpaste") static function kinc_register_copycutpaste(copy: Void->hl.Bytes, cut: Void->hl.Bytes,
 		paste: hl.Bytes->Void): Void {}
 
-	@:hlNative("std", "kinc_system_change_resolution") static function kore_system_change_resolution(width: Int, height: Int): Void {}
+	@:hlNative("std", "kinc_system_change_resolution") static function kinc_system_change_resolution(width: Int, height: Int): Void {}
 
-	@:hlNative("std", "kinc_system_set_keepscreenon") static function kore_system_set_keepscreenon(on: Bool): Void {}
+	@:hlNative("std", "kinc_system_set_keepscreenon") static function kinc_system_set_keepscreenon(on: Bool): Void {}
 
-	@:hlNative("std", "kinc_system_load_url") static function kore_system_load_url(url: hl.Bytes): Void {}
+	@:hlNative("std", "kinc_system_load_url") static function kinc_system_load_url(url: hl.Bytes): Void {}
 
-	@:hlNative("std", "kinc_get_gamepad_id") static function kore_get_gamepad_id(index: Int): hl.Bytes {
+	@:hlNative("std", "kinc_get_gamepad_id") static function kinc_get_gamepad_id(index: Int): hl.Bytes {
 		return null;
 	}
 }

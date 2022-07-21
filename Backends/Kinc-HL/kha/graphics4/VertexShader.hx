@@ -10,22 +10,22 @@ class VertexShader {
 	}
 
 	function initShader(source: Blob): Void {
-		_shader = kore_create_vertexshader(source.bytes.getData(), source.bytes.getData().length);
+		_shader = kinc_create_vertexshader(source.bytes.getData(), source.bytes.getData().length);
 	}
 
 	public static function fromSource(source: String): VertexShader {
 		var sh = new VertexShader(null, null);
-		sh._shader = kore_vertexshader_from_source(StringHelper.convert(source));
+		sh._shader = kinc_vertexshader_from_source(StringHelper.convert(source));
 		return sh;
 	}
 
 	public function delete(): Void {}
 
-	@:hlNative("std", "kinc_create_vertexshader") static function kore_create_vertexshader(data: hl.Bytes, length: Int): Pointer {
+	@:hlNative("std", "kinc_create_vertexshader") static function kinc_create_vertexshader(data: hl.Bytes, length: Int): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_vertexshader_from_source") static function kore_vertexshader_from_source(source: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_vertexshader_from_source") static function kinc_vertexshader_from_source(source: hl.Bytes): Pointer {
 		return null;
 	}
 }

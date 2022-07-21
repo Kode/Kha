@@ -9,27 +9,27 @@ class Video extends kha.Video {
 	}
 
 	function init(filename: String) {
-		_video = kore_video_create(StringHelper.convert(filename));
+		_video = kinc_video_create(StringHelper.convert(filename));
 	}
 
 	override public function play(loop: Bool = false): Void {
-		kore_video_play(_video);
+		kinc_video_play(_video);
 	}
 
 	override public function pause(): Void {
-		kore_video_pause(_video);
+		kinc_video_pause(_video);
 	}
 
 	override public function stop(): Void {
-		kore_video_stop(_video);
+		kinc_video_stop(_video);
 	}
 
 	override public function getLength(): Int { // Miliseconds
-		return kore_video_get_duration(_video);
+		return kinc_video_get_duration(_video);
 	}
 
 	override public function getCurrentPos(): Int { // Miliseconds
-		return kore_video_get_position(_video);
+		return kinc_video_get_position(_video);
 	}
 
 	override function get_position(): Int {
@@ -37,59 +37,59 @@ class Video extends kha.Video {
 	}
 
 	override function set_position(value: Int): Int {
-		kore_video_set_position(_video, value);
+		kinc_video_set_position(_video, value);
 		return value;
 	}
 
 	override public function isFinished(): Bool {
-		return kore_video_is_finished(_video);
+		return kinc_video_is_finished(_video);
 	}
 
 	override public function width(): Int {
-		return kore_video_width(_video);
+		return kinc_video_width(_video);
 	}
 
 	override public function height(): Int {
-		return kore_video_height(_video);
+		return kinc_video_height(_video);
 	}
 
 	override public function unload(): Void {
-		kore_video_unload(_video);
+		kinc_video_unload(_video);
 	}
 
-	@:hlNative("std", "kinc_video_create") static function kore_video_create(filename: hl.Bytes): Pointer {
+	@:hlNative("std", "kinc_video_create") static function kinc_video_create(filename: hl.Bytes): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_video_play") static function kore_video_play(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_play") static function kinc_video_play(video: Pointer): Void {}
 
-	@:hlNative("std", "kinc_video_pause") static function kore_video_pause(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_pause") static function kinc_video_pause(video: Pointer): Void {}
 
-	@:hlNative("std", "kinc_video_stop") static function kore_video_stop(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_stop") static function kinc_video_stop(video: Pointer): Void {}
 
-	@:hlNative("std", "kinc_video_get_duration") static function kore_video_get_duration(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_get_duration") static function kinc_video_get_duration(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_video_get_position") static function kore_video_get_position(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_get_position") static function kinc_video_get_position(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_video_set_position") static function kore_video_set_position(video: Pointer, value: Int): Int {
+	@:hlNative("std", "kinc_video_set_position") static function kinc_video_set_position(video: Pointer, value: Int): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_video_is_finished") static function kore_video_is_finished(video: Pointer): Bool {
+	@:hlNative("std", "kinc_video_is_finished") static function kinc_video_is_finished(video: Pointer): Bool {
 		return false;
 	}
 
-	@:hlNative("std", "kinc_video_width") static function kore_video_width(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_width") static function kinc_video_width(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_video_height") static function kore_video_height(video: Pointer): Int {
+	@:hlNative("std", "kinc_video_height") static function kinc_video_height(video: Pointer): Int {
 		return 0;
 	}
 
-	@:hlNative("std", "kinc_video_unload") static function kore_video_unload(video: Pointer): Void {}
+	@:hlNative("std", "kinc_video_unload") static function kinc_video_unload(video: Pointer): Void {}
 }

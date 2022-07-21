@@ -26,7 +26,7 @@ class LoaderImpl {
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
 		// done(new Blob(File.getBytes(desc.files[0])));
 		var size = 0;
-		var bytes = kore_file_contents(StringHelper.convert(desc.files[0]), size);
+		var bytes = kinc_file_contents(StringHelper.convert(desc.files[0]), size);
 		done(new Blob(@:privateAccess new haxe.io.Bytes(bytes, size)));
 	}
 
@@ -41,14 +41,14 @@ class LoaderImpl {
 	}
 
 	public static function getVideoFormats(): Array<String> {
-		return [StringHelper.fromBytes(kore_video_format())];
+		return [StringHelper.fromBytes(kinc_video_format())];
 	}
 
-	@:hlNative("std", "kinc_file_contents") static function kore_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer {
+	@:hlNative("std", "kinc_file_contents") static function kinc_file_contents(name: hl.Bytes, size: hl.Ref<Int>): Pointer {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_video_format") static function kore_video_format(): Pointer {
+	@:hlNative("std", "kinc_video_format") static function kinc_video_format(): Pointer {
 		return null;
 	}
 }
