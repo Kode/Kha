@@ -35,7 +35,7 @@ static void readChunk(uint8_t **data, struct WaveData *wave) {
 	char fourcc[5];
 	readFOURCC(data, fourcc);
 	uint32_t chunksize = kinc_read_u32le(*data);
-	data += 4;
+	*data += 4;
 	if (strcmp(fourcc, "fmt ") == 0) {
 		wave->audioFormat = kinc_read_u16le(*data + 0);
 		wave->numChannels = kinc_read_u16le(*data + 2);
