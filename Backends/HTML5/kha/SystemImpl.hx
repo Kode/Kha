@@ -577,8 +577,8 @@ class SystemImpl {
 					canvas.width = clientWidth;
 					canvas.height = clientHeight;
 					if (scale != 1) {
-						canvas.style.width = Std.int(clientWidth / scale) + "px";
-						canvas.style.height = Std.int(clientHeight / scale) + "px";
+						canvas.style.width = Std.int(clientWidth * scale) + "px";
+						canvas.style.height = Std.int(clientHeight * scale) + "px";
 					}
 					lastCanvasClientWidth = canvas.clientWidth;
 					lastCanvasClientHeight = canvas.clientHeight;
