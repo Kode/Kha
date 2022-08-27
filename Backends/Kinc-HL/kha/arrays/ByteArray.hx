@@ -70,7 +70,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		return kinc_bytearray_getint32(this.self, this.byteArrayOffset + byteOffset);
 	}
 
-	public inline function getUint32(byteOffset: Int): Int {
+	public inline function getUint32(byteOffset: Int): hl.I64 {
 		return kinc_bytearray_getuint32(this.self, this.byteArrayOffset + byteOffset);
 	}
 
@@ -104,7 +104,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		kinc_bytearray_setint32(this.self, this.byteArrayOffset + byteOffset, value);
 	}
 
-	public inline function setUint32(byteOffset: Int, value: Int): Void {
+	public inline function setUint32(byteOffset: Int, value: hl.I64): Void {
 		kinc_bytearray_setuint32(this.self, this.byteArrayOffset + byteOffset, value);
 	}
 
@@ -142,7 +142,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		#end
 	}
 
-	public inline function getUint32LE(byteOffset: Int): Int {
+	public inline function getUint32LE(byteOffset: Int): hl.I64 {
 		#if !sys_bigendian
 		return getUint32(byteOffset);
 		#else
@@ -192,7 +192,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		#end
 	}
 
-	public inline function setUint32LE(byteOffset: Int, value: Int): Void {
+	public inline function setUint32LE(byteOffset: Int, value: hl.I64): Void {
 		#if !sys_bigendian
 		setUint32(byteOffset, value);
 		#else
@@ -242,7 +242,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		#end
 	}
 
-	public inline function getUint32BE(byteOffset: Int): Int {
+	public inline function getUint32BE(byteOffset: Int): hl.I64 {
 		#if sys_bigendian
 		return getUint32(byteOffset);
 		#else
@@ -292,7 +292,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		#end
 	}
 
-	public inline function setUint32BE(byteOffset: Int, value: Int): Void {
+	public inline function setUint32BE(byteOffset: Int, value: hl.I64): Void {
 		#if sys_bigendian
 		setUint32(byteOffset, value);
 		#else
@@ -327,7 +327,7 @@ abstract ByteArray(ByteArrayPrivate) {
 	@:hlNative("std", "kinc_bytearray_getint16") static function kinc_bytearray_getint16(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getuint16") static function kinc_bytearray_getuint16(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getint32") static function kinc_bytearray_getint32(bytearray: Pointer, byteOffset: Int): Int { return 0; }
-	@:hlNative("std", "kinc_bytearray_getuint32") static function kinc_bytearray_getuint32(bytearray: Pointer, byteOffset: Int): Int { return 0; }
+	@:hlNative("std", "kinc_bytearray_getuint32") static function kinc_bytearray_getuint32(bytearray: Pointer, byteOffset: Int): hl.I64 { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat32") static function kinc_bytearray_getfloat32(bytearray: Pointer, byteOffset: Int): FastFloat { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat64") static function kinc_bytearray_getfloat64(bytearray: Pointer, byteOffset: Int): Float { return 0; }
 
@@ -336,7 +336,7 @@ abstract ByteArray(ByteArrayPrivate) {
 	@:hlNative("std", "kinc_bytearray_setint16") static function kinc_bytearray_setint16(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setuint16") static function kinc_bytearray_setuint16(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setint32") static function kinc_bytearray_setint32(bytearray: Pointer, byteOffset: Int, value: Int) {}
-	@:hlNative("std", "kinc_bytearray_setuint32") static function kinc_bytearray_setuint32(bytearray: Pointer, byteOffset: Int, value: Int) {}
+	@:hlNative("std", "kinc_bytearray_setuint32") static function kinc_bytearray_setuint32(bytearray: Pointer, byteOffset: Int, value: hl.I64) {}
 	@:hlNative("std", "kinc_bytearray_setfloat32") static function kinc_bytearray_setfloat32(bytearray: Pointer, byteOffset: Int, value: FastFloat) {}
 	@:hlNative("std", "kinc_bytearray_setfloat64") static function kinc_bytearray_setfloat64(bytearray: Pointer, byteOffset: Int, value: Float) {}
 
@@ -345,14 +345,14 @@ abstract ByteArray(ByteArrayPrivate) {
 	@:hlNative("std", "kinc_bytearray_getint16_le") static function kinc_bytearray_getint16_le(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getuint16_le") static function kinc_bytearray_getuint16_le(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getint32_le") static function kinc_bytearray_getint32_le(bytearray: Pointer, byteOffset: Int): Int { return 0; }
-	@:hlNative("std", "kinc_bytearray_getuint32_le") static function kinc_bytearray_getuint32_le(bytearray: Pointer, byteOffset: Int): Int { return 0; }
+	@:hlNative("std", "kinc_bytearray_getuint32_le") static function kinc_bytearray_getuint32_le(bytearray: Pointer, byteOffset: Int): hl.I64 { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat32_le") static function kinc_bytearray_getfloat32_le(bytearray: Pointer, byteOffset: Int): FastFloat { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat64_le") static function kinc_bytearray_getfloat64_le(bytearray: Pointer, byteOffset: Int): Float { return 0; }
 
 	@:hlNative("std", "kinc_bytearray_setint16_le") static function kinc_bytearray_setint16_le(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setuint16_le") static function kinc_bytearray_setuint16_le(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setint32_le") static function kinc_bytearray_setint32_le(bytearray: Pointer, byteOffset: Int, value: Int) {}
-	@:hlNative("std", "kinc_bytearray_setuint32_le") static function kinc_bytearray_setuint32_le(bytearray: Pointer, byteOffset: Int, value: Int) {}
+	@:hlNative("std", "kinc_bytearray_setuint32_le") static function kinc_bytearray_setuint32_le(bytearray: Pointer, byteOffset: Int, value: hl.I64) {}
 	@:hlNative("std", "kinc_bytearray_setfloat32_le") static function kinc_bytearray_setfloat32_le(bytearray: Pointer, byteOffset: Int, value: FastFloat) {}
 	@:hlNative("std", "kinc_bytearray_setfloat64_le") static function kinc_bytearray_setfloat64_le(bytearray: Pointer, byteOffset: Int, value: Float) {}
 
@@ -361,14 +361,14 @@ abstract ByteArray(ByteArrayPrivate) {
 	@:hlNative("std", "kinc_bytearray_getint16_be") static function kinc_bytearray_getint16_be(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getuint16_be") static function kinc_bytearray_getuint16_be(bytearray: Pointer, byteOffset: Int): Int { return 0; }
 	@:hlNative("std", "kinc_bytearray_getint32_be") static function kinc_bytearray_getint32_be(bytearray: Pointer, byteOffset: Int): Int { return 0; }
-	@:hlNative("std", "kinc_bytearray_getuint32_be") static function kinc_bytearray_getuint32_be(bytearray: Pointer, byteOffset: Int): Int { return 0; }
+	@:hlNative("std", "kinc_bytearray_getuint32_be") static function kinc_bytearray_getuint32_be(bytearray: Pointer, byteOffset: Int): hl.I64 { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat32_be") static function kinc_bytearray_getfloat32_be(bytearray: Pointer, byteOffset: Int): FastFloat { return 0; }
 	@:hlNative("std", "kinc_bytearray_getfloat64_be") static function kinc_bytearray_getfloat64_be(bytearray: Pointer, byteOffset: Int): Float { return 0; }
 
 	@:hlNative("std", "kinc_bytearray_setint16_be") static function kinc_bytearray_setint16_be(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setuint16_be") static function kinc_bytearray_setuint16_be(bytearray: Pointer, byteOffset: Int, value: Int) {}
 	@:hlNative("std", "kinc_bytearray_setint32_be") static function kinc_bytearray_setint32_be(bytearray: Pointer, byteOffset: Int, value: Int) {}
-	@:hlNative("std", "kinc_bytearray_setuint32_be") static function kinc_bytearray_setuint32_be(bytearray: Pointer, byteOffset: Int, value: Int) {}
+	@:hlNative("std", "kinc_bytearray_setuint32_be") static function kinc_bytearray_setuint32_be(bytearray: Pointer, byteOffset: Int, value: hl.I64) {}
 	@:hlNative("std", "kinc_bytearray_setfloat32_be") static function kinc_bytearray_setfloat32_be(bytearray: Pointer, byteOffset: Int, value: FastFloat) {}
 	@:hlNative("std", "kinc_bytearray_setfloat64_be") static function kinc_bytearray_setfloat64_be(bytearray: Pointer, byteOffset: Int, value: Float) {}
 }
