@@ -13,28 +13,28 @@ void hl_kinc_bytebuffer_free(vbyte *bytearray) {
 
 // Get
 
-int8_t hl_kinc_bytearray_getint8(vbyte *bytearray, int byteoffset) {
-	return *((int8_t *)&(bytearray[byteoffset]));
+int hl_kinc_bytearray_getint8(vbyte *bytearray, int byteoffset) {
+	return (int)*((int8_t *)&(bytearray[byteoffset]));
 }
 
-uint8_t hl_kinc_bytearray_getuint8(vbyte *bytearray, int byteoffset) {
-	return *((uint8_t *)&(bytearray[byteoffset]));
+int hl_kinc_bytearray_getuint8(vbyte *bytearray, int byteoffset) {
+	return (int)*((uint8_t *)&(bytearray[byteoffset]));
 }
 
-int16_t hl_kinc_bytearray_getint16(vbyte *bytearray, int byteoffset) {
-	return *((int16_t *)&bytearray[byteoffset]);
+int hl_kinc_bytearray_getint16(vbyte *bytearray, int byteoffset) {
+	return (int)*((int16_t *)&bytearray[byteoffset]);
 }
 
-uint16_t hl_kinc_bytearray_getuint16(vbyte *bytearray, int byteoffset) {
-	return *((uint16_t *)&bytearray[byteoffset]);
+int hl_kinc_bytearray_getuint16(vbyte *bytearray, int byteoffset) {
+	return (int)*((uint16_t *)&bytearray[byteoffset]);
 }
 
-int32_t hl_kinc_bytearray_getint32(vbyte *bytearray, int byteoffset) {
-	return *((int32_t *)&bytearray[byteoffset]);
+int hl_kinc_bytearray_getint32(vbyte *bytearray, int byteoffset) {
+	return (int)*((int32_t *)&bytearray[byteoffset]);
 }
 
-uint32_t hl_kinc_bytearray_getuint32(vbyte *bytearray, int byteoffset) {
-	return *((uint32_t *)&bytearray[byteoffset]);
+int64_t hl_kinc_bytearray_getuint32(vbyte *bytearray, int byteoffset) {
+	return (int64_t)*((uint32_t *)&bytearray[byteoffset]);
 }
 
 float hl_kinc_bytearray_getfloat32(vbyte *bytearray, int byteoffset) {
@@ -47,28 +47,28 @@ double hl_kinc_bytearray_getfloat64(vbyte *bytearray, int byteoffset) {
 
 // Set
 
-void hl_kinc_bytearray_setint8(vbyte *bytearray, int byteoffset, int8_t value) {
-	*((int8_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setint8(vbyte *bytearray, int byteoffset, int value) {
+	*((int8_t *)&bytearray[byteoffset]) = (int8_t)value;
 }
 
-void hl_kinc_bytearray_setuint8(vbyte *bytearray, int byteoffset, uint8_t value) {
-	*((uint8_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setuint8(vbyte *bytearray, int byteoffset, int value) {
+	*((uint8_t *)&bytearray[byteoffset]) = (uint8_t)value;
 }
 
-void hl_kinc_bytearray_setint16(vbyte *bytearray, int byteoffset, int16_t value) {
-	*((int16_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setint16(vbyte *bytearray, int byteoffset, int value) {
+	*((int16_t *)&bytearray[byteoffset]) = (int16_t)value;
 }
 
-void hl_kinc_bytearray_setuint16(vbyte *bytearray, int byteoffset, uint16_t value) {
-	*((uint16_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setuint16(vbyte *bytearray, int byteoffset, int value) {
+	*((uint16_t *)&bytearray[byteoffset]) = (uint16_t)value;
 }
 
-void hl_kinc_bytearray_setint32(vbyte *bytearray, int byteoffset, int32_t value) {
-	*((int32_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setint32(vbyte *bytearray, int byteoffset, int value) {
+	*((int32_t *)&bytearray[byteoffset]) = (int32_t)value;
 }
 
-void hl_kinc_bytearray_setuint32(vbyte *bytearray, int byteoffset, uint32_t value) {
-	*((uint32_t *)&bytearray[byteoffset]) = value;
+void hl_kinc_bytearray_setuint32(vbyte *bytearray, int byteoffset, int64_t value) {
+	*((uint32_t *)&bytearray[byteoffset]) = (uint32_t)value;
 }
 
 void hl_kinc_bytearray_setfloat32(vbyte *bytearray, int byteoffset, float value) {
@@ -81,20 +81,20 @@ void hl_kinc_bytearray_setfloat64(vbyte *bytearray, int byteoffset, double value
 
 // Get (little endian on big endian system)
 
-int16_t hl_kinc_bytearray_getint16_le(vbyte *bytearray, int byteoffset) {
-	return (int16_t)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8);
+int hl_kinc_bytearray_getint16_le(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8);
 }
 
-uint16_t hl_kinc_bytearray_getuint16_le(vbyte *bytearray, int byteoffset) {
-	return (uint16_t)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8);
+int hl_kinc_bytearray_getuint16_le(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8);
 }
 
-int32_t hl_kinc_bytearray_getint32_le(vbyte *bytearray, int byteoffset) {
-	return (int32_t)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8 | bytearray[byteoffset + 2] << 16 | bytearray[byteoffset + 3] << 24);
+int hl_kinc_bytearray_getint32_le(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8 | bytearray[byteoffset + 2] << 16 | bytearray[byteoffset + 3] << 24);
 }
 
-uint32_t hl_kinc_bytearray_getuint32_le(vbyte *bytearray, int byteoffset) {
-	return (uint32_t)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8 | bytearray[byteoffset + 2] << 16 | bytearray[byteoffset + 3] << 24);
+int64_t hl_kinc_bytearray_getuint32_le(vbyte *bytearray, int byteoffset) {
+	return (int64_t)(bytearray[byteoffset] << 0 | bytearray[byteoffset + 1] << 8 | bytearray[byteoffset + 2] << 16 | bytearray[byteoffset + 3] << 24);
 }
 
 float hl_kinc_bytearray_getfloat32_le(vbyte *bytearray, int byteoffset) {
@@ -111,26 +111,26 @@ double hl_kinc_bytearray_getfloat64_le(vbyte *bytearray, int byteoffset) {
 
 // Set (little endian on big endian system)
 
-void hl_kinc_bytearray_setint16_le(vbyte *bytearray, int byteoffset, int16_t value) {
-	int8_t *data = (int8_t *)&value;
+void hl_kinc_bytearray_setint16_le(vbyte *bytearray, int byteoffset, int value) {
+	int8_t *data = (int8_t *)&((int16_t)value);
 	int16_t le_value = data[0] << 8 | data[1] << 0;
 	*((int16_t *)&bytearray[byteoffset]) = le_value;
 }
 
-void hl_kinc_bytearray_setuint16_le(vbyte *bytearray, int byteoffset, uint16_t value) {
-	int8_t *data = (int8_t *)&value;
+void hl_kinc_bytearray_setuint16_le(vbyte *bytearray, int byteoffset, int value) {
+	int8_t *data = (int8_t *)&((uint16_t)value);
 	uint16_t le_value = data[0] << 8 | data[1] << 0;
 	*((uint16_t *)&bytearray[byteoffset]) = le_value;
 }
 
-void hl_kinc_bytearray_setint32_le(vbyte *bytearray, int byteoffset, int32_t value) {
-	int8_t *data = (int8_t *)&value;
+void hl_kinc_bytearray_setint32_le(vbyte *bytearray, int byteoffset, int value) {
+	int8_t *data = (int8_t *)&((int32_t)value);
 	int32_t le_value = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3] << 0;
 	*((int32_t *)&bytearray[byteoffset]) = le_value;
 }
 
-void hl_kinc_bytearray_setuint32_le(vbyte *bytearray, int byteoffset, uint32_t value) {
-	int8_t *data = (int8_t *)&value;
+void hl_kinc_bytearray_setuint32_le(vbyte *bytearray, int byteoffset, int64_t value) {
+	int8_t *data = (int8_t *)&((uint32_t)value);
 	uint32_t le_value = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3] << 0;
 	*((uint32_t *)&bytearray[byteoffset]) = le_value;
 }
@@ -150,20 +150,20 @@ void hl_kinc_bytearray_setfloat64_le(vbyte *bytearray, int byteoffset, double va
 
 // Get (big endian on little endian system)
 
-int16_t hl_kinc_bytearray_getint16_be(vbyte *bytearray, int byteoffset) {
-	return (int16_t)(bytearray[byteoffset + 1] << 0 | bytearray[byteoffset] << 8);
+int hl_kinc_bytearray_getint16_be(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset + 1] << 0 | bytearray[byteoffset] << 8);
 }
 
-uint16_t hl_kinc_bytearray_getuint16_be(vbyte *bytearray, int byteoffset) {
-	return (uint16_t)(bytearray[byteoffset + 1] << 0 | bytearray[byteoffset] << 8);
+int hl_kinc_bytearray_getuint16_be(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset + 1] << 0 | bytearray[byteoffset] << 8);
 }
 
-int32_t hl_kinc_bytearray_getint32_be(vbyte *bytearray, int byteoffset) {
-	return (int32_t)(bytearray[byteoffset + 3] << 0 | bytearray[byteoffset + 2] << 8 | bytearray[byteoffset + 1] << 16 | bytearray[byteoffset] << 24);
+int hl_kinc_bytearray_getint32_be(vbyte *bytearray, int byteoffset) {
+	return (int)(bytearray[byteoffset + 3] << 0 | bytearray[byteoffset + 2] << 8 | bytearray[byteoffset + 1] << 16 | bytearray[byteoffset] << 24);
 }
 
-uint32_t hl_kinc_bytearray_getuint32_be(vbyte *bytearray, int byteoffset) {
-	return (uint32_t)(bytearray[byteoffset + 3] << 0 | bytearray[byteoffset + 2] << 8 | bytearray[byteoffset + 1] << 16 | bytearray[byteoffset] << 24);
+int64_t hl_kinc_bytearray_getuint32_be(vbyte *bytearray, int byteoffset) {
+	return (int64_t)(bytearray[byteoffset + 3] << 0 | bytearray[byteoffset + 2] << 8 | bytearray[byteoffset + 1] << 16 | bytearray[byteoffset] << 24);
 }
 
 float hl_kinc_bytearray_getfloat32_be(vbyte *bytearray, int byteoffset) {
@@ -180,25 +180,25 @@ double hl_kinc_bytearray_getfloat64_be(vbyte *bytearray, int byteoffset) {
 
 // Set (big endian on little endian system)
 
-void hl_kinc_bytearray_setint16_be(vbyte *bytearray, int byteoffset, int16_t value) {
+void hl_kinc_bytearray_setint16_be(vbyte *bytearray, int byteoffset, int value) {
 	int8_t *data = (int8_t *)&value;
 	int16_t be_value = data[1] << 8 | data[0] << 0;
 	*((int16_t *)&bytearray[byteoffset]) = be_value;
 }
 
-void hl_kinc_bytearray_setuint16_be(vbyte *bytearray, int byteoffset, uint16_t value) {
+void hl_kinc_bytearray_setuint16_be(vbyte *bytearray, int byteoffset, int value) {
 	int8_t *data = (int8_t *)&value;
 	uint16_t be_value = data[1] << 8 | data[0] << 0;
 	*((uint16_t *)&bytearray[byteoffset]) = be_value;
 }
 
-void hl_kinc_bytearray_setint32_be(vbyte *bytearray, int byteoffset, int32_t value) {
+void hl_kinc_bytearray_setint32_be(vbyte *bytearray, int byteoffset, int value) {
 	int8_t *data = (int8_t *)&value;
 	int32_t be_value = data[3] << 24 | data[2] << 16 | data[1] << 8 | data[0] << 0;
 	*((int32_t *)&bytearray[byteoffset]) = be_value;
 }
 
-void hl_kinc_bytearray_setuint32_be(vbyte *bytearray, int byteoffset, uint32_t value) {
+void hl_kinc_bytearray_setuint32_be(vbyte *bytearray, int byteoffset, int64_t value) {
 	int8_t *data = (int8_t *)&value;
 	uint32_t be_value = data[3] << 24 | data[2] << 16 | data[1] << 8 | data[0] << 0;
 	*((uint32_t *)&bytearray[byteoffset]) = be_value;
