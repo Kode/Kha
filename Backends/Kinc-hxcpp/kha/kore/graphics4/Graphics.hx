@@ -39,7 +39,7 @@ import kha.Video;
 #include <kinc/graphics4/rendertarget.h>
 #include <kinc/window.h>
 ")
-@:headerClassCode("kinc_g4_render_target_t renderTarget;")
+@:headerClassCode("kinc_g4_render_target_t *renderTarget = nullptr;")
 class Graphics implements kha.graphics4.Graphics {
 	var target: Canvas;
 
@@ -58,11 +58,11 @@ class Graphics implements kha.graphics4.Graphics {
 			return;
 		if (Std.isOfType(target, CubeMap)) {
 			var cubeMap = cast(target, CubeMap);
-			untyped __cpp__("renderTarget = {0}->renderTarget", cubeMap);
+			untyped __cpp__("renderTarget = &{0}->renderTarget", cubeMap);
 		}
 		else {
 			var image = cast(target, Image);
-			untyped __cpp__("renderTarget = {0}->renderTarget", image);
+			untyped __cpp__("renderTarget = &{0}->renderTarget", image);
 		}
 	}
 
@@ -438,13 +438,13 @@ class Graphics implements kha.graphics4.Graphics {
 			var image7 = cast(additionalRenderTargets[6], Image);
 
 			untyped __cpp__("
-				kinc_g4_render_target_t *renderTargets[8] = { &renderTarget, {1} == null() ? nullptr : &{1}->renderTarget, {2} == null() ? nullptr : &{2}->renderTarget, image3 == null() ? nullptr : &{3}->renderTarget, {4} == null() ? nullptr : &{4}->renderTarget, {5} == null() ? nullptr : &{5}->renderTarget, {6} == null() ? nullptr : &{6}->renderTarget, {7} == null() ? nullptr : &{7}->renderTarget };
+				kinc_g4_render_target_t *renderTargets[8] = { renderTarget, {1} == null() ? nullptr : &{1}->renderTarget, {2} == null() ? nullptr : &{2}->renderTarget, image3 == null() ? nullptr : &{3}->renderTarget, {4} == null() ? nullptr : &{4}->renderTarget, {5} == null() ? nullptr : &{5}->renderTarget, {6} == null() ? nullptr : &{6}->renderTarget, {7} == null() ? nullptr : &{7}->renderTarget };
 				kinc_g4_set_render_targets(renderTargets, {0} + 1);
 			", len, image1, image2, image3, image4, image5, image6, image7);
 		}
 		else {
 			untyped __cpp__("
-				kinc_g4_render_target_t *renderTargets[1] = { &renderTarget };
+				kinc_g4_render_target_t *renderTargets[1] = { renderTarget };
 				kinc_g4_set_render_targets(renderTargets, 1)
 			");
 		}
@@ -484,7 +484,7 @@ class Graphics implements kha.graphics4.Graphics {
 			throw "End before you begin";
 		}
 
-		untyped __cpp__("kinc_g4_set_render_target_face(&renderTarget, face)");
+		untyped __cpp__("kinc_g4_set_render_target_face(renderTarget, face)");
 	}
 
 	public function beginEye(eye: Int): Void {}
