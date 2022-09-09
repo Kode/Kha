@@ -12,21 +12,20 @@ class CubeMap implements Canvas implements Resource {
 
 	function new() {}
 
-	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
-		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
+	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null): CubeMap {
+		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil);
 	}
 
-	public static function create2(size: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat,
-			contextId: Int): CubeMap {
+	public static function create2(size: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat): CubeMap {
 		var cubeMap = new CubeMap();
 		cubeMap.format = format;
 		if (renderTarget)
-			cubeMap.initRenderTarget(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
+			cubeMap.initRenderTarget(size, getRenderTargetFormat(format), getDepthBufferBits(depthStencil), getStencilBufferBits(depthStencil));
 		return cubeMap;
 	}
 
-	@:functionCode("kinc_g4_render_target_init_cube(&renderTarget, cubeMapSize, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);")
-	function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
+	@:functionCode("kinc_g4_render_target_init_cube(&renderTarget, cubeMapSize, (kinc_g4_render_target_format_t)format, depthBufferBits, stencilBufferBits);")
+	function initRenderTarget(cubeMapSize: Int, format: Int, depthBufferBits: Int, stencilBufferBits: Int): Void {}
 
 	static function getRenderTargetFormat(format: TextureFormat): Int {
 		switch (format) {

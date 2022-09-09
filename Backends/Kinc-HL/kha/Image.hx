@@ -28,7 +28,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, 0);
+		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil);
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -36,8 +36,8 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil,
-			antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
-		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
+			antiAliasingSamples: Int = 1): Image {
+		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil);
 	}
 
 	// public static function createArray(images: Array<Image>, format: TextureFormat = null): Image {
@@ -142,13 +142,11 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat,
-			contextId: Int): Image {
+	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		if (renderTarget)
-			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil),
-				contextId);
+			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil));
 		else
 			image.init(width, height, format);
 		return image;
@@ -161,8 +159,8 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-		_renderTarget = kinc_render_target_create(width, height, depthBufferBits, format, stencilBufferBits, contextId);
+	function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int): Void {
+		_renderTarget = kinc_render_target_create(width, height, depthBufferBits, format, stencilBufferBits);
 		_texture = null;
 	}
 
@@ -418,7 +416,7 @@ class Image implements Canvas implements Resource {
 	@:hlNative("std", "kinc_render_target_unload") static function kinc_render_target_unload(renderTarget: Pointer): Void {}
 
 	@:hlNative("std", "kinc_render_target_create") static function kinc_render_target_create(width: Int, height: Int, depthBufferBits: Int, format: Int,
-			stencilBufferBits: Int, contextId: Int): Pointer {
+			stencilBufferBits: Int): Pointer {
 		return null;
 	}
 

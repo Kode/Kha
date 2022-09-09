@@ -3,9 +3,9 @@
 
 #include <hl.h>
 
-vbyte *hl_kinc_cubemap_create(int cubeMapSize, int depthBufferBits, int format, int stencilBufferBits, int contextId) {
+vbyte *hl_kinc_cubemap_create(int cubeMapSize, int depthBufferBits, int format, int stencilBufferBits) {
 	kinc_g4_render_target_t *render_target = (kinc_g4_render_target_t *)malloc(sizeof(kinc_g4_render_target_t));
-	kinc_g4_render_target_init_cube(render_target, cubeMapSize, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);
+	kinc_g4_render_target_init_cube(render_target, cubeMapSize, (kinc_g4_render_target_format_t)format, depthBufferBits, stencilBufferBits);
 	return (vbyte *)render_target;
 }
 

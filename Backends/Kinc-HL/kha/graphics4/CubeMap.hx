@@ -11,21 +11,20 @@ class CubeMap implements Canvas implements Resource {
 
 	function new() {}
 
-	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null, contextId: Int = 0): CubeMap {
-		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, contextId);
+	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = null): CubeMap {
+		return create2(size, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil);
 	}
 
-	public static function create2(size: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat,
-			contextId: Int): CubeMap {
+	public static function create2(size: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat): CubeMap {
 		var cubeMap = new CubeMap();
 		cubeMap.format = format;
 		if (renderTarget)
-			cubeMap.initRenderTarget(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil), contextId);
+			cubeMap.initRenderTarget(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil));
 		return cubeMap;
 	}
 
-	function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Void {
-		_renderTarget = kinc_cubemap_create(cubeMapSize, depthBufferBits, format, stencilBufferBits, contextId);
+	function initRenderTarget(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int): Void {
+		_renderTarget = kinc_cubemap_create(cubeMapSize, depthBufferBits, format, stencilBufferBits);
 		_texture = null;
 	}
 
@@ -121,8 +120,7 @@ class CubeMap implements Canvas implements Resource {
 		return graphics4;
 	}
 
-	@:hlNative("std", "kinc_cubemap_create") static function kinc_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int,
-			contextId: Int): Pointer {
+	@:hlNative("std", "kinc_cubemap_create") static function kinc_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int): Pointer {
 		return null;
 	}
 

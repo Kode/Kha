@@ -231,9 +231,9 @@ void hl_kinc_render_target_unload(vbyte *renderTarget) {
 	free(rt);
 }
 
-vbyte *hl_kinc_render_target_create(int width, int height, int depthBufferBits, int format, int stencilBufferBits, int contextId) {
+vbyte *hl_kinc_render_target_create(int width, int height, int depthBufferBits, int format, int stencilBufferBits) {
 	kinc_g4_render_target_t *rt = (kinc_g4_render_target_t *)malloc(sizeof(kinc_g4_render_target_t));
-	kinc_g4_render_target_init(rt, width, height, depthBufferBits, false, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);
+	kinc_g4_render_target_init(rt, width, height, (kinc_g4_render_target_format_t)format, depthBufferBits, stencilBufferBits);
 	return (vbyte *)rt;
 }
 

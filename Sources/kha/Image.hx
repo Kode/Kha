@@ -24,7 +24,7 @@ extern class Image implements Canvas implements Resource {
 
 	// Create a new image instance and set things up so you can render to the image.
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32,
-		depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image;
+		depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1): Image;
 
 	public static var maxSize(get, null): Int;
 

@@ -66,14 +66,13 @@ class CubeMap implements Canvas implements Resource {
 		}
 	}
 
-	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil,
-			contextId: Int = 0): CubeMap {
+	public static function createRenderTarget(size: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil): CubeMap {
 		if (format == null)
 			format = TextureFormat.RGBA32;
 		var cubeMap = new CubeMap(null);
 		cubeMap.format = format;
 		cubeMap.renderTarget_ = Krom.createRenderTargetCubeMap(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format),
-			getStencilBufferBits(depthStencil), contextId);
+			getStencilBufferBits(depthStencil), 0);
 		return cubeMap;
 	}
 

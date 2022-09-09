@@ -48,7 +48,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, false, 0);
+		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil, 0);
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -56,8 +56,8 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil,
-			antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
-		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, antiAliasingSamples > 1, contextId);
+			antiAliasingSamples: Int = 1): Image {
+		return _create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, true, depthStencil, antiAliasingSamples);
 	}
 
 	/**
@@ -242,12 +242,12 @@ class Image implements Canvas implements Resource {
 
 	@:noCompletion
 	public static function _create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat,
-			antiAliasing: Bool, contextId: Int): Image {
+			samplesPerPixel: Int): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		if (renderTarget)
-			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), antiAliasing, getRenderTargetFormat(format),
-				getStencilBufferBits(depthStencil), contextId);
+			image.initRenderTarget(width, height, getRenderTargetFormat(format), getDepthBufferBits(depthStencil), getStencilBufferBits(depthStencil),
+				samplesPerPixel);
 		else
 			image.init(width, height, getTextureFormat(format));
 		return image;
@@ -262,12 +262,12 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:functionCode("
-		kinc_g4_render_target_init(&renderTarget, width, height, depthBufferBits, antiAliasing, (kinc_g4_render_target_format_t)format, stencilBufferBits, contextId);
+		kinc_g4_render_target_init_with_multisampling(&renderTarget, width, height, (kinc_g4_render_target_format_t)format, depthBufferBits, stencilBufferBits, samplesPerPixel);
 		imageType = KhaImageTypeRenderTarget;
 		originalWidth = width;
 		originalHeight = height;
 	")
-	function initRenderTarget(width: Int, height: Int, depthBufferBits: Int, antiAliasing: Bool, format: Int, stencilBufferBits: Int, contextId: Int): Void {}
+	function initRenderTarget(width: Int, height: Int, format: Int, depthBufferBits: Int, stencilBufferBits: Int, samplesPerPixel: Int): Void {}
 
 	@:functionCode("
 		kinc_g4_texture_init(&texture, width, height, (kinc_image_format_t)format);

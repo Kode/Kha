@@ -25,7 +25,7 @@ class Image implements Canvas implements Resource {
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null,
-			depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1, contextId: Int = 0): Image {
+			depthStencil: DepthStencilFormat = DepthStencilFormat.NoDepthAndStencil, antiAliasingSamples: Int = 1): Image {
 		if (format == null)
 			format = TextureFormat.RGBA32;
 		if (SystemImpl.gl == null)
