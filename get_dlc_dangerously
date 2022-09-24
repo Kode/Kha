@@ -1,22 +1,33 @@
 #!/usr/bin/env bash
 
-git -C `dirname "$0"` submodule update --init --remote Tools/khamake
-git -C `dirname "$0"` submodule update --init --remote Backends/Kinc-hxcpp/khacpp
+. `dirname "$0"`/Tools/platform.sh
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-	MACHINE_TYPE=`uname -m`
-	if [[ "$MACHINE_TYPE" == "armv"* ]]; then
-		git -C `dirname "$0"` submodule update --init --remote Tools/linux_arm
-	elif [[ "$MACHINE_TYPE" == "aarch64"* ]]; then
-		git -C `dirname "$0"` submodule update --init --remote Tools/linux_arm64
-	else
-		git -C `dirname "$0"` submodule update --init --remote Tools/linux_x64
-	fi
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-	git -C `dirname "$0"` submodule update --init --remote Tools/macos
-elif [[ "$OSTYPE" == "FreeBSD"* ]]; then
-	git -C `dirname "$0"` submodule update --init --remote Tools/freebsd_x64
+if test -f "Tools/khamake/khamake.js"; then
+git -C `dirname "$0"` submodule update --remote --merge Tools/khamake
+else
+git -C `dirname "$0"` submodule update --init --remote Tools/khamake
+git -C `dirname "$0"`/Tools/khamake checkout main
 fi
 
+if test -f "Backends/Kinc-hxcpp/khacpp/LICENSE.txt"; then
+git -C `dirname "$0"` submodule update --remote --merge Backends/Kinc-hxcpp/khacpp
+else
+git -C `dirname "$0"` submodule update --init --remote Backends/Kinc-hxcpp/khacpp
+git -C `dirname "$0"`/Backends/Kinc-hxcpp/khacpp checkout main
+fi
+
+if test -f "Tools/$KINC_PLATFORM/LICENSE.txt"; then
+git -C `dirname "$0"` submodule update --remote --merge "Tools/$KINC_PLATFORM"
+else
+git -C `dirname "$0"` submodule update --init --remote "Tools/$KINC_PLATFORM"
+git -C `dirname "$0"`/Tools/$KINC_PLATFORM checkout main
+fi
+
+if test -f "Kinc/get_dlc_dangerously"; then
+git -C `dirname "$0"` submodule update --remote --merge Kinc
+else
 git -C `dirname "$0"` submodule update --init --remote Kinc
+git -C `dirname "$0"`/Kinc checkout main
+fi
+
 bash `dirname "$0"`/Kinc/get_dlc_dangerously
