@@ -186,7 +186,7 @@ vbyte *hl_kinc_texture_from_encoded_bytes(vbyte *bytes, int length, vbyte *forma
 }
 
 bool hl_kinc_non_pow2_textures_supported(void) {
-	return kinc_g4_non_pow2_textures_supported();
+	return kinc_g4_supports_non_pow2_textures();
 }
 
 int hl_kinc_texture_get_width(vbyte *texture) {
