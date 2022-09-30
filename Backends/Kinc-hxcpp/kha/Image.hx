@@ -344,7 +344,7 @@ class Image implements Canvas implements Resource {
 
 	public static var nonPow2Supported(get, never): Bool;
 
-	@:functionCode("return kinc_g4_non_pow2_textures_supported();")
+	@:functionCode("return kinc_g4_supports_non_pow2_textures();")
 	static function get_nonPow2Supported(): Bool {
 		return false;
 	}
