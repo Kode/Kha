@@ -183,6 +183,8 @@ class CanvasImage extends Image {
 	}
 
 	override public function unlock(): Void {
+		data = null;
+
 		if (SystemImpl.gl != null) {
 			texture = SystemImpl.gl.createTexture();
 			// texture.image = image;
