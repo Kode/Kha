@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Get LunarG key
-      run: wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+      run: wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
     - name: Get LunarG apt sources
-      run: sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-bionic.list http://packages.lunarg.com/vulkan/lunarg-vulkan-bionic.list
+      run: sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-focal.list https://packages.lunarg.com/vulkan/lunarg-vulkan-focal.list
     - name: Apt Update
       run: sudo apt update
     - name: Apt Install
