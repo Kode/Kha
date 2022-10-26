@@ -43,6 +43,8 @@ class WebGLImage extends Image {
 
 	var depthStencilFormat: DepthStencilFormat;
 
+	var readable: Bool;
+
 	// WebGL2 constants
 	static inline var GL_RGBA16F = 0x881A;
 	static inline var GL_RGBA32F = 0x8814;
@@ -68,12 +70,13 @@ class WebGLImage extends Image {
 		}
 	}
 
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int, readable: Bool) {
 		myWidth = width;
 		myHeight = height;
 		myFormat = format;
 		this.renderTarget = renderTarget;
 		this.samples = samples;
+		this.readable = readable;
 		image = null;
 		video = null;
 		this.depthStencilFormat = depthStencilFormat;
@@ -138,19 +141,29 @@ class WebGLImage extends Image {
 	}
 
 	override public function at(x: Int, y: Int): Color {
-		if (data == null) {
-			if (context == null)
-				return Color.Black;
-			else
-				createImageData();
+		if (bytes != null) {
+			var r = bytes.get(y * width * 4 + x * 4);
+			var g = bytes.get(y * width * 4 + x * 4 + 1);
+			var b = bytes.get(y * width * 4 + x * 4 + 2);
+			var a = bytes.get(y * width * 4 + x * 4 + 3);
+
+			return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
 		}
+		else {
+			if (data == null) {
+				if (context == null)
+					return Color.Black;
+				else
+					createImageData();
+			}
 
-		var r = data.data[y * width * 4 + x * 4];
-		var g = data.data[y * width * 4 + x * 4 + 1];
-		var b = data.data[y * width * 4 + x * 4 + 2];
-		var a = data.data[y * width * 4 + x * 4 + 3];
+			var r = data.data[y * width * 4 + x * 4];
+			var g = data.data[y * width * 4 + x * 4 + 1];
+			var b = data.data[y * width * 4 + x * 4 + 2];
+			var a = data.data[y * width * 4 + x * 4 + 3];
 
-		return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
+			return Color.fromValue((a << 24) | (r << 16) | (g << 8) | b);
+		}
 	}
 
 	function createImageData() {
@@ -431,6 +444,7 @@ class WebGLImage extends Image {
 
 	override public function unlock(): Void {
 		data = null;
+		image = null;
 
 		if (SystemImpl.gl != null) {
 			texture = SystemImpl.gl.createTexture();
@@ -478,7 +492,10 @@ class WebGLImage extends Image {
 			}
 
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
-			bytes = null;
+
+			if (!readable) {
+				bytes = null;
+			}
 		}
 	}
 

@@ -17,7 +17,7 @@ class Image implements Canvas implements Resource {
 		if (SystemImpl.gl == null)
 			return new CanvasImage(width, height, format, false);
 		else
-			return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1);
+			return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, false);
 	}
 
 	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
@@ -31,7 +31,7 @@ class Image implements Canvas implements Resource {
 		if (SystemImpl.gl == null)
 			return new CanvasImage(width, height, format, true);
 		else
-			return new WebGLImage(width, height, format, true, depthStencil, antiAliasingSamples);
+			return new WebGLImage(width, height, format, true, depthStencil, antiAliasingSamples, false);
 	}
 
 	public static function fromCanvas(canvas: CanvasElement): Image {
@@ -42,7 +42,7 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(canvas.width, canvas.height, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil, 1);
+			var img = new WebGLImage(canvas.width, canvas.height, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil, 1, false);
 			img.image = canvas;
 			img.createTexture();
 			return img;
@@ -57,7 +57,7 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil, 1);
+			var img = new WebGLImage(image.width, image.height, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil, 1, readable);
 			img.image = image;
 			img.createTexture();
 			return img;
@@ -70,7 +70,7 @@ class Image implements Canvas implements Resource {
 		if (usage == null)
 			usage = Usage.StaticUsage;
 		if (SystemImpl.gl != null) {
-			var img = new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1);
+			var img = new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, false);
 			img.image = img.bytesToArray(bytes);
 			img.createTexture();
 			return img;
@@ -107,7 +107,7 @@ class Image implements Canvas implements Resource {
 		}
 		else {
 			var img = new WebGLImage(jsvideo.element.videoWidth, jsvideo.element.videoHeight, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil,
-				1);
+				1, false);
 			img.video = jsvideo.element;
 			img.createTexture();
 			return img;
