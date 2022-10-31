@@ -27,12 +27,12 @@ class Image implements Canvas implements Resource {
 		return image;
 	}
 
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, false, false, NoDepthAndStencil);
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
+		return create2(width, height, format == null ? TextureFormat.RGBA32 : format, readable, false, NoDepthAndStencil);
 	}
 
-	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		return create3(width, height, depth, format == null ? TextureFormat.RGBA32 : format, false, 0);
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
+		return create3(width, height, depth, format == null ? TextureFormat.RGBA32 : format, readable, 0);
 	}
 
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = null, depthStencil: DepthStencilFormat = NoDepthAndStencil,
@@ -47,8 +47,7 @@ class Image implements Canvas implements Resource {
 	// return image;
 	// }
 
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		var readable = true;
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		image.initFromBytes(bytes.getData(), width, height, getTextureFormat(format));
@@ -59,8 +58,7 @@ class Image implements Canvas implements Resource {
 		_texture = kinc_texture_from_bytes(bytes.bytes, width, height, format, readable);
 	}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
-		var readable = true;
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));

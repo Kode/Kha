@@ -9,7 +9,7 @@ import kha.graphics4.DepthStencilFormat;
 import kha.graphics4.Usage;
 
 class Image implements Canvas implements Resource {
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		if (format == null)
 			format = TextureFormat.RGBA32;
 		if (usage == null)
@@ -17,10 +17,10 @@ class Image implements Canvas implements Resource {
 		if (SystemImpl.gl == null)
 			return new CanvasImage(width, height, format, false);
 		else
-			return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, false);
+			return new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, readable);
 	}
 
-	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		return null;
 	}
 
@@ -64,13 +64,13 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		if (format == null)
 			format = TextureFormat.RGBA32;
 		if (usage == null)
 			usage = Usage.StaticUsage;
 		if (SystemImpl.gl != null) {
-			var img = new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, false);
+			var img = new WebGLImage(width, height, format, false, DepthStencilFormat.NoDepthAndStencil, 1, readable);
 			img.image = img.bytesToArray(bytes);
 			img.createTexture();
 			return img;
@@ -83,7 +83,7 @@ class Image implements Canvas implements Resource {
 		return img;
 	}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		return null;
 	}
 

@@ -30,7 +30,7 @@ class Image implements Canvas implements Resource {
 		myFormat = format;
 	}
 
-	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function create(width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		if (format == null)
 			format = TextureFormat.RGBA32;
 		if (usage == null)
@@ -47,7 +47,7 @@ class Image implements Canvas implements Resource {
 		return new Image(id, -1, width, height, width, height, format);
 	}
 
-	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		return null;
 	}
 
@@ -65,11 +65,11 @@ class Image implements Canvas implements Resource {
 		return new Image(-1, rtid, width, height, width, height, format);
 	}
 
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		return null;
 	}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null): Image {
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
 		return null;
 	}
 
