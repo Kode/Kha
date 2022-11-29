@@ -112,25 +112,28 @@ double hl_kinc_bytearray_getfloat64_le(vbyte *bytearray, int byteoffset) {
 // Set (little endian on big endian system)
 
 void hl_kinc_bytearray_setint16_le(vbyte *bytearray, int byteoffset, int value) {
-	int8_t *data = (int8_t *)&((int16_t)value);
+	int16_t val = value;
+	int8_t *data = (int8_t *)&(val);
 	int16_t le_value = data[0] << 8 | data[1] << 0;
 	*((int16_t *)&bytearray[byteoffset]) = le_value;
 }
 
 void hl_kinc_bytearray_setuint16_le(vbyte *bytearray, int byteoffset, int value) {
-	int8_t *data = (int8_t *)&((uint16_t)value);
+	uint16_t val = value;
+	int8_t *data = (int8_t *)&(val);
 	uint16_t le_value = data[0] << 8 | data[1] << 0;
 	*((uint16_t *)&bytearray[byteoffset]) = le_value;
 }
 
 void hl_kinc_bytearray_setint32_le(vbyte *bytearray, int byteoffset, int value) {
-	int8_t *data = (int8_t *)&((int32_t)value);
+	int8_t *data = (int8_t *)&(value);
 	int32_t le_value = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3] << 0;
 	*((int32_t *)&bytearray[byteoffset]) = le_value;
 }
 
 void hl_kinc_bytearray_setuint32_le(vbyte *bytearray, int byteoffset, int64_t value) {
-	int8_t *data = (int8_t *)&((uint32_t)value);
+	uint32_t val = (uint32_t)value;
+	int8_t *data = (int8_t *)&(val);
 	uint32_t le_value = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3] << 0;
 	*((uint32_t *)&bytearray[byteoffset]) = le_value;
 }
