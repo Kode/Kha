@@ -16,7 +16,7 @@ project.addDefine('KORE');
 project.addDefine('KOREC');
 project.addDefine('ROTATE90');
 project.addDefine('LIBHL_STATIC');
-project.c11 = true;
+project.cStd = 'c11';
 
 if (platform === Platform.Windows || platform === Platform.WindowsApp) {
 	project.addDefine('_WINSOCK_DEPRECATED_NO_WARNINGS');
