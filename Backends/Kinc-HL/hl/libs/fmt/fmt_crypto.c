@@ -3,6 +3,9 @@
 #define HL_NAME(n) fmt_##n
 #include <hl.h>
 
+unsigned long adler32(unsigned long adler, const unsigned char *buf, unsigned int len);
+unsigned long crc32(unsigned long crc, const unsigned char *buf, unsigned int len);
+
 /* ------------------------------------------------- CRYPTO --------------------------------------------------- */
 
 typedef unsigned int uint32;
