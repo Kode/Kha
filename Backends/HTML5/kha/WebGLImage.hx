@@ -167,7 +167,7 @@ class WebGLImage extends Image {
 	}
 
 	function createImageData() {
-		if (Std.is(image, Uint8Array)) {
+		if (Std.isOfType(image, Uint8Array)) {
 			data = new js.html.ImageData(new js.lib.Uint8ClampedArray(image.buffer), this.width, this.height);
 		}
 		else {
@@ -297,7 +297,7 @@ class WebGLImage extends Image {
 					SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, SystemImpl.gl2 ? GL_RGBA16F : GL.RGBA, myWidth, myHeight, 0, GL.RGBA,
 						SystemImpl.halfFloat.HALF_FLOAT_OES, image);
 				case RGBA32:
-					if (Std.is(image, Uint8Array)) {
+					if (Std.isOfType(image, Uint8Array)) {
 						SystemImpl.gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, myWidth, myHeight, 0, GL.RGBA, GL.UNSIGNED_BYTE, image);
 					}
 					else {
