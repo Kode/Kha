@@ -64,13 +64,13 @@ class SystemImpl {
 	static function errorHandler(message: String, source: String, lineno: Int, colno: Int, error: Dynamic) {
 		Browser.console.error("Error: " + message);
 		if (error != null) {
-			if (Std.is(error, haxe.Exception)) {
+			if (Std.isOfType(error, haxe.Exception)) {
 				var err: haxe.Exception = error;
 				if (err.stack != null) {
 					Browser.console.error("Stack:\n" + err.stack);
 				}
 			}
-			else if (Std.is(error, js.lib.Error)) {
+			else if (Std.isOfType(error, js.lib.Error)) {
 				var err: js.lib.Error = error;
 				if (err.stack != null) {
 					Browser.console.error("Stack:\n" + err.stack);

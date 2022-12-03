@@ -62,7 +62,7 @@ class Graphics implements kha.graphics4.Graphics {
 	function init() {
 		if (renderTarget == null)
 			return;
-		isCubeMap = Std.is(renderTarget, CubeMap);
+		isCubeMap = Std.isOfType(renderTarget, CubeMap);
 		if (isCubeMap) {
 			var cubeMap: CubeMap = cast(renderTarget, CubeMap);
 			renderTargetFrameBuffer = cubeMap.frameBuffer;
