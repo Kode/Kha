@@ -182,6 +182,9 @@ class Image implements Canvas implements Resource {
 		var isFloat = StringTools.endsWith(filename, ".hdr");
 		image.myFormat = isFloat ? TextureFormat.RGBA128 : TextureFormat.RGBA32;
 		image.initFromFile(filename);
+		if (image._texture == null) {
+			return null;
+		}
 		return image;
 	}
 
