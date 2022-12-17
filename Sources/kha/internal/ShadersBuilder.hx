@@ -4,11 +4,18 @@ import haxe.Json;
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
 import haxe.Serializer;
+#if macro
 import sys.io.File;
+#end
 
 using StringTools;
 
 class ShadersBuilder {
+
+	#if macro
+	public static var files : Array<Dynamic>;
+	#end
+
 	macro static public function build(): Array<Field> {
 		var fields = Context.getBuildFields();
 
@@ -18,7 +25,7 @@ class ShadersBuilder {
 		// rebuild Shaders module whenever manifest file is changed
 		Context.registerModuleDependency(Context.getLocalModule(), manifestPath);
 
-		var files: Iterable<Dynamic> = content.files;
+		files = content.files;
 
 		var init = macro {};
 
