@@ -126,7 +126,7 @@ namespace {
 	bool visible = true;
 	bool paused = false;
 
-	void update() {
+	void update(void *) {
 		//**if (paused) return;
 		kinc_a2_update();
 
@@ -167,31 +167,31 @@ namespace {
 #endif
 	}
 
-	void foreground() {
+	void foreground(void *) {
 		visible = true;
 		SystemImpl_obj::foreground();
 	}
 
-	void resume() {
+	void resume(void *) {
 		SystemImpl_obj::resume();
 		paused = false;
 	}
 
-	void pause() {
+	void pause(void *) {
 		SystemImpl_obj::pause();
 		paused = true;
 	}
 
-	void background() {
+	void background(void *) {
 		visible = false;
 		SystemImpl_obj::background();
 	}
 
-	void shutdown() {
+	void shutdown(void *) {
 		SystemImpl_obj::shutdown();
 	}
 
-	void dropFiles(wchar_t *filePath) {
+	void dropFiles(wchar_t *filePath, void *) {
 		SystemImpl_obj::dropFiles(String(filePath));
 	}
 
@@ -246,7 +246,7 @@ namespace {
 
 	char cutCopyString[4096];
 
-	char *copy() {
+	char *copy(void *) {
 		String text = SystemImpl_obj::copy();
 		if (hx::IsNull(text)) {
 			return NULL;
@@ -255,7 +255,7 @@ namespace {
 		return cutCopyString;
 	}
 
-	char *cut() {
+	char *cut(void *) {
 		String text = SystemImpl_obj::cut();
 		if (hx::IsNull(text)) {
 			return NULL;
@@ -264,15 +264,15 @@ namespace {
 		return cutCopyString;
 	}
 
-	void paste(char *data) {
+	void paste(char *data, void *) {
 		SystemImpl_obj::paste(String(data));
 	}
 
-	void login() {
+	void login(void *) {
 		SystemImpl_obj::loginevent();
 	}
 
-	void logout() {
+	void logout(void *) {
 		SystemImpl_obj::logoutevent();
 	}
 }
@@ -284,18 +284,18 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 
 	kinc_mutex_init(&mutex);
 
-	kinc_set_foreground_callback(foreground);
-	kinc_set_resume_callback(resume);
-	kinc_set_pause_callback(pause);
-	kinc_set_background_callback(background);
-	kinc_set_shutdown_callback(shutdown);
-	kinc_set_drop_files_callback(dropFiles);
-	kinc_set_update_callback(update);
-	kinc_set_copy_callback(copy);
-	kinc_set_cut_callback(cut);
-	kinc_set_paste_callback(paste);
-	kinc_set_login_callback(login);
-	kinc_set_logout_callback(logout);
+	kinc_set_foreground_callback(foreground, nullptr);
+	kinc_set_resume_callback(resume, nullptr);
+	kinc_set_pause_callback(pause, nullptr);
+	kinc_set_background_callback(background, nullptr);
+	kinc_set_shutdown_callback(shutdown, nullptr);
+	kinc_set_drop_files_callback(dropFiles, nullptr);
+	kinc_set_update_callback(update, nullptr);
+	kinc_set_copy_callback(copy, nullptr);
+	kinc_set_cut_callback(cut, nullptr);
+	kinc_set_paste_callback(paste, nullptr);
+	kinc_set_login_callback(login, nullptr);
+	kinc_set_logout_callback(logout, nullptr);
 
 	kinc_keyboard_set_key_down_callback(keyDown);
 	kinc_keyboard_set_key_up_callback(keyUp);

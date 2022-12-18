@@ -159,19 +159,19 @@ void hl_kinc_register_sensor(vclosure *accelerometerChanged, vclosure *gyroscope
 }
 
 // typedef void(*FN_CB_ORIENTATION)(int);
-typedef void (*FN_CB_FOREGROUND)(void);
-typedef void (*FN_CB_RESUME)(void);
-typedef void (*FN_CB_PAUSE)(void);
-typedef void (*FN_CB_BACKGROUND)(void);
-typedef void (*FN_CB_SHUTDOWN)(void);
+typedef void (*FN_CB_FOREGROUND)(void *);
+typedef void (*FN_CB_RESUME)(void *);
+typedef void (*FN_CB_PAUSE)(void *);
+typedef void (*FN_CB_BACKGROUND)(void *);
+typedef void (*FN_CB_SHUTDOWN)(void *);
 
 void hl_kinc_register_callbacks(vclosure *foreground, vclosure *resume, vclosure *pause, vclosure *background, vclosure *shutdown) {
 	// kinc_set_orientation_callback(orientation);
-	kinc_set_foreground_callback(*((FN_CB_FOREGROUND *)(&foreground->fun)));
-	kinc_set_resume_callback(*((FN_CB_RESUME *)(&resume->fun)));
-	kinc_set_pause_callback(*((FN_CB_PAUSE *)(&pause->fun)));
-	kinc_set_background_callback(*((FN_CB_BACKGROUND *)(&background->fun)));
-	kinc_set_shutdown_callback(*((FN_CB_SHUTDOWN *)(&shutdown->fun)));
+	kinc_set_foreground_callback(*((FN_CB_FOREGROUND *)(&foreground->fun)), NULL);
+	kinc_set_resume_callback(*((FN_CB_RESUME *)(&resume->fun)), NULL);
+	kinc_set_pause_callback(*((FN_CB_PAUSE *)(&pause->fun)), NULL);
+	kinc_set_background_callback(*((FN_CB_BACKGROUND *)(&background->fun)), NULL);
+	kinc_set_shutdown_callback(*((FN_CB_SHUTDOWN *)(&shutdown->fun)), NULL);
 }
 
 typedef void (*FN_CB_DROPFILES)(wchar_t *);
@@ -181,14 +181,14 @@ void hl_kinc_register_dropfiles(vclosure *dropFiles) {
 	// kinc_set_drop_files_callback(*((FN_CB_DROPFILES*)(&dropFiles->fun)));
 }
 
-typedef char *(*FN_CB_COPY)(void);
-typedef char *(*FN_CB_CUT)(void);
-typedef void (*FN_CB_PASTE)(char *);
+typedef char *(*FN_CB_COPY)(void *);
+typedef char *(*FN_CB_CUT)(void *);
+typedef void (*FN_CB_PASTE)(char *, void *);
 
 void hl_kinc_register_copycutpaste(vclosure *copy, vclosure *cut, vclosure *paste) {
-	kinc_set_copy_callback(*((FN_CB_COPY *)(&copy->fun)));
-	kinc_set_cut_callback(*((FN_CB_CUT *)(&cut->fun)));
-	kinc_set_paste_callback(*((FN_CB_PASTE *)(&paste->fun)));
+	kinc_set_copy_callback(*((FN_CB_COPY *)(&copy->fun)), NULL);
+	kinc_set_cut_callback(*((FN_CB_CUT *)(&cut->fun)), NULL);
+	kinc_set_paste_callback(*((FN_CB_PASTE *)(&paste->fun)), NULL);
 }
 
 const char *hl_kinc_video_format(void) {

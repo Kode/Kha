@@ -18,7 +18,7 @@ typedef float (*FN_AUDIO_READ_SAMPLE)(void);
 void (*audioCallCallback)(int);
 float (*audioReadSample)(void);
 
-static void update(void) {
+static void update(void *data) {
 	if (paused) {
 		return;
 	}
@@ -86,7 +86,7 @@ void hl_init_kore(vbyte *title, int width, int height, int samplesPerPixel, bool
 	frame.samples_per_pixel = samplesPerPixel;
 	kinc_init((char *)title, width, height, &win, &frame);
 
-	kinc_set_update_callback(update);
+	kinc_set_update_callback(update, NULL);
 }
 
 void hl_kinc_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
