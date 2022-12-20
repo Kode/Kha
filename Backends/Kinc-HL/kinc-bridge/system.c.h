@@ -110,16 +110,16 @@ void hl_kinc_register_keyboard(vclosure *keyDown, vclosure *keyUp, vclosure *key
 	kinc_keyboard_set_key_press_callback(*((FN_KEY_PRESS *)(&keyPress->fun)));
 }
 
-typedef void (*FN_MOUSE_DOWN)(int, int, int, int);
-typedef void (*FN_MOUSE_UP)(int, int, int, int);
-typedef void (*FN_MOUSE_MOVE)(int, int, int, int, int);
-typedef void (*FN_MOUSE_WHEEL)(int, int);
+typedef void (*FN_MOUSE_DOWN)(int, int, int, int, void *);
+typedef void (*FN_MOUSE_UP)(int, int, int, int, void *);
+typedef void (*FN_MOUSE_MOVE)(int, int, int, int, int, void *);
+typedef void (*FN_MOUSE_WHEEL)(int, int, void *);
 
 void hl_kinc_register_mouse(vclosure *mouseDown, vclosure *mouseUp, vclosure *mouseMove, vclosure *mouseWheel) {
-	kinc_mouse_set_press_callback(*((FN_MOUSE_DOWN *)(&mouseDown->fun)));
-	kinc_mouse_set_release_callback(*((FN_MOUSE_UP *)(&mouseUp->fun)));
-	kinc_mouse_set_move_callback(*((FN_MOUSE_MOVE *)(&mouseMove->fun)));
-	kinc_mouse_set_scroll_callback(*((FN_MOUSE_WHEEL *)(&mouseWheel->fun)));
+	kinc_mouse_set_press_callback(*((FN_MOUSE_DOWN *)(&mouseDown->fun)), NULL);
+	kinc_mouse_set_release_callback(*((FN_MOUSE_UP *)(&mouseUp->fun)), NULL);
+	kinc_mouse_set_move_callback(*((FN_MOUSE_MOVE *)(&mouseMove->fun)), NULL);
+	kinc_mouse_set_scroll_callback(*((FN_MOUSE_WHEEL *)(&mouseWheel->fun)), NULL);
 }
 
 typedef void (*FN_PEN_DOWN)(int, int, int, float);
