@@ -51,23 +51,23 @@ namespace {
 		SystemImpl_obj::keyPress((int)character);
 	}
 
-	void mouseDown(int windowId, int button, int x, int y) {
+	void mouseDown(int windowId, int button, int x, int y, void *data) {
 		SystemImpl_obj::mouseDown(windowId, button, x, y);
 	}
 
-	void mouseUp(int windowId, int button, int x, int y) {
+	void mouseUp(int windowId, int button, int x, int y, void *data) {
 		SystemImpl_obj::mouseUp(windowId, button, x, y);
 	}
 
-	void mouseMove(int windowId, int x, int y, int movementX, int movementY) {
+	void mouseMove(int windowId, int x, int y, int movementX, int movementY, void *data) {
 		SystemImpl_obj::mouseMove(windowId, x, y, movementX, movementY);
 	}
 
-	void mouseWheel(int windowId, int delta) {
+	void mouseWheel(int windowId, int delta, void *data) {
 		SystemImpl_obj::mouseWheel(windowId, delta);
 	}
 
-	void mouseLeave(int windowId) {
+	void mouseLeave(int windowId, void *data) {
 		SystemImpl_obj::mouseLeave(windowId);
 	}
 
@@ -300,11 +300,11 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_keyboard_set_key_down_callback(keyDown);
 	kinc_keyboard_set_key_up_callback(keyUp);
 	kinc_keyboard_set_key_press_callback(keyPress);
-	kinc_mouse_set_press_callback(mouseDown);
-	kinc_mouse_set_release_callback(mouseUp);
-	kinc_mouse_set_move_callback(mouseMove);
-	kinc_mouse_set_scroll_callback(mouseWheel);
-	kinc_mouse_set_leave_window_callback(mouseLeave);
+	kinc_mouse_set_press_callback(mouseDown, nullptr);
+	kinc_mouse_set_release_callback(mouseUp, nullptr);
+	kinc_mouse_set_move_callback(mouseMove, nullptr);
+	kinc_mouse_set_scroll_callback(mouseWheel, nullptr);
+	kinc_mouse_set_leave_window_callback(mouseLeave, nullptr);
 	kinc_pen_set_press_callback(penDown);
 	kinc_pen_set_release_callback(penUp);
 	kinc_pen_set_move_callback(penMove);
