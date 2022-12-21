@@ -344,13 +344,13 @@ class GraphicsExtension {
 			}
 		}
 		var yoffset = 0.0;
-		if (verAlign == TextMiddle || verAlign == TextBottom) {
+		if (verAlign == TextTop || verAlign == TextBottom) {
 			var height = g2.font.height(g2.fontSize);
-			if (verAlign == TextMiddle) {
+			if (verAlign == TextTop) {
 				yoffset = -height * 0.5;
 			}
 			else {
-				yoffset = -height;
+				yoffset = height * 0.5;
 			}
 		}
 		g2.drawCharacters(text, start, length, x + xoffset, y + yoffset);
