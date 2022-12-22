@@ -16,6 +16,7 @@ class GraphicsExtension {
 	 * @param	ccw (optional) Specifies whether the drawing should be counterclockwise.
 	 * @param	segments (optional) The amount of lines that should be used to draw the arc.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function drawArc(g2: Graphics, cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, strength: Float = 1, ccw: Bool = false,
 			segments: Int = 0): Void {
 		#if kha_html5
@@ -65,6 +66,7 @@ class GraphicsExtension {
 	 * @param	ccw (optional) Specifies whether the drawing should be counterclockwise.
 	 * @param	segments (optional) The amount of lines that should be used to draw the arc.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function fillArc(g2: Graphics, cx: Float, cy: Float, radius: Float, sAngle: Float, eAngle: Float, ccw: Bool = false,
 			segments: Int = 0): Void {
 		#if kha_html5
@@ -113,6 +115,7 @@ class GraphicsExtension {
 	 * Draws a circle.
 	 * @param	segments (optional) The amount of lines that should be used to draw the circle.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function drawCircle(g2: Graphics, cx: Float, cy: Float, radius: Float, strength: Float = 1, segments: Int = 0): Void {
 		#if kha_html5
 		if (kha.SystemImpl.gl == null) {
@@ -145,6 +148,7 @@ class GraphicsExtension {
 		}
 	}
 
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	static function drawInnerLine(g2: Graphics, x1: Float, y1: Float, x2: Float, y2: Float, strength: Float): Void {
 		var side = y2 > y1 ? 1 : 0;
 		if (y2 == y1)
@@ -168,6 +172,7 @@ class GraphicsExtension {
 	 * Draws a filled circle.
 	 * @param	segments (optional) The amount of lines that should be used to draw the circle.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function fillCircle(g2: Graphics, cx: Float, cy: Float, radius: Float, segments: Int = 0): Void {
 		#if kha_html5
 		if (kha.SystemImpl.gl == null) {
@@ -203,6 +208,7 @@ class GraphicsExtension {
 	/**
 	 * Draws a convex polygon.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function drawPolygon(g2: Graphics, x: Float, y: Float, vertices: Array<Vector2>, strength: Float = 1) {
 		var iterator = vertices.iterator();
 		var v0 = iterator.next();
@@ -219,6 +225,7 @@ class GraphicsExtension {
 	/**
 	 * Draws a filled convex polygon.
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function fillPolygon(g2: Graphics, x: Float, y: Float, vertices: Array<Vector2>) {
 		var iterator = vertices.iterator();
 
@@ -244,6 +251,7 @@ class GraphicsExtension {
 	 * Provide x and y in the following order: startPoint, controlPoint1, controlPoint2, endPoint
 	 * Reference: http://devmag.org.za/2011/04/05/bzier-curves-a-tutorial/
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function drawCubicBezier(g2: Graphics, x: Array<Float>, y: Array<Float>, segments: Int = 20, strength: Float = 1.0): Void {
 		var t: Float;
 
@@ -261,6 +269,7 @@ class GraphicsExtension {
 	/**
 	 * Draws multiple cubic beziers joined by the end point. The minimum size is 4 pairs of points (a single curve).
 	 */
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	public static function drawCubicBezierPath(g2: Graphics, x: Array<Float>, y: Array<Float>, segments: Int = 20, strength: Float = 1.0): Void {
 		var i = 0;
 		var t: Float;
@@ -282,6 +291,7 @@ class GraphicsExtension {
 		}
 	}
 
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	static function calculateCubicBezierPoint(t: Float, x: Array<Float>, y: Array<Float>): Array<Float> {
 		var u: Float = 1 - t;
 		var tt: Float = t * t;
@@ -307,6 +317,7 @@ class GraphicsExtension {
 		return p;
 	}
 
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	static public function drawAlignedString(g2: Graphics, text: String, x: Float, y: Float, horAlign: HorTextAlignment, verAlign: VerTextAlignment): Void {
 		var xoffset = 0.0;
 		if (horAlign == TextCenter || horAlign == TextRight) {
@@ -331,6 +342,7 @@ class GraphicsExtension {
 		g2.drawString(text, x + xoffset, y + yoffset);
 	}
 
+	@:deprecated("GraphicsExtension will be removed. If you want to use it, simply copy it into your own project and then remove this message.")
 	static public function drawAlignedCharacters(g2: Graphics, text: Array<Int>, start: Int, length: Int, x: Float, y: Float, horAlign: HorTextAlignment,
 			verAlign: VerTextAlignment): Void {
 		var xoffset = 0.0;
