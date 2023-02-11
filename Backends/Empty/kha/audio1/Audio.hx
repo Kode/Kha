@@ -18,4 +18,8 @@ class Audio {
 	public static function stream(sound: Sound, loop: Bool = false): kha.audio1.AudioChannel {
 		return null;
 	}
+
+	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
+
+	}
 }
