@@ -2,7 +2,7 @@ package kha.audio1;
 
 import kha.Sound;
 
-extern class Audio {
+class Audio {
 	/**
 	 * Plays a sound immediately.
 	 * @param sound
