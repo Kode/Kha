@@ -39,15 +39,15 @@ namespace {
 	kinc_mutex_t mutex;
 	bool shift = false;
 
-	void keyDown(int code) {
+	void keyDown(int code, void *data) {
 		SystemImpl_obj::keyDown(code);
 	}
 
-	void keyUp(int code) {
+	void keyUp(int code, void *data) {
 		SystemImpl_obj::keyUp(code);
 	}
 
-	void keyPress(unsigned int character) {
+	void keyPress(unsigned int character, void *data) {
 		SystemImpl_obj::keyPress((int)character);
 	}
 
@@ -297,9 +297,9 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_set_login_callback(login, nullptr);
 	kinc_set_logout_callback(logout, nullptr);
 
-	kinc_keyboard_set_key_down_callback(keyDown);
-	kinc_keyboard_set_key_up_callback(keyUp);
-	kinc_keyboard_set_key_press_callback(keyPress);
+	kinc_keyboard_set_key_down_callback(keyDown, nullptr);
+	kinc_keyboard_set_key_up_callback(keyUp, nullptr);
+	kinc_keyboard_set_key_press_callback(keyPress, nullptr);
 	kinc_mouse_set_press_callback(mouseDown, nullptr);
 	kinc_mouse_set_release_callback(mouseUp, nullptr);
 	kinc_mouse_set_move_callback(mouseMove, nullptr);

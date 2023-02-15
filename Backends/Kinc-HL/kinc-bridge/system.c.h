@@ -100,14 +100,14 @@ vbyte *hl_kinc_get_gamepad_id(int index) {
 	// return (vbyte*)getGamepadId(index);
 }
 
-typedef void (*FN_KEY_DOWN)(int);
-typedef void (*FN_KEY_UP)(int);
-typedef void (*FN_KEY_PRESS)(unsigned int);
+typedef void (*FN_KEY_DOWN)(int, void *);
+typedef void (*FN_KEY_UP)(int, void *);
+typedef void (*FN_KEY_PRESS)(unsigned int, void *);
 
 void hl_kinc_register_keyboard(vclosure *keyDown, vclosure *keyUp, vclosure *keyPress) {
-	kinc_keyboard_set_key_down_callback(*((FN_KEY_DOWN *)(&keyDown->fun)));
-	kinc_keyboard_set_key_up_callback(*((FN_KEY_UP *)(&keyUp->fun)));
-	kinc_keyboard_set_key_press_callback(*((FN_KEY_PRESS *)(&keyPress->fun)));
+	kinc_keyboard_set_key_down_callback(*((FN_KEY_DOWN *)(&keyDown->fun)), NULL);
+	kinc_keyboard_set_key_up_callback(*((FN_KEY_UP *)(&keyUp->fun)), NULL);
+	kinc_keyboard_set_key_press_callback(*((FN_KEY_PRESS *)(&keyPress->fun)), NULL);
 }
 
 typedef void (*FN_MOUSE_DOWN)(int, int, int, int, void *);
