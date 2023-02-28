@@ -5,5 +5,10 @@
 	"sameLine": {
 		"ifElse": "next",
 		"tryCatch": "next"
-	}
+	},
+	"excludes": [
+		"\\/hxsl\\/.*",
+		"\\/ogg\\/.*",
+		"\\/truetype\\/.*"
+	]
 }
