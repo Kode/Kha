@@ -34,7 +34,7 @@ class Video implements Resource {
 	 * Call this every frame to update the video.
 	 * This is not required on all targets but where it's not required the function just does nothing - so please call it.
 	 */
-	public function update( dt: Float ): Void {}
+	public function update(dt: Float): Void {}
 
 	/**
 	 * Pause the media element.

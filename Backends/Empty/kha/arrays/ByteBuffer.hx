@@ -5,7 +5,5 @@ class ByteBuffer {
 		return null;
 	}
 
-	function new(length: Int) {
-		
-	}
+	function new(length: Int) {}
 }

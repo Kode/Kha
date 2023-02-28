@@ -15,7 +15,7 @@ class Sound extends kha.Sound {
 		sampleRate = sampleRateRef.get();
 		length = lengthRef.get();
 		uncompressedData = cast new kha.arrays.ByteArray(data, 0, dataSize[0] * 4);
-		(cast dataSize: kha.arrays.ByteArray).free();
+		(cast dataSize : kha.arrays.ByteArray).free();
 	}
 
 	function initOgg(filename: String) {
@@ -35,7 +35,8 @@ class Sound extends kha.Sound {
 		}
 	}
 
-	@:hlNative("std", "kinc_sound_init_wav") static function kinc_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>, outLength: hl.Ref<Float>): Pointer {
+	@:hlNative("std", "kinc_sound_init_wav") static function kinc_sound_init_wav(filename: hl.Bytes, outSize: Pointer, outSampleRate: hl.Ref<Int>,
+			outLength: hl.Ref<Float>): Pointer {
 		return null;
 	}
 }

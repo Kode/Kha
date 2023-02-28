@@ -83,7 +83,8 @@ class Image implements Canvas implements Resource {
 		return img;
 	}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null,
+			readable: Bool = false): Image {
 		return null;
 	}
 
@@ -106,8 +107,8 @@ class Image implements Canvas implements Resource {
 			return img;
 		}
 		else {
-			var img = new WebGLImage(jsvideo.element.videoWidth, jsvideo.element.videoHeight, TextureFormat.RGBA32, false, DepthStencilFormat.NoDepthAndStencil,
-				1, false);
+			var img = new WebGLImage(jsvideo.element.videoWidth, jsvideo.element.videoHeight, TextureFormat.RGBA32, false,
+				DepthStencilFormat.NoDepthAndStencil, 1, false);
 			img.video = jsvideo.element;
 			img.createTexture();
 			return img;

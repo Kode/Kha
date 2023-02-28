@@ -70,7 +70,8 @@ class WebGLImage extends Image {
 		}
 	}
 
-	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int, readable: Bool) {
+	public function new(width: Int, height: Int, format: TextureFormat, renderTarget: Bool, depthStencilFormat: DepthStencilFormat, samples: Int,
+			readable: Bool) {
 		myWidth = width;
 		myHeight = height;
 		myFormat = format;

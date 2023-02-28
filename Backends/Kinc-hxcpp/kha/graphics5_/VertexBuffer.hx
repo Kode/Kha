@@ -8,7 +8,6 @@ import kha.graphics5.VertexStructure;
 @:headerCode('
 #include <Kore/Graphics5/Graphics.h>
 ')
-
 @:headerClassCode("Kore::Graphics5::VertexBuffer* buffer;")
 class VertexBuffer {
 	private var data: Float32Array;
@@ -47,9 +46,7 @@ class VertexBuffer {
 		}
 		buffer = new Kore::Graphics5::VertexBuffer(vertexCount, structure2, false);
 	")
-	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {
-
-	}
+	private function init(vertexCount: Int, structure: VertexStructure, usage: Int, instanceDataStepRate: Int) {}
 
 	@:functionCode('
 		data->self.data = buffer->lock() + start * buffer->stride() / 4;
@@ -61,15 +58,15 @@ class VertexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): Float32Array {
-		if (start == null) start = 0;
-		if (count == null) count = this.count();
+		if (start == null)
+			start = 0;
+		if (count == null)
+			count = this.count();
 		return lock2(start, count);
 	}
 
 	@:functionCode('buffer->unlock();')
-	public function unlock(): Void {
-
-	}
+	public function unlock(): Void {}
 
 	@:functionCode("return buffer->stride();")
 	public function stride(): Int {

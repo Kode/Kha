@@ -25,7 +25,6 @@ class Worker {
 		js.Syntax.code("self").postMessage(message);
 		#end
 	}
-
 	#else
 	#if macro
 	static var threads = new Array<String>();
@@ -115,9 +114,10 @@ class Worker {
 
 	public function notify(func: Dynamic->Void): Void {
 		notifyFuncs[id] = func;
-		if (taskId != -1) return;
+		if (taskId != -1)
+			return;
 		taskId = Scheduler.addFrameTask(function() {
-			var message:Message = Thread.readMessage(false);
+			var message: Message = Thread.readMessage(false);
 			if (message != null) {
 				var func = notifyFuncs[message.threadId];
 				func(message.message);

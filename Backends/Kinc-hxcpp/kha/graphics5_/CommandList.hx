@@ -3,18 +3,14 @@ package kha.graphics5;
 @:headerCode('
 #include <Kore/Graphics5/CommandList.h>
 ')
-
 @:headerClassCode("Kore::Graphics5::CommandList* commandList;")
 class CommandList {
-
 	public function new() {
 		init();
 	}
 
 	@:functionCode('commandList = new Kore::Graphics5::CommandList();')
-	private function init(): Void {
-
-	}
+	private function init(): Void {}
 
 	public function begin(): Void {
 		untyped __cpp__("commandList->begin();");
@@ -32,7 +28,7 @@ class CommandList {
 		untyped __cpp__("commandList->framebufferToRenderTargetBarrier(renderTarget->renderTarget);");
 	}
 
-	public function setRenderTargets(targets:Array<RenderTarget>): Void {
+	public function setRenderTargets(targets: Array<RenderTarget>): Void {
 		var len = targets.length;
 		var image1 = targets[0];
 		var image2 = targets[1];
@@ -65,7 +61,7 @@ class CommandList {
 		untyped __cpp__("commandList->setPipeline(pipeline->pipeline);");
 	}
 
-	public function clear(target:RenderTarget, ?color: Color, ?depth: Float, ?stencil: Int): Void {
+	public function clear(target: RenderTarget, ?color: Color, ?depth: Float, ?stencil: Int): Void {
 		untyped __cpp__("commandList->clear(target->renderTarget, Kore::Graphics5::ClearColorFlag);");
 	}
 

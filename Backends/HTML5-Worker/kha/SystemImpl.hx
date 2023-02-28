@@ -175,7 +175,7 @@ class SystemImpl {
 	public static function getGamepadVendor(index: Int): String {
 		return "unknown";
 	}
-	
+
 	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float) {}
 
 	static function messageHandler(value: Dynamic): Void {

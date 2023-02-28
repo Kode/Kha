@@ -75,8 +75,8 @@ class Mouse extends Controller {
 	/**
 	 * Creates event handlers from passed functions like `notify` function, but only for window with `windowId:Int` id argument. The windows are not supported by all the targets.
 	 */
-	public function notifyWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void, ?moveListener: Int->Int->Int->Int->Void,
-			?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
+	public function notifyWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void,
+			?moveListener: Int->Int->Int->Int->Void, ?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners == null) {
 				windowDownListeners = new Array();
@@ -141,8 +141,8 @@ class Mouse extends Controller {
 	/**
 	 * Removes event handlers for `windowId:Int` from the passed functions that were passed to `notifyWindowed` function.
 	 */
-	public function removeWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void, ?moveListener: Int->Int->Int->Int->Void,
-			?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
+	public function removeWindowed(windowId: Int, ?downListener: Int->Int->Int->Void, ?upListener: Int->Int->Int->Void,
+			?moveListener: Int->Int->Int->Int->Void, ?wheelListener: Int->Void, ?leaveListener: Void->Void = null): Void {
 		if (downListener != null) {
 			if (windowDownListeners != null) {
 				if (windowId < windowDownListeners.length) {

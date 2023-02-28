@@ -1,4 +1,5 @@
 package system.windows;
+
 import system.windows.input.Cursor;
 
 @:native("System.Windows.FrameworkElement")

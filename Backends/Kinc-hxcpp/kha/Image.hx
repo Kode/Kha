@@ -104,7 +104,8 @@ class Image implements Canvas implements Resource {
 	")
 	function initFromBytes(bytes: BytesData, width: Int, height: Int, format: Int): Void {}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null,
+			readable: Bool = false): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
@@ -153,7 +154,7 @@ class Image implements Canvas implements Resource {
 	")
 	function initFromEncodedBytes(bytes: BytesData, format: String): Void {}
 
-	function new(readable: Bool, ?dispose = true ) {
+	function new(readable: Bool, ?dispose = true) {
 		this.readable = readable;
 		nullify();
 

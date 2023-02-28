@@ -15,9 +15,7 @@ enum abstract Color(Int) from Int from UInt to Int to UInt {
 	var Purple = 0xff800080;
 	var Pink = 0xffffc0cb;
 	var Orange = 0xffffa500;
-
 	var Transparent = 0x00000000;
-
 	static inline var invMaxChannelValue: FastFloat = 1 / 255;
 
 	/**

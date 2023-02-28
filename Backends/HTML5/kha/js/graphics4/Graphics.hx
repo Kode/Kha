@@ -487,10 +487,8 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setPipeline(pipe: PipelineState): Void {
 		setCullMode(pipe.cullMode);
 		setDepthMode(pipe.depthWrite, pipe.depthMode);
-		if (pipe.stencilFrontMode == Always && pipe.stencilBackMode == Always
-			&& pipe.stencilFrontBothPass == Keep && pipe.stencilBackBothPass == Keep
-			&& pipe.stencilFrontDepthFail == Keep && pipe.stencilBackDepthFail == Keep
-			&& pipe.stencilFrontFail == Keep && pipe.stencilBackFail == Keep) {
+		if (pipe.stencilFrontMode == Always && pipe.stencilBackMode == Always && pipe.stencilFrontBothPass == Keep && pipe.stencilBackBothPass == Keep
+			&& pipe.stencilFrontDepthFail == Keep && pipe.stencilBackDepthFail == Keep && pipe.stencilFrontFail == Keep && pipe.stencilBackFail == Keep) {
 			SystemImpl.gl.disable(GL.STENCIL_TEST);
 		}
 		else {

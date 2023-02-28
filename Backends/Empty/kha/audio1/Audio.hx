@@ -19,7 +19,5 @@ class Audio {
 		return null;
 	}
 
-	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {
-
-	}
+	public static function _playAgain(channel: kha.audio2.AudioChannel): Void {}
 }

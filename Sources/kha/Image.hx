@@ -9,11 +9,11 @@ extern class Image implements Canvas implements Resource {
 	public static function create(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage,
 		readable: Bool = false): Image;
 
-	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = TextureFormat.RGBA32,
-		usage: Usage = Usage.StaticUsage, readable: Bool = false): Image;
+	public static function create3D(width: Int, height: Int, depth: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage,
+		readable: Bool = false): Image;
 
-	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32,
-		usage: Usage = Usage.StaticUsage, readable: Bool = false): Image;
+	public static function fromBytes(bytes: Bytes, width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32, usage: Usage = Usage.StaticUsage,
+		readable: Bool = false): Image;
 
 	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = TextureFormat.RGBA32,
 		usage: Usage = Usage.StaticUsage, readable: Bool = false): Image;

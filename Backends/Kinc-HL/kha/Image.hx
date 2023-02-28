@@ -58,7 +58,8 @@ class Image implements Canvas implements Resource {
 		_texture = kinc_texture_from_bytes(bytes.bytes, width, height, format, readable);
 	}
 
-	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null, readable: Bool = false): Image {
+	public static function fromBytes3D(bytes: Bytes, width: Int, height: Int, depth: Int, format: TextureFormat = null, usage: Usage = null,
+			readable: Bool = false): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		image.initFromBytes3D(bytes.getData(), width, height, depth, getTextureFormat(format));
@@ -140,7 +141,8 @@ class Image implements Canvas implements Resource {
 		}
 	}
 
-	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool, depthStencil: DepthStencilFormat): Image {
+	public static function create2(width: Int, height: Int, format: TextureFormat, readable: Bool, renderTarget: Bool,
+			depthStencil: DepthStencilFormat): Image {
 		var image = new Image(readable);
 		image.myFormat = format;
 		if (renderTarget)

@@ -41,7 +41,8 @@ class PipelineState extends PipelineStateBase {
 			kinc_structures.push(kinc_structure);
 			for (j in 0...structures[i].size()) {
 				var vertexElement = structures[i].get(j);
-				VertexBuffer.kinc_vertexstructure_add(kinc_structure, StringHelper.convert(vertexElement.name), VertexBuffer.convertVertexDataToKinc(vertexElement.data));
+				VertexBuffer.kinc_vertexstructure_add(kinc_structure, StringHelper.convert(vertexElement.name),
+					VertexBuffer.convertVertexDataToKinc(vertexElement.data));
 			}
 		}
 
@@ -79,11 +80,11 @@ class PipelineState extends PipelineStateBase {
 			default:
 		}
 		kinc_pipeline_set_states(_pipeline, cullMode, depthMode, stencilFrontMode, stencilFrontBothPass, stencilFrontDepthFail, stencilFrontFail,
-		stencilBackMode, stencilBackBothPass, stencilBackDepthFail, stencilBackFail, getBlendFunc(blendSource),
-			getBlendFunc(blendDestination), getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination), depthWrite, stencilReferenceValue,
-			stencilReadMask, stencilWriteMask, colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha, colorAttachmentCount,
-			colorAttachments[0], colorAttachments[1], colorAttachments[2], colorAttachments[3], colorAttachments[4], colorAttachments[5], colorAttachments[6],
-			colorAttachments[7], getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment), conservativeRasterization);
+			stencilBackMode, stencilBackBothPass, stencilBackDepthFail, stencilBackFail, getBlendFunc(blendSource), getBlendFunc(blendDestination),
+			getBlendFunc(alphaBlendSource), getBlendFunc(alphaBlendDestination), depthWrite, stencilReferenceValue, stencilReadMask, stencilWriteMask,
+			colorWriteMaskRed, colorWriteMaskGreen, colorWriteMaskBlue, colorWriteMaskAlpha, colorAttachmentCount, colorAttachments[0], colorAttachments[1],
+			colorAttachments[2], colorAttachments[3], colorAttachments[4], colorAttachments[5], colorAttachments[6], colorAttachments[7],
+			getDepthBufferBits(depthStencilAttachment), getStencilBufferBits(depthStencilAttachment), conservativeRasterization);
 		linkWithStructures2(inputLayout.length > 0 ? inputLayout[0] : null, inputLayout.length > 1 ? inputLayout[1] : null,
 			inputLayout.length > 2 ? inputLayout[2] : null, inputLayout.length > 3 ? inputLayout[3] : null, inputLayout.length);
 	}
@@ -154,14 +155,14 @@ class PipelineState extends PipelineStateBase {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_pipeline_set_states") static function kinc_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int, stencilFrontMode: Int,
-		stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int, stencilBackMode: Int,
-		stencilBackBothPass: Int, stencilBackDepthFail: Int, stencilBackFail: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int,
-		alphaBlendDestination: Int, depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int, colorWriteMaskRed: Bool,
-		colorWriteMaskGreen: Bool, colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool, colorAttachmentCount: Int, colorAttachment0: TextureFormat,
-		colorAttachment1: TextureFormat, colorAttachment2: TextureFormat, colorAttachment3: TextureFormat, colorAttachment4: TextureFormat,
-		colorAttachment5: TextureFormat, colorAttachment6: TextureFormat, colorAttachment7: TextureFormat, depthAttachmentBits: Int,
-		stencilAttachmentBits: Int, conservativeRasterization: Bool): Void {}
+	@:hlNative("std", "kinc_pipeline_set_states") static function kinc_pipeline_set_states(pipeline: Pointer, cullMode: Int, depthMode: Int,
+		stencilFrontMode: Int, stencilFrontBothPass: Int, stencilFrontDepthFail: Int, stencilFrontFail: Int, stencilBackMode: Int, stencilBackBothPass: Int,
+		stencilBackDepthFail: Int, stencilBackFail: Int, blendSource: Int, blendDestination: Int, alphaBlendSource: Int, alphaBlendDestination: Int,
+		depthWrite: Bool, stencilReferenceValue: Int, stencilReadMask: Int, stencilWriteMask: Int, colorWriteMaskRed: Bool, colorWriteMaskGreen: Bool,
+		colorWriteMaskBlue: Bool, colorWriteMaskAlpha: Bool, colorAttachmentCount: Int, colorAttachment0: TextureFormat, colorAttachment1: TextureFormat,
+		colorAttachment2: TextureFormat, colorAttachment3: TextureFormat, colorAttachment4: TextureFormat, colorAttachment5: TextureFormat,
+		colorAttachment6: TextureFormat, colorAttachment7: TextureFormat, depthAttachmentBits: Int, stencilAttachmentBits: Int,
+		conservativeRasterization: Bool): Void {}
 
 	@:hlNative("std", "kinc_pipeline_set") static function kinc_pipeline_set(pipeline: Pointer): Void {}
 }

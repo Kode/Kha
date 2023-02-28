@@ -120,7 +120,8 @@ class CubeMap implements Canvas implements Resource {
 		return graphics4;
 	}
 
-	@:hlNative("std", "kinc_cubemap_create") static function kinc_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int): Pointer {
+	@:hlNative("std", "kinc_cubemap_create") static function kinc_cubemap_create(cubeMapSize: Int, depthBufferBits: Int, format: Int,
+			stencilBufferBits: Int): Pointer {
 		return null;
 	}
 

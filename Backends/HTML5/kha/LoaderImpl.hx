@@ -17,6 +17,7 @@ using StringTools;
 class LoaderImpl {
 	@:allow(kha.SystemImpl)
 	static var dropFiles = new Map<String, js.html.File>();
+
 	public static function getImageFormats(): Array<String> {
 		return ["png", "jpg", "hdr"];
 	}
@@ -195,20 +196,21 @@ class LoaderImpl {
 
 	public static function loadBlobFromDescription(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
 		#if kha_debug_html5
-		var file:String = desc.files[0];
+		var file: String = desc.files[0];
 
 		if (file.startsWith("http://") || file.startsWith("https://")) {
 			loadRemote(desc, done, failed);
 		}
-		else if(file.startsWith("drop://")) {
+		else if (file.startsWith("drop://")) {
 			var dropFile = dropFiles.get(file.substring(7));
-			if(dropFile == null) failed({ url: file, error: 'file not found' });
+			if (dropFile == null)
+				failed({url: file, error: 'file not found'});
 			else {
 				var reader = new FileReader();
 				reader.onloadend = () -> {
 					done(new Blob(Bytes.ofData(reader.result)));
 				};
-				reader.onerror = () -> failed({ url: file, error: reader.error});
+				reader.onerror = () -> failed({url: file, error: reader.error});
 				reader.readAsArrayBuffer(dropFile);
 			}
 		}

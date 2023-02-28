@@ -20,13 +20,15 @@ interface CommandList {
 	function setTextureArray(unit: TextureUnit, texture: Image): Void;
 	function setVideoTexture(unit: TextureUnit, texture: Video): Void;
 	function setImageTexture(unit: TextureUnit, texture: Image): Void;
-	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
-	function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing, minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	function setTextureParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, minificationFilter: TextureFilter,
+		magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
+	function setTexture3DParameters(texunit: TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing, wAddressing: TextureAddressing,
+		minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void;
 	function setCubeMap(unit: TextureUnit, cubeMap: CubeMap): Void;
 	function setCubeMapDepth(unit: TextureUnit, cubeMap: CubeMap): Void;
-	
+
 	function setPipeline(pipeline: PipelineState): Void;
-	
+
 	function setVertexConstants(buffer: ConstantBuffer): Void;
 	function setFragmentConstants(buffer: ConstantBuffer): Void;
 

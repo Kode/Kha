@@ -26,7 +26,8 @@ class Pen {
 	 * @param upListener function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when an eraser is released.
 	 * @param moveListener function with `x:Int`,`y:Int`,`pressure:Float` arguments, fired when an eraser is moved.
 	 */
-	public function notifyEraser(eraserDownListener: Int->Int->Float->Void, eraserUpListener: Int->Int->Float->Void, eraserMoveListener: Int->Int->Float->Void): Void {
+	public function notifyEraser(eraserDownListener: Int->Int->Float->Void, eraserUpListener: Int->Int->Float->Void,
+			eraserMoveListener: Int->Int->Float->Void): Void {
 		notifyEraserWindowed(0, eraserDownListener, eraserUpListener, eraserMoveListener);
 	}
 
@@ -40,7 +41,8 @@ class Pen {
 	/**
 	 * Removes event handlers from the passed functions that were passed to `notifyEraser` function.
 	 */
-	public function removeEraser(eraserDownListener: Int->Int->Float->Void, eraserUpListener: Int->Int->Float->Void, eraserMoveListener: Int->Int->Float->Void): Void {
+	public function removeEraser(eraserDownListener: Int->Int->Float->Void, eraserUpListener: Int->Int->Float->Void,
+			eraserMoveListener: Int->Int->Float->Void): Void {
 		removeEraserWindowed(0, eraserDownListener, eraserUpListener, eraserMoveListener);
 	}
 
