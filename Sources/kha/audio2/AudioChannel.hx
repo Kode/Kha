@@ -7,7 +7,7 @@ import kha.arrays.Float32Array;
 class AudioChannel implements kha.audio1.AudioChannel {
 	public var data: Float32Array = null;
 
-#if cpp
+	#if cpp
 	var myVolume(get, set): Float;
 
 	inline function get_myVolume(): Float {
@@ -62,13 +62,13 @@ class AudioChannel implements kha.audio1.AudioChannel {
 		untyped __cpp__("KINC_ATOMIC_EXCHANGE_32(&kinc_looping, {0} ? 1 : 0)", value);
 		return value;
 	}
-#else
+	#else
 	var myVolume: Float;
 	var myPosition: Int;
 	var paused: Bool;
 	var stopped: Bool;
 	var looping: Bool;
-#end
+	#end
 
 	public function new(looping: Bool) {
 		this.looping = looping;

@@ -11,9 +11,8 @@ import sys.io.File;
 using StringTools;
 
 class AssetsBuilder {
-
 	#if macro
-	public static var files : Array<Dynamic>;
+	public static var files: Array<Dynamic>;
 	#end
 
 	public static function findResources(): String {
@@ -53,7 +52,7 @@ class AssetsBuilder {
 
 	macro static public function build(type: String): Array<Field> {
 		var fields = Context.getBuildFields();
-		if(files == null) {
+		if (files == null) {
 			var content = Json.parse(File.getContent(findResources() + "files.json"));
 			files = content.files;
 		}
@@ -74,7 +73,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro:kha.Image, macro null),
+							kind: FVar(macro : kha.Image, macro null),
 							pos: pos
 						});
 					case "sound":
@@ -82,7 +81,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro:kha.Sound, macro null),
+							kind: FVar(macro : kha.Sound, macro null),
 							pos: pos
 						});
 					case "blob":
@@ -90,7 +89,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro:kha.Blob, macro null),
+							kind: FVar(macro : kha.Blob, macro null),
 							pos: pos
 						});
 					case "font":
@@ -98,7 +97,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro:kha.Font, macro null),
+							kind: FVar(macro : kha.Font, macro null),
 							pos: pos
 						});
 					case "video":
@@ -106,7 +105,7 @@ class AssetsBuilder {
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
-							kind: FVar(macro:kha.Video, macro null),
+							kind: FVar(macro : kha.Video, macro null),
 							pos: pos
 						});
 				}
@@ -115,7 +114,7 @@ class AssetsBuilder {
 					name: name + "Name",
 					meta: [],
 					access: [APublic],
-					kind: FVar(macro:String, macro $v{name}),
+					kind: FVar(macro : String, macro $v{name}),
 					pos: pos
 				});
 
@@ -123,7 +122,7 @@ class AssetsBuilder {
 					name: name + "Description",
 					meta: [{pos: pos, name: ":keep"}],
 					access: [APublic],
-					kind: FVar(macro:Dynamic, macro $v{file}),
+					kind: FVar(macro : Dynamic, macro $v{file}),
 					pos: pos
 				});
 
@@ -132,7 +131,7 @@ class AssetsBuilder {
 					doc: null,
 					meta: [],
 					access: [APublic],
-					kind: FVar(macro:Dynamic, macro $v{filesize}),
+					kind: FVar(macro : Dynamic, macro $v{filesize}),
 					pos: Context.currentPos()
 				});
 
@@ -208,7 +207,7 @@ class AssetsBuilder {
 			name: "names",
 			meta: [],
 			access: [APublic],
-			kind: FVar(macro:Array<String>, macro $a{names}),
+			kind: FVar(macro : Array<String>, macro $a{names}),
 			pos: Context.currentPos()
 		});
 

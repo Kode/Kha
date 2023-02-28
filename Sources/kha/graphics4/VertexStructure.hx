@@ -58,7 +58,7 @@ class VertexStructure {
 				return 2 * 4;
 			case Int32_3X, UInt32_3X:
 				return 3 * 4;
-			case Int32_4X,UInt32_4X:
+			case Int32_4X, UInt32_4X:
 				return 4 * 4;
 		}
 	}

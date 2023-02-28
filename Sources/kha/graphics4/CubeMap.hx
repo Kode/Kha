@@ -3,7 +3,8 @@ package kha.graphics4;
 import haxe.io.Bytes;
 
 extern class CubeMap implements Canvas implements Resource {
-	public static function createRenderTarget(size: Int, format: TextureFormat = TextureFormat.RGBA32, depthStencil: DepthStencilFormat = NoDepthAndStencil): CubeMap;
+	public static function createRenderTarget(size: Int, format: TextureFormat = TextureFormat.RGBA32,
+		depthStencil: DepthStencilFormat = NoDepthAndStencil): CubeMap;
 
 	public function unload(): Void;
 	public function lock(level: Int = 0): Bytes;

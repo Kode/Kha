@@ -11,9 +11,8 @@ import sys.io.File;
 using StringTools;
 
 class ShadersBuilder {
-
 	#if macro
-	public static var files : Array<Dynamic>;
+	public static var files: Array<Dynamic>;
 	#end
 
 	macro static public function build(): Array<Field> {
@@ -46,7 +45,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APrivate, AStatic],
-						kind: FVar(macro:String, macro $v{serialized[i]}),
+						kind: FVar(macro : String, macro $v{serialized[i]}),
 						pos: Context.currentPos()
 					});
 				}
@@ -57,7 +56,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.compute.Shader, macro null),
+						kind: FVar(macro : kha.compute.Shader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -80,7 +79,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.graphics4.GeometryShader, macro null),
+						kind: FVar(macro : kha.graphics4.GeometryShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -103,7 +102,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.graphics4.TessellationControlShader, macro null),
+						kind: FVar(macro : kha.graphics4.TessellationControlShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -126,7 +125,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.graphics4.TessellationEvaluationShader, macro null),
+						kind: FVar(macro : kha.graphics4.TessellationEvaluationShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -149,7 +148,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.graphics4.VertexShader, macro null),
+						kind: FVar(macro : kha.graphics4.VertexShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -172,7 +171,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro:kha.graphics4.FragmentShader, macro null),
+						kind: FVar(macro : kha.graphics4.FragmentShader, macro null),
 						pos: Context.currentPos()
 					});
 

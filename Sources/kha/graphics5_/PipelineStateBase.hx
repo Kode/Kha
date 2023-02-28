@@ -28,15 +28,19 @@ class PipelineStateBase {
 		alphaBlendSource = BlendingFactor.BlendOne;
 		alphaBlendDestination = BlendingFactor.BlendZero;
 		alphaBlendOperation = BlendingOperation.Add;
-		
+
 		colorWriteMasksRed = [];
 		colorWriteMasksGreen = [];
 		colorWriteMasksBlue = [];
 		colorWriteMasksAlpha = [];
-		for (i in 0...8) colorWriteMasksRed.push(true);
-		for (i in 0...8) colorWriteMasksGreen.push(true);
-		for (i in 0...8) colorWriteMasksBlue.push(true);
-		for (i in 0...8) colorWriteMasksAlpha.push(true);
+		for (i in 0...8)
+			colorWriteMasksRed.push(true);
+		for (i in 0...8)
+			colorWriteMasksGreen.push(true);
+		for (i in 0...8)
+			colorWriteMasksBlue.push(true);
+		for (i in 0...8)
+			colorWriteMasksAlpha.push(true);
 
 		conservativeRasterization = false;
 	}
@@ -44,10 +48,10 @@ class PipelineStateBase {
 	public var inputLayout: Array<VertexStructure>;
 	public var vertexShader: VertexShader;
 	public var fragmentShader: FragmentShader;
+
 	// public var geometryShader: GeometryShader;
 	// public var tessellationControlShader: TessellationControlShader;
 	// public var tessellationEvaluationShader: TessellationEvaluationShader;
-
 	public var cullMode: CullMode;
 
 	public var depthWrite: Bool;
@@ -68,7 +72,7 @@ class PipelineStateBase {
 	public var alphaBlendSource: BlendingFactor;
 	public var alphaBlendDestination: BlendingFactor;
 	public var alphaBlendOperation: BlendingOperation;
-	
+
 	public var colorWriteMask(never, set): Bool;
 	public var colorWriteMaskRed(get, set): Bool;
 	public var colorWriteMaskGreen(get, set): Bool;

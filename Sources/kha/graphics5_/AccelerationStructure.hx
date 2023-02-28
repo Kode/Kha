@@ -1,5 +1,3 @@
 package kha.graphics5_;
 
-interface AccelerationStructure {
-	
-}
+interface AccelerationStructure {}

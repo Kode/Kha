@@ -196,7 +196,7 @@ class EntityBuilder {
 				doc: null,
 				meta: [],
 				access: [APublic],
-				kind: FVar(macro:Int, macro kha.netsync.EntityBuilder.nextId++),
+				kind: FVar(macro : Int, macro kha.netsync.EntityBuilder.nextId++),
 				pos: Context.currentPos()
 			});
 		}
