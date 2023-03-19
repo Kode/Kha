@@ -14,14 +14,12 @@ import kha.netsync.Session;
 
 class SystemImpl {
 	static var screenRotation: ScreenRotation = ScreenRotation.RotationNone;
-	static var width: Int;
-	static var height: Int;
 
 	static inline var networkSendRate = 0.05;
 
 	public static function init(options: SystemOptions, callback: Window->Void): Void {
-		SystemImpl.width = options.width;
-		SystemImpl.height = options.height;
+		Window.get(0).width = options.width;
+		Window.get(0).height = options.height;
 		init2();
 		callback(null);
 	}
@@ -39,8 +37,8 @@ class SystemImpl {
 	public static function changeResolution(width: Int, height: Int): Void {}
 
 	public static function _updateSize(width: Int, height: Int): Void {
-		SystemImpl.width = width;
-		SystemImpl.height = height;
+		Window.get(0).width = width;
+		Window.get(0).height = height;
 	}
 
 	public static function _updateScreenRotation(value: Int): Void {
@@ -50,14 +48,6 @@ class SystemImpl {
 	public static function getTime(): Float {
 		var time = Node.process.hrtime();
 		return cast(time[0], Float) + cast(time[1], Float) / 1000000000;
-	}
-
-	public static function windowWidth(id: Int): Int {
-		return width;
-	}
-
-	public static function windowHeight(id: Int): Int {
-		return height;
 	}
 
 	public static function screenDpi(): Int {
@@ -109,6 +99,8 @@ class SystemImpl {
 		Scheduler.init();
 
 		Shaders.init();
+		final width = Window.get(0).width;
+		final height = Window.get(0).height;
 		frame = new Framebuffer(0, new EmptyGraphics1(width, height), new EmptyGraphics2(width, height), new EmptyGraphics4(width, height));
 		Scheduler.start();
 
