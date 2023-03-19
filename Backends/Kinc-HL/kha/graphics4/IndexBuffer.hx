@@ -18,11 +18,17 @@ class IndexBuffer {
 	}
 
 	public function lock(?start: Int, ?count: Int): kha.arrays.Uint32Array {
-		return cast new kha.arrays.ByteArray(kinc_indexbuffer_lock(_buffer), 0, myCount * 4);
+		if (start == null)
+			start = 0;
+		if (count == null)
+			count = this.count();
+		return cast new kha.arrays.ByteArray(kinc_indexbuffer_lock(_buffer, start, count), 0, count * 4);
 	}
 
 	public function unlock(?count: Int): Void {
-		kinc_indexbuffer_unlock(_buffer);
+		if (count == null)
+			count = this.count();
+		kinc_indexbuffer_unlock(_buffer, count);
 	}
 
 	public function count(): Int {
@@ -35,9 +41,9 @@ class IndexBuffer {
 
 	@:hlNative("std", "kinc_delete_indexbuffer") static function kinc_delete_indexbuffer(buffer: Pointer): Void {}
 
-	@:hlNative("std", "kinc_indexbuffer_lock") static function kinc_indexbuffer_lock(buffer: Pointer): hl.Bytes {
+	@:hlNative("std", "kinc_indexbuffer_lock") static function kinc_indexbuffer_lock(buffer: Pointer, start: Int, count: Int): hl.Bytes {
 		return null;
 	}
 
-	@:hlNative("std", "kinc_indexbuffer_unlock") static function kinc_indexbuffer_unlock(buffer: Pointer): Void {}
+	@:hlNative("std", "kinc_indexbuffer_unlock") static function kinc_indexbuffer_unlock(buffer: Pointer, count: Int): Void {}
 }

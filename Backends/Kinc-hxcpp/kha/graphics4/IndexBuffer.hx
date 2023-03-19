@@ -21,7 +21,7 @@ class IndexBuffer {
 	}
 
 	@:functionCode("
-		data->self.data = (uint8_t*)kinc_g4_index_buffer_lock(&buffer) + start;
+		data->self.data = (uint8_t*)kinc_g4_index_buffer_lock(&buffer, start, count);
 		data->byteArrayLength = count * 4;
 		data->byteArrayOffset = 0;
 		return data;
@@ -38,11 +38,13 @@ class IndexBuffer {
 		return lockPrivate(start, count);
 	}
 
-	@:functionCode("kinc_g4_index_buffer_unlock(&buffer); data->self.data = nullptr;")
-	public function unlockPrivate(): Void {}
+	@:functionCode("kinc_g4_index_buffer_unlock(&buffer, count); data->self.data = nullptr;")
+	public function unlockPrivate(count: Int): Void {}
 
 	public function unlock(?count: Int): Void {
-		unlockPrivate();
+		if (count == null)
+			count = this.count();
+		unlockPrivate(count);
 	}
 
 	public function count(): Int {
