@@ -262,7 +262,7 @@ class System {
 	}
 
 	public static function windowHeight(window: Int = 0): Int {
-		return Window.all[window].height;
+		return Window.get(window).height;
 	}
 
 	public static var screenRotation(get, null): ScreenRotation;
