@@ -28,7 +28,8 @@ class Network {
 		kinc_socket_init(&socket);
 		kinc_socket_options options;
 		kinc_socket_options_set_defaults(&options);
-		kinc_socket_open(&socket, KINC_SOCKET_PROTOCOL_UDP, port, &options);
+		kinc_socket_set(&socket, \"127.0.0.1\", port, KINC_SOCKET_FAMILY_IP4, KINC_SOCKET_PROTOCOL_UDP);
+		kinc_socket_open(&socket, &options);
 	")
 	public function init(url: String, port: Int) {
 		send(Bytes.ofString("JOIN"), true); // TODO: Discuss, dependency with Server.hx
