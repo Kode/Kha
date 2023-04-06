@@ -42,7 +42,7 @@ class Compute {
 	}
 
 	public static function setFloats(location: ConstantLocation, values: Float32Array) {
-		untyped __cpp__("kinc_compute_set_floats(location->location, values->self.data, values->self.length());");
+		untyped __cpp__("kinc_compute_set_floats(location->location, (float *)&values->self.data[values->byteArrayOffset], values->byteArrayLength);");
 	}
 
 	public static function setVector2(location: ConstantLocation, value: FastVector2): Void {
@@ -87,7 +87,7 @@ class Compute {
 	public static function setBuffer(buffer: ShaderStorageBuffer, index: Int) {
 		untyped __cpp__("
 			#ifdef KORE_OPENGL
-			kinc_compute_set_buffer(buffer->buffer, index);
+			kinc_compute_set_buffer(&buffer->buffer, index);
 			#endif
 		");
 	}
