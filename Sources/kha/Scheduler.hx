@@ -483,21 +483,20 @@ class Scheduler {
 	}
 
 	public static function pauseTimeTasks(groupId: Int, paused: Bool): Void {
-		if ( paused ) {
+		if (paused) {
 			for (timeTask in timeTasks) {
 				if (timeTask.groupId == groupId) {
 					pauseRunningTimeTask(timeTask, paused);
-					trace(paused);
 				}
 			}
-		} else {
+		}
+		else {
 			for (timeTask in pausedTimeTasks) {
 				if (timeTask.groupId == groupId) {
 					pauseRunningTimeTask(timeTask, paused);
-					trace(paused);
 				}
 			}
-		}		
+		}
 		if (activeTimeTask != null && activeTimeTask.groupId == groupId) {
 			activeTimeTask.paused = paused;
 		}
