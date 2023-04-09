@@ -108,17 +108,7 @@ static int throw_handler( int code ) {
 }
 #endif
 
-#if defined(HL_WIN_DESKTOP) && !defined(_CONSOLE)
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-	return wmain(__argc, __argv);
-}
-#endif
-
-#ifdef HL_WIN_DESKTOP
-int wmain(int argc, uchar *argv[]) {
-#else
-int main(int argc, char *argv[]) {
-#endif
+int kickstart(int argc, char *argv[]) {
 	vdynamic *ret;
 	bool isExc = false;
 	hl_type_fun tf = { 0 };
