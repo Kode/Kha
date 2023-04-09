@@ -10,19 +10,9 @@
 	path = Kinc
 	url = https://github.com/Kode/Kinc.git
 	branch = main
-[submodule "Tools/freebsd_x64"]
-	path = Tools/freebsd_x64
-	url = https://github.com/Kode/KhaTools_freebsd_x64.git
-	branch = main
-	shallow = true
 [submodule "Tools/linux_x64"]
 	path = Tools/linux_x64
 	url = https://github.com/Kode/KhaTools_linux_x64.git
-	branch = main
-	shallow = true
-[submodule "Tools/linux_arm"]
-	path = Tools/linux_arm
-	url = https://github.com/Kode/KhaTools_linux_arm.git
 	branch = main
 	shallow = true
 [submodule "Tools/linux_arm64"]
