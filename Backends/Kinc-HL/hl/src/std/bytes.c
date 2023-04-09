@@ -176,28 +176,36 @@ HL_PRIM void hl_bsort_f64( vbyte *bytes, int pos, int len, vclosure *cmp ) {
 	merge_sort_rec_f64(&m,0,len);
 }
 
+static inline bool is_space_char(uchar c) {
+	return c == 32 || (c > 8 && c < 14);
+}
+
 HL_PRIM double hl_parse_float( vbyte *bytes, int pos, int len ) {
-	uchar *str = (uchar*)(bytes+pos);
+	const uchar *str = (uchar*)(bytes+pos);
 	uchar *end = NULL;
-	double d;
-	while( *str == ' ' ) str++; 
-	d = utod(str,&end);
+	while( is_space_char(*str) ) str++;
+	double d = utod(str,&end);
 	if( end == str )
 		return hl_nan();
 	return d;
 }
 
+static inline bool has_hex_prefix( const uchar *c, int len, bool is_signed ) {
+	if (is_signed)
+		return len >= 3 && c[1] == '0' && (c[2] == 'x' || c[2] == 'X');
+	return len >= 2 && c[0] == '0' && (c[1] == 'x' || c[1] == 'X');
+}
+
 HL_PRIM vdynamic *hl_parse_int( vbyte *bytes, int pos, int len ) {
-	uchar *c = (uchar*)(bytes + pos), *end = NULL;
+	const uchar *c = (uchar*)(bytes + pos);
+	const uchar *start = c;
 	int h;
-	while( *c == ' ' ) {
-		c++;
-		len--;
-	}
-	if( (len >= 2 && c[0] == '0' && (c[1] == 'x' || c[1] == 'X')) || (len >= 3 && c[0] == '-' && c[1] == '0' && (c[2] == 'x' || c[2] == 'X')) ) {
-		bool neg = c[0] == '-';
+	while( is_space_char(*c) ) c++;
+	uchar sign = c[0];
+	bool is_signed = sign == '-' || sign == '+';
+	if( has_hex_prefix(c,(int)(len+start-c),is_signed) ) {
 		h = 0;
-		c += neg ? 3 : 2;
+		c += is_signed ? 3 : 2;
 		while( *c ) {
 			uchar k = *c++;
 			if( k >= '0' && k <= '9' )
@@ -207,13 +215,16 @@ HL_PRIM vdynamic *hl_parse_int( vbyte *bytes, int pos, int len ) {
 			else if( k >= 'a' && k <= 'f' )
 				h = (h << 4) | ((k - 'a') + 10);
 			else
-				return NULL;
+				break;
 		}
-		if( neg ) h = -h;
-		return hl_make_dyn(&h,&hlt_i32);
+		if( sign == '-' ) h = -h;
+	} else {
+		uchar *end = NULL;
+		h = utoi(c,&end);
+		if( c == end )
+			return NULL;
 	}
-	h = utoi(c,&end);
-	return c == end ? NULL : hl_make_dyn(&h,&hlt_i32);
+	return hl_make_dyn(&h,&hlt_i32);
 }
 
 // pointer manipulation

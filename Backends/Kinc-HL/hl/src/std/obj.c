@@ -151,7 +151,7 @@ HL_PRIM void hl_cache_free() {
 
 HL_PRIM hl_obj_field *hl_obj_field_fetch( hl_type *t, int fid ) {
 	hl_runtime_obj *rt;
-	if( t->kind != HOBJ )
+	if( t->kind != HOBJ && t->kind != HSTRUCT )
 		return NULL;
 	rt = hl_get_obj_rt(t);
 	if( fid < 0 || fid >= rt->nfields )
@@ -178,6 +178,13 @@ HL_PRIM hl_runtime_obj *hl_get_obj_rt( hl_type *ot ) {
 	int i, size, start, nlookup, compareHash;
 	if( o->rt ) return o->rt;
 	if( o->super ) p = hl_get_obj_rt(o->super);
+
+	hl_global_lock(true);
+	if( o->rt ) {
+		hl_global_lock(false);
+		return o->rt;
+	}
+
 	t = (hl_runtime_obj*)hl_malloc(alloc,sizeof(hl_runtime_obj));
 	t->t = ot;
 	t->nfields = o->nfields + (p ? p->nfields : 0);
@@ -233,12 +240,25 @@ HL_PRIM hl_runtime_obj *hl_get_obj_rt( hl_type *ot ) {
 	nlookup = 0;
 	for(i=0;i<o->nfields;i++) {
 		hl_type *ft = o->fields[i].t;
-		size += hl_pad_struct(size,ft);
+		hl_type *pad = ft;
+		while( pad->kind == HPACKED ) {
+			// align on first field
+			pad = pad->tparam;
+			while( pad->obj->super && hl_get_obj_rt(pad->obj->super)->nfields ) pad = pad->obj->super;
+			pad = pad->obj->fields[0].t;
+		}
+		size += hl_pad_struct(size,pad);
 		t->fields_indexes[i+start] = size;
 		if( *o->fields[i].name )
 			hl_lookup_insert(t->lookup,nlookup++,o->fields[i].hashed_name,o->fields[i].t,size);
 		else
 			t->nlookup--;
+		if( ft->kind == HPACKED ) {
+			hl_runtime_obj *rts = hl_get_obj_rt(ft->tparam);
+			size += rts->size;
+			if( rts->hasPtr ) t->hasPtr = true;
+			continue;
+		}
 		size += hl_type_size(ft);
 		if( !t->hasPtr && hl_is_ptr(ft) ) t->hasPtr = true;
 	}
@@ -277,10 +297,18 @@ HL_PRIM hl_runtime_obj *hl_get_obj_rt( hl_type *ot ) {
 			hl_type *ft = o->fields[i].t;
 			if( hl_is_ptr(ft) ) {
 				int pos = t->fields_indexes[i + start] / HL_WSIZE;
+				if( ft->kind == HPACKED ) {
+					hl_runtime_obj *rts = hl_get_obj_rt(ft->tparam);
+					if( rts->t->mark_bits )
+						memcpy(mark + (pos>>5), rts->t->mark_bits, hl_mark_size(rts->size));
+					continue;
+				}
 				mark[pos >> 5] |= 1 << (pos & 31);
 			}
 		}
 	}
+
+	hl_global_lock(false);
 	return t;
 }
 
@@ -299,6 +327,13 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 	if( ot->vobj_proto ) return t;
 	if( o->super ) p = hl_get_obj_proto(o->super);
 
+	hl_global_lock(true);
+
+	if( ot->vobj_proto ) {
+		hl_global_lock(false);
+		return t;
+	}
+
 	if( t->nproto ) {
 		void **fptr = (void**)hl_malloc(alloc, sizeof(void*) * t->nproto);
 		ot->vobj_proto = fptr;
@@ -308,7 +343,8 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 			hl_obj_proto *p = o->proto + i;
 			if( p->pindex >= 0 ) fptr[p->pindex] = m->functions_ptrs[p->findex];
 		}
-	}
+	} else
+		ot->vobj_proto = (void*)1;
 
 	t->methods = (void**)hl_malloc(alloc, sizeof(void*) * t->nmethods);
 	if( p ) memcpy(t->methods,p->methods,p->nmethods * sizeof(void*));
@@ -325,6 +361,19 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 		} else
 			method_index = i;
 		t->methods[method_index] = m->functions_ptrs[pr->findex];
+	}
+
+	// interfaces
+	t->ninterfaces = 0;
+	for(i=0;i<o->nfields;i++) {
+		if( o->fields[i].hashed_name == 0 )
+			t->ninterfaces++;
+	}
+	t->interfaces = (int*)hl_malloc(alloc,sizeof(int) * t->ninterfaces);
+	t->ninterfaces = 0;
+	for(i=0;i<o->nfields;i++) {
+		if( o->fields[i].hashed_name == 0 )
+			t->interfaces[t->ninterfaces++] = i;
 	}
 
 	// bindings
@@ -384,6 +433,8 @@ HL_API hl_runtime_obj *hl_get_obj_proto( hl_type *ot ) {
 	t->getFieldFun = getField ? t->methods[-(getField->field_index+1)] : NULL;
 	if( p && !t->getFieldFun ) t->getFieldFun = p->getFieldFun;
 
+	hl_global_lock(false);
+
 	return t;
 }
 
@@ -394,12 +445,24 @@ HL_API void hl_flush_proto( hl_type *ot ) {
 	hl_module_context *m = o->m;
 	if( !rt || !ot->vobj_proto ) return;
 	for(i=0;i<o->nbindings;i++) {
-		hl_runtime_binding *b = rt->bindings + i;
+		int fid = o->bindings[i<<1];
 		int mid = o->bindings[(i<<1)|1];
-		if( b->closure )
-			b->ptr = m->functions_ptrs[mid];
-		else
-			((vclosure*)b->ptr)->fun = m->functions_ptrs[mid];
+		hl_runtime_binding *b = NULL;
+		int j;
+		for(j=0;j<rt->nbindings;j++)
+			if( rt->bindings[j].fid == fid ) {
+				b = rt->bindings + j;
+				break;
+			}
+		void *ptr = m->functions_ptrs[mid];
+		if( b->closure ) {
+			if( b->ptr != ptr )
+				b->ptr = ptr;
+		} else {
+			vclosure *c = (vclosure*)b->ptr;
+			if( c->fun != ptr )
+				c->fun = ptr;
+		}
 	}
 }
 
@@ -502,6 +565,24 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 	case HOBJ:
 		{
 			int i;
+			void **interface_address = NULL;
+			{
+				hl_runtime_obj *rt = obj->t->obj->rt;
+				while( rt ) {
+					for(i=0;i<rt->ninterfaces;i++) {
+						if( rt->t->obj->fields[rt->interfaces[i]].t == vt ) {
+							int start = rt->parent ? rt->parent->nfields : 0;
+							interface_address = (void**)((char*)obj + rt->fields_indexes[rt->interfaces[i]+start]);
+							break;
+						}
+					}
+					rt = rt->parent;
+				}
+			}
+			if( interface_address ) {
+				v = (vvirtual*)*interface_address;
+				if( v ) return v;
+			}
 			v = (vvirtual*)hl_gc_alloc(vt, sizeof(vvirtual) + sizeof(void*)*vt->virt->nfields);
 			v->t = vt;
 			v->value = obj;
@@ -524,6 +605,8 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 				} else
 					hl_vfields(v)[i] = f == NULL || !hl_same_type(f->t,vt->virt->fields[i].t) ? NULL : (char*)obj + f->field_index;
 			}
+			if( interface_address )
+				*interface_address = v;
 		}
 		break;
 	case HDYNOBJ:
@@ -556,9 +639,12 @@ vvirtual *hl_to_virtual( hl_type *vt, vdynamic *obj ) {
 			o->virtuals = v;
 			// recast
 			if( need_recast ) {
+				bool extra_check = vt->virt->nfields > 63;
 				for(i=0;i<vt->virt->nfields;i++)
 					if( need_recast & (((int64)1) << ((int64)i)) ) {
 						hl_obj_field *f = vt->virt->fields + i;
+						if( extra_check && hl_lookup_find(o->lookup,o->nfields,f->hashed_name) == NULL )
+							continue;
 						if( hl_is_ptr(f->t) )
 							hl_dyn_setp(obj,f->hashed_name,f->t,hl_dyn_getp(obj,f->hashed_name,f->t));
 						else if( f->t->kind == HF64 )
@@ -794,6 +880,8 @@ HL_PRIM int hl_dyn_geti( vdynamic *d, int hfield, hl_type *t ) {
 		return *(unsigned short*)addr;
 	case HI32:
 		return *(int*)addr;
+	case HI64:
+		return (int)*(int64*)addr;
 	case HF32:
 		return (int)*(float*)addr;
 	case HF64:
@@ -802,6 +890,34 @@ HL_PRIM int hl_dyn_geti( vdynamic *d, int hfield, hl_type *t ) {
 		return *(bool*)addr;
 	default:
 		return hl_dyn_casti(addr,ft,t);
+	}
+}
+
+HL_PRIM int64 hl_dyn_geti64( vdynamic *d, int hfield ) {
+	hl_type *ft;
+	hl_track_call(HL_TRACK_DYNFIELD, on_dynfield(d,hfield));
+	void *addr = hl_obj_lookup(d,hfield,&ft);
+	if( !addr ) {
+		d = hl_obj_lookup_extra(d,hfield);
+		return d == NULL ? 0 : hl_dyn_casti64(&d,&hlt_dyn);
+	}
+	switch( ft->kind ) {
+	case HUI8:
+		return *(unsigned char*)addr;
+	case HUI16:
+		return *(unsigned short*)addr;
+	case HI32:
+		return *(int*)addr;
+	case HI64:
+		return *(int64*)addr;
+	case HF32:
+		return (int64)*(float*)addr;
+	case HF64:
+		return (int64)*(double*)addr;
+	case HBOOL:
+		return *(bool*)addr;
+	default:
+		return hl_dyn_casti64(addr,ft);
 	}
 }
 
@@ -909,6 +1025,9 @@ HL_PRIM void hl_dyn_seti( vdynamic *d, int hfield, hl_type *t, int value ) {
 	case HI32:
 		*(int*)addr = value;
 		break;
+	case HI64:
+		*(int64*)addr = value;
+		break;
 	case HBOOL:
 		*(bool*)addr = value != 0;
 		break;
@@ -923,6 +1042,43 @@ HL_PRIM void hl_dyn_seti( vdynamic *d, int hfield, hl_type *t, int value ) {
 			vdynamic tmp;
 			tmp.t = t;
 			tmp.v.i = value;
+			hl_write_dyn(addr,ft,&tmp,true);
+		}
+		break;
+	}
+}
+
+HL_PRIM void hl_dyn_seti64( vdynamic *d, int hfield, int64 value ) {
+	hl_type *ft = NULL;
+	hl_track_call(HL_TRACK_DYNFIELD, on_dynfield(d,hfield));
+	void *addr = hl_obj_lookup_set(d,hfield,&hlt_i64,&ft);
+	switch( ft->kind ) {
+	case HUI8:
+		*(unsigned char*)addr = (unsigned char)value;
+		break;
+	case HUI16:
+		*(unsigned short*)addr = (unsigned short)value;
+		break;
+	case HI32:
+		*(int*)addr = (int)value;
+		break;
+	case HI64:
+		*(int64*)addr = value;
+		break;
+	case HBOOL:
+		*(bool*)addr = value != 0;
+		break;
+	case HF32:
+		*(float*)addr = (float)value;
+		break;
+	case HF64:
+		*(double*)addr = (double)value;
+		break;
+	default:
+		{
+			vdynamic tmp;
+			tmp.t = &hlt_i64;
+			tmp.v.i64 = value;
 			hl_write_dyn(addr,ft,&tmp,true);
 		}
 		break;
@@ -990,6 +1146,8 @@ HL_PRIM vdynamic *hl_obj_get_field( vdynamic *obj, int hfield ) {
 }
 
 HL_PRIM void hl_obj_set_field( vdynamic *obj, int hfield, vdynamic *v ) {
+	if( obj == NULL )
+		hl_error("Null access");
 	if( v == NULL ) {
 		hl_dyn_setp(obj,hfield,&hlt_dyn,NULL);
 		return;

@@ -141,7 +141,7 @@ HL_PRIM vdynamic* hl_call_method( vdynamic *c, varray *args ) {
 	vdynamic **vargs = hl_aptr(args,vdynamic*);
 	void *pargs[HL_MAX_ARGS];
 	void *ret;
-	union { double d; int i; float f; } tmp[HL_MAX_ARGS];
+	union { double d; int i; float f; int64 i64; } tmp[HL_MAX_ARGS];
 	hl_type *tret;
 	vdynamic *dret;
 	vdynamic out;
@@ -175,6 +175,10 @@ HL_PRIM vdynamic* hl_call_method( vdynamic *c, varray *args ) {
 		case HI32:
 			tmp[i].i = hl_dyn_casti(vargs + i, &hlt_dyn,t);
 			p = &tmp[i].i;
+			break;
+		case HI64:
+			tmp[i].i64 = hl_dyn_casti64(vargs + i, &hlt_dyn);
+			p = &tmp[i].i64;
 			break;
 		case HF32:
 			tmp[i].f = hl_dyn_castf(vargs + i, &hlt_dyn);
@@ -243,7 +247,7 @@ HL_PRIM vdynamic *hl_dyn_call( vclosure *c, vdynamic **args, int nargs ) {
 HL_PRIM void *hl_wrapper_call( void *_c, void **args, vdynamic *ret ) {
 	vclosure_wrapper *c = (vclosure_wrapper*)_c;
 	hl_type_fun *tfun = c->cl.t->fun;
-	union { double d; int i; float f; } tmp[HL_MAX_ARGS];
+	union { double d; int i; float f; int64 i64; } tmp[HL_MAX_ARGS];
 	void *vargs[HL_MAX_ARGS+1];
 	vdynamic out;
 	vclosure *w = c->wrappedFun;
@@ -279,6 +283,10 @@ HL_PRIM void *hl_wrapper_call( void *_c, void **args, vdynamic *ret ) {
 				tmp[i].i = hl_dyn_casti(v,t,to);
 				v = &tmp[i].i;
 				break;
+			case HI64:
+				tmp[i].i64 = hl_dyn_casti64(v,t);
+				v = &tmp[i].i64;
+				break;
 			case HF32:
 				tmp[i].f = hl_dyn_castf(v,t);
 				v = &tmp[i].f;
@@ -305,6 +313,9 @@ HL_PRIM void *hl_wrapper_call( void *_c, void **args, vdynamic *ret ) {
 	case HI32:
 	case HBOOL:
 		ret->v.i = hl_dyn_casti(aret,w->t->fun->ret,tfun->ret);
+		break;
+	case HI64:
+		ret->v.i64 = hl_dyn_casti64(aret,w->t->fun->ret);
 		break;
 	case HF32:
 		ret->v.f = hl_dyn_castf(aret,w->t->fun->ret);
@@ -434,11 +445,11 @@ DEFINE_PRIM(_DYN, call_method, _DYN _ARR);
 DEFINE_PRIM(_BOOL, is_prim_loaded, _DYN);
 
 #if defined(HL_VCC) && !defined(HL_XBO)
-static int throw_handler( int code ) {
-	switch( code ) {
+static LONG CALLBACK global_handler( PEXCEPTION_POINTERS inf ) {
+	switch( inf->ExceptionRecord->ExceptionCode ) {
 	case EXCEPTION_ACCESS_VIOLATION: hl_error("Access violation");
 	case EXCEPTION_STACK_OVERFLOW: hl_error("Stack overflow");
-	default: hl_error("Unknown runtime error");
+	default: break;
 	}
 	return EXCEPTION_CONTINUE_SEARCH;
 }
@@ -446,17 +457,23 @@ static int throw_handler( int code ) {
 
 HL_PRIM vdynamic *hl_dyn_call_safe( vclosure *c, vdynamic **args, int nargs, bool *isException ) {
 	hl_trap_ctx trap;
-	vdynamic *exc;
+	vdynamic *ret, *exc;
 	*isException = false;
 	hl_trap(trap, exc, on_exception);
 #	if defined(HL_VCC) && !defined(HL_XBO)
-	__try {
-		return hl_dyn_call(c,args,nargs);
-	} __except( throw_handler(GetExceptionCode()) ) {}
-#	else
-	return hl_dyn_call(c,args,nargs);
+	ULONG size = 32<<10;
+	SetThreadStackGuarantee(&size);
+	static bool first = true;
+	if( first && !hl_detect_debugger() ) {
+		first = false;
+		AddVectoredExceptionHandler(1,global_handler);
+	}
 #	endif
+	ret = hl_dyn_call(c,args,nargs);
+	hl_endtrap(trap);
+	return ret;
 on_exception:
+	hl_endtrap(trap);
 	*isException = true;
 	return exc;
 }

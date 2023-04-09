@@ -1,4 +1,7 @@
-if(WIN32)
+if (WIN32)
+    set(MBEDTLS_INCLUDE_DIRS ${INCLUDES_BASE_DIR}/mbedtls/include)
+    set(MBEDTLS_LIBRARIES crypt32)
+
     add_library(ssl.hdll SHARED
         ${INCLUDES_BASE_DIR}/mbedtls/library/aes.c
         ${INCLUDES_BASE_DIR}/mbedtls/library/aesni.c
@@ -72,22 +75,34 @@ if(WIN32)
         ${INCLUDES_BASE_DIR}/mbedtls/library/xtea.c
         ssl.c
     )
+else()
+    find_package(MbedTLS REQUIRED)
 
-    set_as_hdll(ssl)
-
-    target_include_directories(ssl.hdll
-        PRIVATE
-        ${INCLUDES_BASE_DIR}/mbedtls/include
-    )
-
-    target_link_libraries(ssl.hdll
-        libhl
-        crypt32
-    )
-
-    install(
-        TARGETS
-            ssl.hdll
-        DESTINATION ${HDLL_DESTINATION}
+    add_library(ssl.hdll SHARED
+        ssl.c
     )
 endif()
+
+set_as_hdll(ssl)
+
+target_include_directories(ssl.hdll
+    PRIVATE
+    ${MBEDTLS_INCLUDE_DIRS}
+)
+
+target_link_libraries(ssl.hdll
+    libhl
+    ${MBEDTLS_LIBRARIES}
+)
+
+if(APPLE)
+	find_library(SECURITY_LIBRARY Security REQUIRED)
+	find_library(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
+	target_link_libraries(ssl.hdll ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
+endif()
+
+install(
+    TARGETS
+        ssl.hdll
+    DESTINATION ${HDLL_DESTINATION}
+)

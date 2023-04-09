@@ -64,9 +64,66 @@ static const int GC_SIZES[GC_PARTITIONS] = {4,8,12,16,20,	8,64,1<<13,0};
 #define	GC_ALIGN		(1 << GC_ALIGN_BITS)
 
 static gc_pheader *gc_pages[GC_ALL_PAGES] = {NULL};
-static int gc_free_blocks[GC_ALL_PAGES] = {0};
 static gc_pheader *gc_free_pages[GC_ALL_PAGES] = {NULL};
 
+#define MAX_FL_CACHED 16
+
+typedef struct {
+	int count;
+	gc_fl *data[MAX_FL_CACHED];
+} cached_slot;
+
+static cached_slot cached_slots[32] = {0};
+static int free_lists_size = 0;
+static int free_lists_count = 0;
+
+static void alloc_freelist( gc_freelist *fl, int size ) {
+	cached_slot *slot = &cached_slots[size];
+	if( slot->count ) {
+		fl->data = slot->data[--slot->count];
+		fl->size_bits = size;
+		fl->count = 0;
+		fl->current = 0;
+		return;
+	}
+	int bytes = (int)sizeof(gc_fl) * (1<<size);
+	free_lists_size += bytes;
+	free_lists_count++;
+	fl->data = (gc_fl*)malloc(bytes);
+	fl->count = 0;
+	fl->current = 0;
+	fl->size_bits = size;
+}
+
+static void free_freelist( gc_freelist *fl ) {
+	cached_slot *slot = &cached_slots[fl->size_bits];
+	if( slot->count == MAX_FL_CACHED ) {
+		free(fl->data);
+		free_lists_size -= (int)sizeof(gc_fl) * (1 << fl->size_bits);
+		return;
+	}
+	slot->data[slot->count++] = fl->data;
+}
+
+
+#define GET_FL(fl,pos) ((fl)->data + (pos))
+
+static void freelist_append( gc_freelist *fl, int pos, int count ) {
+	if( fl->count == 1<<fl->size_bits ) {
+#		ifdef GC_DEBUG
+		if( fl->current ) hl_fatal("assert");
+#		endif
+		gc_freelist fl2;
+		alloc_freelist(&fl2, fl->size_bits + 1);
+		memcpy(GET_FL(&fl2,0),GET_FL(fl,0),sizeof(gc_fl)*fl->count);
+		free_freelist(fl);
+		fl->size_bits++;
+		fl->data = fl2.data;
+	}
+	gc_fl *p = GET_FL(fl,fl->count++);
+	p->pos = (fl_cursor)pos;
+	p->count = (fl_cursor)count;
+}
 
 static gc_pheader *gc_allocator_new_page( int pid, int block, int size, int kind, bool varsize ) {
 	// increase size based on previously allocated pages
@@ -100,14 +157,18 @@ static gc_pheader *gc_allocator_new_page( int pid, int block, int size, int kind
 		else {
 			p->sizes = ph->base + start_pos;
 			start_pos += p->max_blocks;
+			start_pos += (-start_pos) & 63; // align on cache line
 		}
 		MZERO(p->sizes,p->max_blocks);
 	}
 	int m = start_pos % block;
 	if( m ) start_pos += block - m;
+	int fl_bits = 1;
+	while( fl_bits < 8 && (1<<fl_bits) < (p->max_blocks>>3) ) fl_bits++;
 	p->first_block = start_pos / block;
-	p->next_block = p->first_block;
-	p->free_blocks = p->max_blocks - p->first_block;
+	alloc_freelist(&p->free,fl_bits);
+	freelist_append(&p->free,p->first_block, p->max_blocks - p->first_block);
+	p->need_flush = false;
 
 	ph->next_page = gc_pages[pid];
 	gc_pages[pid] = ph;
@@ -115,53 +176,134 @@ static gc_pheader *gc_allocator_new_page( int pid, int block, int size, int kind
 	return ph;
 }
 
+
+static void flush_free_list( gc_pheader *ph ) {
+	gc_allocator_page_data *p = &ph->alloc;
+
+	int bid = p->first_block;
+	int last = p->max_blocks;
+	gc_freelist new_fl;
+	alloc_freelist(&new_fl,p->free.size_bits);
+	gc_freelist old_fl = p->free;
+	gc_fl *cur_pos = NULL;
+	int reuse_index = old_fl.current;
+	gc_fl *reuse = reuse_index < old_fl.count ? GET_FL(&old_fl,reuse_index++) : NULL;
+	int next_bid = reuse ? reuse->pos : -1;
+	unsigned char *bmp = ph->bmp;
+
+	while( bid < last ) {
+		if( bid == next_bid ) {
+			if( cur_pos && cur_pos->pos + cur_pos->count == bid ) {
+				cur_pos->count += reuse->count;
+			} else {
+				freelist_append(&new_fl,reuse->pos,reuse->count);
+				cur_pos = GET_FL(&new_fl,new_fl.count - 1);
+			}
+			reuse = reuse_index < old_fl.count ? GET_FL(&old_fl,reuse_index++) : NULL;
+			bid = cur_pos->count + cur_pos->pos;
+			next_bid = reuse ? reuse->pos : -1;
+			continue;
+		}
+		fl_cursor count;
+		if( p->sizes ) {
+			count = p->sizes[bid];
+			if( !count ) count = 1;
+		} else
+			count = 1;
+		if( (bmp[bid>>3] & (1<<(bid&7))) == 0 ) {
+			if( p->sizes ) p->sizes[bid] = 0;
+			if( cur_pos && cur_pos->pos + cur_pos->count == bid )
+				cur_pos->count += count;
+			else {
+				freelist_append(&new_fl,bid,count);
+				cur_pos = GET_FL(&new_fl,new_fl.count - 1);
+			}
+		}
+		bid += count;
+	}
+	p->free = new_fl;
+	p->need_flush = false;
+#ifdef __GC_DEBUG
+	if( ph->page_id == -1 ) {
+		int k;
+		for(k=0;k<p->free.count;k++) {
+			gc_fl *fl = GET_FL(&p->free,k);
+			printf("(%d-%d)",fl->pos,fl->pos+fl->count-1); 
+		}
+		printf("\n");
+	}
+	if( reuse && reuse->count ) hl_fatal("assert");
+	for(bid=p->first_block;bid<p->max_blocks;bid++) {
+		int k;
+		bool is_free = false;
+		for(k=0;k<p->free.count;k++) {
+			gc_fl *fl = GET_FL(&p->free,k);
+			if( fl->pos < p->first_block || fl->pos + fl->count > p->max_blocks ) hl_fatal("assert");
+			if( bid >= fl->pos && bid < fl->pos + fl->count ) {
+				if( is_free ) hl_fatal("assert");
+				is_free = true;
+			}
+		}
+		bool is_marked = ((ph->bmp[bid>>3] & (1<<(bid&7))) != 0); 
+		if( is_marked && is_free ) {
+			// check if it was already free before
+			for(k=0;k<old_fl.count;k++) {
+				gc_fl *fl = GET_FL(&old_fl,k);
+				if( bid >= fl->pos && bid < fl->pos+fl->count ) {
+					is_marked = false; // false positive
+					ph->bmp[bid>>3] &= ~(1<<(bid&7));
+					break;
+				}
+			}
+		}
+		if( is_free == is_marked )
+			hl_fatal("assert");
+		if( p->sizes && !is_free )
+			bid += p->sizes[bid]-1;
+	}
+#endif
+	free_freelist(&old_fl);
+}
+
 static void *gc_alloc_fixed( int part, int kind ) {
 	int pid = (part << PAGE_KIND_BITS) | kind;
 	gc_pheader *ph = gc_free_pages[pid];
-	gc_allocator_page_data *p;
-	unsigned char *ptr;
+	gc_allocator_page_data *p = NULL;
+	int bid = -1;
 	while( ph ) {
 		p = &ph->alloc;
-		if( ph->bmp ) {
-			int next = p->next_block;
-			while( true ) {
-				unsigned int fetch_bits = ((unsigned int*)ph->bmp)[next >> 5];
-				int ones = TRAILING_ONES(fetch_bits >> (next&31));
-				next += ones;
-				if( (next&31) == 0 && ones ) {
-					if( next >= p->max_blocks ) {
-						p->next_block = next;
-						break;
-					}
-					continue;
-				}
-				p->next_block = next;
-				if( next >= p->max_blocks )
-					break;
-				goto alloc_fixed;
-			}
-		} else if( p->next_block < p->max_blocks )
+		if( p->need_flush )
+			flush_free_list(ph);
+		gc_freelist *fl = &p->free;
+		if( fl->current < fl->count ) {
+			gc_fl *c = GET_FL(fl,fl->current);
+			bid = c->pos++;
+			c->count--;
+#			ifdef GC_DEBUG
+			if( c->count < 0 ) hl_fatal("assert");
+#			endif
+			if( !c->count ) fl->current++;
 			break;
+		}
 		ph = ph->next_page;
 	}
-	if( ph == NULL )
+	if( ph == NULL ) {
 		ph = gc_allocator_new_page(pid, GC_SIZES[part], GC_PAGE_SIZE, kind, false);
-alloc_fixed:
-	p = &ph->alloc;
-	ptr = ph->base + p->next_block * p->block_size;
+		p = &ph->alloc;
+		bid = p->free.data->pos++;
+		p->free.data->count--;
+	}
+	unsigned char *ptr = ph->base + bid * p->block_size;
 #	ifdef GC_DEBUG
 	{
 		int i;
-		if( p->next_block < p->first_block || p->next_block >= p->max_blocks )
+		if( bid < p->first_block || bid >= p->max_blocks )
 			hl_fatal("assert");
-		if( ph->bmp && (ph->bmp[p->next_block>>3]&(1<<(p->next_block&7))) != 0 )
-			hl_fatal("Alloc on marked bit");
 		for(i=0;i<p->block_size;i++)
 			if( ptr[i] != 0xDD )
 				hl_fatal("assert");
 	}
 #	endif
-	p->next_block++;
 	gc_free_pages[pid] = ph;
 	return ptr;
 }
@@ -169,88 +311,47 @@ alloc_fixed:
 static void *gc_alloc_var( int part, int size, int kind ) {
 	int pid = (part << PAGE_KIND_BITS) | kind;
 	gc_pheader *ph = gc_free_pages[pid];
-	gc_allocator_page_data *p;
+	gc_allocator_page_data *p = NULL;
 	unsigned char *ptr;
-	int nblocks = size >> GC_SBITS[part];
-	int max_free = gc_free_blocks[pid];
-loop:
+	fl_cursor nblocks = (fl_cursor)(size >> GC_SBITS[part]);
+	int bid = -1;
 	while( ph ) {
 		p = &ph->alloc;
-		if( ph->bmp ) {
-			int next, avail = 0;
-			if( p->free_blocks >= nblocks ) {
-				p->next_block = p->first_block;
-				p->free_blocks = 0;
+		if( p->need_flush )
+			flush_free_list(ph);
+		gc_freelist *fl = &p->free;
+		int k;
+		for(k=fl->current;k<fl->count;k++) {
+			gc_fl *c = GET_FL(fl,k);
+			if( c->count >= nblocks ) {
+				bid = c->pos;
+				c->pos += nblocks;
+				c->count -= nblocks;
+#				ifdef GC_DEBUG
+				if( c->count < 0 ) hl_fatal("assert");
+#				endif
+				if( c->count == 0 ) fl->current++;
+				goto alloc_var;
 			}
-			next = p->next_block;
-			if( next + nblocks > p->max_blocks )
-				goto skip;
-			while( true ) {
-				int fid = next >> 5;
-				unsigned int fetch_bits = ((unsigned int*)ph->bmp)[fid];
-				int bits;
-resume:
-				bits = TRAILING_ONES(fetch_bits >> (next&31));
-				if( bits ) {
-					if( avail > p->free_blocks ) p->free_blocks = avail;
-					avail = 0;
-					next += bits - 1;
-					if( next >= p->max_blocks ) {
-						p->next_block = next;
-						ph = ph->next_page;
-						goto loop;
-					}
-					if( p->sizes[next] == 0 ) hl_fatal("assert");
-					next += p->sizes[next];
-					if( next + nblocks > p->max_blocks ) {
-						p->next_block = next;
-						ph = ph->next_page;
-						goto loop;
-					}
-					if( (next>>5) != fid )
-						continue;
-					goto resume;
-				}
-				bits = TRAILING_ZEROES( (next & 31) ? (fetch_bits >> (next&31)) | (1<<(32-(next&31))) : fetch_bits );
-				avail += bits;
-				next += bits;
-				if( next > p->max_blocks ) {
-					avail -= next - p->max_blocks;
-					next = p->max_blocks;
-					if( avail < nblocks ) break;
-				}
-				if( avail >= nblocks ) {
-					p->next_block = next - avail;
-					goto alloc_var;
-				}
-				if( next & 31 ) goto resume;
-			}
-			if( avail > p->free_blocks ) p->free_blocks = avail;
-			p->next_block = next;
-		} else if( p->next_block + nblocks <= p->max_blocks )
-			break;
-skip:
-		if( p->free_blocks > max_free )
-			max_free = p->free_blocks;
-		ph = ph->next_page;
-		if( ph == NULL && max_free >= nblocks ) {
-			max_free = 0;
-			ph = gc_pages[pid];
 		}
+		ph = ph->next_page;
 	}
 	if( ph == NULL ) {
 		int psize = GC_PAGE_SIZE;
 		while( psize < size + 1024 )
 			psize <<= 1;
 		ph = gc_allocator_new_page(pid, GC_SIZES[part], psize, kind, true);
+		p = &ph->alloc;
+		bid = p->first_block;
+		p->free.data->pos += nblocks;
+		p->free.data->count -= nblocks;
 	}
 alloc_var:
-	p = &ph->alloc;
-	ptr = ph->base + p->next_block * p->block_size;
+	ptr = ph->base + bid * p->block_size;
 #	ifdef GC_DEBUG
 	{
 		int i;
-		if( p->next_block < p->first_block || p->next_block + nblocks > p->max_blocks )
+		if( bid < p->first_block || bid + nblocks > p->max_blocks )
 			hl_fatal("assert");
 		for(i=0;i<size;i++)
 			if( ptr[i] != 0xDD )
@@ -258,24 +359,18 @@ alloc_var:
 	}
 #	endif
 	if( ph->bmp ) {
-		int bid = p->next_block;
 #		ifdef GC_DEBUG
 		int i;
 		for(i=0;i<nblocks;i++) {
-			if( (ph->bmp[bid>>3]&(1<<(bid&7))) != 0 ) hl_fatal("Alloc on marked block");
-			bid++;
+			int b = bid + i;
+			if( (ph->bmp[b>>3]&(1<<(b&7))) != 0 ) hl_fatal("Alloc on marked block");
 		}
-		bid = p->next_block;
 #		endif
 		ph->bmp[bid>>3] |= 1<<(bid&7);
-	} else {
-		p->free_blocks = p->max_blocks - (p->next_block + nblocks);
 	}
-	if( nblocks > 1 ) MZERO(p->sizes + p->next_block, nblocks);
-	p->sizes[p->next_block] = (unsigned char)nblocks;
-	p->next_block += nblocks;
+	if( nblocks > 1 ) MZERO(p->sizes + bid, nblocks);
+	p->sizes[bid] = (unsigned char)nblocks;
 	gc_free_pages[pid] = ph;
-	gc_free_blocks[pid] = max_free;
 	return ptr;
 }
 
@@ -332,6 +427,7 @@ static void gc_flush_empty_pages() {
 					gc_pages[i] = next;
 				if( gc_free_pages[i] == ph )
 					gc_free_pages[i] = next;
+				free_freelist(&p->free);
 				gc_free_page(ph, p->max_blocks);
 			} else
 				prev = ph;
@@ -404,11 +500,9 @@ static void gc_allocator_before_mark( unsigned char *mark_cur ) {
 	for(pid=0;pid<GC_ALL_PAGES;pid++) {
 		gc_pheader *p = gc_pages[pid];
 		gc_free_pages[pid] = p;
-		gc_free_blocks[pid] = 0;
 		while( p ) {
 			p->bmp = mark_cur;
-			p->alloc.next_block = p->alloc.first_block;
-			p->alloc.free_blocks = 0;
+			p->alloc.need_flush = true;
 			mark_cur += (p->alloc.max_blocks + 7) >> 3;
 			p = p->next_page;
 		}
@@ -439,6 +533,7 @@ static int gc_allocator_get_block_interior( gc_pheader *page, void **block ) {
 	int offset = (int)((unsigned char*)*block - page->base);
 	int bid = offset / page->alloc.block_size;
 	if( page->alloc.sizes ) {
+		if( bid < page->alloc.first_block ) return -1;
 		while( page->alloc.sizes[bid] == 0 ) {
 			if( bid == page->alloc.first_block ) return -1;
 			bid--;

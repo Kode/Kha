@@ -58,9 +58,12 @@ static bool module_resolve_pos( hl_module *m, void *addr, int *fidx, int *fpos )
 	}
 	if( min == 0 )
 		return false; // hl_callback
-	*fidx = (min - 1);
-	dbg = m->jit_debug + (min - 1);
-	fdebug = m->code->functions + (min - 1);
+	do {
+		min--;
+		*fidx = min;
+		dbg = m->jit_debug + min;
+		fdebug = m->code->functions + min;
+	} while( !dbg->offsets );
 	// lookup inside function
 	min = 0;
 	max = fdebug->nops;
@@ -142,16 +145,23 @@ int hl_module_capture_stack_range( void *stack_top, void **stack_ptr, void **out
 #if defined(HL_64) && defined(HL_WIN)
 			void *module_addr = *stack_ptr++; // EIP
 			if( module_addr >= (void*)code && module_addr < (void*)(code + code_size) ) {
-				if( count == size ) break;
-				out[count++] = module_addr;
+				if( out ) {
+					if( count == size ) break;
+					out[count++] = module_addr;
+				} else
+					count++;
 			}
 #else
 			void *stack_addr = *stack_ptr++; // EBP
 			if( stack_addr > stack_bottom && stack_addr < stack_top ) {
 				void *module_addr = *stack_ptr; // EIP
 				if( module_addr >= (void*)code && module_addr < (void*)(code + code_size) ) {
-					if( count == size ) break;
-					out[count++] = module_addr;
+					if( out ) {
+						if( count == size ) break;
+						out[count++] = module_addr;
+					} else {
+						count++;
+					}
 				}
 			}
 #endif
@@ -172,7 +182,7 @@ int hl_module_capture_stack_range( void *stack_top, void **stack_ptr, void **out
 					unsigned char *code = m->jit_code;
 					int code_size = m->codesize;
 					if( module_addr >= (void*)code && module_addr < (void*)(code + code_size) ) {
-						if( count == size ) {
+						if( out && count == size ) {
 							stack_ptr = stack_top;
 							break;
 						}
@@ -182,7 +192,10 @@ int hl_module_capture_stack_range( void *stack_top, void **stack_ptr, void **out
 							code_size -= s;
 							if( module_addr < (void*)code || module_addr >= (void*)(code + code_size) ) continue;
 						}
-						out[count++] = module_addr;
+						if( out )							
+							out[count++] = module_addr;
+						else
+							count++;
 						break;
 					}
 				}
@@ -232,7 +245,7 @@ hl_module *hl_module_alloc( hl_code *c ) {
 	memset(m,0,sizeof(hl_module));
 	m->code = c;
 	m->globals_indexes = (int*)malloc(sizeof(int)*c->nglobals);
-	if( m == NULL ) {
+	if( m->globals_indexes == NULL ) {
 		hl_module_free(m);
 		return NULL;
 	}
@@ -267,6 +280,8 @@ static void null_function() {
 	hl_error("Null function ptr");
 }
 
+static void append_fields( char **p, hl_type *t );
+
 static void append_type( char **p, hl_type *t ) {
 	*(*p)++ = TYPE_STR[t->kind];
 	switch( t->kind ) {
@@ -283,13 +298,9 @@ static void append_type( char **p, hl_type *t ) {
 	case HNULL:
 		append_type(p,t->tparam);
 		break;
-	case HSTRUCT:
-		*(*p)++ = 'S';
 	case HOBJ:
 		{
-			int i;
-			for(i=0;i<t->obj->nfields;i++)
-				append_type(p,t->obj->fields[i].t);
+			append_fields(p, t);
 			*(*p)++ = '_';
 		}
 		break;
@@ -300,6 +311,14 @@ static void append_type( char **p, hl_type *t ) {
 	default:
 		break;
 	}
+}
+
+static void append_fields( char **p, hl_type *t ) {
+	int i;
+	if( t->obj->super )
+		append_fields(p, t->obj->super);
+	for(i=0;i<t->obj->nfields;i++)
+		append_type(p,t->obj->fields[i].t);
 }
 
 #define DISABLED_LIB_PTR ((void*)(int_val)2)
@@ -445,6 +464,12 @@ static void hl_module_init_indexes( hl_module *m ) {
 			}
 		}
 	}
+
+	static hl_type_obj obj_entry = {0};
+	hl_function *fent = m->code->functions + m->functions_indexes[m->code->entrypoint];
+	obj_entry.name = USTR("");
+	fent->obj = &obj_entry;
+	fent->field.name = USTR("init");
 }
 
 static void hl_module_init_natives( hl_module *m ) {
@@ -487,6 +512,60 @@ static void hl_module_init_natives( hl_module *m ) {
 		if( memcmp(sign,tmp,strlen(sign)+1) != 0 )
 			hl_fatal4("Invalid signature for function %s@%s : %s required but %s found in hdll",n->lib,n->name,tmp,sign);
 	}
+}
+
+static void hl_module_init_constant( hl_module *m, hl_constant *c ) {
+	hl_type *t = m->code->globals[c->global];
+	hl_runtime_obj *rt;
+	vdynamic **global = (vdynamic**)(m->globals_data + m->globals_indexes[c->global]);
+	vdynamic *v = NULL;
+	switch (t->kind) {
+	case HOBJ:
+	case HSTRUCT:
+		rt = hl_get_obj_rt(t);
+		v = (vdynamic*)hl_malloc(&m->ctx.alloc,rt->size);
+		v->t = t;
+		for(int i=0;i<c->nfields;i++) {
+			int idx = c->fields[i];
+			hl_type *ft = t->obj->fields[i].t;
+			void *addr = (char*)v + rt->fields_indexes[i];
+			switch (ft->kind) {
+			case HI32:
+				*(int*)addr = m->code->ints[idx];
+				break;
+			case HBOOL:
+				*(bool*)addr = idx != 0;
+				break;
+			case HF64:
+				*(double*)addr = m->code->floats[idx];
+				break;
+			case HBYTES:
+				*(const void**)addr = hl_get_ustring(m->code, idx);
+				break;
+			case HTYPE:
+				*(hl_type**)addr = m->code->types + idx;
+				break;
+			default:
+				*(void**)addr = *(void**)(m->globals_data + m->globals_indexes[idx]);
+				break;
+			}
+		}
+		break;
+	default:
+		hl_fatal("assert");
+	}
+	*global = v;
+	hl_remove_root(global);
+}
+
+static void hl_module_add( hl_module *m ) {
+	hl_module **old_modules = cur_modules;
+	hl_module **new_modules = (hl_module**)malloc(sizeof(void*)*(modules_count + 1));
+	memcpy(new_modules, old_modules, sizeof(void*)*modules_count);
+	new_modules[modules_count] = m;
+	cur_modules = new_modules;
+	modules_count++;
+	free(old_modules);
 }
 
 int hl_module_init( hl_module *m, h_bool hot_reload ) {
@@ -537,60 +616,11 @@ int hl_module_init( hl_module *m, h_bool hot_reload ) {
 	}
 	// INIT constants
 	for(i=0;i<m->code->nconstants;i++) {
-		int j;
 		hl_constant *c = m->code->constants + i;
-		hl_type *t = m->code->globals[c->global];
-		hl_runtime_obj *rt;
-		vdynamic **global = (vdynamic**)(m->globals_data + m->globals_indexes[c->global]);
-		vdynamic *v = NULL;
-		switch (t->kind) {
-		case HOBJ:
-		case HSTRUCT:
-			rt = hl_get_obj_rt(t);
-			v = (vdynamic*)hl_malloc(&m->ctx.alloc,rt->size);
-			v->t = t;
-			for (j = 0; j<c->nfields; j++) {
-				int idx = c->fields[j];
-				hl_type *ft = t->obj->fields[j].t;
-				void *addr = (char*)v + rt->fields_indexes[j];
-				switch (ft->kind) {
-				case HI32:
-					*(int*)addr = m->code->ints[idx];
-					break;
-				case HBOOL:
-					*(bool*)addr = idx != 0;
-					break;
-				case HF64:
-					*(double*)addr = m->code->floats[idx];
-					break;
-				case HBYTES:
-					*(const void**)addr = hl_get_ustring(m->code, idx);
-					break;
-				case HTYPE:
-					*(hl_type**)addr = m->code->types + idx;
-					break;
-				default:
-					*(void**)addr = *(void**)(m->globals_data + m->globals_indexes[idx]);
-					break;
-				}
-			}
-			break;
-		default:
-			hl_fatal("assert");
-		}
-		*global = v;
-		hl_remove_root(global);
+		hl_module_init_constant(m, c);
 	}
 
-	// DONE
-	hl_module **old_modules = cur_modules;
-	hl_module **new_modules = (hl_module**)malloc(sizeof(void*)*(modules_count + 1));
-	memcpy(new_modules, old_modules, sizeof(void*)*modules_count);
-	new_modules[modules_count] = m;
-	cur_modules = new_modules;
-	modules_count++;
-	free(old_modules);
-
+	hl_module_add(m);
 	hl_setup_exception(module_resolve_symbol, module_capture_stack);
 	hl_gc_set_dump_types(hl_module_types_dump);
 	hl_jit_free(ctx, hot_reload);
@@ -602,7 +632,7 @@ int hl_module_init( hl_module *m, h_bool hot_reload ) {
 }
 
 h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
-	int i1,i2;
+	int i,i1,i2;
 	bool has_changes = false;
 	int changes_count = 0;
 	jit_ctx *ctx = m1->jit_ctx;
@@ -612,17 +642,32 @@ h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
 	hl_code_hash_remap_globals(m2->hash,m1->hash);
 
 	// share global data
-	// TODO : we should assign indexes for new globals
-	// and eventually init their value correctly
 	free(m2->globals_data);
 	free(m2->globals_indexes);
 	m2->globals_data = m1->globals_data;
 	m2->globals_indexes = m1->globals_indexes;
+	int gsize = m1->globals_size;
+	for(i=m1->code->nglobals;i<m2->code->nglobals;i++) {
+		hl_type *t = c->globals[i];
+		gsize += hl_pad_size(gsize, t);
+		m2->globals_indexes[i] = gsize;
+		gsize += hl_type_size(t);
+		if( hl_is_ptr(t) )
+			hl_add_root(m2->globals_data+m2->globals_indexes[i]);
+	}
+	memset(m2->globals_data+m1->globals_size,0,gsize - m1->globals_size);
+	m2->globals_size = gsize;
 	
 	hl_module_init_natives(m2);
 	hl_module_init_indexes(m2);
 	hl_jit_reset(ctx, m2);
 	hl_code_hash_finalize(m2->hash);
+
+	for(i=0;i<m2->code->nconstants;i++) {
+		hl_constant *c = m2->code->constants + i;
+		if( c->global >= m1->code->nglobals )
+			hl_module_init_constant(m2, c);
+	}
 
 	for(i2=0;i2<m2->code->nfunctions;i2++) {
 		hl_function *f2 = m2->code->functions + i2;
@@ -694,22 +739,62 @@ h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
 	// patch same types
 	for(i1=0;i1<m1->code->ntypes;i1++) {
 		hl_type *p = m1->code->types + i1;
-		if( p->kind != HOBJ && p->kind != HSTRUCT ) continue;
+		switch( p->kind ) {
+		case HOBJ:
+		case HSTRUCT:
+			break;
+		case HENUM:
+			if( !p->tenum->global_value ) continue;
+			break;
+		default:
+			continue;
+		}
 		for(i2=0;i2<c->ntypes;i2++) {
 			hl_type *t = c->types + i2;
 			if( p->kind != t->kind ) continue;
-			if( ucmp(p->obj->name,t->obj->name) != 0 ) continue;
-			if( hl_code_hash_type(m1->hash,p) == hl_code_hash_type(m2->hash,t)  ) {
-				t->obj = p->obj; // alias the types ! they are different pointers but have the same layout
-			} else {
-				uprintf(USTR("[HotReload] Type %s has changed\n"),t->obj->name);
-				changes_count++;
+			switch( p->kind ) {
+			case HOBJ:
+			case HSTRUCT:
+				if( ucmp(p->obj->name,t->obj->name) != 0 ) continue;
+				if( hl_code_hash_type(m1->hash,p) == hl_code_hash_type(m2->hash,t)  ) {
+					t->obj = p->obj; // alias the types ! they are different pointers but have the same layout
+					t->vobj_proto = p->vobj_proto;
+				} else {
+					uprintf(USTR("[HotReload] Type %s has changed\n"),t->obj->name);
+					changes_count++;
+				}
+				break;
+			case HENUM:
+				if( ucmp(p->tenum->name,t->tenum->name) != 0 ) continue;
+				if( hl_code_hash_type(m1->hash,p) == hl_code_hash_type(m2->hash,t)  ) {
+					t->tenum = p->tenum; // alias the types ! they are different pointers but have the same layout
+				} else {
+					uprintf(USTR("[HotReload] Type %s has changed\n"),t->tenum->name);
+					changes_count++;
+				}
+				break;
+			default:
+				break;
 			}
 			break;
 		}
 	}
 
 	m2->jit_code = hl_jit_code(ctx, m2, &m2->codesize, &m2->jit_debug, m1);
+
+	// patch missing debug info
+	int start = -1;
+	if( m2->jit_debug ) {
+		for(i=0;i<c->nfunctions;i++) {
+			if( m2->jit_debug[i].start < 0 ) {
+				m2->jit_debug[i].start = start;
+				m2->jit_debug[i].offsets = NULL;
+			} else {
+				start = m2->jit_debug[i].start;
+			}
+		}
+	}
+
 	hl_jit_free(ctx,true);
 
 	if( m2->jit_code == NULL ) {
@@ -718,7 +803,6 @@ h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
 		return false;
 	}
 	
-	int i;
 	for(i=0;i<m2->code->nfunctions;i++) {
 		hl_function *f2 = m2->code->functions + i;
 		if( m2->hash->functions_hashes[i] < -1 ) continue;
@@ -740,11 +824,25 @@ h_bool hl_module_patch( hl_module *m1, hl_code *c ) {
 		printf("[HotReload] %d changes\n", changes_count);
 		fflush(stdout);
 	}
+	hl_module_add(m2);
+
+	// call entry point (will only update types)
+	if( m2->functions_ptrs[c->entrypoint] ) {
+		vclosure cl;
+		cl.t = c->functions[m2->functions_indexes[c->entrypoint]].type;
+		cl.fun = m2->functions_ptrs[c->entrypoint];
+		cl.hasValue = 0;
+		hl_dyn_call(&cl,NULL,0);
+	}
 
 	return true;
 }
 
 void hl_module_free( hl_module *m ) {
+	for(int i=0;i<m->code->nglobals;i++) {
+		if( hl_is_ptr(m->code->globals[i]) )
+			hl_remove_root(m->globals_data+m->globals_indexes[i]);
+	}
 	hl_free(&m->ctx.alloc);
 	hl_free_executable_memory(m->code, m->codesize);
 	if( m->hash ) hl_code_hash_free(m->hash);

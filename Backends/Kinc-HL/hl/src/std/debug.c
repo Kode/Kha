@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include <hl.h>
-#ifdef HL_LINUX
+#if defined(HL_LINUX) && (defined(__i386__) || defined(__x86_64__))
 #	include <sys/ptrace.h>
 #	include <sys/wait.h>
 #	include <sys/user.h>
@@ -30,17 +30,6 @@
 
 #ifdef HL_MAC
 #	include <mdbg/mdbg.h>
-
-static int get_reg( int r ) {
-	switch( r ) {
-		case 0: return REG_RSP;
-		case 1: return REG_RBP;
-		case 2: return REG_RIP;
-		case 3: return REG_RFLAGS;
-		case 4: return REG_DR0 + (r-4);
-	}
-	return -1;
-}
 #endif
 
 #if defined(HL_WIN)
@@ -173,19 +162,44 @@ HL_API bool hl_debug_flush( int pid, vbyte *addr, int size ) {
 #	endif
 }
 
+#ifdef HL_MAC
+static int get_reg( int r ) {
+	switch( r ) {
+		case 0: return REG_RSP;
+		case 1: return REG_RBP;
+		case 2: return REG_RIP;
+		case 3: return REG_RFLAGS;
+		case 4: return REG_DR0;
+		case 5: return REG_DR1;
+		case 6: return REG_DR2;
+		case 7: return REG_DR3;
+		case 8: return REG_DR6;
+		case 9: return REG_DR7;
+		case 10: return REG_RAX;
+	}
+	return -1;
+}
+#endif
+
 #ifdef USE_PTRACE
 static void *get_reg( int r ) {
 		struct user_regs_struct *regs = NULL;
 		struct user *user = NULL;
+		struct user_fpregs_struct *fp = NULL;
 		switch( r ) {
+		case -1: return &user->u_fpstate;
 #		ifdef HL_64
 		case 0: return &regs->rsp;
 		case 1: return &regs->rbp;
 		case 2: return &regs->rip;
+		case 10: return &regs->rax;
+		case 11: return (void*)(-((int_val)&fp->xmm_space[0])-1);
 #		else
 		case 0: return &regs->esp;
 		case 1: return &regs->ebp;
 		case 2: return &regs->eip;
+		case 10: return &regs->eax;
+		case 11: return -1;
 #		endif
 		case 3: return &regs->eflags;
 		default: return &user->u_debugreg[r-4];
@@ -221,6 +235,7 @@ HL_API int hl_debug_wait( int pid, int *thread, int timeout ) {
 		default:
 			return 3;
 		}
+		break;
 	case EXIT_PROCESS_DEBUG_EVENT:
 		return 0;
 	default:
@@ -275,6 +290,7 @@ HL_API bool hl_debug_resume( int pid, int thread ) {
 		case 7: return &c->Dr3; \
 		case 8: return &c->Dr6; \
 		case 9: return &c->Dr7; \
+		case 10: return GET_REG(ax); \
 		default: return GET_REG(ax); \
 		} \
 	}
@@ -304,6 +320,8 @@ HL_API void *hl_debug_read_register( int pid, int thread, int reg, bool is64 ) {
 			return NULL;
 		if( reg == 3 )
 			return (void*)(int_val)c.EFlags;
+		if( reg == 11 )
+			return NULL; // TODO
 		return (void*)(int_val)*GetContextReg32(&c,reg);
 	}
 #	else
@@ -315,11 +333,25 @@ HL_API void *hl_debug_read_register( int pid, int thread, int reg, bool is64 ) {
 		return NULL;
 	if( reg == 3 )
 		return (void*)(int_val)c.EFlags;
+	if( reg == 11 )
+#ifdef HL_64
+		return (void*)(int_val)c.FltSave.XmmRegisters[0].Low;
+#else
+		return (void*)*(int_val*)&c.ExtendedRegisters[10*16];
+#endif
 	return (void*)*GetContextReg(&c,reg);
 #	elif defined(HL_MAC)
 	return mdbg_read_register(pid, thread, get_reg(reg), is64);
 #	elif defined(USE_PTRACE)
-	return (void*)ptrace(PTRACE_PEEKUSER,thread,get_reg(reg),0);
+	void *r = get_reg(reg);
+	if( ((int_val)r) < 0 ) {
+		// peek FP ptr
+		char *addr = (char*)ptrace(PTRACE_PEEKUSER,thread,get_reg(-1),0);
+		void *out = NULL;
+		hl_debug_read(pid, addr + (-((int_val)r)-1), (vbyte*)&out, sizeof(void*));
+		return out;
+	}
+	return (void*)ptrace(PTRACE_PEEKUSER,thread,r,0);
 #	else
 	return NULL;
 #	endif
@@ -335,6 +367,8 @@ HL_API bool hl_debug_write_register( int pid, int thread, int reg, void *value, 
 			return false;
 		if( reg == 3 )
 			c.EFlags = (int)(int_val)value;
+		else if( reg == 11 )
+			return false; // TODO
 		else
 			*GetContextReg32(&c,reg) = (DWORD)(int_val)value;
 		return (bool)Wow64SetThreadContext(OpenTID(thread),&c);
@@ -348,6 +382,12 @@ HL_API bool hl_debug_write_register( int pid, int thread, int reg, void *value, 
 		return false;
 	if( reg == 3 )
 		c.EFlags = (int)(int_val)value;
+	else if( reg == 11 )
+#		ifdef HL_64
+		c.FltSave.XmmRegisters[0].Low = (int_val)value;
+#		else
+		*(int_val*)&c.ExtendedRegisters[10*16] = (int_val)value;
+#		endif
 	else
 		*GetContextReg(&c,reg) = (REGDATA)value;
 	return (bool)SetThreadContext(OpenTID(thread),&c);

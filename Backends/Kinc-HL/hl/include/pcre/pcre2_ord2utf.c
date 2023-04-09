@@ -6,7 +6,8 @@
 and semantics are as close as possible to those of the Perl 5 language.
 
                        Written by Philip Hazel
-           Copyright (c) 1997-2012 University of Cambridge
+     Original API code Copyright (c) 1997-2012 University of Cambridge
+         New API code Copyright (c) 2016 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
@@ -38,53 +39,82 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/* This file contains a private PCRE function that converts an ordinal
-character value into a UTF16 string. */
+/* This file contains a function that converts a Unicode character code point
+into a UTF string. The behaviour is different for each code unit width. */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-/* Generate code with 16 bit character support. */
-#define COMPILE_PCRE16
+#include "pcre2_internal.h"
 
-#include "pcre_internal.h"
+
+/* If SUPPORT_UNICODE is not defined, this function will never be called.
+Supply a dummy function because some compilers do not like empty source
+modules. */
+
+#ifndef SUPPORT_UNICODE
+unsigned int
+PRIV(ord2utf)(uint32_t cvalue, PCRE2_UCHAR *buffer)
+{
+(void)(cvalue);
+(void)(buffer);
+return 0;
+}
+#else  /* SUPPORT_UNICODE */
+
 
 /*************************************************
-*       Convert character value to UTF-16         *
+*          Convert code point to UTF             *
 *************************************************/
 
-/* This function takes an integer value in the range 0 - 0x10ffff
-and encodes it as a UTF-16 character in 1 to 2 pcre_uchars.
-
+/*
 Arguments:
   cvalue     the character value
-  buffer     pointer to buffer for result - at least 2 pcre_uchars long
+  buffer     pointer to buffer for result
 
-Returns:     number of characters placed in the buffer
+Returns:     number of code units placed in the buffer
 */
 
 unsigned int
-PRIV(ord2utf)(pcre_uint32 cvalue, pcre_uchar *buffer)
+PRIV(ord2utf)(uint32_t cvalue, PCRE2_UCHAR *buffer)
 {
-#ifdef SUPPORT_UTF
+/* Convert to UTF-8 */
 
+#if PCRE2_CODE_UNIT_WIDTH == 8
+int i, j;
+for (i = 0; i < PRIV(utf8_table1_size); i++)
+  if ((int)cvalue <= PRIV(utf8_table1)[i]) break;
+buffer += i;
+for (j = i; j > 0; j--)
+ {
+ *buffer-- = 0x80 | (cvalue & 0x3f);
+ cvalue >>= 6;
+ }
+*buffer = PRIV(utf8_table2)[i] | cvalue;
+return i + 1;
+
+/* Convert to UTF-16 */
+
+#elif PCRE2_CODE_UNIT_WIDTH == 16
 if (cvalue <= 0xffff)
   {
-  *buffer = (pcre_uchar)cvalue;
+  *buffer = (PCRE2_UCHAR)cvalue;
   return 1;
   }
-
 cvalue -= 0x10000;
 *buffer++ = 0xd800 | (cvalue >> 10);
 *buffer = 0xdc00 | (cvalue & 0x3ff);
 return 2;
 
-#else /* SUPPORT_UTF */
-(void)(cvalue);  /* Keep compiler happy; this function won't ever be */
-(void)(buffer);  /* called when SUPPORT_UTF is not defined. */
-return 0;
-#endif /* SUPPORT_UTF */
-}
+/* Convert to UTF-32 */
 
-/* End of pcre16_ord2utf16.c */
+#else
+*buffer = (PCRE2_UCHAR)cvalue;
+return 1;
+#endif
+}
+#endif  /* SUPPORT_UNICODE */
+
+/* End of pcre_ord2utf.c */

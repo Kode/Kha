@@ -79,7 +79,7 @@ HL_PRIM void hl_set_error_handler( vclosure *d ) {
 
 static bool break_on_trap( hl_thread_info *t, hl_trap_ctx *trap, vdynamic *v ) {
 	while( true ) {
-		if( trap == NULL || trap == t->trap_uncaught || t->trap_current == NULL ) return true;
+		if( trap == NULL || trap == t->trap_uncaught || t->trap_current == NULL || trap->prev == NULL ) return true;
 		if( !trap->tcheck || !v ) return false;
 		hl_type *ot = ((hl_type**)trap->tcheck)[1]; // it's an obj with first field is a hl_type
 		if( !ot || hl_safe_cast(v->t,ot) ) return false;
@@ -156,6 +156,18 @@ HL_PRIM varray *hl_exception_stack() {
 	return a;
 }
 
+HL_PRIM int hl_exception_stack_raw( varray *arr ) {
+	hl_thread_info *t = hl_get_thread();
+	if( arr ) memcpy(hl_aptr(arr,void*), t->exc_stack_trace, t->exc_stack_count*sizeof(void*));
+	return t->exc_stack_count;
+}
+
+HL_PRIM int hl_call_stack_raw( varray *arr ) {
+	if( !arr )
+		return capture_stack_func(NULL,0);
+	return capture_stack_func(hl_aptr(arr,void*), arr->size);
+}
+
 HL_PRIM void hl_rethrow( vdynamic *v ) {
 	hl_get_thread()->flags |= HL_EXC_RETHROW;
 	hl_throw(v);
@@ -212,7 +224,7 @@ static void _sigtrap_handler(int signum) {
 #endif
 
 #ifdef HL_MAC
-	extern bool kinc_debugger_attached(void);
+	extern bool is_debugger_attached(void);
 #endif
 
 HL_PRIM bool hl_detect_debugger() {
@@ -226,7 +238,7 @@ HL_PRIM bool hl_detect_debugger() {
 	}
 	return (bool)debugger_present;
 #	elif defined(HL_MAC)
-	return kinc_debugger_attached();
+	return is_debugger_attached();
 #	else
 	return false;
 #	endif
@@ -246,6 +258,8 @@ HL_PRIM HL_NO_OPT void hl_assert() {
 #define _SYMBOL _ABSTRACT(hl_symbol)
 
 DEFINE_PRIM(_ARR,exception_stack,_NO_ARG);
+DEFINE_PRIM(_I32,exception_stack_raw,_ARR);
+DEFINE_PRIM(_I32,call_stack_raw,_ARR);
 DEFINE_PRIM(_VOID,set_error_handler,_FUN(_VOID,_DYN));
 DEFINE_PRIM(_VOID,breakpoint,_NO_ARG);
 DEFINE_PRIM(_BYTES,resolve_symbol, _SYMBOL _BYTES _REF(_I32));

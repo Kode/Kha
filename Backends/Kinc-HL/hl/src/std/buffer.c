@@ -65,6 +65,7 @@ static void buffer_append_new( hl_buffer *b, const uchar *s, int len ) {
 
 HL_PRIM void hl_buffer_str_sub( hl_buffer *b, const uchar *s, int len ) {
 	stringitem it;
+	int offset = 0;
 	if( s == NULL || len <= 0 )
 		return;
 	b->totlen += len;
@@ -78,11 +79,11 @@ HL_PRIM void hl_buffer_str_sub( hl_buffer *b, const uchar *s, int len ) {
 		} else {
 			memcpy(it->str + it->len,s,free<<1);
 			it->len += free;
-			s += free;
+			offset = free;
 			len -= free;
 		}
 	}
-	buffer_append_new(b,s,len);
+	buffer_append_new(b,s + offset,len);
 }
 
 HL_PRIM void hl_buffer_str( hl_buffer *b, const uchar *s ) {
@@ -232,11 +233,11 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 	case HSTRUCT:
 		{
 			hl_type_obj *o = v->t->obj;
-			if( o->rt == NULL || o->rt->toStringFun == NULL ) {
+			if( o->rt == NULL || hl_get_obj_proto(v->t)->toStringFun == NULL ) {
 				if( v->t->kind == HSTRUCT ) hl_buffer_char(b,'@');
 				hl_buffer_str(b,o->name);
 			} else
-				hl_buffer_str(b,o->rt->toStringFun(v));
+				hl_buffer_str(b,o->rt->toStringFun(v->t->kind == HSTRUCT ? (vdynamic*)v->v.ptr : v));
 		}
 		break;
 	case HARRAY:

@@ -46,6 +46,11 @@ HL_PRIM vdynamic *hl_make_dyn( void *data, hl_type *t ) {
 		v->t = t;
 		v->v.i = *(int*)data;
 		return v;
+	case HI64:
+		v = (vdynamic*)hl_gc_alloc_noptr(sizeof(vdynamic));
+		v->t = t;
+		v->v.i64 = *(int64*)data;
+		return v;
 	case HF32:
 		v = (vdynamic*)hl_gc_alloc_noptr(sizeof(vdynamic));
 		v->t = t;
@@ -90,6 +95,8 @@ HL_PRIM int hl_dyn_casti( void *data, hl_type *t, hl_type *to ) {
 		return *(unsigned short*)data;
 	case HI32:
 		return *(int*)data;
+	case HI64:
+		return (int)*(int64*)data;
 	case HF32:
 		return (int)*(float*)data;
 	case HF64:
@@ -106,6 +113,42 @@ HL_PRIM int hl_dyn_casti( void *data, hl_type *t, hl_type *to ) {
 		break;
 	}
 	invalid_cast(t,to);
+	return 0;
+}
+
+HL_PRIM int64 hl_dyn_casti64( void *data, hl_type *t ) {
+	hl_track_call(HL_TRACK_CAST, on_cast(t,&hlt_i64));
+	if( t->kind == HDYN ) {
+		vdynamic *v = *((vdynamic**)data);
+		if( v == NULL ) return 0;
+		t = v->t;
+		if( !hl_is_dynamic(t) ) data = &v->v;
+	}
+	switch( t->kind ) {
+	case HUI8:
+		return *(unsigned char*)data;
+	case HUI16:
+		return *(unsigned short*)data;
+	case HI32:
+		return *(int*)data;
+	case HI64:
+		return *(int64*)data;
+	case HF32:
+		return (int64)*(float*)data;
+	case HF64:
+		return (int64)*(double*)data;
+	case HBOOL:
+		return *(bool*)data;
+	case HNULL:
+		{
+			vdynamic *v = *(vdynamic**)data;
+			if( v == NULL ) return 0;
+			return hl_dyn_casti64(&v->v,t->tparam);
+		}
+	default:
+		break;
+	}
+	invalid_cast(t,&hlt_i64);
 	return 0;
 }
 
@@ -187,6 +230,11 @@ HL_PRIM void *hl_dyn_castp( void *data, hl_type *t, hl_type *to ) {
 				int v = hl_dyn_casti(data,t,to->tparam);
 				return hl_make_dyn(&v,to->tparam);
 			}
+		case HI64:
+			{
+				int64 v = hl_dyn_casti64(data,t);
+				return hl_make_dyn(&v,to->tparam);
+			}
 		case HF32:
 			{
 				float f = hl_dyn_castf(data,t);
@@ -211,6 +259,12 @@ HL_PRIM void *hl_dyn_castp( void *data, hl_type *t, hl_type *to ) {
 				int *v = (int*)hl_gc_alloc_noptr(sizeof(int));
 				*v = hl_dyn_casti(data,t,to->tparam);
 				return v;
+			}
+		case HI64:
+			{
+				int64 *d = (int64*)hl_gc_alloc_noptr(sizeof(int64));
+				*d = hl_dyn_casti64(data,t);
+				return d;
 			}
 		case HF32:
 			{
@@ -256,6 +310,8 @@ HL_PRIM double hl_dyn_castd( void *data, hl_type *t ) {
 		return *(unsigned short*)data;
 	case HI32:
 		return *(int*)data;
+	case HI64:
+		return (double)*(int64*)data;
 	case HBOOL:
 		return *(bool*)data;
 	case HNULL:
@@ -290,6 +346,8 @@ HL_PRIM float hl_dyn_castf( void *data, hl_type *t ) {
 		return *(unsigned short*)data;
 	case HI32:
 		return (float)*(int*)data;
+	case HI64:
+		return (float)*(int64*)data;
 	case HBOOL:
 		return *(bool*)data;
 	case HNULL:
@@ -342,6 +400,11 @@ HL_PRIM int hl_dyn_compare( vdynamic *a, vdynamic *b ) {
 		{
 			int d = a->v.i - b->v.i;
 			return d == hl_invalid_comparison ? -1 : d;
+		}
+	case TK2(HI64,HI64):
+		{
+			int64 d = a->v.i64 - b->v.i64;
+			return d == 0 ? 0 : (d > 0 ? 1 : -1);
 		}
 	case TK2(HF32,HF32):
 		return fcompare(a->v.f,b->v.f);
@@ -403,6 +466,9 @@ HL_PRIM void hl_write_dyn( void *data, hl_type *t, vdynamic *v, bool is_tmp ) {
 		break;
 	case HI32:
 		*(int*)data = hl_dyn_casti(&v,&hlt_dyn,t);
+		break;
+	case HI64:
+		*(int64*)data = hl_dyn_casti64(&v,&hlt_dyn);
 		break;
 	case HF32:
 		*(float*)data = hl_dyn_castf(&v,&hlt_dyn);

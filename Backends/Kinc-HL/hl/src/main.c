@@ -41,10 +41,10 @@ typedef char pchar;
 #endif
 
 typedef struct {
+	pchar *file;
 	hl_code *code;
 	hl_module *m;
 	vdynamic *ret;
-	pchar *file;
 	int file_time;
 } main_context;
 
@@ -193,7 +193,7 @@ int main(int argc, pchar *argv[]) {
 		file = PSTR("hlboot.dat");
 		fchk = pfopen(file,"rb");
 		if( fchk == NULL ) {
-			printf("HL/JIT %d.%d.%d (c)2015-2020 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
+			printf("HL/JIT %d.%d.%d (c)2015-2022 Haxe Foundation\n  Usage : hl [--debug <port>] [--debug-wait] <file>\n",HL_VERSION>>16,(HL_VERSION>>8)&0xFF,HL_VERSION&0xFF);
 			return 1;
 		}
 		fclose(fchk);
@@ -244,6 +244,8 @@ int main(int argc, pchar *argv[]) {
 	}
 	hl_module_free(ctx.m);
 	hl_free(&ctx.code->alloc);
+	// do not call hl_unregister_thread() or hl_global_free will display error 
+	// on global_lock if there are threads that are still running (such as debugger)
 	hl_global_free();
 	return 0;
 }

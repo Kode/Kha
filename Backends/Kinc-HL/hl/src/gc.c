@@ -73,9 +73,7 @@ static int_val gc_hash( void *ptr ) {
 #	define GC_MEMCHK
 #endif
 
-#if defined(HL_NX)
-#	define GC_INTERIOR_POINTERS
-#endif
+#define GC_INTERIOR_POINTERS
 
 #define out_of_memory(reason)		hl_fatal("Out of Memory (" reason ")")
 
@@ -160,12 +158,7 @@ static void gc_free_page( gc_pheader *page, int block_count );
 #include "allocator.c"
 #endif
 
-static struct {
-	int count;
-	bool stopping_world;
-	hl_thread_info **threads;
-	hl_mutex *global_lock;
-} gc_threads;
+static hl_threads_info gc_threads;
 
 HL_THREAD_STATIC_VAR hl_thread_info *current_thread;
 
@@ -214,6 +207,13 @@ static void gc_save_context(hl_thread_info *t, void *prev_stack ) {
 	// to gc_save_context (or before) which might hold a gc value !
 	// let's capture them immediately in extra per-thread data
 	t->stack_cur = &prev_stack;
+
+	// We have no guarantee prev_stack is pointer-aligned
+	// All calls are passing a pointer to a bool, which is aligned on 1 byte
+	// If pointer is wrongly aligned, the extra_stack_data is misaligned
+	// and register pointers save in stack will not be discovered correctly by the GC
+	uintptr_t aligned_prev_stack = ((uintptr_t)prev_stack) & ~(sizeof(void*) - 1);
+	prev_stack = (void*)aligned_prev_stack;
 	int size = (int)((char*)prev_stack - (char*)stack_cur) / sizeof(void*);
 	if( size > HL_MAX_EXTRA_STACK ) hl_fatal("GC_SAVE_CONTEXT");
 	t->extra_stack_size = size;
@@ -239,6 +239,13 @@ static void gc_global_lock( bool lock ) {
 	}
 }
 #endif
+
+HL_PRIM void hl_global_lock( bool lock ) {
+	if( lock )
+		hl_mutex_acquire(gc_threads.exclusive_lock);
+	else
+		hl_mutex_release(gc_threads.exclusive_lock);
+}
 
 HL_PRIM void hl_add_root( void *r ) {
 	gc_global_lock(true);
@@ -284,6 +291,10 @@ HL_API void hl_register_thread( void *stack_top ) {
 	hl_thread_info *t = (hl_thread_info*)malloc(sizeof(hl_thread_info));
 	memset(t, 0, sizeof(hl_thread_info));
 	t->thread_id = hl_thread_id();
+	#ifdef HL_MAC
+	t->mach_thread_id = mach_thread_self();
+	t->pthread_id = (pthread_t)hl_thread_current();
+	#endif
 	t->stack_top = stack_top;
 	t->flags = HL_TRACK_MASK << HL_TREAD_TRACK_SHIFT;
 	current_thread = t;
@@ -318,7 +329,7 @@ HL_API void hl_unregister_thread() {
 	hl_mutex_release(gc_threads.global_lock);
 }
 
-HL_API void *hl_gc_threads_info() {
+HL_API hl_threads_info *hl_gc_threads_info() {
 	return &gc_threads;
 }
 
@@ -468,6 +479,8 @@ void *hl_gc_alloc_gen( hl_type *t, int size, int flags ) {
 	int allocated = 0;
 	if( size == 0 )
 		return NULL;
+	if( size < 0 )
+		hl_error("Invalid allocation size");
 	gc_global_lock(true);
 	gc_check_mark();
 #	ifdef GC_MEMCHK
@@ -734,6 +747,13 @@ HL_API bool hl_is_gc_ptr( void *ptr ) {
 	return true;
 }
 
+HL_API int hl_gc_get_memsize( void *ptr ) {
+	gc_pheader *page = GC_GET_PAGE(ptr);
+	if( !page || !INPAGE(ptr,page) ) return -1;
+	return gc_allocator_fast_block_size(page,ptr);
+}
+
+
 static bool gc_is_active = true;
 
 static void gc_check_mark() {
@@ -757,8 +777,16 @@ static void hl_gc_init() {
 	gc_stats.mark_bytes = 4; // prevent reading out of bmp
 	memset(&gc_threads,0,sizeof(gc_threads));
 	gc_threads.global_lock = hl_mutex_alloc(false);
+	gc_threads.exclusive_lock = hl_mutex_alloc(false);
 #	ifdef HL_THREADS
 	hl_add_root(&gc_threads.global_lock);
+	hl_add_root(&gc_threads.exclusive_lock);
+#	endif
+}
+
+static void hl_gc_free() {
+#	ifdef HL_THREADS
+	hl_remove_root(&gc_threads.global_lock);
 #	endif
 }
 
@@ -806,6 +834,7 @@ void hl_global_init() {
 
 void hl_global_free() {
 	hl_cache_free();
+	hl_gc_free();
 }
 
 struct hl_alloc_block {
@@ -902,6 +931,14 @@ void *sys_alloc_align( int size, int align );
 void sys_free_align( void *ptr, int size );
 #elif !defined(HL_WIN)
 static void *base_addr = (void*)0x40000000;
+typedef struct _pextra pextra;
+struct _pextra {
+	void *page_ptr;
+	void *base_ptr;
+	pextra *next;
+};
+static pextra *extra_pages = NULL;
+#define EXTRA_SIZE (GC_PAGE_SIZE + (4<<10))
 #endif
 
 static void *gc_alloc_page_memory( int size ) {
@@ -927,6 +964,7 @@ static void *gc_alloc_page_memory( int size ) {
 #elif defined(HL_CONSOLE)
 	return sys_alloc_align(size, GC_PAGE_SIZE);
 #else
+	static int recursions = 0;
 	int i = 0;
 	while( gc_will_collide(base_addr,size) ) {
 		base_addr = (char*)base_addr + GC_PAGE_SIZE;
@@ -940,6 +978,17 @@ static void *gc_alloc_page_memory( int size ) {
 		return NULL;
 	if( ((int_val)ptr) & (GC_PAGE_SIZE-1) ) {
 		munmap(ptr,size);
+		if( recursions >= 5 ) {
+			ptr = mmap(base_addr,size+EXTRA_SIZE,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
+			int offset = (int)((int_val)ptr) & (GC_PAGE_SIZE-1);
+			void *aligned = (char*)ptr + (GC_PAGE_SIZE - offset);
+			pextra *inf = (pextra*)(offset > (EXTRA_SIZE>>1) ? ((char*)ptr + EXTRA_SIZE - sizeof(pextra)) : (char*)ptr);
+			inf->page_ptr = aligned;
+			inf->base_ptr = ptr;
+			inf->next = extra_pages;
+			extra_pages = inf;
+			return aligned;
+		}
 		void *tmp;
 		int tmp_size = (int)((int_val)ptr - (int_val)base_addr);
 		if( tmp_size > 0 ) {
@@ -950,7 +999,9 @@ static void *gc_alloc_page_memory( int size ) {
 			tmp = NULL;
 		}
 		if( tmp ) tmp = mmap(tmp,tmp_size,PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
+		recursions++;
 		ptr = gc_alloc_page_memory(size);
+		recursions--;
 		if( tmp ) munmap(tmp,tmp_size);
 		return ptr;
 	}
@@ -965,12 +1016,25 @@ static void gc_free_page_memory( void *ptr, int size ) {
 #elif defined(HL_CONSOLE)
 	sys_free_align(ptr,size);
 #else
+	pextra *e = extra_pages, *prev = NULL;
+	while( e ) {
+		if( e->page_ptr == ptr ) {
+			if( prev )
+				prev->next = e->next;
+			else
+				extra_pages = e->next;
+			munmap(e->base_ptr, size + EXTRA_SIZE);
+			return;
+		}
+		prev = e;
+		e = e->next;
+	}
 	munmap(ptr,size);
 #endif
 }
 
 vdynamic *hl_alloc_dynamic( hl_type *t ) {
-	vdynamic *d = (vdynamic*)hl_gc_alloc_gen(t, sizeof(vdynamic), (hl_is_ptr(t) ? MEM_KIND_DYNAMIC : MEM_KIND_NOPTR) | MEM_ZERO);
+	vdynamic *d = (vdynamic*)hl_gc_alloc_gen(t, sizeof(vdynamic), (hl_is_ptr(t) ? (t->kind == HSTRUCT ? MEM_KIND_RAW : MEM_KIND_DYNAMIC) : MEM_KIND_NOPTR) | MEM_ZERO);
 	d->t = t;
 	return d;
 }

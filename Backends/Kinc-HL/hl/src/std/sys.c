@@ -662,8 +662,17 @@ HL_PRIM void hl_setup_reload_check( void *freload, void *param ) {
 	reload_param = param;
 }
 
-HL_PRIM bool hl_sys_check_reload() {
+HL_PRIM bool hl_sys_check_reload( vbyte *debug_alt_file ) {
+	if( debug_alt_file && reload_param ) {
+		*((vbyte**)reload_param) = debug_alt_file;
+	}
 	return reload_fun && ((bool(*)(void*))reload_fun)(reload_param);
+}
+
+extern int hl_closure_stack_capture;
+
+HL_PRIM bool hl_sys_has_debugger() {
+	return hl_closure_stack_capture != 0;
 }
 
 #ifndef HL_MOBILE
@@ -705,6 +714,7 @@ DEFINE_PRIM(_BYTES, sys_exe_path, _NO_ARG);
 DEFINE_PRIM(_I32, sys_get_char, _BOOL);
 DEFINE_PRIM(_ARR, sys_args, _NO_ARG);
 DEFINE_PRIM(_I32, sys_getpid, _NO_ARG);
-DEFINE_PRIM(_BOOL, sys_check_reload, _NO_ARG);
+DEFINE_PRIM(_BOOL, sys_check_reload, _BYTES);
 DEFINE_PRIM(_VOID, sys_profile_event, _I32 _BYTES _I32);
 DEFINE_PRIM(_I32, sys_set_flags, _I32);
+DEFINE_PRIM(_BOOL, sys_has_debugger, _NO_ARG);
