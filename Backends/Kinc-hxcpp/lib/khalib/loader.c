@@ -136,7 +136,7 @@ static void run(void *param) {
 	}
 }
 
-void kha_loader_init() {
+void kha_loader_init(void) {
 	kinc_mutex_init(&loaded_mutex);
 	kinc_mutex_init(&loading_mutex);
 	kinc_event_init(&event, false);
@@ -192,7 +192,7 @@ kha_index_t kha_loader_load_sound(const char *filename) {
 	return file.index;
 }
 
-kha_file_reference_t kha_loader_get_file() {
+kha_file_reference_t kha_loader_get_file(void) {
 	kinc_mutex_lock(&loaded_mutex);
 	if (arrlen(loaded_files) > 0) {
 		kha_file_reference_t file = arrpop(loaded_files);

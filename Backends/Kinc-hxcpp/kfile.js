@@ -46,6 +46,8 @@ const pcreExcludes = [
 	'pcre2_jit_test.c',
 	'pcre2demo.c',
 	'pcre2grep.c',
+	'pcre2posix.h',
+	'pcre2posix.c',
 	'pcre2posix_test.c',
 	'pcre2test.c',
 	'sljit/**'
