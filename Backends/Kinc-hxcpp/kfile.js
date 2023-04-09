@@ -1,6 +1,6 @@
 let project = new Project('Kha');
 
-const pcreVersion = '8.42';
+const pcreVersion = '10.42';
 const tlsVersion = '2.9.0';
 const zlibVersion = '1.2.11';
 
@@ -10,7 +10,7 @@ if (platform === Platform.Windows || platform === Platform.WindowsApp) project.a
 if (platform === Platform.Linux) project.addFiles('khacpp/project/libs/linuxcompat/**.cpp');
 project.addFiles('khacpp/project/libs/regexp/**.h', 'khacpp/project/libs/regexp/**.cpp', 'khacpp/project/libs/std/**.h', 'khacpp/project/libs/std/**.cpp');
 
-project.addFiles('khacpp/project/thirdparty/pcre-' + pcreVersion + '/**.h', 'khacpp/project/thirdparty/pcre-' + pcreVersion + '/**.c');
+project.addFiles('khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/**.h', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/**.c');
 
 const zlibFiles = [
 	'**.h',
@@ -39,19 +39,20 @@ project.addFiles('lib/**');
 project.addIncludeDir('lib');
 
 const pcreExcludes = [
-	'dftables.c',
-	'pcredemo.c',
-	'pcregrep.c',
-	'pcretest.c',
-	'pcre_jit_test.c',
-	'pcre_printint.c',
-	'pcre16_printint.c',
-	'pcre32_printint.c',
+	'pcre2_dftables.c',
+	'pcre2_printint.c',
+	'pcre2_jit_match.c',
+	'pcre2_jit_misc.c',
+	'pcre2_jit_test.c',
+	'pcre2demo.c',
+	'pcre2grep.c',
+	'pcre2posix_test.c',
+	'pcre2test.c',
 	'sljit/**'
 ];
 
 for (const file of pcreExcludes) {
-	project.addExclude('khacpp/project/thirdparty/pcre-' + pcreVersion + '/' + file);
+	project.addExclude('khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/' + file);
 }
 project.addExcludes('khacpp/src/ExampleMain.cpp', 'khacpp/src/hx/Scriptable.cpp', 'khacpp/src/hx/NoFiles.cpp', 'khacpp/src/hx/cppia/**');
 project.addExcludes('khacpp/src/hx/Debugger.cpp', 'khacpp/src/hx/Profiler.cpp', 'khacpp/src/hx/Telemetry.cpp');
@@ -59,7 +60,7 @@ project.addExcludes('khacpp/src/hx/NekoAPI.cpp');
 project.addExcludes('khacpp/src/hx/libs/sqlite/**');
 project.addExcludes('khacpp/src/hx/libs/mysql/**');
 
-project.addIncludeDirs('khacpp/include', 'khacpp/project/thirdparty/pcre-' + pcreVersion, 'khacpp/project/thirdparty/zlib-' + zlibVersion, 'khacpp/project/libs/nekoapi', 'khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
+project.addIncludeDirs('khacpp/include', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src', 'khacpp/project/thirdparty/zlib-' + zlibVersion, 'khacpp/project/libs/nekoapi', 'khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
 
 //if (options.vrApi == "rift") {
 //	out += "project.addIncludeDirs('C:/khaviar/LibOVRKernel/Src/');\n";
@@ -108,7 +109,8 @@ if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 
 // project:addDefine('HXCPP_SCRIPTABLE');
 project.addDefine('STATIC_LINK');
-project.addDefine('PCRE_STATIC');
+project.addDefine('PCRE2_STATIC');
+project.addDefine('PCRE2_CODE_UNIT_WIDTH=8');
 project.addDefine('HXCPP_VISIT_ALLOCS');
 project.addDefine('KHA');
 project.addDefine('KORE');
