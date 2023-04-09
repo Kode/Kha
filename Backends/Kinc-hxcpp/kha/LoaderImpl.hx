@@ -41,16 +41,16 @@ class SoundCallback {
 }
 
 class LoaderImpl {
-	static var blobCallbacks = new Map<cpp.UInt64, BlobCallback>();
-	static var imageCallbacks = new Map<cpp.UInt64, ImageCallback>();
-	static var soundCallbacks = new Map<cpp.UInt64, SoundCallback>();
+	static var blobCallbacks = new Map<haxe.Int64, BlobCallback>();
+	static var imageCallbacks = new Map<haxe.Int64, ImageCallback>();
+	static var soundCallbacks = new Map<haxe.Int64, SoundCallback>();
 
 	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: AssetError->Void) {
 		soundCallbacks[loadSound(desc.files[0])] = new SoundCallback(done, failed);
 	}
 
 	@:functionCode("return kha_loader_load_sound(filename);")
-	static function loadSound(filename: String): cpp.UInt64 {
+	static function loadSound(filename: String): haxe.Int64 {
 		return 0;
 	}
 
@@ -65,7 +65,7 @@ class LoaderImpl {
 	}
 
 	@:functionCode("return kha_loader_load_image(filename, readable);")
-	static function loadImage(filename: String, readable: Bool): cpp.UInt64 {
+	static function loadImage(filename: String, readable: Bool): haxe.Int64 {
 		return 0;
 	}
 
@@ -78,7 +78,7 @@ class LoaderImpl {
 	}
 
 	@:functionCode("return kha_loader_load_blob(filename);")
-	static function loadBlob(filename: String): cpp.UInt64 {
+	static function loadBlob(filename: String): haxe.Int64 {
 		return 0;
 	}
 
@@ -110,15 +110,15 @@ class LoaderImpl {
 	@:functionCode("kinc_load_url(url);")
 	public static function loadURL(url: String): Void {}
 
-	@:keep static function blobLoaded(index: cpp.UInt64, bytes: BytesData) {
+	@:keep static function blobLoaded(index: haxe.Int64, bytes: BytesData) {
 		blobCallbacks[index].success(new Blob(Bytes.ofData(bytes)));
 	}
 
-	@:keep static function blobErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function blobErrored(index: haxe.Int64, filename: String) {
 		blobCallbacks[index].error({url: filename});
 	}
 
-	@:keep static function soundLoadedCompressed(index: cpp.UInt64, bytes: BytesData) {
+	@:keep static function soundLoadedCompressed(index: haxe.Int64, bytes: BytesData) {
 		var sound = new Sound();
 		sound.compressedData = Bytes.ofData(bytes);
 		sound.uncompressedData = null;
@@ -128,7 +128,7 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	@:keep static function soundLoadedUncompressed(index: cpp.UInt64, samples: Float32Array, channels: Int, sampleRate: Int, length: Float) {
+	@:keep static function soundLoadedUncompressed(index: haxe.Int64, samples: Float32Array, channels: Int, sampleRate: Int, length: Float) {
 		var sound = new Sound();
 		sound.compressedData = null;
 		sound.uncompressedData = samples;
@@ -138,7 +138,7 @@ class LoaderImpl {
 		soundCallbacks[index].success(sound);
 	}
 
-	@:keep static function soundErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function soundErrored(index: haxe.Int64, filename: String) {
 		soundCallbacks[index].error({url: filename});
 	}
 
@@ -150,11 +150,11 @@ class LoaderImpl {
 		return Image.createEmpty(readable, floatFormat);
 	}
 
-	@:keep static function imageLoaded(index: cpp.UInt64, image: Image) {
+	@:keep static function imageLoaded(index: haxe.Int64, image: Image) {
 		imageCallbacks[index].success(image);
 	}
 
-	@:keep static function imageErrored(index: cpp.UInt64, filename: String) {
+	@:keep static function imageErrored(index: haxe.Int64, filename: String) {
 		imageCallbacks[index].error({url: filename});
 	}
 

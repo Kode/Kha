@@ -11,7 +11,7 @@ extern "C" {
 
 #define KHA_MAX_PATH_LENGTH 256 - 1
 
-typedef uint64_t kha_index_t;
+typedef int64_t kha_index_t;
 
 typedef enum { KHA_FILE_TYPE_BLOB, KHA_FILE_TYPE_IMAGE, KHA_FILE_TYPE_SOUND } kha_file_type_t;
 
