@@ -83,7 +83,7 @@ class JWindow extends JFrame implements java.awt.event.KeyListener implements ja
 				// new Class[] { java.awt.BufferCapabilities.class, vstClass }
 				untyped var _class = untyped __java__("java.awt.BufferCapabilities.class");
 				var classes: NativeArray<Class<Dynamic>> = NativeArray.make(_class, vstClass);
-				var ebcConstructor = ebcClass.getConstructor(classes);
+				var ebcConstructor = ebcClass.getConstructor(classes[0]);
 				var vSyncType: Object = vstClass.getField("VSYNC_ON").get(null);
 				// (java.awt.BufferCapabilities)
 				// new Object[]
