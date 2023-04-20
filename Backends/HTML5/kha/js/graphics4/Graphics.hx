@@ -593,9 +593,8 @@ class Graphics implements kha.graphics4.Graphics {
 		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 
-	var matrixCache = new Float32Array(16);
-
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
+		static var matrixCache = new js.lib.Float32Array(16);
 		matrixCache[0] = matrix._00;
 		matrixCache[1] = matrix._01;
 		matrixCache[2] = matrix._02;
@@ -612,13 +611,11 @@ class Graphics implements kha.graphics4.Graphics {
 		matrixCache[13] = matrix._31;
 		matrixCache[14] = matrix._32;
 		matrixCache[15] = matrix._33;
-		var rawMatrixCache = new js.lib.Float32Array(matrixCache.buffer, matrixCache.byteOffset, matrixCache.length);
-		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, rawMatrixCache);
+		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrixCache);
 	}
 
-	var matrix3Cache = new Float32Array(9);
-
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
+		static var matrix3Cache = new js.lib.Float32Array(9);
 		matrix3Cache[0] = matrix._00;
 		matrix3Cache[1] = matrix._01;
 		matrix3Cache[2] = matrix._02;
@@ -628,8 +625,7 @@ class Graphics implements kha.graphics4.Graphics {
 		matrix3Cache[6] = matrix._20;
 		matrix3Cache[7] = matrix._21;
 		matrix3Cache[8] = matrix._22;
-		var rawMatrix3Cache = new js.lib.Float32Array(matrix3Cache.buffer, matrix3Cache.byteOffset, matrix3Cache.length);
-		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, rawMatrix3Cache);
+		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, matrix3Cache);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
