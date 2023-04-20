@@ -316,7 +316,7 @@ class Graphics implements kha.graphics4.Graphics {
 		for (i in 0...useVertexAttributes) {
 			SystemImpl.gl.disableVertexAttribArray(i);
 		}
-		useVertexAttributes = cast(vertexBuffer, VertexBuffer).set(0);
+		useVertexAttributes = vertexBuffer.set(0);
 	}
 
 	public function setVertexBuffers(vertexBuffers: Array<kha.graphics4.VertexBuffer>): Void {
@@ -325,7 +325,7 @@ class Graphics implements kha.graphics4.Graphics {
 		}
 		var offset: Int = 0;
 		for (vertexBuffer in vertexBuffers) {
-			offset += cast(vertexBuffer, VertexBuffer).set(offset);
+			offset += vertexBuffer.set(offset);
 		}
 		useVertexAttributes = offset;
 	}
@@ -336,7 +336,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setIndexBuffer(indexBuffer: kha.graphics4.IndexBuffer): Void {
 		indicesCount = indexBuffer.count();
-		cast(indexBuffer, IndexBuffer).set();
+		indexBuffer.set();
 	}
 
 	// public function maxTextureSize(): Int {
@@ -348,16 +348,16 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTexture(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
 		if (texture == null) {
-			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(stage, TextureUnit).value);
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + (cast stage : TextureUnit).value);
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 		}
 		else {
-			cast(texture, WebGLImage).set(cast(stage, TextureUnit).value);
+			cast(texture, WebGLImage).set((cast stage : TextureUnit).value);
 		}
 	}
 
 	public function setTextureDepth(stage: kha.graphics4.TextureUnit, texture: kha.Image): Void {
-		cast(texture, WebGLImage).setDepth(cast(stage, TextureUnit).value);
+		cast(texture, WebGLImage).setDepth((cast stage : TextureUnit).value);
 	}
 
 	public function setTextureArray(unit: kha.graphics4.TextureUnit, texture: kha.Image): Void {
@@ -366,11 +366,11 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setVideoTexture(unit: kha.graphics4.TextureUnit, texture: kha.Video): Void {
 		if (texture == null) {
-			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(unit, TextureUnit).value);
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + (cast unit : TextureUnit).value);
 			SystemImpl.gl.bindTexture(GL.TEXTURE_2D, null);
 		}
 		else {
-			cast(cast(texture, kha.js.Video).texture, WebGLImage).set(cast(unit, TextureUnit).value);
+			cast((cast texture : kha.js.Video).texture, WebGLImage).set((cast unit : TextureUnit).value);
 		}
 	}
 
@@ -378,7 +378,7 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setTextureParameters(texunit: kha.graphics4.TextureUnit, uAddressing: TextureAddressing, vAddressing: TextureAddressing,
 			minificationFilter: TextureFilter, magnificationFilter: TextureFilter, mipmapFilter: MipMapFilter): Void {
-		SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(texunit, TextureUnit).value);
+		SystemImpl.gl.activeTexture(GL.TEXTURE0 + (cast texunit : TextureUnit).value);
 
 		switch (uAddressing) {
 			case Clamp:
@@ -455,16 +455,16 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function setCubeMap(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
 		if (cubeMap == null) {
-			SystemImpl.gl.activeTexture(GL.TEXTURE0 + cast(stage, TextureUnit).value);
+			SystemImpl.gl.activeTexture(GL.TEXTURE0 + (cast stage : TextureUnit).value);
 			SystemImpl.gl.bindTexture(GL.TEXTURE_CUBE_MAP, null);
 		}
 		else {
-			cubeMap.set(cast(stage, TextureUnit).value);
+			cubeMap.set((cast stage : TextureUnit).value);
 		}
 	}
 
 	public function setCubeMapDepth(stage: kha.graphics4.TextureUnit, cubeMap: kha.graphics4.CubeMap): Void {
-		cubeMap.setDepth(cast(stage, TextureUnit).value);
+		cubeMap.setDepth((cast stage : TextureUnit).value);
 	}
 
 	public function maxBoundTextures(): Int {
@@ -514,27 +514,27 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setBool(location: kha.graphics4.ConstantLocation, value: Bool): Void {
-		SystemImpl.gl.uniform1i(cast(location, ConstantLocation).value, value ? 1 : 0);
+		SystemImpl.gl.uniform1i((cast location : ConstantLocation).value, value ? 1 : 0);
 	}
 
 	public function setInt(location: kha.graphics4.ConstantLocation, value: Int): Void {
-		SystemImpl.gl.uniform1i(cast(location, ConstantLocation).value, value);
+		SystemImpl.gl.uniform1i((cast location : ConstantLocation).value, value);
 	}
 
 	public function setInt2(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int): Void {
-		SystemImpl.gl.uniform2i(cast(location, ConstantLocation).value, value1, value2);
+		SystemImpl.gl.uniform2i((cast location : ConstantLocation).value, value1, value2);
 	}
 
 	public function setInt3(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int): Void {
-		SystemImpl.gl.uniform3i(cast(location, ConstantLocation).value, value1, value2, value3);
+		SystemImpl.gl.uniform3i((cast location : ConstantLocation).value, value1, value2, value3);
 	}
 
 	public function setInt4(location: kha.graphics4.ConstantLocation, value1: Int, value2: Int, value3: Int, value4: Int): Void {
-		SystemImpl.gl.uniform4i(cast(location, ConstantLocation).value, value1, value2, value3, value4);
+		SystemImpl.gl.uniform4i((cast location : ConstantLocation).value, value1, value2, value3, value4);
 	}
 
 	public function setInts(location: kha.graphics4.ConstantLocation, values: Int32Array): Void {
-		var webglLocation = cast(location, ConstantLocation);
+		var webglLocation = (cast location : ConstantLocation);
 		var rawValues = new js.lib.Int32Array(values.buffer, values.byteOffset, values.length);
 		switch (webglLocation.type) {
 			case GL.INT_VEC2:
@@ -549,23 +549,23 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setFloat(location: kha.graphics4.ConstantLocation, value: FastFloat): Void {
-		SystemImpl.gl.uniform1f(cast(location, ConstantLocation).value, value);
+		SystemImpl.gl.uniform1f((cast location : ConstantLocation).value, value);
 	}
 
 	public function setFloat2(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat): Void {
-		SystemImpl.gl.uniform2f(cast(location, ConstantLocation).value, value1, value2);
+		SystemImpl.gl.uniform2f((cast location : ConstantLocation).value, value1, value2);
 	}
 
 	public function setFloat3(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat): Void {
-		SystemImpl.gl.uniform3f(cast(location, ConstantLocation).value, value1, value2, value3);
+		SystemImpl.gl.uniform3f((cast location : ConstantLocation).value, value1, value2, value3);
 	}
 
 	public function setFloat4(location: kha.graphics4.ConstantLocation, value1: FastFloat, value2: FastFloat, value3: FastFloat, value4: FastFloat): Void {
-		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value1, value2, value3, value4);
+		SystemImpl.gl.uniform4f((cast location : ConstantLocation).value, value1, value2, value3, value4);
 	}
 
 	public function setFloats(location: kha.graphics4.ConstantLocation, values: Float32Array): Void {
-		var webglLocation = cast(location, ConstantLocation);
+		var webglLocation = (cast location : ConstantLocation);
 		var rawValues = new js.lib.Float32Array(values.buffer, values.byteOffset, values.length);
 		switch (webglLocation.type) {
 			case GL.FLOAT_VEC2:
@@ -582,15 +582,15 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function setVector2(location: kha.graphics4.ConstantLocation, value: FastVector2): Void {
-		SystemImpl.gl.uniform2f(cast(location, ConstantLocation).value, value.x, value.y);
+		SystemImpl.gl.uniform2f((cast location : ConstantLocation).value, value.x, value.y);
 	}
 
 	public function setVector3(location: kha.graphics4.ConstantLocation, value: FastVector3): Void {
-		SystemImpl.gl.uniform3f(cast(location, ConstantLocation).value, value.x, value.y, value.z);
+		SystemImpl.gl.uniform3f((cast location : ConstantLocation).value, value.x, value.y, value.z);
 	}
 
 	public function setVector4(location: kha.graphics4.ConstantLocation, value: FastVector4): Void {
-		SystemImpl.gl.uniform4f(cast(location, ConstantLocation).value, value.x, value.y, value.z, value.w);
+		SystemImpl.gl.uniform4f((cast location : ConstantLocation).value, value.x, value.y, value.z, value.w);
 	}
 
 	public inline function setMatrix(location: kha.graphics4.ConstantLocation, matrix: FastMatrix4): Void {
@@ -611,7 +611,7 @@ class Graphics implements kha.graphics4.Graphics {
 		matrixCache[13] = matrix._31;
 		matrixCache[14] = matrix._32;
 		matrixCache[15] = matrix._33;
-		SystemImpl.gl.uniformMatrix4fv(cast(location, ConstantLocation).value, false, matrixCache);
+		SystemImpl.gl.uniformMatrix4fv((cast location : ConstantLocation).value, false, matrixCache);
 	}
 
 	public inline function setMatrix3(location: kha.graphics4.ConstantLocation, matrix: FastMatrix3): Void {
@@ -625,7 +625,7 @@ class Graphics implements kha.graphics4.Graphics {
 		matrix3Cache[6] = matrix._20;
 		matrix3Cache[7] = matrix._21;
 		matrix3Cache[8] = matrix._22;
-		SystemImpl.gl.uniformMatrix3fv(cast(location, ConstantLocation).value, false, matrix3Cache);
+		SystemImpl.gl.uniformMatrix3fv((cast location : ConstantLocation).value, false, matrix3Cache);
 	}
 
 	public function drawIndexedVertices(start: Int = 0, count: Int = -1): Void {
