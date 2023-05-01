@@ -5,7 +5,6 @@ import kha.input.Mouse;
 import kha.wpf.Graphics;
 import system.diagnostics.Stopwatch;
 import kha.input.Keyboard;
-import kha.Key;
 import system.windows.controls.Canvas;
 import system.windows.FrameworkElement;
 
@@ -269,7 +268,7 @@ class SystemImpl {
 	static var title: String;
 	public static var frameworkElement: StoryPublishCanvas;
 
-	public static function init(options: SystemOptions, callback: Void->Void) {
+	public static function init(options: SystemOptions, callback: Window->Void) {
 		title = options.title;
 		keyboard = new Keyboard();
 		mouse = new kha.input.Mouse();
@@ -289,7 +288,7 @@ class SystemImpl {
 		Scheduler.start();
 		// if (autostartGame) gameToStart.loadFinished();
 
-		callback();
+		callback(null);
 
 		if (openWindow) {
 			startWindow();
@@ -299,7 +298,7 @@ class SystemImpl {
 		}
 	}
 
-	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Void->Void) {
+	public static function initEx(title: String, options: Array<WindowOptions>, windowCallback: Int->Void, callback: Window->Void) {
 		trace('initEx is not supported on the WPF target, running init() with first window options');
 
 		init({title: title, width: options[0].width, height: options[0].height}, callback);
@@ -434,8 +433,10 @@ class SystemImpl {
 		return lang.substr(0, 2).toLowerCase();
 	}
 
-	@:functionCode('global::System.Windows.Application.Current.Shutdown();')
-	public static function requestShutdown(): Void {}
+	@:functionCode('global::System.Windows.Application.Current.Shutdown(); return true;')
+	public static function requestShutdown(): Bool {
+		return true;
+	}
 
 	public static function canSwitchFullscreen(): Bool {
 		return false;
@@ -484,4 +485,14 @@ class SystemImpl {
 	public static function disallowUserChange(): Void {}
 
 	public static function allowUserChange(): Void {}
+
+	public static function automaticSafeZone(): Bool {
+		return true;
+	}
+
+	public static function setSafeZone(value: Float): Void {}
+
+	public static function unlockAchievement(id: Int): Void {}
+
+	public static function login(): Void {}
 }

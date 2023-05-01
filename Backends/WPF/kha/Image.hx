@@ -3,7 +3,6 @@ package kha;
 import haxe.io.Bytes;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
-import kha.graphics4.hxsl.Globals;
 import kha.wpf.Painter;
 import system.windows.media.DrawingVisual;
 import system.windows.media.ImageBrush;
