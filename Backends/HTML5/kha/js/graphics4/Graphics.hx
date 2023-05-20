@@ -45,6 +45,7 @@ class Graphics implements kha.graphics4.Graphics {
 	var instancedExtension: Dynamic;
 	var blendMinMaxExtension: Dynamic;
 
+	static var current: Graphics = null;
 	static var useVertexAttributes: Int = 0;
 
 	public function new(renderTarget: Canvas = null) {
@@ -78,6 +79,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function begin(additionalRenderTargets: Array<Canvas> = null): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		SystemImpl.gl.enable(GL.BLEND);
 		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		if (renderTarget == null) {
@@ -104,6 +112,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function beginFace(face: Int): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		SystemImpl.gl.enable(GL.BLEND);
 		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, renderTargetFrameBuffer);
@@ -113,6 +128,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function beginEye(eye: Int): Void {
+		if (current == null) {
+			current = this;
+		}
+		else {
+			throw "End before you begin";
+		}
+
 		SystemImpl.gl.enable(GL.BLEND);
 		SystemImpl.gl.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		SystemImpl.gl.bindFramebuffer(GL.FRAMEBUFFER, null);
@@ -125,6 +147,13 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function end(): Void {
+		if (current == this) {
+			current = null;
+		}
+		else {
+			throw "Begin before you end";
+		}
+
 		if (renderTargetMSAA != null) {
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.READ_FRAMEBUFFER, renderTargetFrameBuffer);
 			untyped SystemImpl.gl.bindFramebuffer(SystemImpl.gl.DRAW_FRAMEBUFFER, renderTargetMSAA);
