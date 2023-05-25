@@ -40,19 +40,23 @@ enum abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	/**
-	 * Creates a new Color object from an HTML style #AARRGGBB string.
+	 * Creates a new Color object from an HTML style `#AARRGGBB` / `#RRGGBB` / `#RGB` strings.
 	 */
 	public static function fromString(value: String) {
-		if ((value.length == 7 || value.length == 9) && StringTools.fastCodeAt(value, 0) == "#".code) {
-			var colorValue = Std.parseInt("0x" + value.substr(1));
-			if (value.length == 7) {
-				colorValue += 0xFF000000;
-			}
-			return fromValue(colorValue | 0);
+		if (!(value.length == 4 || value.length == 7 || value.length == 9) || StringTools.fastCodeAt(value, 0) != "#".code) {
+			throw 'Invalid Color string: $value';
 		}
-		else {
-			throw "Invalid Color string: '" + value + "'";
+		if (value.length == 4) {
+			final r = value.charAt(1);
+			final g = value.charAt(2);
+			final b = value.charAt(3);
+			value = '#$r$r$g$g$b$b';
 		}
+		var colorValue = Std.parseInt("0x" + value.substr(1));
+		if (value.length == 7) {
+			colorValue += 0xFF000000;
+		}
+		return fromValue(colorValue | 0);
 	}
 
 	/**
