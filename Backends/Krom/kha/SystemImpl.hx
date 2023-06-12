@@ -230,6 +230,10 @@ class SystemImpl {
 	public static function getMouse(num: Int): Mouse {
 		return mouse;
 	}
+			
+	public static function getPosition(windowId: Int, x: Int, y: Int): Void {
+		Krom.getPosition(windowId, x, y);
+	}
 
 	public static function getPen(num: Int): Pen {
 		return pen;
