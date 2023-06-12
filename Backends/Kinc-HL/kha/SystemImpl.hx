@@ -146,6 +146,10 @@ class SystemImpl {
 	public static function canLockMouse(windowId: Int = 0): Bool {
 		return kinc_can_lock_mouse(windowId);
 	}
+	
+	public static function getPosition(windowId: Int = 0, x: Int, y: Int): Void {
+		return kinc_get_mouse_position(windowId, x, y);
+	}
 
 	public static function isMouseLocked(windowId: Int = 0): Bool {
 		return kinc_is_mouse_locked(windowId);
@@ -419,6 +423,8 @@ class SystemImpl {
 	@:hlNative("std", "kinc_mouse_lock") static function kinc_mouse_lock(windowId: Int): Void {}
 
 	@:hlNative("std", "kinc_mouse_unlock") static function kinc_mouse_unlock(windowId: Int): Void {}
+	
+	@:hlNative("std", "kinc_get_mouse_position") static function kinc_get_mouse_position(windowId: Int, x: Int, y: Int): Void {}
 
 	@:hlNative("std", "kinc_can_lock_mouse") static function kinc_can_lock_mouse(windowId: Int): Bool {
 		return false;
