@@ -58,6 +58,10 @@ namespace {
 	void mouseUp(int windowId, int button, int x, int y, void *data) {
 		SystemImpl_obj::mouseUp(windowId, button, x, y);
 	}
+	
+	void getPosition(int windowId, int *x, int *y) {
+		SystemImpl_obj::getPosition(windowId, x, y);
+	}
 
 	void mouseMove(int windowId, int x, int y, int movementX, int movementY, void *data) {
 		SystemImpl_obj::mouseMove(windowId, x, y, movementX, movementY);
