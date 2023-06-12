@@ -23,6 +23,10 @@ class MouseImpl extends kha.input.Mouse {
 	override public function isLocked(): Bool {
 		return SystemImpl.isMouseLocked();
 	}
+	
+	override public function getPosition(windowId: Int, x: Int, y: Int): Void {
+		SystemImpl.getPosition(windowId, x, y);
+	}
 
 	override public function notifyOnLockChange(func: Void->Void, error: Void->Void): Void {
 		SystemImpl.notifyOfMouseLockChange(func, error);
