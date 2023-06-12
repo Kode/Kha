@@ -220,7 +220,7 @@ class Mouse extends Controller {
 	public function lock(): Void {}
 	
 	/**
-	* Returns the mouse current coordinates
+	* Returns the mouse current coordinates.
 	*/
 	public function getPosition(x: Int, y: Int): Void {}
 	
