@@ -218,6 +218,12 @@ class Mouse extends Controller {
 	 * Locks the cursor position and hides it. For catching movements, use the `moveX`/`moveY` arguments of your `moveListener` handler.
 	 */
 	public function lock(): Void {}
+	
+	/**
+	* Returns the mouse current coordinates
+	*/
+	public function getPosition(x: Int, y: Int): Void {}
+	
 
 	/**
 	 * Unlock the cursor position and hides it. For catching movements, use the `moveX`/`moveY` arguments of your `moveListener` handler.
