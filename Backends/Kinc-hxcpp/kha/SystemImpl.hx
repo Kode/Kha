@@ -238,6 +238,10 @@ class SystemImpl {
 	public static function isMouseLocked(windowId: Int = 0): Bool {
 		return untyped __cpp__("kinc_mouse_is_locked()");
 	}
+	
+	public static function getPosition(windowId: Int = 0, x: Int, y: Int) : Void {
+		return untyped __cpp__("kinc_get_mouse_position(windowId, x, y)");
+	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void, windowId: Int = 0): Void {
 		if (canLockMouse(windowId) && func != null) {
