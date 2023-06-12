@@ -56,6 +56,10 @@ bool hl_kinc_can_lock_mouse(void) {
 	return kinc_mouse_can_lock();
 }
 
+void hl_kinc_mouse_get_position(int windowId, int *x, int *y) {
+	return kinc_mouse_get_position(windowId, x, y);
+}
+
 bool hl_kinc_is_mouse_locked(void) {
 	return kinc_mouse_is_locked();
 }
