@@ -277,7 +277,7 @@ class Image implements Canvas implements Resource {
 	public var stride(get, never): Int;
 
 	function get_stride(): Int {
-		return formatByteSize(myFormat) * width;
+		return kinc_g4_texture_stride(_texture);
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool {
