@@ -277,7 +277,7 @@ class Image implements Canvas implements Resource {
 	public var stride(get, never): Int;
 
 	function get_stride(): Int {
-		return kinc_g4_texture_stride(_texture);
+		return _texture != null ? kinc_texture_get_stride(_texture) : (formatByteSize(myFormat) * width);
 	}
 
 	public function isOpaque(x: Int, y: Int): Bool {
@@ -407,6 +407,10 @@ class Image implements Canvas implements Resource {
 	}
 
 	@:hlNative("std", "kinc_texture_get_real_height") static function kinc_texture_get_real_height(texture: Pointer): Int {
+		return 0;
+	}
+
+	@:hlNative("std", "kinc_texture_get_stride") static function kinc_texture_get_stride(texture: Pointer): Int {
 		return 0;
 	}
 

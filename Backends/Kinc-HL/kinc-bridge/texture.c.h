@@ -209,6 +209,11 @@ int hl_kinc_texture_get_real_height(vbyte *texture) {
 	return tex->tex_height;
 }
 
+int hl_kinc_texture_get_stride(vbyte *texture) {
+	kinc_g4_texture_t *tex = (kinc_g4_texture_t *)texture;
+	return kinc_g4_texture_stride(tex);
+}
+
 int hl_kinc_texture_at(vbyte *texture, int x, int y) {
 	tex_and_data_t *tex = (tex_and_data_t *)texture;
 	assert(tex->data != NULL);
