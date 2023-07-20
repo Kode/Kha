@@ -552,7 +552,7 @@ class Image implements Canvas implements Resource {
 
 	public var stride(get, never): Int;
 
-	@:functionCode("return kinc_g4_texture_stride(&texture);")
+	@:functionCode("if (imageType == KhaImageTypeTexture) return kinc_g4_texture_stride(&texture); else if (imageType == KhaImageTypeRenderTarget) return formatByteSize(myFormat) * renderTarget.width; else return 0;")
 	function get_stride(): Int {
 		return 0;
 	}
