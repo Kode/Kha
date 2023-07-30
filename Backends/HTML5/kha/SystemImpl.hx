@@ -1,22 +1,23 @@
 package kha;
 
-import js.Syntax;
-import js.html.webgl.GL;
-import js.html.WheelEvent;
 import js.Browser;
-import js.html.WebSocket;
+import js.Syntax;
 import js.html.CanvasElement;
+import js.html.ClipboardEvent;
+import js.html.DeviceMotionEvent;
+import js.html.DeviceOrientationEvent;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.html.Touch;
 import js.html.TouchEvent;
-import js.html.ClipboardEvent;
-import js.html.DeviceMotionEvent;
-import js.html.DeviceOrientationEvent;
+import js.html.WebSocket;
+import js.html.WheelEvent;
+import js.html.webgl.GL;
+import kha.System;
 import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
-import kha.input.Keyboard;
 import kha.input.KeyCode;
+import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.Surface;
@@ -24,7 +25,6 @@ import kha.js.AudioElementAudio;
 import kha.js.CanvasGraphics;
 import kha.js.MobileWebAudio;
 import kha.js.vr.VrInterface;
-import kha.System;
 
 using StringTools;
 

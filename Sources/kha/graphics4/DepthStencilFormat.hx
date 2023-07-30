@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-@:enum abstract DepthStencilFormat(Int) to Int {
+enum abstract DepthStencilFormat(Int) to Int {
 	var NoDepthAndStencil = 0;
 	var DepthOnly = 1;
 	var DepthAutoStencilAuto = 2;

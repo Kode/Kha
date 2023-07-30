@@ -28,54 +28,54 @@ class Matrix2 {
 		public static function index(x: Int, y: Int): Int {
 			return y * width + x;
 	}*/
-	@:extern public inline function setFrom(m: Matrix2): Void {
+	extern public inline function setFrom(m: Matrix2): Void {
 		this._00 = m._00;
 		this._10 = m._10;
 		this._01 = m._01;
 		this._11 = m._11;
 	}
 
-	@:extern public static inline function empty(): Matrix2 {
+	extern public static inline function empty(): Matrix2 {
 		return new Matrix2(0, 0, 0, 0);
 	}
 
-	@:extern public static inline function identity(): Matrix2 {
+	extern public static inline function identity(): Matrix2 {
 		return new Matrix2(1, 0, 0, 1);
 	}
 
-	@:extern public static inline function scale(x: Float, y: Float): Matrix2 {
+	extern public static inline function scale(x: Float, y: Float): Matrix2 {
 		return new Matrix2(x, 0, 0, y);
 	}
 
-	@:extern public static inline function rotation(alpha: Float): Matrix2 {
+	extern public static inline function rotation(alpha: Float): Matrix2 {
 		return new Matrix2(Math.cos(alpha), -Math.sin(alpha), Math.sin(alpha), Math.cos(alpha));
 	}
 
-	@:extern public inline function add(m: Matrix2): Matrix2 {
+	extern public inline function add(m: Matrix2): Matrix2 {
 		return new Matrix2(_00 + m._00, _10 + m._10, _01 + m._01, _11 + m._11);
 	}
 
-	@:extern public inline function sub(m: Matrix2): Matrix2 {
+	extern public inline function sub(m: Matrix2): Matrix2 {
 		return new Matrix2(_00 - m._00, _10 - m._10, _01 - m._01, _11 - m._11);
 	}
 
-	@:extern public inline function mult(value: Float): Matrix2 {
+	extern public inline function mult(value: Float): Matrix2 {
 		return new Matrix2(_00 * value, _10 * value, _01 * value, _11 * value);
 	}
 
-	@:extern public inline function transpose(): Matrix2 {
+	extern public inline function transpose(): Matrix2 {
 		return new Matrix2(_00, _01, _10, _11);
 	}
 
-	@:extern public inline function trace(): Float {
+	extern public inline function trace(): Float {
 		return _00 + _11;
 	}
 
-	@:extern public inline function multmat(m: Matrix2): Matrix2 {
+	extern public inline function multmat(m: Matrix2): Matrix2 {
 		return new Matrix2(_00 * m._00 + _10 * m._01, _00 * m._10 + _10 * m._11, _01 * m._00 + _11 * m._01, _01 * m._10 + _11 * m._11);
 	}
 
-	@:extern public inline function multvec(value: Vector2): Vector2 {
+	extern public inline function multvec(value: Vector2): Vector2 {
 		var x = _00 * value.x + _10 * value.y;
 		var y = _01 * value.x + _11 * value.y;
 		return new Vector2(x, y);

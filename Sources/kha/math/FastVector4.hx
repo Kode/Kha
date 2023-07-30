@@ -19,7 +19,7 @@ class FastVector4 {
 	public var w: FastFloat;
 	public var length(get, set): FastFloat;
 
-	@:extern public inline function setFrom(v: FastVector4): Void {
+	extern public inline function setFrom(v: FastVector4): Void {
 		this.x = v.x;
 		this.y = v.y;
 		this.z = v.z;
@@ -42,24 +42,24 @@ class FastVector4 {
 		return length;
 	}
 
-	@:extern public inline function add(vec: FastVector4): FastVector4 {
+	extern public inline function add(vec: FastVector4): FastVector4 {
 		return new FastVector4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
 
-	@:extern public inline function sub(vec: FastVector4): FastVector4 {
+	extern public inline function sub(vec: FastVector4): FastVector4 {
 		return new FastVector4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 
-	@:extern public inline function mult(value: FastFloat): FastVector4 {
+	extern public inline function mult(value: FastFloat): FastVector4 {
 		return new FastVector4(x * value, y * value, z * value, w * value);
 	}
 
 	@:deprecated("normalize() will be deprecated soon, use the immutable normalized() instead")
-	@:extern public inline function normalize(): Void {
+	extern public inline function normalize(): Void {
 		#if haxe4 inline #end set_length(1);
 	}
 
-	@:extern public inline function normalized(): FastVector4 {
+	extern public inline function normalized(): FastVector4 {
 		var v = new FastVector4(x, y, z, w);
 		#if haxe4 inline #end v.set_length(1);
 		return v;

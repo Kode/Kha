@@ -45,7 +45,7 @@ class FastMatrix4 {
 		return new FastMatrix4(m._00, m._10, m._20, m._30, m._01, m._11, m._21, m._31, m._02, m._12, m._22, m._32, m._03, m._13, m._23, m._33);
 	}
 
-	@:extern public inline function setFrom(m: FastMatrix4): Void {
+	extern public inline function setFrom(m: FastMatrix4): Void {
 		this._00 = m._00;
 		this._10 = m._10;
 		this._20 = m._20;
@@ -64,41 +64,41 @@ class FastMatrix4 {
 		this._33 = m._33;
 	}
 
-	@:extern public static inline function translation(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
+	extern public static inline function translation(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
 		return new FastMatrix4(1, 0, 0, x, 0, 1, 0, y, 0, 0, 1, z, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function empty(): FastMatrix4 {
+	extern public static inline function empty(): FastMatrix4 {
 		return new FastMatrix4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
-	@:extern public static inline function identity(): FastMatrix4 {
+	extern public static inline function identity(): FastMatrix4 {
 		return new FastMatrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function scale(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
+	extern public static inline function scale(x: FastFloat, y: FastFloat, z: FastFloat): FastMatrix4 {
 		return new FastMatrix4(x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotationX(alpha: FastFloat): FastMatrix4 {
+	extern public static inline function rotationX(alpha: FastFloat): FastMatrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new FastMatrix4(1, 0, 0, 0, 0, ca, -sa, 0, 0, sa, ca, 0, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotationY(alpha: FastFloat): FastMatrix4 {
+	extern public static inline function rotationY(alpha: FastFloat): FastMatrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new FastMatrix4(ca, 0, sa, 0, 0, 1, 0, 0, -sa, 0, ca, 0, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotationZ(alpha: FastFloat): FastMatrix4 {
+	extern public static inline function rotationZ(alpha: FastFloat): FastMatrix4 {
 		var ca = Math.cos(alpha);
 		var sa = Math.sin(alpha);
 		return new FastMatrix4(ca, -sa, 0, 0, sa, ca, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotation(yaw: FastFloat, pitch: FastFloat, roll: FastFloat): FastMatrix4 {
+	extern public static inline function rotation(yaw: FastFloat, pitch: FastFloat, roll: FastFloat): FastMatrix4 {
 		var sy = Math.sin(yaw);
 		var cy = Math.cos(yaw);
 		var sx = Math.sin(pitch);
@@ -138,7 +138,7 @@ class FastMatrix4 {
 			zaxis.dot(eye), 0, 0, 0, 1);
 	}
 
-	@:extern public inline function add(m: FastMatrix4): FastMatrix4 {
+	extern public inline function add(m: FastMatrix4): FastMatrix4 {
 		return new FastMatrix4(_00
 			+ m._00, _10
 			+ m._10, _20
@@ -159,7 +159,7 @@ class FastMatrix4 {
 			+ m._33);
 	}
 
-	@:extern public inline function sub(m: FastMatrix4): FastMatrix4 {
+	extern public inline function sub(m: FastMatrix4): FastMatrix4 {
 		return new FastMatrix4(_00
 			- m._00, _10
 			- m._10, _20
@@ -180,24 +180,24 @@ class FastMatrix4 {
 			- m._33);
 	}
 
-	@:extern public inline function mult(value: FastFloat): FastMatrix4 {
+	extern public inline function mult(value: FastFloat): FastMatrix4 {
 		return new FastMatrix4(_00 * value, _10 * value, _20 * value, _30 * value, _01 * value, _11 * value, _21 * value, _31 * value, _02 * value,
 			_12 * value, _22 * value, _32 * value, _03 * value, _13 * value, _23 * value, _33 * value);
 	}
 
-	@:extern public inline function transpose(): FastMatrix4 {
+	extern public inline function transpose(): FastMatrix4 {
 		return new FastMatrix4(_00, _01, _02, _03, _10, _11, _12, _13, _20, _21, _22, _23, _30, _31, _32, _33);
 	}
 
-	@:extern public inline function transpose3x3(): FastMatrix4 {
+	extern public inline function transpose3x3(): FastMatrix4 {
 		return new FastMatrix4(_00, _01, _02, _30, _10, _11, _12, _31, _20, _21, _22, _32, _03, _13, _23, _33);
 	}
 
-	@:extern public inline function trace(): FastFloat {
+	extern public inline function trace(): FastFloat {
 		return _00 + _11 + _22 + _33;
 	}
 
-	@:extern public inline function multmat(m: FastMatrix4): FastMatrix4 {
+	extern public inline function multmat(m: FastMatrix4): FastMatrix4 {
 		return new FastMatrix4(_00 * m._00
 			+ _10 * m._01
 			+ _20 * m._02
@@ -256,7 +256,7 @@ class FastMatrix4 {
 			+ _33 * m._33);
 	}
 
-	@:extern public inline function multvec(value: FastVector4): FastVector4 {
+	extern public inline function multvec(value: FastVector4): FastVector4 {
 		var product = new FastVector4();
 		product.x = _00 * value.x + _10 * value.y + _20 * value.z + _30 * value.w;
 		product.y = _01 * value.x + _11 * value.y + _21 * value.z + _31 * value.w;
@@ -265,12 +265,12 @@ class FastMatrix4 {
 		return product;
 	}
 
-	@:extern public inline function cofactor(m0: FastFloat, m1: FastFloat, m2: FastFloat, m3: FastFloat, m4: FastFloat, m5: FastFloat, m6: FastFloat,
+	extern public inline function cofactor(m0: FastFloat, m1: FastFloat, m2: FastFloat, m3: FastFloat, m4: FastFloat, m5: FastFloat, m6: FastFloat,
 			m7: FastFloat, m8: FastFloat): FastFloat {
 		return m0 * (m4 * m8 - m5 * m7) - m1 * (m3 * m8 - m5 * m6) + m2 * (m3 * m7 - m4 * m6);
 	}
 
-	@:extern public inline function determinant(): FastFloat {
+	extern public inline function determinant(): FastFloat {
 		var c00 = cofactor(_11, _21, _31, _12, _22, _32, _13, _23, _33);
 		var c01 = cofactor(_10, _20, _30, _12, _22, _32, _13, _23, _33);
 		var c02 = cofactor(_10, _20, _30, _11, _21, _31, _13, _23, _33);
@@ -278,7 +278,7 @@ class FastMatrix4 {
 		return _00 * c00 - _01 * c01 + _02 * c02 - _03 * c03;
 	}
 
-	@:extern public inline function inverse(): FastMatrix4 {
+	extern public inline function inverse(): FastMatrix4 {
 		var c00 = cofactor(_11, _21, _31, _12, _22, _32, _13, _23, _33);
 		var c01 = cofactor(_10, _20, _30, _12, _22, _32, _13, _23, _33);
 		var c02 = cofactor(_10, _20, _30, _11, _21, _31, _13, _23, _33);

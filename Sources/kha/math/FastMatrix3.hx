@@ -55,7 +55,7 @@ class FastMatrix3 {
 		public static function index(x: Int, y: Int): Int {
 			return y * width + x;
 	}*/
-	@:extern public inline function setFrom(m: FastMatrix3): Void {
+	extern public inline function setFrom(m: FastMatrix3): Void {
 		this._00 = m._00;
 		this._10 = m._10;
 		this._20 = m._20;
@@ -67,47 +67,47 @@ class FastMatrix3 {
 		this._22 = m._22;
 	}
 
-	@:extern public static inline function translation(x: FastFloat, y: FastFloat): FastMatrix3 {
+	extern public static inline function translation(x: FastFloat, y: FastFloat): FastMatrix3 {
 		return new FastMatrix3(1, 0, x, 0, 1, y, 0, 0, 1);
 	}
 
-	@:extern public static inline function empty(): FastMatrix3 {
+	extern public static inline function empty(): FastMatrix3 {
 		return new FastMatrix3(0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
-	@:extern public static inline function identity(): FastMatrix3 {
+	extern public static inline function identity(): FastMatrix3 {
 		return new FastMatrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function scale(x: FastFloat, y: FastFloat): FastMatrix3 {
+	extern public static inline function scale(x: FastFloat, y: FastFloat): FastMatrix3 {
 		return new FastMatrix3(x, 0, 0, 0, y, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotation(alpha: FastFloat): FastMatrix3 {
+	extern public static inline function rotation(alpha: FastFloat): FastMatrix3 {
 		return new FastMatrix3(Math.cos(alpha), -Math.sin(alpha), 0, Math.sin(alpha), Math.cos(alpha), 0, 0, 0, 1);
 	}
 
-	@:extern public inline function add(m: FastMatrix3): FastMatrix3 {
+	extern public inline function add(m: FastMatrix3): FastMatrix3 {
 		return new FastMatrix3(_00 + m._00, _10 + m._10, _20 + m._20, _01 + m._01, _11 + m._11, _21 + m._21, _02 + m._02, _12 + m._12, _22 + m._22);
 	}
 
-	@:extern public inline function sub(m: FastMatrix3): FastMatrix3 {
+	extern public inline function sub(m: FastMatrix3): FastMatrix3 {
 		return new FastMatrix3(_00 - m._00, _10 - m._10, _20 - m._20, _01 - m._01, _11 - m._11, _21 - m._21, _02 - m._02, _12 - m._12, _22 - m._22);
 	}
 
-	@:extern public inline function mult(value: FastFloat): FastMatrix3 {
+	extern public inline function mult(value: FastFloat): FastMatrix3 {
 		return new FastMatrix3(_00 * value, _10 * value, _20 * value, _01 * value, _11 * value, _21 * value, _02 * value, _12 * value, _22 * value);
 	}
 
-	@:extern public inline function transpose(): FastMatrix3 {
+	extern public inline function transpose(): FastMatrix3 {
 		return new FastMatrix3(_00, _01, _02, _10, _11, _12, _20, _21, _22);
 	}
 
-	@:extern public inline function trace(): FastFloat {
+	extern public inline function trace(): FastFloat {
 		return _00 + _11 + _22;
 	}
 
-	@:extern public inline function multmat(m: FastMatrix3): FastMatrix3 {
+	extern public inline function multmat(m: FastMatrix3): FastMatrix3 {
 		return new FastMatrix3(_00 * m._00
 			+ _10 * m._01
 			+ _20 * m._02, _00 * m._10
@@ -131,7 +131,7 @@ class FastMatrix3 {
 			+ _22 * m._22);
 	}
 
-	@:extern public inline function multvec(value: FastVector2): FastVector2 {
+	extern public inline function multvec(value: FastVector2): FastVector2 {
 		// var product = new Vector2(0, 0);
 		var w = _02 * value.x + _12 * value.y + _22 * 1;
 		var x = (_00 * value.x + _10 * value.y + _20 * 1) / w;
@@ -140,18 +140,18 @@ class FastMatrix3 {
 		return new FastVector2(x, y);
 	}
 
-	@:extern public inline function cofactor(m0: FastFloat, m1: FastFloat, m2: FastFloat, m3: FastFloat): Float {
+	extern public inline function cofactor(m0: FastFloat, m1: FastFloat, m2: FastFloat, m3: FastFloat): Float {
 		return m0 * m3 - m1 * m2;
 	}
 
-	@:extern public inline function determinant(): FastFloat {
+	extern public inline function determinant(): FastFloat {
 		var c00 = cofactor(_11, _21, _12, _22);
 		var c01 = cofactor(_10, _20, _12, _22);
 		var c02 = cofactor(_10, _20, _11, _21);
 		return _00 * c00 - _01 * c01 + _02 * c02;
 	}
 
-	@:extern public inline function inverse(): FastMatrix3 {
+	extern public inline function inverse(): FastMatrix3 {
 		var c00 = cofactor(_11, _21, _12, _22);
 		var c01 = cofactor(_10, _20, _12, _22);
 		var c02 = cofactor(_10, _20, _11, _21);

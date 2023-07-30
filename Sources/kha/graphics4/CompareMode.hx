@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-@:enum abstract CompareMode(Int) to Int {
+enum abstract CompareMode(Int) to Int {
 	var Always = 0;
 	var Never = 1;
 	var Equal = 2;
