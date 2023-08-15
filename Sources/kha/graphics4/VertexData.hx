@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-@:enum abstract VertexData(Int) {
+enum abstract VertexData(Int) {
 	var Float32_1X = 0;
 	var Float32_2X = 1;
 	var Float32_3X = 2;

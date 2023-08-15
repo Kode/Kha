@@ -15,7 +15,7 @@ class Vector4 {
 	public var w: Float;
 	public var length(get, set): Float;
 
-	@:extern public inline function setFrom(v: Vector4): Void {
+	extern public inline function setFrom(v: Vector4): Void {
 		this.x = v.x;
 		this.y = v.y;
 		this.z = v.z;
@@ -38,30 +38,30 @@ class Vector4 {
 		return length;
 	}
 
-	@:extern public inline function add(vec: Vector4): Vector4 {
+	extern public inline function add(vec: Vector4): Vector4 {
 		return new Vector4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
 	}
 
-	@:extern public inline function sub(vec: Vector4): Vector4 {
+	extern public inline function sub(vec: Vector4): Vector4 {
 		return new Vector4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 
-	@:extern public inline function mult(value: Float): Vector4 {
+	extern public inline function mult(value: Float): Vector4 {
 		return new Vector4(x * value, y * value, z * value, w * value);
 	}
 
 	@:deprecated("Use the immutable normalized() instead")
-	@:extern public inline function normalize(): Void {
+	extern public inline function normalize(): Void {
 		#if haxe4 inline #end set_length(1);
 	}
 
-	@:extern public inline function normalized(): Vector4 {
+	extern public inline function normalized(): Vector4 {
 		var v = new Vector4(x, y, z, w);
 		#if haxe4 inline #end v.set_length(1);
 		return v;
 	}
 
-	@:extern public inline function fast(): FastVector4 {
+	extern public inline function fast(): FastVector4 {
 		return new FastVector4(x, y, z, w);
 	}
 }

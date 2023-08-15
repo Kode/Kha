@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-@:enum abstract TextureFormat(Int) to Int {
+enum abstract TextureFormat(Int) to Int {
 	var RGBA32 = 0;
 	var L8 = 1;
 	var RGBA128 = 2; // Floats

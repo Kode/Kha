@@ -1,6 +1,6 @@
 package kha.graphics4;
 
-@:enum abstract BlendingFactor(Int) to Int {
+enum abstract BlendingFactor(Int) to Int {
 	var Undefined = 0;
 	var BlendOne = 1;
 	var BlendZero = 2;

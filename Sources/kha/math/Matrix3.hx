@@ -54,7 +54,7 @@ class Matrix3 {
 		public static function index(x: Int, y: Int): Int {
 			return y * width + x;
 	}*/
-	@:extern public inline function setFrom(m: Matrix3): Void {
+	extern public inline function setFrom(m: Matrix3): Void {
 		this._00 = m._00;
 		this._10 = m._10;
 		this._20 = m._20;
@@ -66,47 +66,47 @@ class Matrix3 {
 		this._22 = m._22;
 	}
 
-	@:extern public static inline function translation(x: Float, y: Float): Matrix3 {
+	extern public static inline function translation(x: Float, y: Float): Matrix3 {
 		return new Matrix3(1, 0, x, 0, 1, y, 0, 0, 1);
 	}
 
-	@:extern public static inline function empty(): Matrix3 {
+	extern public static inline function empty(): Matrix3 {
 		return new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
-	@:extern public static inline function identity(): Matrix3 {
+	extern public static inline function identity(): Matrix3 {
 		return new Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function scale(x: Float, y: Float): Matrix3 {
+	extern public static inline function scale(x: Float, y: Float): Matrix3 {
 		return new Matrix3(x, 0, 0, 0, y, 0, 0, 0, 1);
 	}
 
-	@:extern public static inline function rotation(alpha: Float): Matrix3 {
+	extern public static inline function rotation(alpha: Float): Matrix3 {
 		return new Matrix3(Math.cos(alpha), -Math.sin(alpha), 0, Math.sin(alpha), Math.cos(alpha), 0, 0, 0, 1);
 	}
 
-	@:extern public inline function add(m: Matrix3): Matrix3 {
+	extern public inline function add(m: Matrix3): Matrix3 {
 		return new Matrix3(_00 + m._00, _10 + m._10, _20 + m._20, _01 + m._01, _11 + m._11, _21 + m._21, _02 + m._02, _12 + m._12, _22 + m._22);
 	}
 
-	@:extern public inline function sub(m: Matrix3): Matrix3 {
+	extern public inline function sub(m: Matrix3): Matrix3 {
 		return new Matrix3(_00 - m._00, _10 - m._10, _20 - m._20, _01 - m._01, _11 - m._11, _21 - m._21, _02 - m._02, _12 - m._12, _22 - m._22);
 	}
 
-	@:extern public inline function mult(value: Float): Matrix3 {
+	extern public inline function mult(value: Float): Matrix3 {
 		return new Matrix3(_00 * value, _10 * value, _20 * value, _01 * value, _11 * value, _21 * value, _02 * value, _12 * value, _22 * value);
 	}
 
-	@:extern public inline function transpose(): Matrix3 {
+	extern public inline function transpose(): Matrix3 {
 		return new Matrix3(_00, _01, _02, _10, _11, _12, _20, _21, _22);
 	}
 
-	@:extern public inline function trace(): Float {
+	extern public inline function trace(): Float {
 		return _00 + _11 + _22;
 	}
 
-	@:extern public inline function multmat(m: Matrix3): Matrix3 {
+	extern public inline function multmat(m: Matrix3): Matrix3 {
 		return new Matrix3(_00 * m._00
 			+ _10 * m._01
 			+ _20 * m._02, _00 * m._10
@@ -130,7 +130,7 @@ class Matrix3 {
 			+ _22 * m._22);
 	}
 
-	@:extern public inline function multvec(value: Vector2): Vector2 {
+	extern public inline function multvec(value: Vector2): Vector2 {
 		// var product = new Vector2(0, 0);
 		var w = _02 * value.x + _12 * value.y + _22 * 1;
 		var x = (_00 * value.x + _10 * value.y + _20 * 1) / w;
@@ -138,18 +138,18 @@ class Matrix3 {
 		return new Vector2(x, y);
 	}
 
-	@:extern public inline function cofactor(m0: Float, m1: Float, m2: Float, m3: Float): Float {
+	extern public inline function cofactor(m0: Float, m1: Float, m2: Float, m3: Float): Float {
 		return m0 * m3 - m1 * m2;
 	}
 
-	@:extern public inline function determinant(): Float {
+	extern public inline function determinant(): Float {
 		var c00 = cofactor(_11, _21, _12, _22);
 		var c01 = cofactor(_10, _20, _12, _22);
 		var c02 = cofactor(_10, _20, _11, _21);
 		return _00 * c00 - _01 * c01 + _02 * c02;
 	}
 
-	@:extern public inline function inverse(): Matrix3 {
+	extern public inline function inverse(): Matrix3 {
 		var c00 = cofactor(_11, _21, _12, _22);
 		var c01 = cofactor(_10, _20, _12, _22);
 		var c02 = cofactor(_10, _20, _11, _21);
