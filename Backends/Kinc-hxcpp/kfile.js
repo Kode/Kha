@@ -1,8 +1,8 @@
 let project = new Project('Kha');
 
 const pcreVersion = '10.42';
-const tlsVersion = '2.9.0';
-const zlibVersion = '1.2.11';
+const tlsVersion = '2.28.2';
+const zlibVersion = '1.2.13';
 
 project.addFiles('khacpp/src/**.h', 'khacpp/src/**.cpp', 'khacpp/include/**.h');
 project.addFiles('khacpp/project/libs/common/**.h', 'khacpp/project/libs/common/**.cpp');
@@ -63,6 +63,7 @@ project.addExcludes('khacpp/src/hx/libs/sqlite/**');
 project.addExcludes('khacpp/src/hx/libs/mysql/**');
 
 project.addIncludeDirs('khacpp/include', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src', 'khacpp/project/thirdparty/zlib-' + zlibVersion, 'khacpp/project/libs/nekoapi', 'khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
+project.addIncludeDir('khacpp/src/hx/libs/ssl');
 
 //if (options.vrApi == "rift") {
 //	out += "project.addIncludeDirs('C:/khaviar/LibOVRKernel/Src/');\n";
@@ -120,6 +121,7 @@ project.addDefine('ROTATE90');
 project.addDefine('HAVE_CONFIG_H');
 project.addDefine('SUPPORT_UTF');
 project.addDefine('SUPPORT_UCP');
+project.addDefine('MBEDTLS_USER_CONFIG_FILE="mbedtls_config.h"');
 
 //if (Options.vrApi === "gearvr") {
 //	out += "project.addDefine('VR_GEAR_VR');\n";
