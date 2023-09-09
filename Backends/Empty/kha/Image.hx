@@ -89,12 +89,18 @@ class Image implements Canvas implements Resource {
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void {}
 
+	/**
+	 * Returns the original width of the image.
+	 */
 	public var width(get, never): Int;
 
 	function get_width(): Int {
 		return 0;
 	}
 
+	/**
+	 * Returns the original height of the image.
+	 */
 	public var height(get, never): Int;
 
 	function get_height(): Int {
@@ -113,12 +119,28 @@ class Image implements Canvas implements Resource {
 		return TextureFormat.RGBA32;
 	}
 
+	/**
+	 * Very old GPUs only supported power of two texture-widths.
+	 * When an Image is created on such a GPU, Kha automatically increases
+	 * its size to a power of two and realWidth returns this new, internal
+	 * size. Knowing the real size is important for calculating
+	 * texture-coordinates correctly but all of this is irrelevant unless
+	 * you really want to support very very old GPUs.
+	 */
 	public var realWidth(get, never): Int;
 
 	function get_realWidth(): Int {
 		return 0;
 	}
 
+	/**
+	 * Very old GPUs only supported power of two texture-heights.
+	 * When an Image is created on such a GPU, Kha automatically increases
+	 * its size to a power of two and realHeight returns this new, internal
+	 * size. Knowing the real size is important for calculating
+	 * texture-coordinates correctly but all of this is irrelevant unless
+	 * you really want to support very very old GPUs.
+	 */
 	public var realHeight(get, never): Int;
 
 	function get_realHeight(): Int {

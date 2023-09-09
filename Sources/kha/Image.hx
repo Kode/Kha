@@ -23,7 +23,6 @@ extern class Image implements Canvas implements Resource {
 
 	public static function fromVideo(video: Video): Image;
 
-	// Create a new image instance and set things up so you can render to the image.
 	public static function createRenderTarget(width: Int, height: Int, format: TextureFormat = TextureFormat.RGBA32,
 		depthStencil: DepthStencilFormat = NoDepthAndStencil, antiAliasingSamples: Int = 1): Image;
 
@@ -35,7 +34,6 @@ extern class Image implements Canvas implements Resource {
 
 	public function unload(): Void;
 
-	// Allocate a bytes for the texture size.
 	public function lock(level: Int = 0): Bytes;
 
 	public function unlock(): Void;
@@ -44,10 +42,8 @@ extern class Image implements Canvas implements Resource {
 
 	public function generateMipmaps(levels: Int): Void;
 
-	// Set custom texture mipmaps, starting at level 1.
 	public function setMipmaps(mipmaps: Array<Image>): Void;
 
-	// Use depth buffer attached to different image.
 	public function setDepthStencilFrom(image: Image): Void;
 
 	public function clear(x: Int, y: Int, z: Int, width: Int, height: Int, depth: Int, color: Color): Void;
@@ -60,15 +56,11 @@ extern class Image implements Canvas implements Resource {
 
 	public var format(get, null): TextureFormat;
 
-	// The width of the image in pixels and been power of two.
 	public var realWidth(get, null): Int;
 
-	// The height of the image in pixels and been power of two.
 	public var realHeight(get, null): Int;
 
-	// Use this for 2D operations.
 	public var g2(get, null): kha.graphics2.Graphics;
 
-	// Use this for 3D operations.
 	public var g4(get, null): kha.graphics4.Graphics;
 }
