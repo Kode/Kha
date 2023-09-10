@@ -1,13 +1,14 @@
 package kha.graphics4;
 
-import kha.arrays.ByteArray;
-import kha.arrays.Float32Array;
 import kha.Canvas;
 import kha.Color;
 import kha.FastFloat;
 import kha.Font;
-import kha.graphics2.ImageScaleQuality;
 import kha.Image;
+import kha.Shaders;
+import kha.arrays.ByteArray;
+import kha.arrays.Float32Array;
+import kha.graphics2.ImageScaleQuality;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.CullMode;
@@ -27,18 +28,17 @@ import kha.math.FastVector2;
 import kha.math.Matrix3;
 import kha.math.Matrix4;
 import kha.math.Vector2;
-import kha.Shaders;
 import kha.simd.Float32x4;
 
 class InternalPipeline {
 	public var pipeline: PipelineState;
 	public var projectionLocation: ConstantLocation;
-	public var textureLocation: TextureUnit;
+	public var textureLocations: Array<TextureUnit>;
 
-	public function new(pipeline: PipelineState, projectionLocation: ConstantLocation, textureLocation: TextureUnit) {
+	public function new(pipeline: PipelineState, projectionLocation: ConstantLocation, textureLocations: Array<TextureUnit>) {
 		this.pipeline = pipeline;
 		this.projectionLocation = projectionLocation;
-		this.textureLocation = textureLocation;
+		this.textureLocations = textureLocations;
 	}
 }
 
@@ -58,17 +58,20 @@ class SimplePipelineCache implements PipelineCache {
 			trace(x);
 		}
 
-		var textureLocation: TextureUnit = null;
+		final textureLocations: Array<TextureUnit> = [];
 		if (texture) {
 			try {
-				textureLocation = pipeline.getTextureUnit("tex");
+				for (i in 0...8) {
+					final textureLocation = pipeline.getTextureUnit("tex" + i);
+					textureLocations.push(textureLocation);
+				}
 			}
 			catch (x:Dynamic) {
 				trace(x);
 			}
 		}
 
-		this.pipeline = new InternalPipeline(pipeline, projectionLocation, textureLocation);
+		this.pipeline = new InternalPipeline(pipeline, projectionLocation, textureLocations);
 	}
 
 	public function get(colorFormats: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat): InternalPipeline {
@@ -90,17 +93,20 @@ class PerFramebufferPipelineCache implements PipelineCache {
 			trace(x);
 		}
 
-		var textureLocation: TextureUnit = null;
+		final textureLocations: Array<TextureUnit> = [];
 		if (texture) {
 			try {
-				textureLocation = pipeline.getTextureUnit("tex");
+				for (i in 0...8) {
+					final textureLocation = pipeline.getTextureUnit("tex" + i);
+					textureLocations.push(textureLocation);
+				}
 			}
 			catch (x:Dynamic) {
 				trace(x);
 			}
 		}
 
-		pipelines.push(new InternalPipeline(pipeline, projectionLocation, textureLocation));
+		pipelines.push(new InternalPipeline(pipeline, projectionLocation, textureLocations));
 	}
 
 	public function get(colorFormats: Array<TextureFormat>, depthStencilFormat: DepthStencilFormat): InternalPipeline {
@@ -118,13 +124,18 @@ class ImageShaderPainter {
 	static var standardImagePipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1500;
-	static inline var vertexSize: Int = 6;
+	static inline var vertexSize: Int = 7;
 	static var bufferStart: Int;
 	static var bufferIndex: Int;
 	static var rectVertexBuffer: VertexBuffer;
 	static var rectVertices: ByteArray;
 	static var indexBuffer: IndexBuffer;
-	static var lastTexture: Image;
+	static var lastTexture: Image = null;
+	static var lastTextureIndex = 0;
+	static var lastTextures: Array<Image> = [
+		for (i in 0...7)
+			null
+	];
 
 	var bilinear: Bool = false;
 	var bilinearMipmaps: Bool = false;
@@ -186,60 +197,98 @@ class ImageShaderPainter {
 
 	inline function setRectVertices(bottomleftx: FastFloat, bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat, toprightx: FastFloat,
 			toprighty: FastFloat, bottomrightx: FastFloat, bottomrighty: FastFloat): Void {
-		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
-		rectVertices.setFloat32(baseIndex + 0 * 4, bottomleftx);
-		rectVertices.setFloat32(baseIndex + 1 * 4, bottomlefty);
-		rectVertices.setFloat32(baseIndex + 2 * 4, -5.0);
+		final baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
+		final vsize = vertexSize;
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 0) * 4, bottomleftx);
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 1) * 4, bottomlefty);
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 2) * 4, -5.0);
 
-		rectVertices.setFloat32(baseIndex + 6 * 4, topleftx);
-		rectVertices.setFloat32(baseIndex + 7 * 4, toplefty);
-		rectVertices.setFloat32(baseIndex + 8 * 4, -5.0);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 0) * 4, topleftx);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 1) * 4, toplefty);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 2) * 4, -5.0);
 
-		rectVertices.setFloat32(baseIndex + 12 * 4, toprightx);
-		rectVertices.setFloat32(baseIndex + 13 * 4, toprighty);
-		rectVertices.setFloat32(baseIndex + 14 * 4, -5.0);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 0) * 4, toprightx);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 1) * 4, toprighty);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 2) * 4, -5.0);
 
-		rectVertices.setFloat32(baseIndex + 18 * 4, bottomrightx);
-		rectVertices.setFloat32(baseIndex + 19 * 4, bottomrighty);
-		rectVertices.setFloat32(baseIndex + 20 * 4, -5.0);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 0) * 4, bottomrightx);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 1) * 4, bottomrighty);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 2) * 4, -5.0);
 	}
 
 	inline function setRectTexCoords(left: FastFloat, top: FastFloat, right: FastFloat, bottom: FastFloat): Void {
 		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
-		rectVertices.setFloat32(baseIndex + 3 * 4, left);
-		rectVertices.setFloat32(baseIndex + 4 * 4, bottom);
+		final vsize = vertexSize;
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 3) * 4, left);
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 4) * 4, bottom);
 
-		rectVertices.setFloat32(baseIndex + 9 * 4, left);
-		rectVertices.setFloat32(baseIndex + 10 * 4, top);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 3) * 4, left);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 4) * 4, top);
 
-		rectVertices.setFloat32(baseIndex + 15 * 4, right);
-		rectVertices.setFloat32(baseIndex + 16 * 4, top);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 3) * 4, right);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 4) * 4, top);
 
-		rectVertices.setFloat32(baseIndex + 21 * 4, right);
-		rectVertices.setFloat32(baseIndex + 22 * 4, bottom);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 3) * 4, right);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 4) * 4, bottom);
 	}
 
 	inline function setRectColor(r: FastFloat, g: FastFloat, b: FastFloat, a: FastFloat): Void {
 		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
-		rectVertices.setUint8(baseIndex + 5 * 4 + 0, Std.int(r * 255));
-		rectVertices.setUint8(baseIndex + 5 * 4 + 1, Std.int(g * 255));
-		rectVertices.setUint8(baseIndex + 5 * 4 + 2, Std.int(b * 255));
-		rectVertices.setUint8(baseIndex + 5 * 4 + 3, Std.int(a * 255));
+		final vsize = vertexSize;
+		rectVertices.setUint8(baseIndex + (vsize * 0 + 5) * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 0 + 5) * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 0 + 5) * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 0 + 5) * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setUint8(baseIndex + 11 * 4 + 0, Std.int(r * 255));
-		rectVertices.setUint8(baseIndex + 11 * 4 + 1, Std.int(g * 255));
-		rectVertices.setUint8(baseIndex + 11 * 4 + 2, Std.int(b * 255));
-		rectVertices.setUint8(baseIndex + 11 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 1 + 5) * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 1 + 5) * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 1 + 5) * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 1 + 5) * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setUint8(baseIndex + 17 * 4 + 0, Std.int(r * 255));
-		rectVertices.setUint8(baseIndex + 17 * 4 + 1, Std.int(g * 255));
-		rectVertices.setUint8(baseIndex + 17 * 4 + 2, Std.int(b * 255));
-		rectVertices.setUint8(baseIndex + 17 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 2 + 5) * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 2 + 5) * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 2 + 5) * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 2 + 5) * 4 + 3, Std.int(a * 255));
 
-		rectVertices.setUint8(baseIndex + 23 * 4 + 0, Std.int(r * 255));
-		rectVertices.setUint8(baseIndex + 23 * 4 + 1, Std.int(g * 255));
-		rectVertices.setUint8(baseIndex + 23 * 4 + 2, Std.int(b * 255));
-		rectVertices.setUint8(baseIndex + 23 * 4 + 3, Std.int(a * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 3 + 5) * 4 + 0, Std.int(r * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 3 + 5) * 4 + 1, Std.int(g * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 3 + 5) * 4 + 2, Std.int(b * 255));
+		rectVertices.setUint8(baseIndex + (vsize * 3 + 5) * 4 + 3, Std.int(a * 255));
+	}
+
+	function setRectTexIndexes(): Void {
+		var baseIndex: Int = (bufferIndex - bufferStart) * vertexSize * 4 * 4;
+		final vsize = vertexSize;
+		rectVertices.setFloat32(baseIndex + (vsize * 0 + 6) * 4, lastTextureIndex);
+		rectVertices.setFloat32(baseIndex + (vsize * 1 + 6) * 4, lastTextureIndex);
+		rectVertices.setFloat32(baseIndex + (vsize * 2 + 6) * 4, lastTextureIndex);
+		rectVertices.setFloat32(baseIndex + (vsize * 3 + 6) * 4, lastTextureIndex);
+	}
+
+	function updateTextures(tex: Image): Void {
+		if (tex == lastTexture)
+			return;
+		var i = lastTextures.indexOf(tex);
+		// texture already exists (update lastTexture to skip flush)
+		if (i != -1) {
+			lastTextureIndex = i;
+			lastTexture = lastTextures[lastTextureIndex];
+			return;
+		}
+		// select new texture cell
+		i = lastTextures.indexOf(null);
+		// no free cells (lastTexture will not be updated)
+		if (i == -1)
+			return;
+		lastTextureIndex = i;
+		lastTextures[lastTextureIndex] = tex;
+		lastTexture = lastTextures[lastTextureIndex];
+
+		var pipeline = myPipeline.get(null, Depth24Stencil8);
+		final location = pipeline.textureLocations[i];
+		g.setTexture(location, tex);
+		g.setTextureParameters(location, TextureAddressing.Clamp, TextureAddressing.Clamp, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter,
+			bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
 	}
 
 	function drawBuffer(end: Bool): Void {
@@ -252,15 +301,16 @@ class ImageShaderPainter {
 		g.setPipeline(pipeline.pipeline);
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
-		g.setTexture(pipeline.textureLocation, lastTexture);
-		g.setTextureParameters(pipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp,
-			bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter,
-			bilinearMipmaps ? MipMapFilter.LinearMipFilter : MipMapFilter.NoMipFilter);
 		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
 
 		g.drawIndexedVertices(bufferStart * 2 * 3, (bufferIndex - bufferStart) * 2 * 3);
 
-		g.setTexture(pipeline.textureLocation, null);
+		lastTextureIndex = 0;
+		lastTexture = null;
+		for (i in 0...lastTextures.length) {
+			g.setTexture(pipeline.textureLocations[i], null);
+			lastTextures[i] = null;
+		}
 
 		if (end || (bufferStart + bufferIndex + 1) * 4 >= bufferSize) {
 			bufferStart = 0;
@@ -288,12 +338,14 @@ class ImageShaderPainter {
 	public inline function drawImage(img: kha.Image, bottomleftx: FastFloat, bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat,
 			toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat, bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
+		updateTextures(tex);
 		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectTexCoords(0, 0, tex.width / tex.realWidth, tex.height / tex.realHeight);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
+		setRectTexIndexes();
 
 		++bufferIndex;
 		lastTexture = tex;
@@ -303,12 +355,14 @@ class ImageShaderPainter {
 			bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat, toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat,
 			bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
+		updateTextures(tex);
 		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
+		setRectTexIndexes();
 
 		++bufferIndex;
 		lastTexture = tex;
@@ -317,12 +371,14 @@ class ImageShaderPainter {
 	public inline function drawImageScale(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, left: FastFloat, top: FastFloat,
 			right: FastFloat, bottom: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
+		updateTextures(tex);
 		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
-		setRectColor(color.R, color.G, color.B, opacity);
+		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectVertices(left, bottom, left, top, right, top, right, bottom);
+		setRectTexIndexes();
 
 		++bufferIndex;
 		lastTexture = tex;
@@ -733,14 +789,14 @@ class TextShaderPainter {
 		g.setVertexBuffer(rectVertexBuffer);
 		g.setIndexBuffer(indexBuffer);
 		g.setMatrix(pipeline.projectionLocation, projectionMatrix);
-		g.setTexture(pipeline.textureLocation, lastTexture);
-		g.setTextureParameters(pipeline.textureLocation, TextureAddressing.Clamp, TextureAddressing.Clamp,
+		g.setTexture(pipeline.textureLocations[0], lastTexture);
+		g.setTextureParameters(pipeline.textureLocations[0], TextureAddressing.Clamp, TextureAddressing.Clamp,
 			bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter, bilinear ? TextureFilter.LinearFilter : TextureFilter.PointFilter,
 			MipMapFilter.NoMipFilter);
 
 		g.drawIndexedVertices(0, bufferIndex * 2 * 3);
 
-		g.setTexture(pipeline.textureLocation, null);
+		g.setTexture(pipeline.textureLocations[0], null);
 		bufferIndex = 0;
 		rectVertices = rectVertexBuffer.lock();
 	}
@@ -1197,6 +1253,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 		structure.add("vertexPosition", VertexData.Float32_3X);
 		structure.add("vertexUV", VertexData.Float32_2X);
 		structure.add("vertexColor", VertexData.UInt8_4X_Normalized);
+		structure.add("vertexTexIndex", VertexData.Float32_1X);
 		return structure;
 	}
 
