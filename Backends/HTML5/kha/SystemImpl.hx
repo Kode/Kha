@@ -58,6 +58,9 @@ class SystemImpl {
 	public static var safari: Bool = false;
 	public static var ie: Bool = false;
 	public static var insideInputEvent: Bool = false;
+	static public var activeMouseEvent: Null<MouseEvent>;
+	static public var activeWheelEvent: Null<WheelEvent>;
+	static public var activeKeyEvent: Null<KeyboardEvent>;
 	static var window: Window;
 	public static var estimatedRefreshRate: Int = 60;
 
@@ -743,6 +746,7 @@ class SystemImpl {
 	static function mouseWheel(event: WheelEvent): Void {
 		unlockSound();
 		insideInputEvent = true;
+		activeWheelEvent = event;
 
 		switch (Mouse.wheelEventBlockBehavior) {
 			case Full:
@@ -761,6 +765,7 @@ class SystemImpl {
 			else if (event.deltaY > 0) {
 				mouse.sendWheelEvent(0, 1);
 			}
+			activeWheelEvent = null;
 			insideInputEvent = false;
 			return;
 		}
@@ -769,15 +774,18 @@ class SystemImpl {
 		if (event.deltaMode == 1) {
 			minimumScroll = Std.int(Math.min(minimumScroll, Math.abs(event.deltaY)));
 			mouse.sendWheelEvent(0, Std.int(event.deltaY / minimumScroll));
+			activeWheelEvent = null;
 			insideInputEvent = false;
 			return;
 		}
+		activeWheelEvent = null;
 		insideInputEvent = false;
 		return;
 	}
 
 	static function mouseDown(event: MouseEvent): Void {
 		insideInputEvent = true;
+		activeMouseEvent = event;
 		unlockSound();
 
 		setMouseXY(event);
@@ -803,6 +811,7 @@ class SystemImpl {
 			mouse.sendDownEvent(0, 4, mouseX, mouseY);
 			khanvas.ownerDocument.addEventListener("mouseup", mouseForwardUp);
 		}
+		activeMouseEvent = null;
 		insideInputEvent = false;
 	}
 
@@ -876,6 +885,7 @@ class SystemImpl {
 
 	static function mouseMove(event: MouseEvent): Void {
 		insideInputEvent = true;
+		activeMouseEvent = event;
 
 		var lastMouseX = mouseX;
 		var lastMouseY = mouseY;
@@ -898,6 +908,7 @@ class SystemImpl {
 		}
 
 		mouse.sendMoveEvent(0, mouseX, mouseY, movementX, movementY);
+		activeMouseEvent = null;
 		insideInputEvent = false;
 	}
 
@@ -1147,6 +1158,7 @@ class SystemImpl {
 
 	static function keyDown(event: KeyboardEvent): Void {
 		insideInputEvent = true;
+		activeKeyEvent = event;
 		unlockSound();
 
 		preventDefaultKeyBehavior(event);
@@ -1159,6 +1171,7 @@ class SystemImpl {
 		}
 		var keyCode = fixedKeyCode(event);
 		keyboard.sendDownEvent(keyCode);
+		activeKeyEvent = null;
 		insideInputEvent = false;
 	}
 
@@ -1211,6 +1224,7 @@ class SystemImpl {
 
 	static function keyUp(event: KeyboardEvent): Void {
 		insideInputEvent = true;
+		activeKeyEvent = event;
 		unlockSound();
 
 		preventDefaultKeyBehavior(event);
@@ -1219,11 +1233,13 @@ class SystemImpl {
 		var keyCode = fixedKeyCode(event);
 		keyboard.sendUpEvent(keyCode);
 
+		activeKeyEvent = null;
 		insideInputEvent = false;
 	}
 
 	static function keyPress(event: KeyboardEvent): Void {
 		insideInputEvent = true;
+		activeKeyEvent = event;
 		unlockSound();
 
 		if (event.which == 0)
@@ -1232,6 +1248,7 @@ class SystemImpl {
 		event.stopPropagation();
 		keyboard.sendPressEvent(String.fromCharCode(event.which));
 
+		activeKeyEvent = null;
 		insideInputEvent = false;
 	}
 
