@@ -93,11 +93,16 @@ void hl_kinc_system_load_url(vbyte *url) {
 	kinc_load_url((char *)url);
 }
 
-// const char* getGamepadId(int index);
-
 vbyte *hl_kinc_get_gamepad_id(int index) {
-	return NULL;
-	// return (vbyte*)getGamepadId(index);
+	return (vbyte*)kinc_gamepad_product_name(index);
+}
+
+vbyte *hl_kinc_get_gamepad_vendor(int index) {
+	return (vbyte*)kinc_gamepad_vendor(index);
+}
+
+bool hl_kinc_gamepad_connected(int index) {
+	return kinc_gamepad_connected(index);
 }
 
 typedef void (*FN_KEY_DOWN)(int, void *);

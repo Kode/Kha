@@ -44,7 +44,8 @@ class SystemImpl {
 		pen = new kha.input.Pen();
 		gamepads = new Array<Gamepad>();
 		for (i in 0...4) {
-			gamepads.push(new kha.input.Gamepad(i));
+			gamepads[i] = new kha.input.Gamepad(i);
+			gamepads[i].connected = kinc_gamepad_connected(i);
 		}
 		surface = new kha.input.Surface();
 		mouseLockListeners = new Array();
@@ -70,6 +71,15 @@ class SystemImpl {
 	public static function frame(): Void {
 		Scheduler.executeFrame();
 		System.render([framebuffer]);
+
+		for (i in 0...4) {
+			if (gamepads[i].connected && !kinc_gamepad_connected(i)) {
+				Gamepad.sendDisconnectEvent(i);
+			}
+			else if (!gamepads[i].connected && kinc_gamepad_connected(i)) {
+				Gamepad.sendConnectEvent(i);
+			}
+		}
 	}
 
 	public static function getTime(): Float {
@@ -215,11 +225,11 @@ class SystemImpl {
 		pen.sendMoveEvent(windowId, x, y, pressure);
 	}
 
-	public static function gamepadAxis(gamepad: Int, axis: Int, value: Float): Void {
+	public static function gamepadAxis(gamepad: Int, axis: Int, value: FastFloat): Void {
 		gamepads[gamepad].sendAxisEvent(axis, value);
 	}
 
-	public static function gamepadButton(gamepad: Int, button: Int, value: Float): Void {
+	public static function gamepadButton(gamepad: Int, button: Int, value: FastFloat): Void {
 		gamepads[gamepad].sendButtonEvent(button, value);
 	}
 
@@ -351,11 +361,13 @@ class SystemImpl {
 	}
 
 	public static function getGamepadId(index: Int): String {
-		return ""; // kinc_get_gamepad_id(index);
+		final b: hl.Bytes = kinc_get_gamepad_id(index);
+		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function getGamepadVendor(index: Int): String {
-		return "";
+		final b: hl.Bytes = kinc_get_gamepad_vendor(index);
+		return @:privateAccess String.fromUTF8(b);
 	}
 
 	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float) {}
@@ -447,8 +459,8 @@ class SystemImpl {
 	@:hlNative("std", "kinc_register_pen") static function kinc_register_pen(penDown: Int->Int->Int->Float->Void, penUp: Int->Int->Int->Float->Void,
 		penMove: Int->Int->Int->Float->Void): Void {}
 
-	@:hlNative("std", "kinc_register_gamepad") static function kinc_register_gamepad(gamepadAxis: Int->Int->Float->Void,
-		gamepadButton: Int->Int->Float->Void): Void {}
+	@:hlNative("std", "kinc_register_gamepad") static function kinc_register_gamepad(gamepadAxis: Int->Int->FastFloat->Void,
+		gamepadButton: Int->Int->FastFloat->Void): Void {}
 
 	@:hlNative("std", "kinc_register_surface") static function kinc_register_surface(touchStart: Int->Int->Int->Void, touchEnd: Int->Int->Int->Void,
 		touchMove: Int->Int->Int->Void): Void {}
@@ -472,5 +484,13 @@ class SystemImpl {
 
 	@:hlNative("std", "kinc_get_gamepad_id") static function kinc_get_gamepad_id(index: Int): hl.Bytes {
 		return null;
+	}
+
+	@:hlNative("std", "kinc_get_gamepad_vendor") static function kinc_get_gamepad_vendor(index: Int): hl.Bytes {
+		return null;
+	}
+
+	@:hlNative("std", "kinc_gamepad_connected") static function kinc_gamepad_connected(index: Int): Bool {
+		return false;
 	}
 }
