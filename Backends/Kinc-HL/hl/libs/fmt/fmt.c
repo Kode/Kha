@@ -77,6 +77,9 @@ HL_PRIM bool HL_NAME(png_decode)( vbyte *data, int dataLen, vbyte *out, int widt
 	case 14:
 		img.format = PNG_FORMAT_LINEAR_RGB_ALPHA;
 		break;
+	case 15:
+		img.format = PNG_FORMAT_LINEAR_Y_ALPHA;
+		break;
 	default:
 		hl_blocking(false);
 		png_image_free(&img);
