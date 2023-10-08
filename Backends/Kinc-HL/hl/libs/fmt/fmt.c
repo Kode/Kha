@@ -1,19 +1,19 @@
 #define HL_NAME(n) fmt_##n
-#include <png.h>
+//#include <png.h>
 #include <hl.h>
 
 #if defined(HL_CONSOLE) && !defined(HL_XBO)
-extern bool sys_jpg_decode( vbyte *data, int dataLen, vbyte *out, int width, int height, int stride, int format, int flags );
+//extern bool sys_jpg_decode( vbyte *data, int dataLen, vbyte *out, int width, int height, int stride, int format, int flags );
 #else
-#	include <turbojpeg.h>
+//#	include <turbojpeg.h>
 #endif
 
 #include <zlib.h>
-#include <vorbis/vorbisfile.h>
+//#include <vorbis/vorbisfile.h>
 
-#define MINIMP3_IMPLEMENTATION
-#define MINIMP3_FLOAT_OUTPUT
-#include <minimp3.h>
+//#define MINIMP3_IMPLEMENTATION
+//#define MINIMP3_FLOAT_OUTPUT
+//#include <minimp3.h>
 
 /* ------------------------------------------------- IMG --------------------------------------------------- */
 
@@ -21,7 +21,7 @@ typedef struct {
 	unsigned char a,r,g,b;
 } pixel;
 
-HL_PRIM bool HL_NAME(jpg_decode)( vbyte *data, int dataLen, vbyte *out, int width, int height, int stride, int format, int flags ) {
+/*HL_PRIM bool HL_NAME(jpg_decode)( vbyte *data, int dataLen, vbyte *out, int width, int height, int stride, int format, int flags ) {
 #if defined(HL_CONSOLE) && !defined(HL_XBO)
 	hl_blocking(true);
 	bool b = sys_jpg_decode(data, dataLen, out, width, height, stride, format, flags);
@@ -102,7 +102,7 @@ HL_PRIM bool HL_NAME(png_decode)( vbyte *data, int dataLen, vbyte *out, int widt
 	hl_error("PNG support is missing for this libPNG version");
 #	endif
 	return true;
-}
+}*/
 
 HL_PRIM void HL_NAME(img_scale)( vbyte *out, int outPos, int outStride, int outWidth, int outHeight, vbyte *in, int inPos, int inStride, int inWidth, int inHeight, int flags ) {
 	int x, y;
@@ -321,7 +321,7 @@ DEFINE_PRIM(_BOOL, deflate_buffer, _ZIP _BYTES _I32 _I32 _BYTES _I32 _I32 _REF(_
 
 /* ----------------------------------------------- SOUND : OGG ------------------------------------------------ */
 
-typedef struct _fmt_ogg fmt_ogg;
+/*typedef struct _fmt_ogg fmt_ogg;
 struct _fmt_ogg {
 	void (*finalize)( fmt_ogg * );
 	OggVorbis_File f;
@@ -432,23 +432,23 @@ DEFINE_PRIM(_OGG, ogg_open, _BYTES _I32);
 DEFINE_PRIM(_VOID, ogg_info, _OGG _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32));
 DEFINE_PRIM(_I32, ogg_tell, _OGG);
 DEFINE_PRIM(_BOOL, ogg_seek, _OGG _I32);
-DEFINE_PRIM(_I32, ogg_read, _OGG _BYTES _I32 _I32);
+DEFINE_PRIM(_I32, ogg_read, _OGG _BYTES _I32 _I32);*/
 
 /* ----------------------------------------------- SOUND : MP3 ------------------------------------------------ */
 
-typedef struct _fmt_mp3 fmt_mp3;
+/*typedef struct _fmt_mp3 fmt_mp3;
 struct _fmt_mp3 {
 	mp3dec_t dec;
 	mp3dec_frame_info_t info;
 	mp3d_sample_t pcm[MINIMP3_MAX_SAMPLES_PER_FRAME];
-};
+};*/
 
 // Allocate MP3 reader.
-HL_PRIM fmt_mp3 *HL_NAME(mp3_open)() {
+/*HL_PRIM fmt_mp3 *HL_NAME(mp3_open)() {
 	fmt_mp3 *o = (fmt_mp3*)hl_gc_alloc_noptr(sizeof(fmt_mp3));
 	mp3dec_init(&o->dec);
 	return o;
-}
+}*/
 
 /**
 	Retreive last decoded frame information.
@@ -458,13 +458,13 @@ HL_PRIM fmt_mp3 *HL_NAME(mp3_open)() {
 	@param hz
 	@param layer Mpeg Layer index (usually 3).
 **/
-HL_PRIM void HL_NAME(mp3_frame_info)(fmt_mp3 *o, int *bitrate_kbps, int *channels, int *frame_bytes, int *hz, int *layer) {
+/*HL_PRIM void HL_NAME(mp3_frame_info)(fmt_mp3 *o, int *bitrate_kbps, int *channels, int *frame_bytes, int *hz, int *layer) {
 	*bitrate_kbps = o->info.bitrate_kbps;
 	*channels = o->info.channels;
 	*frame_bytes = o->info.frame_bytes;
 	*hz = o->info.hz;
 	*layer = o->info.layer;
-}
+}*/
 
 /**
 	Decodes a single frame from input stream and writes result to output.
@@ -481,7 +481,7 @@ HL_PRIM void HL_NAME(mp3_frame_info)(fmt_mp3 *o, int *bitrate_kbps, int *channel
 	@returns 0 if no MP3 data was found (end of stream/invalid data), -1 if either input buffer position invalid or output size is insufficent.
 		Amount of decoded samples otherwise.
 **/
-HL_PRIM int HL_NAME(mp3_decode_frame)( fmt_mp3 *o, char *bytes, int size, int position, char *output, int outputSize, int offset ) {
+/*HL_PRIM int HL_NAME(mp3_decode_frame)( fmt_mp3 *o, char *bytes, int size, int position, char *output, int outputSize, int offset ) {
 
 	// Out of mp3 file bounds.
 	if ( position < 0 || size <= position )
@@ -521,7 +521,7 @@ HL_PRIM int HL_NAME(mp3_decode_frame)( fmt_mp3 *o, char *bytes, int size, int po
 
 DEFINE_PRIM(_MP3, mp3_open, _BYTES _I32);
 DEFINE_PRIM(_VOID, mp3_frame_info, _MP3 _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32) _REF(_I32))
-DEFINE_PRIM(_I32, mp3_decode_frame, _MP3 _BYTES _I32 _I32 _BYTES _I32 _I32);
+DEFINE_PRIM(_I32, mp3_decode_frame, _MP3 _BYTES _I32 _I32 _BYTES _I32 _I32);*/
 
 /* ------------------------------------------------- CRYPTO --------------------------------------------------- */
 
