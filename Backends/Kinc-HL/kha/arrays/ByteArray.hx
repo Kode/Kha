@@ -70,7 +70,7 @@ abstract ByteArray(ByteArrayPrivate) {
 		return kinc_bytearray_getint32(this.self, this.byteArrayOffset + byteOffset);
 	}
 
-	public inline function getUint32(byteOffset: Int): hl.I64 {
+	public inline function getUint32(byteOffset: Int): Int {
 		return kinc_bytearray_getuint32(this.self, this.byteArrayOffset + byteOffset);
 	}
 
