@@ -10,7 +10,9 @@ if (platform === Platform.Windows || platform === Platform.WindowsApp) project.a
 if (platform === Platform.Linux) project.addFiles('khacpp/project/libs/linuxcompat/**.cpp');
 project.addFiles('khacpp/project/libs/regexp/**.h', 'khacpp/project/libs/regexp/**.cpp', 'khacpp/project/libs/std/**.h', 'khacpp/project/libs/std/**.cpp');
 
-project.addFiles('khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/**.h', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/**.c');
+
+project.addFiles('khacpp/project/thirdparty/pcre2-' + pcreVersion + '-8/src/**.h', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '-8/src/**.c');
+project.addFiles('khacpp/project/thirdparty/pcre2-' + pcreVersion + '-16/src/**.h', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '-16/src/**.c');
 
 const zlibFiles = [
 	'**.h',
@@ -40,6 +42,7 @@ project.addIncludeDir('lib');
 
 const pcreExcludes = [
 	'pcre2_dftables.c',
+	'pcre2_fuzzsupport.c',
 	'pcre2_printint.c',
 	'pcre2_jit_match.c',
 	'pcre2_jit_misc.c',
@@ -54,7 +57,8 @@ const pcreExcludes = [
 ];
 
 for (const file of pcreExcludes) {
-	project.addExclude('khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src/' + file);
+	project.addExclude('khacpp/project/thirdparty/pcre2-' + pcreVersion + '-8/src/' + file);
+	project.addExclude('khacpp/project/thirdparty/pcre2-' + pcreVersion + '-16/src/' + file);
 }
 project.addExcludes('khacpp/src/ExampleMain.cpp', 'khacpp/src/hx/Scriptable.cpp', 'khacpp/src/hx/NoFiles.cpp', 'khacpp/src/hx/cppia/**');
 project.addExcludes('khacpp/src/hx/Debugger.cpp', 'khacpp/src/hx/Profiler.cpp', 'khacpp/src/hx/Telemetry.cpp');
@@ -62,7 +66,7 @@ project.addExcludes('khacpp/src/hx/NekoAPI.cpp');
 project.addExcludes('khacpp/src/hx/libs/sqlite/**');
 project.addExcludes('khacpp/src/hx/libs/mysql/**');
 
-project.addIncludeDirs('khacpp/include', 'khacpp/project/thirdparty/pcre2-' + pcreVersion + '/src', 'khacpp/project/thirdparty/zlib-' + zlibVersion, 'khacpp/project/libs/nekoapi', 'khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
+project.addIncludeDirs('khacpp/include', 'khacpp/project/thirdparty/zlib-' + zlibVersion, 'khacpp/project/libs/nekoapi', 'khacpp/project/thirdparty/mbedtls-' + tlsVersion + '/include');
 project.addIncludeDir('khacpp/src/hx/libs/ssl');
 
 //if (options.vrApi == "rift") {
@@ -113,7 +117,6 @@ if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
 // project:addDefine('HXCPP_SCRIPTABLE');
 project.addDefine('STATIC_LINK');
 project.addDefine('PCRE2_STATIC');
-project.addDefine('PCRE2_CODE_UNIT_WIDTH=8');
 project.addDefine('HXCPP_VISIT_ALLOCS');
 project.addDefine('KHA');
 project.addDefine('KORE');
@@ -122,6 +125,7 @@ project.addDefine('HAVE_CONFIG_H');
 project.addDefine('SUPPORT_UTF');
 project.addDefine('SUPPORT_UCP');
 project.addDefine('MBEDTLS_USER_CONFIG_FILE="mbedtls_config.h"');
+project.addDefine('HX_SMART_STRINGS');
 
 //if (Options.vrApi === "gearvr") {
 //	out += "project.addDefine('VR_GEAR_VR');\n";
