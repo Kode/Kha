@@ -47,6 +47,7 @@ const pcreExcludes = [
 	'pcre2_jit_match.c',
 	'pcre2_jit_misc.c',
 	'pcre2_jit_test.c',
+	'pcre2_ucptables.c',
 	'pcre2demo.c',
 	'pcre2grep.c',
 	'pcre2posix.h',
@@ -124,6 +125,7 @@ project.addDefine('ROTATE90');
 project.addDefine('HAVE_CONFIG_H');
 project.addDefine('SUPPORT_UTF');
 project.addDefine('SUPPORT_UCP');
+project.addDefine('SUPPORT_UNICODE');
 project.addDefine('MBEDTLS_USER_CONFIG_FILE="mbedtls_config.h"');
 project.addDefine('HX_SMART_STRINGS');
 
