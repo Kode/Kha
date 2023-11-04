@@ -5,6 +5,29 @@ import haxe.Unserializer;
 
 using StringTools;
 
+typedef AssetData = {
+	name: String,
+	files: Array<String>,
+	file_sizes: Array<Int>,
+	type: String,
+	// image
+	?original_width: Int,
+	?original_height: Int,
+	// shader
+	?inputs: Array<AssetShaderVar>,
+	?outputs: Array<AssetShaderVar>,
+	?uniforms: Array<AssetShaderVar>,
+	?types: Array<{
+		name: String,
+		members: Array<AssetShaderVar>,
+	}>
+}
+
+private typedef AssetShaderVar = {
+	type: String,
+	name: String
+}
+
 @:build(kha.internal.AssetsBuilder.build("image"))
 private class ImageList {
 	public function new() {}
@@ -76,8 +99,8 @@ class Assets {
 		Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 		Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	 */
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null,
-			?failed: AssetError->Void): Void {
+	public static function loadEverything(callback: ()->Void, filter: (item:AssetData)->Bool = null, uncompressSoundsFilter: (soundItem:AssetData)->Bool = null,
+			?failed: (err:AssetError)->Void): Void {
 		final lists: Array<Dynamic> = [ImageList, SoundList, BlobList, FontList, VideoList];
 		final listInstances: Array<Dynamic> = [images, sounds, blobs, fonts, videos];
 		var fileCount = 0;
