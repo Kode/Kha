@@ -5,6 +5,33 @@ import haxe.Unserializer;
 
 using StringTools;
 
+private typedef AssetDataObject = {
+	/** File name, given by khamake, used as identifier in `Assets.someList.get()` function **/
+	var name: String;
+
+	/** List of file paths, unified by khamake to single file with `name`. **/
+	var files: Array<String>;
+
+	/** File sizes in bytes **/
+	var file_sizes: Array<Int>;
+
+	/** Can be `image`, `sound`, `blob`, `font` and `video` **/
+	var type: String;
+
+	/** Original file width (only for images) **/
+	var ?original_width: Int;
+
+	/** Original file height (only for images) **/
+	var ?original_height: Int;
+}
+
+@:forward(name, files, file_sizes, type, original_width, original_height)
+private abstract AssetData(AssetDataObject) from AssetDataObject {
+	@:op(a.b) function _get(key: String): Dynamic {
+		return Reflect.getProperty(this, key);
+	}
+}
+
 @:build(kha.internal.AssetsBuilder.build("image"))
 private class ImageList {
 	public function new() {}
@@ -76,8 +103,8 @@ class Assets {
 		Additionally by default all sounds are decompressed. The uncompressSoundsFilter can be used to avoid that.
 		Uncompressed sounds can still be played using Audio.stream which is recommended for music.
 	 */
-	public static function loadEverything(callback: Void->Void, filter: Dynamic->Bool = null, uncompressSoundsFilter: Dynamic->Bool = null,
-			?failed: AssetError->Void): Void {
+	public static function loadEverything(callback: () -> Void, ?filter: (item: AssetData) -> Bool, ?uncompressSoundsFilter: (soundItem: AssetData) -> Bool,
+			?failed: (err: AssetError) -> Void): Void {
 		final lists: Array<Dynamic> = [ImageList, SoundList, BlobList, FontList, VideoList];
 		final listInstances: Array<Dynamic> = [images, sounds, blobs, fonts, videos];
 		var fileCount = 0;
