@@ -1,32 +1,32 @@
 [submodule "Tools/khamake"]
 	path = Tools/khamake
-	url = https://github.com/Kode/khamake.git
+	url = https://github.com/armory3d/khamake.git
 	branch = main
 [submodule "Backends/Kinc-hxcpp/khacpp"]
 	path = Backends/Kinc-hxcpp/khacpp
-	url = https://github.com/Kode/khacpp.git
+	url = https://github.com/armory3d/khacpp.git
 	branch = main
 [submodule "Kinc"]
 	path = Kinc
-	url = https://github.com/Kode/Kinc.git
+	url = https://github.com/armory3d/Kinc.git
 	branch = main
 [submodule "Tools/linux_x64"]
 	path = Tools/linux_x64
-	url = https://github.com/Kode/KhaTools_linux_x64.git
+	url = https://github.com/armory3d/KhaTools_linux_x64.git
 	branch = main
 	shallow = true
 [submodule "Tools/linux_arm64"]
 	path = Tools/linux_arm64
-	url = https://github.com/Kode/KhaTools_linux_arm64.git
+	url = https://github.com/armory3d/KhaTools_linux_arm64.git
 	branch = main
 	shallow = true
 [submodule "Tools/macos"]
 	path = Tools/macos
-	url = https://github.com/Kode/KhaTools_macos.git
+	url = https://github.com/armory3d/KhaTools_macos.git
 	branch = main
 	shallow = true
 [submodule "Tools/windows_x64"]
 	path = Tools/windows_x64
-	url = https://github.com/Kode/KhaTools_windows_x64.git
+	url = https://github.com/armory3d/KhaTools_windows_x64.git
 	branch = main
 	shallow = true
