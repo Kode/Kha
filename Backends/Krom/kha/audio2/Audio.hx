@@ -11,6 +11,7 @@ class Audio {
 	public static function _init() {
 		var bufferSize = 1024 * 2;
 		buffer = new Buffer(bufferSize * 4, 2, 44100);
+		Audio.samplesPerSecond = 44100;
 	}
 
 	public static function _callCallback(samples: Int): Void {

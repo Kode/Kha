@@ -71,8 +71,8 @@ class CubeMap implements Canvas implements Resource {
 			format = TextureFormat.RGBA32;
 		var cubeMap = new CubeMap(null);
 		cubeMap.format = format;
-		cubeMap.renderTarget_ = Krom.createRenderTargetCubeMap(size, getDepthBufferBits(depthStencil), getRenderTargetFormat(format),
-			getStencilBufferBits(depthStencil), 0);
+		cubeMap.renderTarget_ = Krom.createRenderTargetCubeMap(size, getRenderTargetFormat(format), getDepthBufferBits(depthStencil),
+			getStencilBufferBits(depthStencil));
 		return cubeMap;
 	}
 

@@ -5,6 +5,7 @@ import haxe.io.Bytes;
 class Sound extends kha.Sound {
 	public function new(bytes: Bytes) {
 		super();
+		sampleRate = 44100;
 
 		var count = Std.int(bytes.length / 4);
 		uncompressedData = new kha.arrays.Float32Array(count);

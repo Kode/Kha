@@ -134,8 +134,8 @@ class Image implements Canvas implements Resource {
 			format = TextureFormat.RGBA32;
 		var image = new Image(null);
 		image.myFormat = format;
-		image.renderTarget_ = Krom.createRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format),
-			getStencilBufferBits(depthStencil), 0);
+		image.renderTarget_ = Krom.createRenderTarget(width, height, getRenderTargetFormat(format), getDepthBufferBits(depthStencil),
+			getStencilBufferBits(depthStencil));
 		return image;
 	}
 

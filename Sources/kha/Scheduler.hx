@@ -98,7 +98,7 @@ class Scheduler {
 	public static function start(restartTimers: Bool = false): Void {
 		vsync = Window.get(0).vSynced;
 		#if !kha_html5
-		var hz = Display.primary.frequency;
+		var hz = Display.primary != null ? Display.primary.frequency : 60;
 		if (hz >= 57 && hz <= 63)
 			hz = 60;
 		onedifhz = 1.0 / hz;
