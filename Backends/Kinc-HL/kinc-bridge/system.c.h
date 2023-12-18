@@ -94,11 +94,11 @@ void hl_kinc_system_load_url(vbyte *url) {
 }
 
 vbyte *hl_kinc_get_gamepad_id(int index) {
-	return (vbyte*)kinc_gamepad_product_name(index);
+	return (vbyte *)kinc_gamepad_product_name(index);
 }
 
 vbyte *hl_kinc_get_gamepad_vendor(int index) {
-	return (vbyte*)kinc_gamepad_vendor(index);
+	return (vbyte *)kinc_gamepad_vendor(index);
 }
 
 bool hl_kinc_gamepad_connected(int index) {
@@ -137,12 +137,12 @@ void hl_kinc_register_pen(vclosure *penDown, vclosure *penUp, vclosure *penMove)
 	kinc_pen_set_move_callback(*((FN_PEN_MOVE *)(&penMove->fun)));
 }
 
-typedef void (*FN_GAMEPAD_AXIS)(int, int, float);
-typedef void (*FN_GAMEPAD_BUTTON)(int, int, float);
+typedef void (*FN_GAMEPAD_AXIS)(int, int, float, void *);
+typedef void (*FN_GAMEPAD_BUTTON)(int, int, float, void *);
 
 void hl_kinc_register_gamepad(vclosure *gamepadAxis, vclosure *gamepadButton) {
-	kinc_gamepad_set_axis_callback(*((FN_GAMEPAD_AXIS *)(&gamepadAxis->fun)));
-	kinc_gamepad_set_button_callback(*((FN_GAMEPAD_BUTTON *)(&gamepadButton->fun)));
+	kinc_gamepad_set_axis_callback(*((FN_GAMEPAD_AXIS *)(&gamepadAxis->fun)), NULL);
+	kinc_gamepad_set_button_callback(*((FN_GAMEPAD_BUTTON *)(&gamepadButton->fun)), NULL);
 }
 
 typedef void (*FN_TOUCH_START)(int, int, int);

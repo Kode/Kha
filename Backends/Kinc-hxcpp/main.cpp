@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #ifdef ANDROID
-//#include <Kore/Vr/VrInterface.h>
+// #include <Kore/Vr/VrInterface.h>
 #endif
 
 namespace {
@@ -103,11 +103,11 @@ namespace {
 		Sensor_obj::_changed(1, x, y, z);
 	}
 
-	void gamepadAxis(int gamepad, int axis, float value) {
+	void gamepadAxis(int gamepad, int axis, float value, void *data) {
 		SystemImpl_obj::gamepadAxis(gamepad, axis, value);
 	}
 
-	void gamepadButton(int gamepad, int button, float value) {
+	void gamepadButton(int gamepad, int button, float value, void *data) {
 		SystemImpl_obj::gamepadButton(gamepad, button, value);
 	}
 
@@ -311,8 +311,8 @@ void init_kinc(const char *name, int width, int height, kinc_window_options_t *w
 	kinc_eraser_set_press_callback(penEraserDown);
 	kinc_eraser_set_release_callback(penEraserUp);
 	kinc_eraser_set_move_callback(penEraserMove);
-	kinc_gamepad_set_axis_callback(gamepadAxis);
-	kinc_gamepad_set_button_callback(gamepadButton);
+	kinc_gamepad_set_axis_callback(gamepadAxis, nullptr);
+	kinc_gamepad_set_button_callback(gamepadButton, nullptr);
 	kinc_surface_set_touch_start_callback(touchStart);
 	kinc_surface_set_touch_end_callback(touchEnd);
 	kinc_surface_set_move_callback(touchMove);
