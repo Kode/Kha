@@ -455,7 +455,7 @@ class Graphics implements kha.graphics4.Graphics {
 	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
 		untyped __cpp__("
 			#ifdef KORE_OPENGL
-			kinc_compute_set_buffer(&buffer->buffer, index);
+			kinc_g4_set_shader_storage_buffer(&buffer->buffer, index);
 			#endif
 		");
 	}
