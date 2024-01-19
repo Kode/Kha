@@ -53,6 +53,10 @@ interface Graphics {
 
 	function setPipeline(pipeline: PipelineState): Void;
 
+	function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int): Void;
+	function setComputeShader(shader: ComputeShader): Void;
+	function compute(x: Int, y: Int, z: Int): Void;
+
 	function setBool(location: ConstantLocation, value: Bool): Void;
 	function setInt(location: ConstantLocation, value: Int): Void;
 	function setInt2(location: ConstantLocation, value1: Int, value2: Int): Void;
