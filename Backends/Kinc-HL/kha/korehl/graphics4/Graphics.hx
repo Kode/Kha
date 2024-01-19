@@ -1,9 +1,11 @@
 package kha.korehl.graphics4;
 
 import kha.arrays.Float32Array;
+import kha.graphics4.ComputeShader;
 import kha.graphics4.CubeMap;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
+import kha.graphics4.ShaderStorageBuffer;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
 import kha.graphics4.Usage;
@@ -275,6 +277,18 @@ class Graphics implements kha.graphics4.Graphics {
 		kinc_graphics_flush();
 	}
 
+	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
+		// Kore::Compute::setBuffer(buffer->buffer, index);
+	}
+
+	public function setComputeShader(shader: ComputeShader) {
+		kinc_g4_set_compute_shader(shader._shader);
+	}
+
+	public function compute(x: Int, y: Int, z: Int) {
+		kinc_g4_compute(x, y, z);
+	}
+
 	@:hlNative("std", "kinc_graphics_clear") static function kinc_graphics_clear(flags: Int, color: Int, z: FastFloat, stencil: Int): Void {}
 
 	@:hlNative("std", "kinc_graphics_vsynced") static function kinc_graphics_vsynced(): Bool {
@@ -376,4 +390,8 @@ class Graphics implements kha.graphics4.Graphics {
 	@:hlNative("std", "kinc_graphics_render_to_face") static function kinc_graphics_render_to_face(renderTarget: Pointer, face: Int): Void {}
 
 	@:hlNative("std", "kinc_graphics_flush") static function kinc_graphics_flush(): Void {}
+
+	@:hlNative("std", "kinc_g4_set_compute_shader") static function kinc_g4_set_compute_shader(shader: Pointer): Void {}
+
+	@:hlNative("std", "kinc_g4_compute") static function kinc_g4_compute(x: Int, y: Int, z: Int): Void {}
 }
