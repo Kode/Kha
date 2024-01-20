@@ -8,11 +8,13 @@ import js.html.webgl.GL;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
+import kha.graphics4.ComputeShader;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
+import kha.graphics4.ShaderStorageBuffer;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
@@ -734,5 +736,17 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function instancedRenderingAvailable(): Bool {
 		return instancedExtension;
+	}
+
+	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
+
+	}
+
+	public function setComputeShader(shader: ComputeShader) {
+
+	}
+
+	public function compute(x: Int, y: Int, z: Int) {
+
 	}
 }
