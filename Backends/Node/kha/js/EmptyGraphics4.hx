@@ -3,6 +3,7 @@ package kha.js;
 import kha.arrays.Float32Array;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
+import kha.graphics4.ComputeShader;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
@@ -10,6 +11,7 @@ import kha.graphics4.Graphics;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
+import kha.graphics4.ShaderStorageBuffer;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TextureAddressing;
 import kha.graphics4.TextureFilter;
@@ -144,4 +146,16 @@ class EmptyGraphics4 implements Graphics {
 	}
 
 	public function drawIndexedVerticesInstanced(instanceCount: Int, start: Int = 0, count: Int = -1): Void {}
+
+	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
+
+	}
+
+	public function setComputeShader(shader: ComputeShader) {
+
+	}
+
+	public function compute(x: Int, y: Int, z: Int) {
+
+	}
 }
