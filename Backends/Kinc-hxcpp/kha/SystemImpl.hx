@@ -162,7 +162,7 @@ class SystemImpl {
 		mouse = new kha.input.MouseImpl();
 		pen = new kha.input.Pen();
 		gamepads = new Array<Gamepad>();
-		for (i in 0...4) {
+		for (i in 0...8) {
 			gamepads[i] = new Gamepad(i);
 			gamepads[i].connected = checkGamepadConnected(i);
 		}
