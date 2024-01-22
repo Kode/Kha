@@ -56,7 +56,7 @@ class ShadersBuilder {
 						doc: null,
 						meta: [],
 						access: [APublic, AStatic],
-						kind: FVar(macro : kha.compute.Shader, macro null),
+						kind: FVar(macro : kha.graphics4.ComputeShader, macro null),
 						pos: Context.currentPos()
 					});
 
@@ -69,7 +69,7 @@ class ShadersBuilder {
 								var bytes: haxe.io.Bytes = haxe.Unserializer.run(data);
 								blobs.push(kha.Blob.fromBytes(bytes));
 							}
-							$i{fixedName} = new kha.compute.Shader(blobs, $v{filenames});
+							$i{fixedName} = new kha.graphics4.ComputeShader(blobs, $v{filenames});
 						}
 					};
 				}

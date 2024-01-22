@@ -10,8 +10,10 @@ import kha.graphics4.FragmentShader;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
+import kha.graphics4.ComputeShader;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
+import kha.graphics4.ShaderStorageBuffer;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
@@ -448,6 +450,22 @@ class Graphics implements kha.graphics4.Graphics {
 				kinc_g4_set_render_targets(renderTargets, 1)
 			");
 		}
+	}
+
+	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
+		untyped __cpp__("
+			#ifdef KORE_OPENGL
+			kinc_g4_set_shader_storage_buffer(&buffer->buffer, index);
+			#endif
+		");
+	}
+
+	public function setComputeShader(shader: ComputeShader) {
+		untyped __cpp__("kinc_g4_set_compute_shader(&shader->shader);");
+	}
+
+	public function compute(x: Int, y: Int, z: Int) {
+		untyped __cpp__("kinc_g4_compute(x, y, z);");
 	}
 
 	@:functionCode("kinc_g4_restore_render_target();")

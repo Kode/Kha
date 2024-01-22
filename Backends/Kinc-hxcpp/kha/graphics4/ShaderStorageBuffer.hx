@@ -1,9 +1,7 @@
-package kha.compute;
-
-import kha.graphics4.VertexData;
+package kha.graphics4;
 
 @:headerCode("
-#include <kinc/compute/compute.h>
+#include <kinc/graphics4/compute.h>
 ")
 @:headerClassCode("
 #ifdef KORE_OPENGL

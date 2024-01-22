@@ -1,4 +1,4 @@
-package kha.compute;
+package kha.graphics4;
 
 import kha.Blob;
 

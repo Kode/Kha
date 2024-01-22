@@ -16,7 +16,7 @@ class SystemImpl {
 	static var keyboard: Keyboard;
 	static var mouse: Mouse;
 	static var pen: Pen;
-	static var maxGamepads: Int = 4;
+	static var maxGamepads: Int = 8;
 	static var gamepads: Array<Gamepad>;
 	static var mouseLockListeners: Array<Void->Void> = [];
 

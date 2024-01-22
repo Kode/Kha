@@ -1,6 +1,4 @@
-package kha.compute;
-
-import kha.graphics4.VertexData;
+package kha.graphics4;
 
 class ShaderStorageBuffer {
 	public var _buffer: Pointer;

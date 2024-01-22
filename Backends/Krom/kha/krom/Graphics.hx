@@ -5,12 +5,14 @@ import kha.Blob;
 import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
+import kha.graphics4.ComputeShader;
 import kha.graphics4.CubeMap;
 import kha.graphics4.CullMode;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.MipMapFilter;
 import kha.graphics4.PipelineState;
+import kha.graphics4.ShaderStorageBuffer;
 import kha.graphics4.StencilAction;
 import kha.graphics4.TexDir;
 import kha.graphics4.TextureAddressing;
@@ -252,5 +254,17 @@ class Graphics implements kha.graphics4.Graphics {
 
 	public function disableScissor(): Void {
 		Krom.disableScissor();
+	}
+
+	public function setShaderStorageBuffer(buffer: ShaderStorageBuffer, index: Int) {
+
+	}
+
+	public function setComputeShader(shader: ComputeShader) {
+
+	}
+
+	public function compute(x: Int, y: Int, z: Int) {
+
 	}
 }
