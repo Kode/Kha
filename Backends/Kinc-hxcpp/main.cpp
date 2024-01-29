@@ -202,7 +202,7 @@ namespace {
 #endif
 	bool mixThreadregistered = false;
 
-	void mix(kinc_a2_buffer_t *buffer, int samples) {
+	void mix(kinc_a2_buffer_t *buffer, int samples, void *userdata) {
 		using namespace Kore;
 
 		int t0 = 99;
@@ -340,7 +340,7 @@ void post_kinc_init() {
 }
 
 void kha_kinc_init_audio(void) {
-	kinc_a2_set_callback(mix);
+	kinc_a2_set_callback(mix, nullptr);
 	kinc_a2_init();
 	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second;
 }
