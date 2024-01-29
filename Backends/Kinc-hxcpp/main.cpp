@@ -202,7 +202,7 @@ namespace {
 #endif
 	bool mixThreadregistered = false;
 
-	void mix(kinc_a2_buffer_t *buffer, int samples, void *userdata) {
+	void mix(kinc_a2_buffer_t *buffer, uint32_t samples, void *userdata) {
 		using namespace Kore;
 
 		int t0 = 99;
@@ -226,7 +226,7 @@ namespace {
 		}
 #endif
 
-		::kha::audio2::Audio_obj::_callCallback(samples, buffer->format.samples_per_second);
+		::kha::audio2::Audio_obj::_callCallback(samples * 2, kinc_a2_samples_per_second());
 
 #ifdef KORE_MULTITHREADED_AUDIO
 		if (mixThreadregistered) {
@@ -236,8 +236,10 @@ namespace {
 
 		for (int i = 0; i < samples; ++i) {
 			float value = ::kha::audio2::Audio_obj::_readSample();
-			*(float *)&buffer->data[buffer->write_location] = value;
-			buffer->write_location += 4;
+			buffer->channels[0][buffer->write_location] = value;
+			value = ::kha::audio2::Audio_obj::_readSample();
+			buffer->channels[1][buffer->write_location] = value;
+			buffer->write_location += 1;
 			if (buffer->write_location >= buffer->data_size) {
 				buffer->write_location = 0;
 			}
@@ -342,7 +344,7 @@ void post_kinc_init() {
 void kha_kinc_init_audio(void) {
 	kinc_a2_set_callback(mix, nullptr);
 	kinc_a2_init();
-	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second;
+	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second();
 }
 
 void run_kinc() {
