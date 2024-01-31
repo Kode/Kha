@@ -92,7 +92,7 @@ void hl_init_kore(vbyte *title, int width, int height, int samplesPerPixel, bool
 void hl_kinc_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
 	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK *)(&callCallback->fun));
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE *)(&readSample->fun));
-	kinc_a2_set_callback(mix);
+	kinc_a2_set_callback(mix, NULL);
 	kinc_a2_init();
 	*outSamplesPerSecond = kinc_a2_samples_per_second;
 }
