@@ -42,7 +42,7 @@ static void update(void *data) {
 
 static bool mixThreadregistered = false;
 
-static void mix(kinc_a2_buffer_t *buffer, int samples) {
+static void mix(kinc_a2_buffer_t *buffer, uint32_t samples, void *userdata) {
 #ifdef KORE_MULTITHREADED_AUDIO
 	if (!mixThreadregistered) {
 		vdynamic *ret;
@@ -54,10 +54,12 @@ static void mix(kinc_a2_buffer_t *buffer, int samples) {
 
 	audioCallCallback(samples);
 
-	for (int i = 0; i < samples; ++i) {
-		float value = audioReadSample();
-		*(float *)&buffer->data[buffer->write_location] = value;
-		buffer->write_location += 4;
+	for (uint32_t i = 0; i < samples; i += 2) {
+		float left_value = audioReadSample();
+		float right_value = audioReadSample();
+		*(float *)&buffer->channels[0][buffer->write_location] = left_value;
+		*(float *)&buffer->channels[1][buffer->write_location] = right_value;
+		buffer->write_location += 1;
 		if (buffer->write_location >= buffer->data_size) {
 			buffer->write_location = 0;
 		}
@@ -94,7 +96,7 @@ void hl_kinc_init_audio(vclosure *callCallback, vclosure *readSample, int *outSa
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE *)(&readSample->fun));
 	kinc_a2_set_callback(mix, NULL);
 	kinc_a2_init();
-	*outSamplesPerSecond = kinc_a2_samples_per_second;
+	*outSamplesPerSecond = kinc_a2_samples_per_second();
 }
 
 void hl_run_kore(void) {
