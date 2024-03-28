@@ -43,7 +43,7 @@ static void update(void *data) {
 static bool mixThreadregistered = false;
 
 static void mix(kinc_a2_buffer_t *buffer, uint32_t samples, void *userdata) {
-#ifdef KORE_MULTITHREADED_AUDIO
+#ifdef KINC_MULTITHREADED_AUDIO
 	if (!mixThreadregistered) {
 		vdynamic *ret;
 		hl_register_thread(&ret);
@@ -65,7 +65,7 @@ static void mix(kinc_a2_buffer_t *buffer, uint32_t samples, void *userdata) {
 		}
 	}
 
-#ifdef KORE_MULTITHREADED_AUDIO
+#ifdef KINC_MULTITHREADED_AUDIO
 	hl_blocking(false);
 #endif
 }

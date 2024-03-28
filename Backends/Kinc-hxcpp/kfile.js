@@ -89,13 +89,15 @@ if (platform === Platform.WindowsApp) {
 	project.addDefine('HX_WINRT');
 }
 if (platform !== Platform.Windows || audio !== AudioApi.DirectSound) {
-	project.addDefine('KORE_MULTITHREADED_AUDIO');
+	project.addDefine('KINC_MULTITHREADED_AUDIO');
 }
 if (platform === Platform.OSX) {
 	project.addDefine('HXCPP_M64');
 	project.addDefine('HX_MACOS');
 }
-if (platform === Platform.Linux) project.addDefine('HX_LINUX');
+if (platform === Platform.Linux) {
+	project.addDefine('HX_LINUX');
+}
 if (platform === Platform.iOS) {
 	project.addDefine('IPHONE');
 	project.addDefine('HX_IPHONE');
@@ -110,10 +112,12 @@ if (platform === Platform.Android) {
 	project.addDefine('HXCPP_ANDROID_PLATFORM=24');
 }
 if (platform === Platform.OSX) {
-	project.addDefine('KORE_DEBUGDIR="osx"');
+	project.addDefine('KINC_DEBUGDIR="osx"');
 	project.addLib('Security');
 }
-if (platform === Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios"');
+if (platform === Platform.iOS) {
+	project.addDefine('KINC_DEBUGDIR="ios"');
+}
 
 // project:addDefine('HXCPP_SCRIPTABLE');
 project.addDefine('STATIC_LINK');

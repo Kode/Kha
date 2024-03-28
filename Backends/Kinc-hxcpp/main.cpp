@@ -206,7 +206,7 @@ namespace {
 		using namespace Kore;
 
 		int t0 = 99;
-#ifdef KORE_MULTITHREADED_AUDIO
+#ifdef KINC_MULTITHREADED_AUDIO
 		if (!mixThreadregistered && !::kha::audio2::Audio_obj::disableGcInteractions) {
 			hx::SetTopOfStack(&t0, true);
 			mixThreadregistered = true;
@@ -228,7 +228,7 @@ namespace {
 
 		::kha::audio2::Audio_obj::_callCallback(samples * 2, kinc_a2_samples_per_second());
 
-#ifdef KORE_MULTITHREADED_AUDIO
+#ifdef KINC_MULTITHREADED_AUDIO
 		if (mixThreadregistered) {
 			hx::EnterGCFreeZone();
 		}
@@ -351,7 +351,7 @@ void run_kinc() {
 	kinc_log(KINC_LOG_LEVEL_INFO, "Starting application");
 	kinc_start();
 	kinc_log(KINC_LOG_LEVEL_INFO, "Application stopped");
-#if !defined(KORE_XBOX_ONE) && !defined(KORE_TIZEN) && !defined(KORE_HTML5)
+#if !defined(KINC_HTML5)
 	kinc_threads_quit();
 	kinc_stop();
 #endif
@@ -366,7 +366,7 @@ extern "C" void __hxcpp_main();
 extern int _hxcpp_argc;
 extern char **_hxcpp_argv;
 
-#ifdef KORE_WINDOWS
+#ifdef KINC_WINDOWS
 #include <Windows.h>
 #endif
 
@@ -386,7 +386,7 @@ int kickstart(int argc, char **argv) {
 	} catch (Dynamic e) {
 		__hx_dump_stack();
 		kinc_log(KINC_LOG_LEVEL_ERROR, "Error %s", e == null() ? "null" : e->toString().__CStr());
-#ifdef KORE_WINDOWS
+#ifdef KINC_WINDOWS
 		MessageBoxW(NULL, e->toString().__WCStr(), NULL, MB_OK);
 #endif
 		return -1;

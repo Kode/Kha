@@ -4,7 +4,7 @@ package kha.graphics4;
 #include <kinc/graphics4/compute.h>
 ")
 @:headerClassCode("
-#ifdef KORE_OPENGL
+#ifdef KINC_OPENGL
 kinc_shader_storage_buffer buffer;
 #endif")
 class ShaderStorageBuffer {
@@ -19,7 +19,7 @@ class ShaderStorageBuffer {
 	}
 
 	@:functionCode("
-	#ifdef KORE_OPENGL
+	#ifdef KINC_OPENGL
 	kinc_g4_vertex_data type2;
 	switch (type) {
 	case 0:
@@ -48,7 +48,7 @@ class ShaderStorageBuffer {
 	}
 
 	@:functionCode("
-		#ifdef KORE_OPENGL
+		#ifdef KINC_OPENGL
 		kinc_shader_storage_buffer_destroy(&buffer);
 		#endif
 	")
@@ -59,7 +59,7 @@ class ShaderStorageBuffer {
 	}
 
 	@:functionCode("
-		#ifdef KORE_OPENGL
+		#ifdef KINC_OPENGL
 		int* indices = kinc_shader_storage_buffer_lock(&buffer);
 		for (int i = 0; i < myCount; ++i) {
 			indices[i] = data[i];

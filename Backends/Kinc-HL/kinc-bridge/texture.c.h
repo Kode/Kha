@@ -270,7 +270,7 @@ void hl_kinc_texture_unlock(vbyte *texture, vbyte *bytes) {
 	int stride = kinc_g4_texture_stride(tex);
 	for (int y = 0; y < tex->tex_height; ++y) {
 		for (int x = 0; x < tex->tex_width; ++x) {
-#ifdef KORE_DIRECT3D
+#ifdef KINC_DIRECT3D
 			if (tex->format == KINC_IMAGE_FORMAT_RGBA32) {
 				// RBGA->BGRA
 				btex[y * stride + x * size + 0] = b[(y * tex->tex_width + x) * size + 2];

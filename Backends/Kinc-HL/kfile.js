@@ -5,10 +5,10 @@ project.addExcludes('hl/src/std/unicase.c', 'hl/src/std/debug.c', 'hl/include/pc
 project.addIncludeDirs('hl/src', 'hl/include/pcre', 'hl/include/mbedtls/include', 'hl/include/zlib');
 project.addFiles('hl/include/mbedtls/library/**', 'hl/include/zlib/**', 'hl/libs/fmt/fmt.c', 'hl/libs/fmt/sha1.c', 'hl/libs/ssl/ssl.c');
 
-if (platform == Platform.OSX) project.addDefine('KORE_DEBUGDIR="osx-hl"');
-if (platform == Platform.iOS) project.addDefine('KORE_DEBUGDIR="ios-hl"');
+if (platform == Platform.OSX) project.addDefine('KINC_DEBUGDIR="osx-hl"');
+if (platform == Platform.iOS) project.addDefine('KINC_DEBUGDIR="ios-hl"');
 if (platform !== Platform.Windows || audio !== AudioApi.DirectSound) {
-	project.addDefine('KORE_MULTITHREADED_AUDIO');
+	project.addDefine('KINC_MULTITHREADED_AUDIO');
 }
 
 project.addDefine('KORE');

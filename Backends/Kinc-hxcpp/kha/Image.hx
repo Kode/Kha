@@ -465,7 +465,7 @@ class Image implements Canvas implements Resource {
 		int stride = kinc_g4_texture_stride(&texture);
 		for (int y = 0; y < texture.tex_height; ++y) {
 			for (int x = 0; x < texture.tex_width; ++x) {
-#ifdef KORE_DIRECT3D
+#ifdef KINC_DIRECT3D
 				if (texture.format == KINC_IMAGE_FORMAT_RGBA32) {
 					//RBGA->BGRA
 					tex[y * stride + x * size + 0] = b[(y * originalWidth + x) * size + 2];
