@@ -32,11 +32,11 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Linux (Vulkan or OpenGL)
 * macOS (Metal or OpenGL)
 * FreeBSD
-* Android (Vulkan or OpenGL and via C++ or via Java)
+* Android (Vulkan or OpenGL)
 * iOS (Metal or OpenGL)
 * tvOS
 * Raspberry Pi
-* Universal Windows Platform (Direct3D 12 or Direct3D 11)
+* Universal Windows Platform
 * Node.js (for automatically created server versions)
 * Java and AWT
 * C# and Windows Presentation Foundation
