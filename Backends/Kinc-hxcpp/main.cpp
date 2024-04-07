@@ -342,8 +342,8 @@ void post_kinc_init() {
 }
 
 void kha_kinc_init_audio(void) {
-	kinc_a2_set_callback(mix, nullptr);
 	kinc_a2_init();
+	kinc_a2_set_callback(mix, nullptr);
 	::kha::audio2::Audio_obj::samplesPerSecond = kinc_a2_samples_per_second();
 }
 
