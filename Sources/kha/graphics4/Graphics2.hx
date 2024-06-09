@@ -413,7 +413,7 @@ class ColoredShaderPainter {
 
 			triangleIndexBuffer = new IndexBuffer(triangleBufferSize * 3, Usage.StaticUsage);
 			var triIndices = triangleIndexBuffer.lock();
-			for (i in 0...bufferSize) {
+			for (i in 0...triangleBufferSize) {
 				triIndices[i * 3 + 0] = i * 3 + 0;
 				triIndices[i * 3 + 1] = i * 3 + 1;
 				triIndices[i * 3 + 2] = i * 3 + 2;
