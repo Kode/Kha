@@ -129,7 +129,7 @@ class AssetsBuilder {
 				fields.push({
 					name: name + "Size",
 					doc: null,
-					meta: [],
+					meta: [{pos: pos, name: ":keep"}],
 					access: [APublic],
 					kind: FVar(macro : Dynamic, macro $v{filesize}),
 					pos: Context.currentPos()
