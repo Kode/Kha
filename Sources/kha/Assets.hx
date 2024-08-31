@@ -1,7 +1,7 @@
 package kha;
 
-import haxe.io.Bytes;
 import haxe.Unserializer;
+import haxe.io.Bytes;
 
 using StringTools;
 
@@ -144,16 +144,14 @@ class Assets {
 			onLoaded(bytes);
 		}
 
-		function loadFunc(desc: Dynamic, done: (bytes: Int) -> Void, failure: (err: AssetError, bytes: Int) -> Void): Void {
+		function loadFunc(desc: AssetData, done: (bytes: Int) -> Void, failure: (err: AssetError, bytes: Int) -> Void): Void {
 			final name = desc.name;
 			final size = desc.file_sizes[0];
 			switch (desc.type) {
 				case "image":
-					Assets.loadImage(name, function(image: Image) done(size), function(err: AssetError) {
-						onError(err, size);
-					});
+					Assets.loadImage(name, image -> done(size), err -> onError(err, size));
 				case "sound":
-					Assets.loadSound(name, function(sound: Sound) {
+					Assets.loadSound(name, sound -> {
 						if (uncompressSoundsFilter == null || uncompressSoundsFilter(desc)) {
 							sound.uncompress(function() {
 								done(size);
@@ -162,21 +160,13 @@ class Assets {
 						else {
 							done(size);
 						}
-					}, function(err: AssetError) {
-						onError(err, size);
-					});
+					}, err -> onError(err, size));
 				case "blob":
-					Assets.loadBlob(name, function(blob: Blob) done(size), function(err: AssetError) {
-						onError(err, size);
-					});
+					Assets.loadBlob(name, blob -> done(size), err -> onError(err, size));
 				case "font":
-					Assets.loadFont(name, function(font: Font) done(size), function(err: AssetError) {
-						onError(err, size);
-					});
+					Assets.loadFont(name, font -> done(size), err -> onError(err, size));
 				case "video":
-					Assets.loadVideo(name, function(video: Video) done(size), function(err: AssetError) {
-						onError(err, size);
-					});
+					Assets.loadVideo(name, video -> done(size), err -> onError(err, size));
 			}
 		}
 
@@ -203,7 +193,7 @@ class Assets {
 	 * @param	name The name as defined by the khafile.
 	 * @param	done A callback.
 	 */
-	public static function loadImage(name: String, done: Image->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadImage(name: String, done: (image: Image) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(images, name + "Description");
 		if (description == null) {
 			reporter(failed, pos)({url: name, error: "Name not found"});
@@ -222,7 +212,8 @@ class Assets {
 	 * @param   readable If true, a copy of the image will be kept in main memory for image read operations.
 	 * @param	done A callback.
 	 */
-	public static function loadImageFromPath(path: String, readable: Bool, done: Image->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadImageFromPath(path: String, readable: Bool, done: (image: Image) -> Void, ?failed: (err: AssetError) -> Void,
+			?pos: haxe.PosInfos): Void {
 		var description = {files: [path], readable: readable};
 		LoaderImpl.loadImageFromDescription(description, done, reporter(failed, pos));
 	}
@@ -233,7 +224,7 @@ class Assets {
 		return LoaderImpl.getImageFormats();
 	}
 
-	public static function loadBlob(name: String, done: Blob->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadBlob(name: String, done: (blob: Blob) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(blobs, name + "Description");
 		if (description == null) {
 			reporter(failed, pos)({url: name, error: "Name not found"});
@@ -245,12 +236,12 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadBlobFromPath(path: String, done: Blob->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadBlobFromPath(path: String, done: (blob: Blob) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = {files: [path]};
 		LoaderImpl.loadBlobFromDescription(description, done, reporter(failed, pos));
 	}
 
-	public static function loadSound(name: String, done: Sound->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadSound(name: String, done: (sound: Sound) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(sounds, name + "Description");
 		if (description == null) {
 			reporter(failed, pos)({url: name, error: "Name not found"});
@@ -262,7 +253,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadSoundFromPath(path: String, done: Sound->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadSoundFromPath(path: String, done: (sound: Sound) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = {files: [path]};
 		return LoaderImpl.loadSoundFromDescription(description, done, reporter(failed, pos));
 	}
@@ -273,7 +264,7 @@ class Assets {
 		return LoaderImpl.getSoundFormats();
 	}
 
-	public static function loadFont(name: String, done: Font->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadFont(name: String, done: (font: Font) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(fonts, name + "Description");
 		if (description == null) {
 			reporter(failed, pos)({url: name, error: "Name not found"});
@@ -285,7 +276,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadFontFromPath(path: String, done: Font->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadFontFromPath(path: String, done: (font: Font) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = {files: [path]};
 		return LoaderImpl.loadFontFromDescription(description, done, reporter(failed, pos));
 	}
@@ -296,7 +287,7 @@ class Assets {
 		return ["ttf"];
 	}
 
-	public static function loadVideo(name: String, done: Video->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadVideo(name: String, done: (video: Video) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = Reflect.field(videos, name + "Description");
 		if (description == null) {
 			reporter(failed, pos)({url: name, error: "Name not found"});
@@ -308,7 +299,7 @@ class Assets {
 		}, reporter(failed, pos));
 	}
 
-	public static function loadVideoFromPath(path: String, done: Video->Void, ?failed: AssetError->Void, ?pos: haxe.PosInfos): Void {
+	public static function loadVideoFromPath(path: String, done: (video: Video) -> Void, ?failed: (err: AssetError) -> Void, ?pos: haxe.PosInfos): Void {
 		var description = {files: [path]};
 		return LoaderImpl.loadVideoFromDescription(description, done, reporter(failed, pos));
 	}
@@ -319,7 +310,7 @@ class Assets {
 		return LoaderImpl.getVideoFormats();
 	}
 
-	public static function reporter(custom: AssetError->Void, ?pos: haxe.PosInfos) {
+	public static function reporter(custom: (err: AssetError) -> Void, ?pos: haxe.PosInfos) {
 		return custom != null ? custom : haxe.Log.trace.bind(_, pos);
 	}
 }

@@ -103,7 +103,7 @@ class System {
 		});
 	}
 
-	public static function start(options: SystemOptions, callback: Window->Void): Void {
+	public static function start(options: SystemOptions, callback: (window: Window) -> Void): Void {
 		theTitle = options.title;
 		SystemImpl.init(options, callback);
 	}

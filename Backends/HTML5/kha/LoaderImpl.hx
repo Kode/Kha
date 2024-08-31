@@ -1,16 +1,16 @@
 package kha;
 
-import js.html.FileReader;
-import js.Syntax;
+import haxe.io.Bytes;
 import js.Browser;
+import js.Syntax;
+import js.html.FileReader;
 import js.html.ImageElement;
 import js.html.XMLHttpRequest;
-import haxe.io.Bytes;
 import kha.Blob;
-import kha.js.WebAudioSound;
-import kha.js.MobileWebAudioSound;
 import kha.graphics4.TextureFormat;
 import kha.graphics4.Usage;
+import kha.js.MobileWebAudioSound;
+import kha.js.WebAudioSound;
 
 using StringTools;
 
@@ -22,7 +22,7 @@ class LoaderImpl {
 		return ["png", "jpg", "hdr"];
 	}
 
-	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image->Void, failed: AssetError->Void) {
+	public static function loadImageFromDescription(desc: Dynamic, done: kha.Image->Void, failed: (err: AssetError) -> Void) {
 		var readable = Reflect.hasField(desc, "readable") ? desc.readable : false;
 		if (StringTools.endsWith(desc.files[0], ".hdr")) {
 			loadBlobFromDescription(desc, function(blob) {
@@ -56,7 +56,7 @@ class LoaderImpl {
 		return formats;
 	}
 
-	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: AssetError->Void) {
+	public static function loadSoundFromDescription(desc: Dynamic, done: kha.Sound->Void, failed: (err: AssetError) -> Void) {
 		if (SystemImpl._hasWebAudio) {
 			#if !kha_debug_html5
 			var element = Browser.document.createAudioElement();
@@ -154,11 +154,11 @@ class LoaderImpl {
 		#end
 	}
 
-	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void, failed: AssetError->Void): Void {
+	public static function loadVideoFromDescription(desc: Dynamic, done: kha.Video->Void, failed: (err: AssetError) -> Void): Void {
 		kha.js.Video.fromFile(desc.files, done);
 	}
 
-	public static function loadRemote(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
+	public static function loadRemote(desc: Dynamic, done: Blob->Void, failed: (err: AssetError) -> Void) {
 		var request = untyped new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
 		request.responseType = "arraybuffer";
@@ -194,7 +194,7 @@ class LoaderImpl {
 		request.send(null);
 	}
 
-	public static function loadBlobFromDescription(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
+	public static function loadBlobFromDescription(desc: Dynamic, done: Blob->Void, failed: (err: AssetError) -> Void) {
 		#if kha_debug_html5
 		var file: String = desc.files[0];
 
@@ -228,7 +228,7 @@ class LoaderImpl {
 		#end
 	}
 
-	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void, failed: AssetError->Void): Void {
+	public static function loadFontFromDescription(desc: Dynamic, done: Font->Void, failed: (err: AssetError) -> Void): Void {
 		loadBlobFromDescription(desc, function(blob: Blob) {
 			done(new Font(blob));
 		}, failed);
