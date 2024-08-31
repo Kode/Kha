@@ -4,11 +4,12 @@ import haxe.Json;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
+
+using StringTools;
+
 #if macro
 import sys.io.File;
 #end
-
-using StringTools;
 
 class AssetsBuilder {
 	#if macro
@@ -59,9 +60,9 @@ class AssetsBuilder {
 
 		var names = new Array<Expr>();
 
+		final pos = Context.currentPos();
 		for (file in files) {
 			var name = file.name;
-			final pos = Context.currentPos();
 			var filesize: Int = file.file_sizes[0];
 
 			if (file.type == type) {
@@ -132,7 +133,7 @@ class AssetsBuilder {
 					meta: [{pos: pos, name: ":keep"}],
 					access: [APublic],
 					kind: FVar(macro : Dynamic, macro $v{filesize}),
-					pos: Context.currentPos()
+					pos: pos
 				});
 
 				var loadExpressions = macro {};
@@ -170,13 +171,13 @@ class AssetsBuilder {
 						args: [
 							{
 								value: null,
-								type: Context.toComplexType(Context.getType("kha.internal.VoidCallback")),
+								type: macro : () -> Void,
 								opt: null,
 								name: "done"
 							},
 							{
 								value: null,
-								type: Context.toComplexType(Context.getType("kha.internal.AssetErrorCallback")),
+								type: macro : (err: kha.AssetError) -> Void,
 								opt: true,
 								name: "failure"
 							}
@@ -208,7 +209,7 @@ class AssetsBuilder {
 			meta: [],
 			access: [APublic],
 			kind: FVar(macro : Array<String>, macro $a{names}),
-			pos: Context.currentPos()
+			pos: pos
 		});
 
 		return fields;
