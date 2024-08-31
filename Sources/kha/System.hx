@@ -3,25 +3,34 @@ package kha;
 import kha.WindowOptions;
 
 @:structInit
+private class AudioOptions {
+	/** Allow `audio2.Audio` api initialization on mobile browsers (only for HTML5 target) **/
+	public var allowMobileWebAudio = false;
+}
+
+@:structInit
 class SystemOptions {
-	@:optional public var title: String = "Kha";
-	@:optional public var width: Int = -1;
-	@:optional public var height: Int = -1;
-	@:optional public var window: WindowOptions = null;
-	@:optional public var framebuffer: FramebufferOptions = null;
+	public var title: String = "Kha";
+	public var width: Int = -1;
+	public var height: Int = -1;
+	public var window: WindowOptions = null;
+	public var framebuffer: FramebufferOptions = null;
+	public var audio: AudioOptions = null;
 
 	/**
-	 * Used to provide parameters for System.start
+	 * Used to provide parameters for `System.start`
 	 * @param title The application title is the default window title (unless the window parameter provides a title of its own)
 	 * and is used for various other purposes - for example for save data locations
-	 * @param width Just a shortcut which overwrites window.width if set
-	 * @param height Just a shortcut which overwrites window.height if set
+	 * @param width Just a shortcut which overwrites `window.width` if set
+	 * @param height Just a shortcut which overwrites `window.height` if set
 	 * @param window Optionally provide window options
 	 * @param framebuffer Optionally provide framebuffer options
+	 * @param audio Optionally provide audio options
 	 */
-	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, window: WindowOptions = null, framebuffer: FramebufferOptions = null) {
+	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, ?window: WindowOptions, ?framebuffer: FramebufferOptions,
+			?audio: AudioOptions) {
 		this.title = title;
-		this.window = window == null ? {} : window;
+		this.window = window ?? {};
 
 		if (width > 0) {
 			this.window.width = width;
@@ -39,11 +48,10 @@ class SystemOptions {
 			this.height = this.window.height;
 		}
 
-		if (this.window.title == null) {
-			this.window.title = title;
-		}
+		this.window.title ??= title;
 
-		this.framebuffer = framebuffer == null ? {} : framebuffer;
+		this.framebuffer = framebuffer ?? {};
+		this.audio = audio ?? {};
 	}
 }
 
