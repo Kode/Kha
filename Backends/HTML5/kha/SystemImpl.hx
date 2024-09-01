@@ -460,7 +460,7 @@ class SystemImpl {
 		}
 		// canvas.getContext("2d").scale(transform, transform);
 
-		if (!mobile && kha.audio2.Audio._init()) {
+		if ((!mobile || options.audio.allowMobileWebAudio) && kha.audio2.Audio._init()) {
 			SystemImpl._hasWebAudio = true;
 			kha.audio2.Audio1._init();
 		}

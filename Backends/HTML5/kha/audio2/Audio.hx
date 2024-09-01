@@ -1,14 +1,14 @@
 package kha.audio2;
 
-import js.Syntax;
 import js.Browser;
+import js.Syntax;
 import js.html.URL;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioProcessingEvent;
 import js.html.audio.ScriptProcessorNode;
+import kha.Sound;
 import kha.internal.IntBox;
 import kha.js.AEAudioChannel;
-import kha.Sound;
 
 class Audio {
 	public static var disableGcInteractions = false;
@@ -70,7 +70,7 @@ class Audio {
 
 	public static var samplesPerSecond: Int;
 
-	public static var audioCallback: kha.internal.IntBox->Buffer->Void;
+	public static var audioCallback: (outputBufferLength: IntBox, buffer: Buffer) -> Void;
 
 	static var virtualChannels: Array<VirtualStreamChannel> = [];
 
