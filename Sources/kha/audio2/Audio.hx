@@ -1,5 +1,7 @@
 package kha.audio2;
 
+import kha.internal.IntBox;
+
 extern class Audio {
 	/**
 	 * The samples per second natively used by the target system.
@@ -10,8 +12,10 @@ extern class Audio {
 	 * Requests additional audio data.
 	 * Beware: This is called from a separate audio thread on some targets.
 	 * See kha.audio2.Audio1 for sample code.
+	 * This api is disabled on mobile for HTML5 target by default
+	 * and can be enabled in `System.start` options.
 	 */
-	public static var audioCallback: Int->Buffer->Void;
+	public static var audioCallback: (outputBufferLength:IntBox, buffer:Buffer)->Void;
 
 	/**
 	 * Similar to kha.audio1.Audio.stream, but only for hardware accelerated audio playback.
