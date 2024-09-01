@@ -5,53 +5,61 @@ package kha.input;
 class Gamepad {
 	var index: Int;
 
-	public static function get(index: Int = 0): Gamepad {
+	public static function get(index: Int = 0): Null<Gamepad> {
 		if (index >= instances.length)
 			return null;
 		return instances[index];
 	}
 
-	public static function notifyOnConnect(?connectListener: Int->Void, ?disconnectListener: Int->Void): Void {
+	/**
+		Use this event to get connected gamepad `index` and listen to it with `Gamepad.get(index).notify(axisListener, buttonListener)`.
+
+		Remember to also check `Gamepad.get(0)`, gamepads may already be connected before the application was initialized.
+	**/
+	public static function notifyOnConnect(?connectListener: (index: Int) -> Void, ?disconnectListener: (index: Int) -> Void): Void {
 		if (connectListener != null)
 			connectListeners.push(connectListener);
 		if (disconnectListener != null)
 			disconnectListeners.push(disconnectListener);
 	}
 
-	public static function removeConnect(?connectListener: Int->Void, ?disconnectListener: Int->Void): Void {
+	public static function removeConnect(?connectListener: (index: Int) -> Void, ?disconnectListener: (index: Int) -> Void): Void {
 		if (connectListener != null)
 			connectListeners.remove(connectListener);
 		if (disconnectListener != null)
 			disconnectListeners.remove(disconnectListener);
 	}
 
-	public function notify(?axisListener: Int->Float->Void, ?buttonListener: Int->Float->Void): Void {
+	/**
+		In `axisListener`, `axisId` is axis id (for example `axis == 0` is L-stick `x`, `1` is L-stick `y`, `2` is R-stick `x`, `3` is R-stick `y`, ...) and `value` is in `-1.0 - 1.0` range.
+
+		In `buttonListener`, `buttonId` is pressed button id (layout depends on `vendor`), and `value` is in `0 - 1.0` range how hard the button is pressed.
+	**/
+	public function notify(?axisListener: (axisId: Int, value: Float) -> Void, ?buttonListener: (buttonId: Int, value: Float) -> Void): Void {
 		if (axisListener != null)
 			axisListeners.push(axisListener);
 		if (buttonListener != null)
 			buttonListeners.push(buttonListener);
 	}
 
-	public function remove(?axisListener: Int->Float->Void, ?buttonListener: Int->Float->Void): Void {
+	public function remove(?axisListener: (axisId: Int, value: Float) -> Void, ?buttonListener: (buttonId: Int, value: Float) -> Void): Void {
 		if (axisListener != null)
 			axisListeners.remove(axisListener);
 		if (buttonListener != null)
 			buttonListeners.remove(buttonListener);
 	}
 
-	static var instances: Array<Gamepad> = new Array();
+	static var instances: Array<Gamepad> = [];
 
-	var axisListeners: Array<Int->Float->Void>;
-	var buttonListeners: Array<Int->Float->Void>;
+	var axisListeners: Array<(axisId: Int, value: Float) -> Void> = [];
+	var buttonListeners: Array<(buttonId: Int, value: Float) -> Void> = [];
 
-	static var connectListeners: Array<Int->Void> = new Array();
-	static var disconnectListeners: Array<Int->Void> = new Array();
+	static var connectListeners: Array<(index: Int) -> Void> = [];
+	static var disconnectListeners: Array<(index: Int) -> Void> = [];
 
 	function new(index: Int = 0, id: String = "unknown") {
 		connected = false;
 		this.index = index;
-		axisListeners = new Array<Int->Float->Void>();
-		buttonListeners = new Array<Int->Float->Void>();
 		instances[index] = this;
 	}
 
