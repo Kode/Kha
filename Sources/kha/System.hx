@@ -87,7 +87,7 @@ class System {
 
 	@:deprecated("Use System.start instead")
 	public static function init(options: OldSystemOptions, callback: Void->Void): Void {
-		var features: kha.WindowFeatures = None;
+		var features: WindowFeatures = None;
 		if (options.resizable)
 			features |= WindowFeatures.FeatureResizable;
 		if (options.maximizable)
