@@ -159,9 +159,9 @@ class LoaderImpl {
 	}
 
 	public static function loadRemote(desc: Dynamic, done: Blob->Void, failed: AssetError->Void) {
-		var request = untyped new XMLHttpRequest();
+		var request = new XMLHttpRequest();
 		request.open("GET", desc.files[0], true);
-		request.responseType = "arraybuffer";
+		request.responseType = ARRAYBUFFER;
 
 		request.onreadystatechange = function() {
 			if (request.readyState != 4)
@@ -173,12 +173,6 @@ class LoaderImpl {
 				if (arrayBuffer != null) {
 					var byteArray: Dynamic = Syntax.code("new Uint8Array(arrayBuffer)");
 					bytes = Bytes.ofData(byteArray);
-				}
-				else if (request.responseBody != null) {
-					var data: Dynamic = untyped Syntax.code("VBArray(request.responseBody).toArray()");
-					bytes = Bytes.alloc(data.length);
-					for (i in 0...data.length)
-						bytes.set(i, data[i]);
 				}
 				else {
 					failed({url: desc.files[0]});
