@@ -36,7 +36,7 @@ class LoaderImpl {
 			img.onerror = function(event: Dynamic) failed({url: desc.files[0], error: event});
 			img.onload = function(event: Dynamic) done(Image.fromImage(img, readable));
 			img.crossOrigin = "";
-			img.src = desc.files[0];
+			img.src = desc.files[0] + '#' + Date.now().toString();
 		}
 	}
 
