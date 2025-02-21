@@ -6,10 +6,6 @@
 	path = Backends/Kinc-hxcpp/khacpp
 	url = https://github.com/Kode/khacpp.git
 	branch = main
-[submodule "Kinc"]
-	path = Kinc
-	url = https://github.com/Kode/Kinc.git
-	branch = main
 [submodule "Tools/linux_x64"]
 	path = Tools/linux_x64
 	url = https://github.com/Kode/KhaTools_linux_x64.git
