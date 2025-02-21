@@ -2,10 +2,6 @@
 	path = Tools/khamake
 	url = https://github.com/Kode/khamake.git
 	branch = main
-[submodule "Backends/Kinc-hxcpp/khacpp"]
-	path = Backends/Kinc-hxcpp/khacpp
-	url = https://github.com/Kode/khacpp.git
-	branch = main
 [submodule "Kore"]
 	path = Kore
 	url = https://github.com/Kode/Kore.git
