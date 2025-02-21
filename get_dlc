@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 git -C `dirname "$0"` submodule update --init Tools/khamake
-git -C `dirname "$0"` submodule update --init Backends/Kinc-hxcpp/khacpp
+git -C `dirname "$0"` submodule update --init Backends/Kore-hxcpp/khacpp
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	MACHINE_TYPE=`uname -m`
@@ -18,5 +18,5 @@ elif [[ "$OSTYPE" == "FreeBSD"* ]]; then
 	git -C `dirname "$0"` submodule update --depth 1 --init Tools/freebsd_x64
 fi
 
-git -C `dirname "$0"` submodule update --init Kinc
-bash `dirname "$0"`/Kinc/get_dlc
+git -C `dirname "$0"` submodule update --init Kore
+bash `dirname "$0"`/Kore/get_dlc

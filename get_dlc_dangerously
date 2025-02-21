@@ -9,11 +9,11 @@ git -C `dirname "$0"` submodule update --init --remote Tools/khamake
 git -C `dirname "$0"`/Tools/khamake checkout main
 fi
 
-if test -f "Backends/Kinc-hxcpp/khacpp/LICENSE.txt"; then
-git -C `dirname "$0"` submodule update --remote --merge Backends/Kinc-hxcpp/khacpp
+if test -f "Backends/Kore-hxcpp/khacpp/LICENSE.txt"; then
+git -C `dirname "$0"` submodule update --remote --merge Backends/Kore-hxcpp/khacpp
 else
-git -C `dirname "$0"` submodule update --init --remote Backends/Kinc-hxcpp/khacpp
-git -C `dirname "$0"`/Backends/Kinc-hxcpp/khacpp checkout main
+git -C `dirname "$0"` submodule update --init --remote Backends/Kore-hxcpp/khacpp
+git -C `dirname "$0"`/Backends/Kore-hxcpp/khacpp checkout main
 fi
 
 if test -f "Tools/$KINC_PLATFORM/LICENSE.txt"; then
@@ -23,11 +23,11 @@ git -C `dirname "$0"` submodule update --init --remote "Tools/$KINC_PLATFORM"
 git -C `dirname "$0"`/Tools/$KINC_PLATFORM checkout main
 fi
 
-if test -f "Kinc/get_dlc_dangerously"; then
-git -C `dirname "$0"` submodule update --remote --merge Kinc
+if test -f "Kore/get_dlc_dangerously"; then
+git -C `dirname "$0"` submodule update --remote --merge Kore
 else
-git -C `dirname "$0"` submodule update --init --remote Kinc
-git -C `dirname "$0"`/Kinc checkout main
+git -C `dirname "$0"` submodule update --init --remote Kore
+git -C `dirname "$0"`/Kore checkout main
 fi
 
-bash `dirname "$0"`/Kinc/get_dlc_dangerously
+bash `dirname "$0"`/Kore/get_dlc_dangerously
