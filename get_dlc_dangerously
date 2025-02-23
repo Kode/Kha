@@ -2,28 +2,28 @@
 
 . `dirname "$0"`/Tools/platform.sh
 
-if test -f "Tools/khamake/khamake.js"; then
+if test -f `dirname "$0"`"/Tools/khamake/khamake.js"; then
 git -C `dirname "$0"` submodule update --remote --merge Tools/khamake
 else
 git -C `dirname "$0"` submodule update --init --remote Tools/khamake
 git -C `dirname "$0"`/Tools/khamake checkout main
 fi
 
-if test -f "Backends/Kore-hxcpp/khacpp/LICENSE.txt"; then
+if test -f `dirname "$0"`"/Backends/Kore-hxcpp/khacpp/LICENSE.txt"; then
 git -C `dirname "$0"` submodule update --remote --merge Backends/Kore-hxcpp/khacpp
 else
 git -C `dirname "$0"` submodule update --init --remote Backends/Kore-hxcpp/khacpp
 git -C `dirname "$0"`/Backends/Kore-hxcpp/khacpp checkout main
 fi
 
-if test -f "Tools/$KINC_PLATFORM/LICENSE.txt"; then
+if test -f `dirname "$0"`"/Tools/$KINC_PLATFORM/LICENSE.txt"; then
 git -C `dirname "$0"` submodule update --remote --merge "Tools/$KINC_PLATFORM"
 else
 git -C `dirname "$0"` submodule update --init --remote "Tools/$KINC_PLATFORM"
 git -C `dirname "$0"`/Tools/$KINC_PLATFORM checkout main
 fi
 
-if test -f "Kore/get_dlc_dangerously"; then
+if test -f `dirname "$0"`"/Kore/get_dlc_dangerously"; then
 git -C `dirname "$0"` submodule update --remote --merge Kore
 else
 git -C `dirname "$0"` submodule update --init --remote Kore
