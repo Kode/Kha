@@ -286,7 +286,8 @@ class FastMatrix4 {
 
 		var det: FastFloat = _00 * c00 - _01 * c01 + _02 * c02 - _03 * c03;
 		if (Math.abs(det) < 0.000001) {
-			throw "determinant is too small";
+			final sign = det < 0 ? -1 : 1;
+			det = 0.000001 * sign;
 		}
 
 		var c10 = cofactor(_01, _21, _31, _02, _22, _32, _03, _23, _33);
