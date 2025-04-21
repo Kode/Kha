@@ -10,7 +10,7 @@ class Audio {
 
 	public static function _init() {
 		var bufferSize = 1024 * 2;
-		buffer = new Buffer(bufferSize * 4, 2, 44100);
+		buffer = new Buffer(bufferSize * 4, 2, samplesPerSecond);
 	}
 
 	public static function _callCallback(samples: Int): Void {
@@ -31,11 +31,11 @@ class Audio {
 		}
 	}
 
-	public static function _readSample(): Float {
+	public static function _readSample(): FastFloat {
 		if (buffer == null)
 			return 0;
 		var value = buffer.data.get(buffer.readLocation);
-		buffer.readLocation += 1;
+		++buffer.readLocation;
 		if (buffer.readLocation >= buffer.size) {
 			buffer.readLocation = 0;
 		}

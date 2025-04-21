@@ -171,8 +171,9 @@ class SystemImpl {
 		Krom.setGamepadAxisCallback(gamepadAxisCallback);
 		Krom.setGamepadButtonCallback(gamepadButtonCallback);
 
-		kha.audio2.Audio._init();
+		kha.audio2.Audio.samplesPerSecond = Krom.getSampleRate();
 		kha.audio1.Audio._init();
+		kha.audio2.Audio._init();
 		Krom.setAudioCallback(audioCallback);
 
 		Scheduler.start();
