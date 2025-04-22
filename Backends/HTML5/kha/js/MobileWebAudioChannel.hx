@@ -2,6 +2,8 @@ package kha.js;
 
 import js.html.audio.AudioBuffer;
 import js.html.audio.AudioBufferSourceNode;
+import js.html.audio.ChannelSplitterNode;
+import js.html.audio.ChannelMergerNode;
 import js.html.audio.GainNode;
 
 class MobileWebAudioChannel implements kha.audio1.AudioChannel {
@@ -13,6 +15,11 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 	var pauseTime: Float;
 	var paused: Bool = false;
 	var stopped: Bool = false;
+
+	var leftGain: GainNode;
+	var rightGain: GainNode;
+	var splitter: ChannelSplitterNode;
+	var merger: ChannelMergerNode;
 
 	public function new(sound: MobileWebAudioSound, loop: Bool) {
 		this.buffer = sound._buffer;
@@ -27,8 +34,20 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		source.onended = function() {
 			stopped = true;
 		}
+
+		splitter = MobileWebAudio._context.createChannelSplitter(2);
+		leftGain = MobileWebAudio._context.createGain();
+		rightGain = MobileWebAudio._context.createGain();
+		merger = MobileWebAudio._context.createChannelMerger(2);
 		gain = MobileWebAudio._context.createGain();
-		source.connect(gain);
+
+		source.connect(splitter);
+		splitter.connect(leftGain, 0);
+		splitter.connect(rightGain, 1);
+		leftGain.connect(merger, 0, 0);
+		rightGain.connect(merger, 0, 1);
+		merger.connect(gain);
+
 		gain.connect(MobileWebAudio._context.destination);
 	}
 
