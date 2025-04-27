@@ -80,7 +80,6 @@ extern class Krom {
 	static function unloadImage(image: kha.Image): Void;
 	static function loadSound(file: String): Dynamic;
 	static function writeAudioBuffer(buffer: js.lib.ArrayBuffer, samples: Int): Void;
-	static function getSamplesPerSecond(): Int;
 	static function loadBlob(file: String): js.lib.ArrayBuffer;
 
 	static function init(title: String, width: Int, height: Int, samplesPerPixel: Int, vSync: Bool, windowMode: Int, windowFeatures: Int, kromApi: Int): Void;
