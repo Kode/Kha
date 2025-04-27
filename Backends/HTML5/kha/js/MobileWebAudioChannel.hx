@@ -18,7 +18,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 
 	var leftGain: GainNode;
 	var rightGain: GainNode;
-	var stereoGain: GainNode;
+	var attenuationGain: GainNode;
 	var splitter: ChannelSplitterNode;
 	var merger: ChannelMergerNode;
 
@@ -40,7 +40,7 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		leftGain = MobileWebAudio._context.createGain();
 		rightGain = MobileWebAudio._context.createGain();
 		merger = MobileWebAudio._context.createChannelMerger(2);
-		stereoGain = MobileWebAudio._context.createGain();
+		attenuationGain = MobileWebAudio._context.createGain();
 		gain = MobileWebAudio._context.createGain();
 
 		source.connect(splitter);
@@ -48,8 +48,8 @@ class MobileWebAudioChannel implements kha.audio1.AudioChannel {
 		splitter.connect(rightGain, 1);
 		leftGain.connect(merger, 0, 0);
 		rightGain.connect(merger, 0, 1);
-		merger.connect(stereoGain);
-		stereoGain.connect(gain);
+		merger.connect(attenuationGain);
+		attenuationGain.connect(gain);
 
 		gain.connect(MobileWebAudio._context.destination);
 	}
