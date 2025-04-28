@@ -46,8 +46,8 @@ extern class Krom {
 	static function viewport(x: Int, y: Int, width: Int, height: Int): Void;
 	static function scissor(x: Int, y: Int, width: Int, height: Int): Void;
 	static function disableScissor(): Void;
-	static function createRenderTarget(width: Int, height: Int, format: Int, depthBufferBits: Int, stencilBufferBits: Int): Dynamic;
-	static function createRenderTargetCubeMap(cubeMapSize: Int, format: Int, depthBufferBits: Int, stencilBufferBits: Int): Dynamic;
+	static function createRenderTarget(width: Int, height: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
+	static function createRenderTargetCubeMap(cubeMapSize: Int, depthBufferBits: Int, format: Int, stencilBufferBits: Int, contextId: Int): Dynamic;
 	static function createTexture(width: Int, height: Int, format: Int): Dynamic;
 	static function createTexture3D(width: Int, height: Int, depth: Int, format: Int): Dynamic;
 	static function createTextureFromBytes(data: haxe.io.BytesData, width: Int, height: Int, format: Int, readable: Bool): Dynamic;
@@ -116,7 +116,6 @@ extern class Krom {
 	static function screenDpi(): Int;
 	static function systemId(): String;
 	static function requestShutdown(): Void;
-	static function displayFrequency(): Int;
 	static function displayCount(): Int;
 	static function displayWidth(index: Int): Int;
 	static function displayHeight(index: Int): Int;
