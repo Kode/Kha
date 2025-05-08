@@ -61,7 +61,7 @@ class Graphics implements kha.graphics4.Graphics {
 	}
 
 	public function refreshRate(): Int {
-		return 60;
+		return Krom.displayFrequency();
 	}
 
 	public function clear(?color: Color, ?depth: Float, ?stencil: Int): Void {

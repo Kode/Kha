@@ -207,7 +207,7 @@ class SystemImpl {
 	}
 
 	public static function getRefreshRate(): Int {
-		return 60;
+		return Krom.displayFrequency();
 	}
 
 	public static function getSystemId(): String {
