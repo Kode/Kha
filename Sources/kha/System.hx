@@ -360,11 +360,7 @@ class System {
 	public static var refreshRate(get, null): Int;
 
 	static function get_refreshRate(): Int {
-		#if kha_krom
-		return Krom.displayFrequency();
-		#else
 		return Display.primary.frequency;
-		#end
 	}
 
 	@:deprecated("Use the kha.Display API instead")
