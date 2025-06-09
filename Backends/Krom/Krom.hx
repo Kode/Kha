@@ -116,6 +116,7 @@ extern class Krom {
 	static function screenDpi(): Int;
 	static function systemId(): String;
 	static function requestShutdown(): Void;
+	static function displayFrequency(): Int;
 	static function displayCount(): Int;
 	static function displayWidth(index: Int): Int;
 	static function displayHeight(index: Int): Int;
