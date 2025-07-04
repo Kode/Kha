@@ -1,5 +1,6 @@
 package kha;
 
+import js.html.FileReader;
 import haxe.io.Bytes;
 import js.html.ImageElement;
 import js.html.CanvasElement;
@@ -90,11 +91,25 @@ class Image implements Canvas implements Resource {
 
 	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image->Void, errorCallback: String->Void,
 			readable: Bool = false): Void {
-		var dataUrl = "data:image;base64," + haxe.crypto.Base64.encode(bytes);
-		var imageElement = cast(js.Browser.document.createElement("img"), ImageElement);
-		imageElement.onload = function() doneCallback(fromImage(imageElement, readable));
-		imageElement.onerror = function() errorCallback("Image was not created");
-		imageElement.src = dataUrl;
+		bufferToBase64(cast bytes.getData(), dataUrl -> {
+			final imageElement = js.Browser.document.createImageElement();
+			imageElement.onload = () -> doneCallback(fromImage(imageElement, readable));
+			imageElement.onerror = () -> errorCallback("Image was not created");
+			imageElement.src = 'data:image;base64,$dataUrl';
+		}, () -> {
+			errorCallback("Image was not created");
+		});
+	}
+
+	static function bufferToBase64(buffer:js.lib.Uint8Array, onLoad:(base64:String)->Void, onError:()->Void) {
+		final reader = new FileReader();
+		reader.onload = () -> {
+			final result:String = reader.result;
+			// remove the `data:application/octet-stream;base64,` part from the start
+			onLoad(result.substr(result.indexOf(',') + 1));
+		}
+		reader.onerror = () -> onError();
+		reader.readAsDataURL(new js.html.Blob([buffer]));
 	}
 
 	public static function fromVideo(video: kha.Video): Image {
