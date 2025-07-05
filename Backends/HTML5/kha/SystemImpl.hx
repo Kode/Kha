@@ -6,8 +6,10 @@ import js.html.CanvasElement;
 import js.html.ClipboardEvent;
 import js.html.DeviceMotionEvent;
 import js.html.DeviceOrientationEvent;
+import js.html.DragEvent;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
+import js.html.PointerEvent;
 import js.html.Touch;
 import js.html.TouchEvent;
 import js.html.WebSocket;
@@ -480,7 +482,7 @@ class SystemImpl {
 		canvas.focus();
 
 		#if kha_disable_context_menu
-		canvas.oncontextmenu = function(event: Dynamic) {
+		canvas.oncontextmenu = function(event: PointerEvent) {
 			event.stopPropagation();
 			event.preventDefault();
 		}
@@ -503,12 +505,12 @@ class SystemImpl {
 		canvas.addEventListener("touchend", touchUp, false);
 		canvas.addEventListener("touchmove", touchMove, false);
 		canvas.addEventListener("touchcancel", touchCancel, false);
+		// prevent dragging canvas like images in Firefox
+		canvas.addEventListener("dragstart", (e:DragEvent) -> e.preventDefault());
+		// prevent dropping local files on page and replacing page with them
+		Browser.document.addEventListener("dragover", (e:DragEvent) -> e.preventDefault());
 
-		Browser.document.addEventListener("dragover", function(event) {
-			event.preventDefault();
-		});
-
-		Browser.document.addEventListener("drop", function(event: js.html.DragEvent) {
+		Browser.document.addEventListener("drop", function(event: DragEvent) {
 			event.preventDefault();
 			if (event.dataTransfer != null && event.dataTransfer.files != null) {
 				for (file in event.dataTransfer.files) {
