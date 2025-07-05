@@ -105,18 +105,7 @@ class CanvasGraphics extends Graphics {
 	}
 
 	override function set_imageScaleQuality(value: ImageScaleQuality): ImageScaleQuality {
-		if (value == ImageScaleQuality.Low) {
-			untyped canvas.mozImageSmoothingEnabled = false;
-			untyped canvas.webkitImageSmoothingEnabled = false;
-			untyped canvas.msImageSmoothingEnabled = false;
-			canvas.imageSmoothingEnabled = false;
-		}
-		else {
-			untyped canvas.mozImageSmoothingEnabled = true;
-			untyped canvas.webkitImageSmoothingEnabled = true;
-			untyped canvas.msImageSmoothingEnabled = true;
-			canvas.imageSmoothingEnabled = true;
-		}
+		canvas.imageSmoothingEnabled = value == ImageScaleQuality.High;
 		return scaleQuality = value;
 	}
 

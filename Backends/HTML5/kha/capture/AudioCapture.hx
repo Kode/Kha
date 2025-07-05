@@ -1,5 +1,6 @@
 package kha.capture;
 
+import js.Browser.navigator;
 import js.html.audio.AudioProcessingEvent;
 import kha.audio2.Buffer;
 
@@ -16,8 +17,8 @@ class AudioCapture {
 			return;
 		}
 
-		var getUserMedia = untyped __js__("navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia");
-		getUserMedia.call(js.Browser.navigator, {audio: true}, function(stream: Dynamic) {
+		final getUserMedia = (navigator : Dynamic).getUserMedia;
+		getUserMedia.call(navigator, {audio: true}, function(stream: Dynamic) {
 			input = kha.audio2.Audio._context.createMediaStreamSource(stream);
 
 			var bufferSize = 1024 * 2;
