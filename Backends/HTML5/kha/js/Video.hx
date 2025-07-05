@@ -32,7 +32,7 @@ class Video extends kha.Video {
 
 		video.done = done;
 
-		video.element = cast Browser.document.createElement("video");
+		video.element = Browser.document.createVideoElement();
 
 		video.filenames = [];
 		for (filename in filenames) {

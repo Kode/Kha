@@ -27,7 +27,7 @@ class CanvasImage extends Image {
 	var g2canvas: CanvasGraphics = null;
 
 	public static function init() {
-		var canvas: Dynamic = Browser.document.createElement("canvas");
+		final canvas = Browser.document.createCanvasElement();
 		if (canvas != null) {
 			context = canvas.getContext("2d");
 			canvas.width = 2048;
@@ -56,7 +56,7 @@ class CanvasImage extends Image {
 
 	override function get_g2(): kha.graphics2.Graphics {
 		if (g2canvas == null) {
-			var canvas: Dynamic = Browser.document.createElement("canvas");
+			final canvas = Browser.document.createCanvasElement();
 			image = canvas;
 			var context = canvas.getContext("2d");
 			canvas.width = width;

@@ -311,14 +311,14 @@ class SystemImpl {
 	}
 
 	public static function copyToClipboard(text: String) {
-		var textArea = Browser.document.createElement("textarea");
-		untyped textArea.value = text;
+		var textArea = Browser.document.createTextAreaElement();
+		textArea.value = text;
 		textArea.style.top = "0";
 		textArea.style.left = "0";
 		textArea.style.position = "fixed";
 		Browser.document.body.appendChild(textArea);
 		textArea.focus();
-		untyped textArea.select();
+		textArea.select();
 		try {
 			Browser.document.execCommand("copy");
 		}
@@ -626,14 +626,14 @@ class SystemImpl {
 	}
 
 	public static function lockMouse(): Void {
-		untyped if (SystemImpl.khanvas.requestPointerLock) {
+		if (SystemImpl.khanvas.requestPointerLock != null) {
 			SystemImpl.khanvas.requestPointerLock();
 		}
 	}
 
 	public static function unlockMouse(): Void {
-		untyped if (document.exitPointerLock) {
-			document.exitPointerLock();
+		if (Browser.document.exitPointerLock != null) {
+			Browser.document.exitPointerLock();
 		}
 	}
 
@@ -1267,8 +1267,8 @@ class SystemImpl {
 			return null; // Chrome crashes if navigator.getGamepads() is called when using VR
 		}
 
-		if (untyped navigator.getGamepads) {
-			return js.Browser.navigator.getGamepads();
+		if (Browser.navigator.getGamepads != null) {
+			return Browser.navigator.getGamepads();
 		}
 		else {
 			return null;
