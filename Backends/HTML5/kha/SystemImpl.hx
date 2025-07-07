@@ -313,14 +313,14 @@ class SystemImpl {
 	}
 
 	public static function copyToClipboard(text: String) {
-		var textArea = Browser.document.createElement("textarea");
-		untyped textArea.value = text;
+		var textArea = Browser.document.createTextAreaElement();
+		textArea.value = text;
 		textArea.style.top = "0";
 		textArea.style.left = "0";
 		textArea.style.position = "fixed";
 		Browser.document.body.appendChild(textArea);
 		textArea.focus();
-		untyped textArea.select();
+		textArea.select();
 		try {
 			Browser.document.execCommand("copy");
 		}
@@ -531,14 +531,7 @@ class SystemImpl {
 	static function initAnimate(callback: Window->Void) {
 		var canvas: CanvasElement = getCanvasElement();
 
-		var window: Dynamic = Browser.window;
-		var requestAnimationFrame = window.requestAnimationFrame;
-		if (requestAnimationFrame == null)
-			requestAnimationFrame = window.mozRequestAnimationFrame;
-		if (requestAnimationFrame == null)
-			requestAnimationFrame = window.webkitRequestAnimationFrame;
-		if (requestAnimationFrame == null)
-			requestAnimationFrame = window.msRequestAnimationFrame;
+		final window = Browser.window;
 
 		var isRefreshRateDetectionActive = false;
 		var lastTimestamp = 0.0;
@@ -549,10 +542,7 @@ class SystemImpl {
 		];
 
 		function animate(timestamp) {
-			if (requestAnimationFrame == null)
-				Browser.window.setTimeout(animate, 1000.0 / 60.0);
-			else
-				requestAnimationFrame(animate);
+			window.requestAnimationFrame(animate);
 
 			var sysGamepads = getGamepads();
 			if (sysGamepads != null) {
@@ -633,64 +623,38 @@ class SystemImpl {
 		}, 500);
 
 		Scheduler.start();
-		requestAnimationFrame(animate);
+		window.requestAnimationFrame(animate);
 		callback(SystemImpl.window);
 	}
 
 	public static function lockMouse(): Void {
-		untyped if (SystemImpl.khanvas.requestPointerLock) {
+		if (SystemImpl.khanvas.requestPointerLock != null) {
 			SystemImpl.khanvas.requestPointerLock();
-		}
-		else if (SystemImpl.khanvas.mozRequestPointerLock) {
-			SystemImpl.khanvas.mozRequestPointerLock();
-		}
-		else if (SystemImpl.khanvas.webkitRequestPointerLock) {
-			SystemImpl.khanvas.webkitRequestPointerLock();
 		}
 	}
 
 	public static function unlockMouse(): Void {
-		untyped if (document.exitPointerLock) {
-			document.exitPointerLock();
-		}
-		else if (document.mozExitPointerLock) {
-			document.mozExitPointerLock();
-		}
-		else if (document.webkitExitPointerLock) {
-			document.webkitExitPointerLock();
+		if (Browser.document.exitPointerLock != null) {
+			Browser.document.exitPointerLock();
 		}
 	}
 
 	public static function canLockMouse(): Bool {
-		return Syntax.code("'pointerLockElement' in document ||
-		'mozPointerLockElement' in document ||
-		'webkitPointerLockElement' in document");
+		return Syntax.code("'pointerLockElement' in document");
 	}
 
 	public static function isMouseLocked(): Bool {
-		return Syntax.code("document.pointerLockElement === kha_SystemImpl.khanvas ||
-			document.mozPointerLockElement === kha_SystemImpl.khanvas ||
-			document.webkitPointerLockElement === kha_SystemImpl.khanvas");
+		return Syntax.code("document.pointerLockElement === kha_SystemImpl.khanvas");
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {
 		js.Browser.document.addEventListener("pointerlockchange", func, false);
-		js.Browser.document.addEventListener("mozpointerlockchange", func, false);
-		js.Browser.document.addEventListener("webkitpointerlockchange", func, false);
-
 		js.Browser.document.addEventListener("pointerlockerror", error, false);
-		js.Browser.document.addEventListener("mozpointerlockerror", error, false);
-		js.Browser.document.addEventListener("webkitpointerlockerror", error, false);
 	}
 
 	public static function removeFromMouseLockChange(func: Void->Void, error: Void->Void): Void {
 		js.Browser.document.removeEventListener("pointerlockchange", func, false);
-		js.Browser.document.removeEventListener("mozpointerlockchange", func, false);
-		js.Browser.document.removeEventListener("webkitpointerlockchange", func, false);
-
 		js.Browser.document.removeEventListener("pointerlockerror", error, false);
-		js.Browser.document.removeEventListener("mozpointerlockerror", error, false);
-		js.Browser.document.removeEventListener("webkitpointerlockerror", error, false);
 	}
 
 	static function setMouseXY(event: MouseEvent): Void {
@@ -895,13 +859,6 @@ class SystemImpl {
 
 		var movementX = event.movementX;
 		var movementY = event.movementY;
-
-		if (event.movementX == null) {
-			movementX = (untyped event.mozMovementX != null) ? untyped event.mozMovementX : ((untyped event.webkitMovementX != null) ? untyped event.webkitMovementX : (mouseX
-				- lastMouseX));
-			movementY = (untyped event.mozMovementY != null) ? untyped event.mozMovementY : ((untyped event.webkitMovementY != null) ? untyped event.webkitMovementY : (mouseY
-				- lastMouseY));
-		}
 
 		// this ensures same behaviour across browser until they fix it
 		if (firefox) {
@@ -1312,8 +1269,8 @@ class SystemImpl {
 			return null; // Chrome crashes if navigator.getGamepads() is called when using VR
 		}
 
-		if (untyped navigator.getGamepads) {
-			return js.Browser.navigator.getGamepads();
+		if (Browser.navigator.getGamepads != null) {
+			return Browser.navigator.getGamepads();
 		}
 		else {
 			return null;
