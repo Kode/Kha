@@ -20,13 +20,16 @@
 	url = https://github.com/Kode/KhaTools_linux_arm64.git
 	branch = main
 	shallow = true
-[submodule "Tools/macos"]
-	path = Tools/macos
-	url = https://github.com/Kode/KhaTools_macos.git
-	branch = main
-	shallow = true
 [submodule "Tools/windows_x64"]
 	path = Tools/windows_x64
 	url = https://github.com/Kode/KhaTools_windows_x64.git
 	branch = main
 	shallow = true
+[submodule "Tools/macos_arm64"]
+	path = Tools/macos_arm64
+	url = https://github.com/Kode/KhaTools_macos_arm64.git
+	branch = main
+[submodule "tools/macos_x64"]
+	path = tools/macos_x64
+	url = https://github.com/Kode/KhaTools_macos_x64.git
+	branch = main
