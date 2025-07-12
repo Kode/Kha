@@ -16,11 +16,11 @@ git -C `dirname "$0"` submodule update --init --remote Backends/Kore-hxcpp/khacp
 git -C `dirname "$0"`/Backends/Kore-hxcpp/khacpp checkout main
 fi
 
-if test -f `dirname "$0"`"/Tools/$KINC_PLATFORM/LICENSE.txt"; then
-git -C `dirname "$0"` submodule update --remote --merge "Tools/$KINC_PLATFORM"
+if test -f `dirname "$0"`"/Tools/$KORE_PLATFORM/LICENSE.txt"; then
+git -C `dirname "$0"` submodule update --remote --merge "Tools/$KORE_PLATFORM"
 else
-git -C `dirname "$0"` submodule update --init --remote "Tools/$KINC_PLATFORM"
-git -C `dirname "$0"`/Tools/$KINC_PLATFORM checkout main
+git -C `dirname "$0"` submodule update --init --remote "Tools/$KORE_PLATFORM"
+git -C `dirname "$0"`/Tools/$KORE_PLATFORM checkout main
 fi
 
 if test -f `dirname "$0"`"/Kore/get_dlc_dangerously"; then

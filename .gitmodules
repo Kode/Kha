@@ -29,7 +29,9 @@
 	path = Tools/macos_arm64
 	url = https://github.com/Kode/KhaTools_macos_arm64.git
 	branch = main
+	shallow = true
 [submodule "tools/macos_x64"]
 	path = tools/macos_x64
 	url = https://github.com/Kode/KhaTools_macos_x64.git
 	branch = main
+	shallow = true

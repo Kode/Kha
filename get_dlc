@@ -3,20 +3,8 @@
 git -C `dirname "$0"` submodule update --init Tools/khamake
 git -C `dirname "$0"` submodule update --init Backends/Kore-hxcpp/khacpp
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-	MACHINE_TYPE=`uname -m`
-	if [[ "$MACHINE_TYPE" == "armv"* ]]; then
-		git -C `dirname "$0"` submodule update --depth 1 --init Tools/linux_arm
-	elif [[ "$MACHINE_TYPE" == "aarch64"* ]]; then
-		git -C `dirname "$0"` submodule update --depth 1 --init Tools/linux_arm64
-	else
-		git -C `dirname "$0"` submodule update --depth 1 --init Tools/linux_x64
-	fi
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-	git -C `dirname "$0"` submodule update --depth 1 --init Tools/macos
-elif [[ "$OSTYPE" == "FreeBSD"* ]]; then
-	git -C `dirname "$0"` submodule update --depth 1 --init Tools/freebsd_x64
-fi
+. `dirname "$0"`/Tools/platform.sh
+git -C `dirname "$0"` submodule update --depth 1 --init "Tools/$KORE_PLATFORM"
 
 git -C `dirname "$0"` submodule update --init Kore
 bash `dirname "$0"`/Kore/get_dlc
