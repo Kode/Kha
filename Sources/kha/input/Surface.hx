@@ -13,6 +13,12 @@ class Surface {
 	static var touchDownEventBlockBehavior = TouchDownEventBlockBehavior.Full;
 
 	/**
+		Sets to `true` after first `surface.notify` call,
+		so touch events will not be duplicated as `Mouse` events.
+	**/
+	static var listenedEventsBefore = false;
+
+	/**
 	 * Get current Surface.
 	 * @param num (optional) surface id (0 by default).
 	 */
@@ -41,6 +47,7 @@ class Surface {
 	 */
 	public function notify(?touchStartListener: (id: Int, x: Int, y: Int) -> Void, ?touchEndListener: (id: Int, x: Int, y: Int) -> Void,
 			?moveListener: (id: Int, x: Int, y: Int) -> Void): Void {
+		listenedEventsBefore = true;
 		if (touchStartListener != null)
 			touchStartListeners.push(touchStartListener);
 		if (touchEndListener != null)
