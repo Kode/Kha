@@ -134,22 +134,22 @@ enum abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	inline function set_Rb(i: Int): Int {
-		this = (Ab << 24) | (i << 16) | (Gb << 8) | Bb;
+		this = (this & 0xff00ffff) | (i << 16);
 		return i;
 	}
 
 	inline function set_Gb(i: Int): Int {
-		this = (Ab << 24) | (Rb << 16) | (i << 8) | Bb;
+		this = (this & 0xffff00ff) | (i << 8);
 		return i;
 	}
 
 	inline function set_Bb(i: Int): Int {
-		this = (Ab << 24) | (Rb << 16) | (Gb << 8) | i;
+		this = (this & 0xffffff00) | i;
 		return i;
 	}
 
 	inline function set_Ab(i: Int): Int {
-		this = (i << 24) | (Rb << 16) | (Gb << 8) | Bb;
+		this = (this & 0x00ffffff) | (i << 24);
 		return i;
 	}
 
@@ -170,22 +170,22 @@ enum abstract Color(Int) from Int from UInt to Int to UInt {
 	}
 
 	inline function set_R(f: FastFloat): FastFloat {
-		this = (Std.int(A * 255) << 24) | (Std.int(f * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		set_Rb(Std.int(f * 255));
 		return f;
 	}
 
 	inline function set_G(f: FastFloat): FastFloat {
-		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(f * 255) << 8) | Std.int(B * 255);
+		set_Gb(Std.int(f * 255));
 		return f;
 	}
 
 	inline function set_B(f: FastFloat): FastFloat {
-		this = (Std.int(A * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(f * 255);
+		set_Bb(Std.int(f * 255));
 		return f;
 	}
 
 	inline function set_A(f: FastFloat): FastFloat {
-		this = (Std.int(f * 255) << 24) | (Std.int(R * 255) << 16) | (Std.int(G * 255) << 8) | Std.int(B * 255);
+		set_Ab(Std.int(f * 255));
 		return f;
 	}
 }
