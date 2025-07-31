@@ -52,6 +52,9 @@ class Image implements Canvas implements Resource {
 		return null;
 	}
 
+	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image->Void, errorCallback: String->Void,
+		readable: Bool = false): Void {}
+
 	public static var maxSize(get, never): Int;
 
 	static function get_maxSize(): Int {
