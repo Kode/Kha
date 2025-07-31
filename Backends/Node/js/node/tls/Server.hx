@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by `Server` in addition to its parent classes.
 **/
-@:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		This event is emitted after a new connection has been successfully handshaked.
 	**/

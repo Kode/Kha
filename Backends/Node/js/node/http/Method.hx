@@ -26,7 +26,7 @@ package js.node.http;
 	Enumeration of possible HTTP methods as described in
 	http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 **/
-@:enum abstract Method(String) from String to String {
+enum abstract Method(String) from String to String {
 	var Acl = "ACL";
 	var Bind = "BIND";
 	var Checkout = "CHECKOUT";

@@ -298,7 +298,7 @@ typedef NetworkInterfaceAddressInfo = {
 	var cidr:Null<String>;
 }
 
-@:enum abstract Endianness(String) to String {
+enum abstract Endianness(String) to String {
 	var BigEndian = "BE";
 	var LittleEndian = "LE";
 }

@@ -28,7 +28,7 @@ import js.node.events.EventEmitter;
 /**
 	Enumeration of events emitted by the `Interface` objects.
 **/
-@:enum abstract InterfaceEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract InterfaceEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when one of the following occur:
 

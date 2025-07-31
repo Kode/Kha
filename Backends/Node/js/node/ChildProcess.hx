@@ -136,7 +136,7 @@ typedef ChildProcessSpawnOptionsStdio = EitherType<ChildProcessSpawnOptionsStdio
 /**
 	A shorthand for the `stdio` argument in `ChildProcessSpawnOptions`
 **/
-@:enum abstract ChildProcessSpawnOptionsStdioSimple(String) from String to String {
+enum abstract ChildProcessSpawnOptionsStdioSimple(String) from String to String {
 	/**
 		Equivalent to ['ignore', 'ignore', 'ignore']
 	**/
@@ -156,7 +156,7 @@ typedef ChildProcessSpawnOptionsStdio = EitherType<ChildProcessSpawnOptionsStdio
 /**
 	Enumeration of possible `stdio` behaviours.
 **/
-@:enum abstract ChildProcessSpawnOptionsStdioBehaviour(String) from String to String {
+enum abstract ChildProcessSpawnOptionsStdioBehaviour(String) from String to String {
 	/**
 		Create a pipe between the child process and the parent process.
 		The parent end of the pipe is exposed to the parent as a property on the child_process object as ChildProcess.stdio[fd].
@@ -281,8 +281,8 @@ extern class ChildProcessExecError extends Error {
 	and `error.code` will be the exit code of the child process, and `error.signal` will be set
 	to the signal that terminated the process (see `ChildProcessExecError`).
 **/
-typedef ChildProcessExecCallback = #if (haxe_ver >= 4) (error : Null<ChildProcessExecError>, stdout : EitherType<Buffer, String>, stderr : EitherType<Buffer,
-	String>) -> Void; #else Null<ChildProcessExecError>->EitherType<Buffer, String>->EitherType<Buffer, String>->Void; #end
+typedef ChildProcessExecCallback = #if (haxe_ver >= 4) (error:Null<ChildProcessExecError>, stdout:EitherType<Buffer, String>,
+		stderr:EitherType<Buffer, String>) -> Void; #else Null<ChildProcessExecError>->EitherType<Buffer, String>->EitherType<Buffer, String>->Void; #end
 
 /**
 	Object returned from the `spawnSync` method.

@@ -31,7 +31,7 @@ import js.node.stream.Writable;
 /**
 	Enumeration of events emitted by `ClientRequest`
 **/
-@:enum abstract ClientRequestEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ClientRequestEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the request has been aborted by the client.
 		This event is only emitted on the first call to `abort()`.

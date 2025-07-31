@@ -31,7 +31,7 @@ import js.lib.Error;
 import js.Error;
 #end
 
-@:enum abstract WorkerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WorkerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	var Message:WorkerEvent<Dynamic->Dynamic->Void> = "message";
 	var Online:WorkerEvent<Void->Void> = "online";
 	var Listening:WorkerEvent<ListeningEventAddress->Void> = "listening";

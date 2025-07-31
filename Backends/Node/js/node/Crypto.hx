@@ -36,7 +36,7 @@ import js.Error;
 /**
 	Enumerations of crypto algorighms to be used.
 **/
-@:enum abstract CryptoAlgorithm(String) from String to String {
+enum abstract CryptoAlgorithm(String) from String to String {
 	var SHA1 = "sha1";
 	var MD5 = "md5";
 	var SHA256 = "sha256";
@@ -46,7 +46,7 @@ import js.Error;
 /**
 	Enumeration of supported group names for `Crypto.getDiffieHellman`.
 **/
-@:enum abstract DiffieHellmanGroupName(String) from String to String {
+enum abstract DiffieHellmanGroupName(String) from String to String {
 	var Modp1 = "modp1";
 	var Modp2 = "modp2";
 	var Modp5 = "modp5";

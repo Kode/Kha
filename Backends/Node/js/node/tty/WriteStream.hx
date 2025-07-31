@@ -27,7 +27,7 @@ import js.node.events.EventEmitter;
 /**
 	Enumeration of events emitted by `WriteStream` objects in addition to its parents.
 **/
-@:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted by refreshSize() when either of the columns or rows properties has changed.
 	**/

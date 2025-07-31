@@ -60,7 +60,7 @@ typedef NetConnectOptionsUnix = {
 /**
 	Enumeration of possible values for `Net.isIP` return.
 **/
-@:enum abstract NetIsIPResult(Int) to Int {
+enum abstract NetIsIPResult(Int) to Int {
 	var Invalid = 0;
 	var IPv4 = 4;
 	var IPv6 = 6;

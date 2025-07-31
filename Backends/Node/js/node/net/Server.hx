@@ -34,7 +34,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the `Server` objects
 **/
-@:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the server has been bound after calling `Server.listen`.
 	**/

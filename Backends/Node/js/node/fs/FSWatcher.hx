@@ -33,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of possible types of changes for 'change' event.
 **/
-@:enum abstract FSWatcherChangeType(String) from String to String {
+enum abstract FSWatcherChangeType(String) from String to String {
 	var Change = "change";
 	var Rename = "rename";
 }
@@ -41,7 +41,7 @@ import js.Error;
 /**
 	Enumeration of the events emitted by `FSWatcher`.
 **/
-@:enum abstract FSWatcherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract FSWatcherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when something changes in a watched directory or file. See more details in `Fs.watch`.
 

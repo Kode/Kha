@@ -26,7 +26,7 @@ import haxe.DynamicAccess;
 import js.node.cluster.Worker;
 import js.node.events.EventEmitter;
 
-@:enum abstract ClusterEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ClusterEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		When a new worker is forked the cluster module will emit a 'fork' event.
 		This can be used to log worker activity, and create your own timeout.
@@ -104,7 +104,7 @@ typedef ListeningEventAddress = {
 	var addressType:ListeningEventAddressType;
 }
 
-@:enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to haxe.extern.EitherType<Int, String> {
+enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to haxe.extern.EitherType<Int, String> {
 	var TCPv4 = 4;
 	var TCPv6 = 6;
 	var Unix = -1;
@@ -113,7 +113,7 @@ typedef ListeningEventAddress = {
 }
 
 @:jsRequire("cluster")
-@:enum extern abstract ClusterSchedulingPolicy(Int) {
+extern enum abstract ClusterSchedulingPolicy(Int) {
 	var SCHED_NONE;
 	var SCHED_RR;
 }

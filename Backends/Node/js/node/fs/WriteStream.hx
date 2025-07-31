@@ -25,7 +25,7 @@ package js.node.fs;
 import js.node.Fs.FsPath;
 import js.node.events.EventEmitter.Event;
 
-@:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the `WriteStream`'s file is opened.
 

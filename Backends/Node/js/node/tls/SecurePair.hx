@@ -27,7 +27,7 @@ import js.node.events.EventEmitter;
 /**
 	Events emitted by `SecurePair`.
 **/
-@:enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The event is emitted from the `SecurePair` once the pair has successfully established a secure connection.
 

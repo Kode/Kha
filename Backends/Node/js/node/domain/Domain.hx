@@ -30,7 +30,7 @@ import js.node.events.EventEmitter;
 	Enumeration of events emitted by `Domain` objects.
 **/
 @:deprecated
-@:enum abstract DomainEvent<T:Function>(Event<T>) to Event<T> {
+enum abstract DomainEvent<T:Function>(Event<T>) to Event<T> {
 	var Error:DomainEvent<DomainError->Void> = "error";
 	var Dispose:DomainEvent<Void->Void> = "dispose";
 }

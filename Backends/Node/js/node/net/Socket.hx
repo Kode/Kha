@@ -34,7 +34,7 @@ import js.Error;
 /**
 	Enumeration of events for `Socket` objects.
 **/
-@:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted after resolving the hostname but before connecting.
 		Not applicable to UNIX sockets.
@@ -198,7 +198,7 @@ typedef SocketAdress = {
 /**
 	Enumeration of possible socket family values.
 **/
-@:enum abstract SocketAdressFamily(String) to String {
+enum abstract SocketAdressFamily(String) to String {
 	var IPv4 = "IPv4";
 	var IPv6 = "IPv6";
 }

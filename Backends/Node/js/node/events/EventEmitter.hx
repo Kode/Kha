@@ -32,7 +32,7 @@ import js.lib.Symbol;
 /**
 	Enumeration of events emitted by all `EventEmitter` instances.
 **/
-@:enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
+enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
 	/**
 		The `EventEmitter` instance will emit its own `'newListener'` event before
 		a listener is added to its internal array of listeners.

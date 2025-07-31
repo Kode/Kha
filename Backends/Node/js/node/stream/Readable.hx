@@ -37,7 +37,7 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_readable_streams
 **/
-@:enum abstract ReadableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ReadableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when the stream and any of its underlying
 		resources (a file descriptor, for example) have been closed.

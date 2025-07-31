@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the `IncomingMessage` objects in addition to its parent class events.
 **/
-@:enum abstract IncomingMessageeEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract IncomingMessageeEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the request has been aborted.
 	**/
