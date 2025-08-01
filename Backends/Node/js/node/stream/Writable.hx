@@ -40,7 +40,7 @@ import js.html.Uint8Array;
 
 	@see https://nodejs.org/api/stream.html#stream_writable_streams
 **/
-@:enum abstract WritableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WritableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when the stream and any of its underlying resources
 		(a file descriptor, for example) have been closed.

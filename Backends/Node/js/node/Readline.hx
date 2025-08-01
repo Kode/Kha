@@ -170,7 +170,7 @@ typedef ReadlineCompleterCallback = String->Array<EitherType<Array<String>, Stri
 
 	@see https://nodejs.org/api/readline.html#readline_readline_clearline_stream_dir_callback
 **/
-@:enum abstract ClearLineDirection(Int) from Int to Int {
+enum abstract ClearLineDirection(Int) from Int to Int {
 	/**
 		to the left from cursor.
 	**/

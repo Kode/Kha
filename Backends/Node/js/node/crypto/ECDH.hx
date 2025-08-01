@@ -25,7 +25,7 @@ package js.node.crypto;
 import haxe.extern.EitherType;
 import js.node.Buffer;
 
-@:enum abstract ECDHFormat(String) from String to String {
+enum abstract ECDHFormat(String) from String to String {
 	var Compressed = "compressed";
 	var Uncompressed = "uncompressed";
 	var Hybrid = "hybrid";

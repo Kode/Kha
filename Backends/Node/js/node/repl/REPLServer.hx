@@ -33,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the `REPLServer` objects.
 **/
-@:enum abstract REPLServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract REPLServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'exit'` event is emitted when the REPL is exited either by receiving the `.exit` command as input,
 		the user pressing `<ctrl>-C` twice to signal `SIGINT`, or by pressing `<ctrl>-D` to signal 'end' on the input stream.

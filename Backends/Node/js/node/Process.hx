@@ -38,7 +38,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the Process class.
 **/
-@:enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the process is about to exit.
 		There is no way to prevent the exiting of the event loop at this point,
@@ -263,6 +263,21 @@ extern class Process extends EventEmitter<Process> {
 	var platform:String;
 
 	/**
+		The PID of the parent process
+	**/
+	var ppid:Int;
+
+	/**
+		The metadata of the current release
+	**/
+	var release:Release;
+
+	/**
+		Used for diagnostic reports
+	**/
+	var report:Report;
+
+	/**
 		Returns an object describing the memory usage of the Node process measured in bytes.
 	**/
 	function memoryUsage():MemoryUsage;
@@ -348,4 +363,12 @@ typedef MemoryUsage = {
 	rss:Float,
 	heapTotal:Float,
 	heapUsed:Float
+}
+
+typedef Release = {
+	name:String,
+	?sourceUrl:String,
+	?headersUrl:String,
+	?libUrl:String,
+	?lts:String
 }

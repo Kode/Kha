@@ -33,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of events for the `Socket` object.
 **/
-@:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when a new datagram is available on a socket.
 		Listener arguments:
@@ -77,7 +77,7 @@ typedef MessageListener = Buffer->MessageRemoteInfo->Void;
 /**
 	Enumeration of possible datagram socket types
 **/
-@:enum abstract SocketType(String) from String to String {
+enum abstract SocketType(String) from String to String {
 	var Udp4 = "udp4";
 	var Udp6 = "udp6";
 }

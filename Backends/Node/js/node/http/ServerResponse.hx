@@ -30,7 +30,7 @@ import js.node.stream.Writable;
 /**
 	Enumeration of events emitted by the `ServerResponse` objects in addition to its parent class events.
 **/
-@:enum abstract ServerResponseEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerResponseEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Indicates that the underlying connection was terminated.
 	**/

@@ -36,7 +36,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by `TLSSocket` objects in addition to its parent class events.
 **/
-@:enum abstract TLSSocketEvent<T:Function>(Event<T>) to Event<T> {
+enum abstract TLSSocketEvent<T:Function>(Event<T>) to Event<T> {
 	/**
 		This event is emitted after a new connection has been successfully handshaked.
 

@@ -37,7 +37,7 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_writable_streams
 **/
-@:enum abstract DuplexEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract DuplexEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	// Writable stream events -------------------------------------------------
 	// var Close:DuplexEvent<Void->Void> = "close";
 

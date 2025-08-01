@@ -168,7 +168,7 @@ typedef FsCreateWriteStreamOptions = {
 /**
 	Enumeration of possible symlink types
 **/
-@:enum abstract SymlinkType(String) from String to String {
+enum abstract SymlinkType(String) from String to String {
 	var Dir = "dir";
 	var File = "file";
 	var Junction = "junction";
@@ -184,7 +184,7 @@ typedef FsCreateWriteStreamOptions = {
 	On Linux, positional writes don't work when the file is opened in append mode.
 	The kernel ignores the position argument and always appends the data to the end of the file.
 **/
-@:enum abstract FsOpenFlag(String) from String to String {
+enum abstract FsOpenFlag(String) from String to String {
 	/**
 		Open file for reading.
 		An exception occurs if the file does not exist.

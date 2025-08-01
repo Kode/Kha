@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by `ChildProcess` objects.
 **/
-@:enum abstract ChildProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ChildProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when:
 			1. The process could not be spawned, or
