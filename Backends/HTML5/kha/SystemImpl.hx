@@ -506,9 +506,9 @@ class SystemImpl {
 		canvas.addEventListener("touchmove", touchMove, false);
 		canvas.addEventListener("touchcancel", touchCancel, false);
 		// prevent dragging canvas like images in Firefox
-		canvas.addEventListener("dragstart", (e:DragEvent) -> e.preventDefault());
+		canvas.addEventListener("dragstart", (e: DragEvent) -> e.preventDefault());
 		// prevent dropping local files on page and replacing page with them
-		Browser.document.addEventListener("dragover", (e:DragEvent) -> e.preventDefault());
+		Browser.document.addEventListener("dragover", (e: DragEvent) -> e.preventDefault());
 
 		Browser.document.addEventListener("drop", function(event: DragEvent) {
 			event.preventDefault();
@@ -907,7 +907,9 @@ class SystemImpl {
 			}
 
 			setTouchXY(touch);
-			mouse.sendDownEvent(0, 0, touchX, touchY);
+			if (!Surface.listenedEventsBefore) {
+				mouse.sendDownEvent(0, 0, touchX, touchY);
+			}
 			surface.sendTouchStartEvent(id, touchX, touchY);
 			if (index == 0) {
 				lastFirstTouchX = touchX;
@@ -930,7 +932,9 @@ class SystemImpl {
 			}
 
 			setTouchXY(touch);
-			mouse.sendUpEvent(0, 0, touchX, touchY);
+			if (!Surface.listenedEventsBefore) {
+				mouse.sendUpEvent(0, 0, touchX, touchY);
+			}
 			surface.sendTouchEndEvent(id, touchX, touchY);
 		}
 		insideInputEvent = false;
@@ -949,7 +953,9 @@ class SystemImpl {
 				lastFirstTouchX = touchX;
 				lastFirstTouchY = touchY;
 
-				mouse.sendMoveEvent(0, touchX, touchY, movementX, movementY);
+				if (!Surface.listenedEventsBefore) {
+					mouse.sendMoveEvent(0, touchX, touchY, movementX, movementY);
+				}
 			}
 			var id = touch.identifier;
 			if (ios)
@@ -971,7 +977,9 @@ class SystemImpl {
 				id = iosTouchs.indexOf(id);
 
 			setTouchXY(touch);
-			mouse.sendUpEvent(0, 0, touchX, touchY);
+			if (!Surface.listenedEventsBefore) {
+				mouse.sendUpEvent(0, 0, touchX, touchY);
+			}
 			surface.sendTouchEndEvent(id, touchX, touchY);
 		}
 		iosTouchs = [];
