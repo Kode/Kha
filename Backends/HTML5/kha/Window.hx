@@ -21,7 +21,6 @@ class Window {
 		this.defaultHeight = defaultHeight;
 		windows.push(this);
 		resizeCallbacks[num] = [];
-		windows.push(this);
 		final observer: MutationObserver = new MutationObserver(function(mutations: Array<js.html.MutationRecord>, observer: MutationObserver) {
 			var isResize = false;
 			for (mutation in mutations) {
