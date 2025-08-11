@@ -21,7 +21,7 @@
 @git submodule update --remote --merge Kore
 ) else (
 @git submodule update --init --remote Kore
-@git -C Kore checkout main
+@git -C Kore checkout v2
 )
 @call Kore\get_dlc_dangerously.bat
 @popd

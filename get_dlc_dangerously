@@ -27,7 +27,7 @@ if test -f `dirname "$0"`"/Kore/get_dlc_dangerously"; then
 git -C `dirname "$0"` submodule update --remote --merge Kore
 else
 git -C `dirname "$0"` submodule update --init --remote Kore
-git -C `dirname "$0"`/Kore checkout main
+git -C `dirname "$0"`/Kore checkout v2
 fi
 
 bash `dirname "$0"`/Kore/get_dlc_dangerously
