@@ -1270,7 +1270,37 @@ class SystemImpl {
 		return "unknown";
 	}
 
-	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float) {}
+	public static function setGamepadRumble(index: Int, leftAmount: Float, rightAmount: Float): Void {
+		final sysGamepads = getGamepads();
+		if (sysGamepads == null || sysGamepads[index] == null) {
+			return;
+		}
+
+		final gamepad = sysGamepads[index];
+		final duration = 10000; // 10 seconds
+
+		if (untyped gamepad.vibrationActuator) {
+			if (leftAmount == 0 && rightAmount == 0) {
+				untyped gamepad.vibrationActuator.reset();
+			}
+			else {
+				untyped gamepad.vibrationActuator.playEffect('dual-rumble', {
+					duration: duration,
+					strongMagnitude: leftAmount,
+					weakMagnitude: rightAmount
+				});
+			}
+		}
+		else if (untyped gamepad.hapticActuators && untyped gamepad.hapticActuators.length > 0) {
+			final hapticActuator = untyped gamepad.hapticActuators[0];
+			if (leftAmount == 0 && rightAmount == 0) {
+				untyped gamepad.hapticActuators[0].pulse(0, 0);
+			}
+			else {
+				untyped gamepad.hapticActuators[0].pulse(leftAmount, duration);
+			}
+		}
+	}
 
 	static function getGamepads(): Array<js.html.Gamepad> {
 		if (chrome && kha.vr.VrInterface.instance != null && kha.vr.VrInterface.instance.IsVrEnabled()) {
