@@ -45,5 +45,7 @@ Kha is a low level sdk for building games and media applications in a portable w
 * Xbox One*
 * Xbox Series X|S*
 * Nintendo Switch*
+* Nintendo Switch 2*
 
 \* The consoles code is not public. If you are a registered developer with Microsoft/Nintendo/Sony you can contact us to get access.
+
