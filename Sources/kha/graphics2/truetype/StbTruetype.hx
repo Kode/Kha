@@ -9,7 +9,7 @@ typedef Stbtt_uint16 = Int;
 typedef Stbtt_int16  = Int;
 typedef Stbtt_uint32 = Int;
 typedef Stbtt_int32  = Int;
-   
+
 //typedef char stbtt__check_size32[sizeof(stbtt_int32)==4 ? 1 : -1];
 //typedef char stbtt__check_size16[sizeof(stbtt_int16)==2 ? 1 : -1];
 
@@ -60,7 +60,7 @@ class Stbtt_bakedchar {
 	public var y0: Int;
 	public var x1: Int;
 	public var y1: Int;
-	
+
 	public var xoff: Float;
 	public var yoff: Float;
 	public var xadvance: Float;
@@ -72,7 +72,7 @@ class Stbtt_aligned_quad {
 	public var y0: Float;
 	public var s0: Float;
 	public var t0: Float;
-	
+
 	// bottom-right
 	public var x1: Float;
 	public var y1: Float;
@@ -86,11 +86,11 @@ class Stbtt_packedchar {
 	public var y0: Int;
 	public var x1: Int;
 	public var y1: Int;
-	
+
 	public var xoff: Float;
 	public var yoff: Float;
 	public var xadvance: Float;
-	
+
 	public var xoff2: Float;
 	public var yoff2: Float;
 }
@@ -101,7 +101,7 @@ class Stbtt_pack_range {
 	public var array_of_unicode_codepoints: Vector<Int>; // if non-zero, then this is an array of unicode codepoints
 	public var num_chars: Int;
 	public var chardata_for_range: Stbtt_packedchar;     // output
-	
+
 	// don't set these, they're used internally
 	public var h_oversample: Int;
 	public var v_oversample: Int;
@@ -214,7 +214,7 @@ class Stbtt__csctx {
 class StbTruetype {
 	private static inline function STBTT_assert(value: Bool): Void { if (!value) throw "Error"; }
 	private static inline function STBTT_POINT_SIZE(x: Float): Float { return -x; }
-	
+
 	public static inline var STBTT_vmove  = 1;
 	public static inline var STBTT_vline  = 2;
 	public static inline var STBTT_vcurve = 3;
@@ -231,7 +231,7 @@ class StbTruetype {
 	public static inline var STBTT_PLATFORM_ID_MAC       = 1;
 	public static inline var STBTT_PLATFORM_ID_ISO       = 2;
 	public static inline var STBTT_PLATFORM_ID_MICROSOFT = 3;
-   
+
 	// encodingID for STBTT_PLATFORM_ID_UNICODE
 	public static inline var STBTT_UNICODE_EID_UNICODE_1_0      = 0;
 	public static inline var STBTT_UNICODE_EID_UNICODE_1_1      = 1;
@@ -244,7 +244,7 @@ class StbTruetype {
 	public static inline var STBTT_MS_EID_UNICODE_BMP   = 1;
 	public static inline var STBTT_MS_EID_SHIFTJIS      = 2;
 	public static inline var STBTT_MS_EID_UNICODE_FULL  = 10;
-   
+
 	// encodingID for STBTT_PLATFORM_ID_MAC; same as Script Manager codes
 	public static inline var STBTT_MAC_EID_ROMAN        = 0;
 	public static inline var STBTT_MAC_EID_ARABIC       = 4;
@@ -254,7 +254,7 @@ class StbTruetype {
 	public static inline var STBTT_MAC_EID_GREEK        = 6;
 	public static inline var STBTT_MAC_EID_KOREAN       = 3;
 	public static inline var STBTT_MAC_EID_RUSSIAN      = 7;
-	
+
 	// languageID for STBTT_PLATFORM_ID_MICROSOFT; same as LCID...
 	// problematic because there are e.g. 16 english LCIDs and 16 arabic LCIDs
 	public static inline var STBTT_MS_LANG_ENGLISH     = 0x0409;
@@ -269,7 +269,7 @@ class StbTruetype {
 	public static inline var STBTT_MS_LANG_SPANISH     = 0x0409;
 	public static inline var STBTT_MS_LANG_HEBREW      = 0x040d;
 	public static inline var STBTT_MS_LANG_SWEDISH     = 0x041D;
-	
+
 	// languageID for STBTT_PLATFORM_ID_MAC
 	public static inline var STBTT_MAC_LANG_ENGLISH            =  0;
 	public static inline var STBTT_MAC_LANG_JAPANESE           = 11;
@@ -285,7 +285,7 @@ class StbTruetype {
 	public static inline var STBTT_MAC_LANG_CHINESE_SIMPLIFIED = 33;
 	public static inline var STBTT_MAC_LANG_ITALIAN            =  3;
 	public static inline var STBTT_MAC_LANG_CHINESE_TRAD       = 19;
-	
+
 	public static inline var STBTT_MAX_OVERSAMPLE: Int = 8;
 	//**typedef int stbtt__test_oversample_pow2[(STBTT_MAX_OVERSAMPLE & (STBTT_MAX_OVERSAMPLE-1)) == 0 ? 1 : -1];
 	public static inline var STBTT_RASTERIZER_VERSION: Int = 2;
@@ -435,20 +435,20 @@ class StbTruetype {
 	private static inline function ttBYTE(p: Blob, pos: Int = 0): Stbtt_uint8 {
 		return p.readU8(pos);
 	}
-	
+
 	private static inline function ttCHAR(p: Blob, pos: Int = 0): Stbtt_int8 {
 		var n = p.readU8(pos);
 		if (n >= 128)
 			return n - 256;
 		return n;
 	}
-	
+
 	private static inline function ttUSHORT(p: Blob, pos: Int = 0): Stbtt_uint16 {
 		var ch1 = p.readU8(pos + 0);
 		var ch2 = p.readU8(pos + 1);
 		return ch2 | (ch1 << 8);
 	}
-	
+
 	private static inline function ttSHORT(p: Blob, pos: Int = 0): Stbtt_int16 {
 		var ch1 = p.readU8(pos + 0);
 		var ch2 = p.readU8(pos + 1);
@@ -457,9 +457,9 @@ class StbTruetype {
 			return n - 0x10000;
 		return n;
 	}
-	
+
 	private static inline function ttULONG(p: Blob, pos: Int = 0): Stbtt_uint32 { return ttLONG(p, pos); }
-	
+
 	private static inline function ttLONG(p: Blob, pos: Int = 0): Stbtt_int32 {
 		var ch1 = p.readU8(pos + 0);
 		var ch2 = p.readU8(pos + 1);
@@ -471,9 +471,9 @@ class StbTruetype {
 	private static inline function to_stbtt_uint16(value: Int) {
 		return value & 0xffff;
 	}
-	
+
 	private static inline function ttFixed(p: Blob, pos: Int = 0): Stbtt_int32 { return ttLONG(p, pos); }
-	
+
 	private static inline function stbtt_tag4(p: Blob, pos: Int, c0: Int, c1: Int, c2: Int, c3: Int): Bool { return p.readU8(pos + 0) == c0 && p.readU8(pos + 1) == c1 && p.readU8(pos + 2) == c2 && p.readU8(pos + 3) == c3; }
 	private static inline function stbtt_tag(p: Blob, pos: Int, str: String): Bool { return stbtt_tag4(p, pos, str.charCodeAt(0), str.charCodeAt(1), str.charCodeAt(2), str.charCodeAt(3)); }
 
@@ -626,7 +626,7 @@ class StbTruetype {
 		// the same regardless of glyph.
 		numTables = ttUSHORT(data, cmap + 2);
 		info.index_map = 0;
-		
+
 		for (i in 0...numTables) {
 			var encoding_record: Stbtt_uint32 = cmap + 4 + 8 * i;
 			// find an encoding we understand:
@@ -816,7 +816,7 @@ class StbTruetype {
 		}
 		return num_vertices;
 	}
-	
+
 	private static function copyVertices(from: Vector<Stbtt_vertex>, to: Vector<Stbtt_vertex>, offset: Int, count: Int): Void {
 		for (i in 0...count) {
 			to[offset + i] = from[i];
@@ -938,7 +938,7 @@ class StbTruetype {
 					if (i != 0)
 						num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx,sy,scx,scy,cx,cy);
 
-					// now start the new one               
+					// now start the new one
 					start_off = (flags & 1 == 0);
 					if (start_off) {
 						// if we start off with an off-curve point, then when we need to find a point on the curve
@@ -1029,7 +1029,7 @@ class StbTruetype {
 					mtx2 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 					mtx3 = ttSHORT(data, compIndex)/16384.0; compIndex+=2;
 				}
-		 
+
 				// Find transformation scales.
 				m = Math.sqrt(mtx0*mtx0 + mtx1*mtx1);
 				n = Math.sqrt(mtx2*mtx2 + mtx3*mtx3);
@@ -1147,7 +1147,7 @@ class StbTruetype {
 		stbtt__csctx_v(ctx, STBTT_vcubic, Std.int(ctx.x), Std.int(ctx.y), Std.int(cx1), Std.int(cy1), Std.int(cx2), Std.int(cy2));
 	}
 
-	private static inline function stbtt__get_subr(idx: Stbtt__buf, n: Int): Stbtt__buf 
+	private static inline function stbtt__get_subr(idx: Stbtt__buf, n: Int): Stbtt__buf
 	{
 		var count: Int = stbtt__cff_index_count(idx);
 		var bias: Int = 107;
@@ -1661,7 +1661,7 @@ class StbTruetype {
 		if (x0 <= x && x1 <= x)
 			scanline[scanlineIndex + x] += e.direction * (y1-y0);
 		else if (x0 >= x + 1 && x1 >= x + 1) {
-			
+
 		} else {
 			STBTT_assert(x0 >= x && x0 <= x+1 && x1 >= x && x1 <= x+1);
 			scanline[scanlineIndex + x] += e.direction * (y1-y0) * (1-((x0-x)+(x1-x))/2); // coverage = 1 - average x position
@@ -1870,7 +1870,7 @@ class StbTruetype {
 						step.parent.next = z.next;
 						step.value = z.next;
 					}
-					
+
 					STBTT_assert(z.direction != 0);
 					z.direction = 0;
 				} else {
@@ -1900,7 +1900,7 @@ class StbTruetype {
 				}
 				++eIndex;
 			}
-			
+
 			// now process all active edges
 			if (active != null)
 				stbtt__fill_active_edges_new(scanline, scanline2, scanline2Index + 1, result.w, active, scan_y_top);
@@ -2260,7 +2260,7 @@ class StbTruetype {
 		iy0 = rect.y0;
 		ix1 = rect.x1;
 		iy1 = rect.y1;
-		
+
 		// now we get the size
 		gbm.w = (ix1 - ix0);
 		gbm.h = (iy1 - iy0);
@@ -2270,7 +2270,7 @@ class StbTruetype {
 		region.height = gbm.h;
 		region.xoff   = ix0;
 		region.yoff   = iy0;
-   
+
 		if (gbm.w != 0 && gbm.h != 0) {
 			gbm.pixels = Blob.alloc(gbm.w * gbm.h);
 			if (gbm.pixels != null) {
@@ -2311,7 +2311,7 @@ class StbTruetype {
 
 	public static function stbtt_GetCodepointBitmapSubpixel(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int, region: Stbtt_temp_region): Blob {
 		return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), region);
-	}   
+	}
 
 	public static function stbtt_MakeCodepointBitmapSubpixel(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, shift_x: Float, shift_y: Float, codepoint: Int): Void {
 		stbtt_MakeGlyphBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
@@ -2319,7 +2319,7 @@ class StbTruetype {
 
 	public static function stbtt_GetCodepointBitmap(info: Stbtt_fontinfo, scale_x: Float, scale_y: Float, codepoint: Int, region: Stbtt_temp_region): Blob {
 		return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0, 0.0, codepoint, region);
-	}   
+	}
 
 	public static function stbtt_MakeCodepointBitmap(info: Stbtt_fontinfo, output: Blob, output_offset: Int, out_w: Int, out_h: Int, out_stride: Int, scale_x: Float, scale_y: Float, codepoint: Int): Void {
 		stbtt_MakeCodepointBitmapSubpixel(info, output, output_offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0, 0.0, codepoint);
@@ -2462,7 +2462,7 @@ static void stbrp_init_target(stbrp_context *con, int pw, int ph, stbrp_node *no
    con->y = 0;
    con->bottom_y = 0;
    STBTT__NOTUSED(nodes);
-   STBTT__NOTUSED(num_nodes);   
+   STBTT__NOTUSED(num_nodes);
 }
 
 static void stbrp_pack_rects(stbrp_context *con, stbrp_rect *rects, int num_rects)
@@ -2812,7 +2812,7 @@ STBTT_DEF int stbtt_PackFontRanges(stbtt_pack_context *spc, unsigned char *fontd
    n = 0;
    for (i=0; i < num_ranges; ++i)
       n += ranges[i].num_chars;
-         
+
    rects = (stbrp_rect *) STBTT_malloc(sizeof(*rects) * n, spc->user_allocator_context);
    if (rects == NULL)
       return 0;
@@ -2822,7 +2822,7 @@ STBTT_DEF int stbtt_PackFontRanges(stbtt_pack_context *spc, unsigned char *fontd
    n = stbtt_PackFontRangesGatherRects(spc, &info, ranges, num_ranges, rects);
 
    stbtt_PackFontRangesPackRects(spc, rects, n);
-  
+
    return_value = stbtt_PackFontRangesRenderIntoRects(spc, &info, ranges, num_ranges, rects);
 
    STBTT_free(rects, spc->user_allocator_context);
@@ -2875,7 +2875,7 @@ STBTT_DEF void stbtt_GetPackedQuad(stbtt_packedchar *chardata, int pw, int ph, i
 //
 
 // check if a utf8 string contains a prefix which is the utf16 string; if so return length of matching utf8 string
-static stbtt_int32 stbtt__CompareUTF8toUTF16_bigendian_prefix(const stbtt_uint8 *s1, stbtt_int32 len1, const stbtt_uint8 *s2, stbtt_int32 len2) 
+static stbtt_int32 stbtt__CompareUTF8toUTF16_bigendian_prefix(const stbtt_uint8 *s1, stbtt_int32 len1, const stbtt_uint8 *s2, stbtt_int32 len2)
 {
    stbtt_int32 i=0;
 
@@ -2914,7 +2914,7 @@ static stbtt_int32 stbtt__CompareUTF8toUTF16_bigendian_prefix(const stbtt_uint8 
    return i;
 }
 
-STBTT_DEF int stbtt_CompareUTF8toUTF16_bigendian(const char *s1, int len1, const char *s2, int len2) 
+STBTT_DEF int stbtt_CompareUTF8toUTF16_bigendian(const char *s1, int len1, const char *s2, int len2)
 {
    return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix((const stbtt_uint8*) s1, len1, (const stbtt_uint8*) s2, len2);
 }
