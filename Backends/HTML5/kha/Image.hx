@@ -91,11 +91,15 @@ class Image implements Canvas implements Resource {
 
 	public static function fromEncodedBytes(bytes: Bytes, fileExtention: String, doneCallback: Image->Void, errorCallback: String->Void,
 			readable: Bool = false): Void {
+		final mime = switch fileExtention {
+			case "jpg": 'image/jpeg';
+			case ext: 'image/$ext';
+		}
 		bufferToBase64(cast bytes.getData(), dataUrl -> {
 			final imageElement = js.Browser.document.createImageElement();
 			imageElement.onload = () -> doneCallback(fromImage(imageElement, readable));
 			imageElement.onerror = () -> errorCallback("Image was not created");
-			imageElement.src = 'data:image;base64,$dataUrl';
+			imageElement.src = 'data:$mime;base64,$dataUrl';
 		}, () -> {
 			errorCallback("Image was not created");
 		});
