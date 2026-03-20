@@ -6,25 +6,32 @@ import haxe.macro.Expr.Field;
 import haxe.Serializer;
 #if macro
 import sys.io.File;
+import sys.FileSystem;
 #end
 
 using StringTools;
 
 class ShadersBuilder {
 	#if macro
-	public static var files: Array<Dynamic>;
+	@:persistent static var cache: {time: Float, fields: Array<Field>} = null;
+	static var debug = false;
 	#end
 
 	macro static public function build(): Array<Field> {
-		var fields = Context.getBuildFields();
-
-		var manifestPath = AssetsBuilder.findResources() + "files.json";
-		var content = Json.parse(File.getContent(manifestPath));
-
+		final fields = Context.getBuildFields();
+		final manifestPath = AssetsBuilder.findResources() + "files.json";
 		// rebuild Shaders module whenever manifest file is changed
 		Context.registerModuleDependency(Context.getLocalModule(), manifestPath);
 
-		files = content.files;
+		final time = FileSystem.stat(manifestPath).mtime.getTime();
+		if (cache != null && time == cache.time) {
+			return cache.fields;
+		}
+
+		final content = Json.parse(File.getContent(manifestPath));
+		final files: Array<Dynamic> = content.files;
+		if (debug)
+			trace("invalidate Shaders");
 
 		var init = macro {};
 
@@ -204,6 +211,10 @@ class ShadersBuilder {
 			}),
 			pos: Context.currentPos()
 		});
+		cache = {
+			fields: fields,
+			time: time,
+		};
 
 		return fields;
 	}
