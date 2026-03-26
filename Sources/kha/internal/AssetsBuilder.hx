@@ -6,13 +6,17 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 #if macro
 import sys.io.File;
+import sys.FileSystem;
 #end
 
 using StringTools;
 
 class AssetsBuilder {
 	#if macro
-	public static var files: Array<Dynamic>;
+	@:persistent static var cache: Map<String, {time: Float, fields: Array<Field>}> = [];
+	@:persistent static var files: Array<Dynamic>;
+	@:persistent static var filesTime: Float = 0.0;
+	static var debug = false;
 	#end
 
 	public static function findResources(): String {
@@ -51,18 +55,31 @@ class AssetsBuilder {
 	}
 
 	macro static public function build(type: String): Array<Field> {
-		var fields = Context.getBuildFields();
-		if (files == null) {
-			var content = Json.parse(File.getContent(findResources() + "files.json"));
-			files = content.files;
+		final fields = Context.getBuildFields();
+		final resPath = findResources() + "files.json";
+		Context.registerModuleDependency(Context.getLocalModule(), resPath);
+
+		final time = FileSystem.stat(resPath).mtime.getTime();
+		if (cache[type] != null && cache[type].time == time) {
+			return cache[type].fields;
 		}
 
-		var names = new Array<Expr>();
+		if (files == null || filesTime != time) {
+			final content = Json.parse(File.getContent(resPath));
+			files = content.files;
+			filesTime = time;
+			if (debug)
+				trace("reparse files.json (Assets)");
+		}
+		if (debug)
+			trace('invalidate Assets.$type');
+
+		final names = new Array<Expr>();
 
 		for (file in files) {
-			var name = file.name;
+			final name = file.name;
 			final pos = Context.currentPos();
-			var filesize: Int = file.file_sizes[0];
+			final filesize: Int = file.file_sizes[0];
 
 			if (file.type == type) {
 				names.push(macro $v{name});
@@ -210,6 +227,10 @@ class AssetsBuilder {
 			kind: FVar(macro : Array<String>, macro $a{names}),
 			pos: Context.currentPos()
 		});
+		cache[type] = {
+			fields: fields,
+			time: time,
+		};
 
 		return fields;
 	}
