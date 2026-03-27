@@ -1,6 +1,5 @@
 package kha.audio2;
 
-import haxe.ds.Vector;
 import haxe.io.Bytes;
 
 class StreamChannel implements kha.audio1.AudioChannel {
@@ -9,10 +8,12 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	@:keep var loop: Bool;
 	var myVolume: Float;
 	var paused: Bool = false;
+	var _data: Bytes;
 
 	public function new(data: Bytes, loop: Bool) {
 		myVolume = 1;
 		this.loop = loop;
+		this._data = data;
 		_vorbis = kinc_sound_init_vorbis(data.getData().bytes, data.length);
 	}
 
@@ -28,6 +29,10 @@ class StreamChannel implements kha.audio1.AudioChannel {
 	}
 
 	public function play(): Void {
+		if (atend) {
+			_vorbis = kinc_sound_init_vorbis(_data.getData().bytes, _data.length);
+			atend = false;
+		}
 		paused = false;
 	}
 

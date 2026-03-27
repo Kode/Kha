@@ -52,9 +52,9 @@ static void mix(kinc_a2_buffer_t *buffer, uint32_t samples, void *userdata) {
 	hl_blocking(true);
 #endif
 
-	audioCallCallback(samples);
+	audioCallCallback(samples * 2);
 
-	for (uint32_t i = 0; i < samples; i += 2) {
+	for (uint32_t i = 0; i < samples; ++i) {
 		float left_value = audioReadSample();
 		float right_value = audioReadSample();
 		*(float *)&buffer->channels[0][buffer->write_location] = left_value;
@@ -94,8 +94,8 @@ void hl_init_kore(vbyte *title, int width, int height, int samplesPerPixel, bool
 void hl_kinc_init_audio(vclosure *callCallback, vclosure *readSample, int *outSamplesPerSecond) {
 	audioCallCallback = *((FN_AUDIO_CALL_CALLBACK *)(&callCallback->fun));
 	audioReadSample = *((FN_AUDIO_READ_SAMPLE *)(&readSample->fun));
-	kinc_a2_set_callback(mix, NULL);
 	kinc_a2_init();
+	kinc_a2_set_callback(mix, NULL);
 	*outSamplesPerSecond = kinc_a2_samples_per_second();
 }
 
