@@ -215,6 +215,7 @@ class SystemImpl {
 	}
 
 	public static function vibrate(ms: Int): Void {
+		if (Browser.navigator.vibrate == null) return;
 		Browser.navigator.vibrate(ms);
 	}
 
