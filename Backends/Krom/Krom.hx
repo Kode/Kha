@@ -93,6 +93,7 @@ extern class Krom {
 	static function setKeyboardDownCallback(callback: Int->Void): Void;
 	static function setKeyboardUpCallback(callback: Int->Void): Void;
 	static function setKeyboardPressCallback(callback: Int->Void): Void;
+	static function setMouseCursor(cursor: Int): Void;
 	static function setMouseDownCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseUpCallback(callback: Int->Int->Int->Void): Void;
 	static function setMouseMoveCallback(callback: Int->Int->Int->Int->Void): Void;

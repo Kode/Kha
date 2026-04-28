@@ -71,7 +71,7 @@ abstract ByteArray(ByteArrayPrivate) {
 	}
 
 	public inline function getUint32(byteOffset: Int): Int {
-		return kinc_bytearray_getuint32(this.self, this.byteArrayOffset + byteOffset);
+		return kinc_bytearray_getuint32(this.self, this.byteArrayOffset + byteOffset).toInt();
 	}
 
 	public inline function getFloat32(byteOffset: Int): FastFloat {
