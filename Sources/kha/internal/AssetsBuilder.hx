@@ -86,11 +86,17 @@ class AssetsBuilder {
 
 				switch (type) {
 					case "image":
+						var output = Compiler.getOutput();
+						output = output.replace("\\", "/");
+						output = output.substring(0, output.lastIndexOf("/"));
+						final path = '$output/${file.files[0]}';
+						final url = makeFileUrl(path);
 						fields.push({
 							name: name,
 							meta: [{pos: pos, name: ":keep"}],
 							access: [APublic],
 							kind: FVar(macro : kha.Image, macro null),
+							doc: '[![$url]($url)]($url)',
 							pos: pos
 						});
 					case "sound":
@@ -234,4 +240,13 @@ class AssetsBuilder {
 
 		return fields;
 	}
+
+	#if macro
+	/** Converts a filesystem path into a `file://` URL safe for IDE hover previews. **/
+	static function makeFileUrl(path:String):String {
+		final absPath = FileSystem.absolutePath(path).replace("\\", "/");
+		final url = absPath.urlEncode().replace("%2F", "/").replace("%3A", ":");
+		return "file://" + (url.startsWith("/") ? "" : "/") + url;
+	}
+	#end
 }
