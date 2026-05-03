@@ -16,7 +16,7 @@ import kha.audio2.Audio;
 		super();
 		this.offset = 0;
 		this.buffer = buffer;
-		this.startTime = Audio._context.currentTime; 
+		this.startTime = Audio._context.currentTime;
 		this.source = Audio._context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.connect(Audio._context.destination);
@@ -91,7 +91,7 @@ class WebAudioSound extends kha.Sound {
 			var i = 0;
 			final lidx = len * 2;
 			function uncompressInner() {
-				var chk_len = idx + 11025;
+				var chk_len = idx + 44100;
 				var next_chk = chk_len > lidx ? lidx : chk_len;
 				while (idx < next_chk) {
 					uncompressedData[idx] = ch0[i];
@@ -100,7 +100,7 @@ class WebAudioSound extends kha.Sound {
 					++i;
 				}
 				if (idx < lidx)
-					js.Browser.window.setTimeout(uncompressInner, 0);
+					Microtask.queueMicrotask(uncompressInner);
 				else {
 					compressedData = null;
 					done();
