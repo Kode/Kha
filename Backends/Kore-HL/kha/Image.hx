@@ -156,7 +156,7 @@ class Image implements Canvas implements Resource {
 		if (renderTarget)
 			image.initRenderTarget(width, height, getDepthBufferBits(depthStencil), getRenderTargetFormat(format), getStencilBufferBits(depthStencil));
 		else
-			image.init(width, height, format);
+			image.init(width, height, getTextureFormat(format));
 		return image;
 	}
 
