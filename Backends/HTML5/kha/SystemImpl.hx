@@ -393,7 +393,6 @@ class SystemImpl {
 					antialias: options.framebuffer.samplesPerPixel > 1,
 					stencil: true
 				}); // preserveDrawingBuffer: true } ); Warning: preserveDrawingBuffer can cause huge performance issues on mobile browsers
-			SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
 			halfFloat = {HALF_FLOAT_OES: 0x140B}; // GL_HALF_FLOAT
 			depthTexture = {UNSIGNED_INT_24_8_WEBGL: 0x84FA}; // GL_UNSIGNED_INT_24_8
@@ -422,7 +421,6 @@ class SystemImpl {
 						antialias: options.framebuffer.samplesPerPixel > 1,
 						stencil: true
 					}); // preserveDrawingBuffer: true } ); WARNING: preserveDrawingBuffer causes huge performance issues (on mobile browser)!
-				SystemImpl.gl.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 				SystemImpl.gl.getExtension("OES_texture_float");
 				SystemImpl.gl.getExtension("OES_texture_float_linear");
 				halfFloat = SystemImpl.gl.getExtension("OES_texture_half_float");

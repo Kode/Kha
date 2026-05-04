@@ -8,4 +8,5 @@ enum abstract TextureFormat(Int) to Int {
 	var RGBA64 = 4; // Half floats
 	var A32 = 5; // Float
 	var A16 = 6; // Half float
+	var RGBA64U = 7; // 16-bit uint
 }

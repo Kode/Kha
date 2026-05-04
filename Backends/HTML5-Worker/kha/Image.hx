@@ -109,6 +109,8 @@ class Image implements Canvas implements Resource {
 					bytes = Bytes.alloc(2 * width * height);
 				case RGBA64:
 					bytes = Bytes.alloc(8 * width * height);
+				case RGBA64U:
+					bytes = Bytes.alloc(8 * width * height);
 				case A32:
 					bytes = Bytes.alloc(4 * width * height);
 				case A16:
@@ -177,6 +179,7 @@ class Image implements Canvas implements Resource {
 			case RGBA128: 16;
 			case DEPTH16: 2;
 			case RGBA64: 8;
+			case RGBA64U: 8;
 			case A32: 4;
 			case A16: 2;
 			default: 4;
