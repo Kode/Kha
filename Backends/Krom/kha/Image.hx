@@ -198,6 +198,7 @@ class Image implements Canvas implements Resource {
 			case RGBA128: 16;
 			case DEPTH16: 2;
 			case RGBA64: 8;
+			case RGBA64U: 8;
 			case A32: 4;
 			case A16: 2;
 			default: 4;
