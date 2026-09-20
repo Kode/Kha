@@ -62,6 +62,7 @@ class SystemImpl {
 	static var firefox: Bool = false;
 	public static var safari: Bool = false;
 	public static var ie: Bool = false;
+	public static var macos: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	static public var activeMouseEvent: Null<MouseEvent>;
 	static public var activeWheelEvent: Null<WheelEvent>;
@@ -107,6 +108,7 @@ class SystemImpl {
 		firefox = isFirefox();
 		safari = isSafari();
 		ie = isIE();
+		macos = isMacOS();
 
 		mobileAudioPlaying = !mobile && !chrome && !firefox;
 
@@ -198,6 +200,11 @@ class SystemImpl {
 			return true;
 		}
 		return false;
+	}
+
+	static function isMacOS(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		return agent.contains("Mac") || isIOS();
 	}
 
 	public static function setCanvas(canvas: CanvasElement): Void {
@@ -1154,7 +1161,7 @@ class SystemImpl {
 		final keyCode = fixedKeyCode(event);
 		keyboard.sendDownEvent(keyCode);
 
-		if (event.key.length == 1) {
+		if (isPrintableText(event)) {
 			keyboard.sendPressEvent(event.key);
 		}
 
@@ -1171,6 +1178,26 @@ class SystemImpl {
 			default:
 				cast event.keyCode;
 		}
+	}
+
+	static function isPrintableText(event: KeyboardEvent): Bool {
+		if (event.key == null || event.key.length != 1)
+			return false;
+
+		if (event.metaKey)
+			return false;
+		if (macos) {
+			if (event.ctrlKey)
+				return false;
+		}
+		else {
+			// detect ctrl+alt chars
+			if (event.getModifierState("AltGraph"))
+				return true;
+			if (event.ctrlKey || event.altKey)
+				return false;
+		}
+		return true;
 	}
 
 	static function preventDefaultKeyBehavior(event: KeyboardEvent): Void {
