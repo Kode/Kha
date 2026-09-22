@@ -7,6 +7,7 @@
 #include "kinc.c.h"
 #include "shader.c.h"
 #include "sound.c.h"
+#include "storage.c.h"
 #include "system.c.h"
 #include "texture.c.h"
 #include "vertexbuffer.c.h"
