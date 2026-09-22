@@ -262,7 +262,7 @@ class ImageShaderPainter {
 
 		g.setTexture(pipeline.textureLocation, null);
 
-		if (end || (bufferStart + bufferIndex + 1) * 4 >= bufferSize) {
+		if (end || bufferIndex + 1 >= bufferSize) {
 			bufferStart = 0;
 			bufferIndex = 0;
 			rectVertices = rectVertexBuffer.lock(0);
@@ -288,7 +288,7 @@ class ImageShaderPainter {
 	public inline function drawImage(img: kha.Image, bottomleftx: FastFloat, bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat,
 			toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat, bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
@@ -303,26 +303,12 @@ class ImageShaderPainter {
 			bottomlefty: FastFloat, topleftx: FastFloat, toplefty: FastFloat, toprightx: FastFloat, toprighty: FastFloat, bottomrightx: FastFloat,
 			bottomrighty: FastFloat, opacity: FastFloat, color: Color): Void {
 		var tex = img;
-		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
+		if (bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
 			drawBuffer(false);
 
 		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
 		setRectColor(color.R, color.G, color.B, color.A * opacity);
 		setRectVertices(bottomleftx, bottomlefty, topleftx, toplefty, toprightx, toprighty, bottomrightx, bottomrighty);
-
-		++bufferIndex;
-		lastTexture = tex;
-	}
-
-	public inline function drawImageScale(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, left: FastFloat, top: FastFloat,
-			right: FastFloat, bottom: FastFloat, opacity: FastFloat, color: Color): Void {
-		var tex = img;
-		if (bufferStart + bufferIndex + 1 >= bufferSize || (lastTexture != null && tex != lastTexture))
-			drawBuffer(false);
-
-		setRectTexCoords(sx / tex.realWidth, sy / tex.realHeight, (sx + sw) / tex.realWidth, (sy + sh) / tex.realHeight);
-		setRectColor(color.R, color.G, color.B, opacity);
-		setRectVertices(left, bottom, left, top, right, top, right, bottom);
 
 		++bufferIndex;
 		lastTexture = tex;
