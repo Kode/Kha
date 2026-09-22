@@ -7,6 +7,7 @@ import js.html.ClipboardEvent;
 import js.html.DeviceMotionEvent;
 import js.html.DeviceOrientationEvent;
 import js.html.DragEvent;
+import js.html.FocusEvent;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import js.html.PointerEvent;
@@ -20,7 +21,9 @@ import kha.graphics4.TextureFormat;
 import kha.input.Gamepad;
 import kha.input.KeyCode;
 import kha.input.Keyboard;
+import kha.input.KeyboardImpl;
 import kha.input.Mouse;
+import kha.input.MouseImpl;
 import kha.input.Sensor;
 import kha.input.Surface;
 import kha.js.AudioElementAudio;
@@ -59,6 +62,7 @@ class SystemImpl {
 	static var firefox: Bool = false;
 	public static var safari: Bool = false;
 	public static var ie: Bool = false;
+	public static var macos: Bool = false;
 	public static var insideInputEvent: Bool = false;
 	static public var activeMouseEvent: Null<MouseEvent>;
 	static public var activeWheelEvent: Null<WheelEvent>;
@@ -104,6 +108,7 @@ class SystemImpl {
 		firefox = isFirefox();
 		safari = isSafari();
 		ie = isIE();
+		macos = isMacOS();
 
 		mobileAudioPlaying = !mobile && !chrome && !firefox;
 
@@ -197,6 +202,11 @@ class SystemImpl {
 		return false;
 	}
 
+	static function isMacOS(): Bool {
+		var agent = js.Browser.navigator.userAgent;
+		return agent.contains("Mac") || isIOS();
+	}
+
 	public static function setCanvas(canvas: CanvasElement): Void {
 		khanvas = canvas;
 	}
@@ -247,9 +257,9 @@ class SystemImpl {
 
 	static function init2(defaultWidth: Int, defaultHeight: Int, ?backbufferFormat: TextureFormat) {
 		#if !kha_no_keyboard
-		keyboard = new Keyboard();
+		keyboard = new KeyboardImpl();
 		#end
-		mouse = new kha.input.MouseImpl();
+		mouse = new MouseImpl();
 		surface = new Surface();
 		gamepads = new Array<Gamepad>();
 		gamepadStates = new Array<GamepadStates>();
@@ -498,7 +508,6 @@ class SystemImpl {
 		if (keyboard != null) {
 			canvas.onkeydown = keyDown;
 			canvas.onkeyup = keyUp;
-			canvas.onkeypress = keyPress;
 		}
 		canvas.onblur = onBlur;
 		canvas.onfocus = onFocus;
@@ -991,12 +1000,18 @@ class SystemImpl {
 		insideInputEvent = false;
 	}
 
-	static function onBlur() {
+	static function onBlur(event: FocusEvent) {
+		final input = KeyboardImpl.input;
+		if (input != null && event.relatedTarget == input)
+			return;
 		// System.pause();
 		System.background();
 	}
 
-	static function onFocus() {
+	static function onFocus(event: FocusEvent) {
+		final input = KeyboardImpl.input;
+		if (input != null && event.relatedTarget == input)
+			return;
 		// System.resume();
 		System.foreground();
 	}
@@ -1139,10 +1154,17 @@ class SystemImpl {
 		// prevent key repeat
 		if (event.repeat) {
 			event.preventDefault();
+			activeKeyEvent = null;
+			insideInputEvent = false;
 			return;
 		}
-		var keyCode = fixedKeyCode(event);
+		final keyCode = fixedKeyCode(event);
 		keyboard.sendDownEvent(keyCode);
+
+		if (isPrintableText(event)) {
+			keyboard.sendPressEvent(event.key);
+		}
+
 		activeKeyEvent = null;
 		insideInputEvent = false;
 	}
@@ -1156,6 +1178,26 @@ class SystemImpl {
 			default:
 				cast event.keyCode;
 		}
+	}
+
+	static function isPrintableText(event: KeyboardEvent): Bool {
+		if (event.key == null || event.key.length != 1)
+			return false;
+
+		if (event.metaKey)
+			return false;
+		if (macos) {
+			if (event.ctrlKey)
+				return false;
+		}
+		else {
+			// detect ctrl+alt chars
+			if (event.getModifierState("AltGraph"))
+				return true;
+			if (event.ctrlKey || event.altKey)
+				return false;
+		}
+		return true;
 	}
 
 	static function preventDefaultKeyBehavior(event: KeyboardEvent): Void {
@@ -1204,21 +1246,6 @@ class SystemImpl {
 
 		var keyCode = fixedKeyCode(event);
 		keyboard.sendUpEvent(keyCode);
-
-		activeKeyEvent = null;
-		insideInputEvent = false;
-	}
-
-	static function keyPress(event: KeyboardEvent): Void {
-		insideInputEvent = true;
-		activeKeyEvent = event;
-		unlockSound();
-
-		if (event.which == 0)
-			return; // for Firefox and Safari
-		preventDefaultKeyBehavior(event);
-		event.stopPropagation();
-		keyboard.sendPressEvent(String.fromCharCode(event.which));
 
 		activeKeyEvent = null;
 		insideInputEvent = false;
