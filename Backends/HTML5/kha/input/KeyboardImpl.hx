@@ -1,12 +1,14 @@
 package kha.input;
 
 import js.Browser.document;
+import js.html.CompositionEvent;
 import js.html.InputElement;
 import js.html.InputEvent;
 import js.html.KeyboardEvent;
 
 using StringTools;
 
+@:access(kha.SystemImpl)
 class KeyboardImpl extends Keyboard {
 	static var virtualKeyboardId = "kha-virtual-keyboard";
 	public static var input: InputElement;
@@ -43,13 +45,13 @@ class KeyboardImpl extends Keyboard {
 			}
 			// virtual keyboards do not report pressed chars in most cases
 			// so we only redirect non-printable keys to canvas there
-			if (e.key == null || e.key.length == 1)
+			if (SystemImpl.isPrintableText(e))
 				return;
 			final keyEvent = copyKeyboardEventFrom(e);
 			SystemImpl.khanvas.dispatchEvent(keyEvent);
 		}
 		input.onkeyup = (e: KeyboardEvent) -> {
-			if (e.key == null || e.key.length == 1)
+			if (SystemImpl.isPrintableText(e))
 				return;
 			final keyEvent = copyKeyboardEventFrom(e);
 			SystemImpl.khanvas.dispatchEvent(keyEvent);
@@ -58,15 +60,23 @@ class KeyboardImpl extends Keyboard {
 			// IME-composition, key is not final yet
 			if (e.isComposing)
 				return;
-			final str: String = (e : Dynamic).data ?? return;
-			final kb = Keyboard.get() ?? return;
-			for (code in str) {
-				final char = String.fromCharCode(code);
-				kb.sendPressEvent(char);
-			}
-			input.value = "";
+			sendInputText((e : Dynamic).data);
 		}
+		input.addEventListener("compositionend", (e: CompositionEvent) -> {
+			sendInputText(e.data);
+		});
 		return input;
+	}
+
+	static function sendInputText(str: Null<String>): Void {
+		input.value = "";
+		if (str == null)
+			return;
+		final kb = Keyboard.get() ?? return;
+		for (code in str) {
+			final char = String.fromCharCode(code);
+			kb.sendPressEvent(char);
+		}
 	}
 
 	static function copyKeyboardEventFrom(e: KeyboardEvent): KeyboardEvent {
