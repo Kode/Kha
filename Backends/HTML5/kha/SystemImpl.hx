@@ -225,7 +225,8 @@ class SystemImpl {
 	}
 
 	public static function vibrate(ms: Int): Void {
-		if (Browser.navigator.vibrate == null) return;
+		if (Browser.navigator.vibrate == null)
+			return;
 		Browser.navigator.vibrate(ms);
 	}
 
@@ -324,6 +325,7 @@ class SystemImpl {
 	}
 
 	public static function copyToClipboard(text: String) {
+		final focusEl = Browser.document.activeElement;
 		var textArea = Browser.document.createTextAreaElement();
 		textArea.value = text;
 		textArea.style.top = "0";
@@ -337,6 +339,7 @@ class SystemImpl {
 		}
 		catch (err) {}
 		Browser.document.body.removeChild(textArea);
+		focusEl.focus();
 	}
 
 	public static function getMouse(num: Int): Mouse {
@@ -549,7 +552,7 @@ class SystemImpl {
 
 		var isRefreshRateDetectionActive = false;
 		var lastTimestamp = 0.0;
-		final possibleRefreshRates = [30, 60, 75, 90, 120, 144, 240, 340, 360];
+		final possibleRefreshRates = [30, 60, 75, 90, 120, 144, 165, 180, 200, 240, 340, 360];
 		final refreshRatesCounts = [
 			for (_ in 0...possibleRefreshRates.length)
 				0
@@ -658,7 +661,7 @@ class SystemImpl {
 	}
 
 	public static function isMouseLocked(): Bool {
-		return Syntax.code("document.pointerLockElement === kha_SystemImpl.khanvas");
+		return Browser.document.pointerLockElement == khanvas;
 	}
 
 	public static function notifyOfMouseLockChange(func: Void->Void, error: Void->Void): Void {
@@ -682,7 +685,7 @@ class SystemImpl {
 	static var iosSoundEnabled: Bool = false;
 
 	static function unlockiOSSound(): Void {
-		if (!ios || iosSoundEnabled)
+		if (!ios || iosSoundEnabled || MobileWebAudio._context == null)
 			return;
 
 		var buffer = MobileWebAudio._context.createBuffer(1, 1, 22050);
@@ -1016,133 +1019,6 @@ class SystemImpl {
 		System.foreground();
 	}
 
-	static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
-		if (key != null) {
-			if (key.length == 1)
-				return key;
-			switch (key) {
-				case "Add":
-					return "+";
-				case "Subtract":
-					return "-";
-				case "Multiply":
-					return "*";
-				case "Divide":
-					return "/";
-			}
-		}
-		switch (keycode) {
-			case 187:
-				if (shift)
-					return "*";
-				else
-					return "+";
-			case 188:
-				if (shift)
-					return ";";
-				else
-					return ",";
-			case 189:
-				if (shift)
-					return "_";
-				else
-					return "-";
-			case 190:
-				if (shift)
-					return ":";
-				else
-					return ".";
-			case 191:
-				if (shift)
-					return "'";
-				else
-					return "#";
-			case 226:
-				if (shift)
-					return ">";
-				else
-					return "<";
-			case 106:
-				return "*";
-			case 107:
-				return "+";
-			case 109:
-				return "-";
-			case 111:
-				return "/";
-			case 49:
-				if (shift)
-					return "!";
-				else
-					return "1";
-			case 50:
-				if (shift)
-					return "\"";
-				else
-					return "2";
-			case 51:
-				if (shift)
-					return "§";
-				else
-					return "3";
-			case 52:
-				if (shift)
-					return "$";
-				else
-					return "4";
-			case 53:
-				if (shift)
-					return "%";
-				else
-					return "5";
-			case 54:
-				if (shift)
-					return "&";
-				else
-					return "6";
-			case 55:
-				if (shift)
-					return "/";
-				else
-					return "7";
-			case 56:
-				if (shift)
-					return "(";
-				else
-					return "8";
-			case 57:
-				if (shift)
-					return ")";
-				else
-					return "9";
-			case 48:
-				if (shift)
-					return "=";
-				else
-					return "0";
-			case 219:
-				if (shift)
-					return "?";
-				else
-					return "ß";
-			case 212:
-				if (shift)
-					return "`";
-				else
-					return "´";
-		}
-		if (keycode >= 96 && keycode <= 105) { // num block
-			return String.fromCharCode("0".code - 96 + keycode);
-		}
-		if (keycode >= "A".code && keycode <= "Z".code) {
-			if (shift)
-				return String.fromCharCode(keycode);
-			else
-				return String.fromCharCode(keycode - "A".code + "a".code);
-		}
-		return String.fromCharCode(keycode);
-	}
-
 	static function keyDown(event: KeyboardEvent): Void {
 		insideInputEvent = true;
 		activeKeyEvent = event;
@@ -1207,31 +1083,33 @@ class SystemImpl {
 			case Full:
 				event.preventDefault();
 			case Custom(func):
-				if (func(cast event.keyCode))
+				if (func(fixedKeyCode(event)))
 					event.preventDefault();
 			case None:
 		}
 	}
 
 	static function defaultKeyBlock(e: KeyboardEvent): Void {
+		final keyCode: KeyCode = fixedKeyCode(e);
 		// block if ctrl key pressed
 		if (e.ctrlKey || e.metaKey) {
 			// except for cut-copy-paste
-			if (e.keyCode == 67 || e.keyCode == 88 || e.keyCode == 86) {
+			if (keyCode == C || keyCode == X || keyCode == V) {
 				return;
 			}
 			// and quit on macOS
-			if (e.metaKey && e.keyCode == 81) {
+			if (e.metaKey && keyCode == Q) {
 				return;
 			}
 			e.preventDefault();
 			return;
 		}
+
 		// allow F-keys
-		if (e.keyCode >= 112 && e.keyCode <= 123)
+		if (keyCode.isInRange(F1, F12))
 			return;
 		// allow char keys
-		if (e.key == null || e.key.length == 1)
+		if (e.key != null && e.key.length == 1)
 			return;
 		e.preventDefault();
 	}
@@ -1252,7 +1130,7 @@ class SystemImpl {
 	}
 
 	public static function canSwitchFullscreen(): Bool {
-		return Syntax.code("'fullscreenElement ' in document ||
+		return Syntax.code("'fullscreenElement' in document ||
 		'mozFullScreenElement' in document ||
 		'webkitFullscreenElement' in document ||
 		'msFullscreenElement' in document

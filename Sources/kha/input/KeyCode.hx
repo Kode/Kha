@@ -188,4 +188,12 @@ enum abstract KeyCode(Int) to Int {
 	var Zoom = 251;
 	var PA1 = 253;
 	var WinOemClear = 254;
+
+	public inline function isInRange(min: KeyCode, max: KeyCode): Bool {
+		return this >= min.toInt() && this <= max.toInt();
+	}
+
+	public inline function toInt(): Int {
+		return this;
+	}
 }
