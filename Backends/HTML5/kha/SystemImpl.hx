@@ -896,7 +896,7 @@ class SystemImpl {
 		touchY = Std.int((touch.clientY - rect.top - borderHeight) * SystemImpl.khanvas.height / (rect.height - 2 * borderHeight));
 	}
 
-	static var iosTouchs: Array<Int> = [];
+	static final iosTouchs: Array<Int> = [];
 
 	static function touchDown(event: TouchEvent): Void {
 		insideInputEvent = true;
@@ -985,22 +985,8 @@ class SystemImpl {
 	}
 
 	static function touchCancel(event: TouchEvent): Void {
-		insideInputEvent = true;
-		unlockSound();
-
-		for (touch in event.changedTouches) {
-			var id = touch.identifier;
-			if (ios)
-				id = iosTouchs.indexOf(id);
-
-			setTouchXY(touch);
-			if (!Surface.listenedEventsBefore) {
-				mouse.sendUpEvent(0, 0, touchX, touchY);
-			}
-			surface.sendTouchEndEvent(id, touchX, touchY);
-		}
-		iosTouchs = [];
-		insideInputEvent = false;
+		touchUp(event);
+		iosTouchs.resize(0);
 	}
 
 	static function onBlur(event: FocusEvent) {
