@@ -9,6 +9,12 @@ private class AudioOptions {
 }
 
 @:structInit
+private class Html5Options {
+	/** Resize canvas to fill its parent (`100%`) and scale backbuffer by `devicePixelRatio` on resize **/
+	public var responsive = false;
+}
+
+@:structInit
 class SystemOptions {
 	public var title: String = "Kha";
 	public var width: Int = -1;
@@ -16,6 +22,7 @@ class SystemOptions {
 	public var window: WindowOptions = null;
 	public var framebuffer: FramebufferOptions = null;
 	public var audio: AudioOptions = null;
+	public var html5: Html5Options = null;
 
 	/**
 	 * Used to provide parameters for `System.start`
@@ -26,9 +33,10 @@ class SystemOptions {
 	 * @param window Optionally provide window options
 	 * @param framebuffer Optionally provide framebuffer options
 	 * @param audio Optionally provide audio options
+	 * @param html5 Optionally provide HTML5 options
 	 */
 	public function new(title: String = "Kha", ?width: Int = -1, ?height: Int = -1, ?window: WindowOptions, ?framebuffer: FramebufferOptions,
-			?audio: AudioOptions) {
+			?audio: AudioOptions, ?html5: Html5Options) {
 		this.title = title;
 		this.window = window == null ? {} : window;
 
@@ -54,6 +62,7 @@ class SystemOptions {
 
 		this.framebuffer = framebuffer == null ? {} : framebuffer;
 		this.audio = audio ?? {};
+		this.html5 = html5 ?? {};
 	}
 }
 
