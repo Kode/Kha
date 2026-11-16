@@ -462,6 +462,14 @@ class SystemImpl {
 		#end
 
 		setCanvas(canvas);
+		if (options.html5.responsive) {
+			canvas.style.display = "block";
+			canvas.style.width = "100%";
+			canvas.style.height = "100%";
+			final scale = Browser.window.devicePixelRatio;
+			canvas.width = Std.int(canvas.clientWidth * scale);
+			canvas.height = Std.int(canvas.clientHeight * scale);
+		}
 		window = new Window(0, defaultWidth, defaultHeight, canvas);
 
 		// var widthTransform: Float = canvas.width / Loader.the.width;
@@ -586,11 +594,16 @@ class SystemImpl {
 					var scale = Browser.window.devicePixelRatio;
 					var clientWidth = canvas.clientWidth;
 					var clientHeight = canvas.clientHeight;
-					canvas.width = clientWidth;
-					canvas.height = clientHeight;
-					if (scale != 1) {
-						canvas.style.width = Std.int(clientWidth / scale) + "px";
-						canvas.style.height = Std.int(clientHeight / scale) + "px";
+					if (options.html5.responsive) {
+						canvas.width = Std.int(clientWidth * scale);
+						canvas.height = Std.int(clientHeight * scale);
+					} else {
+						canvas.width = clientWidth;
+						canvas.height = clientHeight;
+						if (scale != 1) {
+							canvas.style.width = Std.int(clientWidth / scale) + "px";
+							canvas.style.height = Std.int(clientHeight / scale) + "px";
+						}
 					}
 					lastCanvasClientWidth = canvas.clientWidth;
 					lastCanvasClientHeight = canvas.clientHeight;
