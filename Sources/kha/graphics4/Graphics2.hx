@@ -30,6 +30,22 @@ import kha.math.Vector2;
 import kha.Shaders;
 import kha.simd.Float32x4;
 
+abstract class ShaderPainter {
+	var g: Graphics;
+
+	public var projectionMatrix(default, null): FastMatrix4;
+
+	public function new(g4: Graphics) {
+		this.g = g4;
+	}
+
+	public function setProjection(projectionMatrix: FastMatrix4): Void {
+		this.projectionMatrix = projectionMatrix;
+	}
+
+	public abstract function end(): Void;
+}
+
 class InternalPipeline {
 	public var pipeline: PipelineState;
 	public var projectionLocation: ConstantLocation;
@@ -112,9 +128,7 @@ class PerFramebufferPipelineCache implements PipelineCache {
 	}
 }
 
-class ImageShaderPainter {
-	var projectionMatrix: FastMatrix4;
-
+class ImageShaderPainter extends ShaderPainter {
 	static var standardImagePipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1500;
@@ -128,13 +142,12 @@ class ImageShaderPainter {
 
 	var bilinear: Bool = false;
 	var bilinearMipmaps: Bool = false;
-	var g: Graphics;
 	var myPipeline: PipelineCache = null;
 
 	public var pipeline(get, set): PipelineCache;
 
 	public function new(g4: Graphics) {
-		this.g = g4;
+		super(g4);
 		bufferStart = 0;
 		bufferIndex = 0;
 		initShaders();
@@ -149,10 +162,6 @@ class ImageShaderPainter {
 	function set_pipeline(pipe: PipelineCache): PipelineCache {
 		myPipeline = pipe != null ? pipe : standardImagePipeline;
 		return myPipeline;
-	}
-
-	public function setProjection(projectionMatrix: FastMatrix4): Void {
-		this.projectionMatrix = projectionMatrix;
 	}
 
 	static function initShaders(): Void {
@@ -322,9 +331,7 @@ class ImageShaderPainter {
 	}
 }
 
-class ColoredShaderPainter {
-	var projectionMatrix: FastMatrix4;
-
+class ColoredShaderPainter extends ShaderPainter {
 	static var standardColorPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 
@@ -340,13 +347,12 @@ class ColoredShaderPainter {
 	static var triangleVertices: Float32Array;
 	static var triangleIndexBuffer: IndexBuffer;
 
-	var g: Graphics;
 	var myPipeline: PipelineCache = null;
 
 	public var pipeline(get, set): PipelineCache;
 
 	public function new(g4: Graphics) {
-		this.g = g4;
+		super(g4);
 		bufferIndex = 0;
 		triangleBufferIndex = 0;
 		initShaders();
@@ -361,10 +367,6 @@ class ColoredShaderPainter {
 	function set_pipeline(pipe: PipelineCache): PipelineCache {
 		myPipeline = pipe != null ? pipe : standardColorPipeline;
 		return myPipeline;
-	}
-
-	public function setProjection(projectionMatrix: FastMatrix4): Void {
-		this.projectionMatrix = projectionMatrix;
 	}
 
 	static function initShaders(): Void {
@@ -570,15 +572,13 @@ class ColoredShaderPainter {
 			drawBuffer(trisDone);
 	}
 
-	public inline function end(): Void {
+	public function end(): Void {
 		endTris(false);
 		endRects(false);
 	}
 }
 
-class TextShaderPainter {
-	var projectionMatrix: FastMatrix4;
-
+class TextShaderPainter extends ShaderPainter {
 	static var standardTextPipeline: PipelineCache = null;
 	static var structure: VertexStructure = null;
 	static inline var bufferSize: Int = 1000;
@@ -591,7 +591,6 @@ class TextShaderPainter {
 
 	static var lastTexture: Image;
 
-	var g: Graphics;
 	var myPipeline: PipelineCache = null;
 
 	public var pipeline(get, set): PipelineCache;
@@ -600,7 +599,7 @@ class TextShaderPainter {
 	var bilinear: Bool = false;
 
 	public function new(g4: Graphics) {
-		this.g = g4;
+		super(g4);
 		bufferIndex = 0;
 		initShaders();
 		myPipeline = standardTextPipeline;
@@ -614,10 +613,6 @@ class TextShaderPainter {
 	function set_pipeline(pipe: PipelineCache): PipelineCache {
 		myPipeline = pipe != null ? pipe : standardTextPipeline;
 		return myPipeline;
-	}
-
-	public function setProjection(projectionMatrix: FastMatrix4): Void {
-		this.projectionMatrix = projectionMatrix;
 	}
 
 	static function initShaders(): Void {
@@ -831,10 +826,19 @@ class Graphics2 extends kha.graphics2.Graphics {
 	var coloredPainter: ColoredShaderPainter;
 	var textPainter: TextShaderPainter;
 
+	public final painters: Array<ShaderPainter> = [];
+	var currentPainter: ShaderPainter = null;
+
 	public static var videoPipeline: PipelineState;
 
 	var canvas: Canvas;
 	var g: Graphics;
+
+	public var g4(get, never): Graphics;
+
+	inline function get_g4(): Graphics {
+		return g;
+	}
 
 	static var current: Graphics2 = null;
 
@@ -847,6 +851,9 @@ class Graphics2 extends kha.graphics2.Graphics {
 		coloredPainter = new ColoredShaderPainter(g);
 		textPainter = new TextShaderPainter(g);
 		textPainter.fontSize = fontSize;
+		painters.push(imagePainter);
+		painters.push(coloredPainter);
+		painters.push(textPainter);
 		projectionMatrix = FastMatrix4.identity();
 		setProjection();
 
@@ -856,6 +863,42 @@ class Graphics2 extends kha.graphics2.Graphics {
 			videoPipeline.vertexShader = Shaders.painter_video_vert;
 			videoPipeline.compile();
 		}
+	}
+
+	public function attachPainter(painter: ShaderPainter): Void {
+		if (painters.contains(painter)) {
+			return;
+		}
+		painters.push(painter);
+		painter.setProjection(projectionMatrix);
+	}
+
+	public function detachPainter(painter: ShaderPainter): Bool {
+		if (currentPainter == painter) {
+			currentPainter = null;
+		}
+		return painters.remove(painter);
+	}
+
+	public function getPainter<T: ShaderPainter>(cl: Class<T>): T {
+		for (painter in painters) {
+			if (Std.isOfType(painter, cl)) {
+				return cast painter;
+			}
+		}
+		return null;
+	}
+
+	public inline function endAllExcept(?keep: ShaderPainter): Void {
+		if (currentPainter == keep) {
+			return;
+		}
+		for (painter in painters) {
+			if (painter != keep) {
+				painter.end();
+			}
+		}
+		currentPainter = keep;
 	}
 
 	static function upperPowerOfTwo(v: Int): Int {
@@ -887,15 +930,14 @@ class Graphics2 extends kha.graphics2.Graphics {
 				projectionMatrix.setFrom(FastMatrix4.orthogonalProjection(0, width, height, 0, 0.1, 1000));
 			}
 		}
-		imagePainter.setProjection(projectionMatrix);
-		coloredPainter.setProjection(projectionMatrix);
-		textPainter.setProjection(projectionMatrix);
+		for (painter in painters) {
+			painter.setProjection(projectionMatrix);
+		}
 	}
 
 	#if cpp
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
-		coloredPainter.end();
-		textPainter.end();
+		endAllExcept(imagePainter);
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 
@@ -922,8 +964,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 	#else
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
-		coloredPainter.end();
-		textPainter.end();
+		endAllExcept(imagePainter);
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 		var p1 = transformation.multvec(new FastVector2(x, yh));
@@ -936,8 +977,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	public override function drawScaledSubImage(img: kha.Image, sx: FastFloat, sy: FastFloat, sw: FastFloat, sh: FastFloat, dx: FastFloat, dy: FastFloat,
 			dw: FastFloat, dh: FastFloat): Void {
-		coloredPainter.end();
-		textPainter.end();
+		endAllExcept(imagePainter);
 		var p1 = transformation.multvec(new FastVector2(dx, dy + dh));
 		var p2 = transformation.multvec(new FastVector2(dx, dy));
 		var p3 = transformation.multvec(new FastVector2(dx + dw, dy));
@@ -954,8 +994,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
-		imagePainter.end();
-		textPainter.end();
+		endAllExcept(coloredPainter);
 
 		var p1 = transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2)); // bottom-left
 		var p2 = transformation.multvec(new FastVector2(x - strength / 2, y - strength / 2)); // top-left
@@ -983,8 +1022,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
-		imagePainter.end();
-		textPainter.end();
+		endAllExcept(coloredPainter);
 
 		var p1 = transformation.multvec(new FastVector2(x, y + height));
 		var p2 = transformation.multvec(new FastVector2(x, y));
@@ -994,15 +1032,13 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function drawString(text: String, x: Float, y: Float): Void {
-		imagePainter.end();
-		coloredPainter.end();
+		endAllExcept(textPainter);
 
 		textPainter.drawString(text, opacity, color, x, y, transformation);
 	}
 
 	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
-		imagePainter.end();
-		coloredPainter.end();
+		endAllExcept(textPainter);
 
 		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation);
 	}
@@ -1021,8 +1057,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
-		imagePainter.end();
-		textPainter.end();
+		endAllExcept(coloredPainter);
 
 		var vec = new FastVector2();
 		if (y2 == y1)
@@ -1045,8 +1080,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
-		imagePainter.end();
-		textPainter.end();
+		endAllExcept(coloredPainter);
 
 		var p1 = transformation.multvec(new FastVector2(x1, y1));
 		var p2 = transformation.multvec(new FastVector2(x2, y2));
@@ -1153,9 +1187,10 @@ class Graphics2 extends kha.graphics2.Graphics {
 	}
 
 	public override function flush(): Void {
-		imagePainter.end();
-		textPainter.end();
-		coloredPainter.end();
+		for (painter in painters) {
+			painter.end();
+		}
+		currentPainter = null;
 	}
 
 	public override function end(): Void {
