@@ -830,6 +830,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 
 	var coloredPainter: ColoredShaderPainter;
 	var textPainter: TextShaderPainter;
+	var flushCallback: () -> Void = null;
 
 	public static var videoPipeline: PipelineState;
 
@@ -896,6 +897,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 
@@ -924,6 +926,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawImage(img: kha.Image, x: FastFloat, y: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 		var xw: FastFloat = x + img.width;
 		var yh: FastFloat = y + img.height;
 		var p1 = transformation.multvec(new FastVector2(x, yh));
@@ -938,6 +941,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 			dw: FastFloat, dh: FastFloat): Void {
 		coloredPainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 		var p1 = transformation.multvec(new FastVector2(dx, dy + dh));
 		var p2 = transformation.multvec(new FastVector2(dx, dy));
 		var p3 = transformation.multvec(new FastVector2(dx + dw, dy));
@@ -956,6 +960,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawRect(x: Float, y: Float, width: Float, height: Float, strength: Float = 1.0): Void {
 		imagePainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 
 		var p1 = transformation.multvec(new FastVector2(x - strength / 2, y + strength / 2)); // bottom-left
 		var p2 = transformation.multvec(new FastVector2(x - strength / 2, y - strength / 2)); // top-left
@@ -985,6 +990,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function fillRect(x: Float, y: Float, width: Float, height: Float): Void {
 		imagePainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 
 		var p1 = transformation.multvec(new FastVector2(x, y + height));
 		var p2 = transformation.multvec(new FastVector2(x, y));
@@ -996,6 +1002,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawString(text: String, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
+		consumeFlushCallback();
 
 		textPainter.drawString(text, opacity, color, x, y, transformation);
 	}
@@ -1003,6 +1010,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawCharacters(text: Array<Int>, start: Int, length: Int, x: Float, y: Float): Void {
 		imagePainter.end();
 		coloredPainter.end();
+		consumeFlushCallback();
 
 		textPainter.drawCharacters(text, start, length, opacity, color, x, y, transformation);
 	}
@@ -1023,6 +1031,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function drawLine(x1: Float, y1: Float, x2: Float, y2: Float, strength: Float = 1.0): Void {
 		imagePainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 
 		var vec = new FastVector2();
 		if (y2 == y1)
@@ -1047,6 +1056,7 @@ class Graphics2 extends kha.graphics2.Graphics {
 	public override function fillTriangle(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) {
 		imagePainter.end();
 		textPainter.end();
+		consumeFlushCallback();
 
 		var p1 = transformation.multvec(new FastVector2(x1, y1));
 		var p2 = transformation.multvec(new FastVector2(x2, y2));
@@ -1156,6 +1166,24 @@ class Graphics2 extends kha.graphics2.Graphics {
 		imagePainter.end();
 		textPainter.end();
 		coloredPainter.end();
+		consumeFlushCallback();
+	}
+
+	public function setFlushCallback(callback: () -> Void): Void {
+		if (flushCallback == callback) {
+			return;
+		}
+		flush();
+		flushCallback = callback;
+	}
+
+	inline function consumeFlushCallback(): Void {
+		if (flushCallback == null) {
+			return;
+		}
+		final callback = flushCallback;
+		flushCallback = null;
+		callback();
 	}
 
 	public override function end(): Void {
